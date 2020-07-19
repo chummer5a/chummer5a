@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1195,7 +1195,7 @@
 			<armor>
 				<id>4b16a172-b328-4717-b632-39a3d07eeb41</id>
 				<name>FleetHead Kappe</name>
-				<translate>FleetHead Kappe</translate>
+				<translate>Casquette FleetHead</translate>
 				<altpage>173</altpage>
 			</armor>
 			<armor>
@@ -1208,6 +1208,36 @@
 				<id>e8065f02-68f3-46f6-8cca-298a1806b97b</id>
 				<name>Ares Victory Friesennerz</name>
 				<translate>Ares Victory Friesennerz</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor>
+				<id>c05c3865-7a13-4c49-989e-a258b71f0d0c</id>
+				<name>Trenchcoat</name>
+				<translate>Imperméable</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor>
+				<id>257d642f-c90b-4dac-90c8-7a4f9a1ccdd0</id>
+				<name>Fedora</name>
+				<translate>Fedora</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor>
+				<id>a9135760-65dd-4c77-84a1-ed6460cf350e</id>
+				<name>Trilby</name>
+				<translate>Trilby</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor>
+				<id>b91be09d-b428-495c-a334-31b316a4ef79</id>
+				<name>Hornburg</name>
+				<translate>Homburg</translate>
+				<altpage>173</altpage>
+			</armor>
+			<armor>
+				<id>90d87a38-fe51-4bbf-bbb3-5b26cacd9834</id>
+				<name>Bowler</name>
+				<translate>Chapeau melon</translate>
 				<altpage>173</altpage>
 			</armor>
 		</armors>
@@ -1665,6 +1695,7 @@
 			<category translate="Modifications génétiques">Genemods</category>
 			<category translate="Améliorations d'orthoderme">Orthoskin Upgrades</category>
 			<category translate="Symbiotes" translated="True">Symbionts</category>
+			<category translate="Thérapie génique">Genetic Restoration</category>
 		</categories>
 		<biowares>
 			<bioware>
@@ -2933,6 +2964,18 @@
 				<translate>Biolink MCT</translate>
 				<altpage>67</altpage>
 			</bioware>
+			<bioware>
+				<id>ac03e91f-4a00-4df7-8ab8-cd840ac5c67f</id>
+				<name>Vocal Expansion</name>
+				<translate>Amplificateur vocal</translate>
+				<altpage>175</altpage>
+			</bioware>
+			<bioware>
+				<id>81b90755-de0b-42d5-a7c9-6c7c72a1db05</id>
+				<name>Adrenaline Filter</name>
+				<translate>Filtre à adrénaline</translate>
+				<altpage>163</altpage>
+			</bioware>
 		</biowares>
 	</chummer>
 	<chummer file="books.xml">
@@ -3224,6 +3267,78 @@
 				<name>Datapuls Verschlusssache (German-exclusive)</name>
 				<translate>Datapuls Verschlusssache (Livret allemand)</translate>
 				<altcode>DPVG</altcode>
+			</book>
+			<book>
+				<id>9b88873f-61fa-4419-b733-49b96997bd42</id>
+				<name>Battle Of Manhattan</name>
+				<translate>Battle Of Manhattan</translate>
+				<altcode>BOM</altcode>
+			</book>
+			<book>
+				<id>2d0b26f5-3d51-46bc-8f0b-93eecd731d23</id>
+				<name>Running Wild</name>
+				<translate>Running Wild</translate>
+				<altcode>RW</altcode>
+			</book>
+			<book>
+				<id>6d5ab707-6906-48f3-a7bc-1efa94cee606</id>
+				<name>Unwired</name>
+				<translate>Unwired</translate>
+				<altcode>UN</altcode>
+			</book>
+			<book>
+				<id>4ac0d433-0850-417a-8448-c7f3b2f05c26</id>
+				<name>Hazard Pay</name>
+				<translate>Hazard Pay</translate>
+				<altcode>HP</altcode>
+			</book>
+			<book>
+				<id>82fbd4e6-939b-41c3-89a5-20e5adc47daf</id>
+				<name>Parabotany</name>
+				<translate>Parabotany</translate>
+				<altcode>PB</altcode>
+			</book>
+			<book>
+				<id>897c4d24-08d4-49f1-bd49-38417adc7028</id>
+				<name>Parazoology</name>
+				<translate>Parazoology</translate>
+				<altcode>PZ</altcode>
+			</book>
+			<book>
+				<id>a9e54d9f-3394-47a5-aed1-55a0249457f0</id>
+				<name>Parazoology 2</name>
+				<translate>Parazoology 2</translate>
+				<altcode>PZ2</altcode>
+			</book>
+			<book>
+				<id>4a683531-f9d3-4b73-a3e8-461a59afd7d5</id>
+				<name>Shadows In Focus: Morocco</name>
+				<translate>Shadows In Focus: Morocco</translate>
+				<altcode>SFMO</altcode>
+			</book>
+			<book>
+				<id>685fa1df-8c84-42cc-9de3-5e81aa7df5f3</id>
+				<name>Firing Line</name>
+				<translate>Firing Line</translate>
+				<altcode>FL</altcode>
+			</book>
+			<book>
+				<id>b7764e7d-ad1b-48a2-80bd-8ebe7d4b614f</id>
+				<name>London Falling</name>
+				<translate>London Falling</translate>
+				<altcode>LF</altcode>
+			</book>
+			<book>
+				<id>e65d69fd-8717-4e2b-88b0-73bf7a22bca0</id>
+				<name>No Future</name>
+				<translate>No Future</translate>
+				<altcode>NF</altcode>
+			</book>
+			<book>
+				<id>e997ea2e-916b-4482-a381-bf8c49cb08ff</id>
+				<name>Krime Katalog</name>
+				<translate>Krime Katalog</translate>
+				<altcode>KK</altcode>
 			</book>
 		</books>
 	</chummer>
@@ -4556,6 +4671,360 @@
 				<translate>Hôte de résonance</translate>
 				<altpage>168</altpage>
 			</power>
+			<power>
+				<id>57dd33b3-7fea-421e-bcf3-336d56ea08b5</id>
+				<name>Combat Skill</name>
+				<translate>Compétence de combat</translate>
+				<altpage>130</altpage>
+			</power>
+			<power>
+				<id>a3f11764-2569-48a1-8eb8-8cdae58b23e8</id>
+				<name>Physical Skill</name>
+				<translate>Compétence physique</translate>
+				<altpage>133</altpage>
+			</power>
+			<power>
+				<id>410c17d0-0490-4e67-b2ca-4ad5e2feb016</id>
+				<name>Social Skill</name>
+				<translate>Compétence sociale</translate>
+				<altpage>137</altpage>
+			</power>
+			<power>
+				<id>07229dc9-3b46-4843-a30a-7b7c4c144ea0</id>
+				<name>Technical Skill</name>
+				<translate>Compétence technique</translate>
+				<altpage>143</altpage>
+			</power>
+			<power>
+				<id>bb55305e-0c6f-47bd-a92f-ce85df478096</id>
+				<name>Vehicle Skill</name>
+				<translate>Compétence de pilotage</translate>
+				<altpage>146</altpage>
+			</power>
+			<power>
+				<id>79317297-becf-4c68-9778-6f00fd955a13</id>
+				<name>Hemorrhage</name>
+				<translate>Hémorragie</translate>
+				<altpage>91</altpage>
+			</power>
+			<power>
+				<id>ce6d38b3-fdb3-4829-979d-381249cc4f18</id>
+				<name>Immersion</name>
+				<translate>Immersion</translate>
+				<altpage>146</altpage>
+			</power>
+			<power>
+				<id>65dd2042-b786-471b-ac26-d6cc8cd16a58</id>
+				<name>Shift</name>
+				<translate>Transformation</translate>
+				<altpage>38</altpage>
+			</power>
+			<power>
+				<id>3243aece-a356-4e46-bd4c-af04cfc2a306</id>
+				<name>Skill</name>
+				<translate>Compétence</translate>
+				<altpage>38</altpage>
+			</power>
+			<power>
+				<id>5aa4a4c2-d27f-416a-976b-330bc878539c</id>
+				<name>Transfer Energy (Essence)</name>
+				<translate>Transfert d'Essence</translate>
+				<altpage>38</altpage>
+			</power>
+			<power>
+				<id>1ad48bb5-2f28-4076-8f4b-185c02f85456</id>
+				<name>Vanishing</name>
+				<translate>Disparition</translate>
+				<altpage>39</altpage>
+			</power>
+			<power>
+				<id>a3651bf9-dda2-4bf0-8c95-8c44bd8ae83b</id>
+				<name>Korrigan Pact</name>
+				<translate>Pacte du Korrigan</translate>
+				<altpage>39</altpage>
+			</power>
+			<power>
+				<id>3fe334d3-f0e3-4bd7-ac39-57fa395ce0be</id>
+				<name>Animal Control (Insect Type)</name>
+				<translate>Contrôle des insectes</translate>
+				<altpage>394</altpage>
+			</power>
+			<power>
+				<id>4d923896-aabb-45fe-9708-85438a75c4a3</id>
+				<name>Compulsion</name>
+				<translate>Contrainte</translate>
+				<altpage>395</altpage>
+			</power>
+			<power translated="True">
+				<id>ed387fd9-5fa3-4f5d-9e97-a9a97ad17b94</id>
+				<name>Confusion</name>
+				<translate>Confusion</translate>
+				<altpage>395</altpage>
+			</power>
+			<power>
+				<id>ac9855da-519a-44ac-b120-a605c20450e6</id>
+				<name>Enhanced Senses (Ultrasound)</name>
+				<translate>Ultrasons</translate>
+				<altpage>396</altpage>
+			</power>
+			<power>
+				<id>fc4ca556-2d13-409b-824d-a4a8a16fc0ee</id>
+				<name>Fear</name>
+				<translate>Peur</translate>
+				<altpage>397</altpage>
+			</power>
+			<power>
+				<id>f986602a-464a-4c8b-aacc-508469401256</id>
+				<name>Search</name>
+				<translate>Recherche</translate>
+				<altpage>400</altpage>
+			</power>
+			<power>
+				<id>6414b273-897d-451a-839a-4d530f1baaab</id>
+				<name>Anchored Resident</name>
+				<translate>Invocation Ancrée</translate>
+				<altpage>49</altpage>
+			</power>
+			<power>
+				<id>9ae68e9e-65dc-49a0-bf06-72054396d371</id>
+				<name>Shell Game</name>
+				<translate>Passe-passe</translate>
+				<altpage>49</altpage>
+			</power>
+			<power>
+				<id>5fca2f99-9b2a-4fb0-b5b3-dd0626b8ed39</id>
+				<name>Superior Banishing Resistance</name>
+				<translate>Résistance supérieure au banissement</translate>
+				<altpage>50</altpage>
+			</power>
+			<power>
+				<id>6d43c580-0285-4d93-bd43-b4edfa091c0e</id>
+				<name>Superior Regeneration</name>
+				<translate>Régénération supérieure</translate>
+				<altpage>49</altpage>
+			</power>
+			<power>
+				<id>d0615070-d0c7-4c8b-ae02-442cadd1f38d</id>
+				<name>Wounded Fury</name>
+				<translate>Rage du blessé</translate>
+				<altpage>49</altpage>
+			</power>
+			<power>
+				<id>9163fb4f-0531-4f11-8894-ed681306ebfd</id>
+				<name>Amphibious</name>
+				<translate>Amphibie</translate>
+				<altpage>156</altpage>
+			</power>
+			<power>
+				<id>c330495b-c6af-4744-b399-c6e068864a8d</id>
+				<name>Astral Brute</name>
+				<translate>Brute astrale</translate>
+				<altpage>157</altpage>
+			</power>
+			<power>
+				<id>c788063f-8daa-4e32-8017-9562513541a0</id>
+				<name>Bacchanal</name>
+				<translate>Bacchanales</translate>
+				<altpage>157</altpage>
+			</power>
+			<power>
+				<id>f79f9ee8-f5db-4673-9225-e6a375aed465</id>
+				<name>Bone Spikes</name>
+				<translate>Pointes osseuses</translate>
+				<altpage>157</altpage>
+			</power>
+			<power>
+				<id>363c3991-5d17-4ca7-963f-e3f2ef395fda</id>
+				<name>Calcified Hide</name>
+				<translate>Peau calcifiée</translate>
+				<altpage>157</altpage>
+			</power>
+			<power>
+				<id>ea3a7442-477a-440f-adcd-4b5050c67b52</id>
+				<name>Corrosive Spit (Infected)</name>
+				<translate>Crachat toxique (infecté)</translate>
+				<altpage>159</altpage>
+			</power>
+			<power>
+				<id>090c0194-3ac9-4ed8-8e82-7a60f18853e8</id>
+				<name>Deathlock Venom</name>
+				<translate>Venin mortel</translate>
+				<altpage>159</altpage>
+			</power>
+			<power>
+				<id>6cbf07be-1491-46c1-ab67-d5f1dd4aa709</id>
+				<name>Digitigrade Legs</name>
+				<translate>Pattes digitigrades</translate>
+				<altpage>159</altpage>
+			</power>
+			<power>
+				<id>00461512-b49c-4759-bc91-e41167682f22</id>
+				<name>Drag Down</name>
+				<translate>Attraction</translate>
+				<altpage>159</altpage>
+			</power>
+			<power>
+				<id>dc0d00da-1d10-42b2-a57a-c336da372df7</id>
+				<name>Dread Feast</name>
+				<translate>Phobophage</translate>
+				<altpage>159</altpage>
+			</power>
+			<power>
+				<id>9a4bde71-3d1b-4852-a613-5a7a8b1898ee</id>
+				<name>Dual Concealment</name>
+				<translate>Nature duale</translate>
+				<altpage>160</altpage>
+			</power>
+			<power>
+				<id>a9809219-9291-4efe-8f74-23a58e144d73</id>
+				<name>Evolved Reflexes</name>
+				<translate>Réflexes améliorés</translate>
+				<altpage>160</altpage>
+			</power>
+			<power>
+				<id>3f607df5-a2af-4fc7-b1ae-9ae2de40964f</id>
+				<name>Feral Dash</name>
+				<translate>Charge sauvage</translate>
+				<altpage>160</altpage>
+			</power>
+			<power>
+				<id>cd9ffa1a-d300-4650-8127-4f27fce3a14b</id>
+				<name>Gnashing Teeth</name>
+				<translate>Grincement de dents</translate>
+				<altpage>160</altpage>
+			</power>
+			<power>
+				<id>53a990fc-ed69-44eb-98d5-5363bf9139f7</id>
+				<name>Metahuman Masque</name>
+				<translate>Masque métahumain</translate>
+				<altpage>160</altpage>
+			</power>
+			<power>
+				<id>09fb492d-0aa0-4a2e-8542-53e2cf97f432</id>
+				<name>Morningstar Fall</name>
+				<translate>Déchu</translate>
+				<altpage>161</altpage>
+			</power>
+			<power>
+				<id>b1cef6fe-aa5f-4b12-a621-a3eb24568dbf</id>
+				<name>Mystic Armor (Infected)</name>
+				<translate>Armure mystique (infecté)</translate>
+				<altpage>161</altpage>
+			</power>
+			<power>
+				<id>53dfd3bb-8c93-4d28-a88f-646c187f7940</id>
+				<name>Plague Bearer</name>
+				<translate>Porteur de peste</translate>
+				<altpage>161</altpage>
+			</power>
+			<power>
+				<id>f61e6df3-bd1a-4ce8-9c75-b49df275cfb3</id>
+				<name>Predator's Glamour</name>
+				<translate>Charisme de prédateur</translate>
+				<altpage>161</altpage>
+			</power>
+			<power>
+				<id>80d692d9-6f13-4148-b346-bb8fc7b78d34</id>
+				<name>Rat King</name>
+				<translate>Roi des rats</translate>
+				<altpage>162</altpage>
+			</power>
+			<power>
+				<id>0daa8f5c-f4de-4558-aca8-82354eecb941</id>
+				<name>Scythe Claws</name>
+				<translate>Griffes courbées</translate>
+				<altpage>162</altpage>
+			</power>
+			<power>
+				<id>96ce4db8-74c5-47ea-8305-1096858ba8ee</id>
+				<name>Sonic Shriek</name>
+				<translate>Hurlement strident</translate>
+				<altpage>162</altpage>
+			</power>
+			<power>
+				<id>a2346acb-c604-4c9d-83b6-e374348f1749</id>
+				<name>Spines</name>
+				<translate>Épines</translate>
+				<altpage>162</altpage>
+			</power>
+			<power>
+				<id>9b2033d3-be97-440e-a5f4-f9d8a230c09c</id>
+				<name>Stupefying Miasma</name>
+				<translate>Miasmes étourdissants</translate>
+				<altpage>162</altpage>
+			</power>
+			<power>
+				<id>5589e7d4-0573-40c4-9798-eb6b604ef82c</id>
+				<name>Terrorscape</name>
+				<translate>Induction de cauchemars</translate>
+				<altpage>162</altpage>
+			</power>
+			<power>
+				<id>97829992-2433-463d-8df7-d8ef0db20e00</id>
+				<name>Traceless Walk</name>
+				<translate>Ne laisse aucune trace</translate>
+				<altpage>163</altpage>
+			</power>
+			<power>
+				<id>765bf1cb-2e4b-46e8-aee4-f19004f031f3</id>
+				<name>Bodyguard</name>
+				<translate>Garde du corps</translate>
+				<altpage>100</altpage>
+			</power>
+			<power>
+				<id>d8e72e33-d70e-4fd5-8ca2-b6cb7da87a96</id>
+				<name>Shield</name>
+				<translate>Bouclier</translate>
+				<altpage>100</altpage>
+			</power>
+			<power>
+				<id>3873ed1d-9f98-4a68-bccd-012d237a2522</id>
+				<name>Active Analytics</name>
+				<translate>Analyse proactive</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<id>5455b362-4c9d-4841-8069-230f44a4a3f0</id>
+				<name>Borrowed IP</name>
+				<translate>IP volée</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<id>ad1c42e7-315b-4c6b-ae49-856b274a129b</id>
+				<name>Decompiling Resistance</name>
+				<translate>Résistance à la décompilation</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<id>68bcb1c1-581c-4756-9856-690a5c3a5397</id>
+				<name>Enhance</name>
+				<translate>Amélioration</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<id>8e7e1bb4-ad16-4195-aef8-dd5b4c701603</id>
+				<name>Navi</name>
+				<translate>Navi</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<id>67ec3e9a-3e21-4906-9d90-1255f6086ce7</id>
+				<name>Resilient Code</name>
+				<translate>Code résilient</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<id>91a4d3a9-bf11-4080-94aa-37e462436b12</id>
+				<name>Resonance Spooling</name>
+				<translate>Bobine de Résonance</translate>
+				<altpage>101</altpage>
+			</power>
+			<power>
+				<id>1749d122-8d63-4790-ba8b-974b500d5bab</id>
+				<name>Resonance Hosting</name>
+				<translate>Hôte de Résonance</translate>
+				<altpage>168</altpage>
+			</power>
 		</powers>
 	</chummer>
 	<chummer file="critters.xml">
@@ -4671,7 +5140,7 @@
 			<metatype translated="True">
 				<id>a1cfa419-e728-4a3e-ad2b-43d3ce062ef1</id>
 				<name>Wendigo (Magician)</name>
-				<translate>Wendigo (Magician)</translate>
+				<translate>Wendigo (Magicien)</translate>
 				<altpage>301</altpage>
 			</metatype>
 			<metatype translated="True">
@@ -4755,7 +5224,7 @@
 			<metatype>
 				<id>f870f03a-9953-468f-bc15-c1d9e13a81c5</id>
 				<name>Barren Spirit</name>
-				<translate>Barren Spirit</translate>
+				<translate>Esprit de Stérilité</translate>
 				<altpage>139</altpage>
 			</metatype>
 			<metatype translated="True">
@@ -4791,13 +5260,13 @@
 			<metatype>
 				<id>ed2dfa45-8827-4470-8edb-f8203db47e82</id>
 				<name>Plague Spirit</name>
-				<translate>Plague Spirit</translate>
+				<translate>Esprit de Peste</translate>
 				<altpage>141</altpage>
 			</metatype>
 			<metatype>
 				<id>2e2bf724-7303-4be7-8010-1c59ff65811a</id>
 				<name>Noxious Spirit</name>
-				<translate>Noxious Spirit</translate>
+				<translate>Esprit Nocif</translate>
 				<altpage>141</altpage>
 			</metatype>
 			<metatype translated="True">
@@ -5259,7 +5728,7 @@
 			<metatype>
 				<id>2cdf4a25-6866-49a2-be90-e508980ad219</id>
 				<name>Killer Whale</name>
-				<translate>Killer Whale</translate>
+				<translate>Orque</translate>
 				<altpage>90</altpage>
 			</metatype>
 			<metatype>
@@ -5442,7 +5911,7 @@
 				<translate>Okapi</translate>
 				<altpage>93</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>be4c5fce-f717-4f96-92d1-103de839d9a2</id>
 				<name>Rat</name>
 				<translate>Rat</translate>
@@ -5931,7 +6400,7 @@
 			<metatype>
 				<id>7fcca21c-729f-414b-95aa-ced043d851cc</id>
 				<name>Snake</name>
-				<translate>Snake</translate>
+				<translate>Serpent</translate>
 				<altpage>96</altpage>
 			</metatype>
 			<metatype>
@@ -7149,7 +7618,7 @@
 			<metatype translated="True">
 				<id>cead0e86-7198-486e-8a2f-7406c1d66fd5</id>
 				<name>Arboreals Spirit</name>
-				<translate>Arboréen</translate>
+				<translate>Esprit Arboréen</translate>
 				<altpage>181</altpage>
 			</metatype>
 			<metatype translated="True">
@@ -7509,13 +7978,13 @@
 			<metatype>
 				<id>634f4b85-5f11-4069-9479-08512772451d</id>
 				<name>Bastet (Domestic Cat)</name>
-				<translate>Bastet (Domestic Cat)</translate>
+				<translate>Bastet (Chat)</translate>
 				<altpage>191</altpage>
 			</metatype>
 			<metatype>
 				<id>9903a854-2785-4adb-bf0d-e74292d3ba05</id>
 				<name>Digit (Cockroach)</name>
-				<translate>Digit (Cockroach)</translate>
+				<translate>Chiffre (Cafar)</translate>
 				<altpage>191</altpage>
 			</metatype>
 			<metatype translated="True">
@@ -7533,7 +8002,7 @@
 			<metatype>
 				<id>08f2a1f3-23a0-4b31-96cc-c960c8d9a6fd</id>
 				<name>Mongrel (Dog)</name>
-				<translate>Mongrel (Dog)</translate>
+				<translate>Bâtard (Chien)</translate>
 				<altpage>192</altpage>
 			</metatype>
 			<metatype translated="True">
@@ -7551,7 +8020,7 @@
 			<metatype>
 				<id>a3adf031-3d38-4fc1-91b3-62c6a589cb68</id>
 				<name>Rook (Crow)</name>
-				<translate>Rook (Crow)</translate>
+				<translate>Pion (Corneille)</translate>
 				<altpage>192</altpage>
 			</metatype>
 			<metatype>
@@ -7932,10 +8401,10 @@
 				<translate>Rat Dioactif</translate>
 				<altpage>95</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>3429f34a-507f-449d-90d5-c017f03ea57b</id>
 				<name>Hellcow (Howling Shadows)</name>
-				<translate>Bovinfernal</translate>
+				<translate>Bovinfernal (Howling Shadows)</translate>
 				<altpage>96</altpage>
 			</metatype>
 			<metatype>
@@ -7943,6 +8412,312 @@
 				<name>Iridescent Owl</name>
 				<translate>Hibou Lumineux</translate>
 				<altpage>97</altpage>
+			</metatype>
+			<metatype>
+				<id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
+				<name>Hellcow (Running Wild)</name>
+				<translate>Bovinfernal (Running Wild)</translate>
+				<altpage>163</altpage>
+			</metatype>
+			<metatype>
+				<id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
+				<name>Gum Toad (Demon)</name>
+				<translate>Crapeau-gomme (Démon)</translate>
+				<altpage>34</altpage>
+			</metatype>
+			<metatype>
+				<id>eece2f07-efa7-411e-a7be-adae734f19f9</id>
+				<name>Crawler (Demon)</name>
+				<translate>Rampant (Demon)</translate>
+				<altpage>34</altpage>
+			</metatype>
+			<metatype>
+				<id>250adb08-63e6-4b64-b593-57723730bb11</id>
+				<name>Ghasts (Demon)</name>
+				<translate>Éᵱouvanteur (Démon)</translate>
+				<altpage>35</altpage>
+			</metatype>
+			<metatype>
+				<id>e77798be-e755-441d-a143-5e49b3757576</id>
+				<name>Vrygoths</name>
+				<translate>Vrygoth</translate>
+				<altpage>36</altpage>
+			</metatype>
+			<metatype>
+				<id>fb6a313e-7bcd-4b27-8283-0ece49970dd4</id>
+				<name>Gremlin</name>
+				<translate>Gremlin</translate>
+				<altpage>36</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>7d8bc3b9-e2be-4139-9399-a3904e12528d</id>
+				<name>Anansi</name>
+				<translate>Anansi</translate>
+				<altpage>37</altpage>
+			</metatype>
+			<metatype>
+				<id>74a4b48f-01cf-4ff8-b95f-83a8b4b25734</id>
+				<name>Tsuchigumo Warrior</name>
+				<translate>Guerrier Tsuchigumo</translate>
+				<altpage>38</altpage>
+			</metatype>
+			<metatype>
+				<id>61d8e6cd-e623-41ea-95af-54b00ba41582</id>
+				<name>Testudine</name>
+				<translate>Testudine</translate>
+				<altpage>167</altpage>
+			</metatype>
+			<metatype>
+				<id>beba6b35-2b2b-40f8-b943-ce690b6a96bb</id>
+				<name>War Hound</name>
+				<translate>Chien de guerre</translate>
+				<altpage>176</altpage>
+			</metatype>
+			<metatype>
+				<id>fc2d14ee-4afb-4a38-9c73-4c35a68b2f42</id>
+				<name>War Dolphin</name>
+				<translate>Dauphin de guerre</translate>
+				<altpage>177</altpage>
+			</metatype>
+			<metatype>
+				<id>52d4e880-653f-4506-ae03-bcdf2583f325</id>
+				<name>War Horse</name>
+				<translate>Cheval de guerre</translate>
+				<altpage>177</altpage>
+			</metatype>
+			<metatype>
+				<id>0b1c6eeb-682f-4f71-bc61-81b5c9c47241</id>
+				<name>Companion Sprite</name>
+				<translate>Sprite Compagnon</translate>
+				<altpage>100</altpage>
+			</metatype>
+			<metatype>
+				<id>8e85cfeb-8058-404f-928c-7f8dc09a8840</id>
+				<name>Generalist Sprite</name>
+				<translate>Sprite Généraliste</translate>
+				<altpage>100</altpage>
+			</metatype>
+			<metatype>
+				<id>588b1381-da7a-4f8d-a1d2-67af53ffade9</id>
+				<name>Yogi</name>
+				<translate>Yogi</translate>
+				<altpage>165</altpage>
+			</metatype>
+			<metatype>
+				<id>b1361f50-d533-437d-bf86-54c671edc486</id>
+				<name>Pachyderm</name>
+				<translate>Pachyderme</translate>
+				<altpage>166</altpage>
+			</metatype>
+			<metatype>
+				<id>590b0d62-0676-4c18-983d-72f453c4e381</id>
+				<name>Saltwater Crocodile</name>
+				<translate>Crocodile marin</translate>
+				<altpage>39</altpage>
+			</metatype>
+			<metatype>
+				<id>a3a4e69a-2804-4f07-af03-e543f48769e6</id>
+				<name>Crocodilian</name>
+				<translate>Crocodilien</translate>
+				<altpage>166</altpage>
+			</metatype>
+			<metatype>
+				<id>94c43469-221c-491a-88a4-8274735a1796</id>
+				<name>Gef</name>
+				<translate>Gef</translate>
+				<altpage>169</altpage>
+			</metatype>
+			<metatype>
+				<id>8f7e0bfe-ce38-489b-ace7-b0aa4f7e320c</id>
+				<name>Energizer</name>
+				<translate>Énergiseur</translate>
+				<altpage>172</altpage>
+			</metatype>
+			<metatype>
+				<id>e9320c19-eb43-4159-be28-aa299e696fa6</id>
+				<name>G33ko</name>
+				<translate>G33ko</translate>
+				<altpage>172</altpage>
+			</metatype>
+			<metatype>
+				<id>aa00a742-89ed-40c8-9474-a94387927001</id>
+				<name>Rybbyt</name>
+				<translate>Rybbyt</translate>
+				<altpage>173</altpage>
+			</metatype>
+			<metatype>
+				<id>58d2a981-ebe5-4075-a92b-01bdf6454978</id>
+				<name>Migaloo</name>
+				<translate>Migaale</translate>
+				<altpage>177</altpage>
+			</metatype>
+			<metatype>
+				<id>1783296b-6033-4d1a-acfc-7930ee3990a3</id>
+				<name>Ravager</name>
+				<translate>Ravageur</translate>
+				<altpage>176</altpage>
+			</metatype>
+			<metatype>
+				<id>e4abe40c-bf0d-4d79-8ab0-d0c09299f795</id>
+				<name>E-Fish</name>
+				<translate>E-Poisson</translate>
+				<altpage>175</altpage>
+			</metatype>
+			<metatype>
+				<id>75d165db-e0eb-48a4-8bfd-b99aeebf04c7</id>
+				<name>Dot-Camel</name>
+				<translate>E-Chameau</translate>
+				<altpage>175</altpage>
+			</metatype>
+			<metatype>
+				<id>290161e4-8b73-4e1d-b24a-00ffea4e79d5</id>
+				<name>Techworm</name>
+				<translate>Techworm</translate>
+				<altpage>174</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>e5727729-0e19-4c1e-924d-b2bc4232e752</id>
+				<name>Anarch</name>
+				<translate>Anarch</translate>
+				<altpage>116</altpage>
+			</metatype>
+			<metatype>
+				<id>46f688ea-66ab-4b63-a2ea-ce797ad001e6</id>
+				<name>Arboreal</name>
+				<translate>Arboréen</translate>
+				<altpage>116</altpage>
+			</metatype>
+			<metatype>
+				<id>c1989f9a-c4c7-4f08-83eb-e252663b5142</id>
+				<name>Blackjack</name>
+				<translate>Blackjack</translate>
+				<altpage>117</altpage>
+			</metatype>
+			<metatype>
+				<id>7499b2df-7a18-4390-a812-30c3ba528856</id>
+				<name>Boggle</name>
+				<translate>Boggle</translate>
+				<altpage>117</altpage>
+			</metatype>
+			<metatype>
+				<id>a2cf75f0-ab9c-4d27-84c5-cebefb0f0d98</id>
+				<name>Bugul</name>
+				<translate>Bugul</translate>
+				<altpage>118</altpage>
+			</metatype>
+			<metatype>
+				<id>42a1c03d-d70a-47df-a23f-2260615bdefe</id>
+				<name>Chindi</name>
+				<translate>Chindi</translate>
+				<altpage>118</altpage>
+			</metatype>
+			<metatype>
+				<id>a296f3ad-26c1-40c4-9cdb-732aa5b86f56</id>
+				<name>Corpselight</name>
+				<translate>Feu follet</translate>
+				<altpage>118</altpage>
+			</metatype>
+			<metatype>
+				<id>943af23e-b4b0-4b0b-84ed-25d97a92ce77</id>
+				<name>Croki</name>
+				<translate>Croki</translate>
+				<altpage>120</altpage>
+			</metatype>
+			<metatype>
+				<id>d1d30016-6f62-4e08-8387-5de731f1086e</id>
+				<name>Duende</name>
+				<translate>Duende</translate>
+				<altpage>121</altpage>
+			</metatype>
+			<metatype>
+				<id>0919e53d-6e38-48b6-8c4b-f0c22f8cd41d</id>
+				<name>Elvar</name>
+				<translate>Elvar</translate>
+				<altpage>121</altpage>
+			</metatype>
+			<metatype>
+				<id>de407ebd-f896-4efe-b16e-511d0181d774</id>
+				<name>Ejerian</name>
+				<translate>Ejérien</translate>
+				<altpage>122</altpage>
+			</metatype>
+			<metatype>
+				<id>33951b3b-65f5-493f-8eb1-65e208f77a74</id>
+				<name>Erinyes</name>
+				<translate>Erinyes</translate>
+				<altpage>123</altpage>
+			</metatype>
+			<metatype>
+				<id>6504cd2d-5e31-4dce-8c78-cbfcfda094f7</id>
+				<name>Green Man/Heart of the City</name>
+				<translate>Homme Vert</translate>
+				<altpage>123</altpage>
+			</metatype>
+			<metatype>
+				<id>7aa16d7a-4f70-4e3a-a9c0-9a3d9ab6e07e</id>
+				<name>Imp</name>
+				<translate>Diablotin</translate>
+				<altpage>124</altpage>
+			</metatype>
+			<metatype>
+				<id>fb5ad9e1-f13e-4da7-b00e-30197cd5ef6c</id>
+				<name>Jarl</name>
+				<translate>Jarl</translate>
+				<altpage>125</altpage>
+			</metatype>
+			<metatype>
+				<id>17b642e0-f3ea-4b1c-8b51-a3eccf0a1ab8</id>
+				<name>Kappa</name>
+				<translate>Kappa</translate>
+				<altpage>126</altpage>
+			</metatype>
+			<metatype>
+				<id>5e37b646-6a2b-438d-92b2-4452d3d3599f</id>
+				<name>Morbi</name>
+				<translate>Morbi</translate>
+				<altpage>128</altpage>
+			</metatype>
+			<metatype>
+				<id>31fa84e3-5d2a-406f-8e6e-4c25ea7e3779</id>
+				<name>Nocnitsa</name>
+				<translate>Nocnitsa</translate>
+				<altpage>129</altpage>
+			</metatype>
+			<metatype>
+				<id>18ab8683-9c7e-4234-9d1d-35d0f779ec71</id>
+				<name>Phantom</name>
+				<translate>Apparition</translate>
+				<altpage>130</altpage>
+			</metatype>
+			<metatype>
+				<id>be973a8d-b997-4d64-b9a7-20d85bc48d08</id>
+				<name>Preta</name>
+				<translate>Preta</translate>
+				<altpage>131</altpage>
+			</metatype>
+			<metatype>
+				<id>d189dcde-b36c-45f4-9a6d-99905af063ba</id>
+				<name>Stabber</name>
+				<translate>Transperceur</translate>
+				<altpage>132</altpage>
+			</metatype>
+			<metatype>
+				<id>98c87b5e-24ad-4fbb-9ad5-29218b801b5b</id>
+				<name>Tungak</name>
+				<translate>Tungak</translate>
+				<altpage>133</altpage>
+			</metatype>
+			<metatype>
+				<id>d6fa5e21-29bd-4cbd-a678-1bf14327a98f</id>
+				<name>Ver</name>
+				<translate>Ver</translate>
+				<altpage>134</altpage>
+			</metatype>
+			<metatype>
+				<id>6cc44762-1e85-4097-bbb4-4f6e5eed2724</id>
+				<name>Vucub Caquix</name>
+				<translate>Vucub Caquix</translate>
+				<altpage>135</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
@@ -9933,7 +10708,7 @@
 			<cyberware>
 				<id>c6fc9433-b33f-45ac-b05a-6341b4d5accc</id>
 				<name>Cosmetic Modifcations Ear</name>
-				<translate>Cosmetic Modifcations Ear</translate>
+				<translate>Modifications cosmétiques d'oreilles</translate>
 				<altpage>201</altpage>
 			</cyberware>
 			<cyberware>
@@ -10236,6 +11011,24 @@
 				<translate>Pare-Feu Crânien</translate>
 				<altpage>66</altpage>
 			</cyberware>
+			<cyberware>
+				<id>f05492b3-de9b-44c3-8622-89840587cc3a</id>
+				<name>Foot Blade</name>
+				<translate>Lame de pied</translate>
+				<altpage>185</altpage>
+			</cyberware>
+			<cyberware>
+				<id>3093590d-5021-441e-973e-38afb95225f6</id>
+				<name>Autovoice</name>
+				<translate>Autovoix</translate>
+				<altpage>175</altpage>
+			</cyberware>
+			<cyberware>
+				<id>6ba97aa3-8b79-43a5-8499-95d5760a724e</id>
+				<name>Autovoice (Hacked)</name>
+				<translate>Autovoix (Piratée)</translate>
+				<altpage>175</altpage>
+			</cyberware>
 		</cyberwares>
 	</chummer>
 	<chummer file="echoes.xml">
@@ -10486,6 +11279,8 @@
 			<category translate="Modificateurs d'apparence">Appearance Modification</category>
 			<category translate="Instruments de Musique">Musical Intruments</category>
 			<category translate="Imprimerie">Printing</category>
+			<category translate="Paydata">Paydata</category>
+			<category translate="Équipement de journaliste">Reporter Gear</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -10527,7 +11322,7 @@
 			<gear translated="True">
 				<id>ecc8aafc-f8a3-408b-9b47-6f85a473de13</id>
 				<name>Ammo: Frangible Rounds</name>
-				<translate>Mun. : Balles frangibles</translate>
+				<translate>Mun. : Cartouches frag</translate>
 				<altpage>54</altpage>
 			</gear>
 			<gear translated="True">
@@ -11385,7 +12180,7 @@
 			<gear translated="True">
 				<id>25b0168d-7052-4f76-b8e5-162d67b8ab6e</id>
 				<name>Weapon Focus</name>
-				<translate>Arme focus</translate>
+				<translate>Focus d'arme</translate>
 				<altpage>322</altpage>
 			</gear>
 			<gear>
@@ -11424,28 +12219,28 @@
 				<translate>Mun. : Obus de canon d’assaut</translate>
 				<altpage>323</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1315cecd-1c13-4d69-9828-a3ea535675da</id>
 				<name>Ammo: Explosive Rounds</name>
-				<translate>Mun. : Balles explosives</translate>
+				<translate>Mun. : Cartouches explosives</translate>
 				<altpage>323</altpage>
 			</gear>
 			<gear translated="True">
 				<id>96eb3f57-26e0-40c5-8dac-62cf8a0bc52f</id>
 				<name>Ammo: EX-Explosive Rounds</name>
-				<translate>Mun. : Balles ex-explosives</translate>
+				<translate>Mun. : Cartouches super-explosives</translate>
 				<altpage>54</altpage>
 			</gear>
 			<gear translated="True">
 				<id>95bff6e2-d788-407b-9069-093250f89fcb</id>
 				<name>Ammo: Flechette Rounds</name>
-				<translate>Mun. : Balles fléchettes</translate>
+				<translate>Mun. : Cartouches à fléchettes</translate>
 				<altpage>323</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>0c8d16cb-6e96-4d95-8454-104a36091cf9</id>
 				<name>Ammo: Gel Rounds</name>
-				<translate>Mun. : Balles gel</translate>
+				<translate>Mun. : Cartouches gel</translate>
 				<altpage>324</altpage>
 			</gear>
 			<gear>
@@ -12189,7 +12984,7 @@
 			<gear>
 				<id>9d81218f-ee70-4304-9a09-ac865d84b8e0</id>
 				<name>[Model] Maneuvering Autosoft</name>
-				<translate>[Model] Maneuvering Autosoft</translate>
+				<translate>[Modèle] Autosoft de Conduite</translate>
 				<altpage>444</altpage>
 			</gear>
 			<gear translated="True">
@@ -12846,10 +13641,10 @@
 				<translate>Formule de focus de lien d'esprits</translate>
 				<altpage>323</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>ead947af-b88b-4b0e-9736-c04d6b21024c</id>
 				<name>Weapon Focus Formula</name>
-				<translate>Formule d'arme focus</translate>
+				<translate>Formule de focus d'arme</translate>
 				<altpage>323</altpage>
 			</gear>
 			<gear>
@@ -13287,7 +14082,7 @@
 			<gear translated="True">
 				<id>b286a62d-c7cb-472a-bea8-0f41a300bb9c</id>
 				<name>Ammo: Hi-De Rounds</name>
-				<translate>Mun. : Balles haute densité</translate>
+				<translate>Mun. : Cartouches haute densité</translate>
 				<altpage>189</altpage>
 			</gear>
 			<gear translated="True">
@@ -13323,7 +14118,7 @@
 			<gear translated="True">
 				<id>608324BB-E4CE-40B7-AC76-FF3F67B2C8E0</id>
 				<name>Ammo: Fuel Canister</name>
-				<translate>Mun. : Cartouches de gaz</translate>
+				<translate>Mun. : Capsules de gaz</translate>
 				<altpage>55</altpage>
 			</gear>
 			<gear>
@@ -16821,7 +17616,7 @@
 			<gear translated="True">
 				<id>2fac0205-8f96-4031-ab10-f3bb35b049e4</id>
 				<name>Winter Wolf</name>
-				<translate>Winter Wolf</translate>
+				<translate>Loup Hivernal</translate>
 				<altpage>143</altpage>
 			</gear>
 			<gear>
@@ -18147,7 +18942,7 @@
 			<gear translated="True">
 				<id>d4b0d4b5-291f-435e-9b61-cd4324c5b1c0</id>
 				<name>Wuxing Frequency</name>
-				<translate>Wuxing Frequency</translate>
+				<translate>Fréquence Wuxing</translate>
 				<altpage>68</altpage>
 			</gear>
 			<gear translated="True">
@@ -18426,7 +19221,7 @@
 				<translate>Tatoos Grey Mana</translate>
 				<altpage>156</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>ae502bc1-1053-46ed-a5c1-4d37aedf3a3a</id>
 				<name>Blight</name>
 				<translate>Blight</translate>
@@ -18437,6 +19232,744 @@
 				<name>Personal Drone Rack</name>
 				<translate>Rack de drone personnel PI-Tac</translate>
 				<altpage>73</altpage>
+			</gear>
+			<gear translated="True">
+				<id>d2a1cc9b-72e3-49df-957c-8ed6fb47a813</id>
+				<name>Narcojet Dazzler</name>
+				<translate>Éblouisseur Narcojet</translate>
+				<altpage>46</altpage>
+			</gear>
+			<gear>
+				<id>25641e84-a0ec-4bfa-a5fd-6a0effeeea04</id>
+				<name>Simple Instrument</name>
+				<translate>Instrument simple</translate>
+				<altpage>171</altpage>
+			</gear>
+			<gear>
+				<id>cb8ede00-71f1-4cf0-9fd5-c70dbd312dec</id>
+				<name>Professional Instrument</name>
+				<translate>Instrument professionnel</translate>
+				<altpage>171</altpage>
+			</gear>
+			<gear>
+				<id>93ead8c1-fb02-4031-bda9-d07cc43163bb</id>
+				<name>Rising Star Instrument</name>
+				<translate>Instrument de star montante</translate>
+				<altpage>171</altpage>
+			</gear>
+			<gear>
+				<id>ca849c10-6b44-486d-83b2-6329d0e075d0</id>
+				<name>Big Time Instrument</name>
+				<translate>Instrument de superstar</translate>
+				<altpage>171</altpage>
+			</gear>
+			<gear>
+				<id>79facff7-e96b-47b5-a65b-3ad40af5529a</id>
+				<name>Internal Synthlink</name>
+				<translate>Synthélink interne</translate>
+				<altpage>171</altpage>
+			</gear>
+			<gear>
+				<id>357d77f6-0e9e-4e5f-87f2-9c4b5422d23c</id>
+				<name>External Synthlink</name>
+				<translate>Synthélink externe</translate>
+				<altpage>171</altpage>
+			</gear>
+			<gear translated="True">
+				<id>3b0f2e22-827d-448e-95df-be872963bc23</id>
+				<name>Grenade: Molotov Cocktail</name>
+				<translate>Cocktails Molotov</translate>
+				<altpage>172</altpage>
+			</gear>
+			<gear translated="True">
+				<id>ac40a996-daa5-4a63-bd2e-deba3e67dcf2</id>
+				<name>Grenade: Molotov Cocktail, Aerodynamic</name>
+				<translate>Cocktails Molotov aérodynamique</translate>
+				<altpage>172</altpage>
+			</gear>
+			<gear>
+				<id>132d65fa-132a-4f69-b007-a08860f47aa6</id>
+				<name>Litre of Milk</name>
+				<translate>Litre de lait</translate>
+				<altpage>172</altpage>
+			</gear>
+			<gear>
+				<id>e948b761-836f-4681-83c8-d5627df81ef0</id>
+				<name>Graffiti Kit</name>
+				<translate>Kit de graffitis</translate>
+				<altpage>173</altpage>
+			</gear>
+			<gear>
+				<id>e3230bd0-0de8-430a-a24b-4403ae8d05fe</id>
+				<name>Press Pass</name>
+				<translate>Carte de presse</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>f1c739c1-4976-4536-ac5e-dd9da491eb36</id>
+				<name>ProCam</name>
+				<translate>Caméra professionnelle</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>731608b0-7146-4083-945e-69d95a1df78f</id>
+				<name>SmartCam External</name>
+				<translate>SmartCam externe</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>b2775dfc-5eda-4097-a12e-4e767bb8759e</id>
+				<name>SmartCam Internal</name>
+				<translate>SmartCam interne</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>c405db73-efd7-4c51-a749-5e733fe6f4ca</id>
+				<name>Basic Press</name>
+				<translate>Presse simple</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>08edaa39-1045-4e8a-a0d9-ed8a75c6ebda</id>
+				<name>Small Press</name>
+				<translate>Petite presse</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>1e70f54f-3c0c-413e-ab16-8f32e7aed835</id>
+				<name>Industrial Press</name>
+				<translate>Presse industrielle</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>3fd93a7a-3f55-4c36-a6be-d03bc835e60d</id>
+				<name>Paper (per 500)</name>
+				<translate>Ramette de papier (500)</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>0234cfa4-0658-45e8-9e66-a1fbc66b2526</id>
+				<name>Black Ink (per 500)</name>
+				<translate>Encre noir (500)</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear>
+				<id>0f43622d-87bb-4288-9d10-b6dab64b0f64</id>
+				<name>Color Ink (per 500)</name>
+				<translate>Encre couleur (500)</translate>
+				<altpage>175</altpage>
+			</gear>
+			<gear translated="True">
+				<id>d86adf45-ab31-46c1-842e-1ddec3bb7384</id>
+				<name>Tarot</name>
+				<translate>Jeu de Tarot</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
+				<name>Tactical Grapple Gun</name>
+				<translate>Pistolet à grappin tactique</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
+				<name>Personal Drone Rack</name>
+				<translate>Lance-drones individuel</translate>
+				<altpage>73</altpage>
+			</gear>
+			<gear>
+				<id>2086797b-7297-4612-bf42-f85494992127</id>
+				<name>Tainted Reagents</name>
+				<translate>Réactif contaminé</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>e61b191f-1cc8-4d6f-a4ab-8baed2591e88</id>
+				<name>Tainted Reagents, Refined</name>
+				<translate>Réactif contaminé (raffiné)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>a591c5c6-7916-4e3c-8d44-a2180be268dc</id>
+				<name>Tainted Reagents, Radical</name>
+				<translate>Réactif contaminé (radical)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>912ede4d-32c4-48ce-bcf2-88d0da386997</id>
+				<name>Inferior Reagents</name>
+				<translate>Réactif inférieur</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>b0e7e907-c9c1-4648-9ff5-9962371eee05</id>
+				<name>Inferior Reagents, Refined</name>
+				<translate>Réactif inférieur (raffiné)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>6ea20805-fd4c-49ad-a4f7-43422289ca73</id>
+				<name>Inferior Reagents, Radical</name>
+				<translate>Réactif inférieur (radical)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>132d7f2a-ad01-4bfe-ae10-1c27ea707982</id>
+				<name>Subpar Reagents</name>
+				<translate>Réactif bas-de-gamme</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>9d7c9076-bd88-4756-af44-26d2cbafb429</id>
+				<name>Subpar Reagents, Refined</name>
+				<translate>Réactif bas-de-gamme (raffiné)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>9276a770-b1b8-4f47-8341-6849c8bb305b</id>
+				<name>Subpar Reagents, Radical</name>
+				<translate>Réactif bas-de-gamme (radical)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>4f2699a7-5980-41cb-aafb-c4285060179e</id>
+				<name>Baseline Reagents</name>
+				<translate>Réactif standard</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>f45f76ea-6c13-44c0-a828-2047f242e5eb</id>
+				<name>Baseline Reagents, Refined</name>
+				<translate>Réactif standard (raffiné)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>1aadeffa-f917-430e-8436-48708c0e6504</id>
+				<name>Baseline Reagents, Radical</name>
+				<translate>Réactif standard (radical)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>e4d6fcbd-a319-4636-bd84-9caf06643dc6</id>
+				<name>Superior Reagents</name>
+				<translate>Réactif supérieur</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>fbab4af1-6b81-4a57-9d8c-d74b5a05ee10</id>
+				<name>Superior Reagents, Refined</name>
+				<translate>Réactif supérieur (raffiné)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>a6bc216b-a210-4201-a970-d4477867595c</id>
+				<name>Superior Reagents, Radical</name>
+				<translate>Réactif supérieur (radical)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>e6bc2ba8-c895-495e-88c7-d673ea2d4751</id>
+				<name>Prime Reagents</name>
+				<translate>Réactif haut-de-gamme</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>f90b26bb-1817-4672-b42e-49c2e0d0a0a2</id>
+				<name>Prime Reagents, Refined</name>
+				<translate>Réactif haut-de-gamme (raffiné)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>c0ea9634-4cd0-4f8f-aba8-cf2ed1b73129</id>
+				<name>Prime Reagents, Radical</name>
+				<translate>Réactif haut-de-gamme (radical)</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
+				<id>9d4cd46c-1fb9-4182-8a82-0479cf2adaae</id>
+				<name>Ammo: Krime Power Rounds</name>
+				<translate>Mun. : Cartouches puissantes Krime Power</translate>
+				<altpage>24</altpage>
+			</gear>
+			<gear>
+				<id>6ffa3fc7-e390-43b5-b27e-3d01baecec92</id>
+				<name>Ammo: Krime Penetrator Buckshot Shells</name>
+				<translate>Mun. : Cartouches de chevrotine pénétrante Krime</translate>
+				<altpage>24</altpage>
+			</gear>
+			<gear>
+				<id>959b02ff-b3b3-4027-8ada-799f31a7a323</id>
+				<name>Ammo: Krime Crackle Fin-Stabilized HEAT Slugs</name>
+				<translate>Mun. : Torpille thermique à stabilisateurs Krime Crackle</translate>
+				<altpage>24</altpage>
+			</gear>
+			<gear>
+				<id>97febd7d-6385-472e-87af-29313f9224ae</id>
+				<name>Ammo: Krime Laser Bullets</name>
+				<translate>Mun. : Balles Laser Krime</translate>
+				<altpage>24</altpage>
+			</gear>
+			<gear>
+				<id>c18eed96-2697-4b95-9be7-be9313504a2f</id>
+				<name>Ammo: Krime Punisher Assault Cannon Rounds</name>
+				<translate>Mun. : Cartouches de canon d'assaut Krime Punisher</translate>
+				<altpage>24</altpage>
+			</gear>
+			<gear>
+				<id>17136c4b-af3b-44a4-b5cf-2eedf7e9d217</id>
+				<name>Ammo: Krime Splash Self-Defense Ammunition</name>
+				<translate>Mun. : Munitions d'auto-défense Krime Splash</translate>
+				<altpage>24</altpage>
+			</gear>
+			<gear translated="True">
+				<id>f2300388-1d51-41bf-b333-fae00776a375</id>
+				<name>Grenade: Krime Cleaner</name>
+				<translate>Grenade: Krime Cleaner</translate>
+				<altpage>27</altpage>
+			</gear>
+			<gear translated="True">
+				<id>16c588e4-9961-4ddd-b5f1-e95ed100159f</id>
+				<name>Grenade: Krime Party</name>
+				<translate>Grenade: Krime Party</translate>
+				<altpage>27</altpage>
+			</gear>
+			<gear translated="True">
+				<id>b654b65a-b9e4-4be2-ac96-53044f5d9b40</id>
+				<name>Grenade: Krime Cocktail</name>
+				<translate>Grenade: Krime Cocktail</translate>
+				<altpage>28</altpage>
+			</gear>
+			<gear translated="True">
+				<id>9964cf3d-c608-4ab5-ba8a-5ea7c96f29fb</id>
+				<name>Grenade: Krime Stinger</name>
+				<translate>Grenade: Krime Stinger</translate>
+				<altpage>29</altpage>
+			</gear>
+			<gear>
+				<id>5f83726b-237c-4628-9a67-f80e91ca0181</id>
+				<name>Radar Scanner</name>
+				<translate>Scanner Radar</translate>
+				<altpage>20</altpage>
+			</gear>
+			<gear>
+				<id>ba8385ca-e355-4e96-a1f7-7398a360ca5c</id>
+				<name>Krime Ripper Sensor Array</name>
+				<translate>Senseurs Krime Ripper</translate>
+				<altpage>20</altpage>
+			</gear>
+			<gear>
+				<id>7576D46D-87F3-47C3-A2A4-1D8E75EBA0AA</id>
+				<name>Alchemical Focus, Individualized, Partial</name>
+				<translate>Focus d'alchimie séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>28B75B07-9C52-4B91-B703-5B8056155ECF</id>
+				<name>Disenchanting Focus, Individualized, Partial</name>
+				<translate>Focus de désenchantement séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>43B96B66-7EEA-4329-99FB-D1B235427F77</id>
+				<name>Centering Focus, Individualized, Partial</name>
+				<translate>Focus de centrage séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>20537E69-CF47-42CC-95FA-697D4328580C</id>
+				<name>Flexible Signature Focus, Individualized, Partial</name>
+				<translate>Focus de signature flexible séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>E4E9BC30-3381-40CC-981D-EE911B3701A8</id>
+				<name>Masking Focus, Individualized, Partial</name>
+				<translate>Focus de camouflage séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>FF0D4D9C-1286-4E08-908B-6D74D3E5F64F</id>
+				<name>Spell Shaping Focus, Individualized, Partial</name>
+				<translate>Focus de façonnage de sorts séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>9A36D4CB-2766-429D-ACE8-39B6615E5A25</id>
+				<name>Power Focus, Individualized, Partial</name>
+				<translate>Focus de pouvoir séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>A4E9723D-0EF6-4A9E-8DDB-FC088780C52F</id>
+				<name>Qi Focus, Individualized, Partial</name>
+				<translate>Focus de qi séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>584AAC51-6E93-4B42-868B-183EC26727C7</id>
+				<name>Counterspelling Focus, Combat, Individualized, Partial</name>
+				<translate>Focus de contresort (Combat) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>DB4E9091-929E-4004-AA1E-57030BAF557F</id>
+				<name>Ritual Spellcasting Focus, Combat, Individualized, Partial</name>
+				<translate>Focus de magie rituelle (Combat) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>A6747F35-5806-4162-8646-52249123D74B</id>
+				<name>Spellcasting Focus, Combat, Individualized, Partial</name>
+				<translate>Focus de lancement de sorts (Combat) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>1215E656-51F6-4963-86A2-47A68A3C129F</id>
+				<name>Sustaining Focus, Combat, Individualized, Partial</name>
+				<translate>Focus de maintien (Combat) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>A11827B3-187F-4D50-96F4-34FE066B19A8</id>
+				<name>Counterspelling Focus, Detection, Individualized, Partial</name>
+				<translate>Focus de contresort (Détection) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>8A24D83C-34B1-41FA-9F76-413FBC935848</id>
+				<name>Ritual Spellcasting Focus, Detection, Individualized, Partial</name>
+				<translate>Focus de magie rituelle (Détection) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>C00F7A3B-7329-4808-86FE-99E147613F03</id>
+				<name>Spellcasting Focus, Detection, Individualized, Partial</name>
+				<translate>Focus de lancement de sorts (Détection) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>ED3B94D3-ABE1-4038-BE1F-84ACEC230750</id>
+				<name>Sustaining Focus, Detection, Individualized, Partial</name>
+				<translate>Focus de maintien (Détection) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>9C07DBC7-FCD2-42AD-B916-8036046B21C4</id>
+				<name>Counterspelling Focus, Health, Individualized, Partial</name>
+				<translate>Focus de contresort (Santé) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>7E1C7451-46E4-43C9-A2C1-F2146D5DC0D6</id>
+				<name>Ritual Spellcasting Focus, Health, Individualized, Partial</name>
+				<translate>Focus de magie rituelle (Santé) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>50220493-C055-44D5-BAB0-84C689EB666B</id>
+				<name>Spellcasting Focus, Health, Individualized, Partial</name>
+				<translate>Focus de lancement de sorts (Santé) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>402C3ABD-6AF7-491B-BCA0-85D3F13F14F7</id>
+				<name>Sustaining Focus, Health, Individualized, Partial</name>
+				<translate>Focus de maintien (Santé) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>95407529-4089-4E0D-BBF2-8D22EA7F4609</id>
+				<name>Counterspelling Focus, Illusion, Individualized, Partial</name>
+				<translate>Focus de contresort (Illusion) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>346AA42D-452D-4BB7-A318-620F9E2A4547</id>
+				<name>Ritual Spellcasting Focus, Illusion, Individualized, Partial</name>
+				<translate>Focus de magie rituelle (Illusion) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>0B34228E-05EB-40FB-B330-90AE54966292</id>
+				<name>Spellcasting Focus, Illusion, Individualized, Partial</name>
+				<translate>Focus de lancement de sorts (Illusion) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>49E16F6A-2054-4FFA-A3A0-CD58D1CA46A3</id>
+				<name>Sustaining Focus, Illusion, Individualized, Partial</name>
+				<translate>Focus de maintien (Illusion) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>1FEDF8B4-11C1-4BE9-B32D-70056B80DD50</id>
+				<name>Counterspelling Focus, Manipulation, Individualized, Partial</name>
+				<translate>Focus de contresort (Manipulation) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>DE2FDF51-DE6C-4315-B3F1-B266DAA06169</id>
+				<name>Ritual Spellcasting Focus, Manipulation, Individualized, Partial</name>
+				<translate>Focus de magie rituelle (Manipulation) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>16D3B0D0-363F-4DF4-9AA1-42146168DA96</id>
+				<name>Spellcasting Focus, Manipulation, Individualized, Partial</name>
+				<translate>Focus de lancement de sorts (Manipulation) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>2EEB0C3A-790A-4FB5-A4D6-26D42739E168</id>
+				<name>Sustaining Focus, Manipulation, Individualized, Partial</name>
+				<translate>Focus de maintien (Manipulation) séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>A4DCE79A-AF2D-4AC1-9CBB-F5A54B143C15</id>
+				<name>Summoning Focus, Individualized, Partial</name>
+				<translate>Focus d’invocation séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>ABA82B09-FC70-443A-9DC7-0B56446AABCE</id>
+				<name>Banishing Focus, Individualized, Partial</name>
+				<translate>Focus de bannissement séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>D329D94D-9649-4B0B-8C7C-8299A288822A</id>
+				<name>Binding Focus, Individualized, Partial</name>
+				<translate>Focus de lien d’esprits séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>CC2DFA43-6185-45AF-88A4-E6AF89C18D6D</id>
+				<name>Weapon Focus, Individualized, Partial</name>
+				<translate>Focus d'arme séparé (Partiel)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>5F4DC485-31FB-4CE1-9B5A-463ADD1E3C58</id>
+				<name>Alchemical Focus, Individualized, Complete</name>
+				<translate>Focus d'alchimie séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>CD7A43BA-6B74-4DFF-AB74-ADD8B2633E2D</id>
+				<name>Disenchanting Focus, Individualized, Complete</name>
+				<translate>Focus de désenchantement séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>5CB38A41-A296-4AA2-B2A4-3E0D68C7EB7B</id>
+				<name>Centering Focus, Individualized, Complete</name>
+				<translate>Focus de centrage séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>52009B1B-A82D-4162-B598-21584DE66799</id>
+				<name>Flexible Signature Focus, Individualized, Complete</name>
+				<translate>Focus de signature flexible séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>33B0643C-B9F3-4792-93EA-64F27A533C9E</id>
+				<name>Masking Focus, Individualized, Complete</name>
+				<translate>Focus de camouflage séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>9777864F-B693-4B6C-ADEF-AA5068C20F89</id>
+				<name>Spell Shaping Focus, Individualized, Complete</name>
+				<translate>Focus de façonnage de sorts séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>9998AB1B-8C0A-4F71-9459-D2D231E07419</id>
+				<name>Power Focus, Individualized, Complete</name>
+				<translate>Focus de pouvoir séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>C758A074-D7FE-4152-B029-3DADCC4AD8A0</id>
+				<name>Qi Focus, Individualized, Complete</name>
+				<translate>Focus de qi séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>20D409B4-2F9E-40C0-9421-E5DCDE4890E3</id>
+				<name>Counterspelling Focus, Combat, Individualized, Complete</name>
+				<translate>Focus de contresort (Combat) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>54A5D681-0C23-4DC5-8ED2-019755F83D2E</id>
+				<name>Ritual Spellcasting Focus, Combat, Individualized, Complete</name>
+				<translate>Focus de magie rituelle (Combat) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>F5FCBE07-9D7B-4AEA-99C6-171754F0751A</id>
+				<name>Spellcasting Focus, Combat, Individualized, Complete</name>
+				<translate>Focus de lancement de sorts (Combat) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>068631C4-1834-4812-8121-DA4A07EF5D6D</id>
+				<name>Sustaining Focus, Combat, Individualized, Complete</name>
+				<translate>Focus de maintien (Combat) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>4BC6A78F-0824-4EE3-AA9C-411771518301</id>
+				<name>Counterspelling Focus, Detection, Individualized, Complete</name>
+				<translate>Focus de contresort (Détection) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>BBC2DF76-248B-446F-B9D8-0D4B0BEDA4D8</id>
+				<name>Ritual Spellcasting Focus, Detection, Individualized, Complete</name>
+				<translate>Focus de magie rituelle (Détection) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>984273A0-B31B-4ADD-9446-8399930EE158</id>
+				<name>Spellcasting Focus, Detection, Individualized, Complete</name>
+				<translate>Focus de lancement de sorts (Détection) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>5BBB0D19-882D-4CBA-A28B-CC9FE41808EB</id>
+				<name>Sustaining Focus, Detection, Individualized, Complete</name>
+				<translate>Focus de maintien (Détection) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>8ED17B61-C4A2-4922-9DC9-8A7B1B416476</id>
+				<name>Counterspelling Focus, Health, Individualized, Complete</name>
+				<translate>Focus de contresort (Santé) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>17343042-B2F3-4B38-A502-A7755B215AFD</id>
+				<name>Ritual Spellcasting Focus, Health, Individualized, Complete</name>
+				<translate>Focus de magie rituelle (Santé) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>0581EC22-F018-40C7-9BEF-20EC3BBC3BF0</id>
+				<name>Spellcasting Focus, Health, Individualized, Complete</name>
+				<translate>Focus de lancement de sorts (Santé) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>BA54CD71-5750-4060-859C-8589DF2A88DD</id>
+				<name>Sustaining Focus, Health, Individualized, Complete</name>
+				<translate>Focus de maintien (Santé) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>924E1822-AFDE-4B5B-9F08-628CFDF0C5EA</id>
+				<name>Counterspelling Focus, Illusion, Individualized, Complete</name>
+				<translate>Focus de contresort (Illusion) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>2A2E2C5F-20A5-44A1-A043-2610A4B1633C</id>
+				<name>Ritual Spellcasting Focus, Illusion, Individualized, Complete</name>
+				<translate>Focus de magie rituelle (Illusion) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>F64A3EDC-35B8-427D-A94E-29EE098A41F3</id>
+				<name>Spellcasting Focus, Illusion, Individualized, Complete</name>
+				<translate>Focus de lancement de sorts (Illusion) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>2813520C-748B-4281-92B3-55DF561FB62C</id>
+				<name>Sustaining Focus, Illusion, Individualized, Complete</name>
+				<translate>Focus de maintien (Illusion) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>306D9A36-F344-4D8D-A3A9-40778996D5AB</id>
+				<name>Counterspelling Focus, Manipulation, Individualized, Complete</name>
+				<translate>Focus de contresort (Manipulation) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>F9DD1033-C78F-4E7D-8CDD-AE7B03F1CF4F</id>
+				<name>Ritual Spellcasting Focus, Manipulation, Individualized, Complete</name>
+				<translate>Focus de magie rituelle (Manipulation) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>5BF36F32-579A-4278-BC8B-0E2AEF12090A</id>
+				<name>Spellcasting Focus, Manipulation, Individualized, Complete</name>
+				<translate>Focus de lancement de sorts (Manipulation) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>B2872926-18E3-4AF7-9CB8-BEEA78ECFC0C</id>
+				<name>Sustaining Focus, Manipulation, Individualized, Complete</name>
+				<translate>Focus de maintien (Manipulation) séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>7E63B243-6AB9-40AA-8FD3-429C6A85F3FB</id>
+				<name>Summoning Focus, Individualized, Complete</name>
+				<translate>Focus d’invocation séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>DA4BC317-B29D-4990-BEDD-B607EE0B5D75</id>
+				<name>Banishing Focus, Individualized, Complete</name>
+				<translate>Focus de bannissement séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>A50A38E7-C46A-4EA9-A0DA-F6FFA11090BF</id>
+				<name>Binding Focus, Individualized, Complete</name>
+				<translate>Focus de lien d’esprits séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>2C40882C-E5CD-452A-8F55-CEB60507240B</id>
+				<name>Weapon Focus, Individualized, Complete</name>
+				<translate>Focus d'arme séparé (Complet)</translate>
+				<altpage>230</altpage>
+			</gear>
+			<gear>
+				<id>447827BE-96A4-471F-929F-CB4BFF4CCBB4</id>
+				<name>Reaper</name>
+				<translate>Faucheur</translate>
+				<altpage>183</altpage>
+			</gear>
+			<gear>
+				<id>9B0A4676-BC13-467A-8398-F0E40B261335</id>
+				<name>Synthstrument (Cheap)</name>
+				<translate>Synthéstrument (Bas-de-gamme)</translate>
+				<altpage>81</altpage>
+			</gear>
+			<gear>
+				<id>BF1DD7CE-A966-46AD-9561-143E2EF3210E</id>
+				<name>Synthstrument (Good)</name>
+				<translate>Synthéstrument (Standard)</translate>
+				<altpage>81</altpage>
+			</gear>
+			<gear>
+				<id>E3FB93D8-CAD9-4982-8F43-91D52BAF20B5</id>
+				<name>Synthstrument (Nice)</name>
+				<translate>Synthéstrument (Excellent)</translate>
+				<altpage>81</altpage>
+			</gear>
+			<gear>
+				<id>75551931-6886-49ac-8119-26dd2c584212</id>
+				<name>Krime Explosive Securing Tripod Replacement Pitons</name>
+				<translate>Pitons explosifs de remplacement de trépied Krime</translate>
+				<altpage>23</altpage>
 			</gear>
 		</gears>
 	</chummer>
@@ -18979,6 +20512,42 @@
 				<name>Free Spells</name>
 				<translate>Sorts gratuits</translate>
 				<altpage>Permet au personnage de marquer certains sorts comme gratuits pour éviter des coûts en karma.</altpage>
+			</improvement>
+			<improvement>
+				<id>genetechessmultiplier</id>
+				<name>Genetech Essence Cost</name>
+				<translate>Coût d'Essence de thérapie génétique</translate>
+				<altpage>Adjusts the Essence cost of Genetech by the percent value entered. All Genetech Essence costs will now be X% of their original value. Numbers lower than 100 reduce the Essence cost. Numbers higher than 100 increase the Essence cost.</altpage>
+			</improvement>
+			<improvement>
+				<id>spelldicepool</id>
+				<name>Specific Spell Dicepool</name>
+				<translate>Jet de dés de sort spécifique</translate>
+				<altpage>Adjusts the size of the character's Spellcasting pool when casting the Spell with the selected name. Positive values improve Spellcasting. Negative values reduce Spellcasting.</altpage>
+			</improvement>
+			<improvement>
+				<id>enablecyberzombie</id>
+				<name>Enable Cyberzombie Conversion</name>
+				<translate>Activer conversion en Cyberzombie</translate>
+				<altpage>Allows the character to be converted into a Cyberzombie.</altpage>
+			</improvement>
+			<improvement>
+				<id>mentallimit</id>
+				<name>Mental Limit</name>
+				<translate>Limite Mentale</translate>
+				<altpage>Adjusts the character's Mental Limit by the listed value.</altpage>
+			</improvement>
+			<improvement>
+				<id>physicallimit</id>
+				<name>Physical Limit</name>
+				<translate>Limite Physique</translate>
+				<altpage>Adjusts the character's Physical Limit by the listed value.</altpage>
+			</improvement>
+			<improvement>
+				<id>sociallimit</id>
+				<name>Social Limit</name>
+				<translate>Limite Sociale</translate>
+				<altpage>Adjusts the character's Social Limit by the listed value.</altpage>
 			</improvement>
 		</improvements>
 	</chummer>
@@ -19712,29 +21281,348 @@
 				<translate>Détecteur de mensonges en ligne</translate>
 				<altpage>144</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>c714a2dd-5570-40ee-8006-42ed533bf7c9</id>
 				<name>Cramped Garage (Car (Body 14 or Less))</name>
 				<translate>Garage réduit (voiture, torse 14 ou moins)</translate>
 				<altpage>226</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>58040d75-7861-4364-b10e-594b63f9b941</id>
 				<name>Cramped Garage (Car (Body 15 or More))</name>
 				<translate>Garage réduit (voiture, torse 15 ou plus)</translate>
 				<altpage>226</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>e3a4b05e-8506-4cd0-bc04-5b49812d5fd9</id>
 				<name>Garage (Car (Body 14 or Less))</name>
 				<translate>Garage (voiture, torse 14 ou moins)</translate>
 				<altpage>226</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>a63933f8-c4d1-4332-add5-a684d4eff041</id>
 				<name>Garage (Car (Body 15 or More))</name>
 				<translate>Garage (voiture, torse 15 ou plus)</translate>
 				<altpage>226</altpage>
+			</quality>
+			<quality translated="True">
+				<id>c0d411e6-ca88-4011-b56c-9f594882beb4</id>
+				<name>Dead SIN</name>
+				<translate>SIN de défunt</translate>
+				<altpage>162</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>96f148e1-fb72-416a-8235-89a3eeafe534</id>
+				<name>Hard Luck</name>
+				<translate>Malchance</translate>
+				<altpage>162</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>39803e82-d85a-4da1-9637-fdd3249f2f21</id>
+				<name>Quadriplegic</name>
+				<translate>Tétraplégique</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>5c49d5e2-ca52-406e-a532-8d4d148ea825</id>
+				<name>Hair Trigger</name>
+				<translate>Gâchette facile</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>31e3097d-68c4-4140-969d-91bd43612afd</id>
+				<name>Hi-Rez</name>
+				<translate>Hi-Réz</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>ef40cac3-d81e-4c7f-b14d-46abfd2f9dff</id>
+				<name>Instinctive Hack</name>
+				<translate>Piratage instinctif</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>1118c31d-521b-46c3-ba82-04123c1303be</id>
+				<name>Rabble Rouser</name>
+				<translate>Agitateur</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>a766e0d9-954e-4738-88f2-bde4f4e89880</id>
+				<name>Social Chameleon</name>
+				<translate>Caméléon social</translate>
+				<altpage>139</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>eb3b2334-29f3-4bd5-a9cc-817672b28d6e</id>
+				<name>Resonant Discordance</name>
+				<translate>Discorde résonante</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>f6387f9d-c177-4c9b-a141-af2d17ea6317</id>
+				<name>Prototype Materials</name>
+				<translate>Prototype</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>83e5f9a2-e76b-4a11-81db-4b0466b727ce</id>
+				<name>Shoot First, Don't Ask</name>
+				<translate>Tirer d'abord, pas de question</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>0dd183a3-85ce-4029-9de5-9b6aa1eb539c</id>
+				<name>Special Modifications</name>
+				<translate>Modifications spéciales</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>430af564-0be1-42f0-a0d0-318c093ea3d8</id>
+				<name>Elemental Attunement</name>
+				<translate>Harmonisation élémentaire</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>7d1bedb9-5d27-419f-bc15-0a39d9b67516</id>
+				<name>Candle in the Darkness</name>
+				<translate>Lueur dans les ténèbres</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>f8384574-ce99-4e33-8a94-b5aea7ddf4bd</id>
+				<name>Massive Network</name>
+				<translate>Réseau massif</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>fc195df5-83f6-4aff-aca8-4287a56e4d4c</id>
+				<name>Networker</name>
+				<translate>Connecté</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>8b18a3aa-fd5a-4712-8dd4-117d7a73ba11</id>
+				<name>Stolen Gear</name>
+				<translate>Matos volé</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>bf68095e-35b9-49dc-a008-f67bbac9b83b</id>
+				<name>Mentor's Mask</name>
+				<translate>Masque du Mentor</translate>
+				<altpage>182</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>e59e5011-61be-44d8-be87-8924555956cb</id>
+				<name>Free Insect Spirit: Cutter Ant</name>
+				<translate>Esprit Insecte Libre : Fourmi noire</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>61008635-56be-4a0f-885e-c69cdad6381c</id>
+				<name>Free Insect Spirit: Fire Ant</name>
+				<translate>Esprit Insecte Libre : Fourmi rouge</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>128a7a7d-7bd2-400c-a388-fd444672cc07</id>
+				<name>Free Insect Spirit: Desert Locust</name>
+				<translate>Esprit Insecte Libre : Criquet</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>791a36c5-3fff-447e-bf47-ae5c186d5e00</id>
+				<name>Free Insect Spirit: Mole Cricket</name>
+				<translate>Esprit Insecte Libre : Courtilière</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>64cd8760-41ac-4280-a1bb-ccbe470cb36a</id>
+				<name>Free Insect Spirit: Subterranean Termite</name>
+				<translate>Esprit Insecte Libre : Termite</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>3c7f9965-3cf9-4d18-92cd-00b07d18bd96</id>
+				<name>Free Insect Spirit: Hunter Wasp</name>
+				<translate>Esprit Insecte Libre : Guêpe</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>b18aa02f-5259-43ce-9f42-108d4cee192c</id>
+				<name>Free Insect Spirit: Bee</name>
+				<translate>Esprit Insecte Libre : Abeille</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f6f960ff-f4eb-48ac-ab6e-95e73f523777</id>
+				<name>Free Insect Spirit: Goliath Beetle</name>
+				<translate>Esprit Insecte Libre : Scarabée</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>a752d652-d59b-4bc5-89b4-3a4d2cf763cb</id>
+				<name>Free Insect Spirit: Water Beetle</name>
+				<translate>Esprit Insecte Libre : Dytique</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>a2680005-2e89-4054-8941-91ac53cde39d</id>
+				<name>Free Insect Spirit: House Centipede</name>
+				<translate>Esprit Insecte Libre : Mille-pattes</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>8726c88b-0c03-41c9-b67c-c0bd8b8f7547</id>
+				<name>Free Insect Spirit: Tropical Centipede</name>
+				<translate>Esprit Insecte Libre : Scolopendre</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>7c99a5ee-a98a-429c-a27a-dd007ba9f680</id>
+				<name>Free Insect Spirit: Century Cicada</name>
+				<translate>Esprit Insecte Libre : Cigale</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>e55ea45c-c1c2-47cb-91f3-528683d58c49</id>
+				<name>Free Insect Spirit: Trapdoor Spider</name>
+				<translate>Esprit Insecte Libre : Migale</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>218a86f5-e292-418d-a3f6-fdb1b9ce5891</id>
+				<name>Free Insect Spirit: Black Widow</name>
+				<translate>Esprit Insecte Libre : Veuve noire</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>578fedfb-a533-413c-ae88-4171cbbcf595</id>
+				<name>Free Insect Spirit: Burster Firefly</name>
+				<translate>Esprit Insecte Libre : Papillon</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>75b52efb-39a2-471d-8c5a-94341eafb5df</id>
+				<name>Free Insect Spirit: Botfly</name>
+				<translate>Esprit Insecte Libre : Taon</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>5be18c92-264a-48ea-8438-79adfffa88f5</id>
+				<name>Free Insect Spirit: Dragonfly</name>
+				<translate>Esprit Insecte Libre : Libellule</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>0833bbaf-db69-4956-9ad6-1fa6c7674536</id>
+				<name>Free Insect Spirit: Mimic Mantis</name>
+				<translate>Esprit Insecte Libre : Mante religieuse</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>b22312fc-ccfb-4ad2-ae79-9d988c2e5ad0</id>
+				<name>Free Insect Spirit: Orchid Mantis</name>
+				<translate>Esprit Insecte Libre : Mante orchidée</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>bce09acf-46b8-4b27-af72-f2ed0909fd9c</id>
+				<name>Free Insect Spirit: Vampire Mosquito</name>
+				<translate>Esprit Insecte Libre : Moustique</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>2570b568-dea1-40b7-a9eb-dfab2e69fde7</id>
+				<name>Free Insect Spirit: Tick</name>
+				<translate>Esprit Insecte Libre : Tique</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>e1d20998-d6b8-4019-8b55-c3a66a6a239b</id>
+				<name>Free Insect Spirit: Death's Head Moth</name>
+				<translate>Esprit Insecte Libre : Sphinx tête de mort</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>20543040-e552-4894-ba3b-f05eabcf58ab</id>
+				<name>Free Insect Spirit: Cryptid Moth</name>
+				<translate>Esprit Insecte Libre : Mite</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>f34b7ccf-5624-492a-938e-fd39a8887a54</id>
+				<name>Free Insect Spirit: Cave Roach</name>
+				<translate>Esprit Insecte Libre : Cafard</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>fe67d03c-1394-41e0-a82a-532f5fe85d2e</id>
+				<name>Free Insect Spirit: Silverfish</name>
+				<translate>Esprit Insecte Libre : Poisson d'argent</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>bbb3bce6-8adc-4992-94b5-7248556a391a</id>
+				<name>Poor Self Control (Thrill Seeker) (Dareadrenaline)</name>
+				<translate>Faible self-contrôle (Avide de frissons) (Mégadrénaline)</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
+				<name>Infected Advanced Optional Power: Mimicry</name>
+				<translate>Pouvoir d'infecté avancé : Mimétisme</translate>
+				<altpage>398</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>8dbc6b92-18a7-4007-b37f-295d21f8ab82</id>
+				<name>Infected Advanced Optional Power: Psychokinesis</name>
+				<translate>Pouvoir d'infecté avancé : Psychokinésie</translate>
+				<altpage>400</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 		</qualities>
 		<categories>
@@ -20257,7 +22145,7 @@
 			<technique translated="True">
 				<id>84036a28-53d6-426f-935f-1f176964fc8a</id>
 				<name>Jiao Di (Knock Down)</name>
-				<translate>Jiao Di (Abattage)</translate>
+				<translate>Jiao Di (Étourdissement)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
@@ -20323,7 +22211,7 @@
 			<technique>
 				<id>1ff734f2-094f-482f-9b52-3583f8d589bb</id>
 				<name>Oaken Stance (Defense Against Being Knocked Down)</name>
-				<translate>Position du chêne (Défense contre l'abattage)</translate>
+				<translate>Position du chêne (Défense contre l'étourdissement)</translate>
 				<altpage>139</altpage>
 			</technique>
 			<technique>
@@ -22589,6 +24477,10 @@
 						<name>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</name>
 						<translate>Adepte : 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</translate>
 					</choice>
+					<choice>
+						<name>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</name>
+						<translate>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</translate>
+					</choice>
 				</choices>
 				<altadvantage>All: +2 dice for Con Tests.</altadvantage>
 				<altdisadvantage>You must succeed in a Charisma + Willpower (3) Test to avoid pursuing a vice or indulgence (drugs, BTLs, sex, and so on) when it is made available.</altdisadvantage>
@@ -23752,6 +25644,14 @@
 						<name>Magician: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
 						<translate>Magicien: +2 dice pool modifier when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</translate>
 					</choice>
+					<choice>
+						<name>Adept: Gain 1 free level of Killing Hands</name>
+						<translate>Adept: Gain 1 free level of Killing Hands</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain 1 free level of Plague Cloud</name>
+						<translate>Adept: Gain 1 free level of Plague Cloud</translate>
+					</choice>
 				</choices>
 			</mentor>
 			<mentor>
@@ -24252,6 +26152,208 @@
 					</choice>
 				</choices>
 			</mentor>
+			<mentor>
+				<id>5593f724-7b72-4927-a8c8-2c73844cc1b1</id>
+				<name>Architect</name>
+				<translate>Architect</translate>
+				<altadvantage>All: +2 dice to Leadership</altadvantage>
+				<altdisadvantage>Followers of this spirit like to stay in charge. Should the circumstances of a run force them to go on the defensive, make a WIL + INT (3) test. Failure imposes a -2 penalty to all tests until the follower regains control of the situation.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Combat spells</name>
+						<translate>Magician: +2 dice for Combat spells</translate>
+					</choice>
+					<choice>
+						<name>Adept: 2 free levels of Analytics</name>
+						<translate>Adept: 2 free levels of Analytics</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>db42c229-3403-4947-8626-3f70f87c8a3c</id>
+				<name>German Shepherd</name>
+				<translate>German Shepherd</translate>
+				<altadvantage>All: +1 to dice to Leadership and Perception</altadvantage>
+				<altdisadvantage>Sometimes, German shepherd followers show impatience. Should their patience be tested (GM discretion), they must succeed at a WIL + CHA (3) test not to react harshly.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +1 die for Combat and Detection spells</name>
+						<translate>Magician: +1 die for Combat and Detection spells</translate>
+					</choice>
+					<choice>
+						<name>Adept: 2 levels of Danger Sense</name>
+						<translate>Adept: 2 levels of Danger Sense</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>bdb4fa0b-3c9d-4164-b2d6-76b7c04c43d8</id>
+				<name>Doberman</name>
+				<translate>Doberman</translate>
+				<altadvantage>All: +1 die to Perception and one combat skill (choose one)</altadvantage>
+				<altdisadvantage>Doberman is very self-confident. In order to accept a subordinate role to someone or follow a stranger's plans, they have to succeed on a WIL + CHA (3) test.</altdisadvantage>
+				<altpage>29</altpage>
+				<choices>
+					<choice>
+						<name>+1 die to Archery</name>
+						<translate>+1 die to Archery</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Automatics</name>
+						<translate>+1 die to Automatics</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Blades</name>
+						<translate>+1 die to Blades</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Clubs</name>
+						<translate>+1 die to Clubs</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Gunnery</name>
+						<translate>+1 die to Gunnery</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Heavy Weapons</name>
+						<translate>+1 die to Heavy Weapons</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Longarms</name>
+						<translate>+1 die to Longarms</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Pistols</name>
+						<translate>+1 die to Pistols</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Throwing Weapons</name>
+						<translate>+1 die to Throwing Weapons</translate>
+					</choice>
+					<choice>
+						<name>+1 die to Unarmed Combat</name>
+						<translate>+1 die to Unarmed Combat</translate>
+					</choice>
+					<choice>
+						<name>Magician: +2 dice for Combat spells</name>
+						<translate>Magician: +2 dice for Combat spells</translate>
+					</choice>
+					<choice>
+						<name>Adept: 1 free level of Combat Sense</name>
+						<translate>Adept: 1 free level of Combat Sense</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>240ab0aa-6be1-452b-88c2-f10f6f6eabfb</id>
+				<name>Weimaraner</name>
+				<translate>Weimaraner</translate>
+				<altadvantage>All: +1 die to Running and Tracking</altadvantage>
+				<altdisadvantage>Should a follower find themselves unable to use their skills for longer than 12 hours, they must succeed  a WIL + CHA (3) test, otherwise they suffer a -1 penalty to all actions until they can use their abilities again.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Detection spells</name>
+						<translate>Magician: +2 dice for Detection spells</translate>
+					</choice>
+					<choice>
+						<name>Adept: 1 free level of Enhanced Perception</name>
+						<translate>Adept: 1 free level of Enhanced Perception</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
+				<name>Badger</name>
+				<translate>Badger</translate>
+				<altadvantage>All: 1 level of Perceptive is gained for free</altadvantage>
+				<altdisadvantage>Badger relentlessly guards his territory. Should enemies invade an area guarded by a follower, for instance a building, or steal an object under their protection, must succeed at a WIL + CHA (3) test to not immediately go after the culprits.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +1 die for Counterspelling and Combat Spells</name>
+						<translate>Magician: +1 die for Counterspelling and Combat Spells</translate>
+					</choice>
+					<choice>
+						<name>Adept: 2 levels of Danger Sense</name>
+						<translate>Adept: 2 levels of Danger Sense</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>b01976a5-2343-4308-846e-da5fb12328a8</id>
+				<name>Mystic Guardian</name>
+				<translate>Mystic Guardian</translate>
+				<altadvantage>All: +2 dice to one melee combat skill (choose one)</altadvantage>
+				<altdisadvantage>What does a mystic guardian do when there is nothing to guard? As long as the follower does not have a specific task, an employer or a ward (or does not carry out their self-imposed duties), they suffer a -2 penalty on every test.</altdisadvantage>
+				<altpage>31</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for summoning guardian or beast spirits (choose one)</name>
+						<translate>Magician: +2 dice for summoning guardian or beast spirits (choose one)</translate>
+					</choice>
+					<choice>
+						<name>Adept: Magic Sense</name>
+						<translate>Adept: Magic Sense</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>296dc353-df11-4c94-a101-04bc501edf5e</id>
+				<name>Little Red Riding Hood</name>
+				<translate>Little Red Riding Hood</translate>
+				<altadvantage>All: +2 to dice to Con</altadvantage>
+				<altdisadvantage>In their unbridled curiosity, followers of Little Red Riding Hood sometimes overlook the important and obvious things. They receive a -1 penalty to Perception tests in unknown areas.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice to Contractual Rituals</name>
+						<translate>Magician: +2 dice to Contractual Rituals</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain Linguist for free</name>
+						<translate>Adept: Gain Linguist for free</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>bea9796a-c5d3-4388-97ec-14969db470fe</id>
+				<name>Treasure Hunter</name>
+				<translate>Treasure Hunter</translate>
+				<altadvantage>All: +1 die to Navigation and Locksmith</altadvantage>
+				<altdisadvantage>A follower of this spirit devotes their full attention to the desired object, as a result, slacking or tackling tasks not directly related to obtaining it in a halfhearted fashion. After the meet with the J, they must succeed at a WIL + WIL (3) test or incur a -1 penalty to all tests which don't directly involve the object of their desire.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice for Detection spells</name>
+						<translate>Magician: +2 dice for Detection spells</translate>
+					</choice>
+					<choice>
+						<name>Adept: Gain Three-Dimensional Memory for free</name>
+						<translate>Adept: Gain Three-Dimensional Memory for free</translate>
+					</choice>
+				</choices>
+			</mentor>
+			<mentor>
+				<id>f2cc5e2b-6538-4271-9f7f-5434076f9a6b</id>
+				<name>Brother at Arms</name>
+				<translate>Brother at Arms</translate>
+				<altadvantage>All: +1 die to Etiquette and Instruction</altadvantage>
+				<altdisadvantage>Every run, followers choose three persons - PCs or key NPCs - of direct relevance to the plot to whom they pledge their loyalty for the duration of the mission. Taking advantage of, lying to or abandoning any of them requires succeeding at a WIL + INT (3) test. Even if they can bring themselves to do so, they suffer a -2 penalty to all tests until they atone.</altdisadvantage>
+				<altpage>32</altpage>
+				<choices>
+					<choice>
+						<name>Magician: +2 dice summoning guardian spirits, task spirits or spirits of man (choose one)</name>
+						<translate>Magician: +2 dice summoning guardian spirits, task spirits or spirits of man (choose one)</translate>
+					</choice>
+					<choice>
+						<name>Adept: 1 free level of Mystic Armor</name>
+						<translate>Adept: 1 free level of Mystic Armor</translate>
+					</choice>
+				</choices>
+			</mentor>
 		</mentors>
 	</chummer>
 	<chummer file="metamagic.xml">
@@ -24603,6 +26705,24 @@
 				<name>Enhanced Mist Form</name>
 				<translate>Forme Brumeuse Améliorée</translate>
 				<altpage>165</altpage>
+			</metamagic>
+			<metamagic>
+				<id>215dbdc3-b4f5-4ca6-98b1-5d6ea5eb5fda</id>
+				<name>Taint</name>
+				<translate>Souillure</translate>
+				<altpage>87</altpage>
+			</metamagic>
+			<metamagic translated="True">
+				<id>920770d1-a705-4fc9-8814-f3a4a455e8fb</id>
+				<name>Corruption</name>
+				<translate>Corruption</translate>
+				<altpage>87</altpage>
+			</metamagic>
+			<metamagic>
+				<id>7b297dad-1111-4819-8c7a-ecdb95479011</id>
+				<name>Great Form Possession</name>
+				<translate>Possession de grande forme</translate>
+				<altpage>134</altpage>
 			</metamagic>
 		</metamagics>
 		<arts>
@@ -26960,6 +29080,18 @@
 				<translate>Etat de Pureté</translate>
 				<altpage>154</altpage>
 			</power>
+			<power>
+				<id>81cc6ee1-7c10-4a4a-baa8-f02cad4542c6</id>
+				<name>Improved Potential (Chaos Mentor)</name>
+				<translate>Potentiel amélioré (Mentor Chaotique)</translate>
+				<altpage>309</altpage>
+			</power>
+			<power>
+				<id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
+				<name>Berserker Temper</name>
+				<translate>Crise du berserker</translate>
+				<altpage>62</altpage>
+			</power>
 		</powers>
 		<enhancements>
 			<enhancement>
@@ -29131,38 +31263,43 @@
 			<quality>
 				<id>1ae3ce29-5249-4477-952a-6074a212e197</id>
 				<name>Reduced Sense (Smell)</name>
-				<translate>Reduced Sense (Smell)</translate>
+				<translate>Sens réduit (Odorat)</translate>
 				<altpage>159</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>4d3a1151-0bc3-4858-98e1-fe930cd98425</id>
 				<name>Reduced Sense (Taste)</name>
-				<translate>Reduced Sense (Taste)</translate>
+				<translate>Sens réduit (Goût)</translate>
 				<altpage>159</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>2699e390-edd6-45fc-9e87-6c584e864490</id>
 				<name>Reduced Sense (Touch)</name>
-				<translate>Reduced Sense (Touch)</translate>
+				<translate>Sens réduit (Toucher)</translate>
 				<altpage>159</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>c70262ae-6137-4c2a-82c7-b38c6debb367</id>
 				<name>Reduced Sense (Hearing)</name>
-				<translate>Reduced Sense (Hearing)</translate>
+				<translate>Sens réduit (Ouïe)</translate>
 				<altpage>159</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>82b00ac1-06c0-4566-ad51-69bba96efc6f</id>
 				<name>Reduced Sense (Sight)</name>
-				<translate>Reduced Sense (Sight)</translate>
+				<translate>Sens réduit (Vue)</translate>
 				<altpage>159</altpage>
 			</quality>
 			<quality>
 				<id>cd42abaf-348c-41e9-ac9d-fbf9e2946b86</id>
 				<name>Reduced Sense (Astral Sight)</name>
-				<translate>Reduced Sense (Astral Sight)</translate>
+				<translate>Sens réduit (Vue astrale)</translate>
 				<altpage>159</altpage>
+				<altnameonpage></altnameonpage>
 			</quality>
 			<quality>
 				<id>04b68abc-0f9d-4fe9-8b41-82d7b9c95e2e</id>
@@ -29206,12 +31343,11 @@
 				<altpage>105</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
 				<name>Magic Sense</name>
 				<translate>Sens magique</translate>
 				<altpage>172</altpage>
-				<altnameonpage></altnameonpage>
 			</quality>
 			<quality translated="True">
 				<id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
@@ -32494,6 +34630,350 @@
 				<altpage>132</altpage>
 				<altnameonpage></altnameonpage>
 			</quality>
+			<quality>
+				<id>237EB46A-A012-4E0B-808A-80EDA1C1A586</id>
+				<name>Tattoo Magic</name>
+				<translate>Magie des Tatouages</translate>
+				<altpage>131</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>43be9ef8-d7e9-47fe-ac79-7d15c508a2ad</id>
+				<name>The Twisted Way</name>
+				<translate>La voie détournée</translate>
+				<altpage>85</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>3b25b895-d700-457e-ac89-8d5a65248c94</id>
+				<name>Conjuring Geas</name>
+				<translate>Geas d'invocation</translate>
+				<altpage>199</altpage>
+			</quality>
+			<quality>
+				<id>bbb3bce6-8adc-4992-94b5-7248556a391a</id>
+				<name>Poor Self Control (Thrill Seeker) (Dareadrenaline)</name>
+				<translate>Faible self-control (Avide de frissons) (Mégadrénaline)</translate>
+				<altpage>160</altpage>
+			</quality>
+			<quality>
+				<id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
+				<name>Infected Advanced Optional Power: Mimicry</name>
+				<translate>Pouvoir d'infecté avancé: Imitation</translate>
+				<altpage>398</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>8dbc6b92-18a7-4007-b37f-295d21f8ab82</id>
+				<name>Infected Advanced Optional Power: Psychokinesis</name>
+				<translate>Pouvoir d'infecté avancé: Psychokinésie</translate>
+				<altpage>400</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality translated="True">
+				<id>e59e5011-61be-44d8-be87-8924555956cb</id>
+				<name>Free Insect Spirit: Cutter Ant</name>
+				<translate>Esprit Insecte Libre : Fourmi noire</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>61008635-56be-4a0f-885e-c69cdad6381c</id>
+				<name>Free Insect Spirit: Fire Ant</name>
+				<translate>Esprit Insecte Libre : Fourmi rouge</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>128a7a7d-7bd2-400c-a388-fd444672cc07</id>
+				<name>Free Insect Spirit: Desert Locust</name>
+				<translate>Esprit Insecte Libre : Criquet</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>791a36c5-3fff-447e-bf47-ae5c186d5e00</id>
+				<name>Free Insect Spirit: Mole Cricket</name>
+				<translate>Esprit Insecte Libre : Courtilière</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>64cd8760-41ac-4280-a1bb-ccbe470cb36a</id>
+				<name>Free Insect Spirit: Subterranean Termite</name>
+				<translate>Esprit Insecte Libre : Termite</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>3c7f9965-3cf9-4d18-92cd-00b07d18bd96</id>
+				<name>Free Insect Spirit: Hunter Wasp</name>
+				<translate>Esprit Insecte Libre : Guêpe</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>b18aa02f-5259-43ce-9f42-108d4cee192c</id>
+				<name>Free Insect Spirit: Bee</name>
+				<translate>Esprit Insecte Libre : Abeille</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>f6f960ff-f4eb-48ac-ab6e-95e73f523777</id>
+				<name>Free Insect Spirit: Goliath Beetle</name>
+				<translate>Esprit Insecte Libre : Scarabée</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a752d652-d59b-4bc5-89b4-3a4d2cf763cb</id>
+				<name>Free Insect Spirit: Water Beetle</name>
+				<translate>Esprit Insecte Libre : Dytique</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>a2680005-2e89-4054-8941-91ac53cde39d</id>
+				<name>Free Insect Spirit: House Centipede</name>
+				<translate>Esprit Insecte Libre : Mille-pattes</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>8726c88b-0c03-41c9-b67c-c0bd8b8f7547</id>
+				<name>Free Insect Spirit: Tropical Centipede</name>
+				<translate>Esprit Insecte Libre : Scolopendre</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>7c99a5ee-a98a-429c-a27a-dd007ba9f680</id>
+				<name>Free Insect Spirit: Century Cicada</name>
+				<translate>Esprit Insecte Libre : Cigale</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>e55ea45c-c1c2-47cb-91f3-528683d58c49</id>
+				<name>Free Insect Spirit: Trapdoor Spider</name>
+				<translate>Esprit Insecte Libre : Migale</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>218a86f5-e292-418d-a3f6-fdb1b9ce5891</id>
+				<name>Free Insect Spirit: Black Widow</name>
+				<translate>Esprit Insecte Libre : Veuve noire</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>578fedfb-a533-413c-ae88-4171cbbcf595</id>
+				<name>Free Insect Spirit: Burster Firefly</name>
+				<translate>Esprit Insecte Libre : Papillon</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>75b52efb-39a2-471d-8c5a-94341eafb5df</id>
+				<name>Free Insect Spirit: Botfly</name>
+				<translate>Esprit Insecte Libre : Taon</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>5be18c92-264a-48ea-8438-79adfffa88f5</id>
+				<name>Free Insect Spirit: Dragonfly</name>
+				<translate>Esprit Insecte Libre : Libellule</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>0833bbaf-db69-4956-9ad6-1fa6c7674536</id>
+				<name>Free Insect Spirit: Mimic Mantis</name>
+				<translate>Esprit Insecte Libre : Mante religieuse</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>b22312fc-ccfb-4ad2-ae79-9d988c2e5ad0</id>
+				<name>Free Insect Spirit: Orchid Mantis</name>
+				<translate>Esprit Insecte Libre : Mante orchidée</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>bce09acf-46b8-4b27-af72-f2ed0909fd9c</id>
+				<name>Free Insect Spirit: Vampire Mosquito</name>
+				<translate>Esprit Insecte Libre : Moustique</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality translated="True">
+				<id>2570b568-dea1-40b7-a9eb-dfab2e69fde7</id>
+				<name>Free Insect Spirit: Tick</name>
+				<translate>Esprit Insecte Libre : Tique</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality>
+				<id>e1d20998-d6b8-4019-8b55-c3a66a6a239b</id>
+				<name>Free Insect Spirit: Death's Head Moth</name>
+				<translate>Esprit Insecte Libre : Sphinx tête de mort</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>20543040-e552-4894-ba3b-f05eabcf58ab</id>
+				<name>Free Insect Spirit: Cryptid Moth</name>
+				<translate>Esprit Insecte Libre : Mite</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>f34b7ccf-5624-492a-938e-fd39a8887a54</id>
+				<name>Free Insect Spirit: Cave Roach</name>
+				<translate>Esprit Insecte Libre : Cafard</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>fe67d03c-1394-41e0-a82a-532f5fe85d2e</id>
+				<name>Free Insect Spirit: Silverfish</name>
+				<translate>Esprit Insecte Libre : Poisson d'argent</translate>
+				<altpage>151</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>e1d20998-d6b8-4019-8b55-c3a66a6a239b</id>
+				<name>Free Insect Spirit: Death's Head Moth</name>
+				<translate>Free Insect Spirit: Death's Head Moth</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality>
+				<id>20543040-e552-4894-ba3b-f05eabcf58ab</id>
+				<name>Free Insect Spirit: Cryptid Moth</name>
+				<translate>Free Insect Spirit: Cryptid Moth</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality>
+				<id>f34b7ccf-5624-492a-938e-fd39a8887a54</id>
+				<name>Free Insect Spirit: Cave Roach</name>
+				<translate>Free Insect Spirit: Cave Roach</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality>
+				<id>fe67d03c-1394-41e0-a82a-532f5fe85d2e</id>
+				<name>Free Insect Spirit: Silverfish</name>
+				<translate>Free Insect Spirit: Silverfish</translate>
+				<altpage>151</altpage>
+			</quality>
+			<quality>
+				<id>bf68095e-35b9-49dc-a008-f67bbac9b83b</id>
+				<name>Mentor's Mask</name>
+				<translate>Masque du Mentor</translate>
+				<altpage>182</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>c0d411e6-ca88-4011-b56c-9f594882beb4</id>
+				<name>Dead SIN</name>
+				<translate>SIN de défunt</translate>
+				<altpage>162</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>96f148e1-fb72-416a-8235-89a3eeafe534</id>
+				<name>Hard Luck</name>
+				<translate>Poisse</translate>
+				<altpage>162</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>39803e82-d85a-4da1-9637-fdd3249f2f21</id>
+				<name>Quadriplegic</name>
+				<translate>Quadriplégique</translate>
+				<altpage>139</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>5c49d5e2-ca52-406e-a532-8d4d148ea825</id>
+				<name>Hair Trigger</name>
+				<translate>Gâchette facile</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>31e3097d-68c4-4140-969d-91bd43612afd</id>
+				<name>Hi-Rez</name>
+				<translate>Haute-résolution</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>ef40cac3-d81e-4c7f-b14d-46abfd2f9dff</id>
+				<name>Instinctive Hack</name>
+				<translate>Piratage instinctif</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>1118c31d-521b-46c3-ba82-04123c1303be</id>
+				<name>Rabble Rouser</name>
+				<translate>Démagogue</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>a766e0d9-954e-4738-88f2-bde4f4e89880</id>
+				<name>Social Chameleon</name>
+				<translate>Caméléon social</translate>
+				<altpage>139</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>eb3b2334-29f3-4bd5-a9cc-817672b28d6e</id>
+				<name>Resonant Discordance</name>
+				<translate>Résonance Discordante</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>f6387f9d-c177-4c9b-a141-af2d17ea6317</id>
+				<name>Prototype Materials</name>
+				<translate>Implants prototypes</translate>
+				<altpage>160</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>83e5f9a2-e76b-4a11-81db-4b0466b727ce</id>
+				<name>Shoot First, Don't Ask</name>
+				<translate>Tirer d'abord, ensuite rien</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>0dd183a3-85ce-4029-9de5-9b6aa1eb539c</id>
+				<name>Special Modifications</name>
+				<translate>Modifications spéciales</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>430af564-0be1-42f0-a0d0-318c093ea3d8</id>
+				<name>Elemental Attunement</name>
+				<translate>Accoutumance élémentaire</translate>
+				<altpage>161</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>7d1bedb9-5d27-419f-bc15-0a39d9b67516</id>
+				<name>Candle in the Darkness</name>
+				<translate>Chandelle dans les ténèbres</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>f8384574-ce99-4e33-8a94-b5aea7ddf4bd</id>
+				<name>Massive Network</name>
+				<translate>Réseau massif</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>fc195df5-83f6-4aff-aca8-4287a56e4d4c</id>
+				<name>Networker</name>
+				<translate>Connecté</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
+			<quality>
+				<id>8b18a3aa-fd5a-4712-8dd4-117d7a73ba11</id>
+				<name>Stolen Gear</name>
+				<translate>Matos volé</translate>
+				<altpage>177</altpage>
+				<altnameonpage></altnameonpage>
+			</quality>
 		</qualities>
 	</chummer>
 	<chummer file="skills.xml">
@@ -33138,12 +35618,16 @@
 				<name>Perception</name>
 				<translate>Perception</translate>
 				<specs>
-					<spec translate="Auditive">Hearing</spec>
-					<spec translate="Olfactive">Scent</spec>
-					<spec translate="Gustative">Taste</spec>
-					<spec translate="Tactile">Touch</spec>
-					<spec translate="Visuelle">Visual</spec>
+					<spec translate="Ouïe">Hearing</spec>
+					<spec translate="Odorat">Scent</spec>
+					<spec translate="Goût">Taste</spec>
+					<spec translate="Toucher">Touch</spec>
+					<spec translate="Vue">Visual</spec>
 					<spec translate="Recherche">Searching</spec>
+					<spec translate="Nyctalopie">Low-Light Vision</spec>
+					<spec translate="Acuité visuelle">Visual Acuity</spec>
+					<spec translate="Sismométrie">Tremorsense</spec>
+					<spec translate="Vision thermographique">Thermographic Vision</spec>
 				</specs>
 				<altpage>136</altpage>
 			</skill>
@@ -36434,6 +38918,7 @@
 				<id>c0be1393-e4a1-4af6-8c0d-f9eef89a93b1</id>
 				<name>Zoology</name>
 				<translate>Zoologie</translate>
+				<specs />
 			</skill>
 		</knowledgeskills>
 	</chummer>
@@ -38581,14 +41066,20 @@
 			<spell>
 				<id>89046778-a77a-4f21-a448-a750af0898eb</id>
 				<name>Astral Disruption</name>
-				<translate>Astral Disruption</translate>
+				<translate>Perturbation astrale</translate>
 				<altpage>158</altpage>
 			</spell>
 			<spell>
 				<id>4c595074-add0-40da-a707-598d2b94ae4f</id>
 				<name>Mass Astral Disruption</name>
-				<translate>Mass Astral Disruption</translate>
+				<translate>Perturbation astrale de masse</translate>
 				<altpage>158</altpage>
+			</spell>
+			<spell>
+				<id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+				<name>Convince</name>
+				<translate>Persuasion</translate>
+				<altpage>132</altpage>
 			</spell>
 		</spells>
 	</chummer>
@@ -38734,7 +41225,7 @@
 			<tradition translated="True">
 				<id>8d185e0e-5f49-4992-babd-d1ac9c848f68</id>
 				<name>Shamanic</name>
-				<translate>Chamanisme traditionnel</translate>
+				<translate>Chamanisme [Traditionnel]</translate>
 				<altpage>181</altpage>
 			</tradition>
 			<tradition translated="True">
@@ -38781,14 +41272,14 @@
 			</tradition>
 			<tradition translated="True">
 				<id>9acc0a3e-3209-4274-9c98-4cbc42c456a7</id>
-				<name>Islam</name>
-				<translate>Islam</translate>
+				<name>Sacred Islam</name>
+				<translate>Islam [Voie Sacrée]</translate>
 				<altpage>46</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>c3604051-9f2b-4cc3-9525-f3029c611926</id>
 				<name>Qabbalism</name>
-				<translate>Cabalisme</translate>
+				<translate>Kabbalisme</translate>
 				<altpage>48</altpage>
 			</tradition>
 			<tradition>
@@ -38848,7 +41339,7 @@
 			<tradition translated="True">
 				<id>43bc28ad-8818-4062-9b55-317f45d1e04e</id>
 				<name>Norse</name>
-				<translate>Tradition Nordique (Asatrú)</translate>
+				<translate>Tradition Nordique [Asatrú]</translate>
 				<altpage>4</altpage>
 			</tradition>
 			<tradition>
@@ -38965,10 +41456,10 @@
 				<translate>Tradition Romani</translate>
 				<altpage>90</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>2cd90e8a-3674-470e-b95d-eb80c008fc4a</id>
 				<name>Tarot</name>
-				<translate>Tarot (Cartomancie)</translate>
+				<translate>Tarot [Cartomancie]</translate>
 				<altpage>91</altpage>
 			</tradition>
 			<tradition>
@@ -39024,6 +41515,102 @@
 				<name>Storm Children</name>
 				<translate>Enfants de la Tempête</translate>
 				<altpage>169</altpage>
+			</tradition>
+			<tradition>
+				<id>09843ed9-6fd1-4c43-9e9f-f6d66493ebdc</id>
+				<name>Black Magic [Alt]</name>
+				<translate>Magie Noire [Alt]</translate>
+				<altpage>61</altpage>
+			</tradition>
+			<tradition>
+				<id>8A0D8BC6-47AC-4043-A916-E2681A4D5BD7</id>
+				<name>Toxic</name>
+				<translate>Toxique</translate>
+				<altpage>84</altpage>
+			</tradition>
+			<tradition>
+				<id>8b7a391e-8d4c-40e8-93a8-9dd031cce0f5</id>
+				<name>Buddhism [Traditionalist]</name>
+				<translate>Bouddhisme [Traditionnel]</translate>
+				<altpage>62</altpage>
+			</tradition>
+			<tradition>
+				<id>dd97bcc9-a731-41fb-a558-9175bc56b587</id>
+				<name>Christian Theurgy [Traditional]</name>
+				<translate>Théurgie chrétienne [Traditionnelle]</translate>
+				<altpage>64</altpage>
+			</tradition>
+			<tradition>
+				<id>ca673acd-961e-4491-8a8d-ddf0c577441b</id>
+				<name>Christian Theurgy [Vigila Evangelica]</name>
+				<translate>Théurgie chrétienne [Vigila Evangelica]</translate>
+				<altpage>64</altpage>
+			</tradition>
+			<tradition>
+				<id>3a7bf066-7b13-4a92-ae31-37a58f84bc8e</id>
+				<name>Christian Theurgy [Westphalian]</name>
+				<translate>Théurgie chrétienne [Westphalienne]</translate>
+				<altpage>64</altpage>
+			</tradition>
+			<tradition>
+				<id>77288f4d-e262-47b6-aad8-2edff23859cb</id>
+				<name>Druid [Traditional]</name>
+				<translate>Druidisme [Traditionel]</translate>
+				<altpage>65</altpage>
+			</tradition>
+			<tradition>
+				<id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
+				<name>Islam [Islamic Alchemist]</name>
+				<translate>Islam [Voie Alchimique]</translate>
+				<altpage>69</altpage>
+			</tradition>
+			<tradition>
+				<id>328d6c96-9e10-424f-bbed-b6e1d1035bd2</id>
+				<name>Islam [Licit Qur'anic]</name>
+				<translate>Islam [Voie Coranique]</translate>
+				<altpage>69</altpage>
+			</tradition>
+			<tradition>
+				<id>2ea02939-030b-407b-b569-c2f39f301999</id>
+				<name>Norse [Godi/Runemaster]</name>
+				<translate>Tradition Nordique [Maître des Runes]</translate>
+				<altpage>68</altpage>
+			</tradition>
+			<tradition>
+				<id>fa341243-5134-42ad-9259-454bf18a26fd</id>
+				<name>Norse [Cunning Woman]</name>
+				<translate>Tradition Nordique [Devin-guérisseur]</translate>
+				<altpage>68</altpage>
+			</tradition>
+			<tradition>
+				<id>52668f12-2895-48e1-8b84-2382ef0fcee0</id>
+				<name>Norse [Berserker]</name>
+				<translate>Tradition Nordique [Berserk]</translate>
+				<altpage>68</altpage>
+			</tradition>
+			<tradition>
+				<id>990cdff5-2fd1-48aa-b085-a7d0ff183d00</id>
+				<name>Norse [Seidman]</name>
+				<translate>Tradition Nordique [Seiðman]</translate>
+				<altpage>68</altpage>
+			</tradition>
+			<tradition>
+				<id>554393e1-1a7a-4807-a343-dc157a8226df</id>
+				<name>Djinn Islam</name>
+				<translate>Islam [Voie des Djinn]</translate>
+				<altpage>70</altpage>
+			</tradition>
+			<tradition>
+				<id>700b05fa-323b-4fc3-b752-7eff65ed4dfe</id>
+				<name>Mechagician</name>
+				<translate>Mécagicien</translate>
+				<altpage>279</altpage>
+			</tradition>
+			<tradition>
+				<id>78372aa6-72e2-4ded-b836-589a1edb0e62</id>
+				<name>Urban Shamanic</name>
+				<translate>Chamanisme Urbain</translate>
+				<altpage>279</altpage>
 			</tradition>
 		</traditions>
 		<spirits>
@@ -39278,6 +41865,126 @@
 				<name>Water Elemental</name>
 				<translate>Élémentaire d'Eau</translate>
 				<altpage>181</altpage>
+			</spirit>
+			<spirit>
+				<id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
+				<name>Homonculus (Fragile)</name>
+				<translate>Homoncule (Fragile)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>28d8859b-21da-43f7-b401-181cf1284f97</id>
+				<name>Homonculus (Cheap Material)</name>
+				<translate>Homoncule (Bon marché)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
+				<name>Homonculus (Average Material)</name>
+				<translate>Homoncule (Standard)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
+				<name>Homonculus (Heavy Material)</name>
+				<translate>Homoncule (Lourd)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
+				<name>Homonculus (Reinforced Material)</name>
+				<translate>Homoncule (Renforcé)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
+				<name>Homonculus (Structural Material)</name>
+				<translate>Homoncule (Armé)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
+				<name>Homonculus (Heavy Structural Material)</name>
+				<translate>Homoncule (Armé lourd)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
+				<name>Homonculus (Armored Material)</name>
+				<translate>Homoncule (Blindé)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
+				<name>Homonculus (Hardened Material)</name>
+				<translate>Homoncule (Trempé)</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>04d2cdc8-7876-4865-93d6-76a46f628014</id>
+				<name>Watcher</name>
+				<translate>Gardien</translate>
+				<altpage>298</altpage>
+			</spirit>
+			<spirit>
+				<id>8011bd8a-847f-4527-89d1-58c559ef9480</id>
+				<name>Ally Spirit</name>
+				<translate>Esprit Allié</translate>
+				<altpage>200</altpage>
+			</spirit>
+			<spirit translated="True">
+				<id>7499b2df-7a18-4390-a812-30c3ba528856</id>
+				<name>Boggle</name>
+				<translate>Boggle</translate>
+				<altpage>117</altpage>
+			</spirit>
+			<spirit>
+				<id>154fd6d6-bb4c-47fe-84dc-f28171dc8f6e</id>
+				<name>Shaitan</name>
+				<translate>Shaitan</translate>
+				<altpage>303</altpage>
+			</spirit>
+			<spirit>
+				<id>b496b164-3d70-46db-9a78-0735ee641fb9</id>
+				<name>Jann</name>
+				<translate>Jann</translate>
+				<altpage>303</altpage>
+			</spirit>
+			<spirit>
+				<id>2ab0df3e-54fa-4bf8-aea3-d516f6b08627</id>
+				<name>Jinn</name>
+				<translate>Jinn</translate>
+				<altpage>303</altpage>
+			</spirit>
+			<spirit>
+				<id>cfa25024-f3df-4709-b3c6-b82dca2cea6e</id>
+				<name>Ifrit</name>
+				<translate>Ifrit</translate>
+				<altpage>303</altpage>
+			</spirit>
+			<spirit>
+				<id>88de8804-3260-464f-9aae-fc589bd17f23</id>
+				<name>Spirit of Sun</name>
+				<translate>Esprit du Soleil</translate>
+				<altpage>303</altpage>
+			</spirit>
+			<spirit>
+				<id>7f2d96d4-3d34-45fb-8762-e3a13ae519ac</id>
+				<name>Doppelganger</name>
+				<translate>Doppelgänger</translate>
+				<altpage>304</altpage>
+			</spirit>
+			<spirit>
+				<id>b95d082f-8347-46f8-a322-56449c1766ae</id>
+				<name>Malak</name>
+				<translate>Malak</translate>
+				<altpage>304</altpage>
+			</spirit>
+			<spirit>
+				<id>a1172720-9557-46df-b3c1-8a1ce5c9e204</id>
+				<name>Marid</name>
+				<translate>Marid</translate>
+				<altpage>304</altpage>
 			</spirit>
 		</spirits>
 		<drainattributes>
@@ -39938,13 +42645,13 @@
 			<vehicle>
 				<id>026beaac-5e92-4210-943a-97f5455d98ec</id>
 				<name>Dodge Hurricane Crew Modell</name>
-				<translate>Dodge Hurricane Crew Modell</translate>
+				<translate>Dodge Hurricane (Gang)</translate>
 				<altpage>42</altpage>
 			</vehicle>
 			<vehicle>
 				<id>4d38b501-1b40-4eb2-a4be-4ec0fb099cdf</id>
 				<name>Dodge Hurricane Security Modell</name>
-				<translate>Dodge Hurricane Security Modell</translate>
+				<translate>Dodge Hurricane (Sécurité)</translate>
 				<altpage>42</altpage>
 			</vehicle>
 			<vehicle>
@@ -39956,13 +42663,13 @@
 			<vehicle>
 				<id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
 				<name>Mercedes-Benz Tornado Crew Modell</name>
-				<translate>Mercedes-Benz Tornado Crew Modell</translate>
+				<translate>Mercedes-Benz Tornado (Gang)</translate>
 				<altpage>42</altpage>
 			</vehicle>
 			<vehicle>
 				<id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
 				<name>Mercedes-Benz Tornado Security Modell</name>
-				<translate>Mercedes-Benz Tornado Security Modell</translate>
+				<translate>Mercedes-Benz Tornado (Sécurité)</translate>
 				<altpage>42</altpage>
 			</vehicle>
 			<vehicle>
@@ -39986,19 +42693,19 @@
 			<vehicle>
 				<id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
 				<name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
-				<translate>Mercedes-Benz CityMog / Dodge City Basis Modell</translate>
+				<translate>Mercedes-Benz CityMog / Dodge City (Nu)</translate>
 				<altpage>42</altpage>
 			</vehicle>
 			<vehicle>
 				<id>22d97843-c25b-4b83-97f4-9f0db590b77d</id>
 				<name>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</name>
-				<translate>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</translate>
+				<translate>Mercedes-Benz CityMog / Dodge City CM-X (Avec plateau)</translate>
 				<altpage>42</altpage>
 			</vehicle>
 			<vehicle>
 				<id>8053ea4f-9ad3-4b50-8ca9-cc7e78eb8da4</id>
 				<name>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</name>
-				<translate>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</translate>
+				<translate>Mercedes-Benz CityMog / Dodge City CM Traveller (Avec plateau)</translate>
 				<altpage>42</altpage>
 			</vehicle>
 			<vehicle>
@@ -41294,13 +44001,13 @@
 			<vehicle>
 				<id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
 				<name>Dodge Hurricane Crew Modell</name>
-				<translate>Dodge Hurricane Crew Modell</translate>
+				<translate>Dodge Hurricane (Gang)</translate>
 				<altpage>57</altpage>
 			</vehicle>
 			<vehicle>
 				<id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
 				<name>Dodge Hurricane Security Modell</name>
-				<translate>Dodge Hurricane Security Modell</translate>
+				<translate>Dodge Hurricane (Sécurité)</translate>
 				<altpage>57</altpage>
 			</vehicle>
 			<vehicle>
@@ -41410,6 +44117,192 @@
 				<name>Maersk Shipyards Wavecutter MPAC</name>
 				<translate>Maersk Shipyards Wavecutter MPAC</translate>
 				<altpage>131</altpage>
+			</vehicle>
+			<vehicle>
+				<id>ee67b675-6acf-4edc-9d95-2797ddbd2f1a</id>
+				<name>Corporate Mobile Command Center (Ares Roadmaster)</name>
+				<translate>Centre de commande mobile Corporatif (Ares Roadmaster)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>fbafc72c-fc94-4196-ac8a-a170ac942dd3</id>
+				<name>Law Enforcement Patrol Cruiser (Chrysler-Nissan Journey)</name>
+				<translate>Voiture de patrouille (Chrysler-Nissan Journey)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>ba29b0d3-8f49-4b96-a25f-4efbf139419d</id>
+				<name>Corporate Moving Truck (Conestoga Trailblazer)</name>
+				<translate>Camion de transport corporatif (Conestoga Trailblazer)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>7114ccdd-3e5c-41a7-9c24-999e41ec5807</id>
+				<name>Corporate Moving Truck w/Trailer (Conestoga Trailblazer)</name>
+				<translate>Camion de transport corporatif avec remorque (Conestoga Trailblazer)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>f1b499b8-3ff0-4134-9723-4dd5b7c22b97</id>
+				<name>Corporate Garbage Hauler (Dodge Ram Industrial: Large)</name>
+				<translate>Camion-poubelle corporatif (grand Dodge Ram Industrial)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>bd45e719-82a5-443d-83bd-976abdcf786b</id>
+				<name>Corporate Garbage Hauler (Dodge Ram Industrial: Narrow)</name>
+				<translate>Camion-poubelle corporatif (petit Dodge Ram Industrial)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>c470d083-325f-43f4-a87e-3e3a56a73362</id>
+				<name>Government Black SUV (Esprit Industries Watcher)</name>
+				<translate>SUV noir du gouvernement (Esprit Industries Watcher)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>2ddf358f-0681-4521-b2a4-735797752aba</id>
+				<name>Corporate Ambulance (GMC Endurance)</name>
+				<translate>Ambulance corporative (GMC Endurance)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>f19454df-6b7a-45cb-97f4-f6ecf71c6fbd</id>
+				<name>Government Pursuit SUV (GMC Sidewinder)</name>
+				<translate>SUV de poursuite du gouvernement (GMC Sidewinder)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>c971c599-71e6-4f19-ac41-48db3911760d</id>
+				<name>Corporate Patrol Cruiser (Honda Artemis)</name>
+				<translate>Voiturue de patrouille corporative (Honda Artemis)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>88724f5f-d51b-4d67-a18f-71c5262696e7</id>
+				<name>Municipal Ambulance (S-K LT-21)</name>
+				<translate>Ambulance municipale (S-K LT-21)</translate>
+				<altpage>187</altpage>
+			</vehicle>
+			<vehicle>
+				<id>378178d4-e941-4f43-acc0-b14a551c0f7b</id>
+				<name>Ford Broadcast</name>
+				<translate>Ford Broadcast</translate>
+				<altpage>174</altpage>
+			</vehicle>
+			<vehicle>
+				<id>8eaa5090-5fcb-42b4-9e96-ef408096d2a1</id>
+				<name>Skiorsky-Bell Condor</name>
+				<translate>Skiorsky-Bell Condor</translate>
+				<altpage>174</altpage>
+			</vehicle>
+			<vehicle>
+				<id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
+				<name>BMW GGX Sandleopard</name>
+				<translate>BMW GGX Sandleopard</translate>
+				<altpage>15</altpage>
+			</vehicle>
+			<vehicle>
+				<id>e5fc5640-a49c-4b01-98b0-6456b867fb4c</id>
+				<name>Jena Robotik Mewero (Minidrone)</name>
+				<translate>Jena Robotik Mewero (Minidrone)</translate>
+				<altpage>23</altpage>
+			</vehicle>
+			<vehicle>
+				<id>8e710ab0-637a-43a1-93a2-66120e7dbea5</id>
+				<name>Porsche-Dornier Aqua 503</name>
+				<translate>Porsche-Dornier Aqua 503</translate>
+				<altpage>18</altpage>
+			</vehicle>
+			<vehicle>
+				<id>bb04e470-621f-4eec-9d3d-09a718a3402f</id>
+				<name>Ruhrmetall Hovawart</name>
+				<translate>Ruhrmetall Hovawart</translate>
+				<altpage>19</altpage>
+			</vehicle>
+			<vehicle>
+				<id>6c20873e-12bf-44a0-951a-5f2ffb213e31</id>
+				<name>Krime Runner</name>
+				<translate>Krime Runner</translate>
+				<altpage>28</altpage>
+			</vehicle>
+			<vehicle>
+				<id>86ed663b-e9c4-4c53-89b4-3f31e199f9a1</id>
+				<name>Krime Wageslave PMV</name>
+				<translate>Krime Wageslave PMV</translate>
+				<altpage>30</altpage>
+			</vehicle>
+			<vehicle>
+				<id>c80237db-ed5c-4c10-8c39-44ab8e64905e</id>
+				<name>Krime Bazoo Basic</name>
+				<translate>Krime Bazoo Basic</translate>
+				<altpage>31</altpage>
+			</vehicle>
+			<vehicle>
+				<id>3bdfcc6a-e572-42c6-8e7f-532cb89f3c4d</id>
+				<name>Krime Bazoo Redline</name>
+				<translate>Krime Bazoo Redline</translate>
+				<altpage>31</altpage>
+			</vehicle>
+			<vehicle>
+				<id>7bf3059c-b426-4697-91ce-dc62008724bc</id>
+				<name>Krime Bazoo Chrome</name>
+				<translate>Krime Bazoo Chrome</translate>
+				<altpage>31</altpage>
+			</vehicle>
+			<vehicle>
+				<id>5e931c14-5ff6-4713-a644-77a798c322d9</id>
+				<name>Krime Big Bazoo Basic</name>
+				<translate>Krime Big Bazoo Basic</translate>
+				<altpage>31</altpage>
+			</vehicle>
+			<vehicle>
+				<id>8537776b-6bd1-4cf0-afb5-0e6939ef98cc</id>
+				<name>Krime Big Bazoo Redline</name>
+				<translate>Krime Big Bazoo Redline</translate>
+				<altpage>31</altpage>
+			</vehicle>
+			<vehicle>
+				<id>cfcda666-a149-462d-835e-624d4e4aef26</id>
+				<name>Krime Big Bazoo Chrome</name>
+				<translate>Krime Big Bazoo Chrome</translate>
+				<altpage>31</altpage>
+			</vehicle>
+			<vehicle>
+				<id>39293426-e13e-45b6-beeb-94726d2335ec</id>
+				<name>Krime SV-2 'Crashtest'</name>
+				<translate>Krime SV-2 'Crashtest'</translate>
+				<altpage>32</altpage>
+			</vehicle>
+			<vehicle>
+				<id>958a937f-d255-41dd-a2ec-7f70c2956112</id>
+				<name>Krime Prowler</name>
+				<translate>Krime Prowler</translate>
+				<altpage>34</altpage>
+			</vehicle>
+			<vehicle>
+				<id>24a64f71-af10-4426-8ca0-cc1b843c7e2c</id>
+				<name>Krime DeTruck Sports Truck</name>
+				<translate>Krime DeTruck Sports Truck</translate>
+				<altpage>35</altpage>
+			</vehicle>
+			<vehicle>
+				<id>9f19cbf7-bd50-49a0-8a94-af64a65feb2e</id>
+				<name>Krime Dix Prime Mover</name>
+				<translate>Krime Dix Prime Mover</translate>
+				<altpage>37</altpage>
+			</vehicle>
+			<vehicle>
+				<id>61cb015d-236b-4236-a91a-f8ef3b2842c2</id>
+				<name>Krime Barco de Pesca</name>
+				<translate>Krime Barco de Pesca</translate>
+				<altpage>38</altpage>
+			</vehicle>
+			<vehicle>
+				<id>8b4ff5d5-e6cd-4b92-b7e1-e780a6539602</id>
+				<name>Krime Euskaldunak Tankette</name>
+				<translate>Krime Euskaldunak Tankette</translate>
+				<altpage>41</altpage>
 			</vehicle>
 		</vehicles>
 		<mods>
@@ -42651,6 +45544,12 @@
 				<translate>Aucune</translate>
 				<altpage>163</altpage>
 			</weaponmount>
+			<weaponmount>
+				<id>ccc4f175-0a93-4a27-a069-29d5ba8375e2</id>
+				<name>Built-In</name>
+				<translate>Built-In</translate>
+				<altpage>0</altpage>
+			</weaponmount>
 		</weaponmounts>
 		<weaponmountmods>
 			<mod>
@@ -42687,26 +45586,80 @@
 	</chummer>
 	<chummer file="vessels.xml">
 		<categories>
-			<category translate="Réceptacles inanimés">Inanimate Vessels</category>
+			<category translate="Réceptacles inanimés" translated="True">Inanimate Vessels</category>
 		</categories>
 		<metatypes>
-			<metatype>
+			<metatype translated="True">
 				<id>523fff8a-2875-4830-b390-5a965a3ca468</id>
 				<name>Plasteel Homunculus</name>
 				<translate>Homoncule de Plastacier</translate>
 				<altpage>87</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>81ff437c-9482-41f1-bb05-991561962234</id>
 				<name>Stone Homunculus</name>
 				<translate>Homoncule de Pierre</translate>
 				<altpage>87</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>aa573527-2e55-4ef7-8351-de0d10b32ce2</id>
 				<name>Wicker Man</name>
 				<translate>Clone Maléfique</translate>
 				<altpage>87</altpage>
+			</metatype>
+			<metatype>
+				<id>3E980802-7A90-49D2-B878-12983BB4B62F</id>
+				<name>Fragile Material</name>
+				<translate>Matériau fragile</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>712889BF-CD58-425C-8D14-0E9720B2C713</id>
+				<name>Cheap Material</name>
+				<translate>Matériau bon marché</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>AF455A22-2B54-469A-9A08-A029473282B3</id>
+				<name>Average Material</name>
+				<translate>Matériau standard</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>E1556535-CC23-401A-9635-01AC2D640BEC</id>
+				<name>Heavy Material</name>
+				<translate>Matériau lourd</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>2CC51D65-54DA-4FDA-AEF5-B641D4C9ED5F</id>
+				<name>Reinforced Material</name>
+				<translate>Matériau renforcé</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>39B667F0-48AB-41D6-8FB9-54F3B34D42AC</id>
+				<name>Structural Material</name>
+				<translate>Matériau armé</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>2ACF277D-76BF-45B7-BC85-FD084D1D7027</id>
+				<name>Heavy Structural Material</name>
+				<translate>Matériau armé lourd</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>6B7BDAA6-99A5-4FB2-9648-E1E0E9568E30</id>
+				<name>Armored/Reinforced Material</name>
+				<translate>Matériau blindé</translate>
+				<altpage>298</altpage>
+			</metatype>
+			<metatype>
+				<id>2643B4A2-05C6-47FF-8E15-FC094415FE44</id>
+				<name>Hardened Material</name>
+				<translate>Matériau trempé</translate>
+				<altpage>298</altpage>
 			</metatype>
 		</metatypes>
 	</chummer>
@@ -42743,7 +45696,7 @@
 			<category translate="Armes montées">Underbarrel Weapons</category>
 			<category translate="Armes de micro-drones">Micro-Drone Weapons</category>
 			<category translate="Carabines">Carbines</category>
-			<category translate="Grenade Launchers">Grenade Launchers</category>
+			<category translate="Lance-grenades">Grenade Launchers</category>
 		</categories>
 		<weapons>
 			<weapon translated="True">
@@ -43541,7 +46494,7 @@
 			<weapon>
 				<id>4a4810ca-4d11-49ee-8705-0411edc4d523</id>
 				<name>Krime Bomb</name>
-				<translate>Krime Bomb</translate>
+				<translate>Bombe Krime</translate>
 				<altpage>35</altpage>
 			</weapon>
 			<weapon translated="True">
@@ -44231,7 +47184,7 @@
 			<weapon>
 				<id>1603b758-f59c-4288-937a-8d7467b9ed33</id>
 				<name>Cavalier Arms Gladius</name>
-				<translate>Cavalier Arms Gladius</translate>
+				<translate>Glaive Cavalier Arms</translate>
 				<altpage>12</altpage>
 			</weapon>
 			<weapon translated="True">
@@ -44297,7 +47250,7 @@
 			<weapon>
 				<id>40bf3eed-b239-4521-ac1d-80a4e472451e</id>
 				<name>Ultimax Rain Forest Carbine</name>
-				<translate>Ultimax Rain Forest Carbine</translate>
+				<translate>Carabine Équatoriale Ultimax</translate>
 				<altpage>32</altpage>
 			</weapon>
 			<weapon translated="True">
@@ -44765,7 +47718,7 @@
 			<weapon>
 				<id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
 				<name>Mannlicher Marpingen Pro D (Shotgun Barrels)</name>
-				<translate>Mannlicher Marpingen Pro D (Shotgun Barrels)</translate>
+				<translate>Mannlicher Marpingen Pro D (canons sciés)</translate>
 				<altpage>0</altpage>
 			</weapon>
 			<weapon>
@@ -46019,7 +48972,7 @@
 			<weapon>
 				<id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
 				<name>Renraku Red Samurai Katana</name>
-				<translate>Renraku Red Samurai Katana</translate>
+				<translate>Katana Renraku Red Samurai</translate>
 				<altpage>132</altpage>
 			</weapon>
 			<weapon>
@@ -46033,6 +48986,360 @@
 				<name>Wuxing-Armtec PTL-02</name>
 				<translate>Wuxing-Armtec PTL-02</translate>
 				<altpage>133</altpage>
+			</weapon>
+			<weapon>
+				<id>aedfc406-ebe3-4abf-8b9d-91d886479884</id>
+				<name>Hardened Yo-Yo</name>
+				<translate>Yo-yo renforcé</translate>
+				<altpage>171</altpage>
+			</weapon>
+			<weapon>
+				<id>cf9f71b2-0207-4da7-ac0c-b7d39e2d8cf7</id>
+				<name>Bladed Yo-Yo</name>
+				<translate>Yo-yo à lames</translate>
+				<altpage>171</altpage>
+			</weapon>
+			<weapon>
+				<id>e18c38e1-72b8-44e3-9afd-42c203b7b350</id>
+				<name>Monofilament Yo-Yo</name>
+				<translate>Yo-yo monofilament</translate>
+				<altpage>171</altpage>
+			</weapon>
+			<weapon>
+				<id>8be0faad-0a8f-4735-9928-2cfd662ba742</id>
+				<name>Hardened Skateboard</name>
+				<translate>Skateboard renforcé</translate>
+				<altpage>171</altpage>
+			</weapon>
+			<weapon>
+				<id>dc713ac6-122b-4fa0-9a70-63822412962f</id>
+				<name>Bladed Skateboard</name>
+				<translate>Skateboard à lames</translate>
+				<altpage>171</altpage>
+			</weapon>
+			<weapon>
+				<id>64efe703-1381-464a-b9ea-26c85b1837e3</id>
+				<name>Rolling Blades</name>
+				<translate>Rollers</translate>
+				<altpage>171</altpage>
+			</weapon>
+			<weapon>
+				<id>68d76db6-3eb5-4f6c-b7d0-e3fcfeeef5c8</id>
+				<name>Torch</name>
+				<translate>Torche</translate>
+				<altpage>172</altpage>
+			</weapon>
+			<weapon>
+				<id>9e04a42b-6e65-4a3f-b8ff-b91efefb1f5c</id>
+				<name>Pitchfork</name>
+				<translate>Fourche</translate>
+				<altpage>172</altpage>
+			</weapon>
+			<weapon>
+				<id>a83ce374-cb7b-45e2-b937-dff5520bd5ae</id>
+				<name>Rolling Blades</name>
+				<translate>Rollers</translate>
+				<altpage>172</altpage>
+			</weapon>
+			<weapon translated="True">
+				<id>c5861520-b344-45b3-8497-ec1b935ef531</id>
+				<name>Grenade: Molotov Cocktail</name>
+				<translate>Cocktail Molotov</translate>
+				<altpage>172</altpage>
+			</weapon>
+			<weapon>
+				<id>fc52a56b-3ae3-40e4-9812-86d35bcb9e51</id>
+				<name>Grenade: Molotov Cocktail (Aerodynamic)</name>
+				<translate>Cocktail Molotov aérodynamique</translate>
+				<altpage>172</altpage>
+			</weapon>
+			<weapon>
+				<id>e1670cec-28ff-4281-94f4-2bda59556f27</id>
+				<name>Abräumer</name>
+				<translate>Abräumer</translate>
+				<altpage>8</altpage>
+			</weapon>
+			<weapon>
+				<id>2f49233d-f747-476a-98cb-996def3714ed</id>
+				<name>Katzbalger</name>
+				<translate>Katzbalger</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon>
+				<id>c97d8ffb-1c2d-484f-8c8b-a1428d630d9d</id>
+				<name>Folding Spade</name>
+				<translate>Pelle pliable</translate>
+				<altpage>8</altpage>
+			</weapon>
+			<weapon>
+				<id>71d149df-bec0-46d5-9d67-2568fd48bd67</id>
+				<name>Sabre</name>
+				<translate>Sabre</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon>
+				<id>baf12a42-8dbc-4144-9e46-304c3b08295d</id>
+				<name>Walther Battle Sword</name>
+				<translate>Épée de bataille Walther</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon>
+				<id>f41e735d-44f3-4eae-8538-71d8ae14b3e1</id>
+				<name>HK Urban Assassin</name>
+				<translate>HK Urban Assassin</translate>
+				<altpage>12</altpage>
+			</weapon>
+			<weapon>
+				<id>08a0ab4f-e5db-4306-875b-df552d0811f7</id>
+				<name>Kanonenschlag</name>
+				<translate>Kanonenschlag</translate>
+				<altpage>9</altpage>
+			</weapon>
+			<weapon>
+				<id>330c3fdf-f64f-482c-9dd9-85d8a8f05f61</id>
+				<name>Donnerbüchse</name>
+				<translate>Donnerbüchse</translate>
+				<altpage>10</altpage>
+			</weapon>
+			<weapon>
+				<id>3d07b871-2d0f-49ad-8c4f-7cb98487ffe4</id>
+				<name>Blaser R11 Conqueror</name>
+				<translate>Blaser R11 Conqueror</translate>
+				<altpage>11</altpage>
+			</weapon>
+			<weapon>
+				<id>51a64bcb-e321-4eab-a89b-0a58674923be</id>
+				<name>Walther P99</name>
+				<translate>Walther P99</translate>
+				<altpage>32</altpage>
+			</weapon>
+			<weapon>
+				<id>c166caeb-aaa8-4e13-b76d-ae9e567f7dcd</id>
+				<name>Underbarrel Bola Launcher</name>
+				<translate>Lance-bola attaché</translate>
+				<altpage>54</altpage>
+			</weapon>
+			<weapon>
+				<id>7d711605-e6a9-42f9-846b-95ef80e8c575</id>
+				<name>Underbarrel Grapple Gun</name>
+				<translate>Pistolet à grappin attaché</translate>
+				<altpage>449</altpage>
+			</weapon>
+			<weapon>
+				<id>c73077d0-fc16-474c-a8e6-ce9635a36224</id>
+				<name>Foot Anchor</name>
+				<translate>Ancre de pied</translate>
+				<altpage>84</altpage>
+			</weapon>
+			<weapon>
+				<id>e1b2576c-9f61-4257-913b-667ea53a4864</id>
+				<name>Melee Bite</name>
+				<translate>Morsure</translate>
+				<altpage>129</altpage>
+			</weapon>
+			<weapon>
+				<id>4260c424-10ab-4530-b6e1-6e1e5bb267ad</id>
+				<name>Jaws</name>
+				<translate>Mâchoire</translate>
+				<altpage>139</altpage>
+			</weapon>
+			<weapon>
+				<id>d0434d89-c035-4793-ba10-3ae13b815b52</id>
+				<name>Grenade: COS</name>
+				<translate>Grenade: COS</translate>
+				<altpage>54</altpage>
+			</weapon>
+			<weapon>
+				<id>153e4dcb-ecd6-4b3c-b69e-55a8fb9e6815</id>
+				<name>Grenade: Douser</name>
+				<translate>Grenade: Arroseur</translate>
+				<altpage>53</altpage>
+			</weapon>
+			<weapon>
+				<id>12724901-a72d-4b26-b97c-b559ebec0a41</id>
+				<name>Grenade: DumDum</name>
+				<translate>Grenade: Dum Dum</translate>
+				<altpage>53</altpage>
+			</weapon>
+			<weapon>
+				<id>6fbed96c-6680-4550-b0de-5c3cbdf646f7</id>
+				<name>Grenade: Fuzzy Boom Boom Bunnies</name>
+				<translate>Grenade: Lapins Fuzzy Boom Boom</translate>
+				<altpage>53</altpage>
+			</weapon>
+			<weapon>
+				<id>754f701a-4363-480d-8008-7ba6be5226aa</id>
+				<name>Krime Vester</name>
+				<translate>Krime Vester</translate>
+				<altpage>3</altpage>
+			</weapon>
+			<weapon>
+				<id>3c2d7e43-5c50-4f4b-9989-0db0215b4d5d</id>
+				<name>Krime Heater</name>
+				<translate>Krime Heater</translate>
+				<altpage>4</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-30e6-404d-923c-35181458ce1d</id>
+				<name>Krime Varmint</name>
+				<translate>Krime Varmint</translate>
+				<altpage>5</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-d0c6-4cbf-9462-7fffffff1c0c</id>
+				<name>Krime Chatter</name>
+				<translate>Krime Chatter</translate>
+				<altpage>6</altpage>
+			</weapon>
+			<weapon>
+				<id>39ad41d8-6e4d-4838-afca-7fffffffdcb9</id>
+				<name>Krime Tradition</name>
+				<translate>Krime Tradition</translate>
+				<altpage>7</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-c1e7-4c5a-b2a7-7fffffff1dda</id>
+				<name>Krime Saint Nicholas</name>
+				<translate>Krime Saint Nicholas</translate>
+				<altpage>8</altpage>
+			</weapon>
+			<weapon>
+				<id>6cebbb41-57af-42ca-88e9-7fffffffb01e</id>
+				<name>Krime AKM-SU97</name>
+				<translate>Krime AKM-SU97</translate>
+				<altpage>9</altpage>
+			</weapon>
+			<weapon>
+				<id>02110645-1a34-4703-bf36-7fffffff32a6</id>
+				<name>Krime AKM-97</name>
+				<translate>Krime AKM-97</translate>
+				<altpage>9</altpage>
+			</weapon>
+			<weapon>
+				<id>0f288faf-3b1c-4d83-a6a8-7fffffffcd45</id>
+				<name>Krime Ditch (Shotgun)</name>
+				<translate>Krime Ditch (Shotgun)</translate>
+				<altpage>10</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-bd92-4531-931d-69a43e0d262f</id>
+				<name>Krime Ditch (Rifle)</name>
+				<translate>Krime Ditch (Fusil)</translate>
+				<altpage>10</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-bf58-494c-88a8-5107a3210405</id>
+				<name>Krime Stopper-II (Homeguard)</name>
+				<translate>Krime Stopper-II (Garde du corps)</translate>
+				<altpage>11</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-a4f5-4358-a0cb-7fffffff7193</id>
+				<name>Krime Stopper-II (Shopkeeper)</name>
+				<translate>Krime Stopper-II (Commerçant)</translate>
+				<altpage>11</altpage>
+			</weapon>
+			<weapon>
+				<id>23368c46-c374-4497-b273-61467489ab46</id>
+				<name>Krime Stopper-II</name>
+				<translate>Krime Stopper-II</translate>
+				<altpage>11</altpage>
+			</weapon>
+			<weapon>
+				<id>60728407-ae88-4ecf-885e-7fffffff1b7f</id>
+				<name>Krime Junior</name>
+				<translate>Krime Junior</translate>
+				<altpage>12</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-fae8-45cb-ac9c-7fffffffe169</id>
+				<name>Krime Soldier</name>
+				<translate>Krime Soldier</translate>
+				<altpage>13</altpage>
+			</weapon>
+			<weapon>
+				<id>390ba259-5ea5-4ae5-ab1e-19ee39356908</id>
+				<name>Krime Soldier GL</name>
+				<translate>Krime Soldier GL</translate>
+				<altpage>13</altpage>
+			</weapon>
+			<weapon>
+				<id>1a0458f9-8733-4a4a-b983-5785c91f3e0d</id>
+				<name>Krime KAR-97-H</name>
+				<translate>Krime KAR-97-H</translate>
+				<altpage>19</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-d3dc-452b-ab09-7fffffffd3d3</id>
+				<name>Krime Monster</name>
+				<translate>Krime Monster</translate>
+				<altpage>20</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-f8d7-4f99-8c9d-7fffffff7d80</id>
+				<name>Krime Confederate</name>
+				<translate>Krime Confederate</translate>
+				<altpage>21</altpage>
+			</weapon>
+			<weapon>
+				<id>35d3e76d-f3a6-495c-8d9d-0cc32aa54ee4</id>
+				<name>Krime T-Shirt Cannon</name>
+				<translate>Krime T-Shirt Cannon</translate>
+				<altpage>22</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-195a-47e8-ad05-7fffffffca0b</id>
+				<name>Krime Escalation</name>
+				<translate>Krime Escalation</translate>
+				<altpage>23</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-e125-44fb-8977-7fffffffc59c</id>
+				<name>Krime Calliope</name>
+				<translate>Krime Calliope</translate>
+				<altpage>24</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-a7c4-4acf-9193-7fffffff0537</id>
+				<name>Krime Ripper</name>
+				<translate>Krime Ripper</translate>
+				<altpage>25</altpage>
+			</weapon>
+			<weapon>
+				<id>7fffffff-a8d1-4932-92db-7fffffff48e6</id>
+				<name>Krime Carpet</name>
+				<translate>Krime Carpet</translate>
+				<altpage>26</altpage>
+			</weapon>
+			<weapon>
+				<id>e36654b4-a1af-4845-8ae2-3d27961d40ce</id>
+				<name>Grenade: Krime Cleaner</name>
+				<translate>Grenade: Krime Cleaner</translate>
+				<altpage>27</altpage>
+			</weapon>
+			<weapon>
+				<id>7e032b35-2c36-489a-b8da-5a3799562415</id>
+				<name>Grenade: Krime Party</name>
+				<translate>Grenade: Krime Party</translate>
+				<altpage>27</altpage>
+			</weapon>
+			<weapon>
+				<id>b2e8caa8-6d64-4b25-8ef2-cfb7de6a7cd6</id>
+				<name>Grenade: Krime Party (Flash-Bang)</name>
+				<translate>Grenade: Krime Party (Flash-Bang)</translate>
+				<altpage>27</altpage>
+			</weapon>
+			<weapon>
+				<id>c4573b7a-90cf-48c8-bb56-fdd97b46a224</id>
+				<name>Grenade: Krime Cocktail</name>
+				<translate>Grenade: Krime Cocktail</translate>
+				<altpage>28</altpage>
+			</weapon>
+			<weapon>
+				<id>62b35fe2-dc35-4720-bcd8-4c92a497667f</id>
+				<name>Grenade: Krime Stinger</name>
+				<translate>Grenade: Krime Stinger</translate>
+				<altpage>29</altpage>
 			</weapon>
 		</weapons>
 		<accessories>
@@ -46420,7 +49727,7 @@
 				<translate>Poignée personnalisée</translate>
 				<altpage>182</altpage>
 			</accessory>
-			<accessory>
+			<accessory translated="True">
 				<id>036742ce-95d8-4510-b25f-5c380ef1076e</id>
 				<name>Imaging Scope (Optical)</name>
 				<translate>Viseur à caméra</translate>
@@ -46756,6 +50063,138 @@
 				<translate>Viseur laser</translate>
 				<altpage>47</altpage>
 			</accessory>
+			<accessory>
+				<id>6763996b-0458-46ee-a6a5-f50255ace664</id>
+				<name>Belt-Feed, 100-round</name>
+				<translate>Ceinture de munitions (100)</translate>
+				<altpage>417</altpage>
+			</accessory>
+			<accessory>
+				<id>61ddc4d3-25fd-405c-af5d-2455efff2509</id>
+				<name>Drum Magazine, 24-round</name>
+				<translate>Magasin tambour (24)</translate>
+				<altpage>417</altpage>
+			</accessory>
+			<accessory>
+				<id>d45c3b70-0e12-48b5-9c69-9f86f14d593b</id>
+				<name>Drum Magazine, 32-round</name>
+				<translate>Magasin tambour (32)</translate>
+				<altpage>417</altpage>
+			</accessory>
+			<accessory>
+				<id>6598e5fa-f2d0-4c5c-a773-570cd9d16300</id>
+				<name>External Power Source</name>
+				<translate>Chargeur externe</translate>
+				<altpage>417</altpage>
+			</accessory>
+			<accessory>
+				<id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>
+				<name>Breeching Teeth</name>
+				<translate>Dents de culasse</translate>
+				<altpage>131</altpage>
+			</accessory>
+			<accessory>
+				<id>2eea1d98-8c6f-4f59-a8e8-e39b17c60869</id>
+				<name>Modified Pump Handle</name>
+				<translate>Poignée de pompe modifiée</translate>
+				<altpage>131</altpage>
+			</accessory>
+			<accessory>
+				<id>b741b729-106e-46f2-9143-0f745fd48789</id>
+				<name>Special Modification: Improved AP</name>
+				<translate>Modification spéciale: Renfort de Pénétration</translate>
+				<altpage>161</altpage>
+			</accessory>
+			<accessory>
+				<id>56b17280-27c6-414a-9957-f628ae5efefa</id>
+				<name>Special Modification: Improved Accuracy</name>
+				<translate>Modification spéciale: Renfort de Précision</translate>
+				<altpage>161</altpage>
+			</accessory>
+			<accessory>
+				<id>9084d801-c654-4eec-960e-4186a6de81d6</id>
+				<name>Special Modification: Improved Ammunition Capacity</name>
+				<translate>Modification spéciale: Renfort de Capacité de chargeur</translate>
+				<altpage>161</altpage>
+			</accessory>
+			<accessory>
+				<id>93be91c1-3f77-4e7b-9ac2-eb349b76d017</id>
+				<name>Special Modification: Improved Concealment</name>
+				<translate>Modification spéciale: Amélioration de Discrétion</translate>
+				<altpage>161</altpage>
+			</accessory>
+			<accessory>
+				<id>3c82e17b-76cd-47b9-9bda-c3131a64e0ee</id>
+				<name>Special Modification: Damage</name>
+				<translate>Modification spéciale: Renfort de Puissance</translate>
+				<altpage>161</altpage>
+			</accessory>
+			<accessory>
+				<id>15d159e8-d3db-4cf3-8964-0eb2235ed6c2</id>
+				<name>Special Modification: Improved Reach</name>
+				<translate>Modification spéciale: Renfort de Portée</translate>
+				<altpage>161</altpage>
+			</accessory>
+			<accessory>
+				<id>09abdea8-df9a-4e74-86aa-0f79ce96f422</id>
+				<name>Special Modification: Improved Recoil Comp</name>
+				<translate>Modification spéciale: Compensation de recul</translate>
+				<altpage>161</altpage>
+			</accessory>
+			<accessory>
+				<id>2d5cd697-4754-420c-ba11-27cf957a4d09</id>
+				<name>Maker Mag</name>
+				<translate>Magasin custom</translate>
+				<altpage>12</altpage>
+			</accessory>
+			<accessory>
+				<id>63a4c7fe-847e-46e6-a99d-da0f39e63b8a</id>
+				<name>Plastic Components 6</name>
+				<translate>Composants plastique (6)</translate>
+				<altpage>12</altpage>
+			</accessory>
+			<accessory>
+				<id>610dffea-8295-434f-b279-5327adbefd59</id>
+				<name>Metahuman Adaptation</name>
+				<translate>Adaptation métahumaine</translate>
+				<altpage>0</altpage>
+			</accessory>
+			<accessory>
+				<id>1c70c3bf-9a59-45d9-bb3e-4569a2a624d6</id>
+				<name>Matrix Signal Scanner</name>
+				<translate>Scanner de signal matriciel</translate>
+				<altpage>18</altpage>
+			</accessory>
+			<accessory>
+				<id>aefc5dd2-4b2d-4662-99d6-3bddc8db026e</id>
+				<name>Krime Dual-Mode External Smartgun Link</name>
+				<translate>Gâchette Smartgun manuelle externe Krime</translate>
+				<altpage>22</altpage>
+			</accessory>
+			<accessory>
+				<id>502c319a-68a9-4e89-8521-e4e535738890</id>
+				<name>Krime Explosive Securing Tripod</name>
+				<translate>Trépied explosif Krime</translate>
+				<altpage>23</altpage>
+			</accessory>
+			<accessory>
+				<id>9b09fc1e-cb5b-473f-83a5-6f23a7524012</id>
+				<name>Krime Offline Support Solutions</name>
+				<translate>Services hors-ligne Krime</translate>
+				<altpage>23</altpage>
+			</accessory>
+			<accessory>
+				<id>3e048d18-3011-4e43-a557-0696c4c09042</id>
+				<name>Krime Loudener</name>
+				<translate>Frein de bouche Krime</translate>
+				<altpage>23</altpage>
+			</accessory>
+			<accessory>
+				<id>a869d692-db53-4b31-847a-5216d9e48c0e</id>
+				<name>Krime Keeper</name>
+				<translate>Holster Krime</translate>
+				<altpage>23</altpage>
+			</accessory>
 		</accessories>
 	</chummer>
 	<chummer file="complexforms.xml">
@@ -47028,7 +50467,7 @@
 			<license translate="Permis de port d'arme exotique">Exotic Weapons License</license>
 			<license translate="Permis de possession d'armure restreinte">Restricted Armor License</license>
 			<license translate="Perrmis de port de fusil court">Shotgun License</license>
-			<license translate="Mage License">Mage License</license>
+			<license translate="Licence de mage">Mage License</license>
 		</licenses>
 	</chummer>
 	<chummer file="priorities.xml">
@@ -47468,6 +50907,8 @@
 			<sex translate="Homme">Male</sex>
 			<sex translate="Inconnu">Unknown</sex>
 			<sex translate="Non-binaire">Other</sex>
+			<sex translate="Agenre">Agender</sex>
+			<sex translate="Genre fluide">Genderfluid</sex>
 		</sexes>
 		<ages>
 			<age translate="Jeune">Young</age>
@@ -47633,7 +51074,7 @@
 			</range>
 			<range>
 				<name>Grenade Launchers</name>
-				<translate>Lance-Grenades</translate>
+				<translate>Lance-grenades</translate>
 			</range>
 			<range>
 				<name>Missile Launchers</name>
@@ -48141,19 +51582,19 @@
 			<grade>
 				<id>b8b70858-6433-451a-835b-49b67d7b63e2</id>
 				<name>Street Cooked</name>
-				<translate>Street Cooked</translate>
+				<translate>De la rue</translate>
 				<altpage>0</altpage>
 			</grade>
 			<grade>
 				<id>b3366009-4884-44d7-9efa-34e213a75e7e</id>
 				<name>Pharmaceutical</name>
-				<translate>Pharmaceutical</translate>
+				<translate>Pharmaceutique</translate>
 				<altpage>0</altpage>
 			</grade>
 			<grade>
 				<id>cd20695d-fedb-476b-956b-1a1ecdd65f03</id>
 				<name>Designer</name>
-				<translate>Designer</translate>
+				<translate>D'artiste</translate>
 				<altpage>0</altpage>
 			</grade>
 		</grades>
@@ -48296,5 +51737,59 @@
 				<altpage>191</altpage>
 			</drugcomponent>
 		</drugcomponents>
+	</chummer>
+	<chummer file="tips.xml">
+		<tips>
+			<tip>
+				<id>528f605f-9994-46b5-8583-cafe006507e4</id>
+				<text>Looks like you're building a street samurai. Don't you need a code of honor?</text>
+				<translate>Looks like you're building a street samurai. Don't you need a code of honor?</translate>
+			</tip>
+			<tip>
+				<id>ccaae7df-40ba-4da9-837e-c0df92f07038</id>
+				<text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
+				<translate>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</translate>
+			</tip>
+			<tip>
+				<id>ff26b01d-1aa4-45ac-8685-0d199e115d1f</id>
+				<text>You have enough money to retire with a Medium Lifestyle. 2.5 kids, picket fence AR overlay, loving partner. Is it really worth saving up for that next upgrade?</text>
+				<translate>You have enough money to retire with a Medium Lifestyle. 2.5 kids, picket fence AR overlay, loving partner. Is it really worth saving up for that next upgrade?</translate>
+			</tip>
+			<tip>
+				<id>b6da9d78-024d-4516-821c-93ad8207075d</id>
+				<text>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</text>
+				<translate>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</translate>
+			</tip>
+			<tip>
+				<id>b669df07-528b-4df3-829b-54d095af1791</id>
+				<text>Why bother with any other weapon when you can have the Ares Alpha, the last word in automatics! This message brought to you by Ares Macrotech.</text>
+				<translate>Why bother with any other weapon when you can have the Ares Alpha, the last word in automatics! This message brought to you by Ares Macrotech.</translate>
+			</tip>
+			<tip>
+				<id>1e98f6d1-dfca-4dc3-9248-dd3da3589989</id>
+				<text>You appear to be making an Alchemist. Are you sure you want to do that?</text>
+				<translate>You appear to be making an Alchemist. Are you sure you want to do that?</translate>
+			</tip>
+			<tip>
+				<id>42262ca7-b414-4dde-b1b3-b7f72bc160c1</id>
+				<text>Looks like you've chosen to make an A.I. Are you sure you wouldn't rather be playing Eclipse Phase?</text>
+				<translate>Looks like you've chosen to make an A.I. Are you sure you wouldn't rather be playing Eclipse Phase?</translate>
+			</tip>
+			<tip>
+				<id>8bdb4ade-46e2-4ff6-b440-d8a8955766ed</id>
+				<text>Oni? More like horny elves!</text>
+				<translate>Oni? More like horny elves!</translate>
+			</tip>
+			<tip>
+				<id>ab52155b-d99e-4e2e-816b-16535afc206f</id>
+				<text>Looks like you don't have any hobbies. Might I suggest competitive basket-weaving?</text>
+				<translate>Looks like you don't have any hobbies. Might I suggest competitive basket-weaving?</translate>
+			</tip>
+			<tip>
+				<id>4bf9379e-101a-4664-8049-7db867073943</id>
+				<text>Looks like you're into some pretty fine shootin' there, Tex.</text>
+				<translate>Looks like you're into some pretty fine shootin' there, Tex.</translate>
+			</tip>
+		</tips>
 	</chummer>
 </chummer>
