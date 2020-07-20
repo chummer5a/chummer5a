@@ -900,7 +900,7 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static ICollection<SourcebookInfo> SourcebookInfo
+        public static HashSet<SourcebookInfo> SourcebookInfo
         {
             get
             {

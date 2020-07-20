@@ -5286,7 +5286,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        public List<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             StringBuilder strFilter = new StringBuilder();
             if(Options != null)
@@ -5423,7 +5423,7 @@ namespace Chummer
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
         /// <param name="blnMountChangeAllowed">Whether or not <paramref name="objModularCyberware"/> can change its mount</param>
         /// <returns></returns>
-        public IList<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
+        public List<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
         {
             if (objModularCyberware == null)
                 throw new ArgumentNullException(nameof(objModularCyberware));
@@ -6913,7 +6913,7 @@ namespace Chummer
         /// <summary>
         /// Character's list of priority bonus skills.
         /// </summary>
-        public IList<string> PriorityBonusSkillList => _lstPrioritySkills;
+        public List<string> PriorityBonusSkillList => _lstPrioritySkills;
 
         /// <summary>
         /// Character's sex.
@@ -10037,7 +10037,7 @@ namespace Chummer
         /// <summary>
         /// List of internal IDs that need their improvements re-applied.
         /// </summary>
-        public IList<string> InternalIdsNeedingReapplyImprovements => _lstInternalIdsNeedingReapplyImprovements;
+        public List<string> InternalIdsNeedingReapplyImprovements => _lstInternalIdsNeedingReapplyImprovements;
 
         #endregion
 

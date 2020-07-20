@@ -1587,9 +1587,9 @@ namespace Chummer
                         }
 
                         bool blnDoRefresh = false;
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
                             x => x.SourceType == Improvement.ImprovementSource.Bioware &&
-                                 x.CanRemoveThroughImprovements))
+                                 x.CanRemoveThroughImprovements).ToList())
                         {
                             if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                             {
@@ -1601,8 +1601,7 @@ namespace Chummer
                             {
                                 objCyberware.DeleteCyberware();
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware",
-                                    GlobalOptions.Language);
+                                string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware");
                                 objExpense.Create(0,
                                     strEntry + strBiowareDisabledSource +
                                     objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
@@ -1642,9 +1641,9 @@ namespace Chummer
                         }
 
                         bool blnDoRefresh = false;
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
                             x => x.SourceType == Improvement.ImprovementSource.Cyberware &&
-                                 x.CanRemoveThroughImprovements))
+                                 x.CanRemoveThroughImprovements).ToList())
                         {
                             if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                             {
@@ -1656,8 +1655,7 @@ namespace Chummer
                             {
                                 objCyberware.DeleteCyberware();
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware",
-                                    GlobalOptions.Language);
+                                string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware");
                                 objExpense.Create(0,
                                     strEntry + strCyberwareDisabledSource +
                                     objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
@@ -1742,8 +1740,8 @@ namespace Chummer
                                              LanguageManager.GetString("String_Space");
                         }
 
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
-                            x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements))
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
+                            x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements).ToList())
                         {
                             char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                             if (chrAvail == 'R' || chrAvail == 'F')

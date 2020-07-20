@@ -3066,7 +3066,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Collection of TreeNodes to update when a relevant property is changed
         /// </summary>
-        public ICollection<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
+        public HashSet<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
 
         /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.

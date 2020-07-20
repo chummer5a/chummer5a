@@ -70,12 +70,12 @@ namespace Chummer.UI.Skills
         }
 
         private Character _objCharacter;
-        private readonly IList<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
-        private readonly IList<Tuple<string, IComparer<Skill>>>  _sortList;
+        private readonly List<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
+        private readonly List<Tuple<string, IComparer<Skill>>>  _sortList;
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
-        private readonly IList<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
-        private readonly IList<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeList;
+        private readonly List<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
+        private readonly List<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeList;
 
         private void SkillsTabUserControl_Load(object sender, EventArgs e)
         {
@@ -353,7 +353,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private static IList<Tuple<string, IComparer<Skill>>> GenerateSortList()
+        private static List<Tuple<string, IComparer<Skill>>> GenerateSortList()
         {
             List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>(9)
             {
@@ -426,7 +426,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static IList<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
+        private static List<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
         {
             List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>(7)
             {
@@ -494,7 +494,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static IList<Tuple<string, IComparer<KnowledgeSkill>>> GenerateKnowledgeSortList()
+        private static List<Tuple<string, IComparer<KnowledgeSkill>>> GenerateKnowledgeSortList()
         {
             List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>(7)
             {
@@ -557,7 +557,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static IList<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
+        private static List<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
         {
             List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>(5)
             {

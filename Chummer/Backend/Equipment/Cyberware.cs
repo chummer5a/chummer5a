@@ -152,7 +152,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
+            List<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
             foreach (Grade objGrade in lstGrades)
             {
                 if (objGrade.Name == strValue)
@@ -936,7 +936,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
                 if (objXmlGearList?.Count > 0)
                 {
-                    IList<Weapon> lstChildWeapons = new List<Weapon>(1);
+                    List<Weapon> lstChildWeapons = new List<Weapon>(1);
                     foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
@@ -4492,9 +4492,9 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlCyberwareImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                IList<Grade> objCyberwareGradeList =
+                List<Grade> objCyberwareGradeList =
                     _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware);
-                IList<Grade> objBiowareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware);
+                List<Grade> objBiowareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware);
                 if (objSelectedGrade == null)
                 {
                     foreach (Grade objCyberwareGrade in objCyberwareGradeList)

@@ -52,7 +52,7 @@ namespace Chummer.UI.Powers
         }
 
         private Character _objCharacter;
-        private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
+        private readonly List<Tuple<string, Predicate<Power>>> _dropDownList;
         private bool _blnSearchMode;
 
         private void PowersTabUserControl_Load(object sender, EventArgs e)
@@ -130,7 +130,7 @@ namespace Chummer.UI.Powers
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
-        private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        private static List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>(4)
             {
