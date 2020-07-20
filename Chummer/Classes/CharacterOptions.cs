@@ -213,14 +213,14 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_CharacterOptionsDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = s_CharacterOptionsDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in s_CharacterOptionsDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in s_CharacterOptionsDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -243,59 +243,59 @@ namespace Chummer
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string> s_CharacterOptionsDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(EnabledCustomDataDirectoryPaths),
-                    new DependencyGraphNode<string>(nameof(CustomDataDirectoryNames))
+        private static readonly DependencyGraph<string, CharacterOptions> s_CharacterOptionsDependencyGraph =
+            new DependencyGraph<string, CharacterOptions>(
+                new DependencyGraphNode<string, CharacterOptions>(nameof(EnabledCustomDataDirectoryPaths),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(CustomDataDirectoryNames))
                 ),
-                new DependencyGraphNode<string>(nameof(EnabledCustomDataDirectoryInfos),
-                    new DependencyGraphNode<string>(nameof(CustomDataDirectoryNames))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(EnabledCustomDataDirectoryInfos),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(CustomDataDirectoryNames))
                 ),
-                new DependencyGraphNode<string>(nameof(MysAdeptSecondMAGAttributeEnabled),
-                    new DependencyGraphNode<string>(nameof(MysAdeptAllowPPCareer)),
-                    new DependencyGraphNode<string>(nameof(PrioritySpellsAsAdeptPowers))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptSecondMAGAttributeEnabled),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptAllowPPCareer)),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(PrioritySpellsAsAdeptPowers))
                 ),
-                new DependencyGraphNode<string>(nameof(MaxNuyenDecimals),
-                    new DependencyGraphNode<string>(nameof(NuyenFormat)),
-                    new DependencyGraphNode<string>(nameof(MinNuyenDecimals))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(MaxNuyenDecimals),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(NuyenFormat)),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(MinNuyenDecimals))
                 ),
-                new DependencyGraphNode<string>(nameof(MinNuyenDecimals),
-                    new DependencyGraphNode<string>(nameof(NuyenFormat)),
-                    new DependencyGraphNode<string>(nameof(MaxNuyenDecimals))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(MinNuyenDecimals),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(NuyenFormat)),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(MaxNuyenDecimals))
                 ),
-                new DependencyGraphNode<string>(nameof(EssenceDecimals),
-                    new DependencyGraphNode<string>(nameof(EssenceFormat))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(EssenceDecimals),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(EssenceFormat))
                 ),
-                new DependencyGraphNode<string>(nameof(BuiltInOption),
-                    new DependencyGraphNode<string>(nameof(SourceId))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(BuiltInOption),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(SourceId))
                 ),
-                new DependencyGraphNode<string>(nameof(BuildMethodUsesPriorityTables),
-                    new DependencyGraphNode<string>(nameof(BuildMethod))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethodUsesPriorityTables),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethod))
                 ),
-                new DependencyGraphNode<string>(nameof(BuildMethodIsPriority),
-                    new DependencyGraphNode<string>(nameof(BuildMethod))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethodIsPriority),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethod))
                 ),
-                new DependencyGraphNode<string>(nameof(BuildMethodIsSumtoTen),
-                    new DependencyGraphNode<string>(nameof(BuildMethod))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethodIsSumtoTen),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethod))
                 ),
-                new DependencyGraphNode<string>(nameof(BuildMethodIsLifeModule),
-                    new DependencyGraphNode<string>(nameof(BuildMethod))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethodIsLifeModule),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(BuildMethod))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplayName),
-                    new DependencyGraphNode<string>(nameof(Name)),
-                    new DependencyGraphNode<string>(nameof(SourceId))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(DisplayName),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(Name)),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(SourceId))
                 ),
-                new DependencyGraphNode<string>(nameof(RedlinerExcludesSkull),
-                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludesSkull),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludes))
                 ),
-                new DependencyGraphNode<string>(nameof(RedlinerExcludesTorso),
-                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludesTorso),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludes))
                 ),
-                new DependencyGraphNode<string>(nameof(RedlinerExcludesArms),
-                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludesArms),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludes))
                 ),
-                new DependencyGraphNode<string>(nameof(RedlinerExcludesLegs),
-                    new DependencyGraphNode<string>(nameof(RedlinerExcludes))
+                new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludesLegs),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(RedlinerExcludes))
                 )
             );
 
@@ -389,10 +389,10 @@ namespace Chummer
             if (_dicCustomDataDirectoryNames.Any(x => x.Value.Item2 && !objOther.CustomDataDirectoryNames.ContainsKey(x.Key)))
                 return false;
 
-            if (_lstBooks.Union(objOther._lstBooks).Count() != _lstBooks.Count)
+            if (!_lstBooks.SequenceEqual(objOther._lstBooks))
                 return false;
 
-            if (BannedWareGrades.Union(objOther.BannedWareGrades).Count() != BannedWareGrades.Count)
+            if (!BannedWareGrades.SequenceEqual(objOther.BannedWareGrades))
                 return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
@@ -2039,7 +2039,7 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public ICollection<string> Books => _lstBooks;
+        public HashSet<string> Books => _lstBooks;
 
         /// <summary>
         /// File name of the option (if it is not a built-in one).

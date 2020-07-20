@@ -71,7 +71,7 @@ namespace Chummer
             this.lblVehicleSeatsLabel = new System.Windows.Forms.Label();
             this.lblVehicleSeats = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -80,7 +80,7 @@ namespace Chummer
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudUsedVehicleDiscount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.flpDiscount.SuspendLayout();
@@ -92,7 +92,7 @@ namespace Chummer
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.txtSearch, 3);
+            this.tlpMain.SetColumnSpan(this.txtSearch, 3);
             this.txtSearch.Location = new System.Drawing.Point(362, 3);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(241, 20);
@@ -394,8 +394,8 @@ namespace Chummer
             // lblSource
             // 
             this.lblSource.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblSource, 2);
-            this.lblSource.Location = new System.Drawing.Point(362, 259);
+            this.tlpMain.SetColumnSpan(this.lblSource, 2);
+            this.lblSource.Location = new System.Drawing.Point(362, 257);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -407,7 +407,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(312, 259);
+            this.lblSourceLabel.Location = new System.Drawing.Point(312, 257);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -417,12 +417,9 @@ namespace Chummer
             // 
             // chkFreeItem
             // 
-            this.chkFreeItem.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeItem.AutoSize = true;
-            this.chkFreeItem.Location = new System.Drawing.Point(3, 4);
-            this.chkFreeItem.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkFreeItem.Location = new System.Drawing.Point(3, 3);
             this.chkFreeItem.Name = "chkFreeItem";
             this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
             this.chkFreeItem.TabIndex = 26;
@@ -433,14 +430,11 @@ namespace Chummer
             // 
             // chkUsedVehicle
             // 
-            this.chkUsedVehicle.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkUsedVehicle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUsedVehicle.AutoSize = true;
             this.chkUsedVehicle.Location = new System.Drawing.Point(3, 4);
-            this.chkUsedVehicle.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUsedVehicle.Name = "chkUsedVehicle";
-            this.chkUsedVehicle.Size = new System.Drawing.Size(89, 18);
+            this.chkUsedVehicle.Size = new System.Drawing.Size(89, 17);
             this.chkUsedVehicle.TabIndex = 22;
             this.chkUsedVehicle.Tag = "Checkbox_SelectVehicle_UsedVehicle";
             this.chkUsedVehicle.Text = "Used Vehicle";
@@ -524,7 +518,7 @@ namespace Chummer
             // 
             this.lblMarkupLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(310, 233);
+            this.lblMarkupLabel.Location = new System.Drawing.Point(310, 231);
             this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
@@ -566,12 +560,9 @@ namespace Chummer
             // 
             // chkBlackMarketDiscount
             // 
-            this.chkBlackMarketDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkBlackMarketDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBlackMarketDiscount.AutoSize = true;
-            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 4);
-            this.chkBlackMarketDiscount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 3);
             this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
             this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
             this.chkBlackMarketDiscount.TabIndex = 38;
@@ -605,10 +596,10 @@ namespace Chummer
             // 
             // chkHideOverAvailLimit
             // 
+            this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkHideOverAvailLimit, 4);
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 282);
-            this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tlpMain.SetColumnSpan(this.chkHideOverAvailLimit, 4);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 279);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 65;
@@ -617,78 +608,77 @@ namespace Chummer
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.chkHideOverAvailLimit, 1, 11);
-            this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleHandlingLabel, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 10);
-            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 10);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleSeats, 4, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblMarkupLabel, 1, 9);
-            this.tableLayoutPanel1.Controls.Add(this.lblTest, 4, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleHandling, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblTestLabel, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleSeatsLabel, 3, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleSpeedLabel, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleSpeed, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleBodyLabel, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleBody, 2, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleAccelLabel, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleAccel, 4, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehiclePilotLabel, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleCost, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleArmorLabel, 3, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleCostLabel, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleArmor, 4, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleSensorLabel, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleSensor, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleAvailLabel, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehicleAvail, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblVehiclePilot, 4, 2);
-            this.tableLayoutPanel1.Controls.Add(this.chkShowOnlyAffordItems, 1, 12);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 13);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpDiscount, 1, 8);
-            this.tableLayoutPanel1.Controls.Add(this.flpMarkup, 2, 9);
-            this.tableLayoutPanel1.Controls.Add(this.flpCheckBoxes, 1, 7);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 14;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
-            this.tableLayoutPanel1.TabIndex = 66;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 5;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 11);
+            this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
+            this.tlpMain.Controls.Add(this.lblVehicleHandlingLabel, 1, 1);
+            this.tlpMain.Controls.Add(this.lblSearchLabel, 1, 0);
+            this.tlpMain.Controls.Add(this.lblSource, 2, 10);
+            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 10);
+            this.tlpMain.Controls.Add(this.lblVehicleSeats, 4, 4);
+            this.tlpMain.Controls.Add(this.lblMarkupLabel, 1, 9);
+            this.tlpMain.Controls.Add(this.lblTest, 4, 5);
+            this.tlpMain.Controls.Add(this.lblVehicleHandling, 2, 1);
+            this.tlpMain.Controls.Add(this.lblTestLabel, 3, 5);
+            this.tlpMain.Controls.Add(this.lblVehicleSeatsLabel, 3, 4);
+            this.tlpMain.Controls.Add(this.lblVehicleSpeedLabel, 1, 2);
+            this.tlpMain.Controls.Add(this.lblVehicleSpeed, 2, 2);
+            this.tlpMain.Controls.Add(this.lblVehicleBodyLabel, 1, 3);
+            this.tlpMain.Controls.Add(this.lblVehicleBody, 2, 3);
+            this.tlpMain.Controls.Add(this.lblVehicleAccelLabel, 3, 1);
+            this.tlpMain.Controls.Add(this.lblVehicleAccel, 4, 1);
+            this.tlpMain.Controls.Add(this.lblVehiclePilotLabel, 3, 2);
+            this.tlpMain.Controls.Add(this.lblVehicleCost, 2, 6);
+            this.tlpMain.Controls.Add(this.lblVehicleArmorLabel, 3, 3);
+            this.tlpMain.Controls.Add(this.lblVehicleCostLabel, 1, 6);
+            this.tlpMain.Controls.Add(this.lblVehicleArmor, 4, 3);
+            this.tlpMain.Controls.Add(this.lblVehicleSensorLabel, 1, 4);
+            this.tlpMain.Controls.Add(this.lblVehicleSensor, 2, 4);
+            this.tlpMain.Controls.Add(this.lblVehicleAvailLabel, 1, 5);
+            this.tlpMain.Controls.Add(this.lblVehicleAvail, 2, 5);
+            this.tlpMain.Controls.Add(this.lblVehiclePilot, 4, 2);
+            this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 12);
+            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 1, 13);
+            this.tlpMain.Controls.Add(this.tableLayoutPanel2, 0, 0);
+            this.tlpMain.Controls.Add(this.flpDiscount, 1, 8);
+            this.tlpMain.Controls.Add(this.flpMarkup, 2, 9);
+            this.tlpMain.Controls.Add(this.flpCheckBoxes, 1, 7);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 14;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(606, 423);
+            this.tlpMain.TabIndex = 66;
             // 
             // chkShowOnlyAffordItems
             // 
+            this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkShowOnlyAffordItems, 4);
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 307);
-            this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tlpMain.SetColumnSpan(this.chkShowOnlyAffordItems, 4);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 302);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
             this.chkShowOnlyAffordItems.TabIndex = 67;
@@ -701,7 +691,7 @@ namespace Chummer
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 4);
+            this.tlpMain.SetColumnSpan(this.flowLayoutPanel1, 4);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
@@ -724,7 +714,7 @@ namespace Chummer
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel2, 14);
+            this.tlpMain.SetRowSpan(this.tableLayoutPanel2, 14);
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.Size = new System.Drawing.Size(301, 423);
@@ -734,12 +724,12 @@ namespace Chummer
             // 
             this.flpDiscount.AutoSize = true;
             this.flpDiscount.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.SetColumnSpan(this.flpDiscount, 4);
+            this.tlpMain.SetColumnSpan(this.flpDiscount, 4);
             this.flpDiscount.Controls.Add(this.chkUsedVehicle);
             this.flpDiscount.Controls.Add(this.lblUsedVehicleDiscountLabel);
             this.flpDiscount.Controls.Add(this.nudUsedVehicleDiscount);
             this.flpDiscount.Controls.Add(this.lblUsedVehicleDiscountPercentLabel);
-            this.flpDiscount.Location = new System.Drawing.Point(301, 201);
+            this.flpDiscount.Location = new System.Drawing.Point(301, 199);
             this.flpDiscount.Margin = new System.Windows.Forms.Padding(0);
             this.flpDiscount.Name = "flpDiscount";
             this.flpDiscount.Size = new System.Drawing.Size(280, 26);
@@ -749,10 +739,10 @@ namespace Chummer
             // 
             this.flpMarkup.AutoSize = true;
             this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.SetColumnSpan(this.flpMarkup, 3);
+            this.tlpMain.SetColumnSpan(this.flpMarkup, 3);
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Location = new System.Drawing.Point(359, 227);
+            this.flpMarkup.Location = new System.Drawing.Point(359, 225);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
             this.flpMarkup.Size = new System.Drawing.Size(127, 26);
@@ -761,13 +751,13 @@ namespace Chummer
             // flpCheckBoxes
             // 
             this.flpCheckBoxes.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flpCheckBoxes, 4);
+            this.tlpMain.SetColumnSpan(this.flpCheckBoxes, 4);
             this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
             this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
             this.flpCheckBoxes.Location = new System.Drawing.Point(301, 176);
             this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpCheckBoxes.Name = "flpCheckBoxes";
-            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 25);
+            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 23);
             this.flpCheckBoxes.TabIndex = 72;
             // 
             // frmSelectVehicle
@@ -778,7 +768,7 @@ namespace Chummer
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(640, 10000);
@@ -792,8 +782,8 @@ namespace Chummer
             this.Load += new System.EventHandler(this.frmSelectVehicle_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudUsedVehicleDiscount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -853,7 +843,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleSeatsLabel;
         private System.Windows.Forms.Label lblVehicleSeats;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;

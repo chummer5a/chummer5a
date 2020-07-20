@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Attributes;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -68,6 +69,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
+        private XmlNode _nodFlechetteWeaponBonus;
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
@@ -97,6 +99,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnCanSwapAttributes;
         private int _intSortOrder;
         private bool _blnStolen;
+        private bool _blnIsFlechetteAmmo;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -218,6 +221,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
             objXmlGear.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            objXmlGear.TryGetBoolFieldQuickly("isflechetteammo", ref _blnIsFlechetteAmmo);
 
             // Check for a Custom name
             if (_strName == "Custom Item")
@@ -433,6 +437,7 @@ namespace Chummer.Backend.Equipment
 
             // If the item grants a Weapon bonus (Ammunition), just fill the WeaponBonus XmlNode.
             _nodWeaponBonus = objXmlGear["weaponbonus"];
+            _nodFlechetteWeaponBonus = objXmlGear["flechetteweaponbonus"];
 
             if (!objXmlGear.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
             {
@@ -748,6 +753,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objGear.Bonus;
             _nodWirelessBonus = objGear.WirelessBonus;
             _nodWeaponBonus = objGear.WeaponBonus;
+            _nodFlechetteWeaponBonus = objGear.FlechetteWeaponBonus;
             if (!Guid.TryParse(objGear.WeaponID, out _guiWeaponID))
                 _guiWeaponID = Guid.Empty;
             _strNotes = objGear.Notes;
@@ -756,6 +762,7 @@ namespace Chummer.Backend.Equipment
             _intChildCostMultiplier = objGear.ChildCostMultiplier;
             _strGearName = objGear.GearName;
             _strForcedValue = objGear._strForcedValue;
+            _blnIsFlechetteAmmo = objGear._blnIsFlechetteAmmo;
 
             foreach (Gear objGearChild in objGear.Children)
             {
@@ -820,8 +827,13 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
             else
                 objWriter.WriteElementString("weaponbonus", string.Empty);
+            if (!string.IsNullOrEmpty(_nodFlechetteWeaponBonus?.InnerXml))
+                objWriter.WriteRaw("<flechetteweaponbonus>" + _nodFlechetteWeaponBonus.InnerXml + "</flechetteweaponbonus>");
+            else
+                objWriter.WriteElementString("flechetteweaponbonus", string.Empty);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("isflechetteammo", _blnIsFlechetteAmmo.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("canformpersona", _strCanFormPersona);
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("gearname", _strGearName);
@@ -922,9 +934,16 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
             _nodWeaponBonus = objNode["weaponbonus"];
+            _nodFlechetteWeaponBonus = objNode["flechetteweaponbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            if (!objNode.TryGetBoolFieldQuickly("isflechetteammmo", ref _blnIsFlechetteAmmo))
+            {
+                GetNode()?.TryGetBoolFieldQuickly("isflechetteammmo", ref _blnIsFlechetteAmmo);
+                if (_nodFlechetteWeaponBonus == null && _blnIsFlechetteAmmo)
+                    _nodFlechetteWeaponBonus = GetNode()?["flechetteweaponbonus"];
+            }
             bool blnNeedCommlinkLegacyShim = !objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -1278,6 +1297,12 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weaponbonusdamage_english", WeaponBonusDamage(GlobalOptions.DefaultLanguage));
                 objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
             }
+            if (_nodFlechetteWeaponBonus != null)
+            {
+                objWriter.WriteElementString("flechetteweaponbonusdamage", FlechetteWeaponBonusDamage(strLanguageToPrint));
+                objWriter.WriteElementString("flechetteweaponbonusdamage_english", FlechetteWeaponBonusDamage(GlobalOptions.DefaultLanguage));
+                objWriter.WriteElementString("flechetteweaponbonusap", FlechetteWeaponBonusAP);
+            }
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
@@ -1352,6 +1377,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _nodWeaponBonus;
             set => _nodWeaponBonus = value;
+        }
+
+        /// <summary>
+        /// WeaponBonus node from the XML file that is used only by weapons that have flechette codes built in.
+        /// </summary>
+        public XmlNode FlechetteWeaponBonus
+        {
+            get => _nodFlechetteWeaponBonus;
+            set => _nodFlechetteWeaponBonus = value;
         }
 
         /// <summary>
@@ -1677,6 +1711,12 @@ namespace Chummer.Backend.Equipment
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
+        public bool IsFlechetteAmmo
+        {
+            get => _blnIsFlechetteAmmo;
+            set => _blnIsFlechetteAmmo = value;
+        }
+
         /// <summary>
         /// String to determine if gear can form persona or grants persona forming to its parent.
         /// </summary>
@@ -1986,7 +2026,7 @@ namespace Chummer.Backend.Equipment
             set => _strModAttributeArray = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.Cast<IHasMatrixAttributes>().ToList();
+        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.Cast<IHasMatrixAttributes>().ToList();
 
         /// <summary>
         /// Commlink's Limit for how many Programs they can run.
@@ -2066,10 +2106,10 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objDoc = _objCharacter.LoadData("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
-                _objCachedMyXmlNode = !string.IsNullOrWhiteSpace(strName)
-                    ? objDoc.SelectSingleNode("/chummer/gears/gear[(name = \"" + strName + "\" and category = \"" + strCategory + "\")]")
-                    : objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant()
-                                              + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
+                _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
+                    ? "/chummer/gears/gear[(name = \"" + strName + "\" and category = \"" + strCategory + "\")]"
+                    : "/chummer/gears/gear[(id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant()
+                      + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
@@ -2124,13 +2164,17 @@ namespace Chummer.Backend.Equipment
                 objAvail.CheapReplace(strAvail, "MinRating", () => MinRatingValue.ToString(GlobalOptions.InvariantCultureInfo));
                 objAvail.CheapReplace(strAvail, "Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 objAvail.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                // Keeping enumerations separate reduces heap allocations
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                 {
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
                 }
-
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                {
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                }
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
@@ -2341,13 +2385,17 @@ namespace Chummer.Backend.Equipment
                 objCost.Replace("Parent Rating", (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Parent Cost", decParentCost.ToString(GlobalOptions.InvariantCultureInfo));
-
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                // Keeping enumerations separate reduces heap allocations
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                 {
                     objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                     objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
                 }
-
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                {
+                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
                 decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
@@ -2574,32 +2622,29 @@ namespace Chummer.Backend.Equipment
         {
             if (_nodWeaponBonus == null)
                 return string.Empty;
-            else
+            string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            // Use the damagereplace value if applicable.
+            if (strReturn == "0")
             {
-                string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
-                // Use the damagereplace value if applicable.
-                if (strReturn == "0")
-                {
-                    // Use the damage bonus if available, otherwise use 0.
-                    strReturn = _nodWeaponBonus["damage"]?.InnerText ?? "0";
+                // Use the damage bonus if available, otherwise use 0.
+                strReturn = _nodWeaponBonus["damage"]?.InnerText ?? "0";
 
-                    // Attach the type if applicable.
-                    strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                // Attach the type if applicable.
+                strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
-                    // If this does not start with "-", add a "+" to the string.
-                    if (!strReturn.StartsWith('-'))
-                        strReturn = '+' + strReturn;
-                }
-
-                // Translate the Avail string.
-                if (strLanguage != GlobalOptions.DefaultLanguage)
-                {
-                    strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                        .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
-                }
-
-                return strReturn;
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
             }
+
+            // Translate the Avail string.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
+                strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+            }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -2611,18 +2656,15 @@ namespace Chummer.Backend.Equipment
             {
                 if (_nodWeaponBonus == null)
                     return string.Empty;
-                else
-                {
-                    // Use the apreplace value if applicable.
-                    // Use the ap bonus if available, otherwise use 0.
-                    string strReturn = _nodWeaponBonus["apreplace"]?.InnerText ?? _nodWeaponBonus["ap"]?.InnerText ?? "0";
+                // Use the apreplace value if applicable.
+                // Use the ap bonus if available, otherwise use 0.
+                string strReturn = _nodWeaponBonus["apreplace"]?.InnerText ?? _nodWeaponBonus["ap"]?.InnerText ?? "0";
 
-                    // If this does not start with "-", add a "+" to the string.
-                    if (!strReturn.StartsWith('-'))
-                        strReturn = '+' + strReturn;
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
 
-                    return strReturn;
-                }
+                return strReturn;
             }
         }
 
@@ -2630,6 +2672,64 @@ namespace Chummer.Backend.Equipment
         /// Weapon Bonus Range.
         /// </summary>
         public int WeaponBonusRange => Convert.ToInt32(_nodWeaponBonus?["rangebonus"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+
+        /// <summary>
+        /// Weapon Bonus Damage.
+        /// </summary>
+        public string FlechetteWeaponBonusDamage(string strLanguage)
+        {
+            if (_nodFlechetteWeaponBonus == null)
+                return string.Empty;
+            string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            // Use the damagereplace value if applicable.
+            if (strReturn == "0")
+            {
+                // Use the damage bonus if available, otherwise use 0.
+                strReturn = _nodFlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+
+                // Attach the type if applicable.
+                strReturn += _nodFlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
+            }
+
+            // Translate the Avail string.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
+                strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Weapon Bonus AP.
+        /// </summary>
+        public string FlechetteWeaponBonusAP
+        {
+            get
+            {
+                if (_nodFlechetteWeaponBonus == null)
+                    return string.Empty;
+                // Use the apreplace value if applicable.
+                // Use the ap bonus if available, otherwise use 0.
+                string strReturn = _nodFlechetteWeaponBonus["apreplace"]?.InnerText ?? _nodFlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus Range.
+        /// </summary>
+        public int FlechetteWeaponBonusRange => Convert.ToInt32(_nodFlechetteWeaponBonus?["rangebonus"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 
 
         /// <summary>
@@ -2960,7 +3060,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Collection of TreeNodes to update when a relevant property is changed
         /// </summary>
-        public ICollection<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
+        public HashSet<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
 
         /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.
@@ -3382,25 +3482,25 @@ namespace Chummer.Backend.Equipment
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string> GearDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
-                            new DependencyGraphNode<string>(nameof(Name))
+        private static readonly DependencyGraph<string, Gear> GearDependencyGraph =
+            new DependencyGraph<string, Gear>(
+                new DependencyGraphNode<string, Gear>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Gear>(nameof(DisplayName),
+                        new DependencyGraphNode<string, Gear>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string, Gear>(nameof(Name))
                         ),
-                        new DependencyGraphNode<string>(nameof(Quantity)),
-                        new DependencyGraphNode<string>(nameof(Rating)),
-                        new DependencyGraphNode<string>(nameof(Extra)),
-                        new DependencyGraphNode<string>(nameof(GearName))
+                        new DependencyGraphNode<string, Gear>(nameof(Quantity)),
+                        new DependencyGraphNode<string, Gear>(nameof(Rating)),
+                        new DependencyGraphNode<string, Gear>(nameof(Extra)),
+                        new DependencyGraphNode<string, Gear>(nameof(GearName))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(CurrentDisplayNameShort),
-                    new DependencyGraphNode<string>(nameof(DisplayNameShort))
+                new DependencyGraphNode<string, Gear>(nameof(CurrentDisplayNameShort),
+                    new DependencyGraphNode<string, Gear>(nameof(DisplayNameShort))
                 ),
-                new DependencyGraphNode<string>(nameof(PreferredColor),
-                    new DependencyGraphNode<string>(nameof(Notes)),
-                    new DependencyGraphNode<string>(nameof(ParentID))
+                new DependencyGraphNode<string, Gear>(nameof(PreferredColor),
+                    new DependencyGraphNode<string, Gear>(nameof(Notes)),
+                    new DependencyGraphNode<string, Gear>(nameof(ParentID))
                 )
             );
 
@@ -3495,14 +3595,14 @@ namespace Chummer.Backend.Equipment
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = GearDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = GearDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in GearDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in GearDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

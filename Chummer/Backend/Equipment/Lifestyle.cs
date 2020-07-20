@@ -774,7 +774,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.ToList().Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole"))
+                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole").ToList())
                     {
                         LifestyleQualities.Remove(objQuality);
                     }
@@ -1294,49 +1294,49 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        private static readonly DependencyGraph<string> LifestyleDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(DisplayTotalMonthlyCost),
-                    new DependencyGraphNode<string>(nameof(TotalCost),
-                        new DependencyGraphNode<string>(nameof(TotalMonthlyCost),
-                            new DependencyGraphNode<string>(nameof(FormattedArea),
-                                new DependencyGraphNode<string>(nameof(AreaDelta),
-                                    new DependencyGraphNode<string>(nameof(TotalArea),
-                                        new DependencyGraphNode<string>(nameof(TotalAreaMaximum),
-                                            new DependencyGraphNode<string>(nameof(Area),
-                                                new DependencyGraphNode<string>(nameof(BaseArea)
+        private static readonly DependencyGraph<string, Lifestyle> LifestyleDependencyGraph =
+            new DependencyGraph<string, Lifestyle>(
+                new DependencyGraphNode<string, Lifestyle>(nameof(DisplayTotalMonthlyCost),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedArea),
+                                new DependencyGraphNode<string, Lifestyle>(nameof(AreaDelta),
+                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalArea),
+                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum),
+                                            new DependencyGraphNode<string, Lifestyle>(nameof(Area),
+                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseArea)
                                                 )))))),
-                            new DependencyGraphNode<string>(nameof(FormattedComforts),
-                                new DependencyGraphNode<string>(nameof(ComfortsDelta),
-                                    new DependencyGraphNode<string>(nameof(TotalComforts),
-                                        new DependencyGraphNode<string>(nameof(TotalComfortsMaximum),
-                                            new DependencyGraphNode<string>(nameof(Comforts),
-                                                new DependencyGraphNode<string>(nameof(BaseComforts)
+                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedComforts),
+                                new DependencyGraphNode<string, Lifestyle>(nameof(ComfortsDelta),
+                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalComforts),
+                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalComfortsMaximum),
+                                            new DependencyGraphNode<string, Lifestyle>(nameof(Comforts),
+                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseComforts)
                                                 )))))),
-                            new DependencyGraphNode<string>(nameof(FormattedSecurity),
-                                new DependencyGraphNode<string>(nameof(SecurityDelta),
-                                    new DependencyGraphNode<string>(nameof(TotalSecurity),
-                                        new DependencyGraphNode<string>(nameof(TotalSecurityMaximum),
-                                            new DependencyGraphNode<string>(nameof(Security),
-                                                new DependencyGraphNode<string>(nameof(BaseSecurity)
+                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedSecurity),
+                                new DependencyGraphNode<string, Lifestyle>(nameof(SecurityDelta),
+                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurity),
+                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurityMaximum),
+                                            new DependencyGraphNode<string, Lifestyle>(nameof(Security),
+                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseSecurity)
                                                 )))))),
-                            new DependencyGraphNode<string>(nameof(Increments)),
-                            new DependencyGraphNode<string>(nameof(CostForArea)),
-                            new DependencyGraphNode<string>(nameof(CostForComforts)),
-                            new DependencyGraphNode<string>(nameof(CostForSecurity))
+                            new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity))
                         ))),
-                new DependencyGraphNode<string>(nameof(TotalLP),
-                    new DependencyGraphNode<string>(nameof(Comforts)),
-                    new DependencyGraphNode<string>(nameof(Area)),
-                    new DependencyGraphNode<string>(nameof(Security)),
-                    new DependencyGraphNode<string>(nameof(Roommates)),
-                    new DependencyGraphNode<string>(nameof(BonusLP)),
-                    new DependencyGraphNode<string>(nameof(LifestyleQualities))
+                new DependencyGraphNode<string, Lifestyle>(nameof(TotalLP),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BonusLP)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
                         ),
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(CustomName)),
-                        new DependencyGraphNode<string>(nameof(DisplayNameShort)))
+                new DependencyGraphNode<string, Lifestyle>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(DisplayName),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CustomName)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(DisplayNameShort)))
                     ));
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -1353,10 +1353,10 @@ namespace Chummer.Backend.Equipment
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = LifestyleDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in LifestyleDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

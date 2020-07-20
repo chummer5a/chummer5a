@@ -696,10 +696,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -713,20 +713,20 @@ namespace Chummer
             }
         }
 
-        private static readonly DependencyGraph<string> SpiritDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(NoLinkedCharacter),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
+        private static readonly DependencyGraph<string, Spirit> SpiritDependencyGraph =
+            new DependencyGraph<string, Spirit>(
+                new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
+                    new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string>(nameof(CritterName),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Spirit>(nameof(CritterName),
+                    new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string>(nameof(MainMugshot),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter)),
-                    new DependencyGraphNode<string>(nameof(Mugshots),
-                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Spirit>(nameof(MainMugshot),
+                    new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter)),
+                    new DependencyGraphNode<string, Spirit>(nameof(Mugshots),
+                        new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                     ),
-                    new DependencyGraphNode<string>(nameof(MainMugshotIndex))
+                    new DependencyGraphNode<string, Spirit>(nameof(MainMugshotIndex))
                 )
             );
 
@@ -837,7 +837,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public IList<Image> Mugshots
+        public List<Image> Mugshots
         {
             get
             {

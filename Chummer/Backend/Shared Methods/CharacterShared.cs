@@ -34,7 +34,6 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
@@ -90,7 +89,7 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms.
         /// </summary>
-        protected struct TransportWrapper : IEquatable<TransportWrapper>
+        protected readonly struct TransportWrapper : IEquatable<TransportWrapper>
         {
             public Control Control { get; }
 

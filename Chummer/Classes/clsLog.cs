@@ -417,7 +417,7 @@ namespace Chummer
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
 
-            StringBuilder objTimeStamper = new StringBuilder(loglevel.ToString() + "\t");
+            StringBuilder objTimeStamper = new StringBuilder(loglevel + "\t");
             string[] classPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             objTimeStamper.Append(classPath[classPath.Length - 1]);
             objTimeStamper.Append('.');

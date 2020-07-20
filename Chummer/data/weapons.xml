@@ -17256,7 +17256,10 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">0</conceal>
+          <OR>
+            <conceal operation="lessthanequals">0</conceal>
+            <category operation="contains">Pistol</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
@@ -17278,7 +17281,10 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="greaterthan">0</conceal>
+          <OR NOT="">
+            <conceal operation="lessthanequals">0</conceal>
+            <category operation="contains">Pistol</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>

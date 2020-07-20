@@ -31,7 +31,6 @@ using Application = System.Windows.Forms.Application;
 using DataFormats = System.Windows.Forms.DataFormats;
 using DragDropEffects = System.Windows.Forms.DragDropEffects;
 using DragEventArgs = System.Windows.Forms.DragEventArgs;
-using MessageBox = System.Windows.Forms.MessageBox;
 using Path = System.IO.Path;
 using Size = System.Drawing.Size;
 using System.Threading.Tasks;
@@ -1254,7 +1253,7 @@ namespace Chummer
         /// </summary>
         public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
         {
-            OpenCharacterList(new Character[] { objCharacter }, blnIncludeInMRU);
+            OpenCharacterList(new[] { objCharacter }, blnIncludeInMRU);
         }
 
         /// <summary>

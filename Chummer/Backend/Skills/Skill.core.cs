@@ -270,7 +270,7 @@ namespace Chummer.Backend.Skills
             return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value);
         }
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false)
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExistAfterFirst = false)
         {
             string strNameToUse = Name;
             if (!string.IsNullOrWhiteSpace(strNameToUse))
@@ -290,32 +290,60 @@ namespace Chummer.Backend.Skills
                         case Improvement.ImprovementType.SwapSkillSpecAttribute:
                         case Improvement.ImprovementType.SkillDisable:
                             if ((objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strNameToUse))
+                            {
                                 yield return objImprovement;
+                                if (blnExistAfterFirst)
+                                    yield break;
+                            }
                             break;
                         case Improvement.ImprovementType.SkillGroup:
                         case Improvement.ImprovementType.SkillGroupDisable:
                             if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
+                            {
                                 yield return objImprovement;
+                                if (blnExistAfterFirst)
+                                    yield break;
+                            }
                             break;
                         case Improvement.ImprovementType.SkillCategory:
                             if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                            {
                                 yield return objImprovement;
+                                if (blnExistAfterFirst)
+                                    yield break;
+                            }
                             break;
                         case Improvement.ImprovementType.SkillAttribute:
                             if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                            {
                                 yield return objImprovement;
+                                if (blnExistAfterFirst)
+                                    yield break;
+                            }
                             break;
                         case Improvement.ImprovementType.SkillLinkedAttribute:
                             if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(strNameToUse))
+                            {
                                 yield return objImprovement;
+                                if (blnExistAfterFirst)
+                                    yield break;
+                            }
                             break;
                         case Improvement.ImprovementType.BlockSkillDefault:
                             if (objImprovement.ImprovedName == SkillGroup)
+                            {
                                 yield return objImprovement;
+                                if (blnExistAfterFirst)
+                                    yield break;
+                            }
                             break;
                         case Improvement.ImprovementType.EnhancedArticulation:
                             if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
+                            {
                                 yield return objImprovement;
+                                if (blnExistAfterFirst)
+                                    yield break;
+                            }
                             break;
                     }
                 }

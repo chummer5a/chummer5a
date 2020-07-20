@@ -34,9 +34,9 @@ namespace Chummer
             this.lblDescription = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.chkDoNotAffectMetatypeMaximum = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,7 +59,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAttribute.FormattingEnabled = true;
-            this.cboAttribute.Location = new System.Drawing.Point(3, 30);
+            this.cboAttribute.Location = new System.Drawing.Point(3, 32);
             this.cboAttribute.Name = "cboAttribute";
             this.cboAttribute.Size = new System.Drawing.Size(320, 21);
             this.cboAttribute.TabIndex = 1;
@@ -91,41 +91,37 @@ namespace Chummer
             // 
             // chkDoNotAffectMetatypeMaximum
             // 
-            this.chkDoNotAffectMetatypeMaximum.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkDoNotAffectMetatypeMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDoNotAffectMetatypeMaximum.AutoSize = true;
-            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 58);
-            this.chkDoNotAffectMetatypeMaximum.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 59);
             this.chkDoNotAffectMetatypeMaximum.Name = "chkDoNotAffectMetatypeMaximum";
-            this.chkDoNotAffectMetatypeMaximum.Size = new System.Drawing.Size(320, 17);
+            this.chkDoNotAffectMetatypeMaximum.Size = new System.Drawing.Size(182, 17);
             this.chkDoNotAffectMetatypeMaximum.TabIndex = 2;
             this.chkDoNotAffectMetatypeMaximum.Tag = "Checkbox_DoNotAffectMaximum";
             this.chkDoNotAffectMetatypeMaximum.Text = "Do not affect Metatype Maximum";
             this.chkDoNotAffectMetatypeMaximum.UseVisualStyleBackColor = true;
             this.chkDoNotAffectMetatypeMaximum.Visible = false;
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboAttribute, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkDoNotAffectMetatypeMaximum, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 3);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 108);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 1;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
+            this.tlpMain.Controls.Add(this.cboAttribute, 0, 1);
+            this.tlpMain.Controls.Add(this.chkDoNotAffectMetatypeMaximum, 0, 2);
+            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 0, 3);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 4;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(326, 108);
+            this.tlpMain.TabIndex = 5;
             // 
             // flowLayoutPanel1
             // 
@@ -149,7 +145,7 @@ namespace Chummer
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(344, 126);
             this.ControlBox = false;
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(360, 10000);
@@ -161,8 +157,8 @@ namespace Chummer
             this.Tag = "Title_SelectAttribute";
             this.Text = "Choose an Attribute";
             this.Load += new System.EventHandler(this.frmSelectAttribute_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -177,7 +173,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.CheckBox chkDoNotAffectMetatypeMaximum;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

@@ -299,7 +299,7 @@ namespace Chummer
             set => _strDescriptors = value;
         }
 
-        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.Split(',').AsEnumerable());
+        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.Split(','));
 
         /// <summary>
         /// Translated Descriptors.
@@ -585,9 +585,10 @@ namespace Chummer
             {
                 string strReturn = _strDV;
                 if (!Limited && (!Extended || Name.EndsWith("Extended", StringComparison.Ordinal)) && !RelevantImprovements(o =>
-                        o.ImproveType == Improvement.ImprovementType.DrainValue ||
-                         o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain ||
-                        o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).Any()) return strReturn;
+                        o.ImproveType == Improvement.ImprovementType.DrainValue
+                        || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                        || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
+                    return strReturn;
                 bool force = strReturn.StartsWith('F');
                 string strDV = strReturn.TrimStartOnce('F');
                 //Navigator can't do math on a single value, so inject a mathable value.
@@ -613,9 +614,9 @@ namespace Chummer
                 }
 
                 foreach (var improvement in RelevantImprovements(i =>
-                    i.ImproveType == Improvement.ImprovementType.DrainValue ||
-                    i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain ||
-                    i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                    i.ImproveType == Improvement.ImprovementType.DrainValue
+                    || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                    || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
                     strDV += string.Format(GlobalOptions.CultureInfo, " + {0:0;-0;0}", improvement.Value);
                 if (Limited)
                 {
@@ -781,18 +782,15 @@ namespace Chummer
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Alchemy");
                 }
-                else if (Category == "Enchantments")
+                if (Category == "Enchantments")
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
                 }
-                else if (Category == "Rituals")
+                if (Category == "Rituals")
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
                 }
-                else
-                {
-                    return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
-                }
+                return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
             }
         }
 
@@ -870,7 +868,7 @@ namespace Chummer
 
 
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false)
         {
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
             {
@@ -878,7 +876,11 @@ namespace Chummer
                 {
                     case Improvement.ImprovementType.SpellDicePool:
                         if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == SourceID.ToString())
+                        {
                             yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
+                        }
                         break;
                     case Improvement.ImprovementType.SpellCategory:
                         if (objImprovement.ImprovedName == Category)
@@ -894,19 +896,26 @@ namespace Chummer
                                 if (bestFocus != null)
                                 {
                                     yield return bestFocus;
+                                    if (blnExitAfterFirst)
+                                        yield break;
                                 }
 
                                 break;
                             }
 
                             yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
                         }
-
                         break;
                     case Improvement.ImprovementType.SpellCategoryDamage:
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
+                        {
                             yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
+                        }
                         break;
                     case Improvement.ImprovementType.SpellDescriptorDrain:
                     case Improvement.ImprovementType.SpellDescriptorDamage:
@@ -933,11 +942,17 @@ namespace Chummer
                             if (allow)
                             {
                                 yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
                             }
                         }
                         break;
                     case Improvement.ImprovementType.DrainValue:
+                    {
                         yield return objImprovement;
+                        if (blnExitAfterFirst)
+                            yield break;
+                    }
                         break;
                 }
             }
@@ -950,11 +965,10 @@ namespace Chummer
         {
             var list = _objCharacter.Foci
                 .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).ToList();
-            if (list.Any())
+            if (list.Count > 0)
             {
                 // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                var powerFocusRating = list.Select(x => x.Rating)
-                    .DefaultIfEmpty().Max();
+                var powerFocusRating = list.Select(x => x.Rating).Max();
 
                 // If our focus is higher, add in a partial bonus
                 if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
@@ -972,10 +986,8 @@ namespace Chummer
                 }
                 return powerFocusRating > 0 ? null : objImprovement;
             }
-            else
-            {
-                return objImprovement;
-            }
+
+            return objImprovement;
         }
 
         #endregion

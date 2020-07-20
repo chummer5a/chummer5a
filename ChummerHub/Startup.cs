@@ -27,6 +27,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
@@ -334,28 +335,27 @@ namespace ChummerHub
 
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
-                    options.SwaggerDoc(description.GroupName, new Info
+                    options.SwaggerDoc(description.GroupName, new OpenApiInfo()
                     {
                         Version = description.GroupName,
                         Title = "ChummerHub",
                         Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
-                        TermsOfService = "None",
-                        Contact = new Contact
+                        Contact = new OpenApiContact
                         {
                             Name = "Archon Megalon",
                             Email = "archon.megalon@gmail.com",
                         },
-                        License = new License
+                        License = new OpenApiLicense
                         {
                             Name = "License",
-                            Url = "https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt",
+                            Url = new Uri("https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt"),
 
                         }
 
                     });
                 }
 
-                options.OperationFilter<FileUploadOperation>();
+                //options.OperationFilter<FileUploadOperation>();
 
                 // add a custom operation filter which sets default values
                 //options.OperationFilter<SwaggerDefaultValues>();
@@ -372,14 +372,14 @@ namespace ChummerHub
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
-                options.MapType<FileResult>(() => new Schema
-                {
-                    Type = "file",
-                });
-                options.MapType<FileStreamResult>(() => new Schema
-                {
-                    Type = "file",
-                });
+                //options.MapType<FileResult>(() => new Schema
+                //{
+                //    Type = "file",
+                //});
+                //options.MapType<FileStreamResult>(() => new Schema
+                //{
+                //    Type = "file",
+                //});
 
             });
 

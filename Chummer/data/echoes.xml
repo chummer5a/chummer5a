@@ -261,15 +261,6 @@
       </bonus>
       <limit>3</limit>
     </echo>
-    <echo>
-      <id>f7bd6993-efa4-494c-8c58-e9f0950af7b9</id>
-      <name>Daemon: Cyberadept</name>
-      <source>KC</source>
-      <page>90</page>
-      <bonus>
-          <cyberadeptdaemon>Rating</cyberadeptdaemon>
-      </bonus>
-    </echo>
     <!-- End Region -->
   </echoes>
 </chummer>

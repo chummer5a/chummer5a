@@ -25,7 +25,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
  using Application = System.Windows.Forms.Application;
- using MessageBox = System.Windows.Forms.MessageBox;
 using System.Collections.Generic;
  using System.Threading;
  using NLog;
@@ -272,10 +271,12 @@ namespace Chummer
             }
             if (!blnChummerVersionGotten || LatestVersion == strError)
             {
-                Program.MainForm.ShowMessageBox(this, 
+                Program.MainForm.ShowMessageBox(this,
                     string.IsNullOrEmpty(_strExceptionString)
                         ? LanguageManager.GetString("Warning_Update_CouldNotConnect")
-                        : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Warning_Update_CouldNotConnectException"), _strExceptionString), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        : string.Format(GlobalOptions.CultureInfo,
+                            LanguageManager.GetString("Warning_Update_CouldNotConnectException"), _strExceptionString),
+                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _blnIsConnected = false;
                 e.Cancel = true;
             }

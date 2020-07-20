@@ -191,7 +191,7 @@ namespace Chummer
                 lstFavoritesNodes = new TreeNode[lstFavorites.Count];
             }
 
-            IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
+            List<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             Dictionary<string,string> dicWatch = new Dictionary<string, string>();
             int intWatchFolderCount = 0;
@@ -890,8 +890,12 @@ namespace Chummer
             if (e.Node.Tag != null)
             {
                 string strTag = e.Node.Tag.ToString();
-                e.Node.ContextMenuStrip = CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                                                 && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                if (!String.IsNullOrEmpty(strTag))
+                    e.Node.ContextMenuStrip = CreateContextMenuStrip(
+                        strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                        && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                else
+                    e.Node.ContextMenuStrip = CreateContextMenuStrip(false);
             }
             foreach (var plugin in Program.PluginLoader.MyActivePlugins)
             {

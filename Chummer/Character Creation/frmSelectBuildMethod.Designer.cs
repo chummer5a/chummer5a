@@ -35,8 +35,8 @@ namespace Chummer
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblMaxNuyenLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdEditCharacterOption = new Chummer.ButtonWithToolTip();
@@ -46,28 +46,32 @@ namespace Chummer
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.lblBuildMethodParamLabel = new System.Windows.Forms.Label();
             this.lblBuildMethodParam = new System.Windows.Forms.Label();
-            this.lblQualityKarmaLabel = new System.Windows.Forms.Label();
-            this.lblQualityKarma = new System.Windows.Forms.Label();
             this.lblBooksLabel = new System.Windows.Forms.Label();
             this.lblCustomDataLabel = new System.Windows.Forms.Label();
             this.lblBooks = new System.Windows.Forms.Label();
             this.lblCustomData = new System.Windows.Forms.Label();
             this.lblMaxAvail = new System.Windows.Forms.Label();
             this.lblKarma = new System.Windows.Forms.Label();
+            this.lblQualityKarmaLabel = new System.Windows.Forms.Label();
+            this.lblQualityKarma = new System.Windows.Forms.Label();
             this.lblMaxNuyen = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.cboBuildMethod = new Chummer.ElasticComboBox();
+            this.nudMaxAvail = new System.Windows.Forms.NumericUpDown();
+            this.cboGamePlay = new Chummer.ElasticComboBox();
+            this.lblStartingKarma = new System.Windows.Forms.Label();
+            this.tlpMain.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.tlpSummary.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
             this.SuspendLayout();
             // 
             // chkIgnoreRules
             // 
-            this.chkIgnoreRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkIgnoreRules.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreRules.AutoSize = true;
             this.chkIgnoreRules.CheckAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkIgnoreRules, 2);
-            this.chkIgnoreRules.Location = new System.Drawing.Point(3, 162);
-            this.chkIgnoreRules.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tlpMain.SetColumnSpan(this.chkIgnoreRules, 2);
+            this.chkIgnoreRules.Location = new System.Drawing.Point(3, 400);
             this.chkIgnoreRules.Name = "chkIgnoreRules";
             this.chkIgnoreRules.Size = new System.Drawing.Size(177, 17);
             this.chkIgnoreRules.TabIndex = 5;
@@ -80,10 +84,10 @@ namespace Chummer
             // 
             this.lblMaxAvailLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMaxAvailLabel.AutoSize = true;
-            this.lblMaxAvailLabel.Location = new System.Drawing.Point(45, 56);
+            this.lblMaxAvailLabel.Location = new System.Drawing.Point(43, 56);
             this.lblMaxAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxAvailLabel.Name = "lblMaxAvailLabel";
-            this.lblMaxAvailLabel.Size = new System.Drawing.Size(56, 26);
+            this.lblMaxAvailLabel.Size = new System.Drawing.Size(103, 13);
             this.lblMaxAvailLabel.TabIndex = 3;
             this.lblMaxAvailLabel.Tag = "Label_SelectBP_MaxAvail";
             this.lblMaxAvailLabel.Text = "Maximum Availability";
@@ -92,12 +96,12 @@ namespace Chummer
             // cboCharacterOption
             // 
             this.cboCharacterOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.cboCharacterOption, 2);
+            this.tlpMain.SetColumnSpan(this.cboCharacterOption, 2);
             this.cboCharacterOption.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCharacterOption.FormattingEnabled = true;
             this.cboCharacterOption.Location = new System.Drawing.Point(122, 4);
             this.cboCharacterOption.Name = "cboCharacterOption";
-            this.cboCharacterOption.Size = new System.Drawing.Size(258, 21);
+            this.cboCharacterOption.Size = new System.Drawing.Size(418, 21);
             this.cboCharacterOption.TabIndex = 8;
             this.cboCharacterOption.TooltipText = "";
             this.cboCharacterOption.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
@@ -106,7 +110,7 @@ namespace Chummer
             // 
             this.lblKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaLabel.AutoSize = true;
-            this.lblKarmaLabel.Location = new System.Drawing.Point(25, 31);
+            this.lblKarmaLabel.Location = new System.Drawing.Point(70, 31);
             this.lblKarmaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaLabel.Name = "lblKarmaLabel";
             this.lblKarmaLabel.Size = new System.Drawing.Size(76, 13);
@@ -118,7 +122,7 @@ namespace Chummer
             // lblDescription
             // 
             this.lblDescription.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblDescription, 4);
+            this.tlpMain.SetColumnSpan(this.lblDescription, 4);
             this.lblDescription.Location = new System.Drawing.Point(3, 35);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
@@ -131,7 +135,7 @@ namespace Chummer
             // 
             this.lblMaxNuyenLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMaxNuyenLabel.AutoSize = true;
-            this.lblMaxNuyenLabel.Location = new System.Drawing.Point(215, 62);
+            this.lblMaxNuyenLabel.Location = new System.Drawing.Point(350, 56);
             this.lblMaxNuyenLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxNuyenLabel.Name = "lblMaxNuyenLabel";
             this.lblMaxNuyenLabel.Size = new System.Drawing.Size(94, 13);
@@ -140,48 +144,49 @@ namespace Chummer
             this.lblMaxNuyenLabel.Text = "Nuyen Karma Max";
             this.lblMaxNuyenLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.chkIgnoreRules, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.cboCharacterOption, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cmdEditCharacterOption, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblCharacterOption, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tlpSummary, 0, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 183);
-            this.tableLayoutPanel1.TabIndex = 16;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 4;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.Controls.Add(this.chkIgnoreRules, 0, 6);
+            this.tlpMain.Controls.Add(this.lblDescription, 0, 1);
+            this.tlpMain.Controls.Add(this.flpButtons, 2, 6);
+            this.tlpMain.Controls.Add(this.cboCharacterOption, 1, 0);
+            this.tlpMain.Controls.Add(this.cmdEditCharacterOption, 3, 0);
+            this.tlpMain.Controls.Add(this.lblCharacterOption, 0, 0);
+            this.tlpMain.Controls.Add(this.tlpSummary, 0, 2);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 7;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(606, 423);
+            this.tlpMain.TabIndex = 16;
             // 
-            // flowLayoutPanel1
+            // flpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(287, 157);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel1.TabIndex = 16;
+            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.SetColumnSpan(this.flpButtons, 2);
+            this.flpButtons.Controls.Add(this.cmdOK);
+            this.flpButtons.Controls.Add(this.cmdCancel);
+            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtons.Location = new System.Drawing.Point(447, 397);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(156, 23);
+            this.flpButtons.TabIndex = 16;
             // 
             // cmdOK
             // 
@@ -217,7 +222,7 @@ namespace Chummer
             this.cmdEditCharacterOption.AutoSize = true;
             this.cmdEditCharacterOption.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditCharacterOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdEditCharacterOption.Location = new System.Drawing.Point(386, 3);
+            this.cmdEditCharacterOption.Location = new System.Drawing.Point(546, 3);
             this.cmdEditCharacterOption.Name = "cmdEditCharacterOption";
             this.cmdEditCharacterOption.Size = new System.Drawing.Size(57, 23);
             this.cmdEditCharacterOption.TabIndex = 17;
@@ -243,7 +248,7 @@ namespace Chummer
             this.tlpSummary.AutoSize = true;
             this.tlpSummary.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpSummary.ColumnCount = 4;
-            this.tableLayoutPanel1.SetColumnSpan(this.tlpSummary, 4);
+            this.tlpMain.SetColumnSpan(this.tlpSummary, 4);
             this.tlpSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpSummary.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
@@ -275,14 +280,14 @@ namespace Chummer
             this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSummary.Size = new System.Drawing.Size(446, 100);
+            this.tlpSummary.Size = new System.Drawing.Size(606, 340);
             this.tlpSummary.TabIndex = 19;
             // 
             // lblBuildMethodLabel
             // 
             this.lblBuildMethodLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblBuildMethodLabel.AutoSize = true;
-            this.lblBuildMethodLabel.Location = new System.Drawing.Point(32, 6);
+            this.lblBuildMethodLabel.Location = new System.Drawing.Point(77, 6);
             this.lblBuildMethodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildMethodLabel.Name = "lblBuildMethodLabel";
             this.lblBuildMethodLabel.Size = new System.Drawing.Size(69, 13);
@@ -294,7 +299,7 @@ namespace Chummer
             // 
             this.lblBuildMethod.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblBuildMethod.AutoSize = true;
-            this.lblBuildMethod.Location = new System.Drawing.Point(107, 6);
+            this.lblBuildMethod.Location = new System.Drawing.Point(152, 6);
             this.lblBuildMethod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildMethod.Name = "lblBuildMethod";
             this.lblBuildMethod.Size = new System.Drawing.Size(75, 13);
@@ -305,7 +310,7 @@ namespace Chummer
             // 
             this.lblBuildMethodParamLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblBuildMethodParamLabel.AutoSize = true;
-            this.lblBuildMethodParamLabel.Location = new System.Drawing.Point(247, 6);
+            this.lblBuildMethodParamLabel.Location = new System.Drawing.Point(382, 6);
             this.lblBuildMethodParamLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildMethodParamLabel.Name = "lblBuildMethodParamLabel";
             this.lblBuildMethodParamLabel.Size = new System.Drawing.Size(62, 13);
@@ -317,18 +322,88 @@ namespace Chummer
             // lblBuildMethodParam
             // 
             this.lblBuildMethodParam.AutoSize = true;
-            this.lblBuildMethodParam.Location = new System.Drawing.Point(315, 6);
+            this.lblBuildMethodParam.Location = new System.Drawing.Point(450, 6);
             this.lblBuildMethodParam.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildMethodParam.Name = "lblBuildMethodParam";
             this.lblBuildMethodParam.Size = new System.Drawing.Size(61, 13);
             this.lblBuildMethodParam.TabIndex = 18;
             this.lblBuildMethodParam.Text = "[Parameter]";
             // 
+            // lblBooksLabel
+            // 
+            this.lblBooksLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.lblBooksLabel.AutoSize = true;
+            this.tlpSummary.SetColumnSpan(this.lblBooksLabel, 2);
+            this.lblBooksLabel.Location = new System.Drawing.Point(109, 81);
+            this.lblBooksLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBooksLabel.Name = "lblBooksLabel";
+            this.lblBooksLabel.Size = new System.Drawing.Size(79, 13);
+            this.lblBooksLabel.TabIndex = 24;
+            this.lblBooksLabel.Text = "Enabled Books";
+            // 
+            // lblCustomDataLabel
+            // 
+            this.lblCustomDataLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.lblCustomDataLabel.AutoSize = true;
+            this.tlpSummary.SetColumnSpan(this.lblCustomDataLabel, 2);
+            this.lblCustomDataLabel.Location = new System.Drawing.Point(413, 81);
+            this.lblCustomDataLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCustomDataLabel.Name = "lblCustomDataLabel";
+            this.lblCustomDataLabel.Size = new System.Drawing.Size(68, 13);
+            this.lblCustomDataLabel.TabIndex = 25;
+            this.lblCustomDataLabel.Text = "Custom Data";
+            // 
+            // lblBooks
+            // 
+            this.lblBooks.AutoSize = true;
+            this.tlpSummary.SetColumnSpan(this.lblBooks, 2);
+            this.lblBooks.Location = new System.Drawing.Point(3, 106);
+            this.lblBooks.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBooks.Name = "lblBooks";
+            this.lblBooks.Size = new System.Drawing.Size(43, 13);
+            this.lblBooks.TabIndex = 26;
+            this.lblBooks.Text = "[Books]";
+            // 
+            // lblCustomData
+            // 
+            this.lblCustomData.AutoSize = true;
+            this.tlpSummary.SetColumnSpan(this.lblCustomData, 2);
+            this.lblCustomData.Location = new System.Drawing.Point(301, 106);
+            this.lblCustomData.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCustomData.Name = "lblCustomData";
+            this.lblCustomData.Size = new System.Drawing.Size(110, 13);
+            this.lblCustomData.TabIndex = 27;
+            this.lblCustomData.Text = "[Custom Data Names]";
+            // 
+            // lblMaxAvail
+            // 
+            this.lblMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMaxAvail.AutoSize = true;
+            this.lblMaxAvail.Location = new System.Drawing.Point(152, 56);
+            this.lblMaxAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxAvail.Name = "lblMaxAvail";
+            this.lblMaxAvail.Size = new System.Drawing.Size(36, 13);
+            this.lblMaxAvail.TabIndex = 19;
+            this.lblMaxAvail.Text = "[Avail]";
+            this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarma
+            // 
+            this.lblKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarma.AutoSize = true;
+            this.lblKarma.Location = new System.Drawing.Point(152, 31);
+            this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarma.Name = "lblKarma";
+            this.lblKarma.Size = new System.Drawing.Size(43, 13);
+            this.lblKarma.TabIndex = 21;
+            this.lblKarma.Text = "[Karma]";
+            this.lblKarma.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // lblQualityKarmaLabel
             // 
             this.lblQualityKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblQualityKarmaLabel.AutoSize = true;
-            this.lblQualityKarmaLabel.Location = new System.Drawing.Point(213, 31);
+            this.lblQualityKarmaLabel.Location = new System.Drawing.Point(348, 31);
             this.lblQualityKarmaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblQualityKarmaLabel.Name = "lblQualityKarmaLabel";
             this.lblQualityKarmaLabel.Size = new System.Drawing.Size(96, 13);
@@ -341,88 +416,18 @@ namespace Chummer
             // 
             this.lblQualityKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblQualityKarma.AutoSize = true;
-            this.lblQualityKarma.Location = new System.Drawing.Point(315, 31);
+            this.lblQualityKarma.Location = new System.Drawing.Point(450, 31);
             this.lblQualityKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblQualityKarma.Name = "lblQualityKarma";
             this.lblQualityKarma.Size = new System.Drawing.Size(43, 13);
             this.lblQualityKarma.TabIndex = 23;
             this.lblQualityKarma.Text = "[Karma]";
             // 
-            // lblBooksLabel
-            // 
-            this.lblBooksLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.lblBooksLabel.AutoSize = true;
-            this.tlpSummary.SetColumnSpan(this.lblBooksLabel, 2);
-            this.lblBooksLabel.Location = new System.Drawing.Point(64, 94);
-            this.lblBooksLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBooksLabel.Name = "lblBooksLabel";
-            this.lblBooksLabel.Size = new System.Drawing.Size(79, 13);
-            this.lblBooksLabel.TabIndex = 24;
-            this.lblBooksLabel.Text = "Enabled Books";
-            // 
-            // lblCustomDataLabel
-            // 
-            this.lblCustomDataLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.lblCustomDataLabel.AutoSize = true;
-            this.tlpSummary.SetColumnSpan(this.lblCustomDataLabel, 2);
-            this.lblCustomDataLabel.Location = new System.Drawing.Point(279, 94);
-            this.lblCustomDataLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCustomDataLabel.Name = "lblCustomDataLabel";
-            this.lblCustomDataLabel.Size = new System.Drawing.Size(68, 13);
-            this.lblCustomDataLabel.TabIndex = 25;
-            this.lblCustomDataLabel.Text = "Custom Data";
-            // 
-            // lblBooks
-            // 
-            this.lblBooks.AutoSize = true;
-            this.tlpSummary.SetColumnSpan(this.lblBooks, 2);
-            this.lblBooks.Location = new System.Drawing.Point(3, 119);
-            this.lblBooks.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBooks.Name = "lblBooks";
-            this.lblBooks.Size = new System.Drawing.Size(43, 13);
-            this.lblBooks.TabIndex = 26;
-            this.lblBooks.Text = "[Books]";
-            // 
-            // lblCustomData
-            // 
-            this.lblCustomData.AutoSize = true;
-            this.tlpSummary.SetColumnSpan(this.lblCustomData, 2);
-            this.lblCustomData.Location = new System.Drawing.Point(211, 119);
-            this.lblCustomData.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCustomData.Name = "lblCustomData";
-            this.lblCustomData.Size = new System.Drawing.Size(110, 13);
-            this.lblCustomData.TabIndex = 27;
-            this.lblCustomData.Text = "[Custom Data Names]";
-            // 
-            // lblMaxAvail
-            // 
-            this.lblMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMaxAvail.AutoSize = true;
-            this.lblMaxAvail.Location = new System.Drawing.Point(107, 62);
-            this.lblMaxAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxAvail.Name = "lblMaxAvail";
-            this.lblMaxAvail.Size = new System.Drawing.Size(36, 13);
-            this.lblMaxAvail.TabIndex = 19;
-            this.lblMaxAvail.Text = "[Avail]";
-            this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblKarma
-            // 
-            this.lblKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarma.AutoSize = true;
-            this.lblKarma.Location = new System.Drawing.Point(107, 31);
-            this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarma.Name = "lblKarma";
-            this.lblKarma.Size = new System.Drawing.Size(43, 13);
-            this.lblKarma.TabIndex = 21;
-            this.lblKarma.Text = "[Karma]";
-            this.lblKarma.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblMaxNuyen
             // 
             this.lblMaxNuyen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMaxNuyen.AutoSize = true;
-            this.lblMaxNuyen.Location = new System.Drawing.Point(315, 62);
+            this.lblMaxNuyen.Location = new System.Drawing.Point(450, 56);
             this.lblMaxNuyen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxNuyen.Name = "lblMaxNuyen";
             this.lblMaxNuyen.Size = new System.Drawing.Size(43, 13);
@@ -430,19 +435,47 @@ namespace Chummer
             this.lblMaxNuyen.Text = "[Karma]";
             this.lblMaxNuyen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // cboBuildMethod
+            // 
+            this.cboBuildMethod.Location = new System.Drawing.Point(0, 0);
+            this.cboBuildMethod.Name = "cboBuildMethod";
+            this.cboBuildMethod.Size = new System.Drawing.Size(121, 21);
+            this.cboBuildMethod.TabIndex = 0;
+            this.cboBuildMethod.TooltipText = "";
+            // 
+            // nudMaxAvail
+            // 
+            this.nudMaxAvail.Location = new System.Drawing.Point(0, 0);
+            this.nudMaxAvail.Name = "nudMaxAvail";
+            this.nudMaxAvail.Size = new System.Drawing.Size(120, 20);
+            this.nudMaxAvail.TabIndex = 0;
+            // 
+            // cboGamePlay
+            // 
+            this.cboGamePlay.Location = new System.Drawing.Point(0, 0);
+            this.cboGamePlay.Name = "cboGamePlay";
+            this.cboGamePlay.Size = new System.Drawing.Size(121, 21);
+            this.cboGamePlay.TabIndex = 0;
+            this.cboGamePlay.TooltipText = "";
+            // 
+            // lblStartingKarma
+            // 
+            this.lblStartingKarma.Location = new System.Drawing.Point(0, 0);
+            this.lblStartingKarma.Name = "lblStartingKarma";
+            this.lblStartingKarma.Size = new System.Drawing.Size(100, 23);
+            this.lblStartingKarma.TabIndex = 0;
+            // 
             // frmSelectBuildMethod
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(464, 201);
+            this.ClientSize = new System.Drawing.Size(624, 441);
             this.ControlBox = false;
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(480, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectBuildMethod";
             this.Padding = new System.Windows.Forms.Padding(9);
@@ -451,12 +484,13 @@ namespace Chummer
             this.Tag = "Title_SelectBP";
             this.Text = "Select Build Method";
             this.Load += new System.EventHandler(this.frmSelectBuildMethod_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
             this.tlpSummary.ResumeLayout(false);
             this.tlpSummary.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -469,18 +503,22 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaLabel;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Label lblMaxNuyenLabel;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblBuildMethodParamLabel;
         private ButtonWithToolTip cmdEditCharacterOption;
         private System.Windows.Forms.Label lblCharacterOption;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
+        private ElasticComboBox cboBuildMethod;
         private BufferedTableLayoutPanel tlpSummary;
         private System.Windows.Forms.Label lblBuildMethodLabel;
         private System.Windows.Forms.Label lblBuildMethod;
         private System.Windows.Forms.Label lblBuildMethodParam;
         private System.Windows.Forms.Label lblMaxAvail;
+        private System.Windows.Forms.NumericUpDown nudMaxAvail;
+        private ElasticComboBox cboGamePlay;
+        private System.Windows.Forms.Label lblStartingKarma;
         private System.Windows.Forms.Label lblMaxNuyen;
         private System.Windows.Forms.Label lblKarma;
         private System.Windows.Forms.Label lblQualityKarmaLabel;

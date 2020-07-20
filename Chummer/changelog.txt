@@ -35,6 +35,12 @@ Application Fixes:
 - Chummer no longer crashes when attempting to delete the quality representing that a metatype-given quality was removed at character creation.
 - The metatype selection form for Karma-based character generation options now properly remembers the character's current metatype and metavariant settings.
 - The message displaying conditions that a character has not met for something that they have picked out can now properly handle condition groups.
+- Condition Monitor boxes now load properly if the character being loaded has any of their boxes filled and/or have more than 24 Physical and/or Stun Condition Monitor boxes.
+- Adepts with an adept power that they both have free levels/ranks in and have put PP into manually now get those PPs automatically removed from said power should the adept stop being an adept.
+- Added two new XML node types to gear: isflechetteammo and flechetteweaponbonus. The former node, if its contents are set to True, indicates that the gear in question could be used by a weapon that can only fire flechette ammunition. The latter is a special version of the weaponbonus node that is only applied if the gear is loaded into a weapon that can only fire flechette ammunition, overriding the weaponbonus entry if it does so.
+- Weapons that can only fire flechette ammunition can now properly only be loaded with flechette ammunition. Existing save files where these weapons are loaded with non-flechette ammunition will automatically unload said ammunition.
+- Custom files for character sheets now work properly, though people who do wish to use them are recommended to add entries in every single language found in sheets.xml.
+- The Cyberadept quality now properly automatically restores lost Resonance to Essence at every Submersion instead of needing a separate echo to be taken. Existing characters with these echoes will have the echoes removed upon loading their character, but their cyberadept bonus should be kept and automatically reassigned to the best applicable submersion grades.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -53,6 +59,8 @@ Data Changes:
 - Added content from Krime Katalog.
 - All Assault Cannons now properly have a Concealability modifier of similarly-sized heavy weapons. Some of them previously had Concealability modifiers equal to Assault Rifles.
 - The Telestrian Shamus' X-Ray Sensor Function can no longer be purchased separately. A custom ruleset has been added that restores the old behavior of the X-Ray Sensor Function, letting it be purchased as a regular sensor function.
+- The Hammerli Gemini and other pistols with a base Concealability modifier greater than 0 now get the appropriate Chameleon Coating weapon mod available to them.
+- Stick-n-Shock Flechette Rounds now properly adjust the damage types of weapons that can only fire flechette rounds.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
@@ -81,6 +89,7 @@ Changed/New Strings:
 - Tip_SkillsKnowledgeSkills
 - Skill_NativeLanguageLong
 - Message_NewNativeLanguageSkill
+- Label_CMRecovery
 
 Build 212
 Application Changes:

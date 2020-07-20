@@ -7,7 +7,7 @@ namespace ChummerHub.Models.V1.Examples
 
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample'
-    public class SINnerExample : IExamplesProvider
+    public class SINnerExample : IExamplesProvider<object>
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample'
     {
         /// <summary>
@@ -82,7 +82,7 @@ namespace ChummerHub.Models.V1.Examples
         }
     }
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample'
-    public class SINnerListExample : IExamplesProvider
+    public class SINnerListExample : IExamplesProvider<object>
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerListExample.GetExamples()'

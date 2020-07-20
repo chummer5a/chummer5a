@@ -909,7 +909,7 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
                     {
-                        if (Program.MainForm.ShowMessageBox(this, 
+                        if (Program.MainForm.ShowMessageBox(this,
                             LanguageManager.GetString("Message_ImprovementLoadError"),
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -1590,9 +1590,9 @@ namespace Chummer
                         }
 
                         bool blnDoRefresh = false;
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
                             x => x.SourceType == Improvement.ImprovementSource.Bioware &&
-                                 x.CanRemoveThroughImprovements))
+                                 x.CanRemoveThroughImprovements).ToList())
                         {
                             if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                             {
@@ -1604,8 +1604,7 @@ namespace Chummer
                             {
                                 objCyberware.DeleteCyberware();
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware",
-                                    GlobalOptions.Language);
+                                string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware");
                                 objExpense.Create(0,
                                     strEntry + strBiowareDisabledSource +
                                     objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
@@ -1645,9 +1644,9 @@ namespace Chummer
                         }
 
                         bool blnDoRefresh = false;
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
                             x => x.SourceType == Improvement.ImprovementSource.Cyberware &&
-                                 x.CanRemoveThroughImprovements))
+                                 x.CanRemoveThroughImprovements).ToList())
                         {
                             if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                             {
@@ -1659,8 +1658,7 @@ namespace Chummer
                             {
                                 objCyberware.DeleteCyberware();
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware",
-                                    GlobalOptions.Language);
+                                string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware");
                                 objExpense.Create(0,
                                     strEntry + strCyberwareDisabledSource +
                                     objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
@@ -1745,8 +1743,8 @@ namespace Chummer
                                              LanguageManager.GetString("String_Space");
                         }
 
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
-                            x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements))
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
+                            x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements).ToList())
                         {
                             char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                             if (chrAvail == 'R' || chrAvail == 'F')
@@ -10800,11 +10798,11 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
                 return;
-            List<string> lstAmmoPrefixStrings = new List<string>(objWeapon.AmmoPrefixStrings);
+            HashSet<string> setAmmoPrefixStrings = new HashSet<string>(objWeapon.AmmoPrefixStrings);
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, lstAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, setAmmoPrefixStrings);
             }
             while (blnAddAgain);
         }
@@ -12789,34 +12787,44 @@ namespace Chummer
         private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
         {
             pnlConditionMonitorPanel.SuspendLayout();
-            CheckBox currentBox = null;
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
                 List<CheckBox> lstCheckBoxes = pnlConditionMonitorPanel.Controls.OfType<CheckBox>().ToList();
                 if (lstCheckBoxes.Count < intConditionMax + intOverflow)
                 {
-                    int max = 0;
-                    if (lstCheckBoxes.Count <= 0)
+                    int intMax = 0;
+                    CheckBox objMaxCheckBox = null;
+                    foreach (CheckBox objLoopCheckBox in lstCheckBoxes)
                     {
-                        max = lstCheckBoxes.Max(x => Convert.ToInt32(x.Tag, GlobalOptions.InvariantCultureInfo));
+                        int intLoop = Convert.ToInt32(objLoopCheckBox.Tag);
+                        if (objMaxCheckBox == null || intMax < intLoop)
+                        {
+                            intMax = intLoop;
+                            objMaxCheckBox = objLoopCheckBox;
+                        }
                     }
 
-                    if (max < intConditionMax + intOverflow)
+                    if (objMaxCheckBox != null)
                     {
-                        for (int i = max + 1; i <= intConditionMax + intOverflow; i++)
+                        for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
                         {
                             CheckBox cb = new CheckBox
                             {
                                 Tag = i,
-                                Appearance = Appearance.Button,
-                                Size = new Size(24, 24),
-                                Margin = new Padding(1, 1, 1, 1),
-                                TextAlign = ContentAlignment.MiddleRight,
-                                UseVisualStyleBackColor = true
+                                Appearance = objMaxCheckBox.Appearance,
+                                AutoSize = objMaxCheckBox.AutoSize,
+                                MinimumSize = objMaxCheckBox.MinimumSize,
+                                Size = objMaxCheckBox.Size,
+                                Padding = objMaxCheckBox.Padding,
+                                Margin = objMaxCheckBox.Margin,
+                                TextAlign = objMaxCheckBox.TextAlign,
+                                Font = objMaxCheckBox.Font,
+                                UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
                             };
                             cb.Click += button_Click;
                             pnlConditionMonitorPanel.Controls.Add(cb);
+                            lstCheckBoxes.Add(cb);
                         }
                     }
                 }
@@ -12824,8 +12832,10 @@ namespace Chummer
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
                     chkCmBox.BackColor = SystemColors.Control;
-                    if (intCurrentBoxTag == value)
-                        currentBox = chkCmBox;
+                    if (check && intCurrentBoxTag <= value)
+                    {
+                        chkCmBox.Checked = true;
+                    }
                     if (intCurrentBoxTag <= intConditionMax)
                     {
                         chkCmBox.Visible = true;
@@ -12848,10 +12858,6 @@ namespace Chummer
                         chkCmBox.Visible = false;
                         chkCmBox.Text = string.Empty;
                     }
-                }
-                if (currentBox != null && check)
-                {
-                    currentBox.Checked = true;
                 }
             }
             else
@@ -14519,7 +14525,8 @@ namespace Chummer
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="lstForceItemPrefixes">Force the user to select an item that begins with one of the strings in this list.</param>
-        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null)
+        /// <param name="blnFlechetteAmmoOnly">Whether or not to show only Flechette ammo.</param>
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null, bool blnFlechetteAmmoOnly = false)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -14552,7 +14559,10 @@ namespace Chummer
                 }
             }
 
-            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories))
+            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories)
+            {
+                ShowFlechetteAmmoOnly = blnFlechetteAmmoOnly
+            })
             {
                 if (!blnNullParent)
                 {
@@ -15892,10 +15902,23 @@ namespace Chummer
                     }
                 }
             }
-            while (chtKarma.ExpenseValues.Count < 2)
-                chtKarma.ExpenseValues.Add(new DateTimePoint(NuyenLast != DateTime.MinValue ? NuyenLast : DateTime.Now, decimal.ToDouble(decKarmaValue)));
-            while (chtNuyen.ExpenseValues.Count < 2)
-                chtNuyen.ExpenseValues.Add(new DateTimePoint(KarmaLast != DateTime.MinValue ? KarmaLast : DateTime.Now, decimal.ToDouble(decNuyenValue)));
+
+            if (KarmaLast == DateTime.MinValue)
+                KarmaLast = File.Exists(CharacterObject.FileName) ? File.GetCreationTime(CharacterObject.FileName) : new DateTime(DateTime.Now.Ticks - 1000);
+            if (chtKarma.ExpenseValues.Count < 2)
+            {
+                if (chtKarma.ExpenseValues.Count < 1)
+                    chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
+                chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
+            }
+            if (NuyenLast == DateTime.MinValue)
+                NuyenLast = File.Exists(CharacterObject.FileName) ? File.GetCreationTime(CharacterObject.FileName) : new DateTime(DateTime.Now.Ticks - 1000);
+            if (chtNuyen.ExpenseValues.Count < 2)
+            {
+                if (chtNuyen.ExpenseValues.Count < 1)
+                    chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
+                chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
+            }
             chtKarma.NormalizeYAxis();
             chtNuyen.NormalizeYAxis();
             chtKarma.ResumeLayout();
@@ -16986,7 +17009,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -17077,7 +17100,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);

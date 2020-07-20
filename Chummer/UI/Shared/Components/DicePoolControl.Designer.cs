@@ -38,12 +38,15 @@ namespace Chummer.UI.Shared.Components
             // 
             // cmdRoll
             // 
-            this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdRoll.AutoSize = true;
+            this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRoll.FlatAppearance.BorderSize = 0;
             this.cmdRoll.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
             this.cmdRoll.Location = new System.Drawing.Point(40, 0);
             this.cmdRoll.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdRoll.MinimumSize = new System.Drawing.Size(24, 24);
             this.cmdRoll.Name = "cmdRoll";
             this.cmdRoll.Size = new System.Drawing.Size(24, 24);
             this.cmdRoll.TabIndex = 119;

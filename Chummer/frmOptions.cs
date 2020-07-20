@@ -794,7 +794,7 @@ namespace Chummer
             return lstSheetLanguages;
         }
 
-        private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             List<string> names = new List<string>(10);
 
@@ -809,7 +809,7 @@ namespace Chummer
             return names;
         }
 
-        private IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
+        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
             List<ListItem> lstSheets;
 
@@ -830,7 +830,7 @@ namespace Chummer
             return lstSheets;
         }
 
-        private static IList<ListItem> GetXslFilesFromOmaeDirectory(string strLanguage)
+        private static List<ListItem> GetXslFilesFromOmaeDirectory(string strLanguage)
         {
             List<ListItem> lstItems = new List<ListItem>(5);
 
@@ -853,7 +853,7 @@ namespace Chummer
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2));
 
-            IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
+            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
             if(GlobalOptions.OmaeEnabled)
             {
                 foreach(ListItem objFile in GetXslFilesFromOmaeDirectory(strSelectedSheetLanguage))

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -117,7 +118,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
-        private static readonly char[] s_MathOperators = new char[] {'"', '*', '/', '+', '-'};
+        private static readonly char[] s_MathOperators = {'"', '*', '/', '+', '-'};
 
         // I don't like this, but it's easier than making it a specific property of the cyberware.
         private static readonly HashSet<string> s_AgilityCustomizationStrings = new HashSet<string>
@@ -151,7 +152,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
+            List<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
             foreach (Grade objGrade in lstGrades)
             {
                 if (objGrade.Name == strValue)
@@ -935,7 +936,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear");
                 if (objXmlGearList?.Count > 0)
                 {
-                    IList<Weapon> lstChildWeapons = new List<Weapon>(1);
+                    List<Weapon> lstChildWeapons = new List<Weapon>(1);
                     foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
@@ -2642,12 +2643,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// List of names to include in pair bonus
         /// </summary>
-        public ICollection<string> IncludePair => _lstIncludeInPairBonus;
+        public HashSet<string> IncludePair => _lstIncludeInPairBonus;
 
         /// <summary>
         /// List of names to include in pair bonus
         /// </summary>
-        public ICollection<string> IncludeWirelessPair => _lstIncludeInWirelessPairBonus;
+        public HashSet<string> IncludeWirelessPair => _lstIncludeInWirelessPairBonus;
 
         /// <summary>
         /// Notes.
@@ -4110,7 +4111,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
+        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
             Gear.Concat(Children.Cast<IHasMatrixAttributes>()).ToList();
 
         #endregion
@@ -4518,9 +4519,9 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlCyberwareImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                IList<Grade> objCyberwareGradeList =
+                List<Grade> objCyberwareGradeList =
                     _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware);
-                IList<Grade> objBiowareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware);
+                List<Grade> objBiowareGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware);
                 if (objSelectedGrade == null)
                 {
                     foreach (Grade objCyberwareGrade in objCyberwareGradeList)
@@ -5039,7 +5040,7 @@ namespace Chummer.Backend.Equipment
                 if (_objCharacter.Created && objVehicle == null && _objParent == null)
                 {
                     _objCharacter.DecreaseEssenceHole((int) (CalculatedESS * 100),
-                        SourceID == Cyberware.EssenceAntiHoleGUID);
+                        SourceID == EssenceAntiHoleGUID);
                 }
 
                 lstCyberwareCollection?.Add(this);
@@ -5140,12 +5141,12 @@ namespace Chummer.Backend.Equipment
                             GlobalOptions.Clipboard.SelectSingleNode("/character/gear/category");
                         XmlNode objXmlNameNode =
                             GlobalOptions.Clipboard.SelectSingleNode("/character/gear/name");
-                        if (AllowGear.ChildNodes.Cast<XmlNode>().Any(objAllowed => (objAllowed.Name == "gearcategory" &&
+                        if (AllowGear?.ChildNodes.Cast<XmlNode>().Any(objAllowed => (objAllowed.Name == "gearcategory" &&
                                                                                     objAllowed.InnerText ==
                                                                                     objXmlCategoryNode?.InnerText) ||
                                                                                    objAllowed.Name == "gearname" &&
                                                                                    objAllowed.InnerText ==
-                                                                                   objXmlNameNode?.InnerText))
+                                                                                   objXmlNameNode?.InnerText) == true)
                         {
                             return true;
                         }
@@ -5175,10 +5176,8 @@ namespace Chummer.Backend.Equipment
                     {
                         return false;
                     }
-                    else
-                    {
-                        objCyberware.Location = Location;
-                    }
+
+                    objCyberware.Location = Location;
                 }
 
                 if (objCyberware.SourceType != SourceType) return true;

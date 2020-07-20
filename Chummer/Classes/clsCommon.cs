@@ -974,10 +974,10 @@ namespace Chummer
                 return;
             intPage += objBookInfo.Offset;
 
-            string strParams = strPDFParamaters;
-            strParams = strParams.Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo));
-            strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-            strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+            string strParams = strPDFParamaters
+                .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
+                .Replace("{localpath}", uriPath.LocalPath)
+                .Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
             {
                 FileName = strPDFAppPath,

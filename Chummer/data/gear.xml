@@ -296,6 +296,10 @@
         <damage>2</damage>
         <damagetype>P(f)</damagetype>
       </weaponbonus>
+      <isflechetteammo>True</isflechetteammo>
+      <flechetteweaponbonus>
+        <damagetype>P(f)</damagetype>
+      </flechetteweaponbonus>
     </gear>
     <gear>
       <id>0dbcca24-c152-47c5-bae2-8feadff22321</id>
@@ -310,6 +314,12 @@
       <weaponbonus>
         <damagetype>S(e)</damagetype>
       </weaponbonus>
+      <isflechetteammo>True</isflechetteammo>
+      <flechetteweaponbonus>
+        <ap>-5</ap>
+        <damage>-2</damage>
+        <damagetype>S(e)</damagetype>
+      </flechetteweaponbonus>
     </gear>
     <gear>
       <id>0c8d16cb-6e96-4d95-8454-104a36091cf9</id>

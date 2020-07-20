@@ -27,7 +27,7 @@ namespace Chummer
 {
     public interface IHasMugshots : IDisposable
     {
-        IList<Image> Mugshots { get; }
+        List<Image> Mugshots { get; }
         Image MainMugshot { get; set; }
         int MainMugshotIndex { get; set; }
 

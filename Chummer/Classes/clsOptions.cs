@@ -173,6 +173,8 @@ namespace Chummer
         private static bool _blnSearchInCategoryOnly = true;
         private static bool _blnAllowSkillDiceRolling;
 
+        public const int MaxStackLimit = 1024;
+
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
 
         // Omae Information.
@@ -842,7 +844,7 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static ICollection<SourcebookInfo> SourcebookInfo
+        public static HashSet<SourcebookInfo> SourcebookInfo
         {
             get
             {
@@ -931,7 +933,7 @@ namespace Chummer
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static ICollection<CustomDataDirectoryInfo> CustomDataDirectoryInfos => _setCustomDataDirectoryInfo;
+        public static HashSet<CustomDataDirectoryInfo> CustomDataDirectoryInfos => _setCustomDataDirectoryInfo;
 
         public static bool OmaeEnabled
         {

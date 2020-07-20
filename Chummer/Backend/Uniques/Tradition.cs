@@ -949,45 +949,45 @@ namespace Chummer.Backend.Uniques
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string> s_AttributeDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
-                            new DependencyGraphNode<string>(nameof(Name))
+        private static readonly DependencyGraph<string, Tradition> s_AttributeDependencyGraph =
+            new DependencyGraph<string, Tradition>(
+                new DependencyGraphNode<string, Tradition>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Tradition>(nameof(DisplayName),
+                        new DependencyGraphNode<string, Tradition>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string, Tradition>(nameof(Name))
                         ),
-                        new DependencyGraphNode<string>(nameof(Extra))
+                        new DependencyGraphNode<string, Tradition>(nameof(Extra))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(DrainValueToolTip),
-                    new DependencyGraphNode<string>(nameof(DrainValue),
-                        new DependencyGraphNode<string>(nameof(DrainExpression))
+                new DependencyGraphNode<string, Tradition>(nameof(DrainValueToolTip),
+                    new DependencyGraphNode<string, Tradition>(nameof(DrainValue),
+                        new DependencyGraphNode<string, Tradition>(nameof(DrainExpression))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(DisplayDrainExpression),
-                    new DependencyGraphNode<string>(nameof(DrainExpression))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplayDrainExpression),
+                    new DependencyGraphNode<string, Tradition>(nameof(DrainExpression))
                 ),
-                new DependencyGraphNode<string>(nameof(AvailableSpirits),
-                    new DependencyGraphNode<string>(nameof(SpiritCombat)),
-                    new DependencyGraphNode<string>(nameof(SpiritDetection)),
-                    new DependencyGraphNode<string>(nameof(SpiritHealth)),
-                    new DependencyGraphNode<string>(nameof(SpiritIllusion)),
-                    new DependencyGraphNode<string>(nameof(SpiritManipulation))
+                new DependencyGraphNode<string, Tradition>(nameof(AvailableSpirits),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritCombat)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritDetection)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritHealth)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritIllusion)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritManipulation))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritCombat),
-                    new DependencyGraphNode<string>(nameof(SpiritCombat))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritCombat),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritCombat))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritDetection),
-                    new DependencyGraphNode<string>(nameof(SpiritDetection))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritDetection),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritDetection))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritHealth),
-                    new DependencyGraphNode<string>(nameof(SpiritHealth))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritHealth),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritHealth))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritIllusion),
-                    new DependencyGraphNode<string>(nameof(SpiritIllusion))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritIllusion),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritIllusion))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritManipulation),
-                    new DependencyGraphNode<string>(nameof(SpiritManipulation))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritManipulation),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritManipulation))
                 )
             );
 
@@ -1032,10 +1032,10 @@ namespace Chummer.Backend.Uniques
             foreach(string strPropertyName in lstPropertyNames)
             {
                 if(lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach(string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach(string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

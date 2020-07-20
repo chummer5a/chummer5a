@@ -40,12 +40,12 @@ namespace Chummer
             this.cmdDelete = new System.Windows.Forms.Button();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.tlpLeft.SuspendLayout();
+            this.tlpRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOKAdd
@@ -115,7 +115,7 @@ namespace Chummer
             // 
             // lstKits
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.lstKits, 2);
+            this.tlpLeft.SetColumnSpan(this.lstKits, 2);
             this.lstKits.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstKits.FormattingEnabled = true;
             this.lstKits.Location = new System.Drawing.Point(3, 30);
@@ -139,7 +139,7 @@ namespace Chummer
             // 
             // treContents
             // 
-            this.tableLayoutPanel2.SetColumnSpan(this.treContents, 2);
+            this.tlpRight.SetColumnSpan(this.treContents, 2);
             this.treContents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treContents.Location = new System.Drawing.Point(3, 32);
             this.treContents.Name = "treContents";
@@ -164,16 +164,15 @@ namespace Chummer
             // 
             // tlpMain
             // 
-            this.tlpMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.flowLayoutPanel1, 1, 1);
-            this.tlpMain.Controls.Add(this.tableLayoutPanel1, 0, 0);
-            this.tlpMain.Controls.Add(this.tableLayoutPanel2, 1, 0);
+            this.tlpMain.Controls.Add(this.tlpLeft, 0, 0);
+            this.tlpMain.Controls.Add(this.tlpRight, 1, 0);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 2;
@@ -198,41 +197,45 @@ namespace Chummer
             this.flowLayoutPanel1.Size = new System.Drawing.Size(243, 29);
             this.flowLayoutPanel1.TabIndex = 9;
             // 
-            // tableLayoutPanel1
+            // tlpLeft
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.lblCategory, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboCategory, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lstKits, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(303, 394);
-            this.tableLayoutPanel1.TabIndex = 10;
+            this.tlpLeft.AutoSize = true;
+            this.tlpLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpLeft.ColumnCount = 2;
+            this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLeft.Controls.Add(this.lblCategory, 0, 0);
+            this.tlpLeft.Controls.Add(this.cboCategory, 1, 0);
+            this.tlpLeft.Controls.Add(this.lstKits, 0, 1);
+            this.tlpLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpLeft.Location = new System.Drawing.Point(0, 0);
+            this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpLeft.Name = "tlpLeft";
+            this.tlpLeft.RowCount = 2;
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLeft.Size = new System.Drawing.Size(303, 394);
+            this.tlpLeft.TabIndex = 10;
             // 
-            // tableLayoutPanel2
+            // tlpRight
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.treContents, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.cmdDelete, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(303, 0);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 394);
-            this.tableLayoutPanel2.TabIndex = 11;
+            this.tlpRight.AutoSize = true;
+            this.tlpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.ColumnCount = 2;
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Controls.Add(this.treContents, 0, 1);
+            this.tlpRight.Controls.Add(this.cmdDelete, 1, 0);
+            this.tlpRight.Controls.Add(this.label1, 0, 0);
+            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRight.Location = new System.Drawing.Point(303, 0);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpRight.Name = "tlpRight";
+            this.tlpRight.RowCount = 2;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Size = new System.Drawing.Size(303, 394);
+            this.tlpRight.TabIndex = 11;
             // 
             // frmSelectPACKSKit
             // 
@@ -257,10 +260,10 @@ namespace Chummer
             this.tlpMain.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.tlpLeft.ResumeLayout(false);
+            this.tlpLeft.PerformLayout();
+            this.tlpRight.ResumeLayout(false);
+            this.tlpRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -279,7 +282,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDelete;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
     }
 }

@@ -28,7 +28,7 @@ namespace Chummer
     public partial class frmSelectDrug : Form
     {
         private readonly Character _objCharacter;
-        private IList<Grade> _lstGrades;
+        private List<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
@@ -650,7 +650,7 @@ namespace Chummer
         }
 
         private bool _blnSkipListRefresh;
-        private IList<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return null;
@@ -669,7 +669,7 @@ namespace Chummer
             return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + strFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private IList<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return null;

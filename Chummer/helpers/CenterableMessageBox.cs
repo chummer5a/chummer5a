@@ -119,7 +119,7 @@ namespace Chummer
 
         public const int WH_CALLWNDPROCRET = 12;
 
-        public enum CbtHookAction : int
+        public enum CbtHookAction
         {
             HCBT_MOVESIZE = 0,
             HCBT_MINMAX = 1,

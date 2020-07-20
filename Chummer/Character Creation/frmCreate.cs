@@ -1352,7 +1352,7 @@ namespace Chummer
                         if (!CharacterObject.AddBiowareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Bioware && x.CanRemoveThroughImprovements))
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Bioware && x.CanRemoveThroughImprovements).ToList())
                             {
                                 objCyberware.DeleteCyberware();
                                 Cyberware objParent = objCyberware.Parent;
@@ -1375,7 +1375,7 @@ namespace Chummer
                         if (!CharacterObject.AddCyberwareEnabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Cyberware && x.CanRemoveThroughImprovements))
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.SourceType == Improvement.ImprovementSource.Cyberware && x.CanRemoveThroughImprovements).ToList())
                             {
                                 objCyberware.DeleteCyberware();
                                 Cyberware objParent = objCyberware.Parent;
@@ -1398,7 +1398,7 @@ namespace Chummer
                         if (CharacterObject.CyberwareDisabled)
                         {
                             bool blnDoRefresh = false;
-                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().Where(x => x.CanRemoveThroughImprovements))
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.Where(x => x.CanRemoveThroughImprovements).ToList())
                             {
                                 objCyberware.DeleteCyberware();
                                 Cyberware objParent = objCyberware.Parent;
@@ -1421,9 +1421,7 @@ namespace Chummer
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
-                            var list = CharacterObject.Cyberware.ToList()
-                                .DeepWhere(x => x.Children, x => x.CanRemoveThroughImprovements);
-                            foreach (Cyberware objCyberware in list)
+                            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.CanRemoveThroughImprovements).ToList())
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                                 if (chrAvail == 'R' || chrAvail == 'F')
@@ -8393,17 +8391,6 @@ namespace Chummer
         }
 #endregion
 
-#region Sourcebook Label Events
-        private void txtNotes_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                e.SuppressKeyPress = true;
-                ((TextBox) sender)?.SelectAll();
-            }
-        }
-#endregion
-
 #region Custom Methods
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
@@ -9447,7 +9434,7 @@ namespace Chummer
                     nudCyberwareRating.Minimum = objCyberware.MinRating;
                     nudCyberwareRating.Value = objCyberware.Rating;
                     nudCyberwareRating.Visible = true;
-                    nudCyberwareRating.Enabled = nudCyberwareRating.Maximum == nudCyberwareRating.Minimum;
+                    nudCyberwareRating.Enabled = nudCyberwareRating.Maximum != nudCyberwareRating.Minimum;
                     lblCyberwareRatingLabel.Visible = true;
                 }
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
@@ -11862,7 +11849,7 @@ namespace Chummer
         /// </summary>
         public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
-            IList<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
+            List<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             List<ListItem> lstCyberwareGrades = new List<ListItem>(objGradeList.Count);
 
             foreach (Grade objWareGrade in objGradeList)

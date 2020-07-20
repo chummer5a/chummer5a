@@ -563,7 +563,7 @@ namespace Chummer
             }
         }
 
-        private static IList<ListItem> GetXslFilesFromOmaeDirectory()
+        private static List<ListItem> GetXslFilesFromOmaeDirectory()
         {
             List<ListItem> lstItems = new List<ListItem>(5);
 
@@ -581,7 +581,7 @@ namespace Chummer
             return lstItems;
         }
 
-        private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             if (Directory.Exists(path))
             {
@@ -593,7 +593,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            IList<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage, _lstCharacters);
+            List<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage, _lstCharacters);
             if (GlobalOptions.OmaeEnabled)
             {
                 foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())
