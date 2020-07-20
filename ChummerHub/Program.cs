@@ -28,8 +28,8 @@ namespace ChummerHub
 #if DEBUG
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                .MinimumLevel.Override("System", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("System", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 //.WriteTo.File(@"ChummerHub_log.txt")
@@ -88,7 +88,6 @@ namespace ChummerHub
         public static IWebHost CreateWebHostBuilder(string[] args) =>
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
             WebHost.CreateDefaultBuilder(args)
-                .UseApplicationInsights()
                 //.UseKestrel(options =>
                 //{
                 //    options.Limits.MinResponseDataRate = null;
@@ -100,7 +99,7 @@ namespace ChummerHub
                 //    //});
                 //})
                 .UseAzureAppServices()
-                .UseContentRoot(Directory.GetCurrentDirectory())
+                //.UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseIISIntegration()
                 .ConfigureLogging((hostingContext, logging) =>

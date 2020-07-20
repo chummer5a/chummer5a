@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -95,6 +96,8 @@ namespace ChummerHub
 
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             // Use this if MyCustomTelemetryInitializer can be constructed without DI injected parameters
             services.AddSingleton<ITelemetryInitializer>(new MyTelemetryInitializer());
@@ -183,6 +186,7 @@ namespace ChummerHub
             services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
+          
 
             services.AddMvc(options =>
             {
@@ -191,7 +195,8 @@ namespace ChummerHub
                                  .Build();
                 var filter = new AuthorizeFilter(policy);
                 options.Filters.Add(filter);
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                options.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddRazorPagesOptions(options =>
                 {
                     //options.AllowAreas = true;
@@ -199,7 +204,13 @@ namespace ChummerHub
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");
-                });
+                })
+                .AddJsonOptions(x =>
+                {
+                    //x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    //x.SerializerSettings.PreserveReferencesHandling =
+                    //    PreserveReferencesHandling.Objects;
+                }); 
 
 
             services.AddAuthentication(options =>
@@ -283,17 +294,7 @@ namespace ChummerHub
                 //    throw new Not();
                 //};
             });
-            
-            services.AddMvc(options =>
-                {
-                    options.EnableEndpointRouting = false;
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(x =>
-                {
-                    //x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    //x.SerializerSettings.PreserveReferencesHandling =
-                    //    PreserveReferencesHandling.Objects;
-                });
+          
 
 
             services.AddVersionedApiExplorer(options =>
@@ -315,6 +316,7 @@ namespace ChummerHub
                 //o.Conventions.Controller<Controllers.V2.SINnerController>().HasApiVersion(new ApiVersion(2, 0));
             });
 
+            services.AddSwaggerExamples();
 
             services.AddSwaggerGen(options =>
             {
@@ -331,7 +333,7 @@ namespace ChummerHub
                 // resolve the IApiVersionDescriptionProvider service
                 // note: that we have to build a temporary service provider here because one has not been created yet
                 var provider = services.BuildServiceProvider()
-            .GetRequiredService<IApiVersionDescriptionProvider>();
+                .GetRequiredService<IApiVersionDescriptionProvider>();
 
                 // add a swagger document for each discovered API version
                 // note: you might choose to skip or document deprecated API versions differently
@@ -386,7 +388,7 @@ namespace ChummerHub
 
             });
           
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            
             //services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             //services.AddSession();
 
@@ -425,8 +427,9 @@ namespace ChummerHub
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseRouting();
             //app.UseCookiePolicy();
 
             app.UseAuthentication();
@@ -454,16 +457,16 @@ namespace ChummerHub
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(options =>
-            {
-
-                //c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
-                // build a swagger endpoint for each discovered API version
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                }
-            });
+            //app.UseSwaggerUI(options =>
+            //{
+            //    //options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            //    //c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
+            //    // build a swagger endpoint for each discovered API version
+            //    foreach (var description in provider.ApiVersionDescriptions)
+            //    {
+            //        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+            //    }
+            //});
 
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())
