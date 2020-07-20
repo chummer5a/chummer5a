@@ -6,6 +6,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using System.IO;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace ChummerHub
@@ -88,16 +89,18 @@ namespace ChummerHub
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
             WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
-                .UseKestrel(options =>
-                {
-                    options.Limits.MinResponseDataRate = null;
-                    //options.Listen(IPAddress.Loopback, 5000);  // http:localhost:5000
-                    //options.Listen(IPAddress.Any, 80);         // http:*:80
-                    //options.Listen(IPAddress.Loopback, 443, listenOptions =>
-                    //{
-                    //    listenOptions.UseHttps("certificate.pfx", "password");
-                    //});
-                })
+                //.UseKestrel(options =>
+                //{
+                //    options.Limits.MinResponseDataRate = null;
+                //    //options.Listen(IPAddress.Loopback, 5000);  // http:localhost:5000
+                //    //options.Listen(IPAddress.Any, 80);         // http:*:80
+                //    //options.Listen(IPAddress.Loopback, 443, listenOptions =>
+                //    //{
+                //    //    listenOptions.UseHttps("certificate.pfx", "password");
+                //    //});
+                //})
+                .UseAzureAppServices()
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseIISIntegration()
                 .ConfigureLogging((hostingContext, logging) =>
