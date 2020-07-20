@@ -201,7 +201,7 @@ namespace Chummer
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
-        private readonly HashSet<string> _lstBooks = new HashSet<string> {"SR5"};
+        private readonly HashSet<string> _lstBooks = new HashSet<string>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -335,7 +335,6 @@ namespace Chummer
             RecalculateEnabledCustomDataDirectories();
 
             _lstBooks.Clear();
-            _lstBooks.Add("SR5");
             foreach (string strBook in objOther._lstBooks)
             {
                 _lstBooks.Add(strBook);
@@ -1075,7 +1074,6 @@ namespace Chummer
 
             // Load Books.
             _lstBooks.Clear();
-            _lstBooks.Add("SR5");
             foreach (XPathNavigator xmlBook in objXmlNode.Select("books/book"))
                 _lstBooks.Add(xmlBook.Value);
             RecalculateBookXPath();

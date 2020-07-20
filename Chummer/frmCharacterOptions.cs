@@ -40,6 +40,7 @@ namespace Chummer
         private bool _blnSkipLimbCountUpdate;
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
+        private readonly HashSet<string> _setPermanentSourcebooks = new HashSet<string>();
 
         #region Form Events
         public frmCharacterOptions(CharacterOptions objExistingOptions = null)
@@ -56,7 +57,7 @@ namespace Chummer
             SetToolTips();
             PopulateSettingsList();
 
-            List<ListItem> lstBuildMethods = new List<ListItem>
+            List<ListItem> lstBuildMethods = new List<ListItem>(4)
             {
                 new ListItem(CharacterBuildMethod.Priority, LanguageManager.GetString("String_Priority")),
                 new ListItem(CharacterBuildMethod.SumtoTen, LanguageManager.GetString("String_SumtoTen")),
@@ -232,7 +233,7 @@ namespace Chummer
             _blnLoading = true;
             foreach (TreeNode objNode in treSourcebook.Nodes)
             {
-                if (objNode.Tag.ToString() != "SR5")
+                if (!_setPermanentSourcebooks.Contains(objNode.Tag.ToString()))
                 {
                     objNode.Checked = _blnSourcebookToggle;
                 }
@@ -250,7 +251,7 @@ namespace Chummer
             if (objNode == null)
                 return;
             string strBookCode = objNode.Tag.ToString();
-            if (string.IsNullOrEmpty(strBookCode) || (strBookCode == "SR5" && !objNode.Checked))
+            if (string.IsNullOrEmpty(strBookCode) || (_setPermanentSourcebooks.Contains(strBookCode) && !objNode.Checked))
             {
                 _blnLoading = true;
                 objNode.Checked = !objNode.Checked;
@@ -426,8 +427,8 @@ namespace Chummer
             // Put the Sourcebooks into a List so they can first be sorted.
             object objOldSelected = treSourcebook.SelectedNode?.Tag;
             treSourcebook.Nodes.Clear();
-
-            using(XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book"))
+            _setPermanentSourcebooks.Clear();
+            using (XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book"))
             {
                 if(objXmlBookList != null)
                 {
@@ -437,6 +438,12 @@ namespace Chummer
                             continue;
                         string strCode = objXmlBook["code"]?.InnerText;
                         bool blnChecked = _objCharacterOptions.Books.Contains(strCode);
+                        if (objXmlBook["permanent"] != null)
+                        {
+                            _setPermanentSourcebooks.Add(strCode);
+                            _objCharacterOptions.Books.Add(strCode);
+                            blnChecked = true;
+                        }
                         TreeNode objNode = new TreeNode
                         {
                             Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? string.Empty,

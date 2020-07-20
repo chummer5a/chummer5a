@@ -932,7 +932,7 @@ namespace Chummer
                 astrSourceParts = strSource.Split(strSpace[0]);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
             {
-                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new [] { "SR5", strSource.Substring(4) };
             }
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
             {

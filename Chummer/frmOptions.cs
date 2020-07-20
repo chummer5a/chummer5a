@@ -142,8 +142,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             // Build a list of Sourcebooks that will be passed to the Verify method.
             // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-            HashSet<string> setBooks = new HashSet<string> { "SR5" };
-
+            HashSet<string> setBooks = new HashSet<string>();
             foreach(ListItem objItem in lstGlobalSourcebookInfos.Items)
             {
                 string strItemValue = objItem.Value?.ToString();
