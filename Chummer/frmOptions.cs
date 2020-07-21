@@ -48,7 +48,7 @@ namespace Chummer
         private CultureInfo _objSelectedCultureInfo = GlobalOptions.CultureInfo;
 
         #region Form Events
-        public frmOptions()
+        public frmOptions(string strActiveTab = "")
         {
             InitializeComponent();
 #if !DEBUG
@@ -59,6 +59,12 @@ namespace Chummer
             this.TranslateWinForm(_strSelectedLanguage);
 
             _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfos);
+            if (!string.IsNullOrEmpty(strActiveTab))
+            {
+                int intActiveTabIndex = tabOptions.TabPages.IndexOfKey(strActiveTab);
+                if (intActiveTabIndex > 0)
+                    tabOptions.SelectedTab = tabOptions.TabPages[intActiveTabIndex];
+            }
         }
 
         private void frmOptions_Load(object sender, EventArgs e)
