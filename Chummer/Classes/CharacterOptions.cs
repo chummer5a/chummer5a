@@ -1139,10 +1139,13 @@ namespace Chummer
             }
 
             // Add in any directories that are in GlobalOptions but are not present in the settings so that we may enable them if we want to
-            foreach (CustomDataDirectoryInfo objMissingDirectory in GlobalOptions.CustomDataDirectoryInfos.Where(x => !_dicCustomDataDirectoryNames.Keys.Contains(x.Name)))
+            foreach (CustomDataDirectoryInfo objMissingDirectory in GlobalOptions.CustomDataDirectoryInfos)
             {
-                _dicCustomDataDirectoryNames.Add(objMissingDirectory.Name, new Tuple<int, bool>(intTopMostLoadOrder, false));
-                ++intTopMostLoadOrder;
+                if (!_dicCustomDataDirectoryNames.Keys.Contains(objMissingDirectory.Name))
+                {
+                    _dicCustomDataDirectoryNames.Add(objMissingDirectory.Name, new Tuple<int, bool>(intTopMostLoadOrder, false));
+                    ++intTopMostLoadOrder;
+                }
             }
 
             // Used to legacy sweep build settings.

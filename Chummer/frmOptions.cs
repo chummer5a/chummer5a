@@ -1167,8 +1167,8 @@ namespace Chummer
             UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin)?.GetOptionsControl();
             if (pluginControl != null)
             {
-                panelPluginOption.Controls.Clear();
-                panelPluginOption.Controls.Add(pluginControl);
+                pnlPluginOption.Controls.Clear();
+                pnlPluginOption.Controls.Add(pluginControl);
             }
         }
 

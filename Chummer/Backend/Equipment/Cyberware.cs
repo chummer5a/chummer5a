@@ -128,7 +128,7 @@ namespace Chummer.Backend.Equipment
             {"Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)"};
 
         private static readonly HashSet<string> s_AgilityCombinedStrings =
-            new HashSet<string>(s_AgilityEnhancementStrings.Union(s_AgilityEnhancementStrings));
+            new HashSet<string>(s_AgilityEnhancementStrings.Union(s_AgilityCustomizationStrings));
 
         private static readonly HashSet<string> s_StrengthCustomizationStrings = new HashSet<string>
             {"Customized Strength", "Cyberlimb Customization, Strength (2050)"};
@@ -137,7 +137,7 @@ namespace Chummer.Backend.Equipment
             {"Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)"};
 
         private static readonly HashSet<string> s_StrengthCombinedStrings =
-            new HashSet<string>(s_StrengthEnhancementStrings.Union(s_StrengthEnhancementStrings));
+            new HashSet<string>(s_StrengthEnhancementStrings.Union(s_StrengthCustomizationStrings));
 
         #region Helper Methods
 
