@@ -100,6 +100,15 @@ namespace Chummer
         #endregion
 
         #region Control Events
+        private void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
+        {
+            Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
+            using (frmOptions frmOptions = new frmOptions("tabCustomDataDirectories"))
+                frmOptions.ShowDialog(this);
+            Cursor = objOldCursor;
+        }
+
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // TODO: Prompt to confirm delete

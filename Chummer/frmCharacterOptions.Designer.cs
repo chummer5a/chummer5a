@@ -50,10 +50,8 @@ namespace Chummer
             this.lblPriorities = new Chummer.LabelWithToolTip();
             this.txtPriorities = new System.Windows.Forms.TextBox();
             this.nudSumToTen = new System.Windows.Forms.NumericUpDown();
-            this.lblStartingKarma = new System.Windows.Forms.Label();
             this.lblMaxNuyenKarma = new System.Windows.Forms.Label();
             this.lblMaxAvail = new System.Windows.Forms.Label();
-            this.nudStartingKarma = new System.Windows.Forms.NumericUpDown();
             this.nudMaxNuyenKarma = new System.Windows.Forms.NumericUpDown();
             this.flpAllowedCyberwareGrades = new System.Windows.Forms.FlowLayoutPanel();
             this.lblKnowledgePoints = new Chummer.LabelWithToolTip();
@@ -62,6 +60,8 @@ namespace Chummer
             this.lblQualityKarmaLimit = new System.Windows.Forms.Label();
             this.txtContactPoints = new System.Windows.Forms.TextBox();
             this.nudQualityKarmaLimit = new System.Windows.Forms.NumericUpDown();
+            this.lblStartingKarma = new System.Windows.Forms.Label();
+            this.nudStartingKarma = new System.Windows.Forms.NumericUpDown();
             this.gpbBasicOptionsPrinting = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsPrinting = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkPrintSkillsWithZeroRating = new System.Windows.Forms.CheckBox();
@@ -3065,16 +3065,16 @@ namespace Chummer
             // 
             this.tlpOptionalRules.AutoSize = true;
             this.tlpOptionalRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptionalRules.ColumnCount = 3;
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpOptionalRules.ColumnCount = 4;
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
             this.tlpOptionalRules.Controls.Add(this.treCustomDataDirectories, 0, 1);
-            this.tlpOptionalRules.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder, 1, 0);
-            this.tlpOptionalRules.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 2, 0);
+            this.tlpOptionalRules.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder, 2, 0);
+            this.tlpOptionalRules.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 3, 0);
+            this.tlpOptionalRules.Controls.Add(this.cmdGlobalOptionsCustomData, 1, 0);
             this.tlpOptionalRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOptionalRules.Location = new System.Drawing.Point(9, 9);
             this.tlpOptionalRules.Name = "tlpOptionalRules";
@@ -3091,16 +3091,16 @@ namespace Chummer
             this.lblCustomDataDirectoriesLabel.Location = new System.Drawing.Point(3, 8);
             this.lblCustomDataDirectoriesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCustomDataDirectoriesLabel.Name = "lblCustomDataDirectoriesLabel";
-            this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(358, 13);
+            this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(155, 13);
             this.lblCustomDataDirectoriesLabel.TabIndex = 36;
-            this.lblCustomDataDirectoriesLabel.Tag = "Label_Options_CustomDataDirectories";
-            this.lblCustomDataDirectoriesLabel.Text = "Custom Data Directories to Use (Changes Are Only Applied After a Restart)";
-            this.lblCustomDataDirectoriesLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.lblCustomDataDirectoriesLabel.Tag = "Label_CharacterOptions_CustomData";
+            this.lblCustomDataDirectoriesLabel.Text = "Custom Data Directories to Use";
+            this.lblCustomDataDirectoriesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // treCustomDataDirectories
             // 
             this.treCustomDataDirectories.CheckBoxes = true;
-            this.tlpOptionalRules.SetColumnSpan(this.treCustomDataDirectories, 3);
+            this.tlpOptionalRules.SetColumnSpan(this.treCustomDataDirectories, 4);
             this.treCustomDataDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treCustomDataDirectories.Location = new System.Drawing.Point(3, 32);
             this.treCustomDataDirectories.Name = "treCustomDataDirectories";
@@ -3116,9 +3116,9 @@ namespace Chummer
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(852, 3);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(973, 3);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
-            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(176, 23);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(115, 23);
             this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
             this.cmdIncreaseCustomDirectoryLoadOrder.Tag = "Button_IncreaseCustomDirectoryLoadOrder";
             this.cmdIncreaseCustomDirectoryLoadOrder.Text = "Increase Load Order";
@@ -3130,9 +3130,9 @@ namespace Chummer
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(1034, 3);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(1094, 3);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
-            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(177, 23);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(117, 23);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
             this.cmdDecreaseCustomDirectoryLoadOrder.Tag = "Button_DecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Text = "Decrease Load Order";
@@ -3883,6 +3883,19 @@ namespace Chummer
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
+            // 
+            // cmdGlobalOptionsCustomData
+            // 
+            this.cmdGlobalOptionsCustomData.AutoSize = true;
+            this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(731, 3);
+            this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
+            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(236, 23);
+            this.cmdGlobalOptionsCustomData.TabIndex = 44;
+            this.cmdGlobalOptionsCustomData.Text = "Change Custom Data Entries";
+            this.cmdGlobalOptionsCustomData.UseVisualStyleBackColor = true;
+            this.cmdGlobalOptionsCustomData.Click += new System.EventHandler(this.cmdGlobalOptionsCustomData_Click);
             // 
             // frmCharacterOptions
             // 

@@ -7323,7 +7323,7 @@
     </string>
     <string>
       <key>Label_Options_CustomDataDirectories</key>
-      <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+      <text>Custom Data Directory Entries (Changes Are Only Applied After a Restart)</text>
     </string>
     <string>
       <key>Button_Options_UploadPastebin</key>
@@ -8130,6 +8130,12 @@
       <text>Lossy (JPG)</text>
     </string>
     <!-- End Region-->
+    <!-- Region Character Options -->
+    <string>
+      <key>Label_CharacterOptions_CustomData</key>
+      <text>Custom Data Directories to Use</text>
+    </string>
+    <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>
       <key>Title_PrintMultiple</key>

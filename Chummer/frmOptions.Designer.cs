@@ -1173,10 +1173,10 @@ namespace Chummer
             // 
             this.lblBrowserVersion.AutoSize = true;
             this.lblBrowserVersion.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblBrowserVersion.Location = new System.Drawing.Point(3, 6);
-            this.lblBrowserVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBrowserVersion.Location = new System.Drawing.Point(3, 3);
+            this.lblBrowserVersion.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.lblBrowserVersion.Name = "lblBrowserVersion";
-            this.lblBrowserVersion.Size = new System.Drawing.Size(190, 14);
+            this.lblBrowserVersion.Size = new System.Drawing.Size(190, 17);
             this.lblBrowserVersion.TabIndex = 53;
             this.lblBrowserVersion.Tag = "Label_Options_BrowserVersion";
             this.lblBrowserVersion.Text = "Preview uses Internet Explorer version:";
@@ -1412,10 +1412,11 @@ namespace Chummer
             this.lblCustomDataDirectoriesLabel.Location = new System.Drawing.Point(3, 8);
             this.lblCustomDataDirectoriesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCustomDataDirectoriesLabel.Name = "lblCustomDataDirectoriesLabel";
-            this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(358, 13);
+            this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(351, 13);
             this.lblCustomDataDirectoriesLabel.TabIndex = 36;
             this.lblCustomDataDirectoriesLabel.Tag = "Label_Options_CustomDataDirectories";
-            this.lblCustomDataDirectoriesLabel.Text = "Custom Data Directories to Use (Changes Are Only Applied After a Restart)";
+            this.lblCustomDataDirectoriesLabel.Text = "Custom Data Directory Entries (Changes Are Only Applied After a Restart)";
+            this.lblCustomDataDirectoriesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cmdAddCustomDirectory
             // 
