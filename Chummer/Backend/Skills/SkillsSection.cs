@@ -63,7 +63,7 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
@@ -887,7 +887,7 @@ namespace Chummer.Backend.Skills
         /// This is only used for reflection, so that all zero ratings skills are not uploaded
         /// </summary>
         [HubTag]
-        public IList<Skill> NotZeroRatingSkills
+        public List<Skill> NotZeroRatingSkills
         {
             get
             {
@@ -906,7 +906,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
-        public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>(1);
+        public List<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>(1);
 
         /// <summary>
         /// Skill Groups.

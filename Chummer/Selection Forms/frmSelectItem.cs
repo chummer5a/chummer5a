@@ -26,9 +26,9 @@ namespace Chummer
 {
     public partial class frmSelectItem : Form
     {
-        private IList<Gear> _lstGear = new List<Gear>();
-        private IList<Vehicle> _lstVehicles = new List<Vehicle>();
-        private IList<ListItem> _lstGeneralItems = new List<ListItem>();
+        private List<Gear> _lstGear = new List<Gear>();
+        private List<Vehicle> _lstVehicles = new List<Vehicle>();
+        private List<ListItem> _lstGeneralItems = new List<ListItem>();
         private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
@@ -44,7 +44,7 @@ namespace Chummer
 
         private void frmSelectItem_Load(object sender, EventArgs e)
         {
-            IList<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>();
 
             if (_strMode == "Gear")
             {

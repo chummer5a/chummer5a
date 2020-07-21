@@ -274,8 +274,8 @@ namespace Chummer
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        var lstToCheck = objListToCheck?.ToList() ?? new List<IHasName>(1);
-                        string strNameNode = xmlNode.SelectSingleNode("name")?.Value;
+                        List<IHasName> lstToCheck = objListToCheck?.ToList();
+                        string strNameNode = xmlNode.SelectSingleNode("name")?.Value ?? string.Empty;
                         if (blnCheckCyberwareChildren)
                         {
                             intCount = string.IsNullOrEmpty(strLocation)
@@ -283,7 +283,7 @@ namespace Chummer
                                 : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && strNameNode == x.Name);
                         }
                         else
-                            intCount = lstToCheck.Count(objItem => strNameNode == objItem.Name);
+                            intCount = lstToCheck?.Count(objItem => strNameNode == objItem.Name) ?? 0;
                         intExtendedCount = intCount;
                         // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
                         XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNode("includeinlimit");
@@ -306,7 +306,7 @@ namespace Chummer
                                     : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
                             }
                             else
-                                intExtendedCount = lstToCheck.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                                intExtendedCount = lstToCheck?.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name)) ?? 0;
                         }
                     }
                     if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
@@ -317,7 +317,7 @@ namespace Chummer
                                 string.Format(
                                     GlobalOptions.CultureInfo,
                                     LanguageManager.GetString("Message_SelectGeneric_Limit"),
-                                    strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
+                                    strLocalName, intLimit == 0 ? 1 : intLimit),
                                 string.Format(
                                     GlobalOptions.CultureInfo,
                                     LanguageManager.GetString("MessageTitle_SelectGeneric_Limit"),

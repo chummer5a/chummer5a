@@ -257,7 +257,7 @@ namespace Chummer
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
         /// </summary>
-        public IList<Gear> Gear => _lstGear;
+        public List<Gear> Gear => _lstGear;
 
         #endregion
 

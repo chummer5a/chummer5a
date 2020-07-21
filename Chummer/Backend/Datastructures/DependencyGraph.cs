@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Chummer
 {
@@ -47,16 +46,19 @@ namespace Chummer
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        public ICollection<T> GetWithAllDependents(T2 objParentInstance, T objKey)
+        public HashSet<T> GetWithAllDependents(T2 objParentInstance, T objKey)
         {
             HashSet<T> objReturn = new HashSet<T>();
             if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
             {
                 if (objReturn.Add(objLoopNode.MyObject))
                 {
-                    foreach (DependencyGraphNode<T, T2> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependencyCondition?.Invoke(objParentInstance) != false).Select(x => x.Node))
+                    foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                     {
-                        CollectDependents(objParentInstance, objDependant.MyObject, objReturn);
+                        if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
+                        {
+                            CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
+                        }
                     }
                 }
             }
@@ -78,9 +80,12 @@ namespace Chummer
             {
                 if (objReturn.Add(objLoopNode.MyObject))
                 {
-                    foreach (DependencyGraphNode<T, T2> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependencyCondition?.Invoke(objParentInstance) != false).Select(x => x.Node))
+                    foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                     {
-                        CollectDependents(objParentInstance, objDependant.MyObject, objReturn);
+                        if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
+                        {
+                            CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
+                        }
                     }
                 }
             }
@@ -97,11 +102,14 @@ namespace Chummer
             if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
             {
                 yield return objLoopNode.MyObject;
-                foreach (DependencyGraphNode<T, T2> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependencyCondition?.Invoke(objParentInstance) != false).Select(x => x.Node))
+                foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                 {
-                    foreach (T objDependantObject in GetWithAllDependentsUnsafe(objParentInstance, objDependant.MyObject))
+                    if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
                     {
-                        yield return objDependantObject;
+                        foreach (T objDependantObject in GetWithAllDependentsUnsafe(objParentInstance, objNode.Node.MyObject))
+                        {
+                            yield return objDependantObject;
+                        }
                     }
                 }
             }

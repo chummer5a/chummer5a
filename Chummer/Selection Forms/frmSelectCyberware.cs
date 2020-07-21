@@ -32,7 +32,7 @@ namespace Chummer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
-        private IList<Grade> _lstGrades;
+        private List<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
@@ -920,7 +920,7 @@ namespace Chummer
         }
 
         private bool _blnSkipListRefresh;
-        private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return null;
@@ -983,7 +983,7 @@ namespace Chummer
             return BuildCyberwareList(node, blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private IList<ListItem> BuildCyberwareList(XPathNodeIterator objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> BuildCyberwareList(XPathNodeIterator objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return null;
@@ -1046,7 +1046,11 @@ namespace Chummer
                         string strBlocksMounts = xmlCyberware.SelectSingleNode("blocksmounts")?.Value;
                         if (!string.IsNullOrEmpty(strBlocksMounts))
                         {
-                            IList<Cyberware> lstWareListToCheck = CyberwareParent == null ? (ParentVehicle == null ? _objCharacter.Cyberware : null) : CyberwareParent.Children;
+                            IList<Cyberware> lstWareListToCheck = CyberwareParent != null
+                                ? CyberwareParent.Children
+                                : (ParentVehicle == null
+                                    ? _objCharacter.Cyberware
+                                    : null);
                             if (xmlCyberware.SelectSingleNode("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
                                 (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                             {

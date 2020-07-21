@@ -762,7 +762,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                return _blnDefault && !RelevantImprovements(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault).Any();
+                return _blnDefault && !RelevantImprovements(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault, string.Empty, false, true).Any();
             }
             set
             {
@@ -974,7 +974,7 @@ namespace Chummer.Backend.Skills
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            IReadOnlyCollection<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
+            List<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
             StringBuilder s;
             if (CyberwareRating > TotalBaseRating)
             {
@@ -988,8 +988,10 @@ namespace Chummer.Backend.Skills
                     LanguageManager.GetString("Tip_Skill_SkillsoftRating")
                     + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
                 bool first = true;
-                foreach (Improvement objImprovement in lstRelevantImprovements.Where(x => x.AddToRating))
+                foreach (Improvement objImprovement in lstRelevantImprovements)
                 {
+                    if (!objImprovement.AddToRating)
+                        continue;
                     if (first)
                     {
                         first = false;
@@ -1025,10 +1027,12 @@ namespace Chummer.Backend.Skills
                       '(' + Math.Abs(intDefaultModifier).ToString(GlobalOptions.CultureInfo) + ')');
             }
 
-            foreach (Improvement source in lstRelevantImprovements.Where(x =>
-                !x.AddToRating && x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute &&
-                x.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute))
+            foreach (Improvement source in lstRelevantImprovements)
             {
+                if (source.AddToRating
+                    || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
+                    || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                    continue;
                 s.Append(strSpace + '+' + strSpace);
                 s.Append(CharacterObject.GetObjectName(source));
                 if (!string.IsNullOrEmpty(source.Condition))
@@ -1053,15 +1057,16 @@ namespace Chummer.Backend.Skills
 
             if (att.Abbrev == "STR" || att.Abbrev == "AGI")
             {
-                foreach (Cyberware cyberware in CharacterObject.Cyberware.Where(x =>
-                    x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
+                foreach (Cyberware cyberware in CharacterObject.Cyberware)
                 {
+                    if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
+                        continue;
                     s.Append(Environment.NewLine);
                     s.AppendFormat("{0}{1}{2} ", cyberware.Location, strSpace,
                         cyberware.DisplayNameShort(GlobalOptions.Language));
                     if (cyberware.Grade.Name != "Standard")
                     {
-                        s.AppendFormat("({0}){1}", cyberware.Grade.CurrentDisplayName,
+                        s.AppendFormat(GlobalOptions.CultureInfo, "({0}){1}", cyberware.Grade.CurrentDisplayName,
                             strSpace);
                     }
 
@@ -1082,14 +1087,15 @@ namespace Chummer.Backend.Skills
 
             if (att.Abbrev != Attribute)
                 return s.ToString();
-            foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements.Where(x =>
-                x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute ||
-                x.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute))
+            foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements)
             {
+                if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillAttribute
+                    && objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
+                    continue;
                 s.Append(Environment.NewLine);
                 if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                    s.AppendFormat("{0}:{1}", objSwapSkillAttribute.Exclude, strSpace);
-                s.AppendFormat("{0}{1}", CharacterObject.GetObjectName(objSwapSkillAttribute),
+                    s.AppendFormat(GlobalOptions.CultureInfo, "{0}:{1}", objSwapSkillAttribute.Exclude, strSpace);
+                s.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}", CharacterObject.GetObjectName(objSwapSkillAttribute),
                     strSpace);
                 int intLoopAttribute = CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value;
                 int intBasePool = PoolOtherAttribute(intLoopAttribute, objSwapSkillAttribute.ImprovedName);
@@ -1110,20 +1116,21 @@ namespace Chummer.Backend.Skills
                 s.Append(intBasePool.ToString(GlobalOptions.CultureInfo));
                 if (objSwapSkillAttribute.ImprovedName != "STR" &&
                     objSwapSkillAttribute.ImprovedName != "AGI") continue;
-                foreach (Cyberware cyberware in CharacterObject.Cyberware.Where(x =>
-                    x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
+                foreach (Cyberware cyberware in CharacterObject.Cyberware)
                 {
+                    if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
+                        continue;
                     s.Append(Environment.NewLine);
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                        s.AppendFormat("{0}{1}{2}", objSwapSkillAttribute.Exclude, LanguageManager.GetString("String_Colon"), strSpace);
-                    s.AppendFormat("{0}{1}",
+                        s.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}{2}", objSwapSkillAttribute.Exclude, LanguageManager.GetString("String_Colon"), strSpace);
+                    s.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}",
                         CharacterObject.GetObjectName(objSwapSkillAttribute),
                         strSpace);
-                    s.AppendFormat("{0}{1}{2} ", cyberware.Location, strSpace,
+                    s.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}{2} ", cyberware.Location, strSpace,
                         cyberware.CurrentDisplayNameShort);
                     if (cyberware.Grade.Name != "Standard")
                     {
-                        s.AppendFormat("({0}){1}", cyberware.Grade.CurrentDisplayName,
+                        s.AppendFormat(GlobalOptions.CultureInfo, "({0}){1}", cyberware.Grade.CurrentDisplayName,
                             strSpace);
                     }
 
@@ -1144,7 +1151,7 @@ namespace Chummer.Backend.Skills
                     }
                     else
                     {
-                        s.AppendFormat("{0}{1}(-2{1}{2})", intLoopPool - 2, strSpace,
+                        s.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}(-2{1}{2})", intLoopPool - 2, strSpace,
                             LanguageManager.GetString("Tip_Skill_OffHand"));
                     }
                 }

@@ -46,7 +46,6 @@ using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
 using Formatting = System.Xml.Formatting;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
@@ -115,8 +114,9 @@ namespace Chummer
         private string _strPlayerName = string.Empty;
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
+
         private static readonly string[] s_LstLimbStrings = { "skull", "torso", "arm", "leg" };
-        public static ReadOnlyCollection<string> LimbStrings => Array.AsReadOnly(s_LstLimbStrings);
+        public static ReadOnlyCollection<string> LimbStrings { get; } = Array.AsReadOnly(s_LstLimbStrings);
 
         // AI Home Node
 
@@ -1750,7 +1750,7 @@ namespace Chummer
 
 
                     //Plugins
-                    if (Program.PluginLoader?.MyActivePlugins?.Any() == true)
+                    if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
                     {
                         // <plugins>
                         objWriter.WriteStartElement("plugins");
@@ -5286,7 +5286,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        public List<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             StringBuilder strFilter = new StringBuilder();
             if(Options != null)
@@ -5423,7 +5423,7 @@ namespace Chummer
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
         /// <param name="blnMountChangeAllowed">Whether or not <paramref name="objModularCyberware"/> can change its mount</param>
         /// <returns></returns>
-        public IList<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
+        public List<ListItem> ConstructModularCyberlimbList(Cyberware objModularCyberware, out bool blnMountChangeAllowed)
         {
             if (objModularCyberware == null)
                 throw new ArgumentNullException(nameof(objModularCyberware));
@@ -6548,7 +6548,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public IList<Image> Mugshots => _lstMugshots;
+        public List<Image> Mugshots => _lstMugshots;
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -6913,7 +6913,7 @@ namespace Chummer
         /// <summary>
         /// Character's list of priority bonus skills.
         /// </summary>
-        public IList<string> PriorityBonusSkillList => _lstPrioritySkills;
+        public List<string> PriorityBonusSkillList => _lstPrioritySkills;
 
         /// <summary>
         /// Character's sex.
@@ -9875,12 +9875,12 @@ namespace Chummer
         /// <summary>
         /// Foci.
         /// </summary>
-        public IList<Focus> Foci => _lstFoci;
+        public List<Focus> Foci => _lstFoci;
 
         /// <summary>
         /// Stacked Foci.
         /// </summary>
-        public IList<StackedFocus> StackedFoci => _lstStackedFoci;
+        public List<StackedFocus> StackedFoci => _lstStackedFoci;
 
         /// <summary>
         /// Adept Powers.
@@ -10037,7 +10037,7 @@ namespace Chummer
         /// <summary>
         /// List of internal IDs that need their improvements re-applied.
         /// </summary>
-        public IList<string> InternalIdsNeedingReapplyImprovements => _lstInternalIdsNeedingReapplyImprovements;
+        public List<string> InternalIdsNeedingReapplyImprovements => _lstInternalIdsNeedingReapplyImprovements;
 
         #endregion
 
@@ -15622,8 +15622,9 @@ namespace Chummer
         }
 
         #region Hero Lab Importing
+
         private static readonly string[] s_LstHeroLabPluginNodeNames = { "modifications", "accessories", "ammunition", "programs", "othergear" };
-        public static ReadOnlyCollection<string> HeroLabPluginNodeNames => Array.AsReadOnly(s_LstHeroLabPluginNodeNames);
+        public static ReadOnlyCollection<string> HeroLabPluginNodeNames { get; } = Array.AsReadOnly(s_LstHeroLabPluginNodeNames);
 
         /// <summary>
         /// Load the Character from an XML file.

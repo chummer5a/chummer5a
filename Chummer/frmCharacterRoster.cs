@@ -191,7 +191,7 @@ namespace Chummer
                 lstFavoritesNodes = new TreeNode[lstFavorites.Count];
             }
 
-            IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
+            List<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             Dictionary<string,string> dicWatch = new Dictionary<string, string>();
             int intWatchFolderCount = 0;

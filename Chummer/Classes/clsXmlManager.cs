@@ -71,9 +71,10 @@ namespace Chummer
         static XmlManager()
         {
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo)
             {
-                s_LstDataDirectories.Add(objCustomDataDirectory.Path);
+                if (objCustomDataDirectory.Enabled)
+                    s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
         }
         #endregion
@@ -85,9 +86,10 @@ namespace Chummer
                 s_SetFilesWithCachedDocs.Clear();
             s_LstDataDirectories.Clear();
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
+            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo)
             {
-                s_LstDataDirectories.Add(objCustomDataDirectory.Path);
+                if (objCustomDataDirectory.Enabled)
+                    s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
         }
 
@@ -295,16 +297,16 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            ICollection<string> setDuplicateIDs = new HashSet<string>();
-            ICollection<string> lstItemsWithMalformedIDs = new List<string>(1);
+            HashSet<string> setDuplicateIDs = new HashSet<string>();
+            List<string> lstItemsWithMalformedIDs = new List<string>(1);
             // Key is ID, Value is a list of the names of all items with that ID.
             Dictionary<string, IList<string>> dicItemsWithIDs = new Dictionary<string, IList<string>>();
-            CheckIdNode(xmlParentNode, ref setDuplicateIDs, ref lstItemsWithMalformedIDs, ref dicItemsWithIDs);
+            CheckIdNode(xmlParentNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs);
 
             if (setDuplicateIDs.Count > 0)
             {
                 StringBuilder sbdDuplicatesNames = new StringBuilder();
-                foreach (IEnumerable<string> lstDuplicateNames in dicItemsWithIDs.Where(x => setDuplicateIDs.Contains(x.Key)).Select(x => x.Value))
+                foreach (IList<string> lstDuplicateNames in dicItemsWithIDs.Where(x => setDuplicateIDs.Contains(x.Key)).Select(x => x.Value))
                 {
                     if (sbdDuplicatesNames.Length != 0)
                         sbdDuplicatesNames.AppendLine();
@@ -327,7 +329,7 @@ namespace Chummer
             }
         }
 
-        private static void CheckIdNode(XmlNode xmlParentNode, ref ICollection<string> setDuplicateIDs, ref ICollection<string> lstItemsWithMalformedIDs, ref Dictionary<string, IList<string>> dicItemsWithIDs)
+        private static void CheckIdNode(XmlNode xmlParentNode, ICollection<string> setDuplicateIDs, ICollection<string> lstItemsWithMalformedIDs, IDictionary<string, IList<string>> dicItemsWithIDs)
         {
             using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
             {
@@ -360,7 +362,7 @@ namespace Chummer
                     }
 
                     // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
-                    CheckIdNode(xmlLoopNode, ref setDuplicateIDs, ref lstItemsWithMalformedIDs, ref dicItemsWithIDs);
+                    CheckIdNode(xmlLoopNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs);
                 }
             }
         }

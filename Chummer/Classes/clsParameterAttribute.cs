@@ -73,7 +73,6 @@ namespace Chummer
 
                 //double junk; //Not used, tryparse needs out
 
-                //LINQ magic to cast matchcollection to the double[]
                 List<double> lstValues = new List<double>(m2.Count);
                 foreach (Match objMatch in m2)
                 {

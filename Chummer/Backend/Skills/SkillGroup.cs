@@ -231,10 +231,13 @@ namespace Chummer.Backend.Skills
                             Skill objSkill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
                             if (objSkill != null)
                             {
-                                foreach (Skill objDisabledSkill in _lstAffectedSkills.Where(x => !x.Enabled))
+                                foreach (Skill objDisabledSkill in _lstAffectedSkills)
                                 {
-                                    objDisabledSkill.Karma = objSkill.Karma;
-                                    objDisabledSkill.Base = objSkill.Base;
+                                    if (!objDisabledSkill.Enabled)
+                                    {
+                                        objDisabledSkill.Karma = objSkill.Karma;
+                                        objDisabledSkill.Base = objSkill.Base;
+                                    }
                                 }
                             }
                         }
@@ -337,7 +340,12 @@ namespace Chummer.Backend.Skills
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
             objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => string.Compare(l.CurrentDisplayName, r.CurrentDisplayName, StringComparison.Ordinal),
-                (l, r) => { foreach (Skill x in r.SkillList.Where(y => !l.SkillList.Contains(y))) l.SkillList.Add(x); });
+                (l, r) =>
+                {
+                    foreach (Skill x in r.SkillList)
+                        if (!l.SkillList.Contains(x))
+                            l.SkillList.Add(x);
+                });
 
             return objNewGroup;
         }
@@ -678,7 +686,7 @@ namespace Chummer.Backend.Skills
                 int intReturn = BasePoints;
                 int intValue = intReturn;
 
-                List<string> lstRelevantCategories = GetRelevantSkillCategories.ToList();
+                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
@@ -728,7 +736,7 @@ namespace Chummer.Backend.Skills
                 else
                     intCost *= _objCharacter.Options.KarmaImproveSkillGroup;
 
-                List<string> lstRelevantCategories = GetRelevantSkillCategories.ToList();
+                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
@@ -784,7 +792,7 @@ namespace Chummer.Backend.Skills
                     return -1;
                 }
 
-                List<string> lstRelevantCategories = GetRelevantSkillCategories.ToList();
+                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
                 decimal decMultiplier = 1.0m;
                 int intExtra = 0;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
@@ -832,7 +840,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// List of skills that belong to this skill group.
         /// </summary>
-        public IList<Skill> SkillList => _lstAffectedSkills;
+        public List<Skill> SkillList => _lstAffectedSkills;
 
         #endregion
     }

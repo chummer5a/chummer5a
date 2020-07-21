@@ -93,7 +93,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
@@ -353,7 +353,7 @@ namespace Chummer
             objWriter.WriteElementString("preferredpayment", DisplayPreferredPaymentMethod(strLanguageToPrint));
             objWriter.WriteElementString("hobbiesvice", DisplayHobbiesViceMethod(strLanguageToPrint));
             objWriter.WriteElementString("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
-            objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType.ToString(), strLanguageToPrint));
+            objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType, strLanguageToPrint));
             objWriter.WriteElementString("forcedloyalty", ForcedLoyalty.ToString(objCulture));
             objWriter.WriteElementString("blackmail", Blackmail.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("family", Family.ToString(GlobalOptions.InvariantCultureInfo));
@@ -517,9 +517,12 @@ namespace Chummer
                     .SelectSingleNode("metavariants/metavariant[id = \"" + LinkedCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
 
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
-                strReturn += !string.IsNullOrEmpty(strMetatypeTranslate)
-                    ? LanguageManager.GetString("String_Space", strLanguage) + '(' + strMetatypeTranslate + ')'
-                    : LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage)
+                             + '('
+                             + (!string.IsNullOrEmpty(strMetatypeTranslate)
+                                 ? strMetatypeTranslate
+                                 : LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage))
+                             + ')';
             }
             else
                 strReturn = LanguageManager.TranslateExtra(strReturn, strLanguage);
@@ -1063,7 +1066,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public IList<Image> Mugshots
+        public List<Image> Mugshots
         {
             get
             {

@@ -2068,10 +2068,10 @@ namespace Chummer.Classes
             {
                 string strMode = nodSelect["type"]?.InnerText ?? "all";
 
-                List<Contact> lstSelectedContacts;
+                Contact[] lstSelectedContacts;
                 if (strMode == "all")
                 {
-                    lstSelectedContacts = new List<Contact>(_objCharacter.Contacts);
+                    lstSelectedContacts = _objCharacter.Contacts.ToArray();
                 }
                 else if (strMode == "group" || strMode == "nongroup")
                 {
@@ -2080,14 +2080,14 @@ namespace Chummer.Classes
 
                     //Select any contact where IsGroup equals blnGroup
                     //and add to a list
-                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
+                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToArray();
                 }
                 else
                 {
                     throw new AbortedException();
                 }
 
-                if (lstSelectedContacts.Count == 0)
+                if (lstSelectedContacts.Length == 0)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
                         LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2096,15 +2096,15 @@ namespace Chummer.Classes
 
                 int count = 0;
                 //Black magic LINQ to cast content of list to another type
-                List<ListItem> contacts = new List<ListItem>(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalOptions.InvariantCultureInfo), x.Name)));
-
-                frmSelect.SetGeneralItemsMode(contacts);
+                frmSelect.SetGeneralItemsMode(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalOptions.InvariantCultureInfo), x.Name)));
                 frmSelect.ShowDialog(Program.MainForm);
 
                 if (frmSelect.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
 
-                Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex) ? lstSelectedContacts[intIndex] : throw new AbortedException();
+                Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex)
+                    ? lstSelectedContacts[intIndex]
+                    : throw new AbortedException();
 
                 string strTemp = string.Empty;
                 if (nodSelect.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
@@ -4257,11 +4257,11 @@ namespace Chummer.Classes
 
                             SelectedValue = objNewPower.CurrentDisplayName;
 
-                            List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
+                            Power[] lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToArray();
 
-                            Log.Info("blnHasPower = " + (lstExistingPowersList.Count > 0).ToString(GlobalOptions.InvariantCultureInfo));
+                            Log.Info("blnHasPower = " + (lstExistingPowersList.Length > 0).ToString(GlobalOptions.InvariantCultureInfo));
 
-                            if (lstExistingPowersList.Count == 0)
+                            if (lstExistingPowersList.Length == 0)
                             {
                                 _objCharacter.Powers.Add(objNewPower);
                             }
@@ -5511,16 +5511,14 @@ namespace Chummer.Classes
             SelectedValue = string.Empty;
             if (nodeList != null)
             {
-                List<ListItem> itemList = (from XmlNode objNode in nodeList
-                    select new ListItem(objNode.InnerText,
-                        objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)).ToList();
-
                 using (frmSelectItem frmPickItem = new frmSelectItem
                 {
                     Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 })
                 {
-                    frmPickItem.SetGeneralItemsMode(itemList);
+                    frmPickItem.SetGeneralItemsMode(nodeList.Cast<XmlNode>()
+                        .Select(objNode =>
+                            new ListItem(objNode.InnerText, objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)));
 
                     Log.Info("_strLimitSelection = " + LimitSelection);
                     Log.Info("_strForcedValue = " + ForcedValue);
@@ -5983,15 +5981,17 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            List<string> options = bonusNode.InnerText.Split(',').Select(x => x.Trim()).ToList();
+            string[] options = bonusNode.InnerText.Split(',');
+            for (int i = 0; i < options.Length; ++i)
+                options[i] = options[i].Trim();
             string final;
-            if (options.Count == 0)
+            if (options.Length == 0)
             {
                 Utils.BreakIfDebug();
                 throw new AbortedException();
             }
 
-            if (options.Count == 1)
+            if (options.Length == 1)
             {
                 final = options[0];
             }

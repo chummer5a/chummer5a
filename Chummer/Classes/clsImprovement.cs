@@ -867,8 +867,18 @@ namespace Chummer
 
                     if (setAttributePropertiesChanged.Count > 0)
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        // Keeping two enumerations separate helps avoid extra heap allocations
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
+                        {
+                            if (objCharacterAttrib.Abbrev != strTargetAttribute)
+                                continue;
+                            foreach (string strPropertyName in setAttributePropertiesChanged)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                    strPropertyName);
+                            }
+                        }
+                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
                         {
                             if (objCharacterAttrib.Abbrev != strTargetAttribute)
                                 continue;
@@ -1143,11 +1153,9 @@ namespace Chummer
                 case ImprovementType.SwapSkillSpecAttribute:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
-                        (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>()
-                             .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
-                         (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                             x.Name == ImprovedName || x.CurrentDisplayName == ImprovedName));
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName)
+                            ?? _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                                x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1188,8 +1196,13 @@ namespace Chummer
                     break;
                 case ImprovementType.SkillsoftAccess:
                 {
-                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills.Concat(_objCharacter.SkillsSection
-                        .KnowledgeSkills))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
+                            nameof(Skill.CyberwareRating));
+                    }
+                    foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objSkill,
                             nameof(Skill.CyberwareRating));
@@ -1220,8 +1233,16 @@ namespace Chummer
                     break;
                 case ImprovementType.EssenceMax:
                 {
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(
-                        _objCharacter.AttributeSection.SpecialAttributeList))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        if (objCharacterAttrib.Abbrev == "ESS")
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.MetatypeMaximum));
+                        }
+                    }
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
                     {
                         if (objCharacterAttrib.Abbrev == "ESS")
                         {
@@ -1317,11 +1338,18 @@ namespace Chummer
                     break;
                 case ImprovementType.Attributelevel:
                 {
-                    string strTargetAttribute = ImprovedName;
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(
-                        _objCharacter.AttributeSection.SpecialAttributeList))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
                     {
-                        if (objCharacterAttrib.Abbrev == strTargetAttribute)
+                        if (objCharacterAttrib.Abbrev == ImprovedName)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.FreeBase));
+                        }
+                    }
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                    {
+                        if (objCharacterAttrib.Abbrev == ImprovedName)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.FreeBase));
@@ -1348,12 +1376,9 @@ namespace Chummer
                 case ImprovementType.Hardwire:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
-                        (_objCharacter.SkillsSection.Skills.OfType<ExoticSkill>()
-                             .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
-                         (Skill) _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                             x.InternalId == ImprovedName ||
-                             x.CurrentDisplayName == ImprovedName));
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName)
+                        ?? _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                            x.InternalId == ImprovedName || x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1383,8 +1408,9 @@ namespace Chummer
                     else
                     {
                         Skill objTargetSkill =
-                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
-                            _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == ImprovedName);
+                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName)
+                            ?? _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                                x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1396,11 +1422,9 @@ namespace Chummer
                 case ImprovementType.Skill:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
-                        _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>()
-                            .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName) ??
-                        _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                            x.Name == ImprovedName) as Skill;
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName)
+                        ?? _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                            x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1411,42 +1435,52 @@ namespace Chummer
                 case ImprovementType.SkillGroup:
                 case ImprovementType.BlockSkillDefault:
                 {
-                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills.Where(x =>
-                        x.SkillGroup == ImprovedName))
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.DisplayPool));
+                        if (objTargetSkill.SkillGroup == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.DisplayPool));
                     }
                 }
                     break;
                 case ImprovementType.SkillCategory:
                 {
-                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills
-                        .Concat(_objCharacter.SkillsSection.KnowledgeSkills)
-                        .Where(x => x.SkillCategory == ImprovedName))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.DisplayPool));
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.DisplayPool));
+                    }
+                    foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.DisplayPool));
                     }
                 }
                     break;
                 case ImprovementType.SkillLinkedAttribute:
                 {
-                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills
-                        .Concat(_objCharacter.SkillsSection.KnowledgeSkills)
-                        .Where(x => x.Attribute == ImprovedName))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.DisplayPool));
+                        if (objTargetSkill.Attribute == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.DisplayPool));
+                    }
+                    foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                    {
+                        if (objTargetSkill.Attribute == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.DisplayPool));
                     }
                 }
                     break;
                 case ImprovementType.SkillLevel:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ?? _objCharacter
-                            .SkillsSection.Skills.OfType<ExoticSkill>()
-                            .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1468,9 +1502,7 @@ namespace Chummer
                 case ImprovementType.SkillBase:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ?? _objCharacter
-                            .SkillsSection.Skills.OfType<ExoticSkill>()
-                            .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1492,7 +1524,7 @@ namespace Chummer
                 case ImprovementType.Skillsoft:
                 {
                     KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                        x.InternalId == ImprovedName || x.CurrentDisplayName == ImprovedName);
+                        x.InternalId == ImprovedName || x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1503,9 +1535,7 @@ namespace Chummer
                 case ImprovementType.Activesoft:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ?? _objCharacter
-                            .SkillsSection.Skills.OfType<ExoticSkill>()
-                            .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1515,11 +1545,20 @@ namespace Chummer
                     break;
                 case ImprovementType.ReplaceAttribute:
                 {
-                    string strTargetAttribute = ImprovedName;
-                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList.Concat(
-                        _objCharacter.AttributeSection.SpecialAttributeList))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
                     {
-                        if (objCharacterAttrib.Abbrev != strTargetAttribute) continue;
+                        if (objCharacterAttrib.Abbrev != ImprovedName)
+                            continue;
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            nameof(CharacterAttrib.MetatypeMaximum));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                            nameof(CharacterAttrib.MetatypeMinimum));
+                    }
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
+                    {
+                        if (objCharacterAttrib.Abbrev != ImprovedName)
+                            continue;
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
                             nameof(CharacterAttrib.MetatypeMaximum));
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
@@ -1554,9 +1593,7 @@ namespace Chummer
                 case ImprovementType.SkillSpecializationOption:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ?? _objCharacter
-                            .SkillsSection.Skills.OfType<ExoticSkill>()
-                            .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1679,9 +1716,7 @@ namespace Chummer
                 case ImprovementType.DisableSpecializationEffects:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ?? _objCharacter
-                            .SkillsSection.Skills.OfType<ExoticSkill>()
-                            .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1838,23 +1873,18 @@ namespace Chummer
                 case ImprovementType.AttributeKarmaCostMultiplier:
                 case ImprovementType.AttributeKarmaCost:
                 {
-                    if (!string.IsNullOrEmpty(ImprovedName))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
                     {
-                        string strTargetAttribute = ImprovedName;
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName)
                         {
-                            if (objCharacterAttrib.Abbrev == strTargetAttribute)
-                            {
-                                yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                                    nameof(CharacterAttrib.UpgradeKarmaCost));
-                            }
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.UpgradeKarmaCost));
                         }
                     }
-                    else
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
                                 nameof(CharacterAttrib.UpgradeKarmaCost));
@@ -1868,9 +1898,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
                         Skill objTargetSkill =
-                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
-                            _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>()
-                                .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1894,7 +1922,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
                         KnowledgeSkill objTargetSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                            x.Name == ImprovedName || x.CurrentDisplayName == ImprovedName);
+                            x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1949,9 +1977,7 @@ namespace Chummer
                 case ImprovementType.SkillDisable:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ?? _objCharacter
-                            .SkillsSection.Skills.OfType<ExoticSkill>()
-                            .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -1962,45 +1988,57 @@ namespace Chummer
                 case ImprovementType.SkillCategorySpecializationKarmaCost:
                 case ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
                 {
-                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills
-                        .Concat(_objCharacter.SkillsSection.KnowledgeSkills)
-                        .Where(x => x.SkillCategory == ImprovedName))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.CanAffordSpecialization));
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.CanAffordSpecialization));
+                    }
+                    foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.CanAffordSpecialization));
                     }
                 }
                     break;
                 case ImprovementType.SkillCategoryKarmaCost:
                 case ImprovementType.SkillCategoryKarmaCostMultiplier:
                 {
-                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills
-                        .Concat(_objCharacter.SkillsSection.KnowledgeSkills)
-                        .Where(x => x.SkillCategory == ImprovedName))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.UpgradeKarmaCost));
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.UpgradeKarmaCost));
+                    }
+                    foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.UpgradeKarmaCost));
                     }
                 }
                     break;
                 case ImprovementType.SkillGroupCategoryDisable:
                 {
-                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x =>
-                        x.GetRelevantSkillCategories.Contains(ImprovedName)))
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
-                            nameof(SkillGroup.IsDisabled));
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName))
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                                nameof(SkillGroup.IsDisabled));
                     }
                 }
                     break;
                 case ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
                 case ImprovementType.SkillGroupCategoryKarmaCost:
                 {
-                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x =>
-                        x.GetRelevantSkillCategories.Contains(ImprovedName)))
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
-                            nameof(SkillGroup.UpgradeKarmaCost));
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName))
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                                nameof(SkillGroup.UpgradeKarmaCost));
                     }
                 }
                     break;
@@ -2055,9 +2093,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(ImprovedName))
                     {
                         Skill objTargetSkill =
-                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == ImprovedName) ??
-                            _objCharacter.SkillsSection.Skills.OfType<ExoticSkill>()
-                                .FirstOrDefault(x => x.Name + " (" + x.Specific + ')' == ImprovedName);
+                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
@@ -2076,12 +2112,18 @@ namespace Chummer
                     break;
                 case ImprovementType.BlockSkillCategorySpecializations:
                 {
-                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills
-                        .Concat(_objCharacter.SkillsSection.KnowledgeSkills)
-                        .Where(x => x.SkillCategory == ImprovedName))
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.CanHaveSpecs));
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.CanHaveSpecs));
+                    }
+                    foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.CanHaveSpecs));
                     }
                 }
                     break;
@@ -2091,10 +2133,11 @@ namespace Chummer
                     break;
                 case ImprovementType.MagiciansWayDiscount:
                 {
-                    foreach (Power objLoopPower in _objCharacter.Powers.Where(x => x.AdeptWayDiscount != 0))
+                    foreach (Power objLoopPower in _objCharacter.Powers)
                     {
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objLoopPower,
-                            nameof(Power.AdeptWayDiscountEnabled));
+                        if (objLoopPower.AdeptWayDiscount != 0)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objLoopPower,
+                                nameof(Power.AdeptWayDiscountEnabled));
                     }
                 }
                     break;
@@ -3293,7 +3336,7 @@ namespace Chummer
             XmlNode nodBonus, int intRating = 1, string strFriendlyName = "", bool blnAddImprovementsToCharacter = true)
         {
             Log.Debug("CreateImprovements enter");
-            Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info("objImprovementSource = " + objImprovementSource);
             Log.Info("strSourceName = " + strSourceName);
             Log.Info("nodBonus = " + nodBonus?.OuterXml);
             Log.Info("intRating = " + intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -4133,18 +4176,20 @@ namespace Chummer
                 return 0;
             }
 
-            Log.Info("objImprovementSource = " + objImprovementSource.ToString());
+            Log.Info("objImprovementSource = " + objImprovementSource);
             Log.Info("strSourceName = " + strSourceName);
             // A List of Improvements to hold all of the items that will eventually be deleted.
-            List<Improvement> objImprovementList = string.IsNullOrEmpty(strSourceName)
-                ? objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList()
-                : objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
+            List<Improvement> objImprovementList = (string.IsNullOrEmpty(strSourceName)
+                ? objCharacter.Improvements.Where(objImprovement =>
+                    objImprovement.ImproveSource == objImprovementSource)
+                : objCharacter.Improvements.Where(objImprovement =>
+                    objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName)).ToList();
             // Compatibility fix for when blnConcatSelectedValue was around
             if (strSourceName.IsGuid())
             {
-                var space = LanguageManager.GetString("String_Space");
+                string strSpace = LanguageManager.GetString("String_Space");
                 objImprovementList.AddRange(objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource &&
-                    (objImprovement.SourceName.StartsWith(strSourceName + space, StringComparison.Ordinal) || objImprovement.SourceName.StartsWith(strSourceName + " ", StringComparison.Ordinal))));
+                    (objImprovement.SourceName.StartsWith(strSourceName + strSpace, StringComparison.Ordinal) || objImprovement.SourceName.StartsWith(strSourceName + " ", StringComparison.Ordinal))));
             }
             return RemoveImprovements(objCharacter, objImprovementList);
         }
@@ -4538,11 +4583,11 @@ namespace Chummer
             Log.Info(
                 "strImprovedName = " + strImprovedName);
             Log.Info(
-                "objImprovementSource = " + objImprovementSource.ToString());
+                "objImprovementSource = " + objImprovementSource);
             Log.Info(
                 "strSourceName = " + strSourceName);
             Log.Info(
-                "objImprovementType = " + objImprovementType.ToString());
+                "objImprovementType = " + objImprovementType);
             Log.Info( "strUnique = " + strUnique);
             Log.Info(
                 "intValue = " + intValue.ToString(GlobalOptions.InvariantCultureInfo));

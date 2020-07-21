@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Attributes;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -2031,7 +2032,7 @@ namespace Chummer.Backend.Equipment
             set => _strModAttributeArray = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.Cast<IHasMatrixAttributes>().ToList();
+        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.Cast<IHasMatrixAttributes>().ToList();
 
         /// <summary>
         /// Commlink's Limit for how many Programs they can run.
@@ -2111,10 +2112,10 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
-                _objCachedMyXmlNode = !string.IsNullOrWhiteSpace(strName)
-                    ? objDoc.SelectSingleNode("/chummer/gears/gear[(name = \"" + strName + "\" and category = \"" + strCategory + "\")]")
-                    : objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant()
-                                              + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
+                _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
+                    ? "/chummer/gears/gear[(name = \"" + strName + "\" and category = \"" + strCategory + "\")]"
+                    : "/chummer/gears/gear[(id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant()
+                      + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
@@ -2169,13 +2170,17 @@ namespace Chummer.Backend.Equipment
                 objAvail.CheapReplace(strAvail, "MinRating", () => MinRatingValue.ToString(GlobalOptions.InvariantCultureInfo));
                 objAvail.CheapReplace(strAvail, "Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 objAvail.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                // Keeping enumerations separate reduces heap allocations
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                 {
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                     objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
                 }
-
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                {
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    objAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                }
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
@@ -2386,13 +2391,17 @@ namespace Chummer.Backend.Equipment
                 objCost.Replace("Parent Rating", (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Parent Cost", decParentCost.ToString(GlobalOptions.InvariantCultureInfo));
-
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                // Keeping enumerations separate reduces heap allocations
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                 {
                     objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
                     objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
                 }
-
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                {
+                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    objCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
                 decimal decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
@@ -2619,32 +2628,29 @@ namespace Chummer.Backend.Equipment
         {
             if (_nodWeaponBonus == null)
                 return string.Empty;
-            else
+            string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            // Use the damagereplace value if applicable.
+            if (strReturn == "0")
             {
-                string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
-                // Use the damagereplace value if applicable.
-                if (strReturn == "0")
-                {
-                    // Use the damage bonus if available, otherwise use 0.
-                    strReturn = _nodWeaponBonus["damage"]?.InnerText ?? "0";
+                // Use the damage bonus if available, otherwise use 0.
+                strReturn = _nodWeaponBonus["damage"]?.InnerText ?? "0";
 
-                    // Attach the type if applicable.
-                    strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                // Attach the type if applicable.
+                strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
-                    // If this does not start with "-", add a "+" to the string.
-                    if (!strReturn.StartsWith('-'))
-                        strReturn = '+' + strReturn;
-                }
-
-                // Translate the Avail string.
-                if (strLanguage != GlobalOptions.DefaultLanguage)
-                {
-                    strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                        .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
-                }
-
-                return strReturn;
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
             }
+
+            // Translate the Avail string.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
+                strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+            }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -2656,18 +2662,15 @@ namespace Chummer.Backend.Equipment
             {
                 if (_nodWeaponBonus == null)
                     return string.Empty;
-                else
-                {
-                    // Use the apreplace value if applicable.
-                    // Use the ap bonus if available, otherwise use 0.
-                    string strReturn = _nodWeaponBonus["apreplace"]?.InnerText ?? _nodWeaponBonus["ap"]?.InnerText ?? "0";
+                // Use the apreplace value if applicable.
+                // Use the ap bonus if available, otherwise use 0.
+                string strReturn = _nodWeaponBonus["apreplace"]?.InnerText ?? _nodWeaponBonus["ap"]?.InnerText ?? "0";
 
-                    // If this does not start with "-", add a "+" to the string.
-                    if (!strReturn.StartsWith('-'))
-                        strReturn = '+' + strReturn;
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
 
-                    return strReturn;
-                }
+                return strReturn;
             }
         }
 
@@ -2683,32 +2686,29 @@ namespace Chummer.Backend.Equipment
         {
             if (_nodFlechetteWeaponBonus == null)
                 return string.Empty;
-            else
+            string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            // Use the damagereplace value if applicable.
+            if (strReturn == "0")
             {
-                string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
-                // Use the damagereplace value if applicable.
-                if (strReturn == "0")
-                {
-                    // Use the damage bonus if available, otherwise use 0.
-                    strReturn = _nodFlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+                // Use the damage bonus if available, otherwise use 0.
+                strReturn = _nodFlechetteWeaponBonus["damage"]?.InnerText ?? "0";
 
-                    // Attach the type if applicable.
-                    strReturn += _nodFlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                // Attach the type if applicable.
+                strReturn += _nodFlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
-                    // If this does not start with "-", add a "+" to the string.
-                    if (!strReturn.StartsWith('-'))
-                        strReturn = '+' + strReturn;
-                }
-
-                // Translate the Avail string.
-                if (strLanguage != GlobalOptions.DefaultLanguage)
-                {
-                    strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                        .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
-                }
-
-                return strReturn;
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
             }
+
+            // Translate the Avail string.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
+                strReturn = strReturn.CheapReplace("P", () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                    .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+            }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -2720,18 +2720,15 @@ namespace Chummer.Backend.Equipment
             {
                 if (_nodFlechetteWeaponBonus == null)
                     return string.Empty;
-                else
-                {
-                    // Use the apreplace value if applicable.
-                    // Use the ap bonus if available, otherwise use 0.
-                    string strReturn = _nodFlechetteWeaponBonus["apreplace"]?.InnerText ?? _nodFlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+                // Use the apreplace value if applicable.
+                // Use the ap bonus if available, otherwise use 0.
+                string strReturn = _nodFlechetteWeaponBonus["apreplace"]?.InnerText ?? _nodFlechetteWeaponBonus["ap"]?.InnerText ?? "0";
 
-                    // If this does not start with "-", add a "+" to the string.
-                    if (!strReturn.StartsWith('-'))
-                        strReturn = '+' + strReturn;
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
 
-                    return strReturn;
-                }
+                return strReturn;
             }
         }
 
@@ -3069,7 +3066,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Collection of TreeNodes to update when a relevant property is changed
         /// </summary>
-        public ICollection<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
+        public HashSet<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
 
         /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.
@@ -3605,7 +3602,7 @@ namespace Chummer.Backend.Equipment
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)

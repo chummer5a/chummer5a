@@ -223,7 +223,7 @@ namespace Chummer.Plugins
                 catalog = new AggregateCatalog();
 
                 var plugindirectories = Directory.GetDirectories(path);
-                if (!plugindirectories.Any())
+                if (plugindirectories.Length > 0)
                 {
                     throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
                 }
@@ -319,9 +319,9 @@ namespace Chummer.Plugins
         }
 
         [ImportMany(typeof(IPlugin))]
-        public ICollection<IPlugin> MyPlugins { get; } = new List<IPlugin>();
+        public List<IPlugin> MyPlugins { get; } = new List<IPlugin>();
 
-        public ICollection<IPlugin> MyActivePlugins
+        public List<IPlugin> MyActivePlugins
         {
             get
             {

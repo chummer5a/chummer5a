@@ -773,7 +773,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.ToList().Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole"))
+                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole").ToList())
                     {
                         LifestyleQualities.Remove(objQuality);
                     }
