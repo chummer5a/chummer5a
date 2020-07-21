@@ -1030,6 +1030,30 @@
       <key>String_Weapon</key>
       <text>Weapon</text>
     </string>
+    <string>
+      <key>String_ContactPoints</key>
+      <text>Contact Points</text>
+    </string>
+    <string>
+      <key>String_KnowledgePoints</key>
+      <text>Knowledge Points</text>
+    </string>
+    <string>
+      <key>String_Skull</key>
+      <text>Skull</text>
+    </string>
+    <string>
+      <key>String_Torso</key>
+      <text>Torso</text>
+    </string>
+    <string>
+      <key>String_Arms</key>
+      <text>Arms</text>
+    </string>
+    <string>
+      <key>String_Legs</key>
+      <text>Legs</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
@@ -8132,8 +8156,52 @@
     <!-- End Region-->
     <!-- Region Character Options -->
     <string>
+      <key>Label_CharacterOptions_CharacterCreationSettings</key>
+      <text>Character Creation Settings</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Printing</key>
+      <text>Printing</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_OptionsOfficialRules</key>
+      <text>Options for Official Rules</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Cyberlimbs</key>
+      <text>Cyberlimbs</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_DecimalsAndRounding</key>
+      <text>Decimals and Rounding</text>
+    </string>
+    <string>
       <key>Label_CharacterOptions_CustomData</key>
       <text>Custom Data Directories to Use</text>
+    </string>
+    <string>
+      <key>Button_ChangeCustomDataEntries</key>
+      <text>Change Custom Data Entries</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Combat</key>
+      <text>Combat</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MagicAndResonance</key>
+      <text>Magic and Resonance</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_PriorityTable</key>
+      <text>Priority Table</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_AllowedCyberwareGrades</key>
+      <text>Allowed Cyberware Grades</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_RedlinerLimbs</key>
+      <text>Limbs Considered by Redliner:</text>
     </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->
