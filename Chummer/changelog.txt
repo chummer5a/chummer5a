@@ -61,6 +61,7 @@ Data Changes:
 - The Telestrian Shamus' X-Ray Sensor Function can no longer be purchased separately. A custom ruleset has been added that restores the old behavior of the X-Ray Sensor Function, letting it be purchased as a regular sensor function.
 - The Hammerli Gemini and other pistols with a base Concealability modifier greater than 0 now get the appropriate Chameleon Coating weapon mod available to them.
 - Stick-n-Shock Flechette Rounds now properly adjust the damage types of weapons that can only fire flechette rounds.
+- Added a customdata rule to allow the Ammo Skip system to use the Internal slot or the Under slot. The Under slot is still consumed preferentially, but allows weapons without the Under mount (ie revolvers) to take it.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
