@@ -28,13 +28,21 @@
       "applicationUrl": "http://localhost:5000;https://localhost:5001"
     },
     "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}",
-      "environmentVariables": {
-        "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONENABLED": "false",
-        "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONVAULT": "https://SINners-0-kv.vault.azure.net"
-      }
+        "commandName": "Docker",
+        "launchBrowser": true,
+        "_launchUrl": "{Scheme}://{ServiceHost}",
+        "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+        "environmentVariables": {
+            "ASPNETCORE_URLS": "https://+:443;http://+:80",
+            "ASPNETCORE_HTTPS_PORT": "44330",
+            "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONENABLED": "false",
+            "ConnectionStrings:MasterSqlConnection": "Data Source=tcp:sinnersdbserver.database.windows.net,1433;Initial Catalog=SINners_DB_Beta_5;User Id=ArchonMegalon@sinnersdbserver;Password=2Fast4You",
+            "ConnectionStrings:DefaultConnection": "Data Source=tcp:sinnersdbserver.database.windows.net,1433;Initial Catalog=SINners_DB_Beta_5;User Id=ArchonMegalon@sinnersdbserver;Password=2Fast4You",
+            "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONVAULT": "https://SINners-0-kv.vault.azure.net"
+        },
+        "httpPort": 10000,
+        "useSSL": true,
+        "sslPort": 44330
     }
   }
 }

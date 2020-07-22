@@ -457,16 +457,16 @@ namespace ChummerHub
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            //app.UseSwaggerUI(options =>
-            //{
-            //    //options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            //    //c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
-            //    // build a swagger endpoint for each discovered API version
-            //    foreach (var description in provider.ApiVersionDescriptions)
-            //    {
-            //        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-            //    }
-            //});
+            app.UseSwaggerUI(options =>
+            {
+                //options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                //c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
+                // build a swagger endpoint for each discovered API version
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                }
+            });
 
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())
