@@ -111,7 +111,13 @@ namespace Chummer
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            // TODO: Prompt to confirm delete
+            // Verify that the user wants to delete this setting
+            if (Program.MainForm.ShowMessageBox(
+                string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CharacterOptions_ConfirmDelete"),
+                    _objReferenceCharacterOptions.Name),
+                LanguageManager.GetString("MessageTitle_Options_ConfirmDelete"),
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
 
             try
             {
@@ -128,7 +134,9 @@ namespace Chummer
                                                                                                                            && x.Value.BuildMethod == _objReferenceCharacterOptions.BuildMethod);
             foreach (Character objCharacter in Program.MainForm.OpenCharacters.Where(x => x.CharacterOptionsKey == _objReferenceCharacterOptions.FileName))
                 objCharacter.CharacterOptionsKey = kvpReplacementOption.Key;
-            _blnDirty = false;
+            _objReferenceCharacterOptions = kvpReplacementOption.Value;
+            _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
+            IsDirty = false;
             PopulateSettingsList();
         }
 
@@ -144,7 +152,7 @@ namespace Chummer
                 _objReferenceCharacterOptions = objNewCharacterOptions;
                 cmdSaveAs.Enabled = false;
                 cmdSave.Enabled = false;
-                _blnDirty = false;
+                IsDirty = false;
             }
         }
 
@@ -155,7 +163,7 @@ namespace Chummer
                 _objReferenceCharacterOptions.CopyValues(_objCharacterOptions);
                 cmdSaveAs.Enabled = false;
                 cmdSave.Enabled = false;
-                _blnDirty = false;
+                IsDirty = false;
             }
         }
 
@@ -167,9 +175,13 @@ namespace Chummer
             if(string.IsNullOrEmpty(strSelectedFile) || !OptionsManager.LoadedCharacterOptions.TryGetValue(strSelectedFile, out CharacterOptions objNewOption))
                 return;
 
-            if (_blnDirty)
+            if (IsDirty)
             {
-                // TODO: Prompt to cancel if dirty
+                string text = LanguageManager.GetString("Message_CharacterOptions_UnsavedDirty");
+                string caption = LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty");
+
+                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
             }
 
             _blnLoading = true;
@@ -177,23 +189,23 @@ namespace Chummer
             _objCharacterOptions.CopyValues(objNewOption);
             PopulateOptions();
             _blnLoading = false;
-            _blnDirty = false;
+            IsDirty = false;
         }
 
         private void cmdRestoreDefaults_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to reset these values.
-            if(MessageBox.Show(
+            if(Program.MainForm.ShowMessageBox(
                 LanguageManager.GetString("Message_Options_RestoreDefaults"),
                 LanguageManager.GetString("MessageTitle_Options_RestoreDefaults"),
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             _blnLoading = true;
             _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
             PopulateOptions();
-            _blnDirty = false;
             _blnLoading = false;
+            IsDirty = false;
         }
 
         private void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
@@ -223,18 +235,20 @@ namespace Chummer
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (_blnDirty)
+            if (IsDirty)
             {
-                // TODO: Prompt to save if dirty
-                string text = LanguageManager.GetString("Message_Options_SaveForms");
-                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
+                string text = LanguageManager.GetString("Message_CharacterOptions_UnsavedDirty");
+                string caption = LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty");
 
-                if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
+
+                DialogResult = DialogResult.Cancel;
             }
-            DialogResult = DialogResult.Cancel;
+            else
+                DialogResult = DialogResult.OK;
         }
 
         private void cmdEnableSourcebooks_Click(object sender, EventArgs e)
@@ -872,8 +886,8 @@ namespace Chummer
         {
             if (!_blnLoading)
             {
-                _blnDirty = !_objCharacterOptions.Equals(_objReferenceCharacterOptions);
-                cmdSaveAs.Enabled = _blnDirty && IsAllTextBoxesLegal;
+                IsDirty = !_objCharacterOptions.Equals(_objReferenceCharacterOptions);
+                cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
                 cmdSave.Enabled = cmdSaveAs.Enabled && !_objCharacterOptions.BuiltInOption;
                 if (e.PropertyName == nameof(CharacterOptions.EnabledCustomDataDirectoryPaths))
                     PopulateOptions();
@@ -894,7 +908,7 @@ namespace Chummer
             else if (e.PropertyName == nameof(CharacterOptions.PriorityArray)
                      || e.PropertyName == nameof(CharacterOptions.BuildMethod))
             {
-                cmdSaveAs.Enabled = _blnDirty && IsAllTextBoxesLegal;
+                cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
                 cmdSave.Enabled = cmdSaveAs.Enabled
                                   && !_objCharacterOptions.BuiltInOption
                                   && (_objReferenceCharacterOptions.BuildMethod == _objCharacterOptions.BuildMethod
@@ -944,6 +958,18 @@ namespace Chummer
             }
         }
 
+        private bool IsDirty
+        {
+            get => _blnDirty;
+            set
+            {
+                if (_blnDirty != value)
+                {
+                    _blnDirty = value;
+                    cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
+                }
+            }
+        }
         #endregion
     }
 }

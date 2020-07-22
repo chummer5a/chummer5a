@@ -284,7 +284,7 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
+            this.cmdOK = new System.Windows.Forms.Button();
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
@@ -3808,7 +3808,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpButtons.Controls.Add(this.cmdDelete, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdCancel, 4, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 4, 0);
             this.tlpButtons.Controls.Add(this.cmdRestoreDefaults, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdSave, 3, 0);
             this.tlpButtons.Controls.Add(this.cmdSaveAs, 2, 0);
@@ -3834,21 +3834,21 @@ namespace Chummer
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
-            // cmdCancel
+            // cmdOK
             // 
-            this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdCancel.Location = new System.Drawing.Point(399, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(96, 23);
-            this.cmdCancel.TabIndex = 6;
-            this.cmdCancel.Tag = "String_Cancel";
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(399, 0);
+            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Name = "cmdOK";
+            this.cmdOK.Size = new System.Drawing.Size(96, 23);
+            this.cmdOK.TabIndex = 6;
+            this.cmdOK.Tag = "String_OK";
+            this.cmdOK.Text = "Cancel";
+            this.cmdOK.UseVisualStyleBackColor = true;
+            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
             // cmdRestoreDefaults
             // 
@@ -4253,7 +4253,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkUsePointsOnBrokenGroups;
         private System.Windows.Forms.CheckBox chkUnclampAttributeMinimum;
         private System.Windows.Forms.Button cmdSave;
-        private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.FlowLayoutPanel flpKarmaInitiation;
         private System.Windows.Forms.GroupBox gpbSourcebook;
         private System.Windows.Forms.FlowLayoutPanel flpBasicOptions;

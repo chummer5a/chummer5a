@@ -8203,6 +8203,22 @@
       <key>Label_CharacterOptions_RedlinerLimbs</key>
       <text>Limbs Considered by Redliner:</text>
     </string>
+    <string>
+      <key>Message_CharacterOptions_UnsavedDirty</key>
+      <text>You currently have unsaved changes in your currently selected setting. Are you sure you want to lose your changes?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_UnsavedDirty</key>
+      <text>Unsaved Changes</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_ConfirmDelete</key>
+      <text>This action will permanently delete the setting {0}. Are you sure that you wish to proceed?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_ConfirmDelete</key>
+      <text>Confirm Delete</text>
+    </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>
