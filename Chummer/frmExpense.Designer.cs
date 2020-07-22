@@ -106,7 +106,7 @@ namespace Chummer
             this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtDescription.Location = new System.Drawing.Point(88, 55);
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(278, 20);
+            this.txtDescription.Size = new System.Drawing.Size(355, 20);
             this.txtDescription.TabIndex = 7;
             this.txtDescription.Text = "Mission Reward";
             // 
@@ -158,7 +158,7 @@ namespace Chummer
             this.datDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.datDate.Location = new System.Drawing.Point(88, 29);
             this.datDate.Name = "datDate";
-            this.datDate.Size = new System.Drawing.Size(278, 20);
+            this.datDate.Size = new System.Drawing.Size(355, 20);
             this.datDate.TabIndex = 5;
             // 
             // lblDateLabel
@@ -248,7 +248,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(369, 180);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 183);
             this.tableLayoutPanel1.TabIndex = 12;
             // 
             // flpAmount
@@ -262,7 +262,7 @@ namespace Chummer
             this.flpAmount.Location = new System.Drawing.Point(85, 0);
             this.flpAmount.Margin = new System.Windows.Forms.Padding(0);
             this.flpAmount.Name = "flpAmount";
-            this.flpAmount.Size = new System.Drawing.Size(284, 26);
+            this.flpAmount.Size = new System.Drawing.Size(361, 26);
             this.flpAmount.TabIndex = 13;
             // 
             // flpButtons
@@ -274,7 +274,7 @@ namespace Chummer
             this.flpButtons.Controls.Add(this.cmdOK);
             this.flpButtons.Controls.Add(this.cmdCancel);
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(210, 154);
+            this.flpButtons.Location = new System.Drawing.Point(287, 157);
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Size = new System.Drawing.Size(156, 23);
             this.flpButtons.TabIndex = 12;
@@ -298,13 +298,12 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(387, 198);
+            this.ClientSize = new System.Drawing.Size(464, 201);
             this.Controls.Add(this.tableLayoutPanel1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(640, 10000);
             this.MinimizeBox = false;
             this.Name = "frmExpense";
             this.Padding = new System.Windows.Forms.Padding(9);

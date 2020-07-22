@@ -600,7 +600,6 @@ namespace Chummer
             this.Controls.Add(this.tlpMetatypes);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(768, 10000);
             this.MinimizeBox = false;
             this.Name = "frmKarmaMetatype";
             this.Padding = new System.Windows.Forms.Padding(9);
