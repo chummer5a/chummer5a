@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <!--AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel-->
     <UserSecretsId>572ea518-a8ec-422d-b9f3-8817088ece8c</UserSecretsId>
     <AssemblyVersion>1.1.0.1</AssemblyVersion>
@@ -87,6 +87,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
   
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+  
+    <PackageReference Include="NuGet.CommandLine" Version="5.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Sendgrid" Version="9.18.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
     <PackageReference Include="Serilog" Version="2.9.0" />

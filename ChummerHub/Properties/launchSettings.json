@@ -33,16 +33,17 @@
         "_launchUrl": "{Scheme}://{ServiceHost}",
         "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
         "environmentVariables": {
-            "ASPNETCORE_URLS": "https://+:443;http://+:80",
-            "ASPNETCORE_HTTPS_PORT": "44330",
+            "_ASPNETCORE_URLS": "https://+:443;http://+:80",
+            "_ASPNETCORE_HTTPS_PORT": "44330",
             "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONENABLED": "false",
             "ConnectionStrings:MasterSqlConnection": "Data Source=tcp:sinnersdbserver.database.windows.net,1433;Initial Catalog=SINners_DB_Beta_5;User Id=ArchonMegalon@sinnersdbserver;Password=2Fast4You",
             "ConnectionStrings:DefaultConnection": "Data Source=tcp:sinnersdbserver.database.windows.net,1433;Initial Catalog=SINners_DB_Beta_5;User Id=ArchonMegalon@sinnersdbserver;Password=2Fast4You",
             "ASPNETCORE_HOSTINGSTARTUP__KEYVAULT__CONFIGURATIONVAULT": "https://SINners-0-kv.vault.azure.net"
         },
-        "httpPort": 10000,
+        "publishAllPorts": true,
+        "_httpPort": 10000,
         "useSSL": true,
-        "sslPort": 44330
+        "_sslPort": 44330
     }
   }
 }
