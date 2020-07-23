@@ -46,7 +46,7 @@ namespace Chummer
         private bool _blnQueueRefresherRun;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
         private bool _blnQueueOutputGeneratorRun;
-        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),Guid.NewGuid() + ".htm");
+        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Guid.NewGuid() + ".htm");
         #region Control Events
         public frmViewer()
         {
@@ -186,6 +186,10 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
+            if (!strSaveFile.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
+                && !strSaveFile.EndsWith(".htm", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".htm";
+
             using (TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
                 objWriter.Write(webBrowser1.DocumentText);
         }
@@ -200,6 +204,9 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
+
+            if (!strSaveFile.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".xml";
 
             try
             {
@@ -491,6 +498,9 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
+
+            if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".pdf";
 
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
             {
