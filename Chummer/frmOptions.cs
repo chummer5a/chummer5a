@@ -124,7 +124,9 @@ namespace Chummer
             if(!_blnLoading)
             {
                 Cursor = Cursors.WaitCursor;
+                _blnLoading = true;
                 TranslateForm();
+                _blnLoading = false;
                 Cursor = Cursors.Default;
             }
 
@@ -673,9 +675,9 @@ namespace Chummer
 
             cboUseLoggingApplicationInsights.BeginUpdate();
             cboUseLoggingApplicationInsights.DataSource = null;
-            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
             cboUseLoggingApplicationInsights.ValueMember = nameof(ListItem.Value);
             cboUseLoggingApplicationInsights.DisplayMember = nameof(ListItem.Name);
+            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
 
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
@@ -1284,6 +1286,8 @@ namespace Chummer
 
         private void cboMugshotCompression_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
             nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
             OptionsChanged(sender, e);
         }

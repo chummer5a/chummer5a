@@ -83,8 +83,8 @@ namespace Chummer
             // 
             this.lblAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAmmoLabel.AutoSize = true;
-            this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Location = new System.Drawing.Point(3, 34);
+            this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Name = "lblAmmoLabel";
             this.lblAmmoLabel.Size = new System.Drawing.Size(38, 13);
             this.lblAmmoLabel.TabIndex = 1;
@@ -154,7 +154,6 @@ namespace Chummer
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(360, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectItem";
             this.Padding = new System.Windows.Forms.Padding(9);

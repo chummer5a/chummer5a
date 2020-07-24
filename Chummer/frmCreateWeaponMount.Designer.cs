@@ -94,8 +94,8 @@ namespace Chummer
             // 
             this.lblVisbility.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVisbility.AutoSize = true;
-            this.lblVisbility.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVisbility.Location = new System.Drawing.Point(311, 63);
+            this.lblVisbility.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVisbility.Name = "lblVisbility";
             this.lblVisbility.Size = new System.Drawing.Size(44, 13);
             this.lblVisbility.TabIndex = 21;
@@ -119,8 +119,8 @@ namespace Chummer
             // 
             this.lblControl.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblControl.AutoSize = true;
-            this.lblControl.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblControl.Location = new System.Drawing.Point(312, 90);
+            this.lblControl.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblControl.Name = "lblControl";
             this.lblControl.Size = new System.Drawing.Size(43, 13);
             this.lblControl.TabIndex = 23;
@@ -144,8 +144,8 @@ namespace Chummer
             // 
             this.lblSize.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSize.AutoSize = true;
-            this.lblSize.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSize.Location = new System.Drawing.Point(325, 36);
+            this.lblSize.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSize.Name = "lblSize";
             this.lblSize.Size = new System.Drawing.Size(30, 13);
             this.lblSize.TabIndex = 25;
@@ -169,8 +169,8 @@ namespace Chummer
             // 
             this.lblFlexibility.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFlexibility.AutoSize = true;
-            this.lblFlexibility.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlexibility.Location = new System.Drawing.Point(304, 117);
+            this.lblFlexibility.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlexibility.Name = "lblFlexibility";
             this.lblFlexibility.Size = new System.Drawing.Size(51, 13);
             this.lblFlexibility.TabIndex = 27;
@@ -194,8 +194,8 @@ namespace Chummer
             // 
             this.lblAvailabilityLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAvailabilityLabel.AutoSize = true;
+            this.lblAvailabilityLabel.Location = new System.Drawing.Point(322, 143);
             this.lblAvailabilityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblAvailabilityLabel.Location = new System.Drawing.Point(322, 137);
             this.lblAvailabilityLabel.Name = "lblAvailabilityLabel";
             this.lblAvailabilityLabel.Size = new System.Drawing.Size(33, 13);
             this.lblAvailabilityLabel.TabIndex = 30;
@@ -207,8 +207,8 @@ namespace Chummer
             // 
             this.lblCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCostLabel.AutoSize = true;
+            this.lblCostLabel.Location = new System.Drawing.Point(324, 193);
             this.lblCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCostLabel.Location = new System.Drawing.Point(324, 185);
             this.lblCostLabel.Name = "lblCostLabel";
             this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblCostLabel.TabIndex = 29;
@@ -221,8 +221,8 @@ namespace Chummer
             this.lblAvailability.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblAvailability.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblAvailability, 2);
+            this.lblAvailability.Location = new System.Drawing.Point(361, 143);
             this.lblAvailability.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblAvailability.Location = new System.Drawing.Point(361, 142);
             this.lblAvailability.Name = "lblAvailability";
             this.lblAvailability.Size = new System.Drawing.Size(19, 13);
             this.lblAvailability.TabIndex = 32;
@@ -235,8 +235,8 @@ namespace Chummer
             this.lblCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCost.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblCost, 2);
+            this.lblCost.Location = new System.Drawing.Point(361, 193);
             this.lblCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCost.Location = new System.Drawing.Point(361, 190);
             this.lblCost.Name = "lblCost";
             this.lblCost.Size = new System.Drawing.Size(19, 13);
             this.lblCost.TabIndex = 31;
@@ -249,8 +249,8 @@ namespace Chummer
             this.lblSlots.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSlots.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblSlots, 2);
+            this.lblSlots.Location = new System.Drawing.Point(361, 168);
             this.lblSlots.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSlots.Location = new System.Drawing.Point(361, 166);
             this.lblSlots.Name = "lblSlots";
             this.lblSlots.Size = new System.Drawing.Size(13, 13);
             this.lblSlots.TabIndex = 34;
@@ -262,8 +262,8 @@ namespace Chummer
             // 
             this.lblSlotsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSlotsLabel.AutoSize = true;
+            this.lblSlotsLabel.Location = new System.Drawing.Point(322, 168);
             this.lblSlotsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSlotsLabel.Location = new System.Drawing.Point(322, 161);
             this.lblSlotsLabel.Name = "lblSlotsLabel";
             this.lblSlotsLabel.Size = new System.Drawing.Size(33, 13);
             this.lblSlotsLabel.TabIndex = 33;
@@ -276,9 +276,9 @@ namespace Chummer
             this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeItem.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkFreeItem, 3);
-            this.chkFreeItem.Location = new System.Drawing.Point(304, 212);
+            this.chkFreeItem.Location = new System.Drawing.Point(304, 215);
             this.chkFreeItem.Name = "chkFreeItem";
-            this.chkFreeItem.Size = new System.Drawing.Size(50, 24);
+            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
             this.chkFreeItem.TabIndex = 59;
             this.chkFreeItem.Tag = "Checkbox_Free";
             this.chkFreeItem.Text = "Free!";
@@ -289,7 +289,7 @@ namespace Chummer
             // 
             this.nudMarkup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMarkup.DecimalPlaces = 2;
-            this.nudMarkup.Location = new System.Drawing.Point(361, 242);
+            this.nudMarkup.Location = new System.Drawing.Point(361, 238);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -309,8 +309,8 @@ namespace Chummer
             // 
             this.lblMarkupPercentLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMarkupPercentLabel.AutoSize = true;
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(443, 241);
             this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(443, 245);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblMarkupPercentLabel.TabIndex = 64;
@@ -321,8 +321,8 @@ namespace Chummer
             // 
             this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMarkupLabel.AutoSize = true;
+            this.lblMarkupLabel.Location = new System.Drawing.Point(309, 241);
             this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMarkupLabel.Location = new System.Drawing.Point(309, 240);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
             this.lblMarkupLabel.TabIndex = 62;
@@ -372,8 +372,8 @@ namespace Chummer
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblSource, 2);
+            this.lblSource.Location = new System.Drawing.Point(361, 267);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSource.Location = new System.Drawing.Point(361, 270);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 69;
@@ -384,8 +384,8 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
+            this.lblSourceLabel.Location = new System.Drawing.Point(311, 267);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSourceLabel.Location = new System.Drawing.Point(311, 265);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSourceLabel.TabIndex = 68;
@@ -470,7 +470,6 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximumSize = new System.Drawing.Size(640, 10000);
             this.Name = "frmCreateWeaponMount";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "Title_CreateWeaponMount";

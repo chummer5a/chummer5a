@@ -853,7 +853,6 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(752, 537);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
-            this.MaximumSize = new System.Drawing.Size(768, 10000);
             this.Name = "frmPriorityMetatype";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -31,10 +31,10 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -221,6 +221,7 @@ namespace Chummer
             // nudPercentage
             // 
             this.nudPercentage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudPercentage.AutoSize = true;
             this.nudPercentage.DecimalPlaces = 2;
             this.nudPercentage.Location = new System.Drawing.Point(389, 239);
             this.nudPercentage.Maximum = new decimal(new int[] {
@@ -228,6 +229,7 @@ namespace Chummer
             0,
             0,
             131072});
+            this.nudPercentage.MinimumSize = new System.Drawing.Size(60, 0);
             this.nudPercentage.Name = "nudPercentage";
             this.nudPercentage.Size = new System.Drawing.Size(60, 20);
             this.nudPercentage.TabIndex = 17;
@@ -278,7 +280,9 @@ namespace Chummer
             // nudRoommates
             // 
             this.nudRoommates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudRoommates.AutoSize = true;
             this.nudRoommates.Location = new System.Drawing.Point(389, 213);
+            this.nudRoommates.MinimumSize = new System.Drawing.Size(60, 0);
             this.nudRoommates.Name = "nudRoommates";
             this.nudRoommates.Size = new System.Drawing.Size(60, 20);
             this.nudRoommates.TabIndex = 15;
@@ -326,40 +330,46 @@ namespace Chummer
             // nudSecurity
             // 
             this.nudSecurity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudSecurity.AutoSize = true;
             this.nudSecurity.Location = new System.Drawing.Point(455, 162);
             this.nudSecurity.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
+            this.nudSecurity.MinimumSize = new System.Drawing.Size(60, 0);
             this.nudSecurity.Name = "nudSecurity";
-            this.nudSecurity.Size = new System.Drawing.Size(71, 20);
+            this.nudSecurity.Size = new System.Drawing.Size(60, 20);
             this.nudSecurity.TabIndex = 41;
             // 
             // nudArea
             // 
             this.nudArea.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudArea.AutoSize = true;
             this.nudArea.Location = new System.Drawing.Point(455, 136);
             this.nudArea.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
+            this.nudArea.MinimumSize = new System.Drawing.Size(60, 0);
             this.nudArea.Name = "nudArea";
-            this.nudArea.Size = new System.Drawing.Size(71, 20);
+            this.nudArea.Size = new System.Drawing.Size(60, 20);
             this.nudArea.TabIndex = 40;
             // 
             // nudComforts
             // 
             this.nudComforts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudComforts.AutoSize = true;
             this.nudComforts.Location = new System.Drawing.Point(455, 110);
             this.nudComforts.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
+            this.nudComforts.MinimumSize = new System.Drawing.Size(60, 0);
             this.nudComforts.Name = "nudComforts";
-            this.nudComforts.Size = new System.Drawing.Size(71, 20);
+            this.nudComforts.Size = new System.Drawing.Size(60, 20);
             this.nudComforts.TabIndex = 39;
             // 
             // lblComfortsLabel
@@ -434,23 +444,23 @@ namespace Chummer
             this.treLifestyleQualities.HideSelection = false;
             this.treLifestyleQualities.Location = new System.Drawing.Point(3, 32);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode1.Name = "nodPositiveLifestyleQualities";
-            treeNode1.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
-            treeNode1.Text = "Positive Qualities";
-            treeNode2.Name = "nodNegativeLifestyleQualities";
-            treeNode2.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
-            treeNode2.Text = "Negative Qualities";
-            treeNode3.Name = "nodLifestyleEntertainments";
-            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode3.Text = "Entertainments";
-            treeNode4.Name = "nodFreeMatrixGrids";
-            treeNode4.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
-            treeNode4.Text = "Free Matrix Grids";
+            treeNode17.Name = "nodPositiveLifestyleQualities";
+            treeNode17.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
+            treeNode17.Text = "Positive Qualities";
+            treeNode18.Name = "nodNegativeLifestyleQualities";
+            treeNode18.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
+            treeNode18.Text = "Negative Qualities";
+            treeNode19.Name = "nodLifestyleEntertainments";
+            treeNode19.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode19.Text = "Entertainments";
+            treeNode20.Name = "nodFreeMatrixGrids";
+            treeNode20.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
+            treeNode20.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20});
             this.tableLayoutPanel1.SetRowSpan(this.treLifestyleQualities, 15);
             this.treLifestyleQualities.Size = new System.Drawing.Size(295, 388);
             this.treLifestyleQualities.TabIndex = 53;
@@ -458,12 +468,12 @@ namespace Chummer
             // 
             // chkTrustFund
             // 
-            this.chkTrustFund.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkTrustFund.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkTrustFund, 2);
-            this.chkTrustFund.Location = new System.Drawing.Point(455, 240);
+            this.chkTrustFund.Dock = System.Windows.Forms.DockStyle.Left;
+            this.chkTrustFund.Location = new System.Drawing.Point(455, 239);
             this.chkTrustFund.Name = "chkTrustFund";
-            this.chkTrustFund.Size = new System.Drawing.Size(77, 17);
+            this.chkTrustFund.Size = new System.Drawing.Size(77, 20);
             this.chkTrustFund.TabIndex = 54;
             this.chkTrustFund.Text = "Trust Fund";
             this.chkTrustFund.UseVisualStyleBackColor = true;
@@ -551,12 +561,12 @@ namespace Chummer
             // 
             // chkPrimaryTenant
             // 
-            this.chkPrimaryTenant.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrimaryTenant.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkPrimaryTenant, 2);
-            this.chkPrimaryTenant.Location = new System.Drawing.Point(455, 214);
+            this.chkPrimaryTenant.Dock = System.Windows.Forms.DockStyle.Left;
+            this.chkPrimaryTenant.Location = new System.Drawing.Point(455, 213);
             this.chkPrimaryTenant.Name = "chkPrimaryTenant";
-            this.chkPrimaryTenant.Size = new System.Drawing.Size(97, 17);
+            this.chkPrimaryTenant.Size = new System.Drawing.Size(97, 20);
             this.chkPrimaryTenant.TabIndex = 74;
             this.chkPrimaryTenant.Tag = "Label_SelectAdvancedLifestyle_Tenant";
             this.chkPrimaryTenant.Text = "Primary Tenant";
@@ -566,7 +576,7 @@ namespace Chummer
             // 
             this.lblSecurityTotal.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSecurityTotal.AutoSize = true;
-            this.lblSecurityTotal.Location = new System.Drawing.Point(532, 165);
+            this.lblSecurityTotal.Location = new System.Drawing.Point(521, 165);
             this.lblSecurityTotal.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSecurityTotal.Name = "lblSecurityTotal";
             this.lblSecurityTotal.Size = new System.Drawing.Size(19, 13);
@@ -579,7 +589,7 @@ namespace Chummer
             // 
             this.lblAreaTotal.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblAreaTotal.AutoSize = true;
-            this.lblAreaTotal.Location = new System.Drawing.Point(532, 139);
+            this.lblAreaTotal.Location = new System.Drawing.Point(521, 139);
             this.lblAreaTotal.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAreaTotal.Name = "lblAreaTotal";
             this.lblAreaTotal.Size = new System.Drawing.Size(19, 13);
@@ -592,7 +602,7 @@ namespace Chummer
             // 
             this.lblComfortTotal.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblComfortTotal.AutoSize = true;
-            this.lblComfortTotal.Location = new System.Drawing.Point(532, 113);
+            this.lblComfortTotal.Location = new System.Drawing.Point(521, 113);
             this.lblComfortTotal.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComfortTotal.Name = "lblComfortTotal";
             this.lblComfortTotal.Size = new System.Drawing.Size(19, 13);
@@ -603,12 +613,12 @@ namespace Chummer
             // 
             // chkQualityContributesLP
             // 
-            this.chkQualityContributesLP.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkQualityContributesLP.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkQualityContributesLP, 2);
-            this.chkQualityContributesLP.Location = new System.Drawing.Point(455, 316);
+            this.chkQualityContributesLP.Dock = System.Windows.Forms.DockStyle.Left;
+            this.chkQualityContributesLP.Location = new System.Drawing.Point(455, 315);
             this.chkQualityContributesLP.Name = "chkQualityContributesLP";
-            this.chkQualityContributesLP.Size = new System.Drawing.Size(142, 17);
+            this.chkQualityContributesLP.Size = new System.Drawing.Size(142, 19);
             this.chkQualityContributesLP.TabIndex = 78;
             this.chkQualityContributesLP.Tag = "Label_SelectAdvancedLifestyle_LPContribution";
             this.chkQualityContributesLP.Text = "Quality Contributes to LP";
@@ -633,12 +643,14 @@ namespace Chummer
             // nudBonusLP
             // 
             this.nudBonusLP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudBonusLP.AutoSize = true;
             this.nudBonusLP.Location = new System.Drawing.Point(389, 59);
             this.nudBonusLP.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
+            this.nudBonusLP.MinimumSize = new System.Drawing.Size(60, 0);
             this.nudBonusLP.Name = "nudBonusLP";
             this.nudBonusLP.Size = new System.Drawing.Size(60, 20);
             this.nudBonusLP.TabIndex = 82;
@@ -646,14 +658,14 @@ namespace Chummer
             // 
             // chkBonusLPRandomize
             // 
-            this.chkBonusLPRandomize.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBonusLPRandomize.AutoSize = true;
             this.chkBonusLPRandomize.Checked = true;
             this.chkBonusLPRandomize.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tableLayoutPanel1.SetColumnSpan(this.chkBonusLPRandomize, 2);
-            this.chkBonusLPRandomize.Location = new System.Drawing.Point(455, 60);
+            this.chkBonusLPRandomize.Dock = System.Windows.Forms.DockStyle.Left;
+            this.chkBonusLPRandomize.Location = new System.Drawing.Point(455, 59);
             this.chkBonusLPRandomize.Name = "chkBonusLPRandomize";
-            this.chkBonusLPRandomize.Size = new System.Drawing.Size(102, 17);
+            this.chkBonusLPRandomize.Size = new System.Drawing.Size(102, 20);
             this.chkBonusLPRandomize.TabIndex = 83;
             this.chkBonusLPRandomize.Tag = "Checkbox_Randomize1D6";
             this.chkBonusLPRandomize.Text = "Randomize 1D6";
@@ -668,10 +680,9 @@ namespace Chummer
             this.tableLayoutPanel1.ColumnCount = 5;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.treLifestyleQualities, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblQualitySource, 2, 14);
             this.tableLayoutPanel1.Controls.Add(this.lblQualityCost, 2, 13);
@@ -810,6 +821,7 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tableLayoutPanel1);

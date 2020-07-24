@@ -59,7 +59,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAttribute.FormattingEnabled = true;
-            this.cboAttribute.Location = new System.Drawing.Point(3, 32);
+            this.cboAttribute.Location = new System.Drawing.Point(3, 47);
             this.cboAttribute.Name = "cboAttribute";
             this.cboAttribute.Size = new System.Drawing.Size(320, 21);
             this.cboAttribute.TabIndex = 1;
@@ -93,7 +93,7 @@ namespace Chummer
             // 
             this.chkDoNotAffectMetatypeMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDoNotAffectMetatypeMaximum.AutoSize = true;
-            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 59);
+            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 74);
             this.chkDoNotAffectMetatypeMaximum.Name = "chkDoNotAffectMetatypeMaximum";
             this.chkDoNotAffectMetatypeMaximum.Size = new System.Drawing.Size(182, 17);
             this.chkDoNotAffectMetatypeMaximum.TabIndex = 2;
@@ -120,7 +120,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(326, 108);
+            this.tlpMain.Size = new System.Drawing.Size(326, 123);
             this.tlpMain.TabIndex = 5;
             // 
             // flowLayoutPanel1
@@ -130,7 +130,7 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(164, 79);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(164, 94);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
@@ -143,12 +143,11 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(344, 126);
+            this.ClientSize = new System.Drawing.Size(344, 141);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(360, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectAttribute";
             this.Padding = new System.Windows.Forms.Padding(9);

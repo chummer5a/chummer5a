@@ -8156,6 +8156,10 @@
     <!-- End Region-->
     <!-- Region Character Options -->
     <string>
+      <key>Title_CharacterOptions</key>
+      <text>Character Settings</text>
+    </string>
+    <string>
       <key>Label_CharacterOptions_CharacterCreationSettings</key>
       <text>Character Creation Settings</text>
     </string>

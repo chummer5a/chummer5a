@@ -45,8 +45,8 @@ namespace Chummer
             // 
             this.lblAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAmmoLabel.AutoSize = true;
-            this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Location = new System.Drawing.Point(3, 7);
+            this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Name = "lblAmmoLabel";
             this.lblAmmoLabel.Size = new System.Drawing.Size(39, 13);
             this.lblAmmoLabel.TabIndex = 0;
@@ -70,8 +70,8 @@ namespace Chummer
             // 
             this.lblTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblTypeLabel.AutoSize = true;
-            this.lblTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTypeLabel.Location = new System.Drawing.Point(16, 34);
+            this.lblTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTypeLabel.Name = "lblTypeLabel";
             this.lblTypeLabel.Size = new System.Drawing.Size(26, 13);
             this.lblTypeLabel.TabIndex = 2;
@@ -137,7 +137,7 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 93);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 83);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // flowLayoutPanel1
@@ -149,7 +149,7 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 67);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 57);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 4;
@@ -161,7 +161,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(344, 111);
+            this.ClientSize = new System.Drawing.Size(344, 101);
             this.Controls.Add(this.tableLayoutPanel1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

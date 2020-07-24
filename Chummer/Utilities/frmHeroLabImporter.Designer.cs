@@ -141,8 +141,8 @@ namespace Chummer
             // 
             this.lblCharacterAlias.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCharacterAlias.AutoSize = true;
+            this.lblCharacterAlias.Location = new System.Drawing.Point(397, 31);
             this.lblCharacterAlias.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCharacterAlias.Location = new System.Drawing.Point(397, 29);
             this.lblCharacterAlias.Name = "lblCharacterAlias";
             this.lblCharacterAlias.Size = new System.Drawing.Size(39, 13);
             this.lblCharacterAlias.TabIndex = 49;
@@ -167,8 +167,8 @@ namespace Chummer
             // 
             this.lblPlayerName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPlayerName.AutoSize = true;
+            this.lblPlayerName.Location = new System.Drawing.Point(397, 56);
             this.lblPlayerName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPlayerName.Location = new System.Drawing.Point(397, 53);
             this.lblPlayerName.Name = "lblPlayerName";
             this.lblPlayerName.Size = new System.Drawing.Size(39, 13);
             this.lblPlayerName.TabIndex = 47;
@@ -285,8 +285,8 @@ namespace Chummer
             this.lblHeroLabTrademark.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblHeroLabTrademark.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblHeroLabTrademark, 3);
-            this.lblHeroLabTrademark.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblHeroLabTrademark.Location = new System.Drawing.Point(349, 522);
+            this.lblHeroLabTrademark.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblHeroLabTrademark.Name = "lblHeroLabTrademark";
             this.lblHeroLabTrademark.Size = new System.Drawing.Size(414, 13);
             this.lblHeroLabTrademark.TabIndex = 52;
@@ -493,6 +493,7 @@ namespace Chummer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;

@@ -148,7 +148,6 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(320, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectExoticSkill";
             this.Padding = new System.Windows.Forms.Padding(9);

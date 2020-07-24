@@ -236,6 +236,7 @@ namespace Chummer
             this.treCustomDataDirectories = new System.Windows.Forms.TreeView();
             this.cmdIncreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.cmdDecreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
+            this.cmdGlobalOptionsCustomData = new System.Windows.Forms.Button();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
             this.flpHouseRules = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbHouseRulesQualities = new System.Windows.Forms.GroupBox();
@@ -288,7 +289,6 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.cmdGlobalOptionsCustomData = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -3146,6 +3146,19 @@ namespace Chummer
             this.cmdDecreaseCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
             this.cmdDecreaseCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdDecreaseCustomDirectoryLoadOrder_Click);
             // 
+            // cmdGlobalOptionsCustomData
+            // 
+            this.cmdGlobalOptionsCustomData.AutoSize = true;
+            this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(731, 3);
+            this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
+            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(236, 23);
+            this.cmdGlobalOptionsCustomData.TabIndex = 44;
+            this.cmdGlobalOptionsCustomData.Text = "Change Custom Data Entries";
+            this.cmdGlobalOptionsCustomData.UseVisualStyleBackColor = true;
+            this.cmdGlobalOptionsCustomData.Click += new System.EventHandler(this.cmdGlobalOptionsCustomData_Click);
+            // 
             // tabHouseRules
             // 
             this.tabHouseRules.AutoScroll = true;
@@ -3895,35 +3908,21 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // cmdGlobalOptionsCustomData
-            // 
-            this.cmdGlobalOptionsCustomData.AutoSize = true;
-            this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(731, 3);
-            this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
-            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(236, 23);
-            this.cmdGlobalOptionsCustomData.TabIndex = 44;
-            this.cmdGlobalOptionsCustomData.Text = "Change Custom Data Entries";
-            this.cmdGlobalOptionsCustomData.UseVisualStyleBackColor = true;
-            this.cmdGlobalOptionsCustomData.Click += new System.EventHandler(this.cmdGlobalOptionsCustomData_Click);
-            // 
             // frmCharacterOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tlpOptions);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(48, 50);
             this.Name = "frmCharacterOptions";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Tag = "Title_Options";
-            this.Text = "Options";
+            this.Tag = "Title_CharacterOptions";
+            this.Text = "Character Settings";
             this.Load += new System.EventHandler(this.frmCharacterOptions_Load);
             this.tlpOptions.ResumeLayout(false);
             this.tlpOptions.PerformLayout();

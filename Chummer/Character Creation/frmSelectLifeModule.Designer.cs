@@ -293,7 +293,6 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(640, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectLifeModule";
             this.Padding = new System.Windows.Forms.Padding(9);

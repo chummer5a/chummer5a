@@ -4705,7 +4705,7 @@
       <category>Combat</category>
       <damage>0</damage>
       <descriptor>Direct</descriptor>
-      <duration>S</duration>
+      <duration>I</duration>
       <dv>F-3</dv>
       <range>LOS</range>
       <type>M</type>

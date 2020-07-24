@@ -44,8 +44,8 @@ namespace Chummer
             // 
             this.lblExport.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblExport.AutoSize = true;
-            this.lblExport.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblExport.Location = new System.Drawing.Point(3, 7);
+            this.lblExport.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblExport.Name = "lblExport";
             this.lblExport.Size = new System.Drawing.Size(52, 13);
             this.lblExport.TabIndex = 0;
@@ -146,6 +146,7 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(464, 281);
             this.Controls.Add(this.tableLayoutPanel1);

@@ -59,7 +59,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPower.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPower.FormattingEnabled = true;
-            this.cboPower.Location = new System.Drawing.Point(3, 28);
+            this.cboPower.Location = new System.Drawing.Point(3, 50);
             this.cboPower.Name = "cboPower";
             this.cboPower.Size = new System.Drawing.Size(320, 21);
             this.cboPower.TabIndex = 1;
@@ -103,10 +103,10 @@ namespace Chummer
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(326, 83);
+            this.tlpMain.Size = new System.Drawing.Size(326, 103);
             this.tlpMain.TabIndex = 5;
             // 
             // flowLayoutPanel1
@@ -116,7 +116,7 @@ namespace Chummer
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 57);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 77);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 2;
@@ -128,12 +128,11 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(344, 101);
+            this.ClientSize = new System.Drawing.Size(344, 121);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(360, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectOptionalPower";
             this.Padding = new System.Windows.Forms.Padding(9);
