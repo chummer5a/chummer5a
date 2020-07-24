@@ -193,6 +193,7 @@ namespace Chummer
         private static bool _blnUseLogging;
         private static UseAILogging _enumUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
+        private static string _strImageFolder = string.Empty;
 
         // Custom Data Directory information.
         private static readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfo = new HashSet<CustomDataDirectoryInfo>();
@@ -442,6 +443,9 @@ namespace Chummer
 
             // Folder path to check for characters.
             LoadStringFromRegistry(ref _strCharacterRosterPath, "characterrosterpath");
+
+            // Most recent image folder location used.
+            LoadStringFromRegistry(ref _strImageFolder, "recentimagefolder");
 
             // Which Plugins are enabled.
             LoadBoolFromRegistry(ref _blnPluginsEnabled, "pluginsenabled");
@@ -978,6 +982,23 @@ namespace Chummer
             return SavedImageQuality == int.MaxValue
                 ? objImageToSave.ToBase64String(ImageFormat.Png)
                 : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+        }
+
+        /// <summary>
+        /// Last folder from which a mugshot was added
+        /// </summary>
+        public static string RecentImageFolder
+        {
+            get => _strImageFolder;
+            set
+            {
+                if (_strImageFolder != value)
+                {
+                    _strImageFolder = value;
+                    using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+                        objRegistry?.SetValue("recentimagefolder", value);
+                }
+            }
         }
         #endregion
 

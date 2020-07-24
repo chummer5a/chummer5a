@@ -47,7 +47,6 @@ namespace Chummer
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
         private string _strName = "Standard";
-        private string _strImageFolder = string.Empty;
 
         // Settings.
         // ReSharper disable once InconsistentNaming
@@ -439,11 +438,6 @@ namespace Chummer
                     objWriter.WriteElementString("id", _guiSourceId.ToString("D", GlobalOptions.InvariantCultureInfo));
                     // <name />
                     objWriter.WriteElementString("name", _strName);
-                    // <recentimagefolder />
-                    if (!string.IsNullOrEmpty(_strImageFolder))
-                    {
-                        objWriter.WriteElementString("recentimagefolder", _strImageFolder);
-                    }
 
                     // <licenserestricted />
                     objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString(GlobalOptions.InvariantCultureInfo));
@@ -821,8 +815,6 @@ namespace Chummer
                 _guiSourceId = guidTemp;
             // Setting name.
             objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
-            // Most recent image folder location used.
-            objXmlNode.TryGetStringFieldQuickly("recentimagefolder", ref _strImageFolder);
             // License Restricted items.
             objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
@@ -2896,22 +2888,6 @@ namespace Chummer
                     OnPropertyChanged();
                     if (value)
                         MysAdeptSecondMAGAttribute = false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Last folder from which a mugshot was added
-        /// </summary>
-        public string RecentImageFolder
-        {
-            get => _strImageFolder;
-            set
-            {
-                if (_strImageFolder != value)
-                {
-                    _strImageFolder = value;
-                    OnPropertyChanged();
                 }
             }
         }

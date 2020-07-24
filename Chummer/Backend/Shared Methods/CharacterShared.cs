@@ -6190,9 +6190,9 @@ namespace Chummer
             bool blnSuccess = false;
             using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
             {
-                if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.RecentImageFolder) && Directory.Exists(GlobalOptions.RecentImageFolder))
                 {
-                    dlgOpenFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
+                    dlgOpenFileDialog.InitialDirectory = GlobalOptions.RecentImageFolder;
                 }
                 // Prompt the user to select an image to associate with this character.
 
@@ -6207,7 +6207,7 @@ namespace Chummer
                 {
                     blnSuccess = true;
                     // Convert the image to a string using Base64.
-                    _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
+                    GlobalOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
                     Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
                     if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
