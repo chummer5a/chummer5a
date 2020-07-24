@@ -63,7 +63,6 @@ namespace Chummer
         private bool _blnArmorDegradation;
         private bool _blnStrictSkillGroupsInCreateMode;
         private bool _blnAllowPointBuySpecializationsOnKarmaSkills;
-        private bool _blnCalculateCommlinkResponse = true;
         private bool _blnCyberlegMovement;
         private bool _blnDontDoubleQualityPurchaseCost;
         private bool _blnDontDoubleQualityRefundCost;
@@ -539,8 +538,6 @@ namespace Chummer
                     objWriter.WriteElementString("restrictrecoil", _blnRestrictRecoil.ToString(GlobalOptions.InvariantCultureInfo));
                     // <unrestrictednuyen />
                     objWriter.WriteElementString("unrestrictednuyen", _blnUnrestrictedNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <calculatecommlinkresponse />
-                    objWriter.WriteElementString("calculatecommlinkresponse", _blnCalculateCommlinkResponse.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowhigherstackedfoci />
                     objWriter.WriteElementString("allowhigherstackedfoci", _blnAllowHigherStackedFoci.ToString(GlobalOptions.InvariantCultureInfo));
                     // <alloweditpartofbaseweapon />
@@ -585,8 +582,8 @@ namespace Chummer
                     objWriter.WriteElementString("cyberlimbattributebonuscapoverride", _blnCyberlimbAttributeBonusCapOverride.ToString(GlobalOptions.InvariantCultureInfo));
                     // <cyberlimbattributebonuscap />
                     objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <clampattributeminimum />
-                    objWriter.WriteElementString("clampattributeminimum", _blnUnclampAttributeMinimum.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <unclampattributeminimum />
+                    objWriter.WriteElementString("unclampattributeminimum", _blnUnclampAttributeMinimum.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronemods />
                     objWriter.WriteElementString("dronemods", _blnDroneMods.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronemodsmaximumpilot />
@@ -887,7 +884,7 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
             // Metatype Costs Karma.
             objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
-            // Metatype Costs Karma.
+            // Allow characters to spend karma before attribute points.
             objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder", ref _blnReverseAttributePriorityOrder);
             // Metatype Costs Karma Multiplier.
             objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
@@ -963,8 +960,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
             // Whether or not character are not restricted to the number of points they can invest in Nuyen.
             objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
-            // Whether or not a Commlink's Response should be calculated based on the number of programs it has running.
-            objXmlNode.TryGetBoolFieldQuickly("calculatecommlinkresponse", ref _blnCalculateCommlinkResponse);
             // Whether or not Stacked Foci can go a combined Force higher than 6.
             objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
             // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.

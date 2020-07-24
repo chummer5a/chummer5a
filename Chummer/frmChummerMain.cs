@@ -210,6 +210,7 @@ namespace Chummer
                                 () => XmlManager.Load("programs.xml"),
                                 () => XmlManager.Load("qualities.xml"),
                                 () => XmlManager.Load("ranges.xml"),
+                                () => XmlManager.Load("settings.xml"),
                                 () => XmlManager.Load("sheets.xml"),
                                 () => XmlManager.Load("skills.xml"),
                                 () => XmlManager.Load("spells.xml"),
