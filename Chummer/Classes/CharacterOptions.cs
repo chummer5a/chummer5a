@@ -402,7 +402,7 @@ namespace Chummer
         /// <summary>
         /// Save the current settings to the settings file.
         /// </summary>
-        public bool Save()
+        public bool Save(string strNewFileName = "")
         {
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -418,6 +418,8 @@ namespace Chummer
                     return false;
                 }
             }
+            if (!string.IsNullOrEmpty(strNewFileName))
+                _strFileName = strNewFileName;
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             using (FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {

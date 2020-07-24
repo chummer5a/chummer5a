@@ -1229,7 +1229,7 @@ namespace Chummer
                     StripAmendAttributesRecursively(xmlChildNode);
         }
 
-        public static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage, IEnumerable<Character> lstCharacters = null, bool blnTerminateAfterFirstMatch = false)
+        public static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage, IEnumerable<Character> lstCharacters = null, bool blnTerminateAfterFirstMatch = false)
         {
             List<ListItem> lstSheets = new List<ListItem>();
 

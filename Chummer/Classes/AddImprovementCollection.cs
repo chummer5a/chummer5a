@@ -6463,7 +6463,7 @@ namespace Chummer.Classes
             }
 
             List<ListItem> lstSpirits;
-            using (XmlNodeList xmlSpirits = _objCharacter.LoadData(xmlDoc).SelectNodes("/chummer/spirits/spirit"))
+            using (XmlNodeList xmlSpirits = _objCharacter.LoadData(strXmlDoc).SelectNodes("/chummer/spirits/spirit"))
             {
                 lstSpirits = new List<ListItem>(xmlSpirits?.Count ?? 0);
                 if (xmlSpirits?.Count > 0)

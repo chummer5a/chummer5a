@@ -142,9 +142,35 @@ namespace Chummer
 
         private void cmdSaveAs_Click(object sender, EventArgs e)
         {
-            // TODO: Prompt for name and file name
+            string strSelectedName;
+            do
+            {
+                using (frmSelectText frmSelectName = new frmSelectText
+                {
+                    DefaultString = _objCharacterOptions.BuiltInOption ? string.Empty : _objCharacterOptions.FileName.TrimEndOnce(".xml"),
+                    PreventFileNameCharErrors = true,
+                    Description = LanguageManager.GetString("Message_CharacterOptions_SelectSettingName")
+                })
+                {
+                    frmSelectName.ShowDialog(this);
+                    if (frmSelectName.DialogResult != DialogResult.OK)
+                        return;
+                    strSelectedName = frmSelectName.SelectedValue;
+                    if (!strSelectedName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                        strSelectedName += ".xml";
+                }
 
-            if (_objCharacterOptions.Save())
+                if (OptionsManager.LoadedCharacterOptions.Any(x => x.Value.FileName == strSelectedName))
+                {
+                    // TODO: Turn this into a prompt to overwrite (which also needs to consider build method being overwritten for a character)
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CharacterOptions_DuplicateSettingName"),
+                            strSelectedName.TrimEndOnce(".xml")),
+                        LanguageManager.GetString("MessageTitle_CharacterOptions_DuplicateSettingName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    strSelectedName = string.Empty;
+                }
+            } while (string.IsNullOrEmpty(strSelectedName));
+
+            if (_objCharacterOptions.Save(strSelectedName))
             {
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
                 objNewCharacterOptions.CopyValues(_objCharacterOptions);
@@ -239,10 +265,8 @@ namespace Chummer
         {
             if (IsDirty)
             {
-                string text = LanguageManager.GetString("Message_CharacterOptions_UnsavedDirty");
-                string caption = LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty");
-
-                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_UnsavedDirty"),
+                    LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
 
                 DialogResult = DialogResult.Cancel;

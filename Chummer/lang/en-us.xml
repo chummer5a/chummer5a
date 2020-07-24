@@ -8223,6 +8223,18 @@
       <key>MessageTitle_CharacterOptions_ConfirmDelete</key>
       <text>Confirm Delete</text>
     </string>
+    <string>
+      <key>Message_CharacterOptions_DuplicateSettingName</key>
+      <text>A setting called {0} already exists. Please select a different name.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DuplicateSettingName</key>
+      <text>Duplicate Setting Name</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SelectSettingName</key>
+      <text>Select a name for your setting:</text>
+    </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>
