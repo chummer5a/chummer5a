@@ -53,17 +53,16 @@ namespace Chummer
         {
             bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
             nudForce.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            chkBound.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Bound));
+            chkBound.DoDatabinding("Checked", _objSpirit, nameof(Spirit.Bound));
             chkBound.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            cboSpiritName.DoDatabinding("Text", _objSpirit, nameof(_objSpirit.Name));
-            txtCritterName.DoDatabinding("Text", _objSpirit, nameof(_objSpirit.CritterName));
-            txtCritterName.DoOneWayDataBinding("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter));
+            cboSpiritName.DoDatabinding("Text", _objSpirit, nameof(Spirit.Name));
+            txtCritterName.DoDatabinding("Text", _objSpirit, nameof(Spirit.CritterName));
+            txtCritterName.DoOneWayDataBinding("Enabled", _objSpirit, nameof(Spirit.NoLinkedCharacter));
             nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
-            nudServices.DoDatabinding("Value", _objSpirit, nameof(_objSpirit.ServicesOwed));
-            nudForce.DoDatabinding("Value", _objSpirit, nameof(_objSpirit.Force));
-            Width = cmdDelete.Left + cmdDelete.Width;
+            nudServices.DoDatabinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
+            nudForce.DoDatabinding("Value", _objSpirit, nameof(Spirit.Force));
             chkFettered.DoOneWayDataBinding("Enabled",_objSpirit.CharacterObject, nameof(Character.AllowSpriteFettering));
-            chkFettered.DoDatabinding("Checked", _objSpirit, nameof(_objSpirit.Fettered));
+            chkFettered.DoDatabinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force");
@@ -316,17 +315,16 @@ namespace Chummer
         public void RebuildSpiritList(Tradition objTradition)
         {
             if (objTradition == null)
-            {
                 return;
-            }
             string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
 
             XmlDocument objXmlDocument = _objSpirit.EntityType == SpiritType.Spirit ? XmlManager.Load("traditions.xml") : XmlManager.Load("streams.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
-            foreach (Improvement improvement in _objSpirit.CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
+            foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
             {
-                lstLimitCategories.Add(improvement.ImprovedName);
+                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && objImprovement.Enabled)
+                    lstLimitCategories.Add(objImprovement.ImprovedName);
             }
 
             List<ListItem> lstCritters = new List<ListItem>(30);
@@ -375,12 +373,16 @@ namespace Chummer
                     if (lstLimitCategories.Count == 0)
                     {
                         using (XmlNodeList xmlSpiritList = objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+                        {
                             if (xmlSpiritList != null)
+                            {
                                 foreach (XmlNode objXmlCritterNode in xmlSpiritList)
                                 {
                                     string strSpiritName = objXmlCritterNode["name"]?.InnerText;
                                     lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode["translate"]?.InnerText ?? strSpiritName));
                                 }
+                            }
+                        }
                     }
                     else
                     {
@@ -394,7 +396,9 @@ namespace Chummer
                 else
                 {
                     using (XmlNodeList xmlSpiritList = objTradition.GetNode()?.SelectSingleNode("spirits")?.ChildNodes)
+                    {
                         if (xmlSpiritList != null)
+                        {
                             foreach (XmlNode objXmlSpirit in xmlSpiritList)
                             {
                                 string strSpiritName = objXmlSpirit.InnerText;
@@ -404,24 +408,25 @@ namespace Chummer
                                     lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
                                 }
                             }
+                        }
+                    }
                 }
             }
 
-            if (_objSpirit.CharacterObject.RESEnabled)
+            if (_objSpirit.CharacterObject.MAGEnabled || _objSpirit.CharacterObject.RESEnabled)
             {
-                // Add any additional Sprites the character has Access to through improvements.
-                lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
-                        .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSprite && imp.Enabled)
-                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
-                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
-            }
-            if (_objSpirit.CharacterObject.MAGEnabled)
-            {
-                // Add any additional Spirits the character has Access to through improvements.
-                lstCritters.AddRange(from objImprovement in _objSpirit.CharacterObject.Improvements
-                    .Where(imp => imp.ImproveType == Improvement.ImprovementType.AddSpirit && imp.Enabled)
-                    let objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]")
-                    select new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
+                // Add any additional Spirits and Sprites the character has Access to through improvements.
+                foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
+                {
+                    if (((objImprovement.ImproveType == Improvement.ImprovementType.AddSpirit && _objSpirit.CharacterObject.MAGEnabled)
+                         || (objImprovement.ImproveType == Improvement.ImprovementType.AddSprite && _objSpirit.CharacterObject.RESEnabled))
+                        && !string.IsNullOrEmpty(objImprovement.ImprovedName) && objImprovement.Enabled)
+                    {
+                        lstCritters.Add(new ListItem(objImprovement.ImprovedName,
+                            objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]/translate")?.InnerText
+                            ?? objImprovement.ImprovedName));
+                    }
+                }
             }
 
             cboSpiritName.BeginUpdate();

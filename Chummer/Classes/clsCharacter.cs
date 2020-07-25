@@ -9909,7 +9909,7 @@ namespace Chummer
 /// <summary>
 /// Martial Arts Maneuvers.
 /// </summary>
-        public IList<MartialArtManeuver> MartialArtManeuvers
+        public List<MartialArtManeuver> MartialArtManeuvers
         {
             get
             {
@@ -9999,7 +9999,7 @@ namespace Chummer
         /// <summary>
         /// Life modules
         /// </summary>
-        //public IList<LifeModule> LifeModules
+        //public List<LifeModule> LifeModules
         //{
         //    get { return _lstLifeModules; }
         //}
@@ -13017,7 +13017,7 @@ namespace Chummer
         /// <summary>
         /// Characters referenced by some member of this character (usually a contact).
         /// </summary>
-        public ICollection<Character> LinkedCharacters => _lstLinkedCharacters;
+        public HashSet<Character> LinkedCharacters => _lstLinkedCharacters;
 
         #endregion
 

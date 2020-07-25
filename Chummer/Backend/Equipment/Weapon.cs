@@ -1053,7 +1053,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
 
-            IDictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
+            Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
             // <ranges>
             objWriter.WriteStartElement("ranges");
             objWriter.WriteElementString("name", DisplayRange(strLanguageToPrint));
@@ -2707,9 +2707,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage)
         {
-            string[] strModes = _strMode.Split('/');
             // Move the contents of the array to a list so it's easier to work with.
-            List<string> lstModes = strModes.ToList();
+            HashSet<string> lstModes = new HashSet<string>(_strMode.Split('/'));
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2725,10 +2724,8 @@ namespace Chummer.Backend.Equipment
                         {
                             if (strFireMode.Contains('/'))
                             {
-                                strModes = strFireMode.Split('/');
-
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
+                                foreach (string strMode in strFireMode.Split('/'))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2742,9 +2739,8 @@ namespace Chummer.Backend.Equipment
                             lstModes.Clear();
                             if (strFireMode.Contains('/'))
                             {
-                                strModes = strFireMode.Split('/');
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
+                                foreach (string strMode in strFireMode.Split('/'))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2760,10 +2756,8 @@ namespace Chummer.Backend.Equipment
                         {
                             if (strFireMode.Contains('/'))
                             {
-                                strModes = strFireMode.Split('/');
-
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
+                                foreach (string strMode in strFireMode.Split('/'))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2777,9 +2771,8 @@ namespace Chummer.Backend.Equipment
                             lstModes.Clear();
                             if (strFireMode.Contains('/'))
                             {
-                                strModes = strFireMode.Split('/');
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
+                                foreach (string strMode in strFireMode.Split('/'))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2799,10 +2792,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (strFireMode.Contains('/'))
                                 {
-                                    strModes = strFireMode.Split('/');
-
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
+                                    foreach (string strMode in strFireMode.Split('/'))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2816,9 +2807,8 @@ namespace Chummer.Backend.Equipment
                                 lstModes.Clear();
                                 if (strFireMode.Contains('/'))
                                 {
-                                    strModes = strFireMode.Split('/');
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
+                                    foreach (string strMode in strFireMode.Split('/'))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2834,10 +2824,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (strFireMode.Contains('/'))
                                 {
-                                    strModes = strFireMode.Split('/');
-
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
+                                    foreach (string strMode in strFireMode.Split('/'))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2852,9 +2840,8 @@ namespace Chummer.Backend.Equipment
                                 lstModes.Clear();
                                 if (strFireMode.Contains('/'))
                                 {
-                                    strModes = strFireMode.Split('/');
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strModes)
+                                    foreach (string strMode in strFireMode.Split('/'))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2873,10 +2860,8 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objAccessory.FireMode.Contains('/'))
                             {
-                                strModes = objAccessory.FireMode.Split('/');
-
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
+                                foreach (string strMode in objAccessory.FireMode.Split('/'))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2890,10 +2875,8 @@ namespace Chummer.Backend.Equipment
                             lstModes.Clear();
                             if (objAccessory.FireModeReplacement.Contains('/'))
                             {
-                                strModes = objAccessory.FireModeReplacement.Split('/');
-
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strModes)
+                                foreach (string strMode in objAccessory.FireModeReplacement.Split('/'))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2907,25 +2890,29 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            lstModes.AddRange(from objAccessory in WeaponAccessories where objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.AddMode) select objAccessory.AddMode);
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.AddMode))
+                    lstModes.Add(objAccessory.AddMode);
+            }
 
-            string strReturn = string.Empty;
+            StringBuilder sbdReturn = new StringBuilder();
             if (lstModes.Contains("SS"))
-                strReturn += LanguageManager.GetString("String_ModeSingleShot", strLanguage) + "/";
+                sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage)).Append('/');
             if (lstModes.Contains("SA"))
-                strReturn += LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage) + "/";
+                sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage)).Append('/');
             if (lstModes.Contains("BF"))
-                strReturn += LanguageManager.GetString("String_ModeBurstFire", strLanguage) + "/";
+                sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage)).Append('/');
             if (lstModes.Contains("FA"))
-                strReturn += LanguageManager.GetString("String_ModeFullAutomatic", strLanguage) + "/";
+                sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage)).Append('/');
             if (lstModes.Contains("Special"))
-                strReturn += LanguageManager.GetString("String_ModeSpecial", strLanguage) + "/";
+                sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage)).Append('/');
 
             // Remove the trailing "/".
-            if (!string.IsNullOrEmpty(strReturn))
-                strReturn = strReturn.Substring(0, strReturn.Length - 1);
+            if (sbdReturn.Length > 0)
+                sbdReturn.Length -= 1;
 
-            return strReturn;
+            return sbdReturn.ToString();
         }
 
         /// <summary>
@@ -2934,8 +2921,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strFindMode">Firing mode to find.</param>
         public bool AllowMode(string strFindMode)
         {
-            string[] strModes = CalculatedMode(GlobalOptions.Language).Split('/');
-            return strModes.Any(strMode => strMode == strFindMode);
+            return CalculatedMode(GlobalOptions.Language).Split('/').Any(strMode => strMode == strFindMode);
         }
 
         /// <summary>
@@ -4096,7 +4082,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>
-        public IDictionary<string, string> GetRangeStrings(CultureInfo objCulture)
+        public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture)
         {
             int intRangeModifier = RangeBonus + 100;
             int intMin = GetRange("min", false);

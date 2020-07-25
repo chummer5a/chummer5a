@@ -67,7 +67,7 @@ namespace Chummer
 
         internal static void RemoveAll<T>(this BindingList<T> list, Predicate<T> predicate)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            for (int i = list.Count - 1; i >= 0; --i)
             {
                 if (predicate(list[i]))
                 {

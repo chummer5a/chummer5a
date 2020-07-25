@@ -52,8 +52,19 @@ namespace Chummer
             // Populate the Improvement Type list.
             XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
             if (objXmlImprovementList != null)
-                lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
-                    select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
+            {
+                foreach (XmlNode objXmlImprovement in objXmlImprovementList)
+                {
+                    string strId = objXmlImprovement["id"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        lstTypes.Add(new ListItem(strId,
+                            objXmlImprovement["translate"]?.InnerText
+                            ?? objXmlImprovement["name"]?.InnerText
+                            ?? LanguageManager.GetString("String_Unknown")));
+                    }
+                }
+            }
 
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
@@ -188,18 +199,18 @@ namespace Chummer
                         }
                     }
 
-                    using (frmSelectItem select = new frmSelectItem
+                    using (frmSelectItem frmSelectAction = new frmSelectItem
                     {
                         Description = LanguageManager.GetString("Title_SelectAction")
                     })
                     {
-                        select.SetDropdownItemsMode(lstActions);
-                        select.ShowDialog(this);
+                        frmSelectAction.SetDropdownItemsMode(lstActions);
+                        frmSelectAction.ShowDialog(this);
 
-                        if (select.DialogResult == DialogResult.OK)
+                        if (frmSelectAction.DialogResult == DialogResult.OK)
                         {
-                            txtSelect.Text = select.SelectedName;
-                            txtTranslateSelection.Text = TranslateField(_strSelect, select.SelectedName);
+                            txtSelect.Text = frmSelectAction.SelectedName;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmSelectAction.SelectedName);
                         }
                     }
                     break;

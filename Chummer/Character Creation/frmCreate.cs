@@ -9699,6 +9699,8 @@ namespace Chummer
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
                         {
+                            if (string.IsNullOrEmpty(strMount))
+                                continue;
                             sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
                             sbdSlotsText.Append('/');
                         }
@@ -9753,7 +9755,7 @@ namespace Chummer
                     tlpWeaponsRanges.Visible = true;
                     lblWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
                     lblWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
                     lblWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
                     lblWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
@@ -9833,6 +9835,8 @@ namespace Chummer
                     sbdSlotsText.Clear();
                     foreach (string strMount in objSelectedAccessory.Mount.Split('/'))
                     {
+                        if (string.IsNullOrEmpty(strMount))
+                            continue;
                         sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
                         sbdSlotsText.Append('/');
                     }
@@ -9849,7 +9853,7 @@ namespace Chummer
                         {
                             if (!boolHaveAddedItem)
                             {
-                                sbdSlotsText.Append(" + ");
+                                sbdSlotsText.Append(strSpace + '+' + strSpace);
                                 boolHaveAddedItem = true;
                             }
                             sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount));
@@ -11406,6 +11410,8 @@ namespace Chummer
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
                         {
+                            if (string.IsNullOrEmpty(strMount))
+                                continue;
                             sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
                             sbdSlotsText.Append('/');
                         }
@@ -11450,7 +11456,7 @@ namespace Chummer
                     tlpVehiclesWeaponRanges.Visible = true;
                     lblVehicleWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
                     lblVehicleWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblVehicleWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
                     lblVehicleWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
                     lblVehicleWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
@@ -11550,7 +11556,7 @@ namespace Chummer
                         {
                             if (!boolHaveAddedItem)
                             {
-                                sbdMount.Append(" + ");
+                                sbdMount.Append(strSpace + '+' + strSpace);
                                 boolHaveAddedItem = true;
                             }
                             sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + '/');

@@ -60,17 +60,15 @@ namespace Chummer.Backend
         {
             StringBuilder builder = new StringBuilder(Environment.NewLine);
             int length = -1;
-            IOrderedEnumerable<KeyValuePair<string, int>> exceptions = from i in _map
-                orderby -i.Value
-                select i;
 
-            foreach (KeyValuePair<string, int> exception in exceptions)
+            foreach (KeyValuePair<string, int> exception in _map.OrderBy(i => -i.Value))
             {
-                builder.Append('\t'); builder.Append('\t');
                 length = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), length);
-                builder.Append(exception.Value.ToString("D" + length.ToString(GlobalOptions.InvariantCultureInfo), GlobalOptions.InvariantCultureInfo));
-
-                builder.Append(" - ").AppendLine(exception.Key);
+                builder
+                    .Append("\t\t")
+                    .Append(exception.Value.ToString("D" + length.ToString(GlobalOptions.InvariantCultureInfo), GlobalOptions.InvariantCultureInfo))
+                    .Append(" - ")
+                    .AppendLine(exception.Key);
             }
 
             return builder.ToString();

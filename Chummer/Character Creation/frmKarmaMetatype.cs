@@ -423,12 +423,17 @@ namespace Chummer
                 {
                     new ListItem(Guid.Empty, LanguageManager.GetString("String_None"))
                 };
-                lstMetavariants.AddRange(
-                    from XPathNavigator objXmlMetavariant in
-                        objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]")
-                    select new ListItem(objXmlMetavariant.SelectSingleNode("id")?.Value,
-                        objXmlMetavariant.SelectSingleNode("translate")?.Value ??
-                        objXmlMetavariant.SelectSingleNode("name")?.Value));
+                foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]"))
+                {
+                    string strId = objXmlMetavariant.SelectSingleNode("id")?.Value;
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        lstMetavariants.Add(new ListItem(strId,
+                            objXmlMetavariant.SelectSingleNode("translate")?.Value
+                            ?? objXmlMetavariant.SelectSingleNode("name")?.Value
+                            ?? LanguageManager.GetString("String_Unknown")));
+                    }
+                }
 
                 // Retrieve the list of Metavariants for the selected Metatype.
 
