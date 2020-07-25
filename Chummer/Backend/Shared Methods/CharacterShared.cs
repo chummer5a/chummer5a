@@ -1858,7 +1858,7 @@ namespace Chummer
 
             void AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality,treQualities);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode = null;

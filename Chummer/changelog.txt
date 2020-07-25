@@ -41,6 +41,7 @@ Application Fixes:
 - Weapons that can only fire flechette ammunition can now properly only be loaded with flechette ammunition. Existing save files where these weapons are loaded with non-flechette ammunition will automatically unload said ammunition.
 - Custom files for character sheets now work properly, though people who do wish to use them are recommended to add entries in every single language found in sheets.xml.
 - The Cyberadept quality now properly automatically restores lost Resonance to Essence at every Submersion instead of needing a separate echo to be taken. Existing characters with these echoes will have the echoes removed upon loading their character, but their cyberadept bonus should be kept and automatically reassigned to the best applicable submersion grades.
+- Fixed a regression when loading characters with suppressed qualities. Closes #4178
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
