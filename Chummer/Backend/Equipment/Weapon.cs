@@ -2916,6 +2916,7 @@ namespace Chummer.Backend.Equipment
         /// Determine if the Weapon is capable of firing in a particular mode.
         /// </summary>
         /// <param name="strFindMode">Firing mode to find.</param>
+        /// <param name="strLanguage">Language of <paramref name="strFindMode"/>. Uses current UI language if unset.</param>
         public bool AllowMode(string strFindMode, string strLanguage = "")
         {
             if (string.IsNullOrEmpty(strLanguage))
@@ -5742,14 +5743,14 @@ namespace Chummer.Backend.Equipment
                 {
                     if (strOriginalName.IndexOf(':') >= 0)
                     {
-                        string strName = strOriginalName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                        string strName = strOriginalName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                         xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]");
                     }
                     if (xmlWeaponDataNode == null)
                     {
                         if (strOriginalName.IndexOf(',') >= 0)
                         {
-                            string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
+                            string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                             xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]");
                         }
                     }

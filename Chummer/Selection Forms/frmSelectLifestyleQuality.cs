@@ -270,9 +270,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex += 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                    {
-                        lstLifestyleQualities.SelectedIndex = 0;
-                    }
+                {
+                    lstLifestyleQualities.SelectedIndex = 0;
+                }
             }
             if (e.KeyCode == Keys.Up)
             {

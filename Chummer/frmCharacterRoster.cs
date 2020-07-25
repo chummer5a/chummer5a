@@ -198,10 +198,8 @@ namespace Chummer
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
                 intWatchFolderCount++;
-                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories);
-                for(int i = 0; i < objFiles.Length; ++i)
+                foreach (string strFile in Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
                 {
-                    string strFile = objFiles[i];
                     // Make sure we're not loading a character that was already loaded by the MRU list.
                     if (lstFavorites.Contains(strFile) ||
                         lstRecents.Contains(strFile))
@@ -283,9 +281,8 @@ namespace Chummer
 
                         if(blnAddFavoriteNode)
                         {
-                            for(int i = 0; i < lstFavoritesNodes.Length; i++)
+                            foreach (TreeNode objNode in lstFavoritesNodes)
                             {
-                                TreeNode objNode = lstFavoritesNodes[i];
                                 if(objNode != null)
                                     objFavoriteNode.Nodes.Add(objNode);
                             }
@@ -307,9 +304,8 @@ namespace Chummer
 
                         if(blnAddRecentNode)
                         {
-                            for(int i = 0; i < lstRecentsNodes.Length; i++)
+                            foreach (TreeNode objNode in lstRecentsNodes)
                             {
-                                TreeNode objNode = lstRecentsNodes[i];
                                 if(objNode != null)
                                     objRecentNode.Nodes.Add(objNode);
                             }
@@ -427,9 +423,8 @@ namespace Chummer
                 else
                 {
                     objFavoriteNode.Nodes.Clear();
-                    for (int i = 0; i < lstFavoritesNodes.Length; i++)
+                    foreach (TreeNode objNode in lstFavoritesNodes)
                     {
-                        TreeNode objNode = lstFavoritesNodes[i];
                         if(objNode != null)
                             objFavoriteNode.Nodes.Add(objNode);
                     }
@@ -448,9 +443,8 @@ namespace Chummer
                     try
                     {
                         objRecentNode.Nodes.Clear();
-                        for (int i = 0; i < lstRecentsNodes.Length; i++)
+                        foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            TreeNode objNode = lstRecentsNodes[i];
                             if (objNode != null)
                                 objRecentNode.Nodes.Add(objNode);
                         }
@@ -472,9 +466,8 @@ namespace Chummer
                 else
                 {
                     objWatchNode.Nodes.Clear();
-                    for(int i = 0; i < lstWatchNodes.Length; i++)
+                    foreach (TreeNode objNode in lstWatchNodes)
                     {
-                        TreeNode objNode = lstWatchNodes[i];
                         if(objNode != null)
                             objWatchNode.Nodes.Add(objNode);
                     }

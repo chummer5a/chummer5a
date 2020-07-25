@@ -41,7 +41,7 @@ namespace Chummer
         /// <param name="read"></param>
         /// <param name="onError"></param>
         /// <returns></returns>
-        public static bool TryGetField<T>(this XPathNavigator node, string field, TryParseFunction<T> parser, out T read, T onError = default(T))
+        public static bool TryGetField<T>(this XPathNavigator node, string field, TryParseFunction<T> parser, out T read, T onError = default)
         {
             if (parser != null)
             {

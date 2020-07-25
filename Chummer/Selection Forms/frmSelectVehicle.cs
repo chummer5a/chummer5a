@@ -435,7 +435,7 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
             {
-                if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+                if (chkHideOverAvailLimit.Checked && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
                 {
                     ++intOverLimit;
                     continue;
@@ -450,7 +450,7 @@ namespace Chummer
                         decCostMultiplier *= 0.9m;
                     if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true) == true)
                         decCostMultiplier *= 0.9m;
-                    if (!SelectionShared.CheckNuyenRestriction(objXmlVehicle, _objCharacter.Nuyen, decCostMultiplier))
+                    if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
                     {
                         ++intOverLimit;
                         continue;

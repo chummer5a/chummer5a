@@ -471,9 +471,7 @@ namespace Chummer.Backend.Equipment
 
         public void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements)
         {
-            if (xmlParentGearNode == null)
-                return;
-            XmlNode objGearsNode = xmlParentGearNode["gears"];
+            XmlNode objGearsNode = xmlParentGearNode?["gears"];
             if (objGearsNode != null)
             {
                 // Create Gear by looking up the name of the item we're provided with.

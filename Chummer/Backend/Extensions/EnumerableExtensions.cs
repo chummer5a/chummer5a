@@ -33,7 +33,7 @@ namespace Chummer
         {
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
-                return default(T);
+                return default;
             }
 
             return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid);
@@ -48,7 +48,7 @@ namespace Chummer
         {
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
-                return default(T);
+                return default;
             }
 
             return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid);

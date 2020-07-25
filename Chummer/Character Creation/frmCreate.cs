@@ -59,7 +59,7 @@ namespace Chummer
         //private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
         //private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 
-        public TabControl TabCharacterTabs { get { return this.tabCharacterTabs; } }
+        public TabControl TabCharacterTabs => this.tabCharacterTabs;
 
         #region Form Events
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -2172,9 +2172,8 @@ namespace Chummer
             }
 
             // Refresh Weapons Gear
-            for (int i = 0; i < CharacterObject.Weapons.Count; i++)
+            foreach (Weapon objWeapon in CharacterObject.Weapons)
             {
-                Weapon objWeapon = CharacterObject.Weapons[i];
                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                 {
                     foreach (Gear objGear in objAccessory.Gear)

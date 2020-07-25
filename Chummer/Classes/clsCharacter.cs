@@ -8131,15 +8131,10 @@ namespace Chummer
         /// <summary>
         /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation.
         /// </summary>
-        public int MaxSpiritForce
-        {
-            get
-            {
-                return ((Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value) > 0)
-                    ? (Created ? 2 : 1) * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value)
-                    : 0;
-            }
-        }
+        public int MaxSpiritForce =>
+            ((Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value) > 0)
+                ? (Created ? 2 : 1) * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value)
+                : 0;
 
         /// <summary>
         /// Maximum level of sprites compilable/registrable by the character. Limited to RES at creation.
@@ -9007,13 +9002,7 @@ namespace Chummer
         /// <summary>
         /// Matrix Initiative via VR with Cold Sim.
         /// </summary>
-        public string MatrixInitiativeCold
-        {
-            get
-            {
-                return GetMatrixInitiativeCold(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            }
-        }
+        public string MatrixInitiativeCold => GetMatrixInitiativeCold(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         public string GetMatrixInitiativeCold(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -9100,13 +9089,7 @@ namespace Chummer
         /// <summary>
         /// Matrix Initiative via VR with Hot Sim.
         /// </summary>
-        public string MatrixInitiativeHot
-        {
-            get
-            {
-                return GetMatrixInitiativeHot(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            }
-        }
+        public string MatrixInitiativeHot => GetMatrixInitiativeHot(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         public string GetMatrixInitiativeHot(CultureInfo objCulture, string strLanguageToPrint)
         {
@@ -15643,10 +15626,6 @@ namespace Chummer
             XmlDocument xmlStatBlockDocument = null;
             XmlDocument xmlLeadsDocument = null;
             List<string> lstTextStatBlockLines = null;
-            XmlNode xmlStatBlockBaseNode;
-            XmlNode xmlLeadsBaseNode;
-            XmlNodeList xmlNodeList;
-            XmlDocument xmlGearDocument;
             using (var op_load = Timekeeper.StartSyncron("LoadFromHeroLabFile", null, CustomActivity.OperationType.DependencyOperation, strPorFile))
             {
                 try
@@ -15848,6 +15827,8 @@ namespace Chummer
                         return false;
                     }
 
+                    XmlNode xmlStatBlockBaseNode;
+                    XmlNode xmlLeadsBaseNode;
                     using (_ = Timekeeper.StartSyncron("load_char_misc", op_load))
                     {
                         IsLoading = true;
@@ -16600,6 +16581,7 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_contacts");
                     }
 
+                    XmlDocument xmlGearDocument;
                     using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
                     {
                         // Armor.
@@ -16892,6 +16874,7 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_ware");
                     }
 
+                    XmlNodeList xmlNodeList;
                     using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
                     {
                         // Spells.

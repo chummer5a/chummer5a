@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmSelectVehicleMod : Form
     {
-        private Vehicle _objVehicle;
+        private readonly Vehicle _objVehicle;
         private int _intWeaponMountSlots;
         private int _intModMultiplier = 1;
         private int _intMarkup;
