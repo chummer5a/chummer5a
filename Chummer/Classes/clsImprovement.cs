@@ -3026,7 +3026,7 @@ namespace Chummer
             //Log.Info("intRating = " + intRating.ToString());
             if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
             if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
@@ -3078,7 +3078,7 @@ namespace Chummer
                 string strOnlyCategory = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strOnlyCategory))
                 {
-                    setAllowedCategories = new HashSet<string>(strOnlyCategory.Split(',').Select(x => x.Trim()));
+                    setAllowedCategories = new HashSet<string>(strOnlyCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
                 }
                 else
                 {
@@ -3099,7 +3099,7 @@ namespace Chummer
                 string strExcludeCategory = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strExcludeCategory))
                 {
-                    setForbiddenCategories = new HashSet<string>(strExcludeCategory.Split(',').Select(x => x.Trim()));
+                    setForbiddenCategories = new HashSet<string>(strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
                 }
                 HashSet<string> setAllowedNames = null;
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -3115,7 +3115,7 @@ namespace Chummer
                     string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
                     if (!string.IsNullOrEmpty(strLimitToSkill))
                     {
-                        setAllowedNames = new HashSet<string>(strLimitToSkill.Split(',').Select(x => x.Trim()));
+                        setAllowedNames = new HashSet<string>(strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
                     }
                 }
 
@@ -3123,7 +3123,7 @@ namespace Chummer
                 string strLimitToAttribute = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
                 if (!string.IsNullOrEmpty(strLimitToAttribute))
                 {
-                    setAllowedLinkedAttributes = new HashSet<string>(strLimitToAttribute.Split(',').Select(x => x.Trim()));
+                    setAllowedLinkedAttributes = new HashSet<string>(strLimitToAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()));
                 }
 
                 List<ListItem> lstDropdownItems = new List<ListItem>(objCharacter.SkillsSection.Skills.Count * 2);

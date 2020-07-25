@@ -876,7 +876,7 @@ namespace Chummer
                                     string strTemp = string.Empty;
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|');
+                                        string[] strParts = strTemp.Split('|', StringSplitOptions.RemoveEmptyEntries);
                                         objSource.Path = strParts[0];
                                         if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                         {

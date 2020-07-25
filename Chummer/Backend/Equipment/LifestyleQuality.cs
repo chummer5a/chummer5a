@@ -158,7 +158,7 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
             var strAllowedFreeLifestyles = string.Empty;
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
-                _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',');
+                _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',', StringSplitOptions.RemoveEmptyEntries);
             _strExtra = strExtra;
             if (!string.IsNullOrEmpty(_strExtra))
             {
@@ -323,7 +323,7 @@ namespace Chummer.Backend.Equipment
             var strAllowedFreeLifestyles = string.Empty;
             if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
                 strAllowedFreeLifestyles = GetNode()?["allowed"]?.InnerText ?? string.Empty;
-            _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',');
+            _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',', StringSplitOptions.RemoveEmptyEntries);
             Bonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 

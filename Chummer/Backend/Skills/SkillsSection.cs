@@ -187,7 +187,7 @@ namespace Chummer.Backend.Skills
                     return;
             }
 
-            for (int i = Skills.Count - 1; i >= 0; i--)
+            for (int i = Skills.Count - 1; i >= 0; --i)
             {
                 if (Skills[i].SkillCategory == strCategory)
                 {
@@ -638,13 +638,11 @@ namespace Chummer.Backend.Skills
                                 // Put points into the attribute with the highest total karma cost.
                                 // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                                 int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
-                                if (objSkillToPutPointsInto == null || (objLoopSkill.Karma <= intSkillPointCount &&
-                                                                        (intLoopTotalKarmaCost >
-                                                                         intSkillToPutPointsIntoTotalKarmaCost ||
-                                                                         (intLoopTotalKarmaCost ==
-                                                                          intSkillToPutPointsIntoTotalKarmaCost &&
-                                                                          objLoopSkill.Karma >
-                                                                          objSkillToPutPointsInto.Karma))))
+                                if (objSkillToPutPointsInto == null
+                                    || (objLoopSkill.Karma <= intSkillPointCount
+                                        && (intLoopTotalKarmaCost > intSkillToPutPointsIntoTotalKarmaCost
+                                            || (intLoopTotalKarmaCost == intSkillToPutPointsIntoTotalKarmaCost
+                                                && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))))
                                 {
                                     objSkillToPutPointsInto = objLoopSkill;
                                     intSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
@@ -670,10 +668,10 @@ namespace Chummer.Backend.Skills
                                 // Put points into the attribute with the highest total karma cost.
                                 // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                                 int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
-                                if (objSkillToPutPointsInto == null ||
-                                    intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
-                                    (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
-                                     objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
+                                if (objSkillToPutPointsInto == null
+                                    || intLoopTotalKarmaCost > intHighestTotalKarmaCost
+                                    || (intLoopTotalKarmaCost == intHighestTotalKarmaCost
+                                        && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
                                 {
                                     objSkillToPutPointsInto = objLoopSkill;
                                     intHighestTotalKarmaCost = intLoopTotalKarmaCost;
@@ -704,11 +702,11 @@ namespace Chummer.Backend.Skills
                             // Put points into the attribute with the highest total karma cost.
                             // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                             int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
-                            if (objKnowledgeSkillToPutPointsInto == null ||
-                                (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount &&
-                                 (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost ||
-                                  (intLoopTotalKarmaCost == intKnowledgeSkillToPutPointsIntoTotalKarmaCost &&
-                                   objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))))
+                            if (objKnowledgeSkillToPutPointsInto == null
+                                || (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount
+                                    && (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost
+                                        || (intLoopTotalKarmaCost == intKnowledgeSkillToPutPointsIntoTotalKarmaCost
+                                            && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))))
                             {
                                 objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
                                 intKnowledgeSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
@@ -734,10 +732,10 @@ namespace Chummer.Backend.Skills
                             // Put points into the attribute with the highest total karma cost.
                             // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                             int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
-                            if (objKnowledgeSkillToPutPointsInto == null ||
-                                intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
-                                (intLoopTotalKarmaCost == intHighestTotalKarmaCost && objLoopKnowledgeSkill.Karma >
-                                 objKnowledgeSkillToPutPointsInto.Karma))
+                            if (objKnowledgeSkillToPutPointsInto == null
+                                || intLoopTotalKarmaCost > intHighestTotalKarmaCost
+                                || (intLoopTotalKarmaCost == intHighestTotalKarmaCost
+                                    && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))
                             {
                                 objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
                                 intHighestTotalKarmaCost = intLoopTotalKarmaCost;
@@ -913,7 +911,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Active Skills Dictionary
         /// </summary>
-        public IDictionary<string, Skill> SkillsDictionary => _dicSkills;
+        public Dictionary<string, Skill> SkillsDictionary => _dicSkills;
 
         /// <summary>
         /// Gets an active skill by its Name. Returns null if none found.

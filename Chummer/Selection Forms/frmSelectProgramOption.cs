@@ -160,7 +160,7 @@ namespace Chummer
         /// <summary>
         /// Tags associated with the Program.
         /// </summary>
-        public IList<string> ProgramTags => _lstTags;
+        public List<string> ProgramTags => _lstTags;
 
         /// <summary>
         /// Program Option that was selected in the dialogue.

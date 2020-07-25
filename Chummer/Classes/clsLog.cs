@@ -19,6 +19,7 @@
  using System;
  using System.Diagnostics;
 using System.IO;
+ using System.Linq;
  using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -418,20 +419,19 @@ namespace Chummer
             //TODO: Add timestamp to logs
 
             StringBuilder objTimeStamper = new StringBuilder(loglevel + "\t");
-            string[] classPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            objTimeStamper.Append(classPath[classPath.Length - 1]);
-            objTimeStamper.Append('.');
-            objTimeStamper.Append(method);
-            objTimeStamper.Append(':');
-            objTimeStamper.Append(line);
+            objTimeStamper.Append(file.SplitNoAlloc(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).LastOrDefault() ?? string.Empty)
+                .Append('.')
+                .Append(method)
+                .Append(':')
+                .Append(line);
 
             if (info?.Length > 0)
             {
                 objTimeStamper.Append(' ');
-                for (int i = 0; i < info.Length; ++i)
+                foreach (string time in info)
                 {
-                    objTimeStamper.Append(info[i]);
-                    objTimeStamper.Append(", ");
+                    objTimeStamper.Append(time)
+                        .Append(", ");
                 }
 
                 objTimeStamper.Length -= 2;

@@ -156,7 +156,7 @@ namespace Chummer
             }
 
             treContents.Nodes.Clear();
-            string[] strIdentifiers = strSelectedKit.Split('<');
+            string[] strIdentifiers = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
             cmdDelete.Visible = strIdentifiers[1] == "Custom";
             XPathNavigator objXmlPack = _xmlBaseChummerNode.SelectSingleNode("packs/pack[name = " + strIdentifiers[0].CleanXPath() + " and category = \"" + strIdentifiers[1] + "\"]");
             if (objXmlPack == null)
@@ -990,7 +990,7 @@ namespace Chummer
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
-            string[] objSelectedKit = strSelectedKit.Split('<');
+            string[] objSelectedKit = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
             _strSelectedKit = objSelectedKit[0];
             s_StrSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;

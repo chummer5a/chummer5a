@@ -54,10 +54,9 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(_strExcludeCategory))
                             {
-                                string[] strExcludes = _strExcludeCategory.Split(',');
                                 string strExclude = string.Empty;
-                                for (int i = 0; i <= strExcludes.Length - 1; i++)
-                                    strExclude += "category != \"" + strExcludes[i].Trim() + "\" and ";
+                                foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                    strExclude += "category != \"" + strCategory.Trim() + "\" and ";
                                 // Remove the trailing " and ";
                                 strExclude = strExclude.Substring(0, strExclude.Length - 5);
 

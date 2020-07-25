@@ -2618,7 +2618,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2634,7 +2634,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2650,7 +2650,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2666,7 +2666,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2682,7 +2682,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2698,7 +2698,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2714,7 +2714,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -5974,7 +5974,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string[] options = bonusNode.InnerText.Split(',');
+            string[] options = bonusNode.InnerText.Split(',', StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < options.Length; ++i)
                 options[i] = options[i].Trim();
             string final;
@@ -7439,7 +7439,7 @@ namespace Chummer.Classes
             {
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
-                    frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.Split(',').Select(x => x.Trim())
+                    frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
                         .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x))));
                 else
                     frmPickItem.SetGeneralItemsMode(objSkill.CGLSpecializations);

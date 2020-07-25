@@ -709,12 +709,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="UI\Shared\VehiclesTabUserControl.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="UI\Shared\VehiclesTabUserControl.Designer.cs">
-      <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
-    </None>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1358,9 +1352,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Shared\VehiclesTabUserControl.resx">
-      <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>

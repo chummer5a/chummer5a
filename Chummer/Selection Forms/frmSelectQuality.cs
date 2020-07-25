@@ -134,10 +134,9 @@ namespace Chummer
                         else
                             int.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMin);
 
-                        if (intMax == int.MaxValue)
-                            lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
-                        else
-                            lblBP.Text = string.Format(GlobalOptions.CultureInfo, "{0}{1}-{1}{2}", intMin, strSpace, intMax);
+                        lblBP.Text = intMax == int.MaxValue
+                            ? intMin.ToString(GlobalOptions.CultureInfo)
+                            : string.Format(GlobalOptions.CultureInfo, "{0}{1}-{1}{2}", intMin, strSpace, intMax);
                     }
                     else
                     {

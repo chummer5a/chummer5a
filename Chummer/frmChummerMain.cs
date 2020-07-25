@@ -554,8 +554,7 @@ namespace Chummer
                                 return;
                             }
 
-                            string[] stringSeparators = {","};
-                            string line = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
+                            string line = responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
 
                             if (_workerVersionUpdateChecker.CancellationPending)
                             {

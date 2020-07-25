@@ -17,6 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -338,7 +340,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new []{chrSeparator}, eSplitOptions);
+            return strInput.SplitNoAlloc(chrSeparator, eSplitOptions).ToArray();
         }
 
         /// <summary>
@@ -353,6 +355,82 @@ namespace Chummer
             if (strHaystack == null)
                 throw new ArgumentNullException(nameof(strHaystack));
             return strHaystack.IndexOf(chrNeedle) != -1;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            int intLoopLength;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                yield return strInput;
+                yield break;
+            }
+            int intLoopLength;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + strSplit.Length)
+            {
+                intLoopLength = strInput.IndexOf(strSplit, intStart, StringComparison.Ordinal);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, params char[] achrSplit)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            int intLoopLength;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                yield return intLoopLength != 0 ? strInput.Substring(intStart, intLoopLength) : string.Empty;
+            }
         }
 
         /// <summary>

@@ -72,8 +72,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strIncludeCategory))
                 {
                     strFilter += " and (";
-                    string[] strValue = _strIncludeCategory.Split(',');
-                    foreach (string strSkillCategory in strValue)
+                    foreach (string strSkillCategory in _strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         strFilter += "category = \"" + strSkillCategory.Trim() + "\" or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
@@ -82,8 +81,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strExcludeCategory))
                 {
                     strFilter += " and (";
-                    string[] strValue = _strExcludeCategory.Split(',');
-                    foreach (string strSkillCategory in strValue)
+                    foreach (string strSkillCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         strFilter += "category != \"" + strSkillCategory.Trim() + "\" and ";
                     // Remove the trailing " and ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 5);
@@ -92,8 +90,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
                 {
                     strFilter += " and (";
-                    string[] strValue = _strIncludeSkillGroup.Split(',');
-                    foreach (string strSkillGroup in strValue)
+                    foreach (string strSkillGroup in _strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         strFilter += "skillgroup = \"" + strSkillGroup.Trim() + "\" or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
@@ -102,8 +99,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
                 {
                     strFilter += " and (";
-                    string[] strValue = _strExcludeSkillGroup.Split(',');
-                    foreach (string strSkillGroup in strValue)
+                    foreach (string strSkillGroup in _strExcludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         strFilter += "skillgroup != \"" + strSkillGroup.Trim() + "\" and ";
                     // Remove the trailing " and ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 5);
@@ -112,8 +108,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(LinkedAttribute))
                 {
                     strFilter += " and (";
-                    string[] strValue = LinkedAttribute.Split(',');
-                    foreach (string strAttribute in strValue)
+                    foreach (string strAttribute in LinkedAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         strFilter += "attribute = \"" + strAttribute.Trim() + "\" or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
@@ -122,8 +117,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strLimitToSkill))
                 {
                     strFilter += " and (";
-                    string[] strValue = _strLimitToSkill.Split(',');
-                    foreach (string strSkill in strValue)
+                    foreach (string strSkill in _strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         strFilter += "name = \"" + strSkill.Trim() + "\" or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
@@ -132,8 +126,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strExcludeSkill))
                 {
                     strFilter += " and (";
-                    string[] strValue = _strExcludeSkill.Split(',');
-                    foreach (string strSkill in strValue)
+                    foreach (string strSkill in _strExcludeSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         strFilter += "name != \"" + strSkill.Trim() + "\" and ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);

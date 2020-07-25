@@ -471,9 +471,7 @@ namespace Chummer.Backend.Equipment
 
         public void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements)
         {
-            if (xmlParentGearNode == null)
-                return;
-            XmlNode objGearsNode = xmlParentGearNode["gears"];
+            XmlNode objGearsNode = xmlParentGearNode?["gears"];
             if (objGearsNode != null)
             {
                 // Create Gear by looking up the name of the item we're provided with.
@@ -1522,7 +1520,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
@@ -1808,7 +1806,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
@@ -2149,7 +2147,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
 
@@ -2217,7 +2215,7 @@ namespace Chummer.Backend.Equipment
                     return (0.0m).ToString("#,0.##", GlobalOptions.CultureInfo);
                 if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
                 int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
@@ -2235,7 +2233,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (strFirstHalf.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
-                            string[] strValues = strFirstHalf.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                            string[] strValues = strFirstHalf.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                             strFirstHalf = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                         }
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
@@ -2305,7 +2303,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (strFirstHalf.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
-                            string[] strValues = strFirstHalf.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                            string[] strValues = strFirstHalf.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                             strFirstHalf = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                         }
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
@@ -2351,7 +2349,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 
@@ -3279,7 +3277,7 @@ namespace Chummer.Backend.Equipment
 
                 if (xmlGearDataNode == null)
                 {
-                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                     if (astrOriginalNameSplit.Length > 1)
                     {
                         string strName = astrOriginalNameSplit[0].Trim();
@@ -3340,7 +3338,7 @@ namespace Chummer.Backend.Equipment
                     }
                     if (xmlGearDataNode == null)
                     {
-                        astrOriginalNameSplit = strOriginalName.Split(',');
+                        astrOriginalNameSplit = strOriginalName.Split(',', StringSplitOptions.RemoveEmptyEntries);
                         if (astrOriginalNameSplit.Length > 1)
                         {
                             string strName = astrOriginalNameSplit[0].Trim();

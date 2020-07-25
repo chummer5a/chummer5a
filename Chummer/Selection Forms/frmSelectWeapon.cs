@@ -446,7 +446,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
                             (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
                         {
-                            string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/');
+                            string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
                             if (astrParentDoubledCostModificationSlots.Contains(strMount) || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
                             {
                                 decCostMultiplier *= 2;
@@ -611,7 +611,7 @@ namespace Chummer
         public string LimitToCategories
         {
             // If passed an empty string, consume it and keep _strLimitToCategories as an empty hash.
-            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.Split(','));
+            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
         }
 
         public Weapon ParentWeapon { get; set; }

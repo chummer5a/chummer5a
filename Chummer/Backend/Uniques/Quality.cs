@@ -931,7 +931,7 @@ namespace Chummer
         #endregion
 
         #region UI Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality,TreeView treQualities)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
                  OriginSource == QualitySource.Improvement ||
@@ -953,7 +953,8 @@ namespace Chummer
             };
             if (Suppressed)
             {
-                objNode.NodeFont = new Font(objNode.NodeFont, FontStyle.Strikeout);
+                //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
+                objNode.NodeFont = new Font(treQualities.Font, FontStyle.Strikeout);
             }
 
             return objNode;

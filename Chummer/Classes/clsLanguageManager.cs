@@ -999,7 +999,7 @@ namespace Chummer
     public class LanguageData
     {
         public bool IsRightToLeftScript { get; }
-        public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
         public XmlDocument DataDocument { get; } = new XmlDocument { XmlResolver = null };
         public string ErrorMessage { get; } = string.Empty;
         public bool ErrorAlreadyShown { get; set; }

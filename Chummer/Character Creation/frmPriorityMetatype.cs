@@ -983,11 +983,11 @@ namespace Chummer
 
         private int SumToTen(bool blnDoUIUpdate = true)
         {
-            int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboTalent.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboSkills.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboResources.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
+            int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboTalent.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboSkills.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboResources.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
 
             if (blnDoUIUpdate)
                 lblSumtoTen.Text = value.ToString(GlobalOptions.CultureInfo) + '/' + _objCharacter.Options.SumtoTen.ToString(GlobalOptions.CultureInfo);
