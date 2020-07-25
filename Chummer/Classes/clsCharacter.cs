@@ -5778,7 +5778,7 @@ namespace Chummer
                         {
                             string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
                             if (!string.IsNullOrEmpty(strBlackMarketAttribute) &&
-                                strBlackMarketAttribute.Split(',').Any(x => setNames.Contains(x)))
+                                strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(x => setNames.Contains(x)))
                             {
                                 setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
                             }
@@ -5824,7 +5824,7 @@ namespace Chummer
                 {
                     string strBlackMarketAttribute = xmlCategoryNode.SelectSingleNode("@blackmarket")?.Value;
                     if(!string.IsNullOrEmpty(strBlackMarketAttribute) &&
-                        strBlackMarketAttribute.Split(',').Any(x => setNames.Contains(x)))
+                        strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(x => setNames.Contains(x)))
                     {
                         setBlackMarketMaps.Add(xmlCategoryNode.Value);
                     }
@@ -12218,7 +12218,7 @@ namespace Chummer
             if(intTmp != int.MinValue)
                 return intTmp;
 
-            string[] strReturn = CurrentWalkingRateString.Split('/');
+            string[] strReturn = CurrentWalkingRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
             switch(strType)
             {
@@ -12255,7 +12255,7 @@ namespace Chummer
             if(intTmp != int.MinValue)
                 return intTmp;
 
-            string[] strReturn = CurrentRunningRateString.Split('/');
+            string[] strReturn = CurrentRunningRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
             switch(strType)
             {
@@ -12292,7 +12292,7 @@ namespace Chummer
             if(decTmp != decimal.MinValue)
                 return decTmp;
 
-            string[] strReturn = CurrentSprintingRateString.Split('/');
+            string[] strReturn = CurrentSprintingRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
             switch(strType)
             {
@@ -13784,17 +13784,22 @@ namespace Chummer
             // Load the Sourcebook information.
             XmlDocument objXmlDocument = XmlManager.Load("books.xml", strLanguage);
 
-            foreach(string strBook in strInput.TrimEndOnce(';').Split(';'))
+            foreach(string strBook in strInput.TrimEndOnce(';').SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
                 if(objXmlBook != null)
                 {
-                    sbdReturn.AppendLine((objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", strLanguage)) +
-                                         LanguageManager.GetString("String_Space", strLanguage) + '(' + (objXmlBook["altcode"]?.InnerText ?? strBook) + ')');
+                    sbdReturn.Append(objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", strLanguage))
+                        .Append(LanguageManager.GetString("String_Space", strLanguage))
+                        .Append('(')
+                        .Append(objXmlBook["altcode"]?.InnerText ?? strBook)
+                        .AppendLine(")");
                 }
                 else
                 {
-                    sbdReturn.AppendLine(LanguageManager.GetString("String_Unknown", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + strBook);
+                    sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
+                        .Append(LanguageManager.GetString("String_Space", strLanguage))
+                        .AppendLine(strBook);
                 }
             }
 
@@ -16274,7 +16279,7 @@ namespace Chummer
                                         "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
                                 if (xmlQualityDataNode == null)
                                 {
-                                    string[] astrOriginalNameSplit = strQualityName.Split(':');
+                                    string[] astrOriginalNameSplit = strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -16288,7 +16293,7 @@ namespace Chummer
 
                                 if (xmlQualityDataNode == null)
                                 {
-                                    string[] astrOriginalNameSplit = strQualityName.Split(',');
+                                    string[] astrOriginalNameSplit = strQualityName.Split(',', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -16366,7 +16371,7 @@ namespace Chummer
                                         "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
                                 if (xmlQualityDataNode == null)
                                 {
-                                    string[] astrOriginalNameSplit = strQualityName.Split(':');
+                                    string[] astrOriginalNameSplit = strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -16380,7 +16385,7 @@ namespace Chummer
 
                                 if (xmlQualityDataNode == null)
                                 {
-                                    string[] astrOriginalNameSplit = strQualityName.Split(',');
+                                    string[] astrOriginalNameSplit = strQualityName.Split(',', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -16556,9 +16561,9 @@ namespace Chummer
                                 Convert.ToInt32(xmlImportAttributes["connection"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                             objContact.Loyalty = Convert.ToInt32(xmlImportAttributes["loyalty"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                             string strDescription = xmlContactToImport["description"]?.InnerText;
-                            foreach (string strLine in strDescription.Split('\n'))
+                            foreach (string strLine in strDescription.SplitNoAlloc('\n', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                string[] astrLineColonSplit = strLine.Split(':');
+                                string[] astrLineColonSplit = strLine.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                 switch (astrLineColonSplit[0])
                                 {
                                     case "Metatype":
@@ -16611,7 +16616,7 @@ namespace Chummer
                                         "chummer/armors/armor[name = \"" + strArmorName + "\"]");
                                 if (xmlArmorData == null)
                                 {
-                                    string[] astrOriginalNameSplit = strArmorName.Split(':');
+                                    string[] astrOriginalNameSplit = strArmorName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -16622,7 +16627,7 @@ namespace Chummer
 
                                     if (xmlArmorData == null)
                                     {
-                                        astrOriginalNameSplit = strArmorName.Split(',');
+                                        astrOriginalNameSplit = strArmorName.Split(',', StringSplitOptions.RemoveEmptyEntries);
                                         if (astrOriginalNameSplit.Length > 1)
                                         {
                                             string strName = astrOriginalNameSplit[0].Trim();
@@ -17113,7 +17118,7 @@ namespace Chummer
                                     strSpellName + "\"]");
                                 if (xmlSpellData == null)
                                 {
-                                    string[] astrOriginalNameSplit = strSpellName.Split(':');
+                                    string[] astrOriginalNameSplit = strSpellName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -17125,7 +17130,7 @@ namespace Chummer
 
                                     if (xmlSpellData == null)
                                     {
-                                        astrOriginalNameSplit = strSpellName.Split(',');
+                                        astrOriginalNameSplit = strSpellName.Split(',', StringSplitOptions.RemoveEmptyEntries);
                                         if (astrOriginalNameSplit.Length > 1)
                                         {
                                             string strName = astrOriginalNameSplit[0].Trim();
@@ -17167,7 +17172,7 @@ namespace Chummer
                                         "chummer/powers/power[contains(name, \"" + strPowerName + "\")]");
                                 if (xmlPowerData == null)
                                 {
-                                    string[] astrOriginalNameSplit = strPowerName.Split(':');
+                                    string[] astrOriginalNameSplit = strPowerName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -17184,7 +17189,7 @@ namespace Chummer
 
                                     if (xmlPowerData == null)
                                     {
-                                        astrOriginalNameSplit = strPowerName.Split('(');
+                                        astrOriginalNameSplit = strPowerName.Split('(', StringSplitOptions.RemoveEmptyEntries);
                                         if (astrOriginalNameSplit.Length > 1)
                                         {
                                             string strName = astrOriginalNameSplit[0].Trim();
@@ -17202,7 +17207,7 @@ namespace Chummer
                                                     intRating = 1;
                                             }
 
-                                            astrOriginalNameSplit = strSecondPart.Split(':');
+                                            astrOriginalNameSplit = strSecondPart.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                             if (astrOriginalNameSplit.Length >= 2)
                                             {
                                                 strForcedValue = astrOriginalNameSplit[1].Trim();
@@ -17251,7 +17256,7 @@ namespace Chummer
                             XmlDocument xmlComplexFormsDocument = XmlManager.Load("complexforms.xml");
 
                             string[] astrComplexForms =
-                                strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim().Split(',');
+                                strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim().Split(',', StringSplitOptions.RemoveEmptyEntries);
                             foreach (string strComplexFormEntry in astrComplexForms)
                             {
                                 string strComplexFormName = strComplexFormEntry.Trim();
@@ -17297,7 +17302,7 @@ namespace Chummer
                                         "chummer/complexforms/complexform[name = \"" + strComplexFormName + "\"]");
                                 if (xmlComplexFormData == null)
                                 {
-                                    string[] astrOriginalNameSplit = strComplexFormName.Split(':');
+                                    string[] astrOriginalNameSplit = strComplexFormName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                     if (astrOriginalNameSplit.Length > 1)
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
@@ -17308,7 +17313,7 @@ namespace Chummer
 
                                     if (xmlComplexFormData == null)
                                     {
-                                        astrOriginalNameSplit = strComplexFormName.Split(',');
+                                        astrOriginalNameSplit = strComplexFormName.Split(',', StringSplitOptions.RemoveEmptyEntries);
                                         if (astrOriginalNameSplit.Length > 1)
                                         {
                                             string strName = astrOriginalNameSplit[0].Trim();

@@ -620,7 +620,7 @@ namespace Chummer
                         string strEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
-                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.Split(','));
+                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
                             decimal decGrade =
                                 objCharacter.Cyberware.Where(
                                         objCyberware =>
@@ -1103,7 +1103,7 @@ namespace Chummer
                     {
                         // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                         int intTotal = 0;
-                        string[] strGroups = xmlNode.SelectSingleNode("skillgroups")?.Value.Split('+');
+                        string[] strGroups = xmlNode.SelectSingleNode("skillgroups")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
                         StringBuilder objOutputString = new StringBuilder(Environment.NewLine + '\t');
                         if (strGroups != null)
                         {
@@ -1348,7 +1348,7 @@ namespace Chummer
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
             if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
             }
 
@@ -1402,7 +1402,7 @@ namespace Chummer
             {
                 if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
                 else if (strCost.StartsWith("Variable", StringComparison.Ordinal))

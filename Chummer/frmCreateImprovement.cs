@@ -608,7 +608,7 @@ namespace Chummer
                         strToTranslate.Contains("Exotic Ranged Weapon") ||
                         strToTranslate.Contains("Pilot Exotic Vehicle"))
                     {
-                        string[] astrToTranslateParts = strToTranslate.Split('(');
+                        string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
                         astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 

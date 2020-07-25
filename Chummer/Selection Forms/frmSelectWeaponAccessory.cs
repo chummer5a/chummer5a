@@ -402,11 +402,11 @@ namespace Chummer
 
             if (blnUpdateMountCBOs)
             {
-                string[] astrDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value.Split('/');
+                string strDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value;
                 List<string> strMounts = new List<string>();
-                if (astrDataMounts != null)
+                if (!string.IsNullOrEmpty(strDataMounts))
                 {
-                    strMounts.AddRange(astrDataMounts);
+                    strMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
                 strMounts.Add("None");
@@ -436,7 +436,7 @@ namespace Chummer
                 string strExtraMount = xmlAccessory.SelectSingleNode("extramount")?.Value;
                 if (!string.IsNullOrEmpty(strExtraMount))
                 {
-                    foreach (string strItem in strExtraMount.Split('/'))
+                    foreach (string strItem in strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
                         strExtraMounts.Add(strItem);
                     }
@@ -518,7 +518,7 @@ namespace Chummer
                     decCost *= _objParentWeapon.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                     {
-                        string[] astrParentDoubledCostModificationSlots = _objParentWeapon.DoubledCostModificationSlots.Split('/');
+                        string[] astrParentDoubledCostModificationSlots = _objParentWeapon.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
                         if (astrParentDoubledCostModificationSlots.Contains(cboMount.SelectedItem?.ToString()) ||
                             astrParentDoubledCostModificationSlots.Contains(cboExtraMount.SelectedItem?.ToString()))
                         {

@@ -307,11 +307,10 @@ namespace Chummer
 
                 objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
                 bool blnExtrasAdded = false;
-                foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').Split(','))
+                foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     blnExtrasAdded = true;
-                    strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, strLanguageToPrint));
-                    strExtra.Append(", ");
+                    strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(", ");
                 }
                 if (blnExtrasAdded)
                     strExtra.Length -= 2;

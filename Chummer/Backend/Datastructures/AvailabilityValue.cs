@@ -53,7 +53,7 @@ namespace Chummer
                 string strAvailExpr = strInput;
                 if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
 

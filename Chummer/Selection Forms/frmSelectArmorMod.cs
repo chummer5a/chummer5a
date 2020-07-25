@@ -315,7 +315,7 @@ namespace Chummer
                         strSuffix = strCostElement.Substring(strCostElement.LastIndexOf(')') + 1);
                         strCostElement = strCostElement.TrimEndOnce(strSuffix);
                     }
-                    string[] strValues = strCostElement.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCostElement.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCostElement = strValues[Math.Max(Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                     strCostElement += strSuffix;
                 }
@@ -371,7 +371,7 @@ namespace Chummer
             {
                 if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCapacity = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
 
@@ -408,7 +408,7 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
 
             // Populate the Mods list.
-            string[] strAllowed = AllowedCategories.Split(',');
+            string[] strAllowed = AllowedCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
             string strMount = string.Empty;
             for (int i = 0; i < strAllowed.Length; i++)
             {

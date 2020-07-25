@@ -133,7 +133,7 @@ namespace Chummer
                 string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
                 if (strSelectedGameplayOption != null && strSelectedGameplayOption.IndexOf('|') != -1)
                 {
-                    strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+                    strSelectedGameplayOption = strSelectedGameplayOption.SplitNoAlloc('|').FirstOrDefault();
                 }
                 XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (strSelectedGameplayOption ?? string.Empty) + "\"]");
                 objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
@@ -178,8 +178,9 @@ namespace Chummer
             string strPriorityArray = string.Empty;
             if (strSelectedGameplayOption.IndexOf('|') != -1)
             {
-                strPriorityArray = strSelectedGameplayOption.Split('|')[1];
-                strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+                string[] astrPriorityArray = strSelectedGameplayOption.Split('|');
+                strPriorityArray = astrPriorityArray[1];
+                strSelectedGameplayOption = astrPriorityArray[0];
             }
 
             XPathNavigator xmlGameplayOption =
@@ -223,7 +224,7 @@ namespace Chummer
             string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
             if (strSelectedGameplayOption != null && strSelectedGameplayOption.IndexOf('|') != -1)
             {
-                strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+                strSelectedGameplayOption = strSelectedGameplayOption.SplitNoAlloc('|').FirstOrDefault();
             }
             XPathNavigator xmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (strSelectedGameplayOption ?? string.Empty) + "\"]");
             string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
@@ -283,7 +284,7 @@ namespace Chummer
             string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
             if (strSelectedGameplayOption != null && strSelectedGameplayOption.IndexOf('|') != -1)
             {
-                strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+                strSelectedGameplayOption = strSelectedGameplayOption.SplitNoAlloc('|').FirstOrDefault();
             }
             XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (strSelectedGameplayOption  ?? string.Empty) + "\"]");
             if (objXmlGameplayOption != null)

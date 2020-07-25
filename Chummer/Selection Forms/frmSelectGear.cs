@@ -81,13 +81,13 @@ namespace Chummer
             // Load the Gear information.
             _xmlBaseGearDataNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
-            foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').Split(','))
+            foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 string strLoop = strCategory.Trim();
                 if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedCategories.Add(strLoop);
             }
 
-            foreach (string strName in strAllowedNames.TrimEndOnce(',').Split(','))
+            foreach (string strName in strAllowedNames.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 string strLoop = strName.Trim();
                 if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedNames.Add(strLoop);
@@ -675,7 +675,7 @@ namespace Chummer
 
                     if (objCostNode.Value.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        string[] strValues = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                        string[] strValues = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         string strCost = "0";
                         if (nudRating.Value > 0)
                             strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim('[', ']');
@@ -746,7 +746,7 @@ namespace Chummer
 
                             if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                             {
-                                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                                 if (strValues.Length >= decimal.ToInt32(nudRating.Value))
                                     lblCapacity.Text = strValues[decimal.ToInt32(nudRating.Value) - 1];
                                 else
@@ -807,7 +807,7 @@ namespace Chummer
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacityText.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
-                            string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                            string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                             lblCapacity.Text = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                         }
                         else
@@ -846,7 +846,7 @@ namespace Chummer
             {
                 if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 
@@ -882,7 +882,7 @@ namespace Chummer
                     {
                         if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
-                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                             strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
                         }
 

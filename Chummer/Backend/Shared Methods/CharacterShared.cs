@@ -174,8 +174,7 @@ namespace Chummer
                 }
             }
 
-            string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-            string strShowFileName = strFile[strFile.Length - 1];
+            string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
             if (string.IsNullOrEmpty(strShowFileName))
                 strShowFileName = _objCharacter.CharacterName;
@@ -6451,8 +6450,7 @@ namespace Chummer
                 Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
-                string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-                string strShowFileName = strFile[strFile.Length - 1];
+                string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
                 if (string.IsNullOrEmpty(strShowFileName))
                     strShowFileName = _objCharacter.CharacterName;

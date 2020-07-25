@@ -4546,7 +4546,7 @@ namespace Chummer
                 ParentWeapon = objSelectedWeapon
             })
             {
-                frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.Split('/'));
+                frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 frmPickWeapon.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
@@ -4911,7 +4911,7 @@ namespace Chummer
                 ParentWeapon = objSelectedWeapon
             })
             {
-                frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.Split('/'));
+                frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 frmPickWeapon.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
@@ -5319,8 +5319,7 @@ namespace Chummer
                         HashSet<string> setHasMounts = new HashSet<string>();
                         foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                         {
-                            string[] strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
-                            foreach (string strLoop in strLoopDisallowedMounts)
+                            foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                 if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                                     setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                             string strLoopHasModularMount = objLoopCyberware.HasModularMount;
@@ -5367,16 +5366,14 @@ namespace Chummer
                         frmPickCyberware.Subsystems = objCyberwareParent.AllowedSubsystems;
                         HashSet<string> setDisallowedMounts = new HashSet<string>();
                         HashSet<string> setHasMounts = new HashSet<string>();
-                        string[] strLoopDisallowedMounts = objCyberwareParent.BlocksMounts.Split(',');
-                        foreach (string strLoop in strLoopDisallowedMounts)
+                        foreach (string strLoop in objCyberwareParent.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
                         string strLoopHasModularMount = objCyberwareParent.HasModularMount;
                         if (!string.IsNullOrEmpty(strLoopHasModularMount))
                             setHasMounts.Add(strLoopHasModularMount);
                         foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                         {
-                            strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
-                            foreach (string strLoop in strLoopDisallowedMounts)
+                            foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                 if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                                     setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                             strLoopHasModularMount = objLoopCyberware.HasModularMount;
@@ -9697,13 +9694,8 @@ namespace Chummer
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
-                        foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
-                        {
-                            if (string.IsNullOrEmpty(strMount))
-                                continue;
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
-                            sbdSlotsText.Append('/');
-                        }
+                        foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
                         sbdSlotsText.Length -= 1;
                         lblWeaponSlots.Text = sbdSlotsText.ToString();
                     }
@@ -9833,32 +9825,22 @@ namespace Chummer
                 if (sbdSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     sbdSlotsText.Clear();
-                    foreach (string strMount in objSelectedAccessory.Mount.Split('/'))
-                    {
-                        if (string.IsNullOrEmpty(strMount))
-                            continue;
-                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
-                        sbdSlotsText.Append('/');
-                    }
+                    foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
                     sbdSlotsText.Length -= 1;
                 }
 
                 if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount) && objSelectedAccessory.ExtraMount != "None")
                 {
                     bool boolHaveAddedItem = false;
-                    string[] strExtraMounts = objSelectedAccessory.ExtraMount.Split('/');
-                    foreach (string strCurrentExtraMount in strExtraMounts)
+                    foreach (string strCurrentExtraMount in objSelectedAccessory.ExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        if (!string.IsNullOrEmpty(strCurrentExtraMount))
+                        if (!boolHaveAddedItem)
                         {
-                            if (!boolHaveAddedItem)
-                            {
-                                sbdSlotsText.Append(strSpace + '+' + strSpace);
-                                boolHaveAddedItem = true;
-                            }
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount));
-                            sbdSlotsText.Append('/');
+                            sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
+                            boolHaveAddedItem = true;
                         }
+                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
                     }
                     // Remove the trailing /
                     if (boolHaveAddedItem)
@@ -10679,16 +10661,14 @@ namespace Chummer
                     frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
                     HashSet<string> setDisallowedMounts = new HashSet<string>();
                     HashSet<string> setHasMounts = new HashSet<string>();
-                    string[] strLoopDisallowedMounts = objSelectedCyberware.BlocksMounts.Split(',');
-                    foreach (string strLoop in strLoopDisallowedMounts)
+                    foreach (string strLoop in objSelectedCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         setDisallowedMounts.Add(strLoop + objSelectedCyberware.Location);
                     string strLoopHasModularMount = objSelectedCyberware.HasModularMount;
                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                         setHasMounts.Add(strLoopHasModularMount);
                     foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                     {
-                        strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
-                        foreach (string strLoop in strLoopDisallowedMounts)
+                        foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                                 setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                         strLoopHasModularMount = objLoopCyberware.HasModularMount;
@@ -11408,13 +11388,8 @@ namespace Chummer
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
-                        foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
-                        {
-                            if (string.IsNullOrEmpty(strMount))
-                                continue;
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
-                            sbdSlotsText.Append('/');
-                        }
+                        foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
                         sbdSlotsText.Length -= 1;
                         lblWeaponSlots.Text = sbdSlotsText.ToString();
                     }
@@ -11539,28 +11514,22 @@ namespace Chummer
                 lblVehicleAvail.Text = objAccessory.DisplayTotalAvail;
                 lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 StringBuilder sbdMount = new StringBuilder();
-                foreach (string strCurrentMount in objAccessory.Mount.Split('/'))
-                {
-                    if (!string.IsNullOrEmpty(strCurrentMount))
-                        sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount) + '/');
-                }
+                foreach (string strCurrentMount in objAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                    sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount)).Append('/');
                 // Remove the trailing /
                 if (sbdMount.Length > 0)
                     sbdMount.Length -= 1;
                 if (!string.IsNullOrEmpty(objAccessory.ExtraMount) && objAccessory.ExtraMount != "None")
                 {
                     bool boolHaveAddedItem = false;
-                    foreach (string strCurrentExtraMount in objAccessory.ExtraMount.Split('/'))
+                    foreach (string strCurrentExtraMount in objAccessory.ExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        if (!string.IsNullOrEmpty(strCurrentExtraMount))
+                        if (!boolHaveAddedItem)
                         {
-                            if (!boolHaveAddedItem)
-                            {
-                                sbdMount.Append(strSpace + '+' + strSpace);
-                                boolHaveAddedItem = true;
-                            }
-                            sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + '/');
+                            sbdMount.Append(strSpace).Append('+').Append(strSpace);
+                            boolHaveAddedItem = true;
                         }
+                        sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
                     }
                     // Remove the trailing /
                     if (boolHaveAddedItem)

@@ -264,7 +264,7 @@ namespace Chummer
             {
                 foreach (string strFile in lstFiles)
                 {
-                    string[] strPath = Path.GetDirectoryName(strFile)?.Replace(' ', '_').Split(Path.DirectorySeparatorChar) ?? new string[] { };
+                    string[] strPath = Path.GetDirectoryName(strFile)?.Replace(' ', '_').Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries) ?? new string[] { };
                     string strPackFile = '/' + strPath[strPath.Length - 2] + '/' + strPath[strPath.Length - 1] + '/' + (Path.GetFileName(strFile)?.Replace(' ', '_') ?? string.Empty);
                     strPackFile = strPackFile.TrimStartOnce("/saves");
                     Uri objUri = new Uri(strPackFile, UriKind.Relative);
@@ -373,7 +373,7 @@ namespace Chummer
                     {
                         string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace('_', ' '));
 
-                        string[] strDirectory = strTarget.Split('/');
+                        string[] strDirectory = strTarget.Split('/', StringSplitOptions.RemoveEmptyEntries);
                         if (!strDirectory[1].EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                         {
                             if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))
@@ -422,7 +422,7 @@ namespace Chummer
                 {
                     string strTarget = Path.Combine(strFilePath, objPart.Uri.ToString().Replace('_', ' '));
 
-                    string[] strDirectory = strTarget.Split('/');
+                    string[] strDirectory = strTarget.Split('/', StringSplitOptions.RemoveEmptyEntries);
                     if (!strDirectory[1].EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                     {
                         if (!Directory.Exists(Path.Combine(strFilePath, strDirectory[1])))

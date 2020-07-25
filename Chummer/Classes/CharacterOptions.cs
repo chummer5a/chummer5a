@@ -976,11 +976,10 @@ namespace Chummer
                 strBookList = "Shadowrun 5th Edition";
                 GlobalOptions.ChummerRegistryKey.SetValue("books", strBookList);
             }
-            string[] strBooks = strBookList.Split(',');
 
             XmlDocument objXmlDocument = XmlManager.Load("books.xml");
 
-            foreach (string strBookName in strBooks)
+            foreach (string strBookName in strBookList.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.InnerText;
                 if (!string.IsNullOrEmpty(strCode))

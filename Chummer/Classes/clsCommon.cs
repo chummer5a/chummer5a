@@ -888,10 +888,10 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
-                astrSourceParts = strSource.Split(strSpace[0]);
+                astrSourceParts = strSource.Split(strSpace[0], StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
             {
-                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new [] { "SR5", strSource.Substring(4) };
             }
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
             {
@@ -956,7 +956,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
-            string[] strTemp = strSource.Split(' ');
+            string[] strTemp = strSource.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (strTemp.Length < 2)
                 return string.Empty;
             if (!int.TryParse(strTemp[1], out int intPage))

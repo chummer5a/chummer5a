@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using System.Reflection;
  using Application = System.Windows.Forms.Application;
 using System.Collections.Generic;
+ using System.Linq;
  using System.Threading;
  using NLog;
 
@@ -214,12 +215,9 @@ namespace Chummer
                                 return;
                             }
 
-                            string[] stringSeparators = {","};
-                            string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
                             bool blnFoundTag = false;
                             bool blnFoundArchive = false;
-                            foreach (string line in result)
+                            foreach (string line in responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 if (_workerConnectionLoader.CancellationPending)
                                 {
@@ -229,8 +227,8 @@ namespace Chummer
 
                                 if (!blnFoundTag && line.Contains("tag_name"))
                                 {
-                                    _strLatestVersion = line.Split(':')[1];
-                                    LatestVersion = _strLatestVersion.Split('}')[0].FastEscape('\"').Trim();
+                                    _strLatestVersion = line.SplitNoAlloc(':').ElementAtOrDefault(1);
+                                    LatestVersion = _strLatestVersion.SplitNoAlloc('}').FirstOrDefault().FastEscape('\"').Trim();
                                     blnFoundTag = true;
                                     if (blnFoundArchive)
                                         break;
@@ -238,9 +236,9 @@ namespace Chummer
 
                                 if (!blnFoundArchive && line.Contains("browser_download_url"))
                                 {
-                                    _strDownloadFile = line.Split(':')[2];
+                                    _strDownloadFile = line.SplitNoAlloc(':').ElementAtOrDefault(2) ?? string.Empty;
                                     _strDownloadFile = _strDownloadFile.Substring(2);
-                                    _strDownloadFile = _strDownloadFile.Split('}')[0].FastEscape('\"');
+                                    _strDownloadFile = _strDownloadFile.SplitNoAlloc('}').FirstOrDefault().FastEscape('\"');
                                     _strDownloadFile = "https://" + _strDownloadFile;
                                     blnFoundArchive = true;
                                     if (blnFoundTag)

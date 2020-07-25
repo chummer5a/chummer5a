@@ -508,14 +508,14 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            string[] strDescriptorsIn = xmlSpell.SelectSingleNode("descriptor")?.Value.Split(',') ?? new string[] {};
 
             StringBuilder objDescriptors = new StringBuilder();
             bool blnExtendedFound = false;
             bool blnAlchemicalFound = false;
-            if (!string.IsNullOrEmpty(xmlSpell.SelectSingleNode("descriptor")?.Value))
+            string strDescriptors = xmlSpell.SelectSingleNode("descriptor")?.Value;
+            if (!string.IsNullOrEmpty(strDescriptors))
             {
-                foreach (string strDescriptor in strDescriptorsIn)
+                foreach (string strDescriptor in strDescriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     switch (strDescriptor.Trim())
                     {
@@ -543,7 +543,7 @@ namespace Chummer
                             objDescriptors.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim()));
                             break;
                     }
-                    objDescriptors.Append(',' + strSpace);
+                    objDescriptors.Append(',').Append(strSpace);
                 }
             }
 

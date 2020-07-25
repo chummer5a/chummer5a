@@ -1333,7 +1333,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
@@ -2181,11 +2181,10 @@ namespace Chummer.Backend.Equipment
                 int intEnd = strDamage.IndexOf(')', intStart);
                 string strMin = strDamage.Substring(intStart, intEnd - intStart + 1);
 
-                string[] strValue = strMin.TrimStartOnce("min(", true).TrimEndOnce(')').Split(',');
-                int intMinValue = Convert.ToInt32(strValue[0], GlobalOptions.InvariantCultureInfo);
-                for (int i = 1; i < strValue.Length; ++i)
+                int intMinValue = int.MaxValue;
+                foreach (string strValue in strMin.TrimStartOnce("min(", true).TrimEndOnce(')').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    intMinValue = Math.Min(intMinValue, Convert.ToInt32(strValue[i], GlobalOptions.InvariantCultureInfo));
+                    intMinValue = Math.Min(intMinValue, Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo));
                 }
 
                 strDamage = strDamage.Replace(strMin, intMinValue.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2549,7 +2548,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
-            string[] strAmmos = Ammo.Split(' ');
+            IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
             string strReturn = string.Empty;
             int intAmmoBonus = 0;
 
@@ -2566,8 +2565,7 @@ namespace Chummer.Backend.Equipment
                         // Replace the Ammo value.
                         if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
                         {
-                            strAmmos = new[] {objAccessory.AmmoReplace};
-                            break;
+                            lstAmmos = objAccessory.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
                         }
 
                         intAmmoBonus += objAccessory.AmmoBonus;
@@ -2582,8 +2580,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!string.IsNullOrEmpty(objMod.AmmoReplace))
                     {
-                        strAmmos = new[] { objMod.AmmoReplace };
-                        break;
+                        lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
                     }
                     intAmmoBonus += objMod.AmmoBonus;
                     if (objMod.AmmoBonusPercent != 0)
@@ -2593,7 +2590,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            foreach (string strAmmo in strAmmos)
+            foreach (string strAmmo in lstAmmos)
             {
                 string strThisAmmo = strAmmo;
                 int intPos = strThisAmmo.IndexOf('(');
@@ -2708,7 +2705,7 @@ namespace Chummer.Backend.Equipment
         public string CalculatedMode(string strLanguage)
         {
             // Move the contents of the array to a list so it's easier to work with.
-            HashSet<string> lstModes = new HashSet<string>(_strMode.Split('/'));
+            HashSet<string> lstModes = new HashSet<string>(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2725,7 +2722,7 @@ namespace Chummer.Backend.Equipment
                             if (strFireMode.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.Split('/'))
+                                foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2740,7 +2737,7 @@ namespace Chummer.Backend.Equipment
                             if (strFireMode.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.Split('/'))
+                                foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2757,7 +2754,7 @@ namespace Chummer.Backend.Equipment
                             if (strFireMode.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.Split('/'))
+                                foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2772,7 +2769,7 @@ namespace Chummer.Backend.Equipment
                             if (strFireMode.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.Split('/'))
+                                foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2793,7 +2790,7 @@ namespace Chummer.Backend.Equipment
                                 if (strFireMode.Contains('/'))
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strFireMode.Split('/'))
+                                    foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2808,7 +2805,7 @@ namespace Chummer.Backend.Equipment
                                 if (strFireMode.Contains('/'))
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strFireMode.Split('/'))
+                                    foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2825,7 +2822,7 @@ namespace Chummer.Backend.Equipment
                                 if (strFireMode.Contains('/'))
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strFireMode.Split('/'))
+                                    foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2841,7 +2838,7 @@ namespace Chummer.Backend.Equipment
                                 if (strFireMode.Contains('/'))
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
-                                    foreach (string strMode in strFireMode.Split('/'))
+                                    foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                         lstModes.Add(strMode);
                                 }
                                 else
@@ -2861,7 +2858,7 @@ namespace Chummer.Backend.Equipment
                             if (objAccessory.FireMode.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in objAccessory.FireMode.Split('/'))
+                                foreach (string strMode in objAccessory.FireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2876,7 +2873,7 @@ namespace Chummer.Backend.Equipment
                             if (objAccessory.FireModeReplacement.Contains('/'))
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in objAccessory.FireModeReplacement.Split('/'))
+                                foreach (string strMode in objAccessory.FireModeReplacement.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                                     lstModes.Add(strMode);
                             }
                             else
@@ -2919,9 +2916,11 @@ namespace Chummer.Backend.Equipment
         /// Determine if the Weapon is capable of firing in a particular mode.
         /// </summary>
         /// <param name="strFindMode">Firing mode to find.</param>
-        public bool AllowMode(string strFindMode)
+        public bool AllowMode(string strFindMode, string strLanguage = "")
         {
-            return CalculatedMode(GlobalOptions.Language).Split('/').Any(strMode => strMode == strFindMode);
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
+            return CalculatedMode(strLanguage).SplitNoAlloc('/').Any(strMode => strMode == strFindMode);
         }
 
         /// <summary>
@@ -2947,18 +2946,16 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string[] astrPossibleMounts = ModificationSlots.Split('/');
-
-                if (astrPossibleMounts.Length <= 0)
+                if (ModificationSlots.IndexOf('/') < 0)
                     return string.Empty;
 
                 StringBuilder strMounts = new StringBuilder();
-                foreach (string strMount in astrPossibleMounts)
+                foreach (string strMount in ModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (WeaponAccessories.All(objAccessory => !objAccessory.Equipped || objAccessory.Mount != strMount && objAccessory.ExtraMount != strMount) && UnderbarrelWeapons.All(weapon => !weapon.Equipped || weapon.Mount != strMount && weapon.ExtraMount != strMount))
+                    if (WeaponAccessories.All(objAccessory => !objAccessory.Equipped || objAccessory.Mount != strMount && objAccessory.ExtraMount != strMount)
+                        && UnderbarrelWeapons.All(weapon => !weapon.Equipped || weapon.Mount != strMount && weapon.ExtraMount != strMount))
                     {
-                        strMounts.Append(strMount);
-                        strMounts.Append('/');
+                        strMounts.Append(strMount).Append('/');
                     }
                 }
 
@@ -3021,7 +3018,7 @@ namespace Chummer.Backend.Equipment
 
                 if (!string.IsNullOrEmpty(Parent?.DoubledCostModificationSlots))
                 {
-                    string[] astrParentDoubledCostModificationSlots = Parent.DoubledCostModificationSlots.Split('/');
+                    string[] astrParentDoubledCostModificationSlots = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
                     if (astrParentDoubledCostModificationSlots.Contains(Mount) || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
                     {
                         decReturn *= 2;
@@ -5468,9 +5465,7 @@ namespace Chummer.Backend.Equipment
                     .FastEscapeOnceFromEnd(" + energy")
                     .Replace(" or belt", " or 250(belt)");
 
-                string[] strAmmos = strWeaponAmmo.Split(new[] { " or " }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string strAmmo in strAmmos)
+                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
                 {
                     lstCount.Add(AmmoCapacity(strAmmo));
                 }
@@ -5745,18 +5740,16 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strOriginalName + "\"]");
                 if (xmlWeaponDataNode == null)
                 {
-                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
-                    if (astrOriginalNameSplit.Length > 1)
+                    if (strOriginalName.IndexOf(':') >= 0)
                     {
-                        string strName = astrOriginalNameSplit[0].Trim();
+                        string strName = strOriginalName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
                         xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]");
                     }
                     if (xmlWeaponDataNode == null)
                     {
-                        astrOriginalNameSplit = strOriginalName.Split(',');
-                        if (astrOriginalNameSplit.Length > 1)
+                        if (strOriginalName.IndexOf(',') >= 0)
                         {
-                            string strName = astrOriginalNameSplit[0].Trim();
+                            string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault().Trim();
                             xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]");
                         }
                     }
@@ -5862,8 +5855,10 @@ namespace Chummer.Backend.Equipment
                             if (xmlWeaponAccessoryData != null)
                             {
                                 WeaponAccessory objWeaponAccessory = new WeaponAccessory(_objCharacter);
-                                string strMainMount = xmlWeaponAccessoryData["mount"]?.InnerText.Split('/').FirstOrDefault() ?? string.Empty;
-                                string strExtraMount = xmlWeaponAccessoryData["extramount"]?.InnerText.Split('/').FirstOrDefault(x => x != strMainMount) ?? string.Empty;
+                                string strMainMount = xmlWeaponAccessoryData["mount"]?.InnerText.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                    .FirstOrDefault() ?? string.Empty;
+                                string strExtraMount = xmlWeaponAccessoryData["extramount"]?.InnerText.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                    .FirstOrDefault(x => x != strMainMount) ?? string.Empty;
 
                                 objWeaponAccessory.Create(xmlWeaponAccessoryData, new Tuple<string, string>(strMainMount, strExtraMount), Convert.ToInt32(xmlWeaponAccessoryToImport.Attributes["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo));
                                 objWeaponAccessory.Notes = xmlWeaponAccessoryToImport["description"]?.InnerText;
@@ -6266,16 +6261,16 @@ namespace Chummer.Backend.Equipment
         public bool CheckAccessoryRequirements(XPathNavigator objXmlAccessory)
         {
             if (objXmlAccessory == null) return false;
-            string[] lstMounts = AccessoryMounts.Split('/');
+            string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
             XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
-            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.Split('/').All(strItem =>
+            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
                 !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
                     strAllowedMount != strItem)))
             {
                 return false;
             }
             xmlMountNode = objXmlAccessory.SelectSingleNode("extramount");
-            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.Split('/').All(strItem =>
+            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
                 !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
                     strAllowedMount != strItem)))
             {
