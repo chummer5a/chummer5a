@@ -461,7 +461,7 @@ namespace Chummer
                             && strFileName != "fr-fr.xml"
                             && strFileName != "ja-jp.xml"
                             && strFileName != "pt-br.xml"
-                            && strFileName != "zh-cm.xml"
+                            && strFileName != "zh-cn.xml"
                             && strFileName != "de-de_data.xml"
                             && strFileName != "fr-fr_data.xml"
                             && strFileName != "ja-jp_data.xml"
