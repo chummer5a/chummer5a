@@ -394,9 +394,11 @@ namespace Chummer
             }
             else
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date") + strSpace +
-                                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"), CurrentVersion) + strSpace +
-                                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Latest_Version"), LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable"), strLatestVersion);
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date")
+                                        + strSpace + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"),
+                                            CurrentVersion)
+                                        + strSpace + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Latest_Version"),
+                                            LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
                     cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date");
@@ -438,23 +440,35 @@ namespace Chummer
                     string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
                     int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
                     string strTopLevelFolder = intSeparatorIndex != -1 ? strFilePath.Substring(intSeparatorIndex + 1) : string.Empty;
-                    if ((!strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase) && !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase) &&
-                         !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase) && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase) &&
-                         !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase) && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase) &&
-                         !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))) ||
-                        strFileName?.EndsWith(".old", StringComparison.OrdinalIgnoreCase) != false || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) ||
-                        strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase) ||
-                        strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase) ||
-                        (strFilePath.Contains("sheets") && strTopLevelFolder != "de" && strTopLevelFolder != "fr" &&
-                         strTopLevelFolder != "jp" && strTopLevelFolder != "zh") || (strTopLevelFolder == "lang" &&
-                                                                                     strFileName != "de.xml" &&
-                                                                                     strFileName != "fr.xml" &&
-                                                                                     strFileName != "jp.xml" &&
-                                                                                     strFileName != "zh.xml" &&
-                                                                                     strFileName != "de_data.xml" &&
-                                                                                     strFileName != "fr_data.xml" &&
-                                                                                     strFileName != "jp_data.xml" &&
-                                                                                     strFileName != "zh_data.xml"))
+                    if ((!strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase)
+                         && !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase)
+                         && !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase)
+                         && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase)
+                         && !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase)
+                         && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase)
+                         && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)))
+                        || strFileName?.EndsWith(".old", StringComparison.OrdinalIgnoreCase) != false
+                        || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                        || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                        || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                        || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
+                        || (strFilePath.Contains("sheets")
+                            && strTopLevelFolder != "de-de"
+                            && strTopLevelFolder != "fr-fr"
+                            && strTopLevelFolder != "ja-jp"
+                            && strTopLevelFolder != "pt-br"
+                            && strTopLevelFolder != "zh-cn")
+                        || (strTopLevelFolder == "lang"
+                            && strFileName != "de-de.xml"
+                            && strFileName != "fr-fr.xml"
+                            && strFileName != "ja-jp.xml"
+                            && strFileName != "pt-br.xml"
+                            && strFileName != "zh-cn.xml"
+                            && strFileName != "de-de_data.xml"
+                            && strFileName != "fr-fr_data.xml"
+                            && strFileName != "ja-jp_data.xml"
+                            && strFileName != "pt-br_data.xml"
+                            && strFileName != "zh-cn_data.xml"))
                         lstFilesToNotDelete.Add(strFileToDelete);
                 }
                 lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));
@@ -487,16 +501,17 @@ namespace Chummer
                 {
                     string strFileName = Path.GetFileName(strFileToDelete);
                     string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
-                    if (!strFilePath.StartsWith("customdata", StringComparison.OrdinalIgnoreCase) &&
-                        !strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase) &&
-                        !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase) &&
-                        !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase) &&
-                        !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase) &&
-                        !strFilePath.StartsWith("settings", StringComparison.OrdinalIgnoreCase) &&
-                        !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase) &&
-                        !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase) &&
-                        !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)) ||
-                        strFileName?.EndsWith(".old", StringComparison.OrdinalIgnoreCase) != false || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                    if (!strFilePath.StartsWith("customdata", StringComparison.OrdinalIgnoreCase)
+                        && !strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase)
+                        && !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase)
+                        && !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase)
+                        && !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase)
+                        && !strFilePath.StartsWith("settings", StringComparison.OrdinalIgnoreCase)
+                        && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase)
+                        && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase)
+                        && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))
+                        || strFileName?.EndsWith(".old", StringComparison.OrdinalIgnoreCase) != false
+                        || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                         lstFilesToNotDelete.Add(strFileToDelete);
                 }
                 lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));

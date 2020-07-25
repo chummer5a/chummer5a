@@ -289,6 +289,7 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
+            this.cmdRename = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -414,7 +415,7 @@ namespace Chummer
             this.cboSetting.FormattingEnabled = true;
             this.cboSetting.Location = new System.Drawing.Point(83, 638);
             this.cboSetting.Name = "cboSetting";
-            this.cboSetting.Size = new System.Drawing.Size(659, 21);
+            this.cboSetting.Size = new System.Drawing.Size(560, 21);
             this.cboSetting.TabIndex = 1;
             this.cboSetting.TooltipText = "";
             this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
@@ -3814,22 +3815,24 @@ namespace Chummer
             // 
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpButtons.ColumnCount = 5;
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpButtons.Controls.Add(this.cmdDelete, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdOK, 4, 0);
+            this.tlpButtons.ColumnCount = 6;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tlpButtons.Controls.Add(this.cmdRename, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdDelete, 2, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 5, 0);
             this.tlpButtons.Controls.Add(this.cmdRestoreDefaults, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdSave, 3, 0);
-            this.tlpButtons.Controls.Add(this.cmdSaveAs, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(748, 637);
+            this.tlpButtons.Controls.Add(this.cmdSave, 4, 0);
+            this.tlpButtons.Controls.Add(this.cmdSaveAs, 3, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(649, 637);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(495, 23);
+            this.tlpButtons.Size = new System.Drawing.Size(594, 23);
             this.tlpButtons.TabIndex = 6;
             // 
             // cmdDelete
@@ -3837,12 +3840,12 @@ namespace Chummer
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDelete.Location = new System.Drawing.Point(102, 0);
+            this.cmdDelete.Location = new System.Drawing.Point(201, 0);
             this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(93, 23);
             this.cmdDelete.TabIndex = 9;
-            this.cmdDelete.Tag = "";
+            this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
@@ -3853,7 +3856,7 @@ namespace Chummer
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(399, 0);
+            this.cmdOK.Location = new System.Drawing.Point(498, 0);
             this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(96, 23);
@@ -3873,7 +3876,7 @@ namespace Chummer
             this.cmdRestoreDefaults.Name = "cmdRestoreDefaults";
             this.cmdRestoreDefaults.Size = new System.Drawing.Size(96, 23);
             this.cmdRestoreDefaults.TabIndex = 8;
-            this.cmdRestoreDefaults.Tag = "";
+            this.cmdRestoreDefaults.Tag = "Button_Options_RestoreDefaults";
             this.cmdRestoreDefaults.Text = "Restore Defaults";
             this.cmdRestoreDefaults.UseVisualStyleBackColor = true;
             this.cmdRestoreDefaults.Click += new System.EventHandler(this.cmdRestoreDefaults_Click);
@@ -3883,12 +3886,12 @@ namespace Chummer
             this.cmdSave.AutoSize = true;
             this.cmdSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSave.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdSave.Location = new System.Drawing.Point(300, 0);
+            this.cmdSave.Location = new System.Drawing.Point(399, 0);
             this.cmdSave.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(93, 23);
             this.cmdSave.TabIndex = 5;
-            this.cmdSave.Tag = "";
+            this.cmdSave.Tag = "String_Save";
             this.cmdSave.Text = "Save";
             this.cmdSave.UseVisualStyleBackColor = true;
             this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
@@ -3898,15 +3901,30 @@ namespace Chummer
             this.cmdSaveAs.AutoSize = true;
             this.cmdSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdSaveAs.Location = new System.Drawing.Point(201, 0);
+            this.cmdSaveAs.Location = new System.Drawing.Point(300, 0);
             this.cmdSaveAs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdSaveAs.Name = "cmdSaveAs";
             this.cmdSaveAs.Size = new System.Drawing.Size(93, 23);
             this.cmdSaveAs.TabIndex = 7;
-            this.cmdSaveAs.Tag = "";
+            this.cmdSaveAs.Tag = "String_SaveAs";
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
+            // 
+            // cmdRename
+            // 
+            this.cmdRename.AutoSize = true;
+            this.cmdRename.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdRename.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRename.Location = new System.Drawing.Point(102, 0);
+            this.cmdRename.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdRename.Name = "cmdRename";
+            this.cmdRename.Size = new System.Drawing.Size(93, 23);
+            this.cmdRename.TabIndex = 10;
+            this.cmdRename.Tag = "String_Rename";
+            this.cmdRename.Text = "Rename";
+            this.cmdRename.UseVisualStyleBackColor = true;
+            this.cmdRename.Click += new System.EventHandler(this.cmdRename_Click);
             // 
             // frmCharacterOptions
             // 
@@ -4321,5 +4339,6 @@ namespace Chummer
         private System.Windows.Forms.GroupBox gpbHouseRulesMagicResonance;
         private BufferedTableLayoutPanel tlpHouseRulesMagicResonance;
         private System.Windows.Forms.Button cmdGlobalOptionsCustomData;
+        private System.Windows.Forms.Button cmdRename;
     }
 }

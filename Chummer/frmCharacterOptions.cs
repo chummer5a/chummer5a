@@ -40,6 +40,7 @@ namespace Chummer
         private bool _blnSkipLimbCountUpdate;
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
+        private bool _blnWasRenamed;
         private readonly HashSet<string> _setPermanentSourcebooks = new HashSet<string>();
 
         #region Form Events
@@ -109,6 +110,40 @@ namespace Chummer
             Cursor = objOldCursor;
         }
 
+        private void cmdRename_Click(object sender, EventArgs e)
+        {
+            using (frmSelectText frmSelectName = new frmSelectText
+            {
+                DefaultString = _objCharacterOptions.Name,
+                Description = LanguageManager.GetString("Message_CharacterOptions_SettingRename")
+            })
+            {
+                frmSelectName.ShowDialog(this);
+                if (frmSelectName.DialogResult != DialogResult.OK)
+                    return;
+                _objCharacterOptions.Name = frmSelectName.SelectedValue;
+            }
+
+            Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
+            SuspendLayout();
+            if (cboSetting.SelectedItem != null)
+            {
+                ListItem objCurrentListItem = (ListItem)cboSetting.SelectedItem;
+                ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objCharacterOptions.DisplayName);
+                _blnLoading = true;
+                SuspendLayout();
+                cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
+                cboSetting.SelectedItem = objNewListItem;
+                ResumeLayout();
+                _blnLoading = false;
+            }
+            _blnWasRenamed = true;
+            IsDirty = true;
+            ResumeLayout();
+            Cursor = objOldCursor;
+        }
+
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to delete this setting
@@ -129,15 +164,20 @@ namespace Chummer
                 return;
             }
 
+            Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
             OptionsManager.LoadedCharacterOptions.Remove(_objReferenceCharacterOptions.FileName);
             KeyValuePair<string, CharacterOptions> kvpReplacementOption = OptionsManager.LoadedCharacterOptions.First(x => x.Value.BuiltInOption
                                                                                                                            && x.Value.BuildMethod == _objReferenceCharacterOptions.BuildMethod);
             foreach (Character objCharacter in Program.MainForm.OpenCharacters.Where(x => x.CharacterOptionsKey == _objReferenceCharacterOptions.FileName))
                 objCharacter.CharacterOptionsKey = kvpReplacementOption.Key;
+            SuspendLayout();
             _objReferenceCharacterOptions = kvpReplacementOption.Value;
             _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
             IsDirty = false;
             PopulateSettingsList();
+            ResumeLayout();
+            Cursor = objOldCursor;
         }
 
         private void cmdSaveAs_Click(object sender, EventArgs e)
@@ -149,7 +189,7 @@ namespace Chummer
                 {
                     DefaultString = _objCharacterOptions.BuiltInOption ? string.Empty : _objCharacterOptions.FileName.TrimEndOnce(".xml"),
                     PreventFileNameCharErrors = true,
-                    Description = LanguageManager.GetString("Message_CharacterOptions_SelectSettingName")
+                    Description = LanguageManager.GetString("Message_CharacterOptions_SelectSettingFileName")
                 })
                 {
                     frmSelectName.ShowDialog(this);
@@ -163,15 +203,17 @@ namespace Chummer
                 if (OptionsManager.LoadedCharacterOptions.Any(x => x.Value.FileName == strSelectedName))
                 {
                     // TODO: Turn this into a prompt to overwrite (which also needs to consider build method being overwritten for a character)
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CharacterOptions_DuplicateSettingName"),
-                            strSelectedName.TrimEndOnce(".xml")),
-                        LanguageManager.GetString("MessageTitle_CharacterOptions_DuplicateSettingName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CharacterOptions_DuplicateSettingFileName"), strSelectedName),
+                        LanguageManager.GetString("MessageTitle_CharacterOptions_DuplicateSettingFileName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     strSelectedName = string.Empty;
                 }
             } while (string.IsNullOrEmpty(strSelectedName));
 
+            Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
             if (_objCharacterOptions.Save(strSelectedName))
             {
+                SuspendLayout();
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
                 objNewCharacterOptions.CopyValues(_objCharacterOptions);
                 OptionsManager.LoadedCharacterOptions.Add(Path.Combine(Utils.GetStartupPath, "settings", objNewCharacterOptions.FileName), objNewCharacterOptions);
@@ -179,18 +221,26 @@ namespace Chummer
                 cmdSaveAs.Enabled = false;
                 cmdSave.Enabled = false;
                 IsDirty = false;
+                PopulateSettingsList();
+                ResumeLayout();
             }
+            Cursor = objOldCursor;
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
+            Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
             if (_objCharacterOptions.Save())
             {
+                SuspendLayout();
                 _objReferenceCharacterOptions.CopyValues(_objCharacterOptions);
                 cmdSaveAs.Enabled = false;
                 cmdSave.Enabled = false;
                 IsDirty = false;
+                ResumeLayout();
             }
+            Cursor = objOldCursor;
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -210,12 +260,24 @@ namespace Chummer
                     return;
             }
 
+            Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
             _blnLoading = true;
+            SuspendLayout();
+            if (_blnWasRenamed && cboSetting.SelectedItem != null)
+            {
+                ListItem objCurrentListItem = (ListItem)cboSetting.SelectedItem;
+                ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
+                cboSetting.SelectedItem = objNewListItem;
+            }
             _objReferenceCharacterOptions = objNewOption;
             _objCharacterOptions.CopyValues(objNewOption);
             PopulateOptions();
             _blnLoading = false;
             IsDirty = false;
+            ResumeLayout();
+            Cursor = objOldCursor;
         }
 
         private void cmdRestoreDefaults_Click(object sender, EventArgs e)
@@ -227,11 +289,23 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
+            Cursor objOldCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
             _blnLoading = true;
+            SuspendLayout();
+            if (_blnWasRenamed && cboSetting.SelectedItem != null)
+            {
+                ListItem objCurrentListItem = (ListItem)cboSetting.SelectedItem;
+                ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
+                cboSetting.SelectedItem = objNewListItem;
+            }
             _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
             PopulateOptions();
             _blnLoading = false;
             IsDirty = false;
+            ResumeLayout();
+            Cursor = objOldCursor;
         }
 
         private void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
@@ -991,6 +1065,8 @@ namespace Chummer
                 {
                     _blnDirty = value;
                     cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
+                    if (!value)
+                        _blnWasRenamed = false;
                 }
             }
         }

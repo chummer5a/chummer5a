@@ -1583,7 +1583,7 @@ namespace Chummer
                 _strBookXPath = string.Empty;
         }
 
-        public IDictionary<string, Tuple<int, bool>> CustomDataDirectoryNames => _dicCustomDataDirectoryNames;
+        public Dictionary<string, Tuple<int, bool>> CustomDataDirectoryNames => _dicCustomDataDirectoryNames;
 
         public IReadOnlyList<string> EnabledCustomDataDirectoryPaths => _lstEnabledCustomDataDirectoryPaths;
 

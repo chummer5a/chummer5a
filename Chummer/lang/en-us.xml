@@ -1489,6 +1489,14 @@
       <text>Save &amp;As</text>
     </string>
     <string>
+      <key>String_Save</key>
+      <text>Save</text>
+    </string>
+    <string>
+      <key>String_SaveAs</key>
+      <text>Save As...</text>
+    </string>
+    <string>
       <key>Menu_FileSaveAsCreated</key>
       <text>Save As &amp;Created</text>
     </string>
@@ -8160,6 +8168,10 @@
       <text>Character Settings</text>
     </string>
     <string>
+      <key>String_Rename</key>
+      <text>Rename</text>
+    </string>
+    <string>
       <key>Label_CharacterOptions_CharacterCreationSettings</key>
       <text>Character Creation Settings</text>
     </string>
@@ -8224,16 +8236,20 @@
       <text>Confirm Delete</text>
     </string>
     <string>
-      <key>Message_CharacterOptions_DuplicateSettingName</key>
-      <text>A setting called {0} already exists. Please select a different name.</text>
+      <key>Message_CharacterOptions_SettingRename</key>
+      <text>Enter a new name for your setting.</text>
     </string>
     <string>
-      <key>MessageTitle_CharacterOptions_DuplicateSettingName</key>
-      <text>Duplicate Setting Name</text>
+      <key>Message_CharacterOptions_DuplicateSettingFileName</key>
+      <text>A setting with a file name of {0} already exists. Please select a different file name.</text>
     </string>
     <string>
-      <key>Message_CharacterOptions_SelectSettingName</key>
-      <text>Select a name for your setting:</text>
+      <key>MessageTitle_CharacterOptions_DuplicateSettingFileName</key>
+      <text>Duplicate Setting File Name</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SelectSettingFileName</key>
+      <text>Enter a file name for your setting.</text>
     </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->
