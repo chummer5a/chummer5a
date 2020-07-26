@@ -308,7 +308,6 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_sortAndCallbacks", op_load_frm_career))
                     {
-
                         treWeapons.SortCustomOrder();
                         treArmor.SortCustomOrder();
                         treGear.SortCustomOrder();
@@ -549,7 +548,6 @@ namespace Chummer
                             cboStream.Visible = false;
                             lblStreamLabel.Visible = false;
                         }
-                        lstStreams.Sort(CompareListItems.CompareNames);
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_shapeshifter", op_load_frm_career))
@@ -606,7 +604,6 @@ namespace Chummer
                         cboVehicleWeaponFiringMode.DisplayMember = nameof(ListItem.Name);
                         cboVehicleWeaponFiringMode.DataSource = lstFireModes;
                         cboVehicleWeaponFiringMode.EndUpdate();
-
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_selectStuff", op_load_frm_career))
@@ -1844,31 +1841,33 @@ namespace Chummer
                     Cursor objOldCursor = Cursor;
                     Cursor = Cursors.WaitCursor;
                     SuspendLayout();
-                    if (!CharacterObjectOptions.BookEnabled("RF"))
-                        cmdAddLifestyle.SplitMenuStrip = cmsAdvancedLifestyle;
-                    else
-                        cmdAddLifestyle.SplitMenuStrip = null;
+                    cmdAddLifestyle.SplitMenuStrip = CharacterObjectOptions.BookEnabled("RF") ? cmsAdvancedLifestyle : null;
 
                     if (!CharacterObjectOptions.BookEnabled("FA"))
                     {
                         lblWildReputation.Visible = false;
+                        nudWildReputation.Visible = false;
                         lblWildReputationTotal.Visible = false;
                         if (!CharacterObjectOptions.BookEnabled("SG"))
                         {
                             lblAstralReputation.Visible = false;
+                            nudAstralReputation.Visible = false;
                             lblAstralReputationTotal.Visible = false;
                         }
                         else
                         {
                             lblAstralReputation.Visible = true;
+                            nudAstralReputation.Visible = true;
                             lblAstralReputationTotal.Visible = true;
                         }
                     }
                     else
                     {
                         lblWildReputation.Visible = true;
+                        nudWildReputation.Visible = true;
                         lblWildReputationTotal.Visible = true;
                         lblAstralReputation.Visible = true;
+                        nudAstralReputation.Visible = true;
                         lblAstralReputationTotal.Visible = true;
                     }
 
@@ -1903,6 +1902,152 @@ namespace Chummer
                     treCyberware.SortCustomOrder();
                     treVehicles.SortCustomOrder();
                     treCritterPowers.SortCustomOrder();
+
+                    XPathNavigator xmlTraditionsBaseChummerNode =
+                        CharacterObject.LoadData("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                    List<ListItem> lstTraditions = new List<ListItem>(30);
+                    if (xmlTraditionsBaseChummerNode != null)
+                    {
+                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                            "traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+                        {
+                            string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstTraditions.Add(new ListItem(
+                                    xmlTradition.SelectSingleNode("id")?.Value ?? strName,
+                                    xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                        }
+                    }
+
+                    if (lstTraditions.Count > 1)
+                    {
+                        lstTraditions.Sort(CompareListItems.CompareNames);
+                        lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
+                        if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
+                        {
+                            cboTradition.BeginUpdate();
+                            cboTradition.DataSource = lstTraditions;
+                            cboTradition.EndUpdate();
+                        }
+                    }
+                    else
+                    {
+                        cboTradition.Visible = false;
+                        lblTraditionLabel.Visible = false;
+                    }
+
+                    List<ListItem> lstDrainAttributes = new List<ListItem>(6)
+                    {
+                        ListItem.Blank
+                    };
+                    if (xmlTraditionsBaseChummerNode != null)
+                    {
+                        foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
+                            "drainattributes/drainattribute"))
+                        {
+                            string strName = xmlDrain.SelectSingleNode("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstDrainAttributes.Add(new ListItem(strName,
+                                    xmlDrain.SelectSingleNode("translate")?.Value ?? strName));
+                        }
+                    }
+
+                    lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                    if (!lstDrainAttributes.SequenceEqual(cboDrain.Items.Cast<ListItem>()))
+                    {
+                        cboDrain.BeginUpdate();
+                        cboDrain.DataSource = lstDrainAttributes;
+                        cboDrain.EndUpdate();
+                    }
+
+                    HashSet<string> limit = new HashSet<string>();
+                    foreach (Improvement improvement in CharacterObject.Improvements.Where(x =>
+                        x.ImproveType == Improvement.ImprovementType.LimitSpiritCategory && x.Enabled))
+                    {
+                        limit.Add(improvement.ImprovedName);
+                    }
+
+                    List<ListItem> lstSpirit = new List<ListItem>(30)
+                    {
+                        ListItem.Blank
+                    };
+                    if (xmlTraditionsBaseChummerNode != null)
+                    {
+                        foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
+                        {
+                            string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
+                            if (!string.IsNullOrEmpty(strSpiritName))
+                            {
+                                if (limit.Count == 0 || limit.Contains(strSpiritName))
+                                {
+                                    lstSpirit.Add(new ListItem(strSpiritName,
+                                        xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
+                                }
+                            }
+                        }
+                    }
+
+                    lstSpirit.Sort(CompareListItems.CompareNames);
+                    if (!lstSpirit.SequenceEqual(cboSpiritCombat.Items.Cast<ListItem>()))
+                    {
+                        List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
+                        cboSpiritCombat.BeginUpdate();
+                        cboSpiritCombat.DataSource = lstCombat;
+                        cboSpiritCombat.EndUpdate();
+
+                        List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
+                        cboSpiritDetection.BeginUpdate();
+                        cboSpiritDetection.DataSource = lstDetection;
+                        cboSpiritDetection.EndUpdate();
+
+                        List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
+                        cboSpiritHealth.BeginUpdate();
+                        cboSpiritHealth.DataSource = lstHealth;
+                        cboSpiritHealth.EndUpdate();
+
+                        List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
+                        cboSpiritIllusion.BeginUpdate();
+                        cboSpiritIllusion.DataSource = lstIllusion;
+                        cboSpiritIllusion.EndUpdate();
+
+                        List<ListItem> lstManip = new List<ListItem>(lstSpirit);
+                        cboSpiritManipulation.BeginUpdate();
+                        cboSpiritManipulation.DataSource = lstManip;
+                        cboSpiritManipulation.EndUpdate();
+                    }
+
+                    // Populate the Technomancer Streams list.
+                    xmlTraditionsBaseChummerNode =
+                        CharacterObject.LoadData("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                    List<ListItem> lstStreams = new List<ListItem>(5);
+                    if (xmlTraditionsBaseChummerNode != null)
+                    {
+                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                            "traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
+                        {
+                            string strName = xmlTradition.SelectSingleNode("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstStreams.Add(new ListItem(xmlTradition.SelectSingleNode("id")?.Value ?? strName,
+                                    xmlTradition.SelectSingleNode("translate")?.Value ?? strName));
+                        }
+                    }
+
+                    if (lstStreams.Count > 1)
+                    {
+                        lstStreams.Sort(CompareListItems.CompareNames);
+                        lstStreams.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
+                        if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
+                        {
+                            cboStream.BeginUpdate();
+                            cboStream.DataSource = lstStreams;
+                            cboStream.EndUpdate();
+                        }
+                    }
+                    else
+                    {
+                        cboStream.Visible = false;
+                        lblStreamLabel.Visible = false;
+                    }
 
                     RefreshSelectedVehicle();
                     ResumeLayout();
