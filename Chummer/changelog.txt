@@ -64,6 +64,7 @@ Data Changes:
 - Stick-n-Shock Flechette Rounds now properly adjust the damage types of weapons that can only fire flechette rounds.
 - Added a customdata rule to allow the Ammo Skip system to use the Internal slot or the Under slot. The Under slot is still consumed preferentially, but allows weapons without the Under mount (ie revolvers) to take it.
 - Evil Eye is now properly an Instantaneous spell instead of a Sustained spell.
+- Fixed missing unique setting for the Muscle Augmentation bioware that caused it fail to stack with Improved Physical Attribute.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
