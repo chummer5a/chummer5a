@@ -7446,8 +7446,8 @@
       <text>Print Free Karma and Nuyen Expenses</text>
     </string>
     <string>
-      <key>Label_Options_DefaultGameplayOption</key>
-      <text>Default Gameplay Option for New Characters:</text>
+      <key>Label_Options_DefaultCharacterOption</key>
+      <text>Default Setting for New Characters:</text>
     </string>
     <string>
       <key>Label_Options_BPAttribute</key>
@@ -9764,7 +9764,7 @@
     </string>
     <string>
       <key>Message_CharacterOptions_CannotLoadSetting</key>
-      <text>The character's settings file ({0}) could not be found. Use default settings instead?</text>
+      <text>The character's settings file ({0}) could not be found. Select an existing settings file with the same build method instead?</text>
     </string>
     <string>
       <key>MessageTitle_CharacterOptions_CannotLoadSetting</key>

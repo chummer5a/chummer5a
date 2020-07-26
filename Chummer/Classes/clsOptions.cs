@@ -142,7 +142,7 @@ namespace Chummer
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
-        public const string DefaultGameplayOptionDefaultValue = "Standard";
+        public const string DefaultCharacterOptionDefaultValue = "223a11ff-80e0-428b-89a9-6ef1c243b8b6"; // GUID for built-in Standard option
 
         private static bool _blnAutomaticUpdate;
         private static bool _blnLiveCustomData;
@@ -164,7 +164,7 @@ namespace Chummer
         private static bool _blnCustomDateTimeFormats;
         private static string _strCustomDateFormat;
         private static string _strCustomTimeFormat;
-        private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
+        private static string _strDefaultCharacterOption = DefaultCharacterOptionDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
         private static bool _blnConfirmDelete = true;
         private static bool _blnConfirmKarmaExpense = true;
@@ -386,7 +386,7 @@ namespace Chummer
             if(_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
-            LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
+            LoadStringFromRegistry(ref _strDefaultCharacterOption, "defaultcharacteroption"); // Deliberate name change to force users to re-check 
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
             // Confirm delete.
@@ -485,9 +485,34 @@ namespace Chummer
             // The quality at which images should be saved. int.MaxValue saves as Png, everything else saves as Jpeg
             LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality");
 
-            RebuildCustomDataDirectoryInfoList();
+            // Retrieve CustomDataDirectoryInfo objects from registry
+            RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
+            if (objCustomDataDirectoryKey != null)
+            {
+                foreach (string strDirectoryName in objCustomDataDirectoryKey.GetSubKeyNames())
+                {
+                    using (RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(strDirectoryName))
+                    {
+                        if (objLoopKey == null)
+                            continue;
+                        string strPath = string.Empty;
+                        object objRegistryResult = objLoopKey.GetValue("Path");
+                        if (objRegistryResult != null)
+                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
+                        if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
+                        {
+                            CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(strDirectoryName, strPath);
+                            _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
+                        }
+                    }
+                }
 
-            for(int i = 1; i <= MaxMruSize; i++)
+                objCustomDataDirectoryKey.Close();
+            }
+
+            XmlManager.RebuildDataDirectoryInfo(_setCustomDataDirectoryInfo);
+
+            for (int i = 1; i <= MaxMruSize; i++)
             {
                 object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
                 if(objLoopValue != null)
@@ -510,6 +535,81 @@ namespace Chummer
                 }
             }
             _lstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
+        }
+        #endregion
+
+        #region Methods
+
+        public static void SaveOptionsToRegistry()
+        {
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+            {
+                if (objRegistry == null)
+                    return;
+                objRegistry.SetValue("autoupdate", AutomaticUpdate.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("liveupdatecleancharacterfiles", LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
+                objRegistry.SetValue("language", Language);
+                objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("defaultsheet", DefaultCharacterSheet);
+                objRegistry.SetValue("datesincludetime", DatesIncludeTime.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("printtofilefirst", PrintToFileFirst.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("emulatedbrowserversion", EmulatedBrowserVersion.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("pdfapppath", PDFAppPath);
+                objRegistry.SetValue("pdfparameters", PDFParameters);
+                objRegistry.SetValue("lifemodule", LifeModuleEnabled.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("prefernightlybuilds", PreferNightlyBuilds.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("characterrosterpath", CharacterRosterPath);
+                objRegistry.SetValue("hidecharacterroster", HideCharacterRoster.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("createbackuponcareer", CreateBackupOnCareer.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("confirmdelete", ConfirmDelete.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("confirmkarmaexpense", ConfirmKarmaExpense.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("hideitemsoveravaillimit", HideItemsOverAvailLimit.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("allowhoverincrement", AllowHoverIncrement.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("searchincategoryonly", SearchInCategoryOnly.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("hidecharts", HideCharts.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("defaultcharacteroption", DefaultCharacterOption);
+                objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("customdateformat", CustomDateFormat);
+                objRegistry.SetValue("customtimeformat", CustomTimeFormat);
+                objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
+
+                //Save the Plugins-Dictionary
+                objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
+
+                // Save the SourcebookInfo.
+                using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook"))
+                {
+                    if (objSourceRegistry != null)
+                    {
+                        foreach (SourcebookInfo objSource in SourcebookInfo)
+                            objSourceRegistry.SetValue(objSource.Code, objSource.Path + '|' + objSource.Offset.ToString(InvariantCultureInfo));
+                    }
+                }
+
+                // Save the Custom Data Directory Info.
+                if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
+                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
+                using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory"))
+                {
+                    if (objCustomDataDirectoryRegistry != null)
+                    {
+                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
+                        {
+                            using (RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name))
+                            {
+                                objLoopKey?.SetValue("Path", objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, "$CHUMMER"));
+                            }
+                        }
+                    }
+                }
+            }
         }
         #endregion
 
@@ -820,12 +920,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Default gameplay option to select when creating a new character
+        /// Default character option to select when creating a new character
         /// </summary>
-        public static string DefaultGameplayOption
+        public static string DefaultCharacterOption
         {
-            get => _strDefaultGameplayOption;
-            set => _strDefaultGameplayOption = value;
+            get => _strDefaultCharacterOption;
+            set => _strDefaultCharacterOption = value;
         }
 
         public static RegistryKey ChummerRegistryKey => _objBaseChummerKey;
@@ -900,38 +1000,6 @@ namespace Chummer
                 }
                 return _lstSourcebookInfo;
             }
-        }
-
-        public static void RebuildCustomDataDirectoryInfoList()
-        {
-            _setCustomDataDirectoryInfo.Clear();
-
-            // Retrieve CustomDataDirectoryInfo objects from registry
-            RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
-            if(objCustomDataDirectoryKey != null)
-            {
-                foreach (string strDirectoryName in objCustomDataDirectoryKey.GetSubKeyNames())
-                {
-                    using (RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(strDirectoryName))
-                    {
-                        if (objLoopKey == null)
-                            continue;
-                        string strPath = string.Empty;
-                        object objRegistryResult = objLoopKey.GetValue("Path");
-                        if (objRegistryResult != null)
-                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
-                        if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
-                        {
-                            CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(strDirectoryName, strPath);
-                            _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
-                        }
-                    }
-                }
-
-                objCustomDataDirectoryKey.Close();
-            }
-
-            XmlManager.RebuildDataDirectoryInfo(_setCustomDataDirectoryInfo);
         }
 
         /// <summary>

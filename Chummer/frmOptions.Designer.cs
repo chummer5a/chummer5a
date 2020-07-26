@@ -62,19 +62,19 @@ namespace Chummer
             this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
             this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
             this.tlpGlobalOptionsTop = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.grpTimeFormat = new System.Windows.Forms.GroupBox();
-            this.tlpTimeFormat = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.txtTimeFormat = new System.Windows.Forms.TextBox();
-            this.txtTimeFormatView = new System.Windows.Forms.TextBox();
-            this.cboXSLT = new Chummer.ElasticComboBox();
-            this.chkCustomDateTimeFormats = new System.Windows.Forms.CheckBox();
             this.grpDateFormat = new System.Windows.Forms.GroupBox();
             this.tlpDateFormat = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtDateFormat = new System.Windows.Forms.TextBox();
             this.txtDateFormatView = new System.Windows.Forms.TextBox();
+            this.grpTimeFormat = new System.Windows.Forms.GroupBox();
+            this.tlpTimeFormat = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.txtTimeFormat = new System.Windows.Forms.TextBox();
+            this.txtTimeFormatView = new System.Windows.Forms.TextBox();
+            this.chkCustomDateTimeFormats = new System.Windows.Forms.CheckBox();
             this.lblXSLT = new System.Windows.Forms.Label();
             this.lblLanguage = new System.Windows.Forms.Label();
             this.cboSheetLanguage = new Chummer.ElasticComboBox();
+            this.cboXSLT = new Chummer.ElasticComboBox();
             this.cboLanguage = new Chummer.ElasticComboBox();
             this.cmdVerify = new System.Windows.Forms.Button();
             this.cmdVerifyData = new System.Windows.Forms.Button();
@@ -83,8 +83,8 @@ namespace Chummer
             this.tlpLoggingOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cboUseLoggingApplicationInsights = new System.Windows.Forms.ComboBox();
             this.cmdUseLoggingHelp = new Chummer.ButtonWithToolTip();
-            this.lblDefaultGameplayOption = new System.Windows.Forms.Label();
-            this.cboDefaultGameplayOption = new System.Windows.Forms.ComboBox();
+            this.lblDefaultCharacterOption = new System.Windows.Forms.Label();
+            this.cboDefaultCharacterOption = new System.Windows.Forms.ComboBox();
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
             this.tlpCharacterRosterPath = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCharacterRoster = new System.Windows.Forms.Button();
@@ -138,10 +138,10 @@ namespace Chummer
             this.tlpGlobalOptions.SuspendLayout();
             this.flpEnablePlugins.SuspendLayout();
             this.tlpGlobalOptionsTop.SuspendLayout();
-            this.grpTimeFormat.SuspendLayout();
-            this.tlpTimeFormat.SuspendLayout();
             this.grpDateFormat.SuspendLayout();
             this.tlpDateFormat.SuspendLayout();
+            this.grpTimeFormat.SuspendLayout();
+            this.tlpTimeFormat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).BeginInit();
             this.tlpLoggingOptions.SuspendLayout();
@@ -229,11 +229,11 @@ namespace Chummer
             this.grpSelectedSourcebook.AutoSize = true;
             this.grpSelectedSourcebook.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.grpSelectedSourcebook.Controls.Add(this.tlpSelectedSourcebook);
-            this.grpSelectedSourcebook.Dock = System.Windows.Forms.DockStyle.Left;
+            this.grpSelectedSourcebook.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSelectedSourcebook.Enabled = false;
             this.grpSelectedSourcebook.Location = new System.Drawing.Point(304, 504);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
-            this.grpSelectedSourcebook.Size = new System.Drawing.Size(434, 77);
+            this.grpSelectedSourcebook.Size = new System.Drawing.Size(907, 77);
             this.grpSelectedSourcebook.TabIndex = 27;
             this.grpSelectedSourcebook.TabStop = false;
             this.grpSelectedSourcebook.Tag = "Label_Options_SelectedSourcebook";
@@ -258,17 +258,16 @@ namespace Chummer
             this.tlpSelectedSourcebook.RowCount = 2;
             this.tlpSelectedSourcebook.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSelectedSourcebook.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSelectedSourcebook.Size = new System.Drawing.Size(428, 58);
+            this.tlpSelectedSourcebook.Size = new System.Drawing.Size(901, 58);
             this.tlpSelectedSourcebook.TabIndex = 18;
             // 
             // txtPDFLocation
             // 
             this.txtPDFLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPDFLocation.Location = new System.Drawing.Point(84, 4);
-            this.txtPDFLocation.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtPDFLocation.Name = "txtPDFLocation";
             this.txtPDFLocation.ReadOnly = true;
-            this.txtPDFLocation.Size = new System.Drawing.Size(309, 20);
+            this.txtPDFLocation.Size = new System.Drawing.Size(782, 20);
             this.txtPDFLocation.TabIndex = 13;
             this.txtPDFLocation.TextChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -290,7 +289,7 @@ namespace Chummer
             this.cmdPDFLocation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdPDFLocation.AutoSize = true;
             this.cmdPDFLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdPDFLocation.Location = new System.Drawing.Point(399, 3);
+            this.cmdPDFLocation.Location = new System.Drawing.Point(872, 3);
             this.cmdPDFLocation.Name = "cmdPDFLocation";
             this.cmdPDFLocation.Size = new System.Drawing.Size(26, 23);
             this.cmdPDFLocation.TabIndex = 14;
@@ -322,21 +321,26 @@ namespace Chummer
             this.flpPDFOffset.Location = new System.Drawing.Point(81, 29);
             this.flpPDFOffset.Margin = new System.Windows.Forms.Padding(0);
             this.flpPDFOffset.Name = "flpPDFOffset";
-            this.flpPDFOffset.Size = new System.Drawing.Size(178, 29);
+            this.flpPDFOffset.Size = new System.Drawing.Size(175, 29);
             this.flpPDFOffset.TabIndex = 16;
             // 
             // nudPDFOffset
             // 
             this.nudPDFOffset.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudPDFOffset.AutoSize = true;
             this.nudPDFOffset.Location = new System.Drawing.Point(3, 4);
-            this.nudPDFOffset.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.nudPDFOffset.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.nudPDFOffset.Minimum = new decimal(new int[] {
-            100,
+            1000,
             0,
             0,
             -2147483648});
             this.nudPDFOffset.Name = "nudPDFOffset";
-            this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
+            this.nudPDFOffset.Size = new System.Drawing.Size(41, 20);
             this.nudPDFOffset.TabIndex = 16;
             this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
             // 
@@ -345,7 +349,7 @@ namespace Chummer
             this.cmdPDFTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdPDFTest.AutoSize = true;
             this.cmdPDFTest.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdPDFTest.Location = new System.Drawing.Point(53, 3);
+            this.cmdPDFTest.Location = new System.Drawing.Point(50, 3);
             this.cmdPDFTest.Name = "cmdPDFTest";
             this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
             this.cmdPDFTest.TabIndex = 17;
@@ -382,8 +386,8 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkCreateBackupOnCareer, 2, 8);
             this.tlpGlobalOptions.Controls.Add(this.tlpGlobalOptionsTop, 0, 0);
             this.tlpGlobalOptions.Controls.Add(this.tlpLoggingOptions, 1, 2);
-            this.tlpGlobalOptions.Controls.Add(this.lblDefaultGameplayOption, 2, 10);
-            this.tlpGlobalOptions.Controls.Add(this.cboDefaultGameplayOption, 3, 10);
+            this.tlpGlobalOptions.Controls.Add(this.lblDefaultCharacterOption, 2, 10);
+            this.tlpGlobalOptions.Controls.Add(this.cboDefaultCharacterOption, 3, 10);
             this.tlpGlobalOptions.Controls.Add(this.lblCharacterRosterLabel, 2, 11);
             this.tlpGlobalOptions.Controls.Add(this.tlpCharacterRosterPath, 3, 11);
             this.tlpGlobalOptions.Controls.Add(this.lblPDFParametersLabel, 2, 13);
@@ -730,6 +734,57 @@ namespace Chummer
             this.tlpGlobalOptionsTop.Size = new System.Drawing.Size(886, 131);
             this.tlpGlobalOptionsTop.TabIndex = 73;
             // 
+            // grpDateFormat
+            // 
+            this.grpDateFormat.AutoSize = true;
+            this.grpDateFormat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.grpDateFormat.Controls.Add(this.tlpDateFormat);
+            this.grpDateFormat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpDateFormat.Enabled = false;
+            this.grpDateFormat.Location = new System.Drawing.Point(155, 60);
+            this.grpDateFormat.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.grpDateFormat.Name = "grpDateFormat";
+            this.grpDateFormat.Size = new System.Drawing.Size(361, 71);
+            this.grpDateFormat.TabIndex = 59;
+            this.grpDateFormat.TabStop = false;
+            this.grpDateFormat.Tag = "Label_Options_DateFormat";
+            this.grpDateFormat.Text = "Date Format";
+            // 
+            // tlpDateFormat
+            // 
+            this.tlpDateFormat.AutoSize = true;
+            this.tlpDateFormat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpDateFormat.ColumnCount = 1;
+            this.tlpDateFormat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpDateFormat.Controls.Add(this.txtDateFormat, 0, 1);
+            this.tlpDateFormat.Controls.Add(this.txtDateFormatView, 0, 0);
+            this.tlpDateFormat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpDateFormat.Location = new System.Drawing.Point(3, 16);
+            this.tlpDateFormat.Name = "tlpDateFormat";
+            this.tlpDateFormat.RowCount = 2;
+            this.tlpDateFormat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDateFormat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDateFormat.Size = new System.Drawing.Size(355, 52);
+            this.tlpDateFormat.TabIndex = 0;
+            // 
+            // txtDateFormat
+            // 
+            this.txtDateFormat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDateFormat.Location = new System.Drawing.Point(3, 29);
+            this.txtDateFormat.Name = "txtDateFormat";
+            this.txtDateFormat.Size = new System.Drawing.Size(349, 20);
+            this.txtDateFormat.TabIndex = 48;
+            this.txtDateFormat.TextChanged += new System.EventHandler(this.txtDateFormat_TextChanged);
+            // 
+            // txtDateFormatView
+            // 
+            this.txtDateFormatView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDateFormatView.Location = new System.Drawing.Point(3, 3);
+            this.txtDateFormatView.Name = "txtDateFormatView";
+            this.txtDateFormatView.ReadOnly = true;
+            this.txtDateFormatView.Size = new System.Drawing.Size(349, 20);
+            this.txtDateFormatView.TabIndex = 47;
+            // 
             // grpTimeFormat
             // 
             this.grpTimeFormat.AutoSize = true;
@@ -782,18 +837,6 @@ namespace Chummer
             this.txtTimeFormatView.Size = new System.Drawing.Size(349, 20);
             this.txtTimeFormatView.TabIndex = 47;
             // 
-            // cboXSLT
-            // 
-            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpGlobalOptionsTop.SetColumnSpan(this.cboXSLT, 2);
-            this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(522, 34);
-            this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(361, 21);
-            this.cboXSLT.TabIndex = 8;
-            this.cboXSLT.TooltipText = "";
-            // 
             // chkCustomDateTimeFormats
             // 
             this.chkCustomDateTimeFormats.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -807,57 +850,6 @@ namespace Chummer
             this.chkCustomDateTimeFormats.Text = "Custom Time Format";
             this.chkCustomDateTimeFormats.UseVisualStyleBackColor = true;
             this.chkCustomDateTimeFormats.CheckedChanged += new System.EventHandler(this.chkCustomDateTimeFormats_CheckedChanged);
-            // 
-            // grpDateFormat
-            // 
-            this.grpDateFormat.AutoSize = true;
-            this.grpDateFormat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.grpDateFormat.Controls.Add(this.tlpDateFormat);
-            this.grpDateFormat.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpDateFormat.Enabled = false;
-            this.grpDateFormat.Location = new System.Drawing.Point(155, 60);
-            this.grpDateFormat.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.grpDateFormat.Name = "grpDateFormat";
-            this.grpDateFormat.Size = new System.Drawing.Size(361, 71);
-            this.grpDateFormat.TabIndex = 59;
-            this.grpDateFormat.TabStop = false;
-            this.grpDateFormat.Tag = "Label_Options_DateFormat";
-            this.grpDateFormat.Text = "Date Format";
-            // 
-            // tlpDateFormat
-            // 
-            this.tlpDateFormat.AutoSize = true;
-            this.tlpDateFormat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpDateFormat.ColumnCount = 1;
-            this.tlpDateFormat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpDateFormat.Controls.Add(this.txtDateFormat, 0, 1);
-            this.tlpDateFormat.Controls.Add(this.txtDateFormatView, 0, 0);
-            this.tlpDateFormat.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpDateFormat.Location = new System.Drawing.Point(3, 16);
-            this.tlpDateFormat.Name = "tlpDateFormat";
-            this.tlpDateFormat.RowCount = 2;
-            this.tlpDateFormat.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDateFormat.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDateFormat.Size = new System.Drawing.Size(355, 52);
-            this.tlpDateFormat.TabIndex = 0;
-            // 
-            // txtDateFormat
-            // 
-            this.txtDateFormat.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDateFormat.Location = new System.Drawing.Point(3, 29);
-            this.txtDateFormat.Name = "txtDateFormat";
-            this.txtDateFormat.Size = new System.Drawing.Size(349, 20);
-            this.txtDateFormat.TabIndex = 48;
-            this.txtDateFormat.TextChanged += new System.EventHandler(this.txtDateFormat_TextChanged);
-            // 
-            // txtDateFormatView
-            // 
-            this.txtDateFormatView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDateFormatView.Location = new System.Drawing.Point(3, 3);
-            this.txtDateFormatView.Name = "txtDateFormatView";
-            this.txtDateFormatView.ReadOnly = true;
-            this.txtDateFormatView.Size = new System.Drawing.Size(349, 20);
-            this.txtDateFormatView.TabIndex = 47;
             // 
             // lblXSLT
             // 
@@ -896,6 +888,18 @@ namespace Chummer
             this.cboSheetLanguage.TabIndex = 34;
             this.cboSheetLanguage.TooltipText = "";
             this.cboSheetLanguage.SelectedIndexChanged += new System.EventHandler(this.cboSheetLanguage_SelectedIndexChanged);
+            // 
+            // cboXSLT
+            // 
+            this.cboXSLT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpGlobalOptionsTop.SetColumnSpan(this.cboXSLT, 2);
+            this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboXSLT.FormattingEnabled = true;
+            this.cboXSLT.Location = new System.Drawing.Point(522, 34);
+            this.cboXSLT.Name = "cboXSLT";
+            this.cboXSLT.Size = new System.Drawing.Size(361, 21);
+            this.cboXSLT.TabIndex = 8;
+            this.cboXSLT.TooltipText = "";
             // 
             // cboLanguage
             // 
@@ -999,29 +1003,29 @@ namespace Chummer
             this.cmdUseLoggingHelp.UseVisualStyleBackColor = true;
             this.cmdUseLoggingHelp.Click += new System.EventHandler(this.cboUseLoggingHelp_Click);
             // 
-            // lblDefaultGameplayOption
+            // lblDefaultCharacterOption
             // 
-            this.lblDefaultGameplayOption.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblDefaultGameplayOption.AutoSize = true;
-            this.lblDefaultGameplayOption.Location = new System.Drawing.Point(451, 371);
-            this.lblDefaultGameplayOption.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDefaultGameplayOption.Name = "lblDefaultGameplayOption";
-            this.lblDefaultGameplayOption.Size = new System.Drawing.Size(165, 26);
-            this.lblDefaultGameplayOption.TabIndex = 70;
-            this.lblDefaultGameplayOption.Tag = "Label_Options_DefaultGameplayOption";
-            this.lblDefaultGameplayOption.Text = "Default Gameplay Option for New Characters:";
-            this.lblDefaultGameplayOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblDefaultCharacterOption.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDefaultCharacterOption.AutoSize = true;
+            this.lblDefaultCharacterOption.Location = new System.Drawing.Point(499, 371);
+            this.lblDefaultCharacterOption.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDefaultCharacterOption.Name = "lblDefaultCharacterOption";
+            this.lblDefaultCharacterOption.Size = new System.Drawing.Size(117, 26);
+            this.lblDefaultCharacterOption.TabIndex = 70;
+            this.lblDefaultCharacterOption.Tag = "Label_Options_DefaultCharacterOption";
+            this.lblDefaultCharacterOption.Text = "Default Setting for New Characters:";
+            this.lblDefaultCharacterOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cboDefaultGameplayOption
+            // cboDefaultCharacterOption
             // 
-            this.cboDefaultGameplayOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboDefaultGameplayOption.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDefaultGameplayOption.FormattingEnabled = true;
-            this.cboDefaultGameplayOption.Location = new System.Drawing.Point(622, 373);
-            this.cboDefaultGameplayOption.Name = "cboDefaultGameplayOption";
-            this.cboDefaultGameplayOption.Size = new System.Drawing.Size(261, 21);
-            this.cboDefaultGameplayOption.TabIndex = 7;
-            this.cboDefaultGameplayOption.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboDefaultCharacterOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboDefaultCharacterOption.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDefaultCharacterOption.FormattingEnabled = true;
+            this.cboDefaultCharacterOption.Location = new System.Drawing.Point(622, 373);
+            this.cboDefaultCharacterOption.Name = "cboDefaultCharacterOption";
+            this.cboDefaultCharacterOption.Size = new System.Drawing.Size(261, 21);
+            this.cboDefaultCharacterOption.TabIndex = 7;
+            this.cboDefaultCharacterOption.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblCharacterRosterLabel
             // 
@@ -1313,7 +1317,7 @@ namespace Chummer
             // 
             this.lblMugshotCompressionQuality.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMugshotCompressionQuality.AutoSize = true;
-            this.lblMugshotCompressionQuality.Location = new System.Drawing.Point(134, 8);
+            this.lblMugshotCompressionQuality.Location = new System.Drawing.Point(141, 8);
             this.lblMugshotCompressionQuality.Name = "lblMugshotCompressionQuality";
             this.lblMugshotCompressionQuality.Size = new System.Drawing.Size(74, 13);
             this.lblMugshotCompressionQuality.TabIndex = 67;
@@ -1323,9 +1327,10 @@ namespace Chummer
             // nudMugshotCompressionQuality
             // 
             this.nudMugshotCompressionQuality.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMugshotCompressionQuality.Location = new System.Drawing.Point(214, 4);
+            this.nudMugshotCompressionQuality.AutoSize = true;
+            this.nudMugshotCompressionQuality.Location = new System.Drawing.Point(221, 4);
             this.nudMugshotCompressionQuality.Name = "nudMugshotCompressionQuality";
-            this.nudMugshotCompressionQuality.Size = new System.Drawing.Size(48, 20);
+            this.nudMugshotCompressionQuality.Size = new System.Drawing.Size(41, 20);
             this.nudMugshotCompressionQuality.TabIndex = 68;
             this.nudMugshotCompressionQuality.Value = new decimal(new int[] {
             90,
@@ -1341,13 +1346,15 @@ namespace Chummer
             this.cboMugshotCompression.FormattingEnabled = true;
             this.cboMugshotCompression.Location = new System.Drawing.Point(3, 4);
             this.cboMugshotCompression.Name = "cboMugshotCompression";
-            this.cboMugshotCompression.Size = new System.Drawing.Size(125, 21);
+            this.cboMugshotCompression.Size = new System.Drawing.Size(132, 21);
             this.cboMugshotCompression.TabIndex = 66;
             this.cboMugshotCompression.TooltipText = "";
             this.cboMugshotCompression.SelectedIndexChanged += new System.EventHandler(this.cboMugshotCompression_SelectedIndexChanged);
             // 
             // gpbEditSourcebookInfo
             // 
+            this.gpbEditSourcebookInfo.AutoSize = true;
+            this.gpbEditSourcebookInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbEditSourcebookInfo.Controls.Add(this.lstGlobalSourcebookInfos);
             this.gpbEditSourcebookInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbEditSourcebookInfo.Location = new System.Drawing.Point(3, 3);
@@ -1385,17 +1392,15 @@ namespace Chummer
             // 
             this.tlpOptionalRules.AutoSize = true;
             this.tlpOptionalRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptionalRules.ColumnCount = 5;
+            this.tlpOptionalRules.ColumnCount = 4;
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
             this.tlpOptionalRules.Controls.Add(this.cmdAddCustomDirectory, 1, 0);
             this.tlpOptionalRules.Controls.Add(this.treCustomDataDirectories, 0, 1);
             this.tlpOptionalRules.Controls.Add(this.cmdRenameCustomDataDirectory, 2, 0);
-            this.tlpOptionalRules.Controls.Add(this.cmdRemoveCustomDirectory, 4, 0);
+            this.tlpOptionalRules.Controls.Add(this.cmdRemoveCustomDirectory, 3, 0);
             this.tlpOptionalRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOptionalRules.Location = new System.Drawing.Point(9, 9);
             this.tlpOptionalRules.Name = "tlpOptionalRules";
@@ -1434,7 +1439,7 @@ namespace Chummer
             // 
             // treCustomDataDirectories
             // 
-            this.tlpOptionalRules.SetColumnSpan(this.treCustomDataDirectories, 5);
+            this.tlpOptionalRules.SetColumnSpan(this.treCustomDataDirectories, 4);
             this.treCustomDataDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treCustomDataDirectories.Location = new System.Drawing.Point(3, 32);
             this.treCustomDataDirectories.Name = "treCustomDataDirectories";
@@ -1448,11 +1453,10 @@ namespace Chummer
             // 
             this.cmdRenameCustomDataDirectory.AutoSize = true;
             this.cmdRenameCustomDataDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptionalRules.SetColumnSpan(this.cmdRenameCustomDataDirectory, 2);
             this.cmdRenameCustomDataDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRenameCustomDataDirectory.Location = new System.Drawing.Point(973, 3);
             this.cmdRenameCustomDataDirectory.Name = "cmdRenameCustomDataDirectory";
-            this.cmdRenameCustomDataDirectory.Size = new System.Drawing.Size(114, 23);
+            this.cmdRenameCustomDataDirectory.Size = new System.Drawing.Size(115, 23);
             this.cmdRenameCustomDataDirectory.TabIndex = 41;
             this.cmdRenameCustomDataDirectory.Tag = "Button_RenameCustomDataDirectory";
             this.cmdRenameCustomDataDirectory.Text = "Rename Entry";
@@ -1464,9 +1468,9 @@ namespace Chummer
             this.cmdRemoveCustomDirectory.AutoSize = true;
             this.cmdRemoveCustomDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRemoveCustomDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRemoveCustomDirectory.Location = new System.Drawing.Point(1093, 3);
+            this.cmdRemoveCustomDirectory.Location = new System.Drawing.Point(1094, 3);
             this.cmdRemoveCustomDirectory.Name = "cmdRemoveCustomDirectory";
-            this.cmdRemoveCustomDirectory.Size = new System.Drawing.Size(118, 23);
+            this.cmdRemoveCustomDirectory.Size = new System.Drawing.Size(117, 23);
             this.cmdRemoveCustomDirectory.TabIndex = 39;
             this.cmdRemoveCustomDirectory.Tag = "Button_RemoveCustomDirectory";
             this.cmdRemoveCustomDirectory.Text = "Remove Directory";
@@ -1532,6 +1536,8 @@ namespace Chummer
             // 
             // grpAvailablePlugins
             // 
+            this.grpAvailablePlugins.AutoSize = true;
+            this.grpAvailablePlugins.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.grpAvailablePlugins.Controls.Add(this.clbPlugins);
             this.grpAvailablePlugins.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpAvailablePlugins.Location = new System.Drawing.Point(3, 3);
@@ -1652,14 +1658,14 @@ namespace Chummer
             this.flpEnablePlugins.PerformLayout();
             this.tlpGlobalOptionsTop.ResumeLayout(false);
             this.tlpGlobalOptionsTop.PerformLayout();
-            this.grpTimeFormat.ResumeLayout(false);
-            this.grpTimeFormat.PerformLayout();
-            this.tlpTimeFormat.ResumeLayout(false);
-            this.tlpTimeFormat.PerformLayout();
             this.grpDateFormat.ResumeLayout(false);
             this.grpDateFormat.PerformLayout();
             this.tlpDateFormat.ResumeLayout(false);
             this.tlpDateFormat.PerformLayout();
+            this.grpTimeFormat.ResumeLayout(false);
+            this.grpTimeFormat.PerformLayout();
+            this.tlpTimeFormat.ResumeLayout(false);
+            this.tlpTimeFormat.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgLanguageFlag)).EndInit();
             this.tlpLoggingOptions.ResumeLayout(false);
@@ -1718,7 +1724,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtTimeFormatView;
         private System.Windows.Forms.CheckBox chkSearchInCategoryOnly;
         private System.Windows.Forms.CheckBox chkAllowEasterEggs;
-        private System.Windows.Forms.ComboBox cboDefaultGameplayOption;
+        private System.Windows.Forms.ComboBox cboDefaultCharacterOption;
         private System.Windows.Forms.NumericUpDown nudBrowserVersion;
         private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
         private System.Windows.Forms.Label lblBrowserVersion;
@@ -1785,7 +1791,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblPDFAppPath;
         private BufferedTableLayoutPanel tlpGlobalOptionsTop;
         private BufferedTableLayoutPanel tlpLoggingOptions;
-        private System.Windows.Forms.Label lblDefaultGameplayOption;
+        private System.Windows.Forms.Label lblDefaultCharacterOption;
         private System.Windows.Forms.Label lblCharacterRosterLabel;
         private System.Windows.Forms.Label lblMugshotCompression;
         private ElasticComboBox cboPDFParameters;

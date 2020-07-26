@@ -48,7 +48,7 @@ namespace Chummer
         {
             InitializeComponent();
             this.TranslateWinForm();
-            _objReferenceCharacterOptions = objExistingOptions ?? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultGameplayOption];
+            _objReferenceCharacterOptions = objExistingOptions ?? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
             _objCharacterOptions = new CharacterOptions(_objReferenceCharacterOptions);
         }
 
@@ -974,7 +974,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboSetting.SelectedValue = strOldSelected;
             if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
-                cboSetting.SelectedValue = cboSetting.FindStringExact(GlobalOptions.DefaultGameplayOption);
+                cboSetting.SelectedValue = cboSetting.FindStringExact(GlobalOptions.DefaultCharacterOption);
             if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
                 cboSetting.SelectedIndex = 0;
             cboSetting.EndUpdate();

@@ -60,7 +60,7 @@ namespace Chummer
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
         private string _strFileName = string.Empty;
-        private string _strCharacterOptionsKey = GlobalOptions.DefaultGameplayOption;
+        private string _strCharacterOptionsKey = GlobalOptions.DefaultCharacterOption;
         private DateTime _dateFileLastWriteTime = DateTime.MinValue;
         private bool _blnIgnoreRules;
         private int _intKarma;
@@ -1180,6 +1180,8 @@ namespace Chummer
 
                     // <settings />
                     objWriter.WriteElementString("settings", _strCharacterOptionsKey);
+                    // <buildmethod />
+                    objWriter.WriteElementString("buildmethod", Options.BuildMethod.ToString());
 
                     // <metatype />
                     objWriter.WriteElementString("metatype", _strMetatype);
@@ -1268,6 +1270,7 @@ namespace Chummer
                     objWriter.WriteElementString("playername", _strPlayerName);
                     // <gamenotes />
                     objWriter.WriteElementString("gamenotes", _strGameNotes);
+                    // <primaryarm />
                     objWriter.WriteElementString("primaryarm", _strPrimaryArm);
 
                     // <ignorerules />
@@ -1316,9 +1319,8 @@ namespace Chummer
                     objWriter.WriteElementString("created", _blnCreated.ToString(GlobalOptions.InvariantCultureInfo));
                     // <nuyen />
                     objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <nuyen />
-                    objWriter.WriteElementString("startingnuyen",
-                        _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <startingnuyen />
+                    objWriter.WriteElementString("startingnuyen", _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <nuyenbp />
                     objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
@@ -1339,8 +1341,7 @@ namespace Chummer
                     objWriter.WriteElementString("critter", _blnCritterEnabled.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <prototypetranshuman />
-                    objWriter.WriteElementString("prototypetranshuman",
-                        _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <attributes>
                     objWriter.WriteStartElement("attributes");
@@ -1484,14 +1485,14 @@ namespace Chummer
                     objWriter.WriteEndElement();
 
 #if LEGACY
-// <martialartmaneuvers>
-            objWriter.WriteStartElement("martialartmaneuvers");
-            foreach (MartialArtManeuver objManeuver in _lstMartialArtManeuvers)
-            {
-                objManeuver.Save(objWriter);
-            }
-            // </martialartmaneuvers>
-            objWriter.WriteEndElement();
+                    // <martialartmaneuvers>
+                    objWriter.WriteStartElement("martialartmaneuvers");
+                    foreach (MartialArtManeuver objManeuver in _lstMartialArtManeuvers)
+                    {
+                        objManeuver.Save(objWriter);
+                    }
+                    // </martialartmaneuvers>
+                    objWriter.WriteEndElement();
 #endif
 
                     // <limitmodifiers>
@@ -1674,14 +1675,14 @@ namespace Chummer
                     // </locations>
                     objWriter.WriteEndElement();
 
-                    // <armorbundles>
+                    // <armorlocations>
                     objWriter.WriteStartElement("armorlocations");
                     foreach (Location objLocation in _lstArmorLocations)
                     {
                         objLocation.Save(objWriter);
                     }
 
-                    // </armorbundles>
+                    // </armorlocations>
                     objWriter.WriteEndElement();
 
                     // <vehiclelocations>
@@ -1723,16 +1724,6 @@ namespace Chummer
 
                     objWriter.WriteEndElement();
                     // </calendar>
-
-                    // <sources>
-                    objWriter.WriteStartElement("sources");
-                    foreach (string strItem in _lstSources)
-                    {
-                        objWriter.WriteElementString("source", strItem);
-                    }
-
-                    objWriter.WriteEndElement();
-                    // </sources>
 
                     //Plugins
                     if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
@@ -2010,65 +2001,64 @@ namespace Chummer
                         xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strCharacterOptionsKey);
 
                         // Load the character's settings file.
+                        // Process cases where Chummer's location has been moved, but the settings are still present
+                        if (!_strCharacterOptionsKey.IsGuid() && !OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
+                        {
+                            string strSavedOptionsKey = Path.GetFileNameWithoutExtension(_strCharacterOptionsKey);
+                            string strPresentOptionsKey = OptionsManager.LoadedCharacterOptions.Keys.FirstOrDefault(x =>
+                                !x.IsGuid() && Path.GetFileNameWithoutExtension(x).Equals(strSavedOptionsKey, StringComparison.OrdinalIgnoreCase));
+                            if (!string.IsNullOrEmpty(strPresentOptionsKey))
+                                _strCharacterOptionsKey = strPresentOptionsKey;
+                        }
+                        CharacterBuildMethod eSavedBuildMethod;
+                        string strDummy = string.Empty;
+                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("buildmethod", ref strDummy)
+                            || !Enum.TryParse(strDummy, true, out eSavedBuildMethod))
+                        {
+                            eSavedBuildMethod = OptionsManager.LoadedCharacterOptions.ContainsKey(GlobalOptions.DefaultCharacterOptionDefaultValue)
+                                ? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOptionDefaultValue].BuildMethod
+                                : CharacterBuildMethod.Priority;
+                        }
                         if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
                         {
-                            IsLoading = false;
-                            return false;
-                        }
-
-                        Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
-
-                        // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                        string strMissingBooks = string.Empty;
-                        //Does the list of enabled books contain the current item?
-                        foreach (XPathNavigator xmlSourceNode in xmlCharacterNavigator.Select("sources/source"))
-                        {
-                            string strLoopString = xmlSourceNode.Value;
-                            if (strLoopString.Length > 0 && !Options.Books.Contains(strLoopString))
+                            // Prompt if we want to switch options or leave
+                            if (!Utils.IsUnitTest && showWarnings)
                             {
-                                strMissingBooks += strLoopString + ';';
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest && showWarnings)
-                        {
-                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString("Message_MissingSourceBooks"),
-                                        TranslatedBookList(strMissingBooks)),
-                                    LanguageManager.GetString("Message_MissingSourceBooks_Title"),
+                                if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
+                                    LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"),
                                     MessageBoxButtons.YesNo) == DialogResult.No)
+                                {
+                                    IsLoading = false;
+                                    return false;
+                                }
+                            }
+                            // Set up interim options for selection by build method
+                            string strReplacementOptionsKey = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x =>
+                                x.Value.BuiltInOption && x.Value.BuildMethod == eSavedBuildMethod).Key;
+                            if (string.IsNullOrEmpty(strReplacementOptionsKey))
+                                strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
+                            _strCharacterOptionsKey = strReplacementOptionsKey;
+                            Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
+
+                            DialogResult ePickBPResult = DialogResult.Cancel;
+                            Program.MainForm.DoThreadSafe(() =>
+                            {
+                                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
+                                {
+                                    frmPickBP.ShowDialog(Program.MainForm);
+                                    ePickBPResult = frmPickBP.DialogResult;
+                                }
+                            });
+                            if (ePickBPResult != DialogResult.OK)
                             {
                                 IsLoading = false;
                                 return false;
                             }
                         }
-
-                        // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                        string strMissingSourceNames = string.Empty;
-                        //Does the list of enabled books contain the current item?
-                        foreach (XPathNavigator xmlDirectoryName in xmlCharacterNavigator.Select(
-                            "customdatadirectorynames/directoryname"))
-                        {
-                            string strLoopString = xmlDirectoryName.Value;
-                            if (strLoopString.Length > 0 &&
-                                GlobalOptions.CustomDataDirectoryInfos.All(path => path.Name != strLoopString))
-                            {
-                                strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
-                        {
-                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("Message_MissingCustomDataDirectories"),
-                                    strMissingSourceNames),
-                                LanguageManager.GetString("Message_MissingCustomDataDirectories_Title"),
-                                MessageBoxButtons.YesNo) == DialogResult.No)
-                            {
-                                IsLoading = false;
-                                return false;
-                            }
-                        }
+                        else
+                            Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
 
                         if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart",
                             ref _decEssenceAtSpecialStart))
@@ -2156,31 +2146,6 @@ namespace Chummer
                         xmlCharacterNavigator.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                             _strPrimaryArm = "Right";
-
-                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(CharacterOptionsKey) && showWarnings)
-                        {
-                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString("Message_MissingGameplayOption"), CharacterOptionsKey),
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title"),
-                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
-                            {
-                                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
-                                {
-                                    frmPickBP.ShowDialog(Program.MainForm);
-
-                                    if (frmPickBP.DialogResult != DialogResult.OK)
-                                    {
-                                        IsLoading = false;
-                                        return false;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                IsLoading = false;
-                                return false;
-                            }
-                        }
 
                         xmlCharacterNavigator.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("priorityattributes",
@@ -2308,13 +2273,12 @@ namespace Chummer
                                     if (removeImprovements || showWarnings)
                                     {
                                         //Utils.BreakIfDebug();
-                                        if (removeImprovements || (Program.MainForm.ShowMessageBox(
-                                                                       LanguageManager.GetString(
-                                                                           "Message_OrphanedImprovements"),
-                                                                       LanguageManager.GetString(
-                                                                           "MessageTitle_OrphanedImprovements"),
-                                                                       MessageBoxButtons.YesNo,
-                                                                       MessageBoxIcon.Error) == DialogResult.Yes))
+                                        if (removeImprovements
+                                            || Program.MainForm.ShowMessageBox(
+                                                LanguageManager.GetString("Message_OrphanedImprovements"),
+                                                LanguageManager.GetString("MessageTitle_OrphanedImprovements"),
+                                                MessageBoxButtons.YesNo,
+                                                MessageBoxIcon.Error) == DialogResult.Yes)
                                         {
                                             removeImprovements = true;
                                             continue;
@@ -2494,18 +2458,23 @@ namespace Chummer
                                                 lstContacts.Sort(CompareListItems.CompareNames);
                                             }
 
-                                            using (frmSelectItem frmPickItem = new frmSelectItem())
+                                            DialogResult ePickItemResult = DialogResult.Cancel;
+                                            Program.MainForm.DoThreadSafe(() =>
                                             {
-                                                frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                frmPickItem.ShowDialog(Program.MainForm);
-
-                                                // Make sure the dialogue window was not canceled.
-                                                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                                using (frmSelectItem frmPickItem = new frmSelectItem())
                                                 {
-                                                    return false;
-                                                }
+                                                    frmPickItem.SetDropdownItemsMode(lstContacts);
+                                                    frmPickItem.ShowDialog(Program.MainForm);
 
-                                                selectedContactUniqueId = frmPickItem.SelectedItem;
+                                                    ePickItemResult = frmPickItem.DialogResult;
+                                                    selectedContactUniqueId = frmPickItem.SelectedItem;
+                                                }
+                                            });
+                                            // Make sure the dialogue window was not canceled.
+                                            if (ePickItemResult != DialogResult.OK)
+                                            {
+                                                IsLoading = false;
+                                                return false;
                                             }
                                         }
 
@@ -3743,6 +3712,8 @@ namespace Chummer
 
             // <settings />
             objWriter.WriteElementString("settings", CharacterOptionsKey);
+            // <buildmethod />
+            objWriter.WriteElementString("buildmethod", Options.BuildMethod.ToString());
             // <imageformat />
             objWriter.WriteElementString("imageformat", GlobalOptions.SavedImageQuality == int.MaxValue ? "png" : "jpeg");
             // <metatype />
@@ -6426,7 +6397,7 @@ namespace Chummer
 
         #region Basic Properties
 
-        private CharacterOptions _objOptions = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultGameplayOption];
+        private CharacterOptions _objOptions = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
 
         /// <summary>
         /// Character Options object.

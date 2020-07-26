@@ -28,11 +28,13 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private readonly bool _blnLockBuildMethod;
+        private readonly CharacterBuildMethod _eStartingBuildMethod;
 
         #region Control Events
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _eStartingBuildMethod = _objCharacter.Options.BuildMethod;
             InitializeComponent();
             this.TranslateWinForm();
 
@@ -51,12 +53,12 @@ namespace Chummer
             {
                 cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[_objCharacter.CharacterOptionsKey];
                 if (cboCharacterOption.SelectedIndex == -1)
-                    cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultGameplayOption];
+                    cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
                 chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
-                _blnLockBuildMethod = true;
+                _blnLockBuildMethod = _objCharacter.Options.BuildMethod == _objCharacter.EffectiveBuildMethod;
             }
             else
-                cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultGameplayOption];
+                cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
             if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                 cboCharacterOption.SelectedIndex = 0;
             cboCharacterOption.EndUpdate();
@@ -99,7 +101,7 @@ namespace Chummer
             cboCharacterOption.DataSource = lstGameplayOptions;
             cboCharacterOption.SelectedValue = objOldSelected;
             if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
-                cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultGameplayOption];
+                cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
             if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                 cboCharacterOption.SelectedIndex = 0;
             cboCharacterOption.EndUpdate();
@@ -158,7 +160,7 @@ namespace Chummer
             }
 
             if (_blnLockBuildMethod)
-                cmdOK.Enabled = objSelectedGameplayOption?.BuildMethod == _objCharacter.Options.BuildMethod;
+                cmdOK.Enabled = objSelectedGameplayOption?.BuildMethod == _eStartingBuildMethod;
         }
         #endregion
     }
