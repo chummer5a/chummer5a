@@ -53,9 +53,10 @@ namespace Chummer
             }
             foreach (string strSettingsFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
             {
+                string strSettingName = Path.GetFileName(strSettingsFilePath);
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
-                if (objNewCharacterOptions.Load(strSettingsFilePath, false) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                    s_dicLoadedCharacterOptions.TryAdd(strSettingsFilePath, objNewCharacterOptions);
+                if (objNewCharacterOptions.Load(strSettingName, false) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
+                    s_dicLoadedCharacterOptions.TryAdd(strSettingName, objNewCharacterOptions);
             }
         }
     }

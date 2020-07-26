@@ -2001,15 +2001,6 @@ namespace Chummer
                         xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strCharacterOptionsKey);
 
                         // Load the character's settings file.
-                        // Process cases where Chummer's location has been moved, but the settings are still present
-                        if (!_strCharacterOptionsKey.IsGuid() && !OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
-                        {
-                            string strSavedOptionsKey = Path.GetFileNameWithoutExtension(_strCharacterOptionsKey);
-                            string strPresentOptionsKey = OptionsManager.LoadedCharacterOptions.Keys.FirstOrDefault(x =>
-                                !x.IsGuid() && Path.GetFileNameWithoutExtension(x).Equals(strSavedOptionsKey, StringComparison.OrdinalIgnoreCase));
-                            if (!string.IsNullOrEmpty(strPresentOptionsKey))
-                                _strCharacterOptionsKey = strPresentOptionsKey;
-                        }
                         CharacterBuildMethod eSavedBuildMethod;
                         string strDummy = string.Empty;
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("buildmethod", ref strDummy)
@@ -2019,15 +2010,23 @@ namespace Chummer
                                 ? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOptionDefaultValue].BuildMethod
                                 : CharacterBuildMethod.Priority;
                         }
-                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
+                        bool blnShowSelectBP = false;
+                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
+                            || (!Created && OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod != eSavedBuildMethod))
                         {
                             // Prompt if we want to switch options or leave
                             if (!Utils.IsUnitTest && showWarnings)
                             {
                                 if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"),
+                                        LanguageManager.GetString(
+                                            OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
+                                                ? "Message_CharacterOptions_DesyncBuildMethod"
+                                                : "Message_CharacterOptions_CannotLoadSetting"),
                                         Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
-                                    LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"),
+                                    LanguageManager.GetString(
+                                        OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
+                                            ? "MessageTitle_CharacterOptions_DesyncBuildMethod"
+                                            : "MessageTitle_CharacterOptions_CannotLoadSetting"),
                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                 {
                                     IsLoading = false;
@@ -2040,8 +2039,13 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strReplacementOptionsKey))
                                 strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
                             _strCharacterOptionsKey = strReplacementOptionsKey;
-                            Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
+                            blnShowSelectBP = true;
+                        }
 
+                        Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
+
+                        if (blnShowSelectBP)
+                        {
                             DialogResult ePickBPResult = DialogResult.Cancel;
                             Program.MainForm.DoThreadSafe(() =>
                             {
@@ -2057,8 +2061,6 @@ namespace Chummer
                                 return false;
                             }
                         }
-                        else
-                            Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
 
                         if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart",
                             ref _decEssenceAtSpecialStart))

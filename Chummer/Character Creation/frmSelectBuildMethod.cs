@@ -55,7 +55,7 @@ namespace Chummer
                 if (cboCharacterOption.SelectedIndex == -1)
                     cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
                 chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
-                _blnLockBuildMethod = _objCharacter.Options.BuildMethod == _objCharacter.EffectiveBuildMethod;
+                _blnLockBuildMethod = !_objCharacter.Created && _objCharacter.Options.BuildMethod == _objCharacter.EffectiveBuildMethod;
             }
             else
                 cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];

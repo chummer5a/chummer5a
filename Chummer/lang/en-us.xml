@@ -9755,12 +9755,12 @@
     <!-- End Region-->
     <!-- Region CharacterOptions Messages -->
     <string>
-      <key>Message_CharacterOptions_OpenOptions</key>
-      <text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Options menu now?</text>
+      <key>Message_CharacterOptions_DesyncBuildMethod</key>
+      <text>The settings file present that matches with the character's settings file ({0}) has a different build method. Select a different settings file with the same build method instead?</text>
     </string>
     <string>
-      <key>MessageTitle_CharacterOptions_OpenOptions</key>
-      <text>No Settings File Found</text>
+      <key>MessageTitle_CharacterOptions_DesyncBuildMethod</key>
+      <text>Loaded Settings File Has Different Build Method</text>
     </string>
     <string>
       <key>Message_CharacterOptions_CannotLoadSetting</key>

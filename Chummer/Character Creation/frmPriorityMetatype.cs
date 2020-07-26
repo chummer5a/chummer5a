@@ -68,7 +68,7 @@ namespace Chummer
         {
             // Load the Priority information.
             if (string.IsNullOrEmpty(_objCharacter.CharacterOptionsKey))
-                _objCharacter.CharacterOptionsKey = "Standard";
+                _objCharacter.CharacterOptionsKey = GlobalOptions.DefaultCharacterOption;
 
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
