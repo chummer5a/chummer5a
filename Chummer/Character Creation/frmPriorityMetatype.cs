@@ -33,9 +33,10 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
 
-        private int _intBuildMethod;
         private bool _blnLoading = true;
+        private readonly Dictionary<string, int> _dicSumtoTenValues;
         private readonly List<string> _lstPrioritySkills;
+        private readonly List<string> _lstPriorities;
 
         private readonly XPathNavigator _xmlBasePriorityDataNode;
         private readonly XPathNavigator _xmlBaseMetatypeDataNode;
@@ -49,6 +50,8 @@ namespace Chummer
         public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            if (string.IsNullOrEmpty(_objCharacter.CharacterOptionsKey))
+                _objCharacter.CharacterOptionsKey = GlobalOptions.DefaultCharacterOption;
             InitializeComponent();
             this.TranslateWinForm();
 
@@ -62,47 +65,47 @@ namespace Chummer
             _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
             _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
-        }
-
-        private void frmPriorityMetatype_Load(object sender, EventArgs e)
-        {
-            // Load the Priority information.
-            if (string.IsNullOrEmpty(_objCharacter.CharacterOptionsKey))
-                _objCharacter.CharacterOptionsKey = GlobalOptions.DefaultCharacterOption;
-
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            _dicSumtoTenValues = new Dictionary<string, int>(5);
+            if (_xmlBasePriorityDataNode != null)
             {
-                _intBuildMethod = 1;
-                lblSumtoTen.Visible = true;
+                foreach (XPathNavigator xmlNode in _xmlBasePriorityDataNode.Select("priortysumtotenvalues/*"))
+                {
+                    _dicSumtoTenValues.Add(xmlNode.Name, xmlNode.ValueAsInt);
+                }
             }
-            List<string> objPriorities = new List<string>(5);
+
+            if (_dicSumtoTenValues.Count == 0)
+            {
+                _dicSumtoTenValues.Add("A", 4);
+                _dicSumtoTenValues.Add("B", 3);
+                _dicSumtoTenValues.Add("C", 2);
+                _dicSumtoTenValues.Add("D", 1);
+                _dicSumtoTenValues.Add("E", 0);
+            }
+
             if (!string.IsNullOrEmpty(_objCharacter.Options.PriorityArray))
             {
+                _lstPriorities = new List<string>(5);
                 foreach (char c in _objCharacter.Options.PriorityArray)
                 {
-                    switch (c)
-                    {
-                        case 'A':
-                            objPriorities.Add("A,4");
-                            break;
-                        case 'B':
-                            objPriorities.Add("B,3");
-                            break;
-                        case 'C':
-                            objPriorities.Add("C,2");
-                            break;
-                        case 'D':
-                            objPriorities.Add("D,1");
-                            break;
-                        case 'E':
-                            objPriorities.Add("E,0");
-                            break;
-                    }
+                    _lstPriorities.Add(c.ToString());
                 }
             }
             else
             {
-                objPriorities = new List<string> { "A,4", "B,3", "C,2", "D,1", "E,0" };
+                _lstPriorities = new List<string> { "A", "B", "C", "D", "E" };
+            }
+
+            foreach (string strPriority in _lstPriorities)
+                if (!_dicSumtoTenValues.ContainsKey(strPriority))
+                    _dicSumtoTenValues.Add(strPriority, 0);
+        }
+
+        private void frmPriorityMetatype_Load(object sender, EventArgs e)
+        {
+            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            {
+                lblSumtoTen.Visible = true;
             }
 
             // Populate the Priority Category list.
@@ -122,7 +125,7 @@ namespace Chummer
                     {
                         List<ListItem> lstItems = new List<ListItem>(objItems.Count);
 
-                        foreach (string s in objPriorities)
+                        foreach (string s in _lstPriorities)
                         {
                             foreach (XPathNavigator objXmlPriority in objItems)
                             {
@@ -917,36 +920,7 @@ namespace Chummer
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
             {
-                List<string> objPriorities = new List<string>(5);
-                if (!string.IsNullOrEmpty(_objCharacter.Options.PriorityArray))
-                {
-                    foreach (char c in _objCharacter.Options.PriorityArray)
-                    {
-                        switch (c)
-                        {
-                            case 'A':
-                                objPriorities.Add("A,4");
-                                break;
-                            case 'B':
-                                objPriorities.Add("B,3");
-                                break;
-                            case 'C':
-                                objPriorities.Add("C,2");
-                                break;
-                            case 'D':
-                                objPriorities.Add("D,1");
-                                break;
-                            case 'E':
-                                objPriorities.Add("E,0");
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    objPriorities = new List<string> { "A,4", "B,3", "C,2", "D,1", "E,0" };
-                }
-
+                List<string> lstCurrentPriorities = new List<string>(_lstPriorities);
                 string strHeritageSelected = cboHeritage.SelectedValue.ToString();
                 string strTalentSelected = cboTalent.SelectedValue.ToString();
                 string strAttributesSelected = cboAttributes.SelectedValue.ToString();
@@ -954,17 +928,17 @@ namespace Chummer
                 string strResourcesSelected = cboResources.SelectedValue.ToString();
 
                 // Discover which priority rating is not currently assigned
-                objPriorities.Remove(strHeritageSelected);
-                objPriorities.Remove(strTalentSelected);
-                objPriorities.Remove(strAttributesSelected);
-                objPriorities.Remove(strSkillsSelected);
-                objPriorities.Remove(strResourcesSelected);
-                if (objPriorities.Count == 0)
+                lstCurrentPriorities.Remove(strHeritageSelected);
+                lstCurrentPriorities.Remove(strTalentSelected);
+                lstCurrentPriorities.Remove(strAttributesSelected);
+                lstCurrentPriorities.Remove(strSkillsSelected);
+                lstCurrentPriorities.Remove(strResourcesSelected);
+                if (lstCurrentPriorities.Count == 0)
                     return;
 
                 string strComboBoxSelected = comboBox.SelectedValue.ToString();
 
-                string strMissing = objPriorities.First();
+                string strMissing = lstCurrentPriorities.First();
 
                 // Find the combo with the same value as this one and change it to the missing value.
                 //_blnInitializing = true;
@@ -983,11 +957,11 @@ namespace Chummer
 
         private int SumToTen(bool blnDoUIUpdate = true)
         {
-            int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboTalent.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboSkills.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboResources.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            int value = _dicSumtoTenValues[cboHeritage.SelectedValue.ToString()];
+            value += _dicSumtoTenValues[cboTalent.SelectedValue.ToString()];
+            value += _dicSumtoTenValues[cboAttributes.SelectedValue.ToString()];
+            value += _dicSumtoTenValues[cboSkills.SelectedValue.ToString()];
+            value += _dicSumtoTenValues[cboResources.SelectedValue.ToString()];
 
             if (blnDoUIUpdate)
                 lblSumtoTen.Text = value.ToString(GlobalOptions.CultureInfo) + '/' + _objCharacter.Options.SumtoTen.ToString(GlobalOptions.CultureInfo);

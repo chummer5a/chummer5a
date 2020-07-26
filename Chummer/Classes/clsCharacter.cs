@@ -174,11 +174,11 @@ namespace Chummer
         private int _intBaseWildReputation;
 
         // Priority Selections.
-        private string _strPriorityMetatype = "A,4";
-        private string _strPriorityAttributes = "B,3";
-        private string _strPrioritySpecial = "C,2";
-        private string _strPrioritySkills = "D,1";
-        private string _strPriorityResources = "E,0";
+        private string _strPriorityMetatype = "A";
+        private string _strPriorityAttributes = "B";
+        private string _strPrioritySpecial = "C";
+        private string _strPrioritySkills = "D";
+        private string _strPriorityResources = "E";
         private string _strPriorityTalent = string.Empty;
         private readonly List<string> _lstPrioritySkills = new List<string>(3);
 
@@ -15953,15 +15953,15 @@ namespace Chummer
                                     switch (strInput)
                                     {
                                         case "1.":
-                                            return "A,4";
+                                            return "A";
                                         case "2.":
-                                            return "B,3";
+                                            return "B";
                                         case "3.":
-                                            return "C,2";
+                                            return "C";
                                         case "4.":
-                                            return "D,1";
+                                            return "D";
                                         case "5.":
-                                            return "E,0";
+                                            return "E";
                                         default:
                                             return string.Empty;
                                     }
