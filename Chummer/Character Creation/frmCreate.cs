@@ -82,7 +82,7 @@ namespace Chummer
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
-            CharacterObjectOptions.PropertyChanged += MakeDirtyWithCharacterUpdate;
+            CharacterObjectOptions.PropertyChanged += OnCharacterOptionsPropertyChanged;
 
             tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             tabSkillUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -237,8 +237,7 @@ namespace Chummer
                         lblMetagenicQualitiesLabel.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
                         tslKarmaLabel.Text = LanguageManager.GetString("Label_Karma");
-                        tslKarmaRemainingLabel.Text =
-                            LanguageManager.GetString("Label_KarmaRemaining");
+                        tslKarmaRemainingLabel.Text = LanguageManager.GetString("Label_KarmaRemaining");
                         tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma");
                         lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma");
 
@@ -272,16 +271,12 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_refresh", op_load_frm_create))
                     {
-                        OnCharacterPropertyChanged(CharacterObject,
-                            new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));
+                        OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));
 
-                        cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
-                            nameof(Character.AddInitiationsAllowed));
+                        cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
-                        cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject,
-                            nameof(Character.EffectiveBuildMethodIsLifeModule));
-                        btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject,
-                            nameof(Character.EnableAutomaticStoryButton));
+                        cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
+                        btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EnableAutomaticStoryButton));
 
                         if (!CharacterObjectOptions.BookEnabled("RF"))
                         {
@@ -334,7 +329,6 @@ namespace Chummer
                         treCyberware.SortCustomOrder();
                         treVehicles.SortCustomOrder();
                         treCritterPowers.SortCustomOrder();
-
 
                         // Set up events that would change various lists
                         CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
@@ -945,7 +939,7 @@ namespace Chummer
                 CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
                 CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                CharacterObjectOptions.PropertyChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObjectOptions.PropertyChanged -= OnCharacterOptionsPropertyChanged;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -1496,6 +1490,99 @@ namespace Chummer
                 case nameof(Character.IsSprite):
                 {
                     mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
+                    break;
+                }
+            }
+        }
+
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            IsCharacterUpdateRequested = true;
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.Books):
+                {
+                    Cursor objOldCursor = Cursor;
+                    Cursor = Cursors.WaitCursor;
+                    SuspendLayout();
+                    if (!CharacterObjectOptions.BookEnabled("RF"))
+                        cmdAddLifestyle.SplitMenuStrip = cmsAdvancedLifestyle;
+                    else
+                        cmdAddLifestyle.SplitMenuStrip = null;
+
+                    if (!CharacterObjectOptions.BookEnabled("FA"))
+                    {
+                        lblWildReputation.Visible = false;
+                        lblWildReputationTotal.Visible = false;
+                        if (!CharacterObjectOptions.BookEnabled("SG"))
+                        {
+                            lblAstralReputation.Visible = false;
+                            lblAstralReputationTotal.Visible = false;
+                        }
+                        else
+                        {
+                            lblAstralReputation.Visible = true;
+                            lblAstralReputationTotal.Visible = true;
+                        }
+                    }
+                    else
+                    {
+                        lblWildReputation.Visible = true;
+                        lblWildReputationTotal.Visible = true;
+                        lblAstralReputation.Visible = true;
+                        lblAstralReputationTotal.Visible = true;
+                    }
+
+                    // Refresh all trees because enabled sources can change the nodes that are visible
+                    RefreshQualities(treQualities, cmsQuality);
+                    RefreshSpirits(panSpirits, panSprites);
+                    RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                    RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+                    RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                    RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                    RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                    RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                    RefreshContacts(panContacts, panEnemies, panPets);
+
+                    RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                    RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                    RefreshFociFromGear(treFoci, null);
+                    RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                    RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                        cmsWeaponAccessoryGear);
+                    RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                        cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount,
+                        cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                    RefreshDrugs(treCustomDrugs);
+                    treWeapons.SortCustomOrder();
+                    treArmor.SortCustomOrder();
+                    treGear.SortCustomOrder();
+                    treLifestyles.SortCustomOrder();
+                    treCustomDrugs.SortCustomOrder();
+                    treCyberware.SortCustomOrder();
+                    treVehicles.SortCustomOrder();
+                    treCritterPowers.SortCustomOrder();
+
+                    RefreshSelectedVehicle();
+                    ResumeLayout();
+                    Cursor = objOldCursor;
+                    break;
+                }
+                case nameof(CharacterOptions.AllowFreeGrids):
+                {
+                    if (!CharacterObjectOptions.BookEnabled("HT"))
+                    {
+                        Cursor objOldCursor = Cursor;
+                        Cursor = Cursors.WaitCursor;
+                        SuspendLayout();
+                        RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                        treLifestyles.SortCustomOrder();
+                        ResumeLayout();
+                        Cursor = objOldCursor;
+                    }
+
                     break;
                 }
             }
