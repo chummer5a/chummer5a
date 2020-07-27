@@ -67,6 +67,7 @@ Data Changes:
 - Evil Eye is now properly an Instantaneous spell instead of a Sustained spell.
 - Fixed missing unique setting for the Muscle Augmentation bioware that caused it fail to stack with Improved Physical Attribute.
 - Fixed incorrect Concealability and Spec settings for the SK/Onotari Arms Silent Claw Stiletto.
+- Fixed Neocortial Neural Amplifiers not listing the correct condition modifier.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

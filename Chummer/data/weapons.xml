@@ -14106,7 +14106,7 @@
       <damage>18P</damage>
       <ap>-6</ap>
       <mode>FA</mode>
-      <rc>0</rc>
+      <rc>-6</rc>
       <ammo>200(belt)</ammo>
       <avail>24F</avail>
       <cost>29000</cost>
