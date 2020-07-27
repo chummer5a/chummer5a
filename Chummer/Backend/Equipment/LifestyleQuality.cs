@@ -652,16 +652,11 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (Type == QualityType.Entertainment || Type == QualityType.Contracts)
-                {
-                    var strLifestyleEquivalent = Lifestyle.GetEquivalentLifestyle(ParentLifestyle.BaseLifestyle);
-                    if (!string.IsNullOrEmpty(ParentLifestyle?.BaseLifestyle) &&
-                        _lstAllowedFreeLifestyles.Any(strLifestyle =>
-                            strLifestyle == strLifestyleEquivalent || strLifestyle == ParentLifestyle.BaseLifestyle))
-                        return true;
-                }
-
-                return false;
+                if (Type != QualityType.Entertainment && Type != QualityType.Contracts) return false;
+                return _lstAllowedFreeLifestyles != null && !string.IsNullOrEmpty(ParentLifestyle?.BaseLifestyle) &&
+                       _lstAllowedFreeLifestyles.Any(strLifestyle =>
+                           strLifestyle == Lifestyle.GetEquivalentLifestyle(ParentLifestyle.BaseLifestyle) ||
+                           strLifestyle == ParentLifestyle.BaseLifestyle);
             }
         }
 
