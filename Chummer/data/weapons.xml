@@ -14335,7 +14335,7 @@
       <name>SK/Onotari Arms Silent Claw Stiletto</name>
       <category>Blades</category>
       <type>Melee</type>
-      <conceal>4</conceal>
+      <conceal>-2</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>(STR)P</damage>
@@ -14347,7 +14347,7 @@
       <cost>400</cost>
       <source>SL</source>
       <page>133</page>
-      <spec>Swords</spec>
+      <spec>Knives</spec>
     </weapon>
     <weapon>
       <id>b14a54e6-a60d-4e89-8ddb-91b4af9d41e8</id>
