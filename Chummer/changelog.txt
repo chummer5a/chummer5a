@@ -93,6 +93,8 @@ Changed/New Strings:
 - Skill_NativeLanguageLong
 - Message_NewNativeLanguageSkill
 - Label_CMRecovery
+- Title_MasterIndex
+- Label_MasterIndex_SourceClickReminder
 
 Build 212
 Application Changes:

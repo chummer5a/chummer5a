@@ -184,6 +184,7 @@ namespace Chummer
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
                             Parallel.Invoke(
+                                () => XmlManager.Load("actions.xml"),
                                 () => XmlManager.Load("armor.xml"),
                                 () => XmlManager.Load("bioware.xml"),
                                 () => XmlManager.Load("books.xml"),

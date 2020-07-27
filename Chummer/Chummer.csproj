@@ -1178,6 +1178,12 @@
     <Compile Include="frmTest.Designer.cs">
       <DependentUpon>frmTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\frmMasterIndex.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Utilities\frmMasterIndex.Designer.cs">
+      <DependentUpon>frmMasterIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\frmUpdate.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1560,6 +1566,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmTest.resx">
       <DependentUpon>frmTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utilities\frmMasterIndex.resx">
+      <DependentUpon>frmMasterIndex.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmUpdate.resx">
       <DependentUpon>frmUpdate.cs</DependentUpon>
