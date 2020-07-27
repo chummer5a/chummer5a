@@ -8623,6 +8623,19 @@ namespace Chummer
                 }
             }
 
+            if (CharacterObject.Contacts.Any(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
+            {
+                sbdPositiveQualityTooltip.AppendFormat(GlobalOptions.CultureInfo,$"{LanguageManager.GetString("Label_GroupContacts")}");
+                sbdPositiveQualityTooltip.AppendLine();
+                foreach (Contact objGroupContact in CharacterObject.Contacts.Where(x =>
+                    x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
+                {
+                    sbdPositiveQualityTooltip.AppendFormat(
+                        GlobalOptions.CultureInfo,$"{String.Join("/", new[]{objGroupContact.GroupName, objGroupContact.Name}.Where(c => !string.IsNullOrWhiteSpace(c)))}{strSpace}({objGroupContact.ContactPoints})");
+                    sbdPositiveQualityTooltip.AppendLine();
+                }
+            }
+
             int intQualityPointsUsed = intLifeModuleQualities - CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
 
             intKarmaPointsRemain -= intQualityPointsUsed;

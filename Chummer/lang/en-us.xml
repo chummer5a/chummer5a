@@ -4126,6 +4126,10 @@
       <text>Contacts</text>
     </string>
     <string>
+      <key>Label_GroupContacts</key>
+      <text>Group Contacts</text>
+    </string>
+    <string>
       <key>Label_Enemies</key>
       <text>Enemies</text>
     </string>
