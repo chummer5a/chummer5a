@@ -397,6 +397,7 @@ namespace Chummer
             nudBrowserVersion.Value = GlobalOptions.EmulatedBrowserVersion;
             txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
+            chkHideMasterIndex.Checked = GlobalOptions.HideMasterIndex;
             chkHideCharacterRoster.Checked = GlobalOptions.HideCharacterRoster;
             chkCreateBackupOnCareer.Checked = GlobalOptions.CreateBackupOnCareer;
             chkConfirmDelete.Checked = GlobalOptions.ConfirmDelete;
@@ -456,6 +457,7 @@ namespace Chummer
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
             GlobalOptions.CharacterRosterPath = txtCharacterRosterPath.Text;
+            GlobalOptions.HideMasterIndex = chkHideMasterIndex.Checked;
             GlobalOptions.HideCharacterRoster = chkHideCharacterRoster.Checked;
             GlobalOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             GlobalOptions.ConfirmDelete = chkConfirmDelete.Checked;

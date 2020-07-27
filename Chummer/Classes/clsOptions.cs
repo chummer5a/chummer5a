@@ -156,6 +156,7 @@ namespace Chummer
         private static bool _lifeModuleEnabled;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
+        private static bool _blnHideMasterIndex;
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
@@ -372,6 +373,7 @@ namespace Chummer
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
+            LoadBoolFromRegistry(ref _blnHideMasterIndex, "hidemasterindex");
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
@@ -563,6 +565,7 @@ namespace Chummer
                 objRegistry.SetValue("lifemodule", LifeModuleEnabled.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("prefernightlybuilds", PreferNightlyBuilds.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("characterrosterpath", CharacterRosterPath);
+                objRegistry.SetValue("hidemasterindex", HideMasterIndex.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("hidecharacterroster", HideCharacterRoster.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("createbackuponcareer", CreateBackupOnCareer.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("confirmdelete", ConfirmDelete.ToString(InvariantCultureInfo));
@@ -640,6 +643,15 @@ namespace Chummer
         {
             get => _blnAllowEasterEggs;
             set => _blnAllowEasterEggs = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Master Index should be shown. If true, prevents the roster from being removed or hidden.
+        /// </summary>
+        public static bool HideMasterIndex
+        {
+            get => _blnHideMasterIndex;
+            set => _blnHideMasterIndex = value;
         }
 
         /// <summary>

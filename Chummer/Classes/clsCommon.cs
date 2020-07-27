@@ -1017,7 +1017,15 @@ namespace Chummer
             if (objBookInfo == null)
                 return string.Empty;
 
-            Uri uriPath = new Uri(objBookInfo.Path);
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return string.Empty;
+            }
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return string.Empty;
