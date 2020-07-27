@@ -42,9 +42,9 @@ namespace Chummer
             ListInstanceNameFromProperty = listInstanceNameFromProperty;
             DeleteEmptyTags = deleteEmptyTags;
             if(!string.IsNullOrEmpty(commentProperties))
-                ListCommentProperties = new List<string>(commentProperties.Split(';'));
+                ListCommentProperties = new List<string>(commentProperties.SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries));
             if(!string.IsNullOrEmpty(extraProperties))
-                ListExtraProperties = new List<string>(extraProperties.Split(';'));
+                ListExtraProperties = new List<string>(extraProperties.SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries));
         }
 
         public List<string> ListCommentProperties { get; } = new List<string>(1);

@@ -298,7 +298,7 @@ namespace Chummer
             set => _strDescriptors = value;
         }
 
-        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.Split(','));
+        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
 
         /// <summary>
         /// Translated Descriptors.
@@ -921,7 +921,7 @@ namespace Chummer
                     case Improvement.ImprovementType.SpellDescriptorDamage:
                         if (_hashDescriptors.Count > 0)
                         {
-                            HashSet<string> _hashImp = new HashSet<string>(objImprovement.ImprovedName.Split(','));
+                            HashSet<string> _hashImp = new HashSet<string>(objImprovement.ImprovedName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
                             bool allow = false;
                             foreach (string hash in _hashImp)
                             {

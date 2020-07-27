@@ -1367,6 +1367,16 @@
       <text>Error with Loading Metatype!</text>
     </string>
     <!-- End Region -->
+    <!-- Region Master Index -->
+    <string>
+      <key>Title_MasterIndex</key>
+      <text>Master Index</text>
+    </string>
+    <string>
+      <key>Label_MasterIndex_SourceClickReminder</key>
+      <text>&lt;- Click to Open Linked PDF</text>
+    </string>
+    <!-- End Region -->
     <!-- Region About -->
     <string>
       <key>About_Description_Text</key>
@@ -5661,6 +5671,10 @@
     <string>
       <key>Checkbox_Options_EnablePlugins</key>
       <text>Enable Plugins (experimental)</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_HideMasterIndex</key>
+      <text>Hide the Master Index</text>
     </string>
     <string>
       <key>Checkbox_Options_HideCharacterRoster</key>

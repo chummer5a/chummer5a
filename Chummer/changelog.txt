@@ -42,6 +42,7 @@ Application Fixes:
 - Custom files for character sheets now work properly, though people who do wish to use them are recommended to add entries in every single language found in sheets.xml.
 - The Cyberadept quality now properly automatically restores lost Resonance to Essence at every Submersion instead of needing a separate echo to be taken. Existing characters with these echoes will have the echoes removed upon loading their character, but their cyberadept bonus should be kept and automatically reassigned to the best applicable submersion grades.
 - Fixed a regression when loading characters with suppressed qualities. Closes #4178
+- Added a Master Index tab that lets users search the entire Chummer database for any entry and quickly view its sourcebook reference (and click it to open up a linked PDF). This does cause the program's initial startup time to be noticeably longer than before, so it can be disabled in the Options menu for those who do not want to use it.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -94,6 +95,9 @@ Changed/New Strings:
 - Skill_NativeLanguageLong
 - Message_NewNativeLanguageSkill
 - Label_CMRecovery
+- Title_MasterIndex
+- Label_MasterIndex_SourceClickReminder
+- Checkbox_Options_HideMasterIndex
 
 Build 212
 Application Changes:

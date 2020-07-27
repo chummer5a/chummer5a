@@ -258,6 +258,7 @@ namespace Chummer
         private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
+        private static bool _blnHideMasterIndex;
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
@@ -470,6 +471,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
             LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
             LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
+            LoadBoolFromRegistry(ref _blnHideMasterIndex, "hidemasterindex");
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
@@ -627,6 +629,15 @@ namespace Chummer
         {
             get => _blnAllowEasterEggs;
             set => _blnAllowEasterEggs = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Master Index should be shown. If true, prevents the roster from being removed or hidden.
+        /// </summary>
+        public static bool HideMasterIndex
+        {
+            get => _blnHideMasterIndex;
+            set => _blnHideMasterIndex = value;
         }
 
         /// <summary>
@@ -928,7 +939,7 @@ namespace Chummer
                                     string strTemp = string.Empty;
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|');
+                                        string[] strParts = strTemp.Split('|', StringSplitOptions.RemoveEmptyEntries);
                                         objSource.Path = strParts[0];
                                         if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                         {

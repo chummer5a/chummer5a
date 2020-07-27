@@ -287,7 +287,7 @@ namespace Chummer
                     if (chkHideOverAvailLimit.Checked)
                     {
                         int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckAvailRestriction(xmlCyberware, _objCharacter, decimal.ToInt32(nudRating.Maximum), intAvailModifier))
+                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum), intAvailModifier))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -298,7 +298,7 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (chkBlackMarketDiscount.Checked)
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !SelectionShared.CheckNuyenRestriction(xmlCyberware, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -733,7 +733,7 @@ namespace Chummer
                             strSuffix = strCost.Substring(strCost.LastIndexOf(')') + 1);
                             strCost = strCost.TrimEndOnce(strSuffix);
                         }
-                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                         strCost += strSuffix;
                     }
@@ -839,7 +839,7 @@ namespace Chummer
                             strSuffix = strEss.Substring(strEss.LastIndexOf(')') + 1);
                             strEss = strEss.TrimEndOnce(strSuffix);
                         }
-                        string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                        string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                         strEss += strSuffix;
                     }
@@ -877,7 +877,7 @@ namespace Chummer
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                 if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCapacity = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
                 if (strCapacity == "[*]" || strCapacity == "*")
@@ -1054,8 +1054,8 @@ namespace Chummer
                             if (xmlCyberware.SelectSingleNode("selectside") == null || !string.IsNullOrEmpty(CyberwareParent?.Location) ||
                                 (lstWareListToCheck != null && lstWareListToCheck.Any(x => x.Location == "Left") && lstWareListToCheck.Any(x => x.Location == "Right")))
                             {
-                                string[] astrBlockedMounts = strBlocksMounts.Split(',');
-                                foreach (string strLoop in _strHasModularMounts.Split(','))
+                                string[] astrBlockedMounts = strBlocksMounts.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                foreach (string strLoop in _strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                 {
                                     if (astrBlockedMounts.Contains(strLoop))
                                     {
@@ -1072,7 +1072,7 @@ namespace Chummer
                         string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
                         if (!string.IsNullOrEmpty(strLoopMount))
                         {
-                            foreach (string strLoop in _strHasModularMounts.Split(','))
+                            foreach (string strLoop in _strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 if (strLoopMount == strLoop)
                                 {
@@ -1123,7 +1123,7 @@ namespace Chummer
                             string strAvailExpr = xmlCyberware.SelectSingleNode("avail")?.Value ?? string.Empty;
                             if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                             {
-                                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                                 strAvailExpr = strValues[Math.Max(Math.Min(intMinRating - 1, strValues.Length - 1), 0)];
                             }
 
@@ -1238,7 +1238,7 @@ namespace Chummer
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                        string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         strCapacity = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                     }
 

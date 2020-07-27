@@ -81,6 +81,15 @@ namespace Chummer
                 string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
 
             //lets write that in separate lines to see where the exception is thrown
+            if (GlobalOptions.HideMasterIndex)
+                MasterIndex = null;
+            else
+            {
+                MasterIndex = new frmMasterIndex
+                {
+                    MdiParent = this
+                };
+            }
             if (GlobalOptions.HideCharacterRoster)
                 CharacterRoster = null;
             else
@@ -184,6 +193,7 @@ namespace Chummer
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
                             Parallel.Invoke(
+                                () => XmlManager.Load("actions.xml"),
                                 () => XmlManager.Load("armor.xml"),
                                 () => XmlManager.Load("bioware.xml"),
                                 () => XmlManager.Load("books.xml"),
@@ -228,7 +238,6 @@ namespace Chummer
                         _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                         _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
 
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
                         // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
                         string[] strArgs = Environment.GetCommandLineArgs();
                         ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
@@ -291,7 +300,15 @@ namespace Chummer
                             }
                         }
 
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
+
+                        if (MasterIndex != null)
+                        {
+                            MasterIndex.WindowState = FormWindowState.Maximized;
+                            MasterIndex.Show();
+                        }
+
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
                         if (blnShowTest)
                         {
                             frmTest frmTestData = new frmTest();
@@ -299,7 +316,7 @@ namespace Chummer
                         }
 
                         OpenCharacterList(lstCharactersToLoad);
-                        if (!GlobalOptions.HideCharacterRoster)
+                        if (CharacterRoster != null)
                         {
                             CharacterRoster.WindowState = FormWindowState.Maximized;
                             CharacterRoster.Show();
@@ -470,6 +487,8 @@ namespace Chummer
 
         public frmCharacterRoster CharacterRoster { get; }
 
+        public frmMasterIndex MasterIndex { get; }
+
         private Uri UpdateLocation { get; } = new Uri(GlobalOptions.PreferNightlyBuilds
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
@@ -554,8 +573,7 @@ namespace Chummer
                                 return;
                             }
 
-                            string[] stringSeparators = {","};
-                            string line = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
+                            string line = responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
 
                             if (_workerVersionUpdateChecker.CancellationPending)
                             {
@@ -661,7 +679,7 @@ namespace Chummer
         {
             foreach(Form childForm in MdiChildren)
             {
-                if (childForm != CharacterRoster)
+                if (childForm != CharacterRoster && childForm != MasterIndex)
                     childForm.Close();
             }
         }

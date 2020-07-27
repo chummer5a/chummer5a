@@ -697,19 +697,19 @@ namespace Chummer.Backend.Equipment
                                     string.Empty, "Left") ||
                                 (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x =>
                                     !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" &&
-                                    BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
+                                    BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount))) ||
                                 (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x =>
                                     !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" &&
-                                    x.BlocksMounts.Split(',').Contains(HasModularMount))))
+                                    x.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(HasModularMount))))
                                 strForcedSide = "Right";
                             else if (!xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
                                          string.Empty, "Right") ||
                                      (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x =>
                                          !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Right" &&
-                                         BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
+                                         BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount))) ||
                                      (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x =>
                                          !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Right" &&
-                                         x.BlocksMounts.Split(',').Contains(HasModularMount))))
+                                         x.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(HasModularMount))))
                                 strForcedSide = "Left";
                         }
 
@@ -2903,7 +2903,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
 
@@ -3005,7 +3005,7 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = Capacity;
                 if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
 
@@ -3191,7 +3191,7 @@ namespace Chummer.Backend.Equipment
                         strESS = strESS.TrimEndOnce(strSuffix);
                     }
 
-                    string[] strValues = strESS.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strESS.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strESS = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                     strESS += strSuffix;
                 }
@@ -3331,7 +3331,7 @@ namespace Chummer.Backend.Equipment
 
             if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strExpression = strValues[Math.Max(0, Math.Min(Rating, strValues.Length) - 1)].Trim('[', ']');
             }
 
@@ -3439,8 +3439,7 @@ namespace Chummer.Backend.Equipment
                         strCostExpression = strCostExpression.TrimEndOnce(strSuffix);
                     }
 
-                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                        .Split(',');
+                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
                     strCostExpression += strSuffix;
                 }
@@ -4594,7 +4593,7 @@ namespace Chummer.Backend.Equipment
 
                 if (xmlCyberwareDataNode == null)
                 {
-                    string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':', StringSplitOptions.RemoveEmptyEntries);
                     if (astrOriginalNameSplit.Length > 1)
                     {
                         string strName = astrOriginalNameSplit[0].Trim();
@@ -4673,7 +4672,7 @@ namespace Chummer.Backend.Equipment
 
                     if (xmlCyberwareDataNode == null)
                     {
-                        astrOriginalNameSplit = strOriginalName.Split(',');
+                        astrOriginalNameSplit = strOriginalName.Split(',', StringSplitOptions.RemoveEmptyEntries);
                         if (astrOriginalNameSplit.Length > 1)
                         {
                             string strName = astrOriginalNameSplit[0].Trim();
@@ -5166,7 +5165,7 @@ namespace Chummer.Backend.Equipment
                     string strAllowedSubsystems = AllowedSubsystems;
                     if (!string.IsNullOrEmpty(strAllowedSubsystems))
                     {
-                        return strAllowedSubsystems.Split(',')
+                        return strAllowedSubsystems.SplitNoAlloc(',')
                             .All(strSubsystem => objCyberware.Category != strSubsystem);
                     }
 
@@ -5174,8 +5173,7 @@ namespace Chummer.Backend.Equipment
                         string.IsNullOrEmpty(objCyberware.BlocksMounts)) return true;
                     HashSet<string> setDisallowedMounts = new HashSet<string>();
                     HashSet<string> setHasMounts = new HashSet<string>();
-                    string[] strLoopDisallowedMounts = BlocksMounts.Split(',');
-                    foreach (string strLoop in strLoopDisallowedMounts)
+                    foreach (string strLoop in BlocksMounts.SplitNoAlloc(','))
                         setDisallowedMounts.Add(strLoop + Location);
                     string strLoopHasModularMount = HasModularMount;
                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
@@ -5183,8 +5181,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objLoopCyberware in Children.DeepWhere(
                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                     {
-                        strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
-                        foreach (string strLoop in strLoopDisallowedMounts)
+                        foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(','))
                             if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                                 setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                         strLoopHasModularMount = objLoopCyberware.HasModularMount;
@@ -5220,8 +5217,7 @@ namespace Chummer.Backend.Equipment
                         if (string.IsNullOrEmpty(objCyberware.Location) && string.IsNullOrEmpty(Location) &&
                             (Children.All(x => x.Location != "Left") || Children.All(x => x.Location != "Right")))
                             return true;
-                        string[] astrBlockedMounts = objCyberware.BlocksMounts.Split(',');
-                        return astrBlockedMounts.All(strLoop => !setHasMounts.Contains(strLoop));
+                        return objCyberware.BlocksMounts.SplitNoAlloc(',').All(strLoop => !setHasMounts.Contains(strLoop));
                     }
                 }
             }

@@ -94,14 +94,14 @@ namespace Chummer
 
             int startingLength = story.Length;
 
-            string[] words;
+            IEnumerable<string> words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = Macro(innerText, xmlBaseMacrosNode).Split(' ', '\n', '\r', '\t');
+                words = Macro(innerText, xmlBaseMacrosNode).SplitNoAlloc(' ', '\n', '\r', '\t');
             }
             else
             {
-                words = innerText.Split(' ', '\n', '\r', '\t');
+                words = innerText.SplitNoAlloc(' ', '\n', '\r', '\t');
             }
 
             bool mfix = false;

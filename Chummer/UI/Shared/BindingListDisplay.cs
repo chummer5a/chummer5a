@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -674,20 +675,16 @@ namespace Chummer.UI.Shared
                     {
                         return xindex.CompareTo(yindex);
                     }
-                    else
-                    {
-                        Utils.BreakIfDebug();
-                        return 1;
-                    }
-                }
-                else
-                {
-                    Utils.BreakIfDebug();
-                    if (y != null && (x == null || _index.ContainsKey(y)))
-                        return -1;
 
-                    return 0;
+                    Utils.BreakIfDebug();
+                    return 1;
                 }
+
+                Utils.BreakIfDebug();
+                if (y != null && (x == null || _index.ContainsKey(y)))
+                    return -1;
+
+                return 0;
             }
 
             public IndexComparer(IReadOnlyList<TType> list)

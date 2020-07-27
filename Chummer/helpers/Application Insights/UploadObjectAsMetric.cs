@@ -47,7 +47,7 @@ namespace Chummer
                 name = obj.ToString();
             }
 
-            //var propnames = (from a in boolProperties select a.Name).ToList();
+            //var propnames = boolProperties.Select(a => a.Name).ToList();
             MetricIdentifier micount = new MetricIdentifier(name, "MetricsReportCount");
             var mcount =  tc.GetMetric(micount);
             mcount.TrackValue(1);

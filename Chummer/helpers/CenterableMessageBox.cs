@@ -31,7 +31,7 @@ namespace Chummer
     public class CenterableMessageBox
     {
         private static IWin32Window _owner;
-        private static HookProc _hookProc;
+        private static readonly HookProc _hookProc;
         private static IntPtr _hHook;
 
         public static DialogResult Show(string text)
