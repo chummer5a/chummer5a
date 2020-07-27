@@ -30,20 +30,20 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpTopLeft = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lstItems = new System.Windows.Forms.ListBox();
-            this.cboFile = new Chummer.ElasticComboBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
-            this.lblFile = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new Chummer.LabelWithToolTip();
             this.rtbNotes = new System.Windows.Forms.RichTextBox();
             this.lblSourceClickReminder = new System.Windows.Forms.Label();
+            this.tlpTopLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblFile = new System.Windows.Forms.Label();
+            this.cboFile = new Chummer.ElasticComboBox();
+            this.lstItems = new System.Windows.Forms.ListBox();
             this.tlpMain.SuspendLayout();
-            this.tlpTopLeft.SuspendLayout();
             this.tlpRight.SuspendLayout();
+            this.tlpTopLeft.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -51,8 +51,8 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 2;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.tlpRight, 1, 0);
             this.tlpMain.Controls.Add(this.tlpTopLeft, 0, 0);
             this.tlpMain.Controls.Add(this.lstItems, 0, 1);
@@ -64,24 +64,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 0;
-            // 
-            // tlpTopLeft
-            // 
-            this.tlpTopLeft.AutoSize = true;
-            this.tlpTopLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpTopLeft.ColumnCount = 2;
-            this.tlpTopLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpTopLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTopLeft.Controls.Add(this.lblFile, 0, 0);
-            this.tlpTopLeft.Controls.Add(this.cboFile, 1, 0);
-            this.tlpTopLeft.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTopLeft.Location = new System.Drawing.Point(0, 0);
-            this.tlpTopLeft.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpTopLeft.Name = "tlpTopLeft";
-            this.tlpTopLeft.RowCount = 1;
-            this.tlpTopLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTopLeft.Size = new System.Drawing.Size(301, 27);
-            this.tlpTopLeft.TabIndex = 0;
             // 
             // tlpRight
             // 
@@ -98,7 +80,7 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.rtbNotes, 0, 2);
             this.tlpRight.Controls.Add(this.lblSourceClickReminder, 2, 1);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(301, 0);
+            this.tlpRight.Location = new System.Drawing.Point(383, 0);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
             this.tlpRight.RowCount = 3;
@@ -106,30 +88,8 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Size = new System.Drawing.Size(465, 543);
+            this.tlpRight.Size = new System.Drawing.Size(383, 543);
             this.tlpRight.TabIndex = 1;
-            // 
-            // lstItems
-            // 
-            this.lstItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstItems.FormattingEnabled = true;
-            this.lstItems.Location = new System.Drawing.Point(3, 30);
-            this.lstItems.Name = "lstItems";
-            this.lstItems.Size = new System.Drawing.Size(295, 510);
-            this.lstItems.TabIndex = 2;
-            this.lstItems.SelectedIndexChanged += new System.EventHandler(this.lstItems_SelectedIndexChanged);
-            // 
-            // cboFile
-            // 
-            this.cboFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFile.FormattingEnabled = true;
-            this.cboFile.Location = new System.Drawing.Point(61, 3);
-            this.cboFile.Name = "cboFile";
-            this.cboFile.Size = new System.Drawing.Size(237, 21);
-            this.cboFile.TabIndex = 0;
-            this.cboFile.TooltipText = "";
-            this.cboFile.SelectedIndexChanged += new System.EventHandler(this.RefreshList);
             // 
             // txtSearch
             // 
@@ -137,7 +97,7 @@ namespace Chummer
             this.tlpRight.SetColumnSpan(this.txtSearch, 2);
             this.txtSearch.Location = new System.Drawing.Point(53, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(409, 20);
+            this.txtSearch.Size = new System.Drawing.Size(327, 20);
             this.txtSearch.TabIndex = 0;
             this.txtSearch.TextChanged += new System.EventHandler(this.RefreshList);
             // 
@@ -152,18 +112,6 @@ namespace Chummer
             this.lblSearch.TabIndex = 1;
             this.lblSearch.Tag = "String_Search";
             this.lblSearch.Text = "Search:";
-            // 
-            // lblFile
-            // 
-            this.lblFile.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblFile.AutoSize = true;
-            this.lblFile.Location = new System.Drawing.Point(3, 7);
-            this.lblFile.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblFile.Name = "lblFile";
-            this.lblFile.Size = new System.Drawing.Size(52, 13);
-            this.lblFile.TabIndex = 2;
-            this.lblFile.Tag = "Label_DataFile";
-            this.lblFile.Text = "Data File:";
             // 
             // lblSourceLabel
             // 
@@ -203,11 +151,10 @@ namespace Chummer
             this.rtbNotes.Name = "rtbNotes";
             this.rtbNotes.ReadOnly = true;
             this.rtbNotes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbNotes.Size = new System.Drawing.Size(459, 486);
+            this.rtbNotes.Size = new System.Drawing.Size(377, 486);
             this.rtbNotes.TabIndex = 4;
             this.rtbNotes.Text = "";
             this.rtbNotes.Visible = false;
-            this.rtbNotes.TextChanged += new System.EventHandler(this.rtbNotes_TextChanged);
             // 
             // lblSourceClickReminder
             // 
@@ -222,6 +169,58 @@ namespace Chummer
             this.lblSourceClickReminder.Text = "<- Click to Open Linked PDF";
             this.lblSourceClickReminder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSourceClickReminder.Visible = false;
+            // 
+            // tlpTopLeft
+            // 
+            this.tlpTopLeft.AutoSize = true;
+            this.tlpTopLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTopLeft.ColumnCount = 2;
+            this.tlpTopLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTopLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTopLeft.Controls.Add(this.lblFile, 0, 0);
+            this.tlpTopLeft.Controls.Add(this.cboFile, 1, 0);
+            this.tlpTopLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTopLeft.Location = new System.Drawing.Point(0, 0);
+            this.tlpTopLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTopLeft.Name = "tlpTopLeft";
+            this.tlpTopLeft.RowCount = 1;
+            this.tlpTopLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTopLeft.Size = new System.Drawing.Size(383, 27);
+            this.tlpTopLeft.TabIndex = 0;
+            // 
+            // lblFile
+            // 
+            this.lblFile.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblFile.AutoSize = true;
+            this.lblFile.Location = new System.Drawing.Point(3, 7);
+            this.lblFile.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblFile.Name = "lblFile";
+            this.lblFile.Size = new System.Drawing.Size(52, 13);
+            this.lblFile.TabIndex = 2;
+            this.lblFile.Tag = "Label_DataFile";
+            this.lblFile.Text = "Data File:";
+            // 
+            // cboFile
+            // 
+            this.cboFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFile.FormattingEnabled = true;
+            this.cboFile.Location = new System.Drawing.Point(61, 3);
+            this.cboFile.Name = "cboFile";
+            this.cboFile.Size = new System.Drawing.Size(319, 21);
+            this.cboFile.TabIndex = 0;
+            this.cboFile.TooltipText = "";
+            this.cboFile.SelectedIndexChanged += new System.EventHandler(this.RefreshList);
+            // 
+            // lstItems
+            // 
+            this.lstItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstItems.FormattingEnabled = true;
+            this.lstItems.Location = new System.Drawing.Point(3, 30);
+            this.lstItems.Name = "lstItems";
+            this.lstItems.Size = new System.Drawing.Size(377, 510);
+            this.lstItems.TabIndex = 2;
+            this.lstItems.SelectedIndexChanged += new System.EventHandler(this.lstItems_SelectedIndexChanged);
             // 
             // frmMasterIndex
             // 
@@ -238,10 +237,10 @@ namespace Chummer
             this.Load += new System.EventHandler(this.frmMasterIndex_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.tlpTopLeft.ResumeLayout(false);
-            this.tlpTopLeft.PerformLayout();
             this.tlpRight.ResumeLayout(false);
             this.tlpRight.PerformLayout();
+            this.tlpTopLeft.ResumeLayout(false);
+            this.tlpTopLeft.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

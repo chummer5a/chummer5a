@@ -5673,6 +5673,10 @@
       <text>Enable Plugins (experimental)</text>
     </string>
     <string>
+      <key>Checkbox_Options_HideMasterIndex</key>
+      <text>Hide the Master Index</text>
+    </string>
+    <string>
       <key>Checkbox_Options_HideCharacterRoster</key>
       <text>Hide the Character Roster</text>
     </string>

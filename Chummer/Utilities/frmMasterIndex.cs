@@ -18,8 +18,10 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -29,6 +31,7 @@ namespace Chummer
     {
         private bool _blnSkipRefresh = true;
         private readonly List<ListItem> _lstFileNamesWithItems;
+        private readonly ConcurrentDictionary<MasterIndexEntry, string> _dicCachedNotes = new ConcurrentDictionary<MasterIndexEntry, string>();
         private readonly List<ListItem> _lstItems = new List<ListItem>(short.MaxValue);
         private readonly List<string> _lstFileNames = new List<string>
         {
@@ -74,40 +77,61 @@ namespace Chummer
             {
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
                 {
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    foreach (string strFileName in _lstFileNames)
+                    ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
+                    ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
+                    Parallel.ForEach(_lstFileNames, strFileName =>
                     {
-                        string strDisplayNameSuffix = string.Concat(strSpace, "[", strFileName, "]");
                         XPathNavigator xmlBaseNode = XmlManager.Load(strFileName).GetFastNavigator().SelectSingleNode("/chummer");
                         if (xmlBaseNode != null)
                         {
                             bool blnLoopFileNameHasItems = false;
-                            foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select("//[source and page]"))
+                            foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[source and page]"))
                             {
                                 blnLoopFileNameHasItems = true;
+                                string strName = xmlItemNode.SelectSingleNode("name")?.Value;
                                 string strDisplayName = xmlItemNode.SelectSingleNode("translate")?.Value
-                                                        ?? xmlItemNode.SelectSingleNode("name")?.Value
+                                                        ?? strName
                                                         ?? xmlItemNode.SelectSingleNode("id")?.Value
                                                         ?? LanguageManager.GetString("String_Unknown");
-                                string strSource = xmlItemNode.SelectSingleNode("altsource")?.Value
-                                                   ?? xmlItemNode.SelectSingleNode("source")?.Value;
-                                string strPage = xmlItemNode.SelectSingleNode("altpage")?.Value
-                                                 ?? xmlItemNode.SelectSingleNode("page")?.Value;
-                                string strNameOnPage = xmlItemNode.SelectSingleNode("altnameonpage")?.Value
-                                                       ?? xmlItemNode.SelectSingleNode("nameonpage")?.Value
-                                                       ?? strDisplayName;
+                                string strSource = xmlItemNode.SelectSingleNode("source")?.Value;
+                                string strPage = xmlItemNode.SelectSingleNode("page")?.Value;
+                                string strDisplayPage = xmlItemNode.SelectSingleNode("altpage")?.Value
+                                                        ?? strPage;
+                                string strEnglishNameOnPage = xmlItemNode.SelectSingleNode("nameonpage")?.Value
+                                                              ?? strName;
+                                string strTranslatedNameOnPage = xmlItemNode.SelectSingleNode("altnameonpage")?.Value
+                                                                 ?? strDisplayName;
+                                string strNotes = xmlItemNode.SelectSingleNode("altnotes")?.Value
+                                                  ?? xmlItemNode.SelectSingleNode("notes")?.Value;
                                 MasterIndexEntry objEntry = new MasterIndexEntry(
                                     strDisplayName,
                                     strFileName,
-                                    new SourceString(strSource, strPage, GlobalOptions.Language),
-                                    CommonFunctions.GetTextFromPDF(strSource + ' ' + strPage, strNameOnPage));
-                                _lstItems.Add(new ListItem(objEntry, strDisplayName + strDisplayNameSuffix));
+                                    new SourceString(strSource, strPage, GlobalOptions.DefaultLanguage),
+                                    new SourceString(strSource, strDisplayPage, GlobalOptions.Language),
+                                    strEnglishNameOnPage,
+                                    strTranslatedNameOnPage);
+                                lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
+                                if (!string.IsNullOrEmpty(strNotes))
+                                    _dicCachedNotes.TryAdd(objEntry, strNotes);
                             }
 
                             if (blnLoopFileNameHasItems)
-                                _lstFileNamesWithItems.Add(new ListItem(strFileName, strFileName));
+                                lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
                         }
+                    });
+
+                    foreach (ListItem objItem in lstItemsForLoading)
+                    {
+                        MasterIndexEntry objEntry = (MasterIndexEntry)objItem.Value;
+                        ListItem objExistingItem = _lstItems.FirstOrDefault(x =>
+                            ((MasterIndexEntry) x.Value).DisplayName.Equals(objEntry.DisplayName, StringComparison.OrdinalIgnoreCase)
+                            && ((MasterIndexEntry) x.Value).DisplaySource == objEntry.DisplaySource);
+                        if (objExistingItem.Value == null)
+                            _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
+                        else
+                            ((MasterIndexEntry)objExistingItem.Value).FileNames.UnionWith(objEntry.FileNames);
                     }
+                    _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                 }
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", op_load_frm_masterindex))
@@ -131,6 +155,7 @@ namespace Chummer
                     lstItems.ValueMember = nameof(ListItem.Value);
                     lstItems.DisplayMember = nameof(ListItem.Name);
                     lstItems.DataSource = _lstItems;
+                    lstItems.SelectedIndex = -1;
                     lstItems.EndUpdate();
 
                     _blnSkipRefresh = false;
@@ -162,7 +187,7 @@ namespace Chummer
                 foreach (ListItem objItem in _lstItems)
                 {
                     MasterIndexEntry objItemEntry = (MasterIndexEntry)objItem.Value;
-                    if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileName.Equals(strFileFilter, StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
                         continue;
                     if (!string.IsNullOrEmpty(strSearchFilter) && objItemEntry.DisplayName.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase) == -1)
                         continue;
@@ -170,18 +195,22 @@ namespace Chummer
                 }
             }
 
-            string strOldSelectedValue = ((MasterIndexEntry)lstItems.SelectedValue).Id;
+            object objOldSelectedValue = lstItems.SelectedValue;
             lstItems.BeginUpdate();
             _blnSkipRefresh = true;
             lstItems.DataSource = lstFilteredItems;
             _blnSkipRefresh = false;
-            ListItem objSelectedItem = !string.IsNullOrEmpty(strOldSelectedValue)
-                ? _lstItems.FirstOrDefault(x => ((MasterIndexEntry)x.Value).Id.Equals(strOldSelectedValue))
-                : ListItem.Blank;
-            if (!objSelectedItem.Equals(ListItem.Blank))
-                lstItems.SelectedItem = objSelectedItem;
+            if (objOldSelectedValue != null)
+            {
+                MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry)objOldSelectedValue;
+                ListItem objSelectedItem = _lstItems.FirstOrDefault(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
+                if (objSelectedItem.Value != null)
+                    lstItems.SelectedItem = objSelectedItem;
+                else
+                    lstItems.SelectedIndex = -1;
+            }
             else
-                lstItems_SelectedIndexChanged(sender, e);
+                lstItems.SelectedIndex = -1;
             lstItems.EndUpdate();
             Cursor = objOldCursor;
         }
@@ -198,44 +227,58 @@ namespace Chummer
                 lblSourceLabel.Visible = true;
                 lblSource.Visible = true;
                 lblSourceClickReminder.Visible = true;
-                lblSource.Text = objEntry.Source.ToString();
-                lblSource.ToolTipText = objEntry.Source.LanguageBookTooltip;
-                rtbNotes.Text = objEntry.Notes;
+                lblSource.Text = objEntry.DisplaySource.ToString();
+                lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
+                if (!_dicCachedNotes.TryGetValue(objEntry, out string strNotes))
+                {
+                    strNotes = CommonFunctions.GetTextFromPDF(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
+
+                    if (string.IsNullOrEmpty(strNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    {
+                        // don't check again it is not translated
+                        if (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage || objEntry.Source.Page != objEntry.DisplaySource.Page)
+                        {
+                            strNotes = CommonFunctions.GetTextFromPDF(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                        }
+                    }
+
+                    _dicCachedNotes.TryAdd(objEntry, strNotes);
+                }
+                rtbNotes.Text = strNotes;
+                rtbNotes.Visible = true;
             }
             else
             {
                 lblSourceLabel.Visible = false;
                 lblSource.Visible = false;
                 lblSourceClickReminder.Visible = false;
-                rtbNotes.Text = string.Empty;
+                rtbNotes.Visible = false;
             }
             ResumeLayout();
             Cursor = objOldCursor;
         }
 
-        private void rtbNotes_TextChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-            rtbNotes.Visible = rtbNotes.TextLength > 0;
-        }
-
         private readonly struct MasterIndexEntry
         {
-            public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, string strNotes)
+            public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, SourceString objDisplaySource, string strEnglishNameOnPage, string strTranslatedNameOnPage)
             {
-                Id = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo);
                 DisplayName = strDisplayName;
-                FileName = strFileName;
+                FileNames = new HashSet<string>
+                {
+                    strFileName
+                };
                 Source = objSource;
-                Notes = strNotes;
+                DisplaySource = objDisplaySource;
+                EnglishNameOnPage = strEnglishNameOnPage;
+                TranslatedNameOnPage = strTranslatedNameOnPage;
             }
 
-            internal string Id { get; }
             internal string DisplayName { get; }
-            internal string FileName { get; }
+            internal HashSet<string> FileNames { get; }
             internal SourceString Source { get; }
-            internal string Notes { get; }
+            internal SourceString DisplaySource { get; }
+            internal string EnglishNameOnPage { get; }
+            internal string TranslatedNameOnPage { get; }
         }
     }
 }
