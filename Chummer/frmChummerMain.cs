@@ -63,11 +63,13 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                string title = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion;
+                StringBuilder sbdTitle = new StringBuilder(Application.ProductName)
+                    .Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_Version"))
+                    .Append(strSpace).Append(_strCurrentVersion);
 #if DEBUG
-                title += " DEBUG BUILD";
+                sbdTitle.Append(" DEBUG BUILD");
 #endif
-                return title;
+                return sbdTitle.ToString();
             }
         }
 
@@ -1272,7 +1274,7 @@ namespace Chummer
         /// </summary>
         public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
         {
-            OpenCharacterList(new[] { objCharacter }, blnIncludeInMRU);
+            OpenCharacterList(objCharacter.Yield(), blnIncludeInMRU);
         }
 
         /// <summary>

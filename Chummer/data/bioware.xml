@@ -285,9 +285,9 @@
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 31000</cost>
-      <bonus>
+      <bonus unique="muscle">
         <specificattribute>
-          <name precedence="0">STR</name>
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>

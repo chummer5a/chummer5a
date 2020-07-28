@@ -5527,7 +5527,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>LimitCondition_AttribSkillINT</condition>
+          <condition>LimitCondition_AttribSkillLOG</condition>
         </limitmodifier>
         <skilllinkedattribute>
           <name>LOG</name>

@@ -656,6 +656,8 @@ namespace Chummer
                 x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("paragons.xml", "/chummer/mentors/mentor/choices/choice",
                 x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("actions.xml", "/chummer/actions/action",
+                x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
         };
 
         /// <summary>

@@ -26,12 +26,12 @@ namespace Chummer
     {
         private readonly int _intPage;
         private readonly string _strCachedSpace;
+        private readonly int _intHashCode;
 
-        public SourceString(string strSourceString, string strLanguage = "", Character objCharacter = null)
+        public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
-            Language = strLanguage;
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
+            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             string strCode = strSourceString ?? string.Empty;
             int intWhitespaceIndex = strCode.IndexOf(' ');
             if (intWhitespaceIndex != -1)
@@ -42,47 +42,52 @@ namespace Chummer
             }
 
             Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
+            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) +
-                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
         }
 
-        // Cannot have strLanguage default to empty string here, otherwise we would have ambiguous constructors
-        public SourceString(string strSource, string strPage, string strLanguage, Character objCharacter = null)
+        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
-            Language = strLanguage;
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
+            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
+            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) +
-                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
         }
 
-        public SourceString(string strSource, int intPage, string strLanguage = "", Character objCharacter = null)
+        public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
-            Language = strLanguage;
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
+            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             _intPage = intPage;
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
+            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) +
-                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage;
+                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
         }
 
         public override string ToString()
         {
-            return Code + _strCachedSpace + Page;
+            return Code + _strCachedSpace + Page.ToString(CultureInfo);
         }
 
         /// <summary>
         /// Language code originally used to construct the source info (alters book code, possibly alters page numbers)
         /// </summary>
         public string Language { get; }
+
+        /// <summary>
+        /// Culture info originally used to construct the source info (alters book code, possibly alters page numbers)
+        /// </summary>
+        public CultureInfo CultureInfo { get; }
 
         /// <summary>
         /// Book code of the source info, possibly modified from English by the language of the source info
@@ -143,7 +148,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {Language, Code, Page}.GetHashCode();
+            return _intHashCode;
         }
 
         public bool Equals(SourceString other)

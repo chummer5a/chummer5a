@@ -271,7 +271,7 @@ namespace Chummer.Backend.Skills
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
                                             (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
                                              objImprovement.Enabled)
-                    .Select(objImprovement => objImprovement.Value).Concat(new[] {-1}).Max();
+                    .Select(objImprovement => objImprovement.Value).Concat((-1).Yield()).Max();
                 if (intMaxHardwire >= 0)
                 {
                     return _intCachedCyberwareRating = intMaxHardwire;
@@ -282,7 +282,7 @@ namespace Chummer.Backend.Skills
                 int intMax = CharacterObject.Improvements
                     .Where(objSkillsoftImprovement => objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
                                                       objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value).Concat(new[] {0}).Max();
+                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value).Concat(0.Yield()).Max();
 
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
 

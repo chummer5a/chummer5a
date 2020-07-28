@@ -26,6 +26,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -156,15 +157,12 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
-                            objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine
-                                                                                + LanguageManager.GetString(
-                                                                                    "String_Error",
-                                                                                    GlobalOptions.Language) +
-                                                                                LanguageManager.GetString(
-                                                                                    "String_Colon",
-                                                                                    GlobalOptions.Language)
-                                                                                + Environment.NewLine +
-                                                                                objCache.ErrorText;
+                            objCharacterNode.ToolTipText += Environment.NewLine
+                                                            + Environment.NewLine
+                                                            + LanguageManager.GetString("String_Error")
+                                                            + LanguageManager.GetString("String_Colon")
+                                                            + Environment.NewLine
+                                                            + objCache.ErrorText;
                         }
                         else
                             objCharacterNode.ForeColor = SystemColors.WindowText;
@@ -245,9 +243,9 @@ namespace Chummer
                 {
                     string strFile = objCharacterForm.CharacterObject.FileName;
                     // Make sure we're not loading a character that was already loaded by the MRU list.
-                    if(lstFavorites.Contains(strFile) ||
-                        lstRecents.Contains(strFile) ||
-                        dicWatch.ContainsValue(strFile))
+                    if(lstFavorites.Contains(strFile)
+                       || lstRecents.Contains(strFile)
+                       || dicWatch.ContainsValue(strFile))
                         continue;
 
                     lstRecents.Add(strFile);
@@ -569,15 +567,15 @@ namespace Chummer
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     }
 
-                    string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;
+                    StringBuilder sbdMetatype = new StringBuilder(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype);
 
                     if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                        strMetatype += LanguageManager.GetString("String_Space") + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                        sbdMetatype.Append(LanguageManager.GetString("String_Space")).Append('(').Append(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant).Append(')');
                     }
-                    lblMetatype.Text = strMetatype;
+                    lblMetatype.Text = sbdMetatype.ToString();
                 }
                 else
                     lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError");

@@ -212,8 +212,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
-                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, CharacterObject);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, CharacterObject);
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -1101,10 +1100,13 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdModifier = new StringBuilder("Rating" + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpace + '×' + strSpace + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdModifier = new StringBuilder("Rating")
+                    .Append(strSpace).Append('(').Append(Rating.ToString(GlobalOptions.CultureInfo))
+                    .Append(strSpace).Append('×').Append(strSpace).Append(PointsPerLevel.ToString(GlobalOptions.CultureInfo)).Append(')');
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
                 {
-                    sbdModifier.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(CharacterObject.GetObjectName(objImprovement))
+                        .Append(strSpace).Append('(').Append(objImprovement.Rating.ToString(GlobalOptions.CultureInfo)).Append(')');
                 }
 
                 return sbdModifier.ToString();

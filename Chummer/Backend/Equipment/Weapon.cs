@@ -538,8 +538,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
-                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -664,6 +663,8 @@ namespace Chummer.Backend.Equipment
                 _objCharacter.SourceProcess(_strSource);
         }
 
+        private static readonly string[] s_astrOldClipValues = {string.Empty, "2", "3", "4"};
+
         /// <summary>
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
@@ -706,7 +707,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else //Load old clips
                 {
-                    foreach (string s in new[] { string.Empty, "2", "3", "4" })
+                    foreach (string s in s_astrOldClipValues)
                     {
                         int ammo = 0;
                         if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
@@ -1234,21 +1235,20 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = DisplayNameShort(strLanguage);
+            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0)
             {
-                strReturn += strSpace + '(' +
-                             LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
-                             Rating.ToString(objCulture) + ')';
+                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString(RatingLabel, strLanguage))
+                    .Append(strSpace).Append(Rating.ToString(objCulture)).Append(')');
             }
 
             if (!string.IsNullOrEmpty(_strWeaponName))
             {
-                strReturn += strSpace + "(\"" + _strWeaponName + "\")";
+                sbdReturn.Append(strSpace).Append("(\"").Append(_strWeaponName).Append("\")");
             }
 
-            return strReturn;
+            return sbdReturn.ToString();
         }
 
         /// <summary>
@@ -3179,10 +3179,10 @@ namespace Chummer.Backend.Equipment
                 strRCFull = strRC;
             }
 
-            string strRCTip = "1" + strSpace;
+            StringBuilder sbdRCTip = new StringBuilder(1.ToString(GlobalOptions.CultureInfo)).Append(strSpace);
             if (blnRefreshRCToolTip && strRCBase != "0")
             {
-                strRCTip += '+' + strSpace + LanguageManager.GetString("Label_Base", strLanguage) + '(' + strRCBase + ')';
+                sbdRCTip.Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_Base", strLanguage)).Append('(').Append(strRCBase).Append(')');
             }
 
             int.TryParse(strRCBase, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intRCBase);
@@ -3205,7 +3205,8 @@ namespace Chummer.Backend.Equipment
                             intRCFull += intLoopRCBonus;
 
                             if (blnRefreshRCToolTip)
-                                strRCTip += strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')';
+                                sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(objGear.DisplayName(objCulture, strLanguage))
+                                    .Append(strSpace).Append('(').Append(strRCBonus).Append(')');
                         }
                     }
                     else if (objGear.WeaponBonus != null)
@@ -3217,7 +3218,8 @@ namespace Chummer.Backend.Equipment
                             intRCFull += intLoopRCBonus;
 
                             if (blnRefreshRCToolTip)
-                                strRCTip += strSpace + '+' + strSpace + objGear.DisplayName(objCulture, strLanguage) + strSpace + '(' + strRCBonus + ')';
+                                sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(objGear.DisplayName(objCulture, strLanguage))
+                                    .Append(strSpace).Append('(').Append(strRCBonus).Append(')');
                         }
                     }
                 }
@@ -3260,7 +3262,8 @@ namespace Chummer.Backend.Equipment
                         intRCBase += intLoopRCBonus;
                     }
                     if (blnRefreshRCToolTip)
-                        strRCTip += strSpace + '+' + strSpace + objAccessory.DisplayName(strLanguage) + strSpace + '(' + objAccessory.RC + ')';
+                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(objAccessory.DisplayName(strLanguage))
+                            .Append(strSpace).Append('(').Append(objAccessory.RC).Append(')');
                 }
             }
 
@@ -3272,7 +3275,8 @@ namespace Chummer.Backend.Equipment
                     intRCBase += objRCGroup.Item2;
                     intRCFull += objRCGroup.Item2;
                     if (blnRefreshRCToolTip)
-                        strRCTip += strSpace + '+' + strSpace + objRCGroup.Item1 + strSpace + '(' + objRCGroup.Item2.ToString(objCulture) + ')';
+                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(objRCGroup.Item1)
+                            .Append(strSpace).Append('(').Append(objRCGroup.Item2.ToString(objCulture)).Append(')');
                 }
             }
 
@@ -3283,8 +3287,7 @@ namespace Chummer.Backend.Equipment
                     // Add in the Recoil Group bonuses.
                     intRCFull += objRCGroup.Item2;
                     if (blnRefreshRCToolTip)
-                        strRCTip += strSpace + '+' + strSpace
-                                    + string.Format(objCulture, LanguageManager.GetString("Tip_RecoilAccessories", strLanguage), objRCGroup.Item1, objRCGroup.Item2.ToString(objCulture));
+                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace).AppendFormat(objCulture, LanguageManager.GetString("Tip_RecoilAccessories", strLanguage), objRCGroup.Item1, objRCGroup.Item2);
                 }
             }
 
@@ -3357,9 +3360,10 @@ namespace Chummer.Backend.Equipment
             intRCBase += intStrRC + 1;
             intRCFull += intStrRC + 1;
             if (blnRefreshRCToolTip)
-                strRCTip += strSpace + '+' + strSpace + _objCharacter.STR.GetDisplayAbbrev(strLanguage) + strSpace
-                    + '[' + intUseSTR.ToString(objCulture) + strSpace + '/' + strSpace + 3.ToString(objCulture)
-                    + strSpace + '=' + strSpace + intStrRC.ToString(objCulture) + ']';
+                sbdRCTip.Append(strSpace).Append('+').Append(strSpace).Append(_objCharacter.STR.GetDisplayAbbrev(strLanguage))
+                    .Append(strSpace).Append('[').Append(intUseSTR.ToString(objCulture))
+                    .Append(strSpace).Append('/').Append(strSpace).Append(3.ToString(objCulture))
+                    .Append(strSpace).Append('=').Append(strSpace).Append(intStrRC.ToString(objCulture)).Append(']');
             // If the full RC is not higher than the base, only the base value is shown.
             strRC = intRCBase.ToString(objCulture);
             if (intRCFull > intRCBase)
@@ -3368,7 +3372,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnRefreshRCToolTip)
-                _strRCTip = strRCTip;
+                _strRCTip = sbdRCTip.ToString();
 
             return strRC;
         }
@@ -3418,10 +3422,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strAccuracy = Accuracy;
-                StringBuilder objAccuracy = new StringBuilder(strAccuracy);
+                StringBuilder sbdAccuracy = new StringBuilder(strAccuracy);
                 int intAccuracy = 0;
-                objAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                ProcessAttributesInXPath(objAccuracy, strAccuracy);
+                sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
                 Func<string> funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalOptions.InvariantCultureInfo);
                 if (ParentVehicle != null)
                 {
@@ -3434,12 +3438,11 @@ namespace Chummer.Backend.Equipment
                         return strHandling;
                     };
                 }
-                objAccuracy.CheapReplace(strAccuracy, "Physical", funcPhysicalLimitString);
-                objAccuracy.CheapReplace(strAccuracy, "Missile", funcPhysicalLimitString);
+                sbdAccuracy.CheapReplace(strAccuracy, "Physical", funcPhysicalLimitString).CheapReplace(strAccuracy, "Missile", funcPhysicalLimitString);
 
                 // Replace the division sign with "div" since we're using XPath.
-                objAccuracy.Replace("/", " div ");
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAccuracy.ToString(), out bool blnIsSuccess);
+                sbdAccuracy.Replace("/", " div ");
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdAccuracy.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAccuracy = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
 

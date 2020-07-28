@@ -226,8 +226,7 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
 
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail
-                                                                     ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, _objCharacter);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         ///     Save the object's XML to the XmlWriter.
@@ -652,16 +651,11 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (Type == QualityType.Entertainment || Type == QualityType.Contracts)
-                {
-                    var strLifestyleEquivalent = Lifestyle.GetEquivalentLifestyle(ParentLifestyle.BaseLifestyle);
-                    if (!string.IsNullOrEmpty(ParentLifestyle?.BaseLifestyle) &&
-                        _lstAllowedFreeLifestyles.Any(strLifestyle =>
-                            strLifestyle == strLifestyleEquivalent || strLifestyle == ParentLifestyle.BaseLifestyle))
-                        return true;
-                }
-
-                return false;
+                if (Type != QualityType.Entertainment && Type != QualityType.Contracts) return false;
+                return _lstAllowedFreeLifestyles != null && !string.IsNullOrEmpty(ParentLifestyle?.BaseLifestyle) &&
+                       _lstAllowedFreeLifestyles.Any(strLifestyle =>
+                           strLifestyle == Lifestyle.GetEquivalentLifestyle(ParentLifestyle.BaseLifestyle) ||
+                           strLifestyle == ParentLifestyle.BaseLifestyle);
             }
         }
 
