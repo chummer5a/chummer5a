@@ -149,6 +149,8 @@ namespace Chummer
             LoadMugshots(objNode);
         }
 
+        private static readonly string[] s_astrPrintAttributeLabels = {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"};
+
         /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
@@ -184,7 +186,7 @@ namespace Chummer
 
                 Dictionary<string, int> dicAttributes = new Dictionary<string, int>();
                 objWriter.WriteStartElement("spiritattributes");
-                foreach (string strAttribute in new[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
+                foreach (string strAttribute in s_astrPrintAttributeLabels)
                 {
                     string strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))

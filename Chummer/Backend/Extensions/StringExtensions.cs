@@ -344,6 +344,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="strSeparator">Separator to use.</param>
+        /// <param name="eSplitOptions">String split options.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, string strSeparator, StringSplitOptions eSplitOptions)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.SplitNoAlloc(strSeparator, eSplitOptions).ToArray();
+        }
+
+        /// <summary>
         /// Syntactic sugar for a version of Contains(char) for strings that is faster than messing with Linq
         /// </summary>
         /// <param name="strHaystack">Input string to search.</param>

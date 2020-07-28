@@ -136,10 +136,13 @@ namespace Chummer
 
         #endregion
 
+        private readonly int _intHashCode;
+
         public CustomDataDirectoryInfo(string strName, string strPath)
         {
             Name = strName;
             Path = strPath;
+            _intHashCode = new {Name, Path}.GetHashCode();
         }
 
         public int CompareTo(object obj)
@@ -178,7 +181,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {Name, Path}.GetHashCode();
+            return _intHashCode;
         }
 
         public bool Equals(CustomDataDirectoryInfo other)

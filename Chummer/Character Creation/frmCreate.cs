@@ -3348,7 +3348,7 @@ namespace Chummer
                 int intStage;
                 for (intStage = 1; intStage < 5; ++intStage)
                 {
-                    XmlNode xmlStageNode = xmlStagesParentNode?.SelectSingleNode("stage[@order = \"" + intStage + "\"]");
+                    XmlNode xmlStageNode = xmlStagesParentNode?.SelectSingleNode("stage[@order = \"" + intStage.ToString(GlobalOptions.InvariantCultureInfo) + "\"]");
                     if (xmlStageNode == null)
                     {
                         intStage -= 1;
@@ -8625,13 +8625,20 @@ namespace Chummer
 
             if (CharacterObject.Contacts.Any(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
             {
-                sbdPositiveQualityTooltip.AppendFormat(GlobalOptions.CultureInfo,$"{LanguageManager.GetString("Label_GroupContacts")}");
-                sbdPositiveQualityTooltip.AppendLine();
+                sbdPositiveQualityTooltip.AppendLine(LanguageManager.GetString("Label_GroupContacts"));
                 foreach (Contact objGroupContact in CharacterObject.Contacts.Where(x =>
                     x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
                 {
-                    sbdPositiveQualityTooltip.AppendFormat(
-                        GlobalOptions.CultureInfo,$"{String.Join("/", new[]{objGroupContact.GroupName, objGroupContact.Name}.Where(c => !string.IsNullOrWhiteSpace(c)))}{strSpace}({objGroupContact.ContactPoints})");
+                    sbdPositiveQualityTooltip.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2})",
+                        !string.IsNullOrWhiteSpace(objGroupContact.GroupName)
+                        ? !string.IsNullOrWhiteSpace(objGroupContact.Name)
+                            ? objGroupContact.GroupName + '/' + objGroupContact.Name
+                            : objGroupContact.GroupName
+                        : !string.IsNullOrWhiteSpace(objGroupContact.Name)
+                            ? objGroupContact.Name
+                            : LanguageManager.GetString("String_Unknown"),
+                        strSpace,
+                        objGroupContact.ContactPoints);
                     sbdPositiveQualityTooltip.AppendLine();
                 }
             }
@@ -9067,14 +9074,14 @@ namespace Chummer
                 {
                     strContactPoints += '/' + Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalOptions.CultureInfo);
                 }
-                strContactPoints += strOf + intContactPoints;
+                strContactPoints += strOf + intContactPoints.ToString(GlobalOptions.CultureInfo);
                 if (CharacterObject.FriendsInHighPlaces)
                 {
                     strContactPoints += '/' + (CharacterObject.CHA.Value * 4).ToString(GlobalOptions.CultureInfo);
                 }
                 if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
                 {
-                    strContactPoints += strSpace + '(' + intPointsInContacts + strSpace + strPoints + ')';
+                    strContactPoints += strSpace + '(' + intPointsInContacts.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints + ')';
                 }
 
                 lblContactsBP.Text = strContactPoints;
@@ -11047,7 +11054,8 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             nudLifestyleMonths.Value = objLifestyle.Increments;
-            lblLifestyleStartingNuyen.Text = objLifestyle.Dice + LanguageManager.GetString("String_D6") + strSpace + '×' + strSpace + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_D6") + strSpace
+                                             + '×' + strSpace + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             objLifestyle.SetSourceDetail(lblLifestyleSource);
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
@@ -11183,8 +11191,9 @@ namespace Chummer
                 lblVehicleSlotsLabel.Visible = !CharacterObjectOptions.BookEnabled("R5");
                 lblVehicleSlots.Visible = !CharacterObjectOptions.BookEnabled("R5");
                 if (!CharacterObjectOptions.BookEnabled("R5"))
-                    lblVehicleSlots.Text = objVehicle.Slots + strSpace + '(' + (objVehicle.Slots - objVehicle.SlotsUsed) +
-                                           strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                    lblVehicleSlots.Text = objVehicle.Slots.ToString(GlobalOptions.CultureInfo)
+                                           + strSpace + '(' + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(GlobalOptions.CultureInfo)
+                                           + strSpace + LanguageManager.GetString("String_Remaining") + ')';
                 cmdVehicleCyberwareChangeMount.Visible = false;
                 chkVehicleWeaponAccessoryInstalled.Visible = false;
                 chkVehicleIncludedInWeapon.Visible = false;
@@ -11216,7 +11225,7 @@ namespace Chummer
                         lblVehicleProtection.Visible = false;
                         lblVehicleDroneModSlotsLabel.Visible = true;
                         lblVehicleDroneModSlots.Visible = true;
-                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString(GlobalOptions.CultureInfo) + '/' + objVehicle.DroneModSlots;
+                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString(GlobalOptions.CultureInfo) + '/' + objVehicle.DroneModSlots.ToString(GlobalOptions.CultureInfo);
                     }
                     else
                     {

@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
@@ -52,6 +53,18 @@ namespace Chummer
             }
 
             return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid);
+        }
+
+        /// <summary>
+        /// Wraps this object instance into an IEnumerable consisting of a single item.
+        /// </summary>
+        /// <typeparam name="T">Type of the object.</typeparam>
+        /// <param name="objItem">The instance that will be wrapped. </param>
+        /// <returns>An IEnumerable consisting of just <paramref name="objItem"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IEnumerable<T> Yield<T>(this T objItem)
+        {
+            yield return objItem;
         }
     }
 }

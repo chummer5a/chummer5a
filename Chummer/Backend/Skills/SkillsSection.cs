@@ -750,11 +750,11 @@ namespace Chummer.Backend.Skills
                 }
             );
 
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, new[] { KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill });
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, new[] { KarmaExpenseType.ImproveSkillGroup });
+            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, KarmaExpenseType.AddSkill.Yield().Concat(KarmaExpenseType.ImproveSkill.Yield()));
+            UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
         }
 
-        private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, KarmaExpenseType[] typesRequreingConverting)
+        private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequreingConverting)
         {
             //Build a crazy xpath to get everything we want to convert
 

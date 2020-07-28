@@ -156,15 +156,12 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
-                            objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine
-                                                                                + LanguageManager.GetString(
-                                                                                    "String_Error",
-                                                                                    GlobalOptions.Language) +
-                                                                                LanguageManager.GetString(
-                                                                                    "String_Colon",
-                                                                                    GlobalOptions.Language)
-                                                                                + Environment.NewLine +
-                                                                                objCache.ErrorText;
+                            objCharacterNode.ToolTipText += Environment.NewLine
+                                                            + Environment.NewLine
+                                                            + LanguageManager.GetString("String_Error")
+                                                            + LanguageManager.GetString("String_Colon")
+                                                            + Environment.NewLine
+                                                            + objCache.ErrorText;
                         }
                         else
                             objCharacterNode.ForeColor = SystemColors.WindowText;
@@ -245,9 +242,9 @@ namespace Chummer
                 {
                     string strFile = objCharacterForm.CharacterObject.FileName;
                     // Make sure we're not loading a character that was already loaded by the MRU list.
-                    if(lstFavorites.Contains(strFile) ||
-                        lstRecents.Contains(strFile) ||
-                        dicWatch.ContainsValue(strFile))
+                    if(lstFavorites.Contains(strFile)
+                       || lstRecents.Contains(strFile)
+                       || dicWatch.ContainsValue(strFile))
                         continue;
 
                     lstRecents.Add(strFile);

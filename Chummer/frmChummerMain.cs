@@ -1317,7 +1317,7 @@ namespace Chummer
         /// </summary>
         public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
         {
-            OpenCharacterList(new[] { objCharacter }, blnIncludeInMRU);
+            OpenCharacterList(objCharacter.Yield(), blnIncludeInMRU);
         }
 
         /// <summary>
