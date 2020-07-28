@@ -1062,14 +1062,45 @@ namespace Chummer.Backend.Attributes
 
         private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CharacterOptions.DontUseCyberlimbCalculation))
+            switch (e.PropertyName)
             {
-                if ((Abbrev == "AGI" || Abbrev == "STR") &&
-                    CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                  && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                  && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                case nameof(CharacterOptions.DontUseCyberlimbCalculation):
                 {
-                    OnPropertyChanged(nameof(TotalValue));
+                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.ExcludeLimbSlot):
+                {
+                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        OnMultiplePropertyChanged(nameof(TotalValue));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.UnclampAttributeMinimum):
+                {
+                    OnPropertyChanged(nameof(RawMinimum));
+                    break;
+                }
+                case nameof(CharacterOptions.KarmaAttribute):
+                case nameof(CharacterOptions.AlternateMetatypeAttributeKarma):
+                {
+                    OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
+                    break;
+                }
+                case nameof(CharacterOptions.ReverseAttributePriorityOrder):
+                {
+                    OnPropertyChanged(nameof(TotalKarmaCost));
+                    break;
                 }
             }
         }

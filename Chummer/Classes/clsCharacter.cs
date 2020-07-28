@@ -7831,8 +7831,7 @@ namespace Chummer
             {
                 if(Options.MysAdeptSecondMAGAttribute && IsMysticAdept)
                     return AttributeSection.GetAttributeByName("MAGAdept");
-                else
-                    return MAG;
+                return MAG;
             }
         }
 
