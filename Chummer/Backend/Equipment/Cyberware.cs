@@ -1990,7 +1990,7 @@ namespace Chummer.Backend.Equipment
 
         public SourceString SourceDetail => _objCachedSourceDetail ?? (_objCachedSourceDetail =
                                                 new SourceString(Source, DisplayPage(GlobalOptions.Language),
-                                                    GlobalOptions.Language));
+                                                    GlobalOptions.Language, GlobalOptions.CultureInfo));
 
         /// <summary>
         /// ID of the object that added this cyberware (if any).
