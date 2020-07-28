@@ -178,7 +178,7 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo));
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
