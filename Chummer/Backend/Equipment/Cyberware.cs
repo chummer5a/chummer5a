@@ -1715,18 +1715,18 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = DisplayNameShort(strLanguage);
+            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
             {
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) +
-                             strSpace + Rating.ToString(objCulture) + ')';
+                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString(RatingLabel, strLanguage))
+                    .Append(strSpace).Append(Rating.ToString(objCulture)).Append(')');
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.TranslateExtra(Extra, strLanguage)).Append(')');
             }
 
             if (!string.IsNullOrEmpty(Location))
@@ -1737,10 +1737,10 @@ namespace Chummer.Backend.Equipment
                 else if (Location == "Right")
                     strSide = LanguageManager.GetString("String_Improvement_SideRight", strLanguage);
                 if (!string.IsNullOrEmpty(strSide))
-                    strReturn += strSpace + '(' + strSide + ')';
+                    sbdReturn.Append(strSpace + '(' + strSide + ')');
             }
 
-            return strReturn;
+            return sbdReturn.ToString();
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -5066,14 +5066,13 @@ namespace Chummer.Backend.Equipment
 
             string strSpace = LanguageManager.GetString("String_Space");
             StringBuilder expenseBuilder = new StringBuilder();
-            expenseBuilder.Append(LanguageManager.GetString("String_ExpenseUpgradedCyberware") +
-                                  strSpace + CurrentDisplayNameShort);
+            expenseBuilder.Append(LanguageManager.GetString("String_ExpenseUpgradedCyberware")).Append(strSpace).Append(CurrentDisplayNameShort);
             if (oldGrade != Grade || oldRating != intRating)
             {
-                expenseBuilder.Append('(' + LanguageManager.GetString("String_Grade") + strSpace +
-                                      Grade.CurrentDisplayName + strSpace + "->" + oldGrade.CurrentDisplayName +
-                                      strSpace + LanguageManager.GetString(RatingLabel) +
-                                      oldRating.ToString(GlobalOptions.CultureInfo) + strSpace + "->" + strSpace + Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                expenseBuilder.Append('(').Append(LanguageManager.GetString("String_Grade"))
+                    .Append(strSpace).Append(Grade.CurrentDisplayName).Append(strSpace).Append("->").Append(oldGrade.CurrentDisplayName)
+                    .Append(strSpace).Append(LanguageManager.GetString(RatingLabel)).Append(oldRating.ToString(GlobalOptions.CultureInfo))
+                    .Append(strSpace).Append("->").Append(strSpace).Append(Rating.ToString(GlobalOptions.CultureInfo)).Append(')');
             }
 
             // Create the Expense Log Entry.

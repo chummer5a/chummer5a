@@ -26,6 +26,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -566,15 +567,15 @@ namespace Chummer
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     }
 
-                    string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;
+                    StringBuilder sbdMetatype = new StringBuilder(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype);
 
                     if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                        strMetatype += LanguageManager.GetString("String_Space") + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                        sbdMetatype.Append(LanguageManager.GetString("String_Space")).Append('(').Append(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant).Append(')');
                     }
-                    lblMetatype.Text = strMetatype;
+                    lblMetatype.Text = sbdMetatype.ToString();
                 }
                 else
                     lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError");

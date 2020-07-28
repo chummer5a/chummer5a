@@ -2600,21 +2600,25 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = DisplayNameShort(strLanguage);
+            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1.0m || Category == "Currency")
-                strReturn = Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture) + strSpace + strReturn;
+                sbdReturn.Insert(0, strSpace).Insert(0, Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal)
+                    ? _objCharacter.Options.NuyenFormat
+                    : Category == "Currency"
+                        ? "#,0.00"
+                        : "#,0.##", objCulture));
             if (Rating > 0)
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
+                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString(RatingLabel, strLanguage)).Append(strSpace).Append(Rating.ToString(objCulture)).Append(')');
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.TranslateExtra(Extra, strLanguage)).Append(')');
 
             if (!string.IsNullOrEmpty(GearName))
             {
-                strReturn += strSpace + "(\"" + GearName + "\")";
+                sbdReturn.Append(strSpace).Append("(\"").Append(GearName).Append("\")");
             }
 
-            return strReturn;
+            return sbdReturn.ToString();
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
