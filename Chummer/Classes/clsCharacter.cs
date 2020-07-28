@@ -8047,29 +8047,29 @@ namespace Chummer
                             // If this character has any MAG-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
                             // it has to be assumed those are taken first.
                             bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x =>
-                                x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "MAG" &&
-                                (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
-                                 x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
-                                 x.ImproveSource == Improvement.ImprovementSource.Heritage) && x.Enabled);
+                                x.ImproveType == Improvement.ImprovementType.Attribute
+                                && x.ImprovedName == "MAG"
+                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                && x.Enabled);
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
                             foreach(Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage) &&
-                                    objImprovement.Enabled)
+                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                   && objImprovement.Enabled)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
                                     {
                                         decLoopEssencePenalty += objImprovement.Value;
                                     }
-                                    else if(objImprovement.ImproveType ==
-                                             Improvement.ImprovementType.EssencePenaltyT100 ||
-                                             objImprovement.ImproveType ==
-                                             Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
+                                    else if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100
+                                            || objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
                                     {
                                         decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
                                     }
@@ -8252,27 +8252,28 @@ namespace Chummer
                             // If this character has any RES-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
                             // it has to be assumed those are taken first.
                             bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x =>
-                                x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "RES" &&
-                                (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
-                                 x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
-                                 x.ImproveSource == Improvement.ImprovementSource.Heritage) && x.Enabled);
+                                x.ImproveType == Improvement.ImprovementType.Attribute
+                                && x.ImprovedName == "RES"
+                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                && x.Enabled);
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
                             foreach(Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage) &&
-                                    objImprovement.Enabled)
+                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                   && objImprovement.Enabled)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
                                     {
                                         decLoopEssencePenalty += objImprovement.Value;
                                     }
-                                    else if(objImprovement.ImproveType ==
-                                             Improvement.ImprovementType.EssencePenaltyT100)
+                                    else if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100)
                                     {
                                         decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
                                     }
@@ -8377,27 +8378,28 @@ namespace Chummer
                             // If this character has any DEP-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
                             // it has to be assumed those are taken first.
                             bool blnCountOnlyPriorityOrMetatypeGivenBonuses = Improvements.Any(x =>
-                                x.ImproveType == Improvement.ImprovementType.Attribute && x.ImprovedName == "DEP" &&
-                                (x.ImproveSource == Improvement.ImprovementSource.Metatype ||
-                                 x.ImproveSource == Improvement.ImprovementSource.Metavariant ||
-                                 x.ImproveSource == Improvement.ImprovementSource.Heritage) && x.Enabled);
+                                x.ImproveType == Improvement.ImprovementType.Attribute
+                                && x.ImprovedName == "DEP"
+                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                && x.Enabled);
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
                             foreach(Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant ||
-                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage) &&
-                                    objImprovement.Enabled)
+                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                   && objImprovement.Enabled)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
                                     {
                                         decLoopEssencePenalty += objImprovement.Value;
                                     }
-                                    else if(objImprovement.ImproveType ==
-                                             Improvement.ImprovementType.EssencePenaltyT100)
+                                    else if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100)
                                     {
                                         decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
                                     }
@@ -8571,9 +8573,9 @@ namespace Chummer
                     return _decCachedCyberwareEssence;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedCyberwareEssence = Cyberware
-                    .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) &&
-                                           !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID) &&
-                                           objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                    .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
+                                           && !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID)
+                                           && objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS);
             }
         }
@@ -8591,9 +8593,9 @@ namespace Chummer
                     return _decCachedBiowareEssence;
                 // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                 return _decCachedBiowareEssence = Cyberware
-                    .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) &&
-                                           !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID) &&
-                                           objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                    .Where(objCyberware => !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
+                                           && !objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID)
+                                           && objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS);
             }
         }
@@ -8611,8 +8613,8 @@ namespace Chummer
                     return _decCachedEssenceHole;
                 // Find the total Essence Cost of all Essence Hole objects.
                 return _decCachedEssenceHole = Cyberware
-                    .Where(objCyberware => objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID) ||
-                                           objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
+                    .Where(objCyberware => objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceHoleGUID)
+                                           || objCyberware.SourceID.Equals(Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
                     .AsParallel().Sum(objCyberware => objCyberware.CalculatedESS);
             }
         }
@@ -9194,21 +9196,17 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(
-                    CHA.DisplayAbbrev + strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')' +
-                    strSpace + '+' + strSpace +
-                    WIL.DisplayAbbrev + strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')');
+                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(CHA.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(WIL.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Composure &&
                         objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace +
-                                          GetObjectName(objLoopImprovement) +
-                                          strSpace + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
+                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
@@ -9221,30 +9219,25 @@ namespace Chummer
         /// </summary>
         public int JudgeIntentions => INT.TotalValue + CHA.TotalValue +
                                       ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) +
-                                      ImprovementManager.ValueOf(this,
-                                          Improvement.ImprovementType.JudgeIntentionsOffense);
+                                      ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense);
 
         public string JudgeIntentionsToolTip
         {
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(
-                    CHA.DisplayAbbrev + strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')' +
-                    strSpace + '+' + strSpace +
-                    INT.DisplayAbbrev + strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')');
+                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(CHA.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(INT.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(INT.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions ||
-                         objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsOffense) &&
-                        objLoopImprovement.Enabled)
+                    if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions
+                        || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsOffense)
+                       && objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace +
-                                          GetObjectName(objLoopImprovement) +
-                                          strSpace + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
+                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
@@ -9256,32 +9249,26 @@ namespace Chummer
         /// Judge Intentions Resist (CHA + WIL).
         /// </summary>
         public int JudgeIntentionsResist => CHA.TotalValue + WIL.TotalValue +
-                                            ImprovementManager.ValueOf(this,
-                                                Improvement.ImprovementType.JudgeIntentions) +
-                                            ImprovementManager.ValueOf(this,
-                                                Improvement.ImprovementType.JudgeIntentionsDefense);
+                                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) +
+                                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense);
 
         public string JudgeIntentionsResistToolTip
         {
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(
-                    CHA.DisplayAbbrev + strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')' +
-                    strSpace + '+' + strSpace +
-                    WIL.DisplayAbbrev + strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')');
+                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(CHA.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(WIL.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions ||
-                         objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsDefense) &&
-                        objLoopImprovement.Enabled)
+                    if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions
+                        || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsDefense)
+                       && objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace +
-                                          GetObjectName(objLoopImprovement) +
-                                          strSpace + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
+                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
@@ -9300,28 +9287,22 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(
-                    BOD.DisplayAbbrev + strSpace + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')' +
-                    strSpace + '+' + strSpace +
-                    STR.DisplayAbbrev + strSpace + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')');
+                StringBuilder sbdToolTip = new StringBuilder(BOD.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(BOD.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(STR.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(STR.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.LiftAndCarry &&
-                        objLoopImprovement.Enabled)
+                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.LiftAndCarry
+                       && objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace +
-                                          GetObjectName(objLoopImprovement) +
-                                          strSpace + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
+                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
-                sbdToolTip.Append(Environment.NewLine +
-                                  string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_LiftAndCarry")
-                                      , (STR.TotalValue * 15).ToString(GlobalOptions.CultureInfo)
-                                      , (STR.TotalValue * 10).ToString(GlobalOptions.CultureInfo)));
+                sbdToolTip.AppendLine().AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_LiftAndCarry"),
+                    (STR.TotalValue * 15).ToString(GlobalOptions.CultureInfo), (STR.TotalValue * 10).ToString(GlobalOptions.CultureInfo));
                 return sbdToolTip.ToString();
             }
         }
@@ -9337,21 +9318,17 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(
-                    LOG.DisplayAbbrev + strSpace + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')' +
-                    strSpace + '+' + strSpace +
-                    WIL.DisplayAbbrev + strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
-                    ')');
+                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(LOG.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(WIL.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Memory &&
                         objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace +
-                                          GetObjectName(objLoopImprovement) +
-                                          strSpace + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
+                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
@@ -9689,9 +9666,8 @@ namespace Chummer
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
                     if(objImprovement.ImproveType == Improvement.ImprovementType.Notoriety && objImprovement.Enabled)
-                        objReturn.Append(strSpace + '+' + strSpace +
-                                         GetObjectName(objImprovement) + strSpace +
-                                         '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        objReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
+                            .Append(strSpace).Append('(').Append(objImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                 }
 
                 /*
@@ -9701,10 +9677,8 @@ namespace Chummer
                     */
 
                 if(BurntStreetCred > 0)
-                    objReturn.Append(strSpace + '-' + strSpace +
-                                     LanguageManager.GetString("String_BurntStreetCred") +
-                                     strSpace + '(' +
-                                     (BurntStreetCred / 2).ToString(GlobalOptions.CultureInfo) + ')');
+                    objReturn.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_BurntStreetCred"))
+                        .Append(strSpace).Append('(').Append((BurntStreetCred / 2).ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 string strReturn = objReturn.ToString();
 
@@ -10978,17 +10952,14 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace +
-                                                             WIL.DisplayAbbrev + strSpace + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(LOG.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(WIL.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 if(CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace + '+' + strSpace +
-                                      LanguageManager.GetString("Label_CounterspellingDice") +
-                                      strSpace + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
+                        .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist);
@@ -11025,17 +10996,14 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace +
-                                                             INT.DisplayAbbrev + strSpace + '(' +
-                                                             INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(LOG.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(INT.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(INT.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 if(CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace + '+' + strSpace +
-                                      LanguageManager.GetString("Label_CounterspellingDice") +
-                                      strSpace + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
+                        .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist);
@@ -11072,17 +11040,14 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
-                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace +
-                                                             WIL.DisplayAbbrev + strSpace + '(' +
-                                                             WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(LOG.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(WIL.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(WIL.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 if(CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace + '+' + strSpace +
-                                      LanguageManager.GetString("Label_CounterspellingDice") +
-                                      strSpace + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
+                        .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist);
@@ -11126,8 +11091,7 @@ namespace Chummer
                 if(IsAI)
                 {
                     intBody = intStrength = (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0);
-                    strBodyAbbrev = strStrengthAbbrev =
-                        LanguageManager.GetString("String_VehicleBody");
+                    strBodyAbbrev = strStrengthAbbrev = LanguageManager.GetString("String_VehicleBody");
                 }
                 else
                 {
@@ -11137,17 +11101,14 @@ namespace Chummer
                     strStrengthAbbrev = STR.DisplayAbbrev;
                 }
 
-                StringBuilder sbdToolTip = new StringBuilder(strBodyAbbrev + strSpace + '(' +
-                                                             intBody.ToString(GlobalOptions.CultureInfo) + ')' +
-                                                             strSpace + '+' + strSpace +
-                                                             strStrengthAbbrev + strSpace + '(' +
-                                                             intStrength.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(strBodyAbbrev)
+                    .Append(strSpace).Append('(').Append(intBody.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(strStrengthAbbrev)
+                    .Append(strSpace).Append('(').Append(intStrength.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 if(CurrentCounterspellingDice != 0)
-                    sbdToolTip.Append(strSpace + '+' + strSpace +
-                                      LanguageManager.GetString("Label_CounterspellingDice") +
-                                      strSpace + '(' +
-                                      CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
+                        .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
                 int intModifiers = SpellResistance +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist);
