@@ -750,7 +750,7 @@ namespace Chummer.Backend.Skills
                 }
             );
 
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, KarmaExpenseType.AddSkill.Yield().Concat(KarmaExpenseType.ImproveSkill.Yield()));
+            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
             UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
         }
 

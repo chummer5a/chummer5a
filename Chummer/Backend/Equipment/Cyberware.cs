@@ -5073,7 +5073,7 @@ namespace Chummer.Backend.Equipment
                 expenseBuilder.Append('(' + LanguageManager.GetString("String_Grade") + strSpace +
                                       Grade.CurrentDisplayName + strSpace + "->" + oldGrade.CurrentDisplayName +
                                       strSpace + LanguageManager.GetString(RatingLabel) +
-                                      oldRating + strSpace + "->" + strSpace + Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                                      oldRating.ToString(GlobalOptions.CultureInfo) + strSpace + "->" + strSpace + Rating.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             // Create the Expense Log Entry.

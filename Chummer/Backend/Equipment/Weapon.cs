@@ -663,6 +663,8 @@ namespace Chummer.Backend.Equipment
                 _objCharacter.SourceProcess(_strSource);
         }
 
+        private static readonly string[] s_astrOldClipValues = {string.Empty, "2", "3", "4"};
+
         /// <summary>
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
@@ -705,7 +707,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else //Load old clips
                 {
-                    foreach (string s in new[] { string.Empty, "2", "3", "4" })
+                    foreach (string s in s_astrOldClipValues)
                     {
                         int ammo = 0;
                         if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&

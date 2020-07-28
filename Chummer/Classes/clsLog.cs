@@ -272,7 +272,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(exception.ToString().Yield().Concat((info?.ToString() ?? string.Empty).Yield()), file ?? string.Empty, method, line, LogLevel.Trace);
+            writeLog(EnumerableExtensions.ToEnumerable(exception.ToString(), info?.ToString() ?? string.Empty), file ?? string.Empty, method, line, LogLevel.Trace);
         }
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace Chummer
             if (exception == null)
                 throw new ArgumentNullException(nameof(exception));
             writeLog(
-                message.Yield().Concat(exception.ToString().Yield()).Concat(exception.StackTrace.Yield()),
+                EnumerableExtensions.ToEnumerable(message, exception.ToString(), exception.StackTrace),
                 exception.Source,
                 exception.TargetSite.Name,
                 (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),

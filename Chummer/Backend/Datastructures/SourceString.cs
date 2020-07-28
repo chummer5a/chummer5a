@@ -26,6 +26,7 @@ namespace Chummer
     {
         private readonly int _intPage;
         private readonly string _strCachedSpace;
+        private readonly int _intHashCode;
 
         public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null)
         {
@@ -41,6 +42,7 @@ namespace Chummer
             }
 
             Code = CommonFunctions.LanguageBookShort(strCode, Language);
+            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
@@ -53,6 +55,7 @@ namespace Chummer
             int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
@@ -65,6 +68,7 @@ namespace Chummer
             _intPage = intPage;
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
             LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
@@ -144,7 +148,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {Language, CultureInfo, Code, Page}.GetHashCode();
+            return _intHashCode;
         }
 
         public bool Equals(SourceString other)

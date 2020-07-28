@@ -263,13 +263,13 @@ namespace Chummer.UI.Shared
                 if (_intOffScreenChunkSize > 1)
                 {
                     _intOffScreenChunkSize /= 2;
-                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize);
+                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize.ToString(GlobalOptions.InvariantCultureInfo));
                 }
             }
             else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f))
             {
                 _intOffScreenChunkSize *= 2;
-                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize);
+                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize.ToString(GlobalOptions.InvariantCultureInfo));
             }
         }
 
@@ -568,7 +568,7 @@ namespace Chummer.UI.Shared
                 _parent.ChildPropertyChanged?.Invoke(sender, e);
                 if (changes)
                 {
-                    _parent.RedrawControls(new[] { this });
+                    _parent.RedrawControls(this.Yield());
                 }
             }
 

@@ -445,7 +445,7 @@ namespace Chummer
                         if (intDV < 2)
                             intDV = 2;
                         strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force") + strSpace + i.ToString(GlobalOptions.CultureInfo)
-                                      + LanguageManager.GetString("String_Colon") + strSpace + intDV);
+                                      + LanguageManager.GetString("String_Colon") + strSpace + intDV.ToString(GlobalOptions.CultureInfo));
 
                         string strLabelFormat = strSpace + "({0}" + LanguageManager.GetString("String_Colon") + strSpace + "{1})";
                         if (Limited)

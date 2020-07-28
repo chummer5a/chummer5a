@@ -56,7 +56,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Wraps this object instance into an IEnumerable consisting of a single item.
+        /// Syntactic sugar to wraps this object instance into an IEnumerable consisting of a single item.
         /// </summary>
         /// <typeparam name="T">Type of the object.</typeparam>
         /// <param name="objItem">The instance that will be wrapped. </param>
@@ -64,7 +64,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<T> Yield<T>(this T objItem)
         {
-            yield return objItem;
+            return ToEnumerable(objItem); // stealth array allocation through params is still faster than yield return
+        }
+
+        /// <summary>
+        /// Making use of params for syntactic sugar, wraps a list of objects into an IEnumerable consisting of them.
+        /// </summary>
+        /// <typeparam name="T">Type of the object.</typeparam>
+        /// <param name="lstItems">The list of objects that will be wrapped. </param>
+        /// <returns>An IEnumerable consisting of <paramref name="lstItems"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IEnumerable<T> ToEnumerable<T>(params T[] lstItems)
+        {
+            return lstItems; // faster and lighter on memory than yield return
         }
     }
 }
