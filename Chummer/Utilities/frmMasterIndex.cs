@@ -75,10 +75,10 @@ namespace Chummer
         {
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
+                ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
+                ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
-                    ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
-                    ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                     Parallel.ForEach(_lstFileNames, strFileName =>
                     {
                         XPathNavigator xmlBaseNode = XmlManager.Load(strFileName).GetFastNavigator().SelectSingleNode("/chummer");
@@ -119,7 +119,10 @@ namespace Chummer
                                 lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
                         }
                     });
+                }
 
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
+                {
                     Dictionary<Tuple<string, SourceString>, HashSet<string>> dicHelper = new Dictionary<Tuple<string, SourceString>, HashSet<string>>(lstItemsForLoading.Count);
                     foreach (ListItem objItem in lstItemsForLoading)
                     {
