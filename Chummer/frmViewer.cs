@@ -84,6 +84,13 @@ namespace Chummer
             using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"))
                 objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
 
+            // These two needed to have WebBrowser control obey DPI settings for Chummer
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
+
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
+
             InitializeComponent();
             this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate = {
