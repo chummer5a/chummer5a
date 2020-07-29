@@ -1707,16 +1707,89 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CharacterOptions.StrictSkillGroupsInCreateMode))
+            switch (e.PropertyName)
             {
-                if (!CharacterObject.Created)
+                case nameof(CharacterOptions.StrictSkillGroupsInCreateMode):
                 {
-                    OnPropertyChanged(nameof(KarmaUnlocked));
+                    if (SkillGroupObject != null)
+                    {
+                        if (!CharacterObject.Created)
+                        {
+                            OnPropertyChanged(nameof(KarmaUnlocked));
+                        }
+
+                        OnMultiplePropertyChanged(nameof(BaseUnlocked), nameof(ForcedNotBuyWithKarma));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.UsePointsOnBrokenGroups):
+                {
+                    if (SkillGroupObject != null)
+                    {
+                        OnPropertyChanged(nameof(BaseUnlocked));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.KarmaNewKnowledgeSkill):
+                case nameof(CharacterOptions.KarmaImproveKnowledgeSkill):
+                {
+                    if (IsKnowledgeSkill)
+                    {
+                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.KarmaKnowledgeSpecialization):
+                {
+                    if (IsKnowledgeSkill)
+                    {
+                        OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.KarmaNewActiveSkill):
+                case nameof(CharacterOptions.KarmaImproveActiveSkill):
+                {
+                    if (!IsKnowledgeSkill)
+                    {
+                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.KarmaSpecialization):
+                {
+                    if (!IsKnowledgeSkill)
+                    {
+                        OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.CompensateSkillGroupKarmaDifference):
+                {
+                    if (SkillGroupObject != null)
+                    {
+                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.KarmaNewSkillGroup):
+                case nameof(CharacterOptions.KarmaImproveSkillGroup):
+                {
+                    if (SkillGroupObject != null && CharacterObject.Options.CompensateSkillGroupKarmaDifference)
+                    {
+                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.SpecializationBonus):
+                {
+                    if (Specializations.Count > 0)
+                    {
+                        OnPropertyChanged(nameof(PoolOtherAttribute));
+                    }
+                    break;
                 }
             }
-            else if (e.PropertyName == nameof(CharacterOptions.StrictSkillGroupsInCreateMode)
-                     || e.PropertyName == nameof(CharacterOptions.UsePointsOnBrokenGroups))
-                OnPropertyChanged(nameof(BaseUnlocked));
         }
 
         protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)

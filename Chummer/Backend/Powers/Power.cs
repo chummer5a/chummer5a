@@ -74,6 +74,7 @@ namespace Chummer
             if (CharacterObject != null)
             {
                 CharacterObject.PropertyChanged += OnCharacterChanged;
+                CharacterObject.Options.PropertyChanged += OnCharacterOptionsChanged;
                 if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                 {
                     MAGAttributeObject = CharacterObject.MAGAdept;
@@ -87,7 +88,11 @@ namespace Chummer
 
         public void UnbindPower()
         {
-            CharacterObject.PropertyChanged -= OnCharacterChanged;
+            if (CharacterObject != null)
+            {
+                CharacterObject.PropertyChanged -= OnCharacterChanged;
+                CharacterObject.Options.PropertyChanged -= OnCharacterOptionsChanged;
+            }
             MAGAttributeObject = null;
             BoostedSkill = null;
         }
@@ -886,7 +891,7 @@ namespace Chummer
                 if (BoostedSkill != null)
                 {
                     // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                    intReturn = Math.Min(intReturn, ( + (BoostedSkill.LearnedRating + 1)) / 2);
+                    intReturn = Math.Min(intReturn, (BoostedSkill.LearnedRating + 1) / 2);
                     if (CharacterObject.Options.IncreasedImprovedAbilityMultiplier)
                     {
                         intReturn += BoostedSkill.LearnedRating;
@@ -1056,17 +1061,33 @@ namespace Chummer
             }
         }
 
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (propertyChangedEventArgs.PropertyName == nameof(Character.IsMysticAdept))
+            if (e.PropertyName == nameof(Character.IsMysticAdept))
             {
-                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                    ? CharacterObject.MAGAdept
+                    : CharacterObject.MAG;
+            }
+        }
+
+        private void OnCharacterOptionsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.MysAdeptSecondMAGAttribute):
                 {
-                    MAGAttributeObject = CharacterObject.MAGAdept;
+                    MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                        ? CharacterObject.MAGAdept
+                        : CharacterObject.MAG;
+                    break;
                 }
-                else
+                case nameof(CharacterOptions.IncreasedImprovedAbilityMultiplier):
                 {
-                    MAGAttributeObject = CharacterObject.MAG;
+                    MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                        ? CharacterObject.MAGAdept
+                        : CharacterObject.MAG;
+                    break;
                 }
             }
         }

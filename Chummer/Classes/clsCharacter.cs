@@ -329,6 +329,15 @@ namespace Chummer
         {
             switch (e?.PropertyName)
             {
+                case nameof(CharacterOptions.UseCalculatedPublicAwareness):
+                    OnPropertyChanged(nameof(CalculatedPublicAwareness));
+                    break;
+                case nameof(CharacterOptions.SpiritForceBasedOnTotalMAG):
+                    OnPropertyChanged(nameof(MaxSpiritForce));
+                    break;
+                case nameof(CharacterOptions.CyberlegMovement):
+                    OnPropertyChanged(nameof(Movement));
+                    break;
                 case nameof(CharacterOptions.AllowInitiationInCreateMode):
                     OnPropertyChanged(nameof(AddInitiationsAllowed));
                     break;
@@ -336,7 +345,7 @@ namespace Chummer
                     OnPropertyChanged(nameof(MysAdeptAllowPPCareer));
                     break;
                 case nameof(CharacterOptions.MysAdeptSecondMAGAttribute):
-                    OnPropertyChanged(nameof(UseMysticAdeptPPs));
+                    OnMultiplePropertyChanged(nameof(UseMysticAdeptPPs), nameof(AllowAdeptWayPowerDiscount));
                     break;
                 case nameof(CharacterOptions.ContactPointsExpression):
                     OnPropertyChanged(nameof(ContactPoints));
@@ -345,12 +354,13 @@ namespace Chummer
                     RefreshEssenceLossImprovements();
                     break;
                 case nameof(CharacterOptions.NuyenFormat):
-                    OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen));
+                    OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen), nameof(DisplayStolenNuyen));
                     break;
                 case nameof(CharacterOptions.EssenceFormat):
                 case nameof(CharacterOptions.DontRoundEssenceInternally):
-                    OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(Essence));
+                    OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
                     break;
+                case nameof(CharacterOptions.NuyenMaximumBP):
                 case nameof(CharacterOptions.UnrestrictedNuyen):
                     OnPropertyChanged(nameof(TotalNuyenMaximumBP));
                     break;
@@ -363,8 +373,40 @@ namespace Chummer
                 case nameof(CharacterOptions.AutomaticBackstory):
                     OnPropertyChanged(nameof(EnableAutomaticStoryButton));
                     break;
-                case nameof(CharacterOptions.NuyenMaximumBP):
-                    OnPropertyChanged(nameof(TotalNuyenMaximumBP));
+                case nameof(CharacterOptions.NuyenPerBP):
+                    OnPropertyChanged(nameof(TotalStartingNuyen));
+                    break;
+                case nameof(CharacterOptions.LimbCount):
+                    OnPropertyChanged(nameof(LimbCount));
+                    break;
+                case nameof(CharacterOptions.MetatypeCostsKarmaMultiplier):
+                    OnPropertyChanged(nameof(DisplayMetatypeBP));
+                    break;
+                case nameof(CharacterOptions.RedlinerExcludes):
+                    RefreshRedlinerImprovements();
+                    break;
+                case nameof(CharacterOptions.NoArmorEncumbrance):
+                    RefreshEncumbrance();
+                    break;
+                case nameof(CharacterOptions.KarmaQuality):
+                case nameof(CharacterOptions.QualityKarmaLimit):
+                    OnMultiplePropertyChanged(nameof(PositiveQualityKarma), nameof(NegativeQualityKarma));
+                    break;
+                case nameof(CharacterOptions.ExceedPositiveQualitiesCostDoubled):
+                    OnPropertyChanged(nameof(PositiveQualityKarma));
+                    break;
+                case nameof(CharacterOptions.EnemyKarmaQualityLimit):
+                case nameof(CharacterOptions.ExceedNegativeQualitiesLimit):
+                    OnPropertyChanged(nameof(NegativeQualityKarma));
+                    break;
+                case nameof(CharacterOptions.KarmaEnemy):
+                    OnPropertyChanged(nameof(EnemyKarma));
+                    break;
+                case nameof(CharacterOptions.KarmaSpell):
+                    if (FreeSpells > 0)
+                    {
+                        OnPropertyChanged(nameof(PositiveQualityKarma));
+                    }
                     break;
             }
         }
@@ -666,7 +708,10 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Reset:
                     blnDoCyberlimbAttributesRefresh = !Options.DontUseCyberlimbCalculation;
                     setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
-                    setEssenceImprovementsToRefresh.Add(nameof(Essence));
+                    setEssenceImprovementsToRefresh.Add(nameof(PrototypeTranshumanEssenceUsed));
+                    setEssenceImprovementsToRefresh.Add(nameof(BiowareEssence));
+                    setEssenceImprovementsToRefresh.Add(nameof(CyberwareEssence));
+                    setEssenceImprovementsToRefresh.Add(nameof(EssenceHole));
                     break;
             }
 
@@ -14513,7 +14558,7 @@ namespace Chummer
             // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
             if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
-                OnPropertyChanged(nameof(Essence));
+                OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
             }
         }
 

@@ -680,17 +680,30 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.Karma))
-                OnPropertyChanged(nameof(CareerCanIncrease));
-            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
-                OnPropertyChanged(nameof(BaseUnbroken));
+            switch (e.PropertyName)
+            {
+                case nameof(Character.Karma):
+                    OnPropertyChanged(nameof(CareerCanIncrease));
+                    break;
+                case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
+                    OnPropertyChanged(nameof(BaseUnbroken));
+                    break;
+            }
         }
 
         private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CharacterOptions.StrictSkillGroupsInCreateMode)
-                || e.PropertyName == nameof(CharacterOptions.UsePointsOnBrokenGroups))
-                OnPropertyChanged(nameof(BaseUnbroken));
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.StrictSkillGroupsInCreateMode):
+                case nameof(CharacterOptions.UsePointsOnBrokenGroups):
+                    OnPropertyChanged(nameof(BaseUnbroken));
+                    break;
+                case nameof(CharacterOptions.KarmaNewSkillGroup):
+                case nameof(CharacterOptions.KarmaImproveSkillGroup):
+                    OnPropertyChanged(nameof(CurrentKarmaCost));
+                    break;
+            }
         }
 
         public int CurrentSpCost

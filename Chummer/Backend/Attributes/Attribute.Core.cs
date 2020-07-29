@@ -1075,6 +1075,7 @@ namespace Chummer.Backend.Attributes
                     }
                     break;
                 }
+                case nameof(CharacterOptions.CyberlimbAttributeBonusCap):
                 case nameof(CharacterOptions.ExcludeLimbSlot):
                 {
                     if ((Abbrev == "AGI" || Abbrev == "STR") &&
