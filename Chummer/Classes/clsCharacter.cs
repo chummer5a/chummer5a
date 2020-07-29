@@ -11614,7 +11614,7 @@ namespace Chummer
                            '[' + (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalOptions.CultureInfo) + ']';
                 }
 
-                StringBuilder sbdToolTip = new StringBuilder('(').Append(STR.DisplayAbbrev)
+                StringBuilder sbdToolTip = new StringBuilder("(").Append(STR.DisplayAbbrev)
                     .Append(strSpace).Append('[').Append(STR.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(']')
                     .Append(strSpace).Append('×').Append(strSpace).Append(2.ToString(GlobalOptions.CultureInfo))
                     .Append(strSpace).Append('+').Append(strSpace).Append(BOD.DisplayAbbrev)
