@@ -51,6 +51,7 @@ namespace Chummer
 #endif
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
+        private frmLoading _frmLoading;
         private readonly ObservableCollection<Character> _lstCharacters = new ObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
@@ -186,10 +187,10 @@ namespace Chummer
                     }
 
 
-                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = Text })
+                    using (_frmLoading = new frmLoading { CharacterFile = Text })
                     {
-                        frmLoadingForm.Reset(3);
-                        frmLoadingForm.Show();
+                        _frmLoading.Reset(3);
+                        _frmLoading.Show();
 
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
@@ -235,7 +236,7 @@ namespace Chummer
                             //Timekeeper.Finish("cache_load");
                         }
 
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                        _frmLoading.PerformStep(LanguageManager.GetString("String_UI"));
 
                         _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                         _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
@@ -302,7 +303,7 @@ namespace Chummer
                             }
                         }
 
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
+                        _frmLoading.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
 
                         if (MasterIndex != null)
                         {
@@ -310,7 +311,7 @@ namespace Chummer
                             MasterIndex.Show();
                         }
 
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
+                        _frmLoading.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
                         if (blnShowTest)
                         {
                             frmTest frmTestData = new frmTest();
@@ -1105,6 +1106,8 @@ namespace Chummer
         /// <returns></returns>
         public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
+            if (_frmLoading?.IsDisposed == false)
+                return ShowMessageBox(_frmLoading, message, caption, buttons, icon);
             return ShowMessageBox(this, message, caption, buttons, icon);
         }
 
@@ -1395,30 +1398,42 @@ namespace Chummer
                 {
                     FileName = strFileName
                 };
-                using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = objCharacter.FileName})
+                if (blnShowErrors)
                 {
-                    if (blnShowErrors)
+                    using (frmLoading _frmLoading = new frmLoading {CharacterFile = objCharacter.FileName})
                     {
-                        frmLoadingForm.Reset(35);
-                        frmLoadingForm.Show();
+                        _frmLoading.Reset(35);
+                        _frmLoading.Show();
+                        OpenCharacters.Add(objCharacter);
+                        //Timekeeper.Start("load_file");
+                        bool blnLoaded = await objCharacter.Load(_frmLoading).ConfigureAwait(true);
+                        //Timekeeper.Finish("load_file");
+                        if (!blnLoaded)
+                        {
+                            OpenCharacters.Remove(objCharacter);
+                            return null;
+                        }
                     }
+                }
+                else
+                {
                     OpenCharacters.Add(objCharacter);
                     //Timekeeper.Start("load_file");
-                    bool blnLoaded = await objCharacter.Load(frmLoadingForm).ConfigureAwait(true);
+                    bool blnLoaded = await objCharacter.Load().ConfigureAwait(true);
                     //Timekeeper.Finish("load_file");
                     if (!blnLoaded)
                     {
                         OpenCharacters.Remove(objCharacter);
                         return null;
                     }
-
-                    // If a new name is given, set the character's name to match (used in cloning).
-                    if (!string.IsNullOrEmpty(strNewName))
-                        objCharacter.Name = strNewName;
-                    // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
-                    if (blnClearFileName)
-                        objCharacter.FileName = string.Empty;
                 }
+
+                // If a new name is given, set the character's name to match (used in cloning).
+                if (!string.IsNullOrEmpty(strNewName))
+                    objCharacter.Name = strNewName;
+                // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                if (blnClearFileName)
+                    objCharacter.FileName = string.Empty;
             }
             else if(blnShowErrors)
             {

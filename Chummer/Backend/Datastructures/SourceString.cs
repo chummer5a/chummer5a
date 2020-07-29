@@ -48,7 +48,7 @@ namespace Chummer
                                 _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
         }
 
-        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo)
+        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null)
         {
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
