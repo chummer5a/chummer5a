@@ -1400,7 +1400,7 @@ namespace Chummer
                 };
                 if (blnShowErrors)
                 {
-                    using (frmLoading _frmLoading = new frmLoading {CharacterFile = objCharacter.FileName})
+                    using (_frmLoading = new frmLoading {CharacterFile = objCharacter.FileName})
                     {
                         _frmLoading.Reset(35);
                         _frmLoading.Show();
