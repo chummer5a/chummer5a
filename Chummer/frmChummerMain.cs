@@ -52,7 +52,7 @@ namespace Chummer
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
         private frmLoading _frmLoading;
-        private readonly ObservableCollection<Character> _lstCharacters = new ObservableCollection<Character>();
+        private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
@@ -1296,17 +1296,22 @@ namespace Chummer
                         lstFilesToOpen.Add(strFile);
                 }
 
-                if (lstFilesToOpen.Count != 0)
+                if (lstFilesToOpen.Count > 0)
                 {
-                    Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                    object lstCharactersLock = new object();
-                    Parallel.For(0, lstCharacters.Length, i =>
+                    using (_frmLoading = new frmLoading { CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen) })
                     {
-                        Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
-                        lock (lstCharactersLock)
-                            lstCharacters[i] = objLoopCharacter;
-                    });
-                    Program.MainForm.OpenCharacterList(lstCharacters);
+                        _frmLoading.Reset(35 * lstFilesToOpen.Count);
+                        _frmLoading.Show();
+                        Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                        object lstCharactersLock = new object();
+                        Parallel.For(0, lstCharacters.Length, i =>
+                        {
+                            Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
+                            lock (lstCharactersLock)
+                                lstCharacters[i] = objLoopCharacter;
+                        });
+                        Program.MainForm.OpenCharacterList(lstCharacters);
+                    }
                 }
 
                 Cursor = objOldCursor;
@@ -1337,12 +1342,10 @@ namespace Chummer
 
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
-            FormWindowState wsPreference = FormWindowState.Maximized;
-            if (OpenCharacterForms.Any(x => x.WindowState != wsPreference))
-            {
-                wsPreference = FormWindowState.Normal;
-            }
-            foreach(Character objCharacter in lstCharacters)
+            FormWindowState wsPreference = OpenCharacterForms.Any(x => x.WindowState != FormWindowState.Maximized)
+                ? FormWindowState.Normal
+                : FormWindowState.Maximized;
+            foreach (Character objCharacter in lstCharacters)
             {
                 if(objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                     continue;
@@ -1398,7 +1401,7 @@ namespace Chummer
                 {
                     FileName = strFileName
                 };
-                if (blnShowErrors)
+                if (blnShowErrors && _frmLoading?.IsDisposed != false)
                 {
                     using (_frmLoading = new frmLoading {CharacterFile = objCharacter.FileName})
                     {
@@ -1419,7 +1422,7 @@ namespace Chummer
                 {
                     OpenCharacters.Add(objCharacter);
                     //Timekeeper.Start("load_file");
-                    bool blnLoaded = await objCharacter.Load().ConfigureAwait(true);
+                    bool blnLoaded = await objCharacter.Load(blnShowErrors && _frmLoading?.IsDisposed == false ? _frmLoading : null).ConfigureAwait(true);
                     //Timekeeper.Finish("load_file");
                     if (!blnLoaded)
                     {
@@ -1636,7 +1639,7 @@ namespace Chummer
             set => _frmRoller = value;
         }
 
-        public ObservableCollection<Character> OpenCharacters => _lstCharacters;
+        public ThreadSafeObservableCollection<Character> OpenCharacters => _lstCharacters;
 
         public ObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
 

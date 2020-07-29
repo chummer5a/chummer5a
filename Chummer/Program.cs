@@ -265,7 +265,7 @@ namespace Chummer
                         TelemetryConfiguration.Active.DisableTelemetry = true;
 
                     Log.Info(strInfo);
-                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Properties.Settings.Default.UploadClientId + ").");
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo) + ").");
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
