@@ -75,7 +75,7 @@ namespace Chummer
                 string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+                imgNotes.SetToolTip(strTooltip.WordWrap());
             }
             else
             {
@@ -86,7 +86,7 @@ namespace Chummer
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+                imgNotes.SetToolTip(strTooltip.WordWrap());
             }
 
             _blnLoading = false;
@@ -315,7 +315,7 @@ namespace Chummer
             string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-            imgNotes.SetToolTip(strTooltip.WordWrap(100));
+            imgNotes.SetToolTip(strTooltip.WordWrap());
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 

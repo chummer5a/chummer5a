@@ -757,7 +757,7 @@ namespace Chummer.Backend.Equipment
                 Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;

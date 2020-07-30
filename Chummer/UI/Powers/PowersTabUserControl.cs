@@ -407,7 +407,7 @@ namespace Chummer.UI.Powers
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
                         strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
-                    return strTooltip.WordWrap(100);
+                    return strTooltip.WordWrap();
                 })
             };
             noteColumn.AddDependency(nameof(Power.Notes));

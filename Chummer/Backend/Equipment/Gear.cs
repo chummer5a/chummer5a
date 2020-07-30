@@ -3086,7 +3086,7 @@ namespace Chummer.Backend.Equipment
                 Tag = this,
                 ContextMenuStrip = cmsGear,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             BuildChildrenGearTree(objNode, cmsGear);

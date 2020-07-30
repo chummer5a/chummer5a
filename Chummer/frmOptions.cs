@@ -1301,17 +1301,17 @@ namespace Chummer
 
         private void SetToolTips()
         {
-            const int width = 100;
-            chkUnarmedSkillImprovements.SetToolTip(LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap(width));
-            chkIgnoreArt.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap(width));
-            chkIgnoreComplexFormLimit.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreComplexFormLimit", _strSelectedLanguage).WordWrap(width));
-            chkCyberlegMovement.SetToolTip(LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap(width));
-            chkDontDoubleQualityPurchases.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases", _strSelectedLanguage).WordWrap(width));
-            chkDontDoubleQualityRefunds.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds", _strSelectedLanguage).WordWrap(width));
-            chkStrictSkillGroups.SetToolTip(LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap(width));
-            chkAllowInitiation.SetToolTip(LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap(width));
-            chkUseCalculatedPublicAwareness.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap(width));
-            cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Tip_Options_TelemetryId", _strSelectedLanguage).WordWrap(width), Properties.Settings.Default.UploadClientId));
+            chkUnarmedSkillImprovements.SetToolTip(LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements", _strSelectedLanguage).WordWrap());
+            chkIgnoreArt.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreArt", _strSelectedLanguage).WordWrap());
+            chkIgnoreComplexFormLimit.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreComplexFormLimit", _strSelectedLanguage).WordWrap());
+            chkCyberlegMovement.SetToolTip(LanguageManager.GetString("Tip_OptionsCyberlegMovement", _strSelectedLanguage).WordWrap());
+            chkDontDoubleQualityPurchases.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases", _strSelectedLanguage).WordWrap());
+            chkDontDoubleQualityRefunds.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds", _strSelectedLanguage).WordWrap());
+            chkStrictSkillGroups.SetToolTip(LanguageManager.GetString("Tip_OptionStrictSkillGroups", _strSelectedLanguage).WordWrap());
+            chkAllowInitiation.SetToolTip(LanguageManager.GetString("Tip_OptionsAllowInitiation", _strSelectedLanguage).WordWrap());
+            chkUseCalculatedPublicAwareness.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness", _strSelectedLanguage).WordWrap());
+            cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Tip_Options_TelemetryId", _strSelectedLanguage),
+                Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo)).WordWrap());
         }
 
         private void PopulateSettingsList()
@@ -2055,7 +2055,7 @@ namespace Chummer
             if (useAI > UseAILogging.Info && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info)
             {
                 if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(256),
+                    LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(),
                     LanguageManager.GetString("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
                 {
@@ -2075,7 +2075,7 @@ namespace Chummer
             if (chkUseLogging.Checked && !GlobalOptions.UseLogging)
             {
                 if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
-                                            LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(256),
+                                            LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(),
                                             LanguageManager.GetString("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
                                             MessageBoxButtons.YesNo))
                 {

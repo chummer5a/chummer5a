@@ -387,7 +387,7 @@ namespace Chummer
                 Tag = this,
                 ContextMenuStrip = cmsMetamagic,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             return objNode;

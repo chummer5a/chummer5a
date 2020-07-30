@@ -254,7 +254,7 @@ namespace Chummer
                     if (treNode != null)
                     {
                         treNode.ForeColor = objNotes.PreferredColor;
-                        treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+                        treNode.ToolTipText = objNotes.Notes.WordWrap();
                     }
                 }
             }
@@ -4540,7 +4540,7 @@ namespace Chummer
                                 Tag = objImprovement.SourceName,
                                 ContextMenuStrip = cmsLimitModifier,
                                 ForeColor = objImprovement.PreferredColor,
-                                ToolTipText = objImprovement.Notes.WordWrap(100)
+                                ToolTipText = objImprovement.Notes.WordWrap()
                             };
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {

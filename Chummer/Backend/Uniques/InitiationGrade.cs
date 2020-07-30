@@ -295,7 +295,7 @@ namespace Chummer
                 Text = Text(GlobalOptions.Language),
                 Tag = this,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
             return objNode;
         }

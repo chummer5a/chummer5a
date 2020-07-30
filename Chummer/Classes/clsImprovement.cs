@@ -2248,7 +2248,7 @@ namespace Chummer
             {
                 Tag = this,
                 Text = CustomName,
-                ToolTipText = Notes.WordWrap(100),
+                ToolTipText = Notes.WordWrap(),
                 ContextMenuStrip = cmsImprovement,
                 ForeColor = PreferredColor
             };

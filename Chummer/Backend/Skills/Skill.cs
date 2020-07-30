@@ -985,7 +985,7 @@ namespace Chummer.Backend.Skills
             else
             {
                 s = new StringBuilder(
-                    LanguageManager.GetString("Tip_Skill_SkillsoftRating")
+                    LanguageManager.GetString("Tip_Skill_SkillRating")
                     + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
                 bool first = true;
                 foreach (Improvement objImprovement in lstRelevantImprovements)

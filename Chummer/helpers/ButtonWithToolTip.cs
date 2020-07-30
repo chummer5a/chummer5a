@@ -44,7 +44,7 @@ namespace Chummer
             get => _strToolTipText;
             set
             {
-                value = value.WordWrap(_intToolTipWrap);
+                value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
                 if (_strToolTipText != value)
                 {
                     _strToolTipText = value;
@@ -55,7 +55,7 @@ namespace Chummer
 
         public ButtonWithToolTip() : this(ToolTipFactory.ToolTip) { }
 
-        public ButtonWithToolTip(ToolTip objToolTip, int intToolTipWrap = 100)
+        public ButtonWithToolTip(ToolTip objToolTip, int intToolTipWrap = -1)
         {
             ToolTipObject = objToolTip;
             _intToolTipWrap = intToolTipWrap;

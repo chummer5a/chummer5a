@@ -4781,7 +4781,7 @@ namespace Chummer
                         IsDirty = true;
 
                         treVehicles.SelectedNode.ForeColor = objGear.PreferredColor;
-                        treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap(100);
+                        treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
                     }
                 }
             }
