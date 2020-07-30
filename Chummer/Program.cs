@@ -49,7 +49,7 @@ namespace Chummer
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _pluginLoader;
-        public static PluginControl PluginLoader => _pluginLoader ?? (_pluginLoader = new PluginControl());
+        public static PluginControl PluginLoader => _pluginLoader = _pluginLoader ?? new PluginControl();
 
 
         /// <summary>
