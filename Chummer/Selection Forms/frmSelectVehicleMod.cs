@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmSelectVehicleMod : Form
     {
-        private Vehicle _objVehicle;
+        private readonly Vehicle _objVehicle;
         private int _intWeaponMountSlots;
         private int _intModMultiplier = 1;
         private int _intMarkup;
@@ -83,7 +83,7 @@ namespace Chummer
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
-            string[] strValues = _strLimitToCategories.Split(',');
+            string[] strValues = _strLimitToCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("modcategories/category"))
@@ -553,7 +553,7 @@ namespace Chummer
                 string strSlots = xmlVehicleMod.SelectSingleNode("slots")?.Value ?? string.Empty;
                 if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strSlots.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strSlots.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
                 int.TryParse(strSlots, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intExtraSlots);
@@ -602,7 +602,7 @@ namespace Chummer
                     {
                         int intRating = decimal.ToInt32(nudRating.Value) - 1;
                         strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
-                        string[] strValues = strCost.Split(',');
+                        string[] strValues = strCost.Split(',', StringSplitOptions.RemoveEmptyEntries);
                         if (intRating < 0 || intRating > strValues.Length)
                         {
                             intRating = 0;

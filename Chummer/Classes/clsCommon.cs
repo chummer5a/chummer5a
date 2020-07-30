@@ -792,18 +792,13 @@ namespace Chummer
                 return string.Empty;
             string strSearchText = strNeedle.ToUpperInvariant();
             // Treat everything as being uppercase so the search is case-insensitive.
-            return string.Concat(
-                blnAddAnd ? " and ((not(" : "((not(",
+            return (blnAddAnd ? " and " : string.Empty) + string.Format(
+                GlobalOptions.InvariantCultureInfo,
+                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"{2}\")) " +
+                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"{2}\"))",
                 strTranslateElement,
-                ") and contains(translate(",
                 strNameElement,
-                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
-                strSearchText,
-                "\")) or contains(translate(",
-                strTranslateElement,
-                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
-                strSearchText,
-                "\"))");
+                strSearchText);
         }
 
         /// <summary>
@@ -888,15 +883,11 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
-                astrSourceParts = strSource.Split(strSpace[0]);
+                astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-            {
                 astrSourceParts = new [] { "SR5", strSource.Substring(3) };
-            }
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-            {
-                astrSourceParts = new [] { "R5", strSource.Substring(3) };
-            }
+                astrSourceParts = new [] { "R5", strSource.Substring(2) };
             else
             {
                 int i = strSource.Length - 1;
@@ -933,10 +924,10 @@ namespace Chummer
                 return;
             intPage += objBookInfo.Offset;
 
-            string strParams = strPDFParamaters;
-            strParams = strParams.Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo));
-            strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-            strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+            string strParams = strPDFParamaters
+                .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
+                .Replace("{localpath}", uriPath.LocalPath)
+                .Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
             {
                 FileName = strPDFAppPath,
@@ -956,7 +947,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
-            string[] strTemp = strSource.Split(' ');
+            string[] strTemp = strSource.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (strTemp.Length < 2)
                 return string.Empty;
             if (!int.TryParse(strTemp[1], out int intPage))
@@ -975,7 +966,15 @@ namespace Chummer
             if (objBookInfo == null)
                 return string.Empty;
 
-            Uri uriPath = new Uri(objBookInfo.Path);
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return string.Empty;
+            }
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return string.Empty;

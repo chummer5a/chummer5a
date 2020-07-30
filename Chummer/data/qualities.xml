@@ -18621,7 +18621,9 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <cyberadeptdaemon />
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Machinist</quality>

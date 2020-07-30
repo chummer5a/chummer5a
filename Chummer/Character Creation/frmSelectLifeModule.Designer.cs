@@ -43,12 +43,12 @@ namespace Chummer
             this.lblStage = new System.Windows.Forms.Label();
             this.chkLimitList = new System.Windows.Forms.CheckBox();
             this.cboStage = new Chummer.ElasticComboBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpStage = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpMain.SuspendLayout();
+            this.flpStage.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // treModules
@@ -56,7 +56,7 @@ namespace Chummer
             this.treModules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treModules.Location = new System.Drawing.Point(3, 3);
             this.treModules.Name = "treModules";
-            this.tableLayoutPanel1.SetRowSpan(this.treModules, 6);
+            this.tlpMain.SetRowSpan(this.treModules, 6);
             this.treModules.ShowLines = false;
             this.treModules.Size = new System.Drawing.Size(295, 417);
             this.treModules.TabIndex = 0;
@@ -188,10 +188,11 @@ namespace Chummer
             // lblStage
             // 
             this.lblStage.AutoSize = true;
+            this.lblStage.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblStage.Location = new System.Drawing.Point(258, 6);
             this.lblStage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblStage.Name = "lblStage";
-            this.lblStage.Size = new System.Drawing.Size(41, 13);
+            this.lblStage.Size = new System.Drawing.Size(41, 15);
             this.lblStage.TabIndex = 25;
             this.lblStage.Text = "[Stage]";
             // 
@@ -200,8 +201,8 @@ namespace Chummer
             this.chkLimitList.AutoSize = true;
             this.chkLimitList.Checked = true;
             this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkLimitList, 2);
-            this.chkLimitList.Location = new System.Drawing.Point(304, 105);
+            this.tlpMain.SetColumnSpan(this.chkLimitList, 2);
+            this.chkLimitList.Location = new System.Drawing.Point(304, 107);
             this.chkLimitList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLimitList.Name = "chkLimitList";
             this.chkLimitList.Size = new System.Drawing.Size(189, 17);
@@ -213,7 +214,7 @@ namespace Chummer
             // 
             // cboStage
             // 
-            this.cboStage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboStage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboStage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboStage.FormattingEnabled = true;
             this.cboStage.Location = new System.Drawing.Point(3, 3);
@@ -224,62 +225,65 @@ namespace Chummer
             this.cboStage.Visible = false;
             this.cboStage.SelectionChangeCommitted += new System.EventHandler(this.cboStage_SelectionChangeCommitted);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblSearch, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkLimitList, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.treModules, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblStageLabel, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblBP, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblBPLabel, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 2, 3);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 2, 5);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
-            this.tableLayoutPanel1.TabIndex = 28;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 3;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
+            this.tlpMain.Controls.Add(this.lblSearch, 1, 0);
+            this.tlpMain.Controls.Add(this.chkLimitList, 1, 4);
+            this.tlpMain.Controls.Add(this.treModules, 0, 0);
+            this.tlpMain.Controls.Add(this.lblStageLabel, 1, 3);
+            this.tlpMain.Controls.Add(this.lblBP, 2, 1);
+            this.tlpMain.Controls.Add(this.lblBPLabel, 1, 1);
+            this.tlpMain.Controls.Add(this.lblSource, 2, 2);
+            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 2);
+            this.tlpMain.Controls.Add(this.flpStage, 2, 3);
+            this.tlpMain.Controls.Add(this.flpButtons, 2, 5);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 6;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(606, 423);
+            this.tlpMain.TabIndex = 28;
             // 
-            // flowLayoutPanel1
+            // flpStage
             // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.cboStage);
-            this.flowLayoutPanel1.Controls.Add(this.lblStage);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(351, 76);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(255, 25);
-            this.flowLayoutPanel1.TabIndex = 27;
-            this.flowLayoutPanel1.WrapContents = false;
+            this.flpStage.AutoSize = true;
+            this.flpStage.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpStage.Controls.Add(this.cboStage);
+            this.flpStage.Controls.Add(this.lblStage);
+            this.flpStage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpStage.Location = new System.Drawing.Point(351, 76);
+            this.flpStage.Margin = new System.Windows.Forms.Padding(0);
+            this.flpStage.Name = "flpStage";
+            this.flpStage.Size = new System.Drawing.Size(255, 27);
+            this.flpStage.TabIndex = 27;
+            this.flpStage.WrapContents = false;
             // 
-            // flowLayoutPanel2
+            // flpButtons
             // 
-            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel2.Controls.Add(this.cmdOKAdd);
-            this.flowLayoutPanel2.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(366, 397);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(237, 23);
-            this.flowLayoutPanel2.TabIndex = 28;
+            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpButtons.Controls.Add(this.cmdOK);
+            this.flpButtons.Controls.Add(this.cmdOKAdd);
+            this.flpButtons.Controls.Add(this.cmdCancel);
+            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtons.Location = new System.Drawing.Point(366, 397);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(237, 23);
+            this.flpButtons.TabIndex = 28;
             // 
             // frmSelectLifeModule
             // 
@@ -287,9 +291,8 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(624, 441);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(640, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectLifeModule";
             this.Padding = new System.Windows.Forms.Padding(9);
@@ -297,12 +300,12 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.Text = "Select Life Module";
             this.Load += new System.EventHandler(this.frmSelectLifeModule_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.flpStage.ResumeLayout(false);
+            this.flpStage.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -324,8 +327,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblStage;
         private System.Windows.Forms.CheckBox chkLimitList;
         private ElasticComboBox cboStage;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.FlowLayoutPanel flpStage;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
     }
 }

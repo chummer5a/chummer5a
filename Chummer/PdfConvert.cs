@@ -39,12 +39,14 @@ namespace Codaxy.WkHtmlToPdf
         public String FooterCenter { get; set; }
         public String FooterRight { get; set; }
         public object State { get; set; }
-        public Dictionary<String, String> Cookies { get; set; }
-        public Dictionary<String, String> ExtraParams { get; set; }
-        public String HeaderFontSize { get; set; }
-        public String FooterFontSize { get; set; }
-        public String HeaderFontName { get; set; }
-        public String FooterFontName { get; set; }
+
+        public Dictionary<string, string> Cookies { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> ExtraParams { get; } = new Dictionary<string, string>();
+        public string HeaderFontSize { get; set; }
+        public string FooterFontSize { get; set; }
+        public string HeaderFontName { get; set; }
+        public string FooterFontName { get; set; }
+
     }
 
     public class PdfConvertEnvironment

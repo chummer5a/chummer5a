@@ -970,6 +970,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    if (objXmlSelectedQuality == null)
+                        continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
                     string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
@@ -1364,7 +1366,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCostExpression = strValues[Math.Max(Math.Min(Level, strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 

@@ -10295,7 +10295,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
       </mods>
       <seats>1</seats>
     </vehicle>
@@ -10324,7 +10324,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10352,7 +10352,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
       </mods>
     </vehicle>
     <vehicle>
@@ -10380,7 +10380,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name rating="2" select="Chrome">Yerzed Out</name>
       </mods>
     </vehicle>
@@ -10409,7 +10409,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name>Off-Road Suspension</name>
       </mods>
     </vehicle>
@@ -10423,7 +10423,7 @@
       <avail>5</avail>
       <body>9</body>
       <category>Cars</category>
-      <cost>22000</cost>
+      <cost>26000</cost>
       <handling>1/3</handling>
       <pilot>1</pilot>
       <seats>4</seats>
@@ -10438,7 +10438,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name>Off-Road Suspension</name>
       </mods>
     </vehicle>
@@ -10452,7 +10452,7 @@
       <avail>10</avail>
       <body>9</body>
       <category>Cars</category>
-      <cost>22000</cost>
+      <cost>45000</cost>
       <handling>1/3</handling>
       <pilot>1</pilot>
       <seats>4</seats>
@@ -10467,7 +10467,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name rating="2" select="Chrome">Yerzed Out</name>
       </mods>
     </vehicle>
@@ -10496,7 +10496,7 @@
       </gears>
       <mods>
         <name rating="1">Life Support</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="2">Metahuman Adjustment</name>
         <name rating="3">Passenger Protection System</name>
         <name rating="4">Personal Armor</name>
       </mods>
@@ -10532,7 +10532,7 @@
         <name rating="3">Passenger Protection System</name>
         <name rating="6">Personal Armor</name>
         <name>GridLink</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name>Multifuel Engine</name>
         <name>Ram Plate</name>
         <name>Rigger Interface</name>
@@ -10568,7 +10568,7 @@
       </gears>
       <mods>
         <name>Amenities (Middle)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="3">Metahuman Adjustment</name>
         <name select="Open box storage">Special Equipment</name>
         <name rating="1">Yerzed Out</name>
       </mods>
@@ -10597,7 +10597,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Metahuman Adjustment</name>
+        <name rating="4">Metahuman Adjustment</name>
         <name>Multifuel Engine</name>
         <name select="Open box storage">Special Equipment</name>
       </mods>
@@ -10627,7 +10627,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="6">Metahuman Adjustment</name>
         <name>Multifuel Engine</name>
         <name>Satellite Link</name>
         <name select="Fishing nets and lines">Special Equipment</name>
@@ -10643,7 +10643,7 @@
       <armor>20</armor>
       <avail>24F</avail>
       <body>7</body>
-      <category>Tanks</category>
+      <category>Corpsec/Police/Military</category>
       <cost>200000</cost>
       <handling>4</handling>
       <pilot>4</pilot>
@@ -10665,7 +10665,7 @@
       </gears>
       <mods>
         <name>Amenities (Street)</name>
-        <name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
         <name>Rigger Cocoon</name>
         <name>Rigger Interface</name>
         <name>Searchlight</name>

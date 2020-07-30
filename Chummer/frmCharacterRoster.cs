@@ -26,6 +26,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -156,15 +157,12 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
-                            objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine
-                                                                                + LanguageManager.GetString(
-                                                                                    "String_Error",
-                                                                                    GlobalOptions.Language) +
-                                                                                LanguageManager.GetString(
-                                                                                    "String_Colon",
-                                                                                    GlobalOptions.Language)
-                                                                                + Environment.NewLine +
-                                                                                objCache.ErrorText;
+                            objCharacterNode.ToolTipText += Environment.NewLine
+                                                            + Environment.NewLine
+                                                            + LanguageManager.GetString("String_Error")
+                                                            + LanguageManager.GetString("String_Colon")
+                                                            + Environment.NewLine
+                                                            + objCache.ErrorText;
                         }
                         else
                             objCharacterNode.ForeColor = SystemColors.WindowText;
@@ -191,17 +189,15 @@ namespace Chummer
                 lstFavoritesNodes = new TreeNode[lstFavorites.Count];
             }
 
-            IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
+            List<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             Dictionary<string,string> dicWatch = new Dictionary<string, string>();
             int intWatchFolderCount = 0;
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
                 intWatchFolderCount++;
-                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories);
-                for(int i = 0; i < objFiles.Length; ++i)
+                foreach (string strFile in Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
                 {
-                    string strFile = objFiles[i];
                     // Make sure we're not loading a character that was already loaded by the MRU list.
                     if (lstFavorites.Contains(strFile) ||
                         lstRecents.Contains(strFile))
@@ -247,9 +243,9 @@ namespace Chummer
                 {
                     string strFile = objCharacterForm.CharacterObject.FileName;
                     // Make sure we're not loading a character that was already loaded by the MRU list.
-                    if(lstFavorites.Contains(strFile) ||
-                        lstRecents.Contains(strFile) ||
-                        dicWatch.ContainsValue(strFile))
+                    if(lstFavorites.Contains(strFile)
+                       || lstRecents.Contains(strFile)
+                       || dicWatch.ContainsValue(strFile))
                         continue;
 
                     lstRecents.Add(strFile);
@@ -283,9 +279,8 @@ namespace Chummer
 
                         if(blnAddFavoriteNode)
                         {
-                            for(int i = 0; i < lstFavoritesNodes.Length; i++)
+                            foreach (TreeNode objNode in lstFavoritesNodes)
                             {
-                                TreeNode objNode = lstFavoritesNodes[i];
                                 if(objNode != null)
                                     objFavoriteNode.Nodes.Add(objNode);
                             }
@@ -307,9 +302,8 @@ namespace Chummer
 
                         if(blnAddRecentNode)
                         {
-                            for(int i = 0; i < lstRecentsNodes.Length; i++)
+                            foreach (TreeNode objNode in lstRecentsNodes)
                             {
-                                TreeNode objNode = lstRecentsNodes[i];
                                 if(objNode != null)
                                     objRecentNode.Nodes.Add(objNode);
                             }
@@ -427,9 +421,8 @@ namespace Chummer
                 else
                 {
                     objFavoriteNode.Nodes.Clear();
-                    for (int i = 0; i < lstFavoritesNodes.Length; i++)
+                    foreach (TreeNode objNode in lstFavoritesNodes)
                     {
-                        TreeNode objNode = lstFavoritesNodes[i];
                         if(objNode != null)
                             objFavoriteNode.Nodes.Add(objNode);
                     }
@@ -448,9 +441,8 @@ namespace Chummer
                     try
                     {
                         objRecentNode.Nodes.Clear();
-                        for (int i = 0; i < lstRecentsNodes.Length; i++)
+                        foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            TreeNode objNode = lstRecentsNodes[i];
                             if (objNode != null)
                                 objRecentNode.Nodes.Add(objNode);
                         }
@@ -472,9 +464,8 @@ namespace Chummer
                 else
                 {
                     objWatchNode.Nodes.Clear();
-                    for(int i = 0; i < lstWatchNodes.Length; i++)
+                    foreach (TreeNode objNode in lstWatchNodes)
                     {
-                        TreeNode objNode = lstWatchNodes[i];
                         if(objNode != null)
                             objWatchNode.Nodes.Add(objNode);
                     }
@@ -576,15 +567,15 @@ namespace Chummer
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     }
 
-                    string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;
+                    StringBuilder sbdMetatype = new StringBuilder(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype);
 
                     if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                        strMetatype += LanguageManager.GetString("String_Space") + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                        sbdMetatype.Append(LanguageManager.GetString("String_Space")).Append('(').Append(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant).Append(')');
                     }
-                    lblMetatype.Text = strMetatype;
+                    lblMetatype.Text = sbdMetatype.ToString();
                 }
                 else
                     lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError");

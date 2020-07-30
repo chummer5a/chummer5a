@@ -729,7 +729,10 @@ namespace Chummer
                                 }
 
                                 foreach (Quality objQuality in lstOldPriorityQualities)
+                                {
+                                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                                     _objCharacter.Qualities.Remove(objQuality);
+                                }
 
                                 // Set starting magic
                                 int intTemp = 0;
@@ -997,11 +1000,11 @@ namespace Chummer
 
         private int SumToTen(bool blnDoUIUpdate = true)
         {
-            int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboTalent.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboSkills.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
-            value += Convert.ToInt32(cboResources.SelectedValue.ToString().Split(',')[_intBuildMethod], GlobalOptions.InvariantCultureInfo);
+            int value = Convert.ToInt32(cboHeritage.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboTalent.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboSkills.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
+            value += Convert.ToInt32(cboResources.SelectedValue.ToString().SplitNoAlloc(',').ElementAtOrDefault(_intBuildMethod), GlobalOptions.InvariantCultureInfo);
 
             if (blnDoUIUpdate)
                 lblSumtoTen.Text = value.ToString(GlobalOptions.CultureInfo) + '/' + _objCharacter.SumtoTen.ToString(GlobalOptions.CultureInfo);

@@ -20,30 +20,30 @@ using System;
 
 namespace Chummer
 {
-    public struct DependencyGraphNodeWithCondition<T> : IEquatable<DependencyGraphNodeWithCondition<T>>
+    public readonly struct DependencyGraphNodeWithCondition<T, T2> : IEquatable<DependencyGraphNodeWithCondition<T, T2>>
     {
-        public DependencyGraphNodeWithCondition(DependencyGraphNode<T> objNode, Func<bool> funcDependencyCondition)
+        public DependencyGraphNodeWithCondition(DependencyGraphNode<T, T2> objNode, Func<T2, bool> funcDependencyCondition)
         {
             Node = objNode;
             DependencyCondition = funcDependencyCondition;
         }
 
-        public DependencyGraphNode<T> Node { get; }
-        public Func<bool> DependencyCondition { get; }
+        public DependencyGraphNode<T, T2> Node { get; }
+        public Func<T2, bool> DependencyCondition { get; }
 
-        public static bool operator ==(DependencyGraphNodeWithCondition<T> objFirstEdge, DependencyGraphNodeWithCondition<T> objSecondEdge)
+        public static bool operator ==(DependencyGraphNodeWithCondition<T, T2> objFirstEdge, DependencyGraphNodeWithCondition<T, T2> objSecondEdge)
         {
             return ((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
         }
 
-        public static bool operator !=(DependencyGraphNodeWithCondition<T> objFirstEdge, DependencyGraphNodeWithCondition<T> objSecondEdge)
+        public static bool operator !=(DependencyGraphNodeWithCondition<T, T2> objFirstEdge, DependencyGraphNodeWithCondition<T, T2> objSecondEdge)
         {
             return !((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is DependencyGraphNodeWithCondition<T> objOtherEdge && Equals(objOtherEdge);
+            return obj is DependencyGraphNodeWithCondition<T, T2> objOtherEdge && Equals(objOtherEdge);
         }
 
         public override int GetHashCode()
@@ -56,7 +56,7 @@ namespace Chummer
             return Node?.ToString() ?? string.Empty;
         }
 
-        public bool Equals(DependencyGraphNodeWithCondition<T> other)
+        public bool Equals(DependencyGraphNodeWithCondition<T, T2> other)
         {
             return (Node == null && other.Node == null) || Node?.Equals(other.Node) == true;
         }

@@ -350,7 +350,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -929,7 +929,7 @@ namespace Chummer
         #endregion
 
         #region UI Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality,TreeView treQualities)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
                  OriginSource == QualitySource.Improvement ||
@@ -951,7 +951,8 @@ namespace Chummer
             };
             if (Suppressed)
             {
-                objNode.NodeFont = new Font(objNode.NodeFont, FontStyle.Strikeout);
+                //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
+                objNode.NodeFont = new Font(treQualities.Font, FontStyle.Strikeout);
             }
 
             return objNode;

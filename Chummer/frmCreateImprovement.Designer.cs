@@ -48,9 +48,9 @@ namespace Chummer
             this.chkApplyToRating = new System.Windows.Forms.CheckBox();
             this.chkFree = new System.Windows.Forms.CheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
             this.chkIgnoreLimits = new System.Windows.Forms.CheckBox();
             this.txtHelp = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).BeginInit();
@@ -58,8 +58,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAug)).BeginInit();
             this.tlpMain.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
+            this.flpButtons.SuspendLayout();
+            this.flpSelectValue.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblImprovementType
@@ -321,10 +321,10 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblMin, 0, 4);
             this.tlpMain.Controls.Add(this.lblSelect, 0, 2);
             this.tlpMain.Controls.Add(this.lblVal, 0, 3);
-            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 0, 8);
+            this.tlpMain.Controls.Add(this.flpButtons, 0, 8);
             this.tlpMain.Controls.Add(this.txtSelect, 1, 7);
             this.tlpMain.Controls.Add(this.txtTranslateSelection, 1, 2);
-            this.tlpMain.Controls.Add(this.flowLayoutPanel2, 3, 2);
+            this.tlpMain.Controls.Add(this.flpSelectValue, 3, 2);
             this.tlpMain.Controls.Add(this.txtHelp, 4, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
@@ -345,19 +345,19 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(686, 263);
             this.tlpMain.TabIndex = 20;
             // 
-            // flowLayoutPanel1
+            // flpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.SetColumnSpan(this.flowLayoutPanel1, 5);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(527, 233);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 27);
-            this.flowLayoutPanel1.TabIndex = 20;
+            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.SetColumnSpan(this.flpButtons, 5);
+            this.flpButtons.Controls.Add(this.cmdOK);
+            this.flpButtons.Controls.Add(this.cmdCancel);
+            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtons.Location = new System.Drawing.Point(527, 233);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(156, 27);
+            this.flpButtons.TabIndex = 20;
             // 
             // txtTranslateSelection
             // 
@@ -370,17 +370,17 @@ namespace Chummer
             this.txtTranslateSelection.TabIndex = 21;
             this.txtTranslateSelection.Visible = false;
             // 
-            // flowLayoutPanel2
+            // flpSelectValue
             // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel2.Controls.Add(this.cmdChangeSelection);
-            this.flowLayoutPanel2.Controls.Add(this.chkIgnoreLimits);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(295, 53);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(174, 29);
-            this.flowLayoutPanel2.TabIndex = 22;
+            this.flpSelectValue.AutoSize = true;
+            this.flpSelectValue.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpSelectValue.Controls.Add(this.cmdChangeSelection);
+            this.flpSelectValue.Controls.Add(this.chkIgnoreLimits);
+            this.flpSelectValue.Location = new System.Drawing.Point(295, 53);
+            this.flpSelectValue.Margin = new System.Windows.Forms.Padding(0);
+            this.flpSelectValue.Name = "flpSelectValue";
+            this.flpSelectValue.Size = new System.Drawing.Size(174, 29);
+            this.flpSelectValue.TabIndex = 22;
             // 
             // chkIgnoreLimits
             // 
@@ -426,7 +426,7 @@ namespace Chummer
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmCreateImprovement";
-            this.Padding = new System.Windows.Forms.Padding(9, 9, 9, 9);
+            this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreateImprovement";
@@ -438,10 +438,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudAug)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
+            this.flpSelectValue.ResumeLayout(false);
+            this.flpSelectValue.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -469,9 +469,9 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkApplyToRating;
         private System.Windows.Forms.CheckBox chkFree;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.TextBox txtTranslateSelection;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flpSelectValue;
         private System.Windows.Forms.CheckBox chkIgnoreLimits;
         private System.Windows.Forms.TextBox txtHelp;
     }

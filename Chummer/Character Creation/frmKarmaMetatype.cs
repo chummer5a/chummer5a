@@ -183,7 +183,7 @@ namespace Chummer
         private void MetatypeSelected()
         {
             Cursor = Cursors.WaitCursor;
-            string strSelectedMetatype = lstMetatypes.SelectedValue.ToString();
+            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
                 string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
@@ -423,12 +423,17 @@ namespace Chummer
                 {
                     new ListItem(Guid.Empty, LanguageManager.GetString("String_None"))
                 };
-                lstMetavariants.AddRange(
-                    from XPathNavigator objXmlMetavariant in
-                        objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]")
-                    select new ListItem(objXmlMetavariant.SelectSingleNode("id")?.Value,
-                        objXmlMetavariant.SelectSingleNode("translate")?.Value ??
-                        objXmlMetavariant.SelectSingleNode("name")?.Value));
+                foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]"))
+                {
+                    string strId = objXmlMetavariant.SelectSingleNode("id")?.Value;
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        lstMetavariants.Add(new ListItem(strId,
+                            objXmlMetavariant.SelectSingleNode("translate")?.Value
+                            ?? objXmlMetavariant.SelectSingleNode("name")?.Value
+                            ?? LanguageManager.GetString("String_Unknown")));
+                    }
+                }
 
                 // Retrieve the list of Metavariants for the selected Metatype.
 
@@ -436,6 +441,7 @@ namespace Chummer
                 string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo);
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
+                cboMetavariant.DataSource = null;
                 cboMetavariant.ValueMember = nameof(ListItem.Value);
                 cboMetavariant.DisplayMember = nameof(ListItem.Name);
                 cboMetavariant.DataSource = lstMetavariants;
@@ -481,7 +487,9 @@ namespace Chummer
                                                                        objXmlMetatype.SelectSingleNode("agimax")?.Value == "0" &&
                                                                        objXmlMetatype.SelectSingleNode("reamax")?.Value == "0" &&
                                                                        objXmlMetatype.SelectSingleNode("strmax")?.Value == "0" &&
-                                                                       objXmlMetatype.SelectSingleNode("magmin")?.Value.Contains('F') != true ? "String_Level" : "String_Force");
+                                                                       objXmlMetatype.SelectSingleNode("magmin")?.Value.Contains('F') != true
+                            ? "String_Level"
+                            : "String_Force");
                         nudForce.Maximum = 100;
                     }
                 }
@@ -500,12 +508,13 @@ namespace Chummer
                 // Clear the Metavariant list if nothing is currently selected.
                 List<ListItem> lstMetavariants = new List<ListItem>(5)
                 {
-                    new ListItem("None", LanguageManager.GetString("String_None"))
+                    new ListItem(Guid.Empty, LanguageManager.GetString("String_None"))
                 };
 
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
+                cboMetavariant.DataSource = null;
                 cboMetavariant.ValueMember = nameof(ListItem.Value);
                 cboMetavariant.DisplayMember = nameof(ListItem.Name);
                 cboMetavariant.DataSource = lstMetavariants;
@@ -527,11 +536,19 @@ namespace Chummer
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedCategory))
             {
-                List<ListItem> lstMetatypeItems =
-                    _xmlBaseMetatypeDataNode.Select("metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedCategory + "\"]")
-                        .Cast<XPathNavigator>()
-                        .Select(objXmlMetatype => new ListItem(objXmlMetatype.SelectSingleNode("id")?.Value,
-                            objXmlMetatype.SelectSingleNode("translate")?.Value ?? objXmlMetatype.SelectSingleNode("name")?.Value)).ToList();
+                List<ListItem> lstMetatypeItems = new List<ListItem>();
+                foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(
+                    "metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedCategory + "\"]"))
+                {
+                    string strId = xmlMetatype.SelectSingleNode("id")?.Value;
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        lstMetatypeItems.Add(new ListItem(strId,
+                            xmlMetatype.SelectSingleNode("translate")?.Value
+                            ?? xmlMetatype.SelectSingleNode("name")?.Value
+                            ?? LanguageManager.GetString("String_Unknown")));
+                    }
+                }
 
                 lstMetatypeItems.Sort(CompareListItems.CompareNames);
 
@@ -541,6 +558,7 @@ namespace Chummer
                     strOldSelected = _objCharacter.GetNode(true)?.SelectSingleNode("id")?.Value ?? string.Empty;
                 _blnLoading = true;
                 lstMetatypes.BeginUpdate();
+                lstMetatypes.DataSource = null;
                 lstMetatypes.ValueMember = nameof(ListItem.Value);
                 lstMetatypes.DisplayMember = nameof(ListItem.Name);
                 lstMetatypes.DataSource = lstMetatypeItems;

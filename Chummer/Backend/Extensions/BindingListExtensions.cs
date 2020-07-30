@@ -38,9 +38,12 @@ namespace Chummer
 
         internal static void MergeInto<T>(this BindingList<T> list, T objNewItem, Comparison<T> comparison, Action<T,T> funcMergeIfEquals = null)
         {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-            if (objNewItem == null) throw new ArgumentNullException(nameof(objNewItem));
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
+            if (objNewItem == null)
+                throw new ArgumentNullException(nameof(objNewItem));
+            if (comparison == null)
+                throw new ArgumentNullException(nameof(comparison));
             //if (list.Count == 0)
             //{
             //    list.Add(item);
@@ -58,7 +61,7 @@ namespace Chummer
                     funcMergeIfEquals?.Invoke(objLoopExistingItem, objNewItem);
                     return;
                 }
-                else if (intCompareResult > 0 && intMergeIndex == intCount)
+                if (intCompareResult > 0 && intMergeIndex == intCount)
                     intMergeIndex = i;
             }
 
@@ -67,7 +70,7 @@ namespace Chummer
 
         internal static void RemoveAll<T>(this BindingList<T> list, Predicate<T> predicate)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            for (int i = list.Count - 1; i >= 0; --i)
             {
                 if (predicate(list[i]))
                 {

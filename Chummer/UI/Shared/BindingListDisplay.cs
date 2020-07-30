@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -156,7 +157,12 @@ namespace Chummer.UI.Shared
 
             objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
 
-            int[] lstOldDisplayIndex = _lstDisplayIndex.ToArray();
+            // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
+            Span<int> aintOldDisplayIndex = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit
+                ? new int[_lstDisplayIndex.Count]
+                : stackalloc int[_lstDisplayIndex.Count];
+            for (int i = 0; i < aintOldDisplayIndex.Length; ++i)
+                aintOldDisplayIndex[i] = _lstDisplayIndex[i];
             _lstDisplayIndex.Clear();
             _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
 
@@ -166,7 +172,7 @@ namespace Chummer.UI.Shared
             {
                 for (int i = 0; i < _ablnRendered.Count; ++i)
                 {
-                    _ablnRendered[i] = _ablnRendered[i] && _lstDisplayIndex[i] == lstOldDisplayIndex[i];
+                    _ablnRendered[i] = _ablnRendered[i] && _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                 }
             }
         }
@@ -257,13 +263,13 @@ namespace Chummer.UI.Shared
                 if (_intOffScreenChunkSize > 1)
                 {
                     _intOffScreenChunkSize /= 2;
-                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize);
+                    Log.Info("Offscreen chunk render size decreased to " + _intOffScreenChunkSize.ToString(GlobalOptions.InvariantCultureInfo));
                 }
             }
             else if (sw.Elapsed < TimeSpan.FromSeconds(0.05f))
             {
                 _intOffScreenChunkSize *= 2;
-                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize);
+                Log.Info("Offscreen chunk render size increased to " + _intOffScreenChunkSize.ToString(GlobalOptions.InvariantCultureInfo));
             }
         }
 
@@ -562,7 +568,7 @@ namespace Chummer.UI.Shared
                 _parent.ChildPropertyChanged?.Invoke(sender, e);
                 if (changes)
                 {
-                    _parent.RedrawControls(new[] { this });
+                    _parent.RedrawControls(this.Yield());
                 }
             }
 
@@ -669,20 +675,16 @@ namespace Chummer.UI.Shared
                     {
                         return xindex.CompareTo(yindex);
                     }
-                    else
-                    {
-                        Utils.BreakIfDebug();
-                        return 1;
-                    }
-                }
-                else
-                {
-                    Utils.BreakIfDebug();
-                    if (y != null && (x == null || _index.ContainsKey(y)))
-                        return -1;
 
-                    return 0;
+                    Utils.BreakIfDebug();
+                    return 1;
                 }
+
+                Utils.BreakIfDebug();
+                if (y != null && (x == null || _index.ContainsKey(y)))
+                    return -1;
+
+                return 0;
             }
 
             public IndexComparer(IReadOnlyList<TType> list)

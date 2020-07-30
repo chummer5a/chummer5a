@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
@@ -33,7 +34,7 @@ namespace Chummer
         {
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
-                return default(T);
+                return default;
             }
 
             return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid);
@@ -48,10 +49,34 @@ namespace Chummer
         {
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
-                return default(T);
+                return default;
             }
 
             return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid);
+        }
+
+        /// <summary>
+        /// Syntactic sugar to wraps this object instance into an IEnumerable consisting of a single item.
+        /// </summary>
+        /// <typeparam name="T">Type of the object.</typeparam>
+        /// <param name="objItem">The instance that will be wrapped. </param>
+        /// <returns>An IEnumerable consisting of just <paramref name="objItem"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IEnumerable<T> Yield<T>(this T objItem)
+        {
+            return ToEnumerable(objItem); // stealth array allocation through params is still faster than yield return
+        }
+
+        /// <summary>
+        /// Making use of params for syntactic sugar, wraps a list of objects into an IEnumerable consisting of them.
+        /// </summary>
+        /// <typeparam name="T">Type of the object.</typeparam>
+        /// <param name="lstItems">The list of objects that will be wrapped. </param>
+        /// <returns>An IEnumerable consisting of <paramref name="lstItems"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IEnumerable<T> ToEnumerable<T>(params T[] lstItems)
+        {
+            return lstItems; // faster and lighter on memory than yield return
         }
     }
 }

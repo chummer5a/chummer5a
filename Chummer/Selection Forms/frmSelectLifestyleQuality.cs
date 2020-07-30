@@ -210,7 +210,7 @@ namespace Chummer
                 return strAllowedLifestyles;
             }
             int intMin = int.MaxValue;
-            foreach (string strLifesytle in strAllowedLifestyles.Split(','))
+            foreach (string strLifesytle in strAllowedLifestyles.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 if (s_LstLifestylesSorted.Contains(strLifesytle) && s_LstLifestylesSorted.IndexOf(strLifesytle) < intMin)
                 {
@@ -270,9 +270,9 @@ namespace Chummer
                     lstLifestyleQualities.SelectedIndex += 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
-                    {
-                        lstLifestyleQualities.SelectedIndex = 0;
-                    }
+                {
+                    lstLifestyleQualities.SelectedIndex = 0;
+                }
             }
             if (e.KeyCode == Keys.Up)
             {
@@ -338,7 +338,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
-        private IList<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
@@ -693,12 +693,11 @@ namespace Chummer
                             {
                                 // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                                 int intTotal = 0;
-                                string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
-                                for (int i = 0; i <= strGroups.Length - 1; i++)
+                                foreach (string strGroup in objXmlRequired["skillgroups"].InnerText.SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries))
                                 {
                                     foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
                                     {
-                                        if (objGroup.Name == strGroups[i])
+                                        if (objGroup.Name == strGroup)
                                         {
                                             intTotal += objGroup.Rating;
                                             break;
@@ -946,12 +945,11 @@ namespace Chummer
                             {
                                 // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                                 int intTotal = 0;
-                                string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
-                                for (int i = 0; i <= strGroups.Length - 1; i++)
+                                foreach (string strGroup in objXmlRequired["skillgroups"].InnerText.SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries))
                                 {
                                     foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
                                     {
-                                        if (objGroup.Name == strGroups[i])
+                                        if (objGroup.Name == strGroup)
                                         {
                                             intTotal += objGroup.Rating;
                                             break;

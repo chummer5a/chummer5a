@@ -43,9 +43,9 @@ namespace Chummer
             this.lblDurationLabel = new System.Windows.Forms.Label();
             this.lblFV = new System.Windows.Forms.Label();
             this.lblFVLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +54,7 @@ namespace Chummer
             this.lstComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstComplexForms.Location = new System.Drawing.Point(3, 3);
             this.lstComplexForms.Name = "lstComplexForms";
-            this.tableLayoutPanel1.SetRowSpan(this.lstComplexForms, 6);
+            this.tlpMain.SetRowSpan(this.lstComplexForms, 6);
             this.lstComplexForms.Size = new System.Drawing.Size(295, 417);
             this.lstComplexForms.TabIndex = 6;
             this.lstComplexForms.SelectedIndexChanged += new System.EventHandler(this.lstComplexForms_SelectedIndexChanged);
@@ -215,46 +215,44 @@ namespace Chummer
             this.lblFVLabel.Tag = "Label_SelectComplexForm_FV";
             this.lblFVLabel.Text = "FV:";
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.txtSearch, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblDurationLabel, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblSearchLabel, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lstComplexForms, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblDuration, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblFVLabel, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblFV, 2, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblTargetLabel, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblTarget, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 5);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
-            this.tableLayoutPanel1.TabIndex = 14;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 3;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
+            this.tlpMain.Controls.Add(this.lblDurationLabel, 1, 2);
+            this.tlpMain.Controls.Add(this.lblSearchLabel, 1, 0);
+            this.tlpMain.Controls.Add(this.lstComplexForms, 0, 0);
+            this.tlpMain.Controls.Add(this.lblDuration, 2, 2);
+            this.tlpMain.Controls.Add(this.lblFVLabel, 1, 3);
+            this.tlpMain.Controls.Add(this.lblFV, 2, 3);
+            this.tlpMain.Controls.Add(this.lblTargetLabel, 1, 1);
+            this.tlpMain.Controls.Add(this.lblTarget, 2, 1);
+            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 4);
+            this.tlpMain.Controls.Add(this.lblSource, 2, 4);
+            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 1, 5);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 6;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(606, 423);
+            this.tlpMain.TabIndex = 14;
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
+            this.tlpMain.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
@@ -272,7 +270,7 @@ namespace Chummer
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -283,8 +281,8 @@ namespace Chummer
             this.Tag = "Title_SelectComplexForm";
             this.Text = "Select a Complex Form";
             this.Load += new System.EventHandler(this.frmSelectComplexForm_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -308,7 +306,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDurationLabel;
         private System.Windows.Forms.Label lblFV;
         private System.Windows.Forms.Label lblFVLabel;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

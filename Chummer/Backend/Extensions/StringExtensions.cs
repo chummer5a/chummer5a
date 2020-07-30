@@ -17,6 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -82,17 +84,37 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            char[] achrNewChars = new char[intLength];
-            // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
-            int intCurrent = 0;
-            for (int i = 0; i < intLength; ++i)
+            if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char chrLoop = strInput[i];
-                if (chrLoop != chrToDelete)
-                    achrNewChars[intCurrent++] = chrLoop;
+                char[] achrNewChars = new char[intLength];
+                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                int intCurrent = 0;
+                for (int i = 0; i < intLength; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    if (chrLoop != chrToDelete)
+                        achrNewChars[intCurrent++] = chrLoop;
+                }
+
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrent);
             }
-            // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-            return new string(achrNewChars, 0, intCurrent);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intLength];
+                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                int intCurrent = 0;
+                for (int i = 0; i < intLength; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    if (chrLoop != chrToDelete)
+                        achrNewChars[intCurrent++] = chrLoop;
+                }
+
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrent);
+            }
         }
 
         /// <summary>
@@ -111,24 +133,53 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            char[] achrNewChars = new char[intLength];
-            // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
-            int intCurrent = 0;
-            for (int i = 0; i < intLength; ++i)
+            if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char chrLoop = strInput[i];
-                for (int j = 0; j < intDeleteLength; ++j)
+                char[] achrNewChars = new char[intLength];
+                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
+                int intCurrent = 0;
+                for (int i = 0; i < intLength; ++i)
                 {
-                    if (chrLoop == achrToDelete[j])
+                    char chrLoop = strInput[i];
+                    for (int j = 0; j < intDeleteLength; ++j)
                     {
-                        goto SkipChar;
+                        if (chrLoop == achrToDelete[j])
+                        {
+                            goto SkipChar;
+                        }
                     }
+
+                    achrNewChars[intCurrent++] = chrLoop;
+                    SkipChar: ;
                 }
-                achrNewChars[intCurrent++] = chrLoop;
-            SkipChar:;
+
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrent);
             }
-            // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-            return new string(achrNewChars, 0, intCurrent);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intLength];
+                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
+                int intCurrent = 0;
+                for (int i = 0; i < intLength; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    for (int j = 0; j < intDeleteLength; ++j)
+                    {
+                        if (chrLoop == achrToDelete[j])
+                        {
+                            goto SkipChar;
+                        }
+                    }
+
+                    achrNewChars[intCurrent++] = chrLoop;
+                    SkipChar:;
+                }
+
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrent);
+            }
         }
 
         /// <summary>
@@ -158,32 +209,61 @@ namespace Chummer
             if (intCurrentEnd == -1)
                 return strInput;
 
-            // Create CharArray in which we will store the new string
-            char[] achrNewChars = new char[intLength];
-
-            // Logic is to read the input string into the CharArray up to the next instance of the substring, then jump over the substring's length and repeat until no more substrings are found
-            int intCurrentLength = 0;
-            int intCurrentReadPosition = 0;
-            do
+            if (intLength > GlobalOptions.MaxStackLimit)
             {
-                for (; intCurrentReadPosition < intCurrentEnd; ++intCurrentReadPosition)
+                // Create CharArray in which we will store the new string
+                char[] achrNewChars = new char[intLength];
+                // Logic is to read the input string into the CharArray up to the next instance of the substring, then jump over the substring's length and repeat until no more substrings are found
+                int intCurrentLength = 0;
+                int intCurrentReadPosition = 0;
+                do
+                {
+                    for (; intCurrentReadPosition < intCurrentEnd; ++intCurrentReadPosition)
+                    {
+                        achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
+                    }
+
+                    intCurrentReadPosition += intToDeleteLength;
+                    intCurrentEnd = strInput.IndexOf(strSubstringToDelete, intCurrentReadPosition, eComparison);
+                } while (intCurrentEnd != -1);
+
+                // Copy the remainder of the string once there are no more needles to remove
+                for (; intCurrentReadPosition < intLength; ++intCurrentReadPosition)
                 {
                     achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
                 }
 
-                intCurrentReadPosition += intToDeleteLength;
-                intCurrentEnd = strInput.IndexOf(strSubstringToDelete, intCurrentReadPosition, eComparison);
+                // Create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrentLength);
             }
-            while (intCurrentEnd != -1);
-
-            // Copy the remainder of the string once there are no more needles to remove
-            for (; intCurrentReadPosition < intLength; ++intCurrentReadPosition)
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
             {
-                achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
-            }
+                // Create CharArray in which we will store the new string
+                char* achrNewChars = stackalloc char[intLength];
+                // Logic is to read the input string into the CharArray up to the next instance of the substring, then jump over the substring's length and repeat until no more substrings are found
+                int intCurrentLength = 0;
+                int intCurrentReadPosition = 0;
+                do
+                {
+                    for (; intCurrentReadPosition < intCurrentEnd; ++intCurrentReadPosition)
+                    {
+                        achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
+                    }
 
-            // Create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-            return new string(achrNewChars, 0, intCurrentLength);
+                    intCurrentReadPosition += intToDeleteLength;
+                    intCurrentEnd = strInput.IndexOf(strSubstringToDelete, intCurrentReadPosition, eComparison);
+                } while (intCurrentEnd != -1);
+
+                // Copy the remainder of the string once there are no more needles to remove
+                for (; intCurrentReadPosition < intLength; ++intCurrentReadPosition)
+                {
+                    achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
+                }
+
+                // Create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrentLength);
+            }
         }
 
         /// <summary>
@@ -260,7 +340,22 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new []{chrSeparator}, eSplitOptions);
+            return strInput.SplitNoAlloc(chrSeparator, eSplitOptions).ToArray();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="strSeparator">Separator to use.</param>
+        /// <param name="eSplitOptions">String split options.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, string strSeparator, StringSplitOptions eSplitOptions)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.SplitNoAlloc(strSeparator, eSplitOptions).ToArray();
         }
 
         /// <summary>
@@ -275,6 +370,82 @@ namespace Chummer
             if (strHaystack == null)
                 throw new ArgumentNullException(nameof(strHaystack));
             return strHaystack.IndexOf(chrNeedle) != -1;
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            int intLoopLength;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                yield return strInput;
+                yield break;
+            }
+            int intLoopLength;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + strSplit.Length)
+            {
+                intLoopLength = strInput.IndexOf(strSplit, intStart, StringComparison.Ordinal);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, params char[] achrSplit)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            int intLoopLength;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                yield return intLoopLength != 0 ? strInput.Substring(intStart, intLoopLength) : string.Empty;
+            }
         }
 
         /// <summary>
@@ -293,31 +464,64 @@ namespace Chummer
                 return strInput;
             if (funcIsWhiteSpace == null)
                 funcIsWhiteSpace = char.IsWhiteSpace;
-            char[] achrNewChars = new char[intLength];
-            // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
-            int intCurrent = 0;
-            // Start as true so that whitespace at the first character is trimmed as well
-            bool blnLastCharWasWhiteSpace = true;
-            for (int i = 0; i < intLength; ++i)
+            if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char chrLoop = strInput[i];
-                // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
-                if (funcIsWhiteSpace(chrLoop))
+                char[] achrNewChars = new char[intLength];
+                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
+                int intCurrent = 0;
+                // Start as true so that whitespace at the first character is trimmed as well
+                bool blnLastCharWasWhiteSpace = true;
+                for (int i = 0; i < intLength; ++i)
                 {
-                    if (!blnLastCharWasWhiteSpace)
-                        achrNewChars[intCurrent++] = chrWhiteSpace;
-                    blnLastCharWasWhiteSpace = true;
+                    char chrLoop = strInput[i];
+                    // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
+                    if (funcIsWhiteSpace(chrLoop))
+                    {
+                        if (!blnLastCharWasWhiteSpace)
+                            achrNewChars[intCurrent++] = chrWhiteSpace;
+                        blnLastCharWasWhiteSpace = true;
+                    }
+                    else
+                    {
+                        achrNewChars[intCurrent++] = chrLoop;
+                        blnLastCharWasWhiteSpace = false;
+                    }
                 }
-                else
-                {
-                    achrNewChars[intCurrent++] = chrLoop;
-                    blnLastCharWasWhiteSpace = false;
-                }
-            }
 
-            // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
-            // If the last char is whitespace, we don't copy that, either.
-            return new string(achrNewChars, 0, blnLastCharWasWhiteSpace ? intCurrent - 1 : intCurrent);
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
+                // If the last char is whitespace, we don't copy that, either.
+                return new string(achrNewChars, 0, blnLastCharWasWhiteSpace ? intCurrent - 1 : intCurrent);
+            }
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                // Create CharArray in which we will store the new string
+                char* achrNewChars = stackalloc char[intLength];
+                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
+                int intCurrent = 0;
+                // Start as true so that whitespace at the first character is trimmed as well
+                bool blnLastCharWasWhiteSpace = true;
+                for (int i = 0; i < intLength; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
+                    if (funcIsWhiteSpace(chrLoop))
+                    {
+                        if (!blnLastCharWasWhiteSpace)
+                            achrNewChars[intCurrent++] = chrWhiteSpace;
+                        blnLastCharWasWhiteSpace = true;
+                    }
+                    else
+                    {
+                        achrNewChars[intCurrent++] = chrLoop;
+                        blnLastCharWasWhiteSpace = false;
+                    }
+                }
+
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
+                // If the last char is whitespace, we don't copy that, either.
+                return new string(achrNewChars, 0, blnLastCharWasWhiteSpace ? intCurrent - 1 : intCurrent);
+            }
         }
 
         /// <summary>
@@ -738,9 +942,9 @@ namespace Chummer
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheapReplace(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static StringBuilder CheapReplace(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
-            sbdInput.CheapReplace(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
+            return sbdInput.CheapReplace(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
         }
 
         /// <summary>
@@ -754,7 +958,7 @@ namespace Chummer
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheapReplace(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static StringBuilder CheapReplace(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
             if (sbdInput?.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
             {
@@ -770,6 +974,8 @@ namespace Chummer
                     sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison));
                 }
             }
+
+            return sbdInput;
         }
 
         /// <summary>
@@ -1008,9 +1214,7 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            if (string.IsNullOrEmpty(strInput))
-                return false;
-            return rgxHtmlTagExpression.IsMatch(strInput);
+            return !string.IsNullOrEmpty(strInput) && rgxHtmlTagExpression.IsMatch(strInput);
         }
 
         private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",

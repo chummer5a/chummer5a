@@ -274,8 +274,8 @@ namespace Chummer
                     int intExtendedCount = 0;
                     if (objListToCheck != null || blnCheckCyberwareChildren)
                     {
-                        var lstToCheck = objListToCheck?.ToList() ?? new List<IHasName>(1);
-                        string strNameNode = xmlNode.SelectSingleNode("name")?.Value;
+                        List<IHasName> lstToCheck = objListToCheck?.ToList();
+                        string strNameNode = xmlNode.SelectSingleNode("name")?.Value ?? string.Empty;
                         if (blnCheckCyberwareChildren)
                         {
                             intCount = string.IsNullOrEmpty(strLocation)
@@ -283,7 +283,7 @@ namespace Chummer
                                 : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && strNameNode == x.Name);
                         }
                         else
-                            intCount = lstToCheck.Count(objItem => strNameNode == objItem.Name);
+                            intCount = lstToCheck?.Count(objItem => strNameNode == objItem.Name) ?? 0;
                         intExtendedCount = intCount;
                         // In case one item is split up into multiple entries with different names, e.g. Indomitable quality, we need to be able to check all those entries against the limit
                         XPathNavigator xmlIncludeInLimit = xmlNode.SelectSingleNode("includeinlimit");
@@ -306,7 +306,7 @@ namespace Chummer
                                     : objCharacter.Cyberware.DeepCount(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount) && x.Location == strLocation && lstNamesIncludedInLimit.Any(strName => strName == x.Name));
                             }
                             else
-                                intExtendedCount = lstToCheck.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name));
+                                intExtendedCount = lstToCheck?.Count(objItem => lstNamesIncludedInLimit.Any(objLimitName => objLimitName == objItem.Name)) ?? 0;
                         }
                     }
                     if (intCount >= intLimit || intExtendedCount >= intExtendedLimit)
@@ -317,7 +317,7 @@ namespace Chummer
                                 string.Format(
                                     GlobalOptions.CultureInfo,
                                     LanguageManager.GetString("Message_SelectGeneric_Limit"),
-                                    strLocalName, intLimit == 0 ? "1" : intLimit.ToString(GlobalOptions.CultureInfo)),
+                                    strLocalName, intLimit == 0 ? 1 : intLimit),
                                 string.Format(
                                     GlobalOptions.CultureInfo,
                                     LanguageManager.GetString("MessageTitle_SelectGeneric_Limit"),
@@ -620,7 +620,7 @@ namespace Chummer
                         string strEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
                         {
-                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.Split(','));
+                            HashSet<string> setEssNodeGradeAttributeText = new HashSet<string>(strEssNodeGradeAttributeText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
                             decimal decGrade =
                                 objCharacter.Cyberware.Where(
                                         objCyberware =>
@@ -753,7 +753,7 @@ namespace Chummer
                     StringBuilder sbdResultName = new StringBuilder(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_OneOf"));
                     foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                     {
-                        bool blnLoopResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage);
+                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage) || blnResult;
                         if (blnResult && !blnShowMessage)
                             break;
                         sbdResultName.Append(strLoopResult.Replace(Environment.NewLine + '\t', Environment.NewLine + '\t' + '\t'));
@@ -1103,7 +1103,7 @@ namespace Chummer
                     {
                         // Check if the total combined Ratings of Skill Groups adds up to a particular total.
                         int intTotal = 0;
-                        string[] strGroups = xmlNode.SelectSingleNode("skillgroups")?.Value.Split('+');
+                        string[] strGroups = xmlNode.SelectSingleNode("skillgroups")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
                         StringBuilder objOutputString = new StringBuilder(Environment.NewLine + '\t');
                         if (strGroups != null)
                         {
@@ -1348,7 +1348,7 @@ namespace Chummer
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
             if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
-                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                 strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
             }
 
@@ -1402,7 +1402,7 @@ namespace Chummer
             {
                 if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
                 else if (strCost.StartsWith("Variable", StringComparison.Ordinal))

@@ -45,9 +45,9 @@ namespace Chummer
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.cmdChangeColour = new System.Windows.Forms.Button();
             this.chkFreeContact = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -249,54 +249,53 @@ namespace Chummer
             this.chkFreeContact.UseVisualStyleBackColor = true;
             this.chkFreeContact.CheckedChanged += new System.EventHandler(this.chkFreeContact_CheckedChanged);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.chkFreeContact, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblGroupNameLabel, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblMembershipLabel, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.txtGroupName, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblAreaOfInfluenceLabel, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblTotalConnectionModifier, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblMagicalResourcesLabel, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblTotalConnectionModifierLabel, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblMatrixResourcesLabel, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.cboMatrixResources, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.cboMembership, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cboMagicalResources, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.cboAreaOfInfluence, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 8);
-            this.tableLayoutPanel1.Controls.Add(this.cmdChangeColour, 1, 6);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 9;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(366, 218);
-            this.tableLayoutPanel1.TabIndex = 16;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.chkFreeContact, 0, 6);
+            this.tlpMain.Controls.Add(this.lblGroupNameLabel, 0, 0);
+            this.tlpMain.Controls.Add(this.lblMembershipLabel, 0, 1);
+            this.tlpMain.Controls.Add(this.txtGroupName, 1, 0);
+            this.tlpMain.Controls.Add(this.lblAreaOfInfluenceLabel, 0, 2);
+            this.tlpMain.Controls.Add(this.lblTotalConnectionModifier, 1, 5);
+            this.tlpMain.Controls.Add(this.lblMagicalResourcesLabel, 0, 3);
+            this.tlpMain.Controls.Add(this.lblTotalConnectionModifierLabel, 0, 5);
+            this.tlpMain.Controls.Add(this.lblMatrixResourcesLabel, 0, 4);
+            this.tlpMain.Controls.Add(this.cboMatrixResources, 1, 4);
+            this.tlpMain.Controls.Add(this.cboMembership, 1, 1);
+            this.tlpMain.Controls.Add(this.cboMagicalResources, 1, 3);
+            this.tlpMain.Controls.Add(this.cboAreaOfInfluence, 1, 2);
+            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 0, 8);
+            this.tlpMain.Controls.Add(this.cmdChangeColour, 1, 6);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 9;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Size = new System.Drawing.Size(366, 223);
+            this.tlpMain.TabIndex = 16;
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
+            this.tlpMain.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(204, 189);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(204, 194);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
@@ -309,11 +308,10 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(384, 236);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.ClientSize = new System.Drawing.Size(384, 241);
+            this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(400, 10000);
             this.MinimizeBox = false;
             this.Name = "frmSelectContactConnection";
             this.Padding = new System.Windows.Forms.Padding(9);
@@ -322,8 +320,8 @@ namespace Chummer
             this.Tag = "Title_SelectContactConnection";
             this.Text = "Advanced Contact Options";
             this.Load += new System.EventHandler(this.frmSelectContactConnection_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -349,7 +347,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtGroupName;
         private System.Windows.Forms.Button cmdChangeColour;
         private System.Windows.Forms.CheckBox chkFreeContact;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

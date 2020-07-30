@@ -31,7 +31,7 @@ namespace Chummer
     public class CenterableMessageBox
     {
         private static IWin32Window _owner;
-        private static HookProc _hookProc;
+        private static readonly HookProc _hookProc;
         private static IntPtr _hHook;
 
         public static DialogResult Show(string text)
@@ -119,7 +119,7 @@ namespace Chummer
 
         public const int WH_CALLWNDPROCRET = 12;
 
-        public enum CbtHookAction : int
+        public enum CbtHookAction
         {
             HCBT_MOVESIZE = 0,
             HCBT_MINMAX = 1,

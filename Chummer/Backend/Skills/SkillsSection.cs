@@ -63,14 +63,14 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_SkillSectionDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in s_SkillSectionDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -144,7 +144,7 @@ namespace Chummer.Backend.Skills
                     return;
             }
 
-            for (int i = Skills.Count - 1; i >= 0; i--)
+            for (int i = Skills.Count - 1; i >= 0; --i)
             {
                 if (Skills[i].SkillCategory == strCategory)
                 {
@@ -595,13 +595,11 @@ namespace Chummer.Backend.Skills
                                 // Put points into the attribute with the highest total karma cost.
                                 // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                                 int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
-                                if (objSkillToPutPointsInto == null || (objLoopSkill.Karma <= intSkillPointCount &&
-                                                                        (intLoopTotalKarmaCost >
-                                                                         intSkillToPutPointsIntoTotalKarmaCost ||
-                                                                         (intLoopTotalKarmaCost ==
-                                                                          intSkillToPutPointsIntoTotalKarmaCost &&
-                                                                          objLoopSkill.Karma >
-                                                                          objSkillToPutPointsInto.Karma))))
+                                if (objSkillToPutPointsInto == null
+                                    || (objLoopSkill.Karma <= intSkillPointCount
+                                        && (intLoopTotalKarmaCost > intSkillToPutPointsIntoTotalKarmaCost
+                                            || (intLoopTotalKarmaCost == intSkillToPutPointsIntoTotalKarmaCost
+                                                && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))))
                                 {
                                     objSkillToPutPointsInto = objLoopSkill;
                                     intSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
@@ -627,10 +625,10 @@ namespace Chummer.Backend.Skills
                                 // Put points into the attribute with the highest total karma cost.
                                 // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                                 int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
-                                if (objSkillToPutPointsInto == null ||
-                                    intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
-                                    (intLoopTotalKarmaCost == intHighestTotalKarmaCost &&
-                                     objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
+                                if (objSkillToPutPointsInto == null
+                                    || intLoopTotalKarmaCost > intHighestTotalKarmaCost
+                                    || (intLoopTotalKarmaCost == intHighestTotalKarmaCost
+                                        && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
                                 {
                                     objSkillToPutPointsInto = objLoopSkill;
                                     intHighestTotalKarmaCost = intLoopTotalKarmaCost;
@@ -661,11 +659,11 @@ namespace Chummer.Backend.Skills
                             // Put points into the attribute with the highest total karma cost.
                             // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                             int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
-                            if (objKnowledgeSkillToPutPointsInto == null ||
-                                (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount &&
-                                 (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost ||
-                                  (intLoopTotalKarmaCost == intKnowledgeSkillToPutPointsIntoTotalKarmaCost &&
-                                   objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))))
+                            if (objKnowledgeSkillToPutPointsInto == null
+                                || (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount
+                                    && (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost
+                                        || (intLoopTotalKarmaCost == intKnowledgeSkillToPutPointsIntoTotalKarmaCost
+                                            && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))))
                             {
                                 objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
                                 intKnowledgeSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
@@ -691,10 +689,10 @@ namespace Chummer.Backend.Skills
                             // Put points into the attribute with the highest total karma cost.
                             // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
                             int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
-                            if (objKnowledgeSkillToPutPointsInto == null ||
-                                intLoopTotalKarmaCost > intHighestTotalKarmaCost ||
-                                (intLoopTotalKarmaCost == intHighestTotalKarmaCost && objLoopKnowledgeSkill.Karma >
-                                 objKnowledgeSkillToPutPointsInto.Karma))
+                            if (objKnowledgeSkillToPutPointsInto == null
+                                || intLoopTotalKarmaCost > intHighestTotalKarmaCost
+                                || (intLoopTotalKarmaCost == intHighestTotalKarmaCost
+                                    && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))
                             {
                                 objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
                                 intHighestTotalKarmaCost = intLoopTotalKarmaCost;
@@ -752,11 +750,11 @@ namespace Chummer.Backend.Skills
                 }
             );
 
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, new[] { KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill });
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, new[] { KarmaExpenseType.ImproveSkillGroup });
+            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
+            UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
         }
 
-        private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, KarmaExpenseType[] typesRequreingConverting)
+        private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequreingConverting)
         {
             //Build a crazy xpath to get everything we want to convert
 
@@ -870,7 +868,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Active Skills Dictionary
         /// </summary>
-        public IDictionary<string, Skill> SkillsDictionary => _dicSkills;
+        public Dictionary<string, Skill> SkillsDictionary => _dicSkills;
 
         /// <summary>
         /// Gets an active skill by its Name. Returns null if none found.
@@ -887,7 +885,7 @@ namespace Chummer.Backend.Skills
         /// This is only used for reflection, so that all zero ratings skills are not uploaded
         /// </summary>
         [HubTag]
-        public IList<Skill> NotZeroRatingSkills
+        public List<Skill> NotZeroRatingSkills
         {
             get
             {
@@ -906,7 +904,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
-        public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>(1);
+        public List<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>(1);
 
         /// <summary>
         /// Skill Groups.
@@ -1118,18 +1116,18 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static readonly DependencyGraph<string> s_SkillSectionDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(HasKnowledgePoints),
-                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints))
+        private static readonly DependencyGraph<string, SkillsSection> s_SkillSectionDependencyGraph =
+            new DependencyGraph<string, SkillsSection>(
+                new DependencyGraphNode<string, SkillsSection>(nameof(HasKnowledgePoints),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints))
                 ),
-                new DependencyGraphNode<string>(nameof(KnowledgeSkillPointsRemain),
-                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints)),
-                    new DependencyGraphNode<string>(nameof(KnowledgeSkillPointsUsed),
-                        new DependencyGraphNode<string>(nameof(KnowledgeSkillRanksSum)),
-                        new DependencyGraphNode<string>(nameof(SkillPointsSpentOnKnoskills),
-                            new DependencyGraphNode<string>(nameof(KnowledgeSkillPoints)),
-                            new DependencyGraphNode<string>(nameof(KnowledgeSkillRanksSum))
+                new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPointsRemain),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints)),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPointsUsed),
+                        new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillRanksSum)),
+                        new DependencyGraphNode<string, SkillsSection>(nameof(SkillPointsSpentOnKnoskills),
+                            new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints)),
+                            new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillRanksSum))
                         )
                     )
                 )

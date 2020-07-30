@@ -32,9 +32,9 @@
             this.lblDice = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // nudDiceResult
@@ -61,7 +61,7 @@
             // cmdOK
             // 
             this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tableLayoutPanel1.SetColumnSpan(this.cmdOK, 3);
+            this.tlpMain.SetColumnSpan(this.cmdOK, 3);
             this.cmdOK.Location = new System.Drawing.Point(145, 57);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
@@ -74,7 +74,7 @@
             // lblDescription
             // 
             this.lblDescription.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblDescription, 3);
+            this.tlpMain.SetColumnSpan(this.lblDescription, 3);
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
@@ -82,28 +82,27 @@
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Text = "[Text Goes Here]";
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.cmdOK, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.nudDiceResult, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblDice, 0, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(366, 83);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 3;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.cmdOK, 0, 2);
+            this.tlpMain.Controls.Add(this.nudDiceResult, 1, 1);
+            this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
+            this.tlpMain.Controls.Add(this.lblDice, 0, 1);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(366, 83);
+            this.tlpMain.TabIndex = 5;
             // 
             // frmDiceHits
             // 
@@ -112,7 +111,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(384, 101);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(400, 10000);
@@ -125,8 +124,8 @@
             this.Text = "Dice Hits";
             this.Load += new System.EventHandler(this.frmDiceHits_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,6 +137,6 @@
         private System.Windows.Forms.Label lblDice;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblDescription;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
     }
 }

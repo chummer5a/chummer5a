@@ -49,7 +49,7 @@ namespace Chummer
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _pluginLoader;
-        public static PluginControl PluginLoader => _pluginLoader ?? (_pluginLoader = new PluginControl());
+        public static PluginControl PluginLoader => _pluginLoader = _pluginLoader ?? new PluginControl();
 
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace Chummer
                         TelemetryConfiguration.Active.DisableTelemetry = true;
 
                     Log.Info(strInfo);
-                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Properties.Settings.Default.UploadClientId + ").");
+                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo) + ").");
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -322,7 +322,7 @@ namespace Chummer
                                     string msg =
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                     Log.Warn(msg);
-                                    Program.MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
                                 else
                                 {
@@ -342,7 +342,7 @@ namespace Chummer
                                             string msg = "Plugin " + whatplugin + " is not enabled in the options!"
                                                          + Environment.NewLine + "If you want to use command-line arguments, please enable this plugin and restart the program.";
                                             Log.Warn(msg);
-                                            Program.MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
                                     else

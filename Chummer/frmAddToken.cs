@@ -18,7 +18,8 @@
  */
  using System;
  using System.IO;
-using System.Threading.Tasks;
+ using System.Linq;
+ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -74,7 +75,7 @@ namespace Chummer
 
                 nudInit.Value = objCharacter.InitiativeDice;
                 txtName.Text = objCharacter.Name;
-                if (int.TryParse(objCharacter.Initiative.Split(' ')[0], out int intTemp))
+                if (int.TryParse(objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
                     nudInitStart.Value = intTemp;
                 if (_character != null)
                 {

@@ -32,6 +32,22 @@
         <cyberwaretotalessmultiplier>90</cyberwaretotalessmultiplier>
       </bonus>
     </bioware>
+	<bioware>
+	  <name>Damage Compensators</name>
+	  <forbidden>
+        <oneof>
+          <quality>High Pain Tolerance (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</bioware>
+	<bioware>
+	  <name>Damage Compensators (2050)</name>
+	  <forbidden>
+        <oneof>
+          <quality>High Pain Tolerance (Metagenic)</quality>
+        </oneof>
+      </forbidden>
+	</bioware>
     <bioware>
       <name>Immunization</name>
       <hide />

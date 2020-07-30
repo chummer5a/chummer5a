@@ -317,7 +317,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intNameIndex))
                         {
-                            string[] lstNames = _objCharacter.Name.Split(' ');
+                            string[] lstNames = _objCharacter.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                             return lstNames[Math.Max(Math.Min(intNameIndex, lstNames.Length - 1), 0)];
                         }
 
@@ -353,7 +353,7 @@ namespace Chummer
                     }
                 case "$Index":
                 {
-                    string[] strArgumentsSplit = strArguments.Split('|');
+                    string[] strArgumentsSplit = strArguments.Split('|', StringSplitOptions.RemoveEmptyEntries);
                     int intArgumentsCount = strArgumentsSplit.Length;
                     if (intArgumentsCount > 2 && int.TryParse(strArgumentsSplit[0], out int intIndex))
                     {

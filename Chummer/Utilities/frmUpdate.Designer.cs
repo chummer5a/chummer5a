@@ -39,23 +39,21 @@ namespace Chummer
             this.lblUpdaterStatusLabel = new System.Windows.Forms.Label();
             this.lblUpdaterStatus = new System.Windows.Forms.Label();
             this.cmdRestart = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // webNotes
             // 
             this.webNotes.AllowNavigation = false;
-            this.webNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.webNotes, 2);
+            this.tlpMain.SetColumnSpan(this.webNotes, 2);
+            this.webNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webNotes.Location = new System.Drawing.Point(3, 3);
             this.webNotes.MinimumSize = new System.Drawing.Size(20, 20);
             this.webNotes.Name = "webNotes";
-            this.webNotes.Size = new System.Drawing.Size(760, 476);
+            this.webNotes.Size = new System.Drawing.Size(760, 475);
             this.webNotes.TabIndex = 0;
             this.webNotes.WebBrowserShortcutsEnabled = false;
             // 
@@ -101,8 +99,8 @@ namespace Chummer
             this.lblUpdaterStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUpdaterStatusLabel.AutoSize = true;
             this.lblUpdaterStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUpdaterStatusLabel.Location = new System.Drawing.Point(3, 487);
             this.lblUpdaterStatusLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblUpdaterStatusLabel.Location = new System.Drawing.Point(3, 482);
             this.lblUpdaterStatusLabel.Name = "lblUpdaterStatusLabel";
             this.lblUpdaterStatusLabel.Size = new System.Drawing.Size(81, 13);
             this.lblUpdaterStatusLabel.TabIndex = 104;
@@ -137,25 +135,26 @@ namespace Chummer
             this.cmdRestart.UseVisualStyleBackColor = true;
             this.cmdRestart.Click += new System.EventHandler(this.cmdRestart_Click);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.webNotes, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblUpdaterStatus, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblUpdaterStatusLabel, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(766, 543);
-            this.tableLayoutPanel1.TabIndex = 107;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.webNotes, 0, 0);
+            this.tlpMain.Controls.Add(this.lblUpdaterStatus, 1, 1);
+            this.tlpMain.Controls.Add(this.lblUpdaterStatusLabel, 0, 1);
+            this.tlpMain.Controls.Add(this.tableLayoutPanel2, 0, 2);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(766, 543);
+            this.tlpMain.TabIndex = 107;
             // 
             // tableLayoutPanel2
             // 
@@ -163,7 +162,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.AutoSize = true;
             this.tableLayoutPanel2.ColumnCount = 4;
-            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 2);
+            this.tlpMain.SetColumnSpan(this.tableLayoutPanel2, 2);
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -186,17 +185,16 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MaximumSize = new System.Drawing.Size(800, 10000);
             this.Name = "frmUpdate";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Text = "Chummer Updater";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmUpdate_FormClosing);
             this.Load += new System.EventHandler(this.frmUpdate_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
@@ -213,7 +211,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblUpdaterStatusLabel;
         private System.Windows.Forms.Label lblUpdaterStatus;
         private System.Windows.Forms.Button cmdRestart;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
     }
 }

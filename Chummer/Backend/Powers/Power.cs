@@ -40,7 +40,7 @@ namespace Chummer
     /// An Adept Power.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{CurrentDisplayName}")]
+    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource
     {
         private Guid _guiID;
@@ -212,7 +212,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -932,49 +932,49 @@ namespace Chummer
                 DiscountedAdeptWay = false;
         }
 
-        private static readonly DependencyGraph<string> PowerDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(DisplayPoints),
-                    new DependencyGraphNode<string>(nameof(PowerPoints),
-                        new DependencyGraphNode<string>(nameof(TotalRating),
-                            new DependencyGraphNode<string>(nameof(Rating)),
-                            new DependencyGraphNode<string>(nameof(FreeLevels),
-                                new DependencyGraphNode<string>(nameof(FreePoints)),
-                                new DependencyGraphNode<string>(nameof(ExtraPointCost)),
-                                new DependencyGraphNode<string>(nameof(PointsPerLevel))
+        private static readonly DependencyGraph<string, Power> PowerDependencyGraph =
+            new DependencyGraph<string, Power>(
+                new DependencyGraphNode<string, Power>(nameof(DisplayPoints),
+                    new DependencyGraphNode<string, Power>(nameof(PowerPoints),
+                        new DependencyGraphNode<string, Power>(nameof(TotalRating),
+                            new DependencyGraphNode<string, Power>(nameof(Rating)),
+                            new DependencyGraphNode<string, Power>(nameof(FreeLevels),
+                                new DependencyGraphNode<string, Power>(nameof(FreePoints)),
+                                new DependencyGraphNode<string, Power>(nameof(ExtraPointCost)),
+                                new DependencyGraphNode<string, Power>(nameof(PointsPerLevel))
                             ),
-                            new DependencyGraphNode<string>(nameof(TotalMaximumLevels),
-                                new DependencyGraphNode<string>(nameof(LevelsEnabled)),
-                                new DependencyGraphNode<string>(nameof(MaxLevels))
+                            new DependencyGraphNode<string, Power>(nameof(TotalMaximumLevels),
+                                new DependencyGraphNode<string, Power>(nameof(LevelsEnabled)),
+                                new DependencyGraphNode<string, Power>(nameof(MaxLevels))
                             )
                         ),
-                        new DependencyGraphNode<string>(nameof(Rating)),
-                        new DependencyGraphNode<string>(nameof(LevelsEnabled)),
-                        new DependencyGraphNode<string>(nameof(FreeLevels)),
-                        new DependencyGraphNode<string>(nameof(PointsPerLevel)),
-                        new DependencyGraphNode<string>(nameof(FreePoints)),
-                        new DependencyGraphNode<string>(nameof(ExtraPointCost)),
-                        new DependencyGraphNode<string>(nameof(Discount),
-                            new DependencyGraphNode<string>(nameof(DiscountedAdeptWay)),
-                            new DependencyGraphNode<string>(nameof(AdeptWayDiscount))
+                        new DependencyGraphNode<string, Power>(nameof(Rating)),
+                        new DependencyGraphNode<string, Power>(nameof(LevelsEnabled)),
+                        new DependencyGraphNode<string, Power>(nameof(FreeLevels)),
+                        new DependencyGraphNode<string, Power>(nameof(PointsPerLevel)),
+                        new DependencyGraphNode<string, Power>(nameof(FreePoints)),
+                        new DependencyGraphNode<string, Power>(nameof(ExtraPointCost)),
+                        new DependencyGraphNode<string, Power>(nameof(Discount),
+                            new DependencyGraphNode<string, Power>(nameof(DiscountedAdeptWay)),
+                            new DependencyGraphNode<string, Power>(nameof(AdeptWayDiscount))
                         )
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(ToolTip),
-                    new DependencyGraphNode<string>(nameof(Rating)),
-                    new DependencyGraphNode<string>(nameof(PointsPerLevel))
+                new DependencyGraphNode<string, Power>(nameof(ToolTip),
+                    new DependencyGraphNode<string, Power>(nameof(Rating)),
+                    new DependencyGraphNode<string, Power>(nameof(PointsPerLevel))
                 ),
-                new DependencyGraphNode<string>(nameof(DoesNotHaveFreeLevels),
-                    new DependencyGraphNode<string>(nameof(FreeLevels))
+                new DependencyGraphNode<string, Power>(nameof(DoesNotHaveFreeLevels),
+                    new DependencyGraphNode<string, Power>(nameof(FreeLevels))
                 ),
-                new DependencyGraphNode<string>(nameof(AdeptWayDiscountEnabled),
-                    new DependencyGraphNode<string>(nameof(AdeptWayDiscount))
+                new DependencyGraphNode<string, Power>(nameof(AdeptWayDiscountEnabled),
+                    new DependencyGraphNode<string, Power>(nameof(AdeptWayDiscount))
                 ),
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(Extra)),
-                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
-                            new DependencyGraphNode<string>(nameof(Name))
+                new DependencyGraphNode<string, Power>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Power>(nameof(DisplayName),
+                        new DependencyGraphNode<string, Power>(nameof(Extra)),
+                        new DependencyGraphNode<string, Power>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string, Power>(nameof(Name))
                         )
                     )
                 )
@@ -994,10 +994,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -1101,10 +1101,13 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdModifier = new StringBuilder("Rating" + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo) + strSpace + '×' + strSpace + PointsPerLevel.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdModifier = new StringBuilder("Rating")
+                    .Append(strSpace).Append('(').Append(Rating.ToString(GlobalOptions.CultureInfo))
+                    .Append(strSpace).Append('×').Append(strSpace).Append(PointsPerLevel.ToString(GlobalOptions.CultureInfo)).Append(')');
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled))
                 {
-                    sbdModifier.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace + '(' + objImprovement.Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(CharacterObject.GetObjectName(objImprovement))
+                        .Append(strSpace).Append('(').Append(objImprovement.Rating.ToString(GlobalOptions.CultureInfo)).Append(')');
                 }
 
                 return sbdModifier.ToString();

@@ -372,7 +372,7 @@ namespace Chummer
                 nudRating.Maximum = intMaxRating;
                 if (chkHideOverAvailLimit.Checked)
                 {
-                    while (nudRating.Maximum > nudRating.Minimum && !SelectionShared.CheckAvailRestriction(xmlAccessory, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -382,7 +382,7 @@ namespace Chummer
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(xmlAccessory.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    while (nudRating.Maximum > nudRating.Minimum && !SelectionShared.CheckNuyenRestriction(xmlAccessory, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -402,11 +402,11 @@ namespace Chummer
 
             if (blnUpdateMountCBOs)
             {
-                string[] astrDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value.Split('/');
+                string strDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value;
                 List<string> strMounts = new List<string>();
-                if (astrDataMounts != null)
+                if (!string.IsNullOrEmpty(strDataMounts))
                 {
-                    strMounts.AddRange(astrDataMounts);
+                    strMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
                 strMounts.Add("None");
@@ -436,7 +436,7 @@ namespace Chummer
                 string strExtraMount = xmlAccessory.SelectSingleNode("extramount")?.Value;
                 if (!string.IsNullOrEmpty(strExtraMount))
                 {
-                    foreach (string strItem in strExtraMount.Split('/'))
+                    foreach (string strItem in strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
                         strExtraMounts.Add(strItem);
                     }
@@ -518,7 +518,7 @@ namespace Chummer
                     decCost *= _objParentWeapon.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                     {
-                        string[] astrParentDoubledCostModificationSlots = _objParentWeapon.DoubledCostModificationSlots.Split('/');
+                        string[] astrParentDoubledCostModificationSlots = _objParentWeapon.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
                         if (astrParentDoubledCostModificationSlots.Contains(cboMount.SelectedItem?.ToString()) ||
                             astrParentDoubledCostModificationSlots.Contains(cboExtraMount.SelectedItem?.ToString()))
                         {

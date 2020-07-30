@@ -23,7 +23,6 @@ using System.Linq;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer.UI.Attributes
 {

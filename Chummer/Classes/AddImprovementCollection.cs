@@ -104,7 +104,7 @@ namespace Chummer.Classes
             */
 
             //Add to list
-            //retrive list
+            //retrieve list
             //sort list
             //find active instance
             //if active = list[top]
@@ -850,6 +850,7 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
+            bool blnSingleSelected = true;
             List<string> selectedValues = new List<string>(AttributeSection.AttributeStrings.Count);
             using (XmlNodeList xmlSelectAttributeList = bonusNode.SelectNodes("selectattribute"))
             {
@@ -921,6 +922,8 @@ namespace Chummer.Classes
                                 throw new AbortedException();
                             }
 
+                            if (blnSingleSelected && selectedValues.Count > 0 && !selectedValues.Contains(frmPickAttribute.SelectedAttribute))
+                                blnSingleSelected = false;
                             selectedValues.Add(frmPickAttribute.SelectedAttribute);
 
                             Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
@@ -960,22 +963,30 @@ namespace Chummer.Classes
                 }
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
-            StringBuilder sBld = new StringBuilder();
-            foreach (string s in AttributeSection.AttributeStrings)
+            if (blnSingleSelected)
             {
-                int i = selectedValues.Count(c => c == s);
-                if (i > 0)
-                {
-                    if (sBld.Length > 0)
-                    {
-                        sBld.Append(',' + strSpace);
-                    }
-                    sBld.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2})", s, strSpace, i);
-                }
+                SelectedValue = selectedValues.FirstOrDefault();
             }
+            else
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                StringBuilder sBld = new StringBuilder();
+                foreach (string s in AttributeSection.AttributeStrings)
+                {
+                    int i = selectedValues.Count(c => c == s);
+                    if (i > 0)
+                    {
+                        if (sBld.Length > 0)
+                        {
+                            sBld.Append(',' + strSpace);
+                        }
 
-            SelectedValue = sBld.ToString();
+                        sBld.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2})", s, strSpace, i);
+                    }
+                }
+
+                SelectedValue = sBld.ToString();
+            }
         }
 
         // Select an CharacterAttribute.
@@ -2057,10 +2068,10 @@ namespace Chummer.Classes
             {
                 string strMode = nodSelect["type"]?.InnerText ?? "all";
 
-                List<Contact> lstSelectedContacts;
+                Contact[] lstSelectedContacts;
                 if (strMode == "all")
                 {
-                    lstSelectedContacts = new List<Contact>(_objCharacter.Contacts);
+                    lstSelectedContacts = _objCharacter.Contacts.ToArray();
                 }
                 else if (strMode == "group" || strMode == "nongroup")
                 {
@@ -2069,14 +2080,14 @@ namespace Chummer.Classes
 
                     //Select any contact where IsGroup equals blnGroup
                     //and add to a list
-                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
+                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToArray();
                 }
                 else
                 {
                     throw new AbortedException();
                 }
 
-                if (lstSelectedContacts.Count == 0)
+                if (lstSelectedContacts.Length == 0)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
                         LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2085,15 +2096,15 @@ namespace Chummer.Classes
 
                 int count = 0;
                 //Black magic LINQ to cast content of list to another type
-                List<ListItem> contacts = new List<ListItem>(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalOptions.InvariantCultureInfo), x.Name)));
-
-                frmSelect.SetGeneralItemsMode(contacts);
+                frmSelect.SetGeneralItemsMode(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalOptions.InvariantCultureInfo), x.Name)));
                 frmSelect.ShowDialog(Program.MainForm);
 
                 if (frmSelect.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
 
-                Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex) ? lstSelectedContacts[intIndex] : throw new AbortedException();
+                Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex)
+                    ? lstSelectedContacts[intIndex]
+                    : throw new AbortedException();
 
                 string strTemp = string.Empty;
                 if (nodSelect.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
@@ -2607,7 +2618,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2623,7 +2634,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2639,7 +2650,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2655,7 +2666,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2671,7 +2682,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2687,7 +2698,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2703,7 +2714,7 @@ namespace Chummer.Classes
             {
                 if (strBonus.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strBonus.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strBonus = strValues[Math.Max(Math.Min(_intRating, strValues.Length) - 1, 0)];
                 }
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -3620,7 +3631,7 @@ namespace Chummer.Classes
              * That is true, it is a class, based on manipulating a single
              * list on another class.
              * 
-             * But atleast there is a reference to it somewhere right?
+             * But at least there is a reference to it somewhere right?
              * 
              * No, you create one wherever you need it, meaning there are
              * tens of instances of this class, all operating on the same 
@@ -4246,11 +4257,11 @@ namespace Chummer.Classes
 
                             SelectedValue = objNewPower.CurrentDisplayName;
 
-                            List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
+                            Power[] lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToArray();
 
-                            Log.Info("blnHasPower = " + (lstExistingPowersList.Count > 0).ToString(GlobalOptions.InvariantCultureInfo));
+                            Log.Info("blnHasPower = " + (lstExistingPowersList.Length > 0).ToString(GlobalOptions.InvariantCultureInfo));
 
-                            if (lstExistingPowersList.Count == 0)
+                            if (lstExistingPowersList.Length == 0)
                             {
                                 _objCharacter.Powers.Add(objNewPower);
                             }
@@ -4318,7 +4329,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedArt.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art"), string.Empty, _strFriendlyName))
+                objXmlSelectedArt?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art"), string.Empty, _strFriendlyName) == true)
             {
                 Art objAddArt = new Art(_objCharacter);
                 objAddArt.Create(objXmlSelectedArt, Improvement.ImprovementSource.Metamagic);
@@ -4411,7 +4422,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedMetamagic.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName))
+                objXmlSelectedMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName) == true)
             {
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic, strForcedValue);
@@ -4514,7 +4525,7 @@ namespace Chummer.Classes
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedEcho.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName))
+                objXmlSelectedEcho?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName) == true)
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
@@ -5500,16 +5511,14 @@ namespace Chummer.Classes
             SelectedValue = string.Empty;
             if (nodeList != null)
             {
-                List<ListItem> itemList = (from XmlNode objNode in nodeList
-                    select new ListItem(objNode.InnerText,
-                        objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)).ToList();
-
                 using (frmSelectItem frmPickItem = new frmSelectItem
                 {
                     Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
                 })
                 {
-                    frmPickItem.SetGeneralItemsMode(itemList);
+                    frmPickItem.SetGeneralItemsMode(nodeList.Cast<XmlNode>()
+                        .Select(objNode =>
+                            new ListItem(objNode.InnerText, objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)));
 
                     Log.Info("_strLimitSelection = " + LimitSelection);
                     Log.Info("_strForcedValue = " + ForcedValue);
@@ -5972,15 +5981,17 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            List<string> options = bonusNode.InnerText.Split(',').Select(x => x.Trim()).ToList();
+            string[] options = bonusNode.InnerText.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < options.Length; ++i)
+                options[i] = options[i].Trim();
             string final;
-            if (options.Count == 0)
+            if (options.Length == 0)
             {
                 Utils.BreakIfDebug();
                 throw new AbortedException();
             }
 
-            if (options.Count == 1)
+            if (options.Length == 1)
             {
                 final = options[0];
             }
@@ -6046,7 +6057,7 @@ namespace Chummer.Classes
                         {
                             // Makes sure we aren't over our limits for this particular quality from this overall source
                             if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                                objXmlSelectedQuality.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName))
+                                objXmlSelectedQuality?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName) == true)
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objAddQuality = new Quality(_objCharacter);
@@ -7289,13 +7300,10 @@ namespace Chummer.Classes
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //TODO: I'm not happy with this.
-            //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
-            //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance and cut the submersion grade in half.
-            //Whichever value is lower becomes the value of the improvement.
             Log.Info("cyberadeptdaemon");
-            int final = (int) Math.Min((decimal) Math.Ceiling(0.5 * _objCharacter.SubmersionGrade), Math.Ceiling(_objCharacter.CyberwareEssence));
-            CreateImprovement("RESBase", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute, _strUnique, final, 1, 0, 0, final);
+            Log.Info("cyberadeptdaemon = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberadeptDaemon, _strUnique);
         }
 
         /// <summary>
@@ -7438,7 +7446,7 @@ namespace Chummer.Classes
             {
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
-                    frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.Split(',').Select(x => x.Trim())
+                    frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
                         .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, LanguageManager.TranslateExtra(x))));
                 else
                     frmPickItem.SetGeneralItemsMode(objSkill.CGLSpecializations);

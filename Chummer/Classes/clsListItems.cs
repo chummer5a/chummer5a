@@ -27,7 +27,7 @@ namespace Chummer
     /// ListItem class to make populating a DropDownList from a DataSource easier.
     /// </summary>
     [DebuggerDisplay("{Name} {Value?.ToString() ?? \"\"}")]
-    public struct ListItem : IEquatable<ListItem>
+    public readonly struct ListItem : IEquatable<ListItem>
     {
         public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 

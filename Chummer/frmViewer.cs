@@ -46,7 +46,7 @@ namespace Chummer
         private bool _blnQueueRefresherRun;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
         private bool _blnQueueOutputGeneratorRun;
-        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),Guid.NewGuid() + ".htm");
+        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo) + ".htm");
         #region Control Events
         public frmViewer()
         {
@@ -83,6 +83,13 @@ namespace Chummer
 
             using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"))
                 objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
+
+            // These two needed to have WebBrowser control obey DPI settings for Chummer
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
+
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
 
             InitializeComponent();
             this.TranslateWinForm();
@@ -186,6 +193,10 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
+            if (!strSaveFile.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
+                && !strSaveFile.EndsWith(".htm", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".htm";
+
             using (TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
                 objWriter.Write(webBrowser1.DocumentText);
         }
@@ -200,6 +211,9 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
+
+            if (!strSaveFile.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".xml";
 
             try
             {
@@ -492,6 +506,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
+            if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".pdf";
+
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
@@ -563,7 +580,7 @@ namespace Chummer
             }
         }
 
-        private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
+        private static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
             List<ListItem> lstSheets;
 
@@ -584,7 +601,7 @@ namespace Chummer
             return lstSheets;
         }
 
-        private static IList<ListItem> GetXslFilesFromOmaeDirectory()
+        private static List<ListItem> GetXslFilesFromOmaeDirectory()
         {
             List<ListItem> lstItems = new List<ListItem>(5);
 
@@ -601,7 +618,7 @@ namespace Chummer
 
             return lstItems;
         }
-        private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             if (Directory.Exists(path))
             {
@@ -613,7 +630,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
+            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
                 foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())

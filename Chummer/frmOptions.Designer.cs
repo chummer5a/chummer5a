@@ -337,6 +337,7 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.chkHideMasterIndex = new System.Windows.Forms.CheckBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -694,7 +695,6 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.lblPDFAppPath, 0, 21);
             this.tlpGlobalOptions.Controls.Add(this.chkHideCharts, 0, 12);
             this.tlpGlobalOptions.Controls.Add(this.lblPDFParametersLabel, 0, 20);
-            this.tlpGlobalOptions.Controls.Add(this.chkHideCharacterRoster, 0, 15);
             this.tlpGlobalOptions.Controls.Add(this.grpTimeFormat, 4, 2);
             this.tlpGlobalOptions.Controls.Add(this.chkSearchInCategoryOnly, 3, 10);
             this.tlpGlobalOptions.Controls.Add(this.lblCharacterRosterLabel, 0, 19);
@@ -732,11 +732,13 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.cboPDFParameters, 2, 20);
             this.tlpGlobalOptions.Controls.Add(this.flowLayoutPanel3, 2, 21);
             this.tlpGlobalOptions.Controls.Add(this.grpDateFormat, 2, 2);
-            this.tlpGlobalOptions.Controls.Add(this.chkCreateBackupOnCareer, 3, 12);
             this.tlpGlobalOptions.Controls.Add(this.lblMugshotCompression, 0, 18);
             this.tlpGlobalOptions.Controls.Add(this.nudBrowserVersion, 2, 17);
             this.tlpGlobalOptions.Controls.Add(this.cboMugshotCompression, 2, 18);
             this.tlpGlobalOptions.Controls.Add(this.flpMugshotCompressionQuality, 3, 18);
+            this.tlpGlobalOptions.Controls.Add(this.chkCreateBackupOnCareer, 0, 15);
+            this.tlpGlobalOptions.Controls.Add(this.chkHideCharacterRoster, 3, 12);
+            this.tlpGlobalOptions.Controls.Add(this.chkHideMasterIndex, 3, 11);
             this.tlpGlobalOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpGlobalOptions.Location = new System.Drawing.Point(301, 0);
             this.tlpGlobalOptions.Margin = new System.Windows.Forms.Padding(0);
@@ -815,7 +817,7 @@ namespace Chummer
             this.chkHideCharacterRoster.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideCharacterRoster.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkHideCharacterRoster, 3);
-            this.chkHideCharacterRoster.Location = new System.Drawing.Point(3, 439);
+            this.chkHideCharacterRoster.Location = new System.Drawing.Point(406, 364);
             this.chkHideCharacterRoster.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideCharacterRoster.Name = "chkHideCharacterRoster";
             this.chkHideCharacterRoster.Size = new System.Drawing.Size(149, 17);
@@ -885,9 +887,9 @@ namespace Chummer
             this.chkSearchInCategoryOnly.Checked = true;
             this.chkSearchInCategoryOnly.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkSearchInCategoryOnly, 3);
-            this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(406, 326);
+            this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(406, 314);
+            this.chkSearchInCategoryOnly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkSearchInCategoryOnly.Name = "chkSearchInCategoryOnly";
-            this.tlpGlobalOptions.SetRowSpan(this.chkSearchInCategoryOnly, 2);
             this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(325, 17);
             this.chkSearchInCategoryOnly.TabIndex = 21;
             this.chkSearchInCategoryOnly.Tag = "Checkbox_Options_SearchInCategoryOnly";
@@ -1188,6 +1190,7 @@ namespace Chummer
             this.chkAllowHoverIncrement.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowHoverIncrement, 3);
             this.chkAllowHoverIncrement.Location = new System.Drawing.Point(406, 276);
+            this.chkAllowHoverIncrement.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowHoverIncrement.Name = "chkAllowHoverIncrement";
             this.tlpGlobalOptions.SetRowSpan(this.chkAllowHoverIncrement, 2);
             this.chkAllowHoverIncrement.Size = new System.Drawing.Size(410, 17);
@@ -1380,6 +1383,7 @@ namespace Chummer
             this.chkHideItemsOverAvail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkHideItemsOverAvail, 3);
             this.chkHideItemsOverAvail.Location = new System.Drawing.Point(406, 185);
+            this.chkHideItemsOverAvail.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideItemsOverAvail.Name = "chkHideItemsOverAvail";
             this.chkHideItemsOverAvail.Size = new System.Drawing.Size(353, 17);
             this.chkHideItemsOverAvail.TabIndex = 40;
@@ -1572,7 +1576,7 @@ namespace Chummer
             this.chkCreateBackupOnCareer.AutoSize = true;
             this.chkCreateBackupOnCareer.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpGlobalOptions.SetColumnSpan(this.chkCreateBackupOnCareer, 3);
-            this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(406, 364);
+            this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(3, 439);
             this.chkCreateBackupOnCareer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCreateBackupOnCareer.Name = "chkCreateBackupOnCareer";
             this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(333, 17);
@@ -4934,6 +4938,20 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
+            // chkHideMasterIndex
+            // 
+            this.chkHideMasterIndex.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkHideMasterIndex.AutoSize = true;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkHideMasterIndex, 3);
+            this.chkHideMasterIndex.Location = new System.Drawing.Point(406, 339);
+            this.chkHideMasterIndex.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkHideMasterIndex.Name = "chkHideMasterIndex";
+            this.chkHideMasterIndex.Size = new System.Drawing.Size(130, 17);
+            this.chkHideMasterIndex.TabIndex = 69;
+            this.chkHideMasterIndex.Tag = "Checkbox_Options_HideMasterIndex";
+            this.chkHideMasterIndex.Text = "Hide the Master Index";
+            this.chkHideMasterIndex.UseVisualStyleBackColor = true;
+            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5393,5 +5411,6 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudMugshotCompressionQuality;
         private System.Windows.Forms.FlowLayoutPanel flpKarmaInitiation;
         private System.Windows.Forms.GroupBox gpbSourcebook;
+        private System.Windows.Forms.CheckBox chkHideMasterIndex;
     }
 }

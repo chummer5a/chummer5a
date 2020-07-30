@@ -907,7 +907,7 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
                     {
-                        if (Program.MainForm.ShowMessageBox(this, 
+                        if (Program.MainForm.ShowMessageBox(this,
                             LanguageManager.GetString("Message_ImprovementLoadError"),
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -1587,9 +1587,9 @@ namespace Chummer
                         }
 
                         bool blnDoRefresh = false;
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
                             x => x.SourceType == Improvement.ImprovementSource.Bioware &&
-                                 x.CanRemoveThroughImprovements))
+                                 x.CanRemoveThroughImprovements).ToList())
                         {
                             if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                             {
@@ -1601,8 +1601,7 @@ namespace Chummer
                             {
                                 objCyberware.DeleteCyberware();
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware",
-                                    GlobalOptions.Language);
+                                string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware");
                                 objExpense.Create(0,
                                     strEntry + strBiowareDisabledSource +
                                     objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
@@ -1642,9 +1641,9 @@ namespace Chummer
                         }
 
                         bool blnDoRefresh = false;
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
                             x => x.SourceType == Improvement.ImprovementSource.Cyberware &&
-                                 x.CanRemoveThroughImprovements))
+                                 x.CanRemoveThroughImprovements).ToList())
                         {
                             if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                             {
@@ -1656,8 +1655,7 @@ namespace Chummer
                             {
                                 objCyberware.DeleteCyberware();
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware",
-                                    GlobalOptions.Language);
+                                string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware");
                                 objExpense.Create(0,
                                     strEntry + strCyberwareDisabledSource +
                                     objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
@@ -1742,8 +1740,8 @@ namespace Chummer
                                              LanguageManager.GetString("String_Space");
                         }
 
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.ToList().DeepWhere(x => x.Children,
-                            x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements))
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
+                            x => x.Grade.Name != "None" && x.CanRemoveThroughImprovements).ToList())
                         {
                             char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
                             if (chrAvail == 'R' || chrAvail == 'F')
@@ -2892,8 +2890,7 @@ namespace Chummer
                 }
 
                 // Now that everything is done, save the merged character and open them.
-                string[] strFile = objMerge.FileName.Split(Path.DirectorySeparatorChar);
-                string strShowFileName = strFile[strFile.Length - 1];
+                string strShowFileName = objMerge.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
                 if (string.IsNullOrEmpty(strShowFileName))
                     strShowFileName = objMerge.CharacterName;
@@ -3950,7 +3947,10 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade") + LanguageManager.GetString("String_Space") + CharacterObject.InitiateGrade + strSpace + "->" + strSpace + (CharacterObject.InitiateGrade + 1), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade")
+                                                        + strSpace + CharacterObject.InitiateGrade.ToString(GlobalOptions.CultureInfo)
+                                                        + strSpace + "->" + strSpace
+                                                        + (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -3966,7 +3966,10 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                 {
                     ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
-                    objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade") + LanguageManager.GetString("String_Space") + CharacterObject.InitiateGrade + strSpace + "->" + strSpace + (CharacterObject.InitiateGrade + 1), ExpenseType.Nuyen, DateTime.Now);
+                    objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade")
+                                                   + strSpace + CharacterObject.InitiateGrade.ToString(GlobalOptions.CultureInfo)
+                                                   + strSpace + "->" + strSpace
+                                                   + (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objNuyenExpense);
                     CharacterObject.Nuyen -= 10000;
 
@@ -4019,7 +4022,10 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade") + LanguageManager.GetString("String_Space") + CharacterObject.SubmersionGrade + strSpace +  "->" + strSpace + (CharacterObject.SubmersionGrade + 1), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade")
+                                                        + strSpace + CharacterObject.SubmersionGrade.ToString(GlobalOptions.CultureInfo)
+                                                        + strSpace +  "->" + strSpace
+                                                        + (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -6968,7 +6974,7 @@ namespace Chummer
                 ParentWeapon = objSelectedWeapon
             })
             {
-                frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.Split('/'));
+                frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 frmPickWeapon.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
@@ -8974,8 +8980,7 @@ namespace Chummer
                         HashSet<string> setHasMounts = new HashSet<string>();
                         foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                         {
-                            string[] strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
-                            foreach (string strLoop in strLoopDisallowedMounts)
+                            foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                 if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                                     setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                             string strLoopHasModularMount = objLoopCyberware.HasModularMount;
@@ -9021,16 +9026,14 @@ namespace Chummer
 
                         HashSet<string> setDisallowedMounts = new HashSet<string>();
                         HashSet<string> setHasMounts = new HashSet<string>();
-                        string[] strLoopDisallowedMounts = objCyberwareParent.BlocksMounts.Split(',');
-                        foreach (string strLoop in strLoopDisallowedMounts)
+                        foreach (string strLoop in objCyberwareParent.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
                         string strLoopHasModularMount = objCyberwareParent.HasModularMount;
                         if (!string.IsNullOrEmpty(strLoopHasModularMount))
                             setHasMounts.Add(strLoopHasModularMount);
                         foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                         {
-                            strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
-                            foreach (string strLoop in strLoopDisallowedMounts)
+                            foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                                 if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                                     setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                             strLoopHasModularMount = objLoopCyberware.HasModularMount;
@@ -10787,11 +10790,11 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
                 return;
-            List<string> lstAmmoPrefixStrings = new List<string>(objWeapon.AmmoPrefixStrings);
+            HashSet<string> setAmmoPrefixStrings = new HashSet<string>(objWeapon.AmmoPrefixStrings);
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, lstAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, setAmmoPrefixStrings);
             }
             while (blnAddAgain);
         }
@@ -12299,13 +12302,13 @@ namespace Chummer
                 // Build a string that contains the value(s) of the Improvement.
                 string strValue = string.Empty;
                 if (objImprovement.Value != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementValue") + strSpace + objImprovement.Value + ',' + strSpace;
+                    strValue += LanguageManager.GetString("Label_CreateImprovementValue") + strSpace + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ',' + strSpace;
                 if (objImprovement.Minimum != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementMinimum") + strSpace + objImprovement.Minimum + ',' + strSpace;
+                    strValue += LanguageManager.GetString("Label_CreateImprovementMinimum") + strSpace + objImprovement.Minimum.ToString(GlobalOptions.CultureInfo) + ',' + strSpace;
                 if (objImprovement.Maximum != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementMaximum") + strSpace + objImprovement.Maximum + ',' + strSpace;
+                    strValue += LanguageManager.GetString("Label_CreateImprovementMaximum") + strSpace + objImprovement.Maximum.ToString(GlobalOptions.CultureInfo) + ',' + strSpace;
                 if (objImprovement.Augmented != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementAugmented") + strSpace + objImprovement.Augmented + ',' + strSpace;
+                    strValue += LanguageManager.GetString("Label_CreateImprovementAugmented") + strSpace + objImprovement.Augmented.ToString(GlobalOptions.CultureInfo) + ',' + strSpace;
 
                 // Remove the trailing comma.
                 if (!string.IsNullOrEmpty(strValue))
@@ -12776,34 +12779,44 @@ namespace Chummer
         private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
         {
             pnlConditionMonitorPanel.SuspendLayout();
-            CheckBox currentBox = null;
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
                 List<CheckBox> lstCheckBoxes = pnlConditionMonitorPanel.Controls.OfType<CheckBox>().ToList();
                 if (lstCheckBoxes.Count < intConditionMax + intOverflow)
                 {
-                    int max = 0;
-                    if (lstCheckBoxes.Count <= 0)
+                    int intMax = 0;
+                    CheckBox objMaxCheckBox = null;
+                    foreach (CheckBox objLoopCheckBox in lstCheckBoxes)
                     {
-                        max = lstCheckBoxes.Max(x => Convert.ToInt32(x.Tag, GlobalOptions.InvariantCultureInfo));
+                        int intLoop = Convert.ToInt32(objLoopCheckBox.Tag);
+                        if (objMaxCheckBox == null || intMax < intLoop)
+                        {
+                            intMax = intLoop;
+                            objMaxCheckBox = objLoopCheckBox;
+                        }
                     }
 
-                    if (max < intConditionMax + intOverflow)
+                    if (objMaxCheckBox != null)
                     {
-                        for (int i = max + 1; i <= intConditionMax + intOverflow; i++)
+                        for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
                         {
                             CheckBox cb = new CheckBox
                             {
                                 Tag = i,
-                                Appearance = Appearance.Button,
-                                Size = new Size(24, 24),
-                                Margin = new Padding(1, 1, 1, 1),
-                                TextAlign = ContentAlignment.MiddleRight,
-                                UseVisualStyleBackColor = true
+                                Appearance = objMaxCheckBox.Appearance,
+                                AutoSize = objMaxCheckBox.AutoSize,
+                                MinimumSize = objMaxCheckBox.MinimumSize,
+                                Size = objMaxCheckBox.Size,
+                                Padding = objMaxCheckBox.Padding,
+                                Margin = objMaxCheckBox.Margin,
+                                TextAlign = objMaxCheckBox.TextAlign,
+                                Font = objMaxCheckBox.Font,
+                                UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
                             };
                             cb.Click += button_Click;
                             pnlConditionMonitorPanel.Controls.Add(cb);
+                            lstCheckBoxes.Add(cb);
                         }
                     }
                 }
@@ -12811,8 +12824,10 @@ namespace Chummer
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
                     chkCmBox.BackColor = SystemColors.Control;
-                    if (intCurrentBoxTag == value)
-                        currentBox = chkCmBox;
+                    if (check && intCurrentBoxTag <= value)
+                    {
+                        chkCmBox.Checked = true;
+                    }
                     if (intCurrentBoxTag <= intConditionMax)
                     {
                         chkCmBox.Visible = true;
@@ -12835,10 +12850,6 @@ namespace Chummer
                         chkCmBox.Visible = false;
                         chkCmBox.Text = string.Empty;
                     }
-                }
-                if (currentBox != null && check)
-                {
-                    currentBox.Checked = true;
                 }
             }
             else
@@ -13437,11 +13448,8 @@ namespace Chummer
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
-                        foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
-                        {
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
-                            sbdSlotsText.Append('/');
-                        }
+                        foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
                         sbdSlotsText.Length -= 1;
                         lblWeaponSlots.Text = sbdSlotsText.ToString();
                     }
@@ -13495,7 +13503,7 @@ namespace Chummer
                     tlpWeaponsRanges.Visible = true;
                     lblWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
                     lblWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
                     lblWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
                     lblWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
@@ -13666,40 +13674,32 @@ namespace Chummer
                 lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponSlotsLabel.Visible = true;
                 lblWeaponSlots.Visible = true;
-                StringBuilder strSlotsText = new StringBuilder(objSelectedAccessory.Mount);
-                if (strSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                StringBuilder sbdSlotsText = new StringBuilder(objSelectedAccessory.Mount);
+                if (sbdSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    strSlotsText.Clear();
-                    foreach (string strMount in objSelectedAccessory.Mount.Split('/'))
-                    {
-                        strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
-                        strSlotsText.Append('/');
-                    }
-                    strSlotsText.Length -= 1;
+                    sbdSlotsText.Clear();
+                    foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                    sbdSlotsText.Length -= 1;
                 }
 
                 if (!string.IsNullOrEmpty(objSelectedAccessory.ExtraMount) && objSelectedAccessory.ExtraMount != "None")
                 {
                     bool boolHaveAddedItem = false;
-                    string[] strExtraMounts = objSelectedAccessory.ExtraMount.Split('/');
-                    foreach (string strCurrentExtraMount in strExtraMounts)
+                    foreach (string strCurrentExtraMount in objSelectedAccessory.ExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        if (!string.IsNullOrEmpty(strCurrentExtraMount))
+                        if (!boolHaveAddedItem)
                         {
-                            if (!boolHaveAddedItem)
-                            {
-                                strSlotsText.Append(" + ");
-                                boolHaveAddedItem = true;
-                            }
-                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount));
-                            strSlotsText.Append('/');
+                            sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
+                            boolHaveAddedItem = true;
                         }
+                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
                     }
                     // Remove the trailing /
                     if (boolHaveAddedItem)
-                        strSlotsText.Length -= 1;
+                        sbdSlotsText.Length -= 1;
                 }
-                lblWeaponSlots.Text = strSlotsText.ToString();
+                lblWeaponSlots.Text = sbdSlotsText.ToString();
                 lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
                 lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
                 lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
@@ -14437,16 +14437,14 @@ namespace Chummer
 
                     HashSet<string> setDisallowedMounts = new HashSet<string>();
                     HashSet<string> setHasMounts = new HashSet<string>();
-                    string[] strLoopDisallowedMounts = objSelectedCyberware.BlocksMounts.Split(',');
-                    foreach (string strLoop in strLoopDisallowedMounts)
+                    foreach (string strLoop in objSelectedCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                         setDisallowedMounts.Add(strLoop + objSelectedCyberware.Location);
                     string strLoopHasModularMount = objSelectedCyberware.HasModularMount;
                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                         setHasMounts.Add(strLoopHasModularMount);
                     foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                     {
-                        strLoopDisallowedMounts = objLoopCyberware.BlocksMounts.Split(',');
-                        foreach (string strLoop in strLoopDisallowedMounts)
+                        foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
                                 setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                         strLoopHasModularMount = objLoopCyberware.HasModularMount;
@@ -14506,7 +14504,8 @@ namespace Chummer
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="lstForceItemPrefixes">Force the user to select an item that begins with one of the strings in this list.</param>
-        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null)
+        /// <param name="blnFlechetteAmmoOnly">Whether or not to show only Flechette ammo.</param>
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null, bool blnFlechetteAmmoOnly = false)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -14539,7 +14538,10 @@ namespace Chummer
                 }
             }
 
-            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories))
+            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories)
+            {
+                ShowFlechetteAmmoOnly = blnFlechetteAmmoOnly
+            })
             {
                 if (!blnNullParent)
                 {
@@ -15133,7 +15135,7 @@ namespace Chummer
                         lblVehicleProtection.Visible = false;
                         lblVehicleDroneModSlotsLabel.Visible = true;
                         lblVehicleDroneModSlots.Visible = true;
-                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString(GlobalOptions.CultureInfo) + '/' + objVehicle.DroneModSlots;
+                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString(GlobalOptions.CultureInfo) + '/' + objVehicle.DroneModSlots.ToString(GlobalOptions.CultureInfo);
                     }
                     else
                     {
@@ -15308,14 +15310,11 @@ namespace Chummer
                 {
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        StringBuilder strSlotsText = new StringBuilder();
-                        foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
-                        {
-                            strSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount));
-                            strSlotsText.Append('/');
-                        }
-                        strSlotsText.Length -= 1;
-                        lblWeaponSlots.Text = strSlotsText.ToString();
+                        StringBuilder sbdSlotsText = new StringBuilder();
+                        foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                        sbdSlotsText.Length -= 1;
+                        lblWeaponSlots.Text = sbdSlotsText.ToString();
                     }
                     else
                         lblWeaponSlots.Text = objWeapon.AccessoryMounts;
@@ -15354,7 +15353,7 @@ namespace Chummer
                     tlpVehiclesWeaponRanges.Visible = true;
                     lblVehicleWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
                     lblVehicleWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblVehicleWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
                     lblVehicleWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
                     lblVehicleWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
@@ -15536,39 +15535,31 @@ namespace Chummer
                 cmdVehicleGearReduceQty.Visible = false;
                 lblVehicleAvail.Text = objAccessory.DisplayTotalAvail;
                 lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                string[] strMounts = objAccessory.Mount.Split('/');
-                StringBuilder strMount = new StringBuilder();
-                foreach (string strCurrentMount in strMounts)
-                {
-                    if (!string.IsNullOrEmpty(strCurrentMount))
-                        strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount) + '/');
-                }
+                StringBuilder sbdMount = new StringBuilder();
+                foreach (string strCurrentMount in objAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                    sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount) + '/');
                 // Remove the trailing /
-                if (strMount.Length > 0)
-                    strMount.Length -= 1;
+                if (sbdMount.Length > 0)
+                    sbdMount.Length -= 1;
                 if (!string.IsNullOrEmpty(objAccessory.ExtraMount) && objAccessory.ExtraMount != "None")
                 {
                     bool boolHaveAddedItem = false;
-                    string[] strExtraMounts = objAccessory.ExtraMount.Split('/');
-                    foreach (string strCurrentExtraMount in strExtraMounts)
+                    foreach (string strCurrentExtraMount in objAccessory.ExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        if (!string.IsNullOrEmpty(strCurrentExtraMount))
+                        if (!boolHaveAddedItem)
                         {
-                            if (!boolHaveAddedItem)
-                            {
-                                strMount.Append(" + ");
-                                boolHaveAddedItem = true;
-                            }
-                            strMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + '/');
+                            sbdMount.Append(strSpace).Append('+').Append(strSpace);
+                            boolHaveAddedItem = true;
                         }
+                        sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
                     }
                     // Remove the trailing /
                     if (boolHaveAddedItem)
-                        strMount.Length -= 1;
+                        sbdMount.Length -= 1;
                 }
                 lblVehicleSlotsLabel.Visible = true;
                 lblVehicleSlots.Visible = true;
-                lblVehicleSlots.Text = strMount.ToString();
+                lblVehicleSlots.Text = sbdMount.ToString();
                 cmdVehicleMoveToInventory.Visible = false;
                 cmdVehicleCyberwareChangeMount.Visible = false;
                 chkVehicleWeaponAccessoryInstalled.Visible = true;
@@ -15879,10 +15870,23 @@ namespace Chummer
                     }
                 }
             }
-            while (chtKarma.ExpenseValues.Count < 2)
-                chtKarma.ExpenseValues.Add(new DateTimePoint(NuyenLast != DateTime.MinValue ? NuyenLast : DateTime.Now, decimal.ToDouble(decKarmaValue)));
-            while (chtNuyen.ExpenseValues.Count < 2)
-                chtNuyen.ExpenseValues.Add(new DateTimePoint(KarmaLast != DateTime.MinValue ? KarmaLast : DateTime.Now, decimal.ToDouble(decNuyenValue)));
+
+            if (KarmaLast == DateTime.MinValue)
+                KarmaLast = File.Exists(CharacterObject.FileName) ? File.GetCreationTime(CharacterObject.FileName) : new DateTime(DateTime.Now.Ticks - 1000);
+            if (chtKarma.ExpenseValues.Count < 2)
+            {
+                if (chtKarma.ExpenseValues.Count < 1)
+                    chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
+                chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
+            }
+            if (NuyenLast == DateTime.MinValue)
+                NuyenLast = File.Exists(CharacterObject.FileName) ? File.GetCreationTime(CharacterObject.FileName) : new DateTime(DateTime.Now.Ticks - 1000);
+            if (chtNuyen.ExpenseValues.Count < 2)
+            {
+                if (chtNuyen.ExpenseValues.Count < 1)
+                    chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
+                chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
+            }
             chtKarma.NormalizeYAxis();
             chtNuyen.NormalizeYAxis();
             chtKarma.ResumeLayout();
@@ -16237,14 +16241,15 @@ namespace Chummer
             }
 
             string strType = eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
-            using (XmlNodeList xmlChildrenList = xmlSuiteNode.SelectNodes(strType + "s/" + strType))
+            string strXPathPrefix = strType + "s/" + strType;
+            using (XmlNodeList xmlChildrenList = xmlSuiteNode.SelectNodes(strXPathPrefix))
             {
                 if (xmlChildrenList?.Count > 0)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
                     foreach (XmlNode objXmlChild in xmlChildrenList)
                     {
-                        XmlNode objXmlChildCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlChild["name"]?.InnerText + "\"]");
+                        XmlNode objXmlChildCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strXPathPrefix + "[name = \"" + objXmlChild["name"]?.InnerText + "\"]");
                         int intChildRating = Convert.ToInt32(objXmlChild["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 
                         objCyberware.Children.Add(CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade, intChildRating, eSource));
@@ -16973,7 +16978,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -17064,7 +17069,7 @@ namespace Chummer
                 frmPickMount.SetGeneralItemsMode(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, out bool blnMountChangeAllowed));
                 if (!blnMountChangeAllowed)
                 {
-                    Program.MainForm.ShowMessageBox(this, 
+                    Program.MainForm.ShowMessageBox(this,
                         LanguageManager.GetString("Message_NoValidModularMount"),
                         LanguageManager.GetString("MessageTitle_NoValidModularMount"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);

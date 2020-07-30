@@ -17,8 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
+ using System.Collections.Generic;
  using System.Diagnostics;
 using System.IO;
+ using System.Linq;
  using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -112,7 +114,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[] {"Entering " + info}, file ?? string.Empty, method, line, LogLevel.Debug);
+            writeLog(("Entering " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -138,7 +140,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[]{ "Exiting " + info}, file ?? string.Empty, method, line, LogLevel.Debug);
+            writeLog(("Exiting " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -164,7 +166,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info, file ?? String.Empty, method, line, LogLevel.Error);
+            writeLog(info?.Select(x => x.ToString()), file ?? String.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
@@ -190,7 +192,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new[]{info}, file ?? string.Empty, method, line, LogLevel.Error);
+            writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
@@ -216,7 +218,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new[] { info }, file ?? string.Empty, method, line, LogLevel.Debug);
+            writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -242,7 +244,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new object[] { info }, file ?? string.Empty, method, line, LogLevel.Trace);
+            writeLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Trace);
         }
 
         /// <summary>
@@ -270,7 +272,7 @@ namespace Chummer
 #endif
         )
         {
-            writeLog(new[] { exception, info }, file ?? string.Empty, method, line, LogLevel.Trace);
+            writeLog(EnumerableExtensions.ToEnumerable(exception.ToString(), info?.ToString() ?? string.Empty), file ?? string.Empty, method, line, LogLevel.Trace);
         }
 
         /// <summary>
@@ -287,7 +289,7 @@ namespace Chummer
             if (exception == null)
                 throw new ArgumentNullException(nameof(exception));
             writeLog(
-                string.IsNullOrEmpty(message) ? new object[] {exception, exception.StackTrace} : new object[] {message, exception, exception.StackTrace},
+                EnumerableExtensions.ToEnumerable(message, exception.ToString(), exception.StackTrace),
                 exception.Source,
                 exception.TargetSite.Name,
                 (new StackTrace(exception, true)).GetFrame(0).GetFileLineNumber(),
@@ -317,7 +319,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info, file ?? string.Empty, method, line, LogLevel.Warn);
+            writeLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -343,7 +345,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new[]{info}, file ?? string.Empty, method, line, LogLevel.Warn);
+            writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -369,7 +371,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(info, file ?? string.Empty, method, line, LogLevel.Info);
+            writeLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Info);
         }
 
         /// <summary>
@@ -395,7 +397,7 @@ namespace Chummer
 #endif
             )
         {
-            writeLog(new object[]{info}, file ?? string.Empty, method, line, LogLevel.Info);
+            writeLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Info);
         }
 
         public enum LogLevel
@@ -409,7 +411,7 @@ namespace Chummer
             Fatal
         }
 
-        private static void writeLog(object[] info, string file, string method, int line, LogLevel loglevel)
+        private static void writeLog(IEnumerable<string> info, string file, string method, int line, LogLevel loglevel)
         {
             if (!IsLoggerEnabled)
                 return;
@@ -417,24 +419,23 @@ namespace Chummer
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
 
-            StringBuilder objTimeStamper = new StringBuilder(loglevel.ToString() + "\t");
-            string[] classPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            objTimeStamper.Append(classPath[classPath.Length - 1]);
-            objTimeStamper.Append('.');
-            objTimeStamper.Append(method);
-            objTimeStamper.Append(':');
-            objTimeStamper.Append(line);
+            StringBuilder objTimeStamper = new StringBuilder(loglevel + "\t");
+            objTimeStamper.Append(file.SplitNoAlloc(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).LastOrDefault() ?? string.Empty)
+                .Append('.').Append(method).Append(':').Append(line);
 
-            if (info?.Length > 0)
+            if (info != null)
             {
+                bool blnItemAdded = false;
                 objTimeStamper.Append(' ');
-                for (int i = 0; i < info.Length; ++i)
+                foreach (string time in info)
                 {
-                    objTimeStamper.Append(info[i]);
-                    objTimeStamper.Append(", ");
+                    if (string.IsNullOrWhiteSpace(time))
+                        continue;
+                    blnItemAdded = true;
+                    objTimeStamper.Append(time).Append(", ");
                 }
 
-                objTimeStamper.Length -= 2;
+                objTimeStamper.Length -= blnItemAdded ? 2 : 1;
             }
 
             sw.TaskEnd("makeentry");
