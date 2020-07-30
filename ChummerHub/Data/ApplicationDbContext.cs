@@ -1,13 +1,14 @@
 using ChummerHub.API;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ChummerHub.Data
 {
@@ -94,6 +95,7 @@ namespace ChummerHub.Data
                 {
                     string constring = "Server=(localdb)\\mssqllocaldb;Database=SINners_DB;Trusted_Connection=True;MultipleActiveResultSets=true";
                     optionsBuilder.UseSqlServer(constring);
+                    
                     //throw new ArgumentNullException("HostingEnviroment is null!");
                 }
                 else

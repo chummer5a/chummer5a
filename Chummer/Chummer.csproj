@@ -704,6 +704,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="UI\Shared\VehiclesTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </None>
+    <None Include="UI\Shared\VehiclesTabUserControl.Designer.cs">
+      <DependentUpon>VehiclesTabUserControl.cs</DependentUpon>
+    </None>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
