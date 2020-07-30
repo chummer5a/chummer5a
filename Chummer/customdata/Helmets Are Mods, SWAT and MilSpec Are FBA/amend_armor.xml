@@ -67,10 +67,6 @@
       <name>SWAT Helmet</name>
       <hide />
     </armor>
-	<armor>
-      <name>Urban Explorer Jumpsuit: Helmet</name>
-      <hide />
-    </armor>
     <armor>
       <name>Urban Explorer Daedalus: Helmet</name>
       <hide />
@@ -127,24 +123,6 @@
       <cost>5000</cost>
       <source>RG</source>
       <page>67</page>
-    </mod>
-    <mod amendoperation="addnode">
-      <id>812a7926-3980-4c26-9935-5f1b66abacda</id>
-      <name>Urban Explorer Jumpsuit: Helmet</name>
-      <category>Urban Explorer Jumpsuit Accessories</category>
-      <armor>+2</armor>
-      <maxrating>1</maxrating>
-      <armorcapacity>0</armorcapacity>
-      <required>
-        <parentdetails>
-          <name>Urban Explorer Jumpsuit</name>
-        </parentdetails>
-      </required>
-      <gearcapacity>6</gearcapacity>
-      <avail>0</avail>
-      <cost>100</cost>
-      <source>SR5</source>
-      <page>437</page>
     </mod>
     <mod amendoperation="addnode">
       <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>

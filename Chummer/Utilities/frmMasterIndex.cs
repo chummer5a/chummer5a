@@ -75,10 +75,10 @@ namespace Chummer
         {
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
+                ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
+                ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
-                    ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
-                    ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                     Parallel.ForEach(_lstFileNames, strFileName =>
                     {
                         XPathNavigator xmlBaseNode = XmlManager.Load(strFileName).GetFastNavigator().SelectSingleNode("/chummer");
@@ -119,17 +119,24 @@ namespace Chummer
                                 lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
                         }
                     });
+                }
 
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
+                {
+                    Dictionary<Tuple<string, SourceString>, HashSet<string>> dicHelper = new Dictionary<Tuple<string, SourceString>, HashSet<string>>(lstItemsForLoading.Count);
                     foreach (ListItem objItem in lstItemsForLoading)
                     {
                         MasterIndexEntry objEntry = (MasterIndexEntry)objItem.Value;
-                        ListItem objExistingItem = _lstItems.FirstOrDefault(x =>
-                            ((MasterIndexEntry) x.Value).DisplayName.Equals(objEntry.DisplayName, StringComparison.OrdinalIgnoreCase)
-                            && ((MasterIndexEntry) x.Value).DisplaySource == objEntry.DisplaySource);
-                        if (objExistingItem.Value == null)
-                            _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
+                        Tuple<string, SourceString> objKey = new Tuple<string, SourceString>(objEntry.DisplayName.ToUpperInvariant(), objEntry.DisplaySource);
+                        if (dicHelper.TryGetValue(objKey, out HashSet<string> setFileNames))
+                        {
+                            setFileNames.UnionWith(objEntry.FileNames);
+                        }
                         else
-                            ((MasterIndexEntry)objExistingItem.Value).FileNames.UnionWith(objEntry.FileNames);
+                        {
+                            _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
+                            dicHelper.Add(objKey, objEntry.FileNames);
+                        }
                     }
                     _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                 }
