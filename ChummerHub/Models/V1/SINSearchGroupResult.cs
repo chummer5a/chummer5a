@@ -73,7 +73,7 @@ namespace ChummerHub.Models.V1
             //    throw new ArgumentNullException(nameof(user));
             Username = user?.UserName;
             MySINner = member ?? throw new ArgumentNullException(nameof(member));
-            if (user != null && user.FavoriteGroups?.Count > 0)
+            if (user  != null && user.FavoriteGroups?.Count > 0)
             {
                 user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
                 IsFavorite = user.FavoriteGroups.Any(a => a.FavoriteGuid == MySINner.Id);
