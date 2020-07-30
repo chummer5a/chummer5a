@@ -2070,6 +2070,7 @@ namespace Chummer
                                     IsLoading = false;
                                     return false;
                                 }
+                                blnShowSelectBP = true;
                             }
                             // Set up interim options for selection by build method
                             string strReplacementOptionsKey = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x =>
@@ -2077,7 +2078,6 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strReplacementOptionsKey))
                                 strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
                             _strCharacterOptionsKey = strReplacementOptionsKey;
-                            blnShowSelectBP = true;
                         }
 
                         Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
