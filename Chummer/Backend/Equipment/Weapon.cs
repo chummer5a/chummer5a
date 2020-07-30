@@ -6268,16 +6268,14 @@ namespace Chummer.Backend.Equipment
             if (objXmlAccessory == null) return false;
             string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
             XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
-            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
-                    strAllowedMount != strItem)))
+            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
+                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
             {
                 return false;
             }
             xmlMountNode = objXmlAccessory.SelectSingleNode("extramount");
-            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
-                    strAllowedMount != strItem)))
+            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
+                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
             {
                 return false;
             }
