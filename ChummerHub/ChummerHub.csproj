@@ -45,7 +45,7 @@
   </PropertyGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.48.0.2013" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.48.0.2021" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.14.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.14.0" />
@@ -114,7 +114,6 @@
     </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Controllers\V2\" />
   </ItemGroup>
 
@@ -129,10 +128,14 @@
     <None Include="Properties\PublishProfiles\sinners-Beta - Web Deploy.pubxml.user" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!--Reference Include="System.Web">
+  <ItemGroup><!--Reference Include="System.Web">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Web.dll</HintPath>
     </Reference-->
+  
+    <Compile Remove="Areas\Identity\Services\**" />
+    <Content Remove="Areas\Identity\Services\**" />
+    <EmbeddedResource Remove="Areas\Identity\Services\**" />
+    <None Remove="Areas\Identity\Services\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -168,5 +171,9 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="dotnet restore ChummerHub.csproj --packages .\packages" />
+  </Target>
 
 </Project>

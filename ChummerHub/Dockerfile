@@ -13,7 +13,9 @@ EXPOSE 1433
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["ChummerHub/ChummerHub.csproj", "ChummerHub/"]
-RUN dotnet restore "ChummerHub/ChummerHub.csproj"
+COPY ["ChummerHub/packages/.", "ChummerHub/packages/"]
+
+RUN dotnet restore "ChummerHub/ChummerHub.csproj" -s /src/ChummerHub/packages -s https://api.nuget.org/v3/index.json
 COPY . .
 WORKDIR "/src/ChummerHub"
 RUN dotnet build "ChummerHub.csproj" -c Release -o /app/build
