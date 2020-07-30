@@ -2948,7 +2948,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (ModificationSlots.IndexOf('/') < 0)
+                if (string.IsNullOrEmpty(ModificationSlots))
                     return string.Empty;
 
                 StringBuilder strMounts = new StringBuilder();
