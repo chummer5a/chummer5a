@@ -995,7 +995,7 @@ namespace Chummer
         /// <param name="strText">Text to be word wrapped</param>
         /// <param name="intWidth">Width, in characters, to which the text should be word wrapped</param>
         /// <returns>The modified text</returns>
-        public static string WordWrap(this string strText, int intWidth)
+        public static string WordWrap(this string strText, int intWidth = 256)
         {
             // Lucidity checks
             if (string.IsNullOrEmpty(strText))
@@ -1004,7 +1004,7 @@ namespace Chummer
                 return strText;
 
             int intNextPosition;
-            StringBuilder objReturn = new StringBuilder(strText.Length);
+            StringBuilder sbdReturn = new StringBuilder(strText.Length);
             string strNewLine = Environment.NewLine;
             // Parse each line of text
             for (int intCurrentPosition = 0; intCurrentPosition < strText.Length; intCurrentPosition = intNextPosition)
@@ -1024,8 +1024,7 @@ namespace Chummer
                         int intLengthToRead = intEndOfLinePosition - intCurrentPosition;
                         if (intLengthToRead > intWidth)
                             intLengthToRead = strText.BreakLine(intCurrentPosition, intWidth);
-                        objReturn.Append(strText, intCurrentPosition, intLengthToRead);
-                        objReturn.Append(strNewLine);
+                        sbdReturn.Append(strText, intCurrentPosition, intLengthToRead).AppendLine();
 
                         // Trim whitespace following break
                         intCurrentPosition += intLengthToRead;
@@ -1034,9 +1033,10 @@ namespace Chummer
                     }
                     while (intEndOfLinePosition > intCurrentPosition);
                 }
-                else objReturn.Append(strNewLine); // Empty line
+                else
+                    sbdReturn.AppendLine(); // Empty line
             }
-            return objReturn.ToString();
+            return sbdReturn.ToString();
         }
 
         /// <summary>

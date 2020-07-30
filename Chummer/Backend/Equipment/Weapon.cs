@@ -2943,7 +2943,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (ModificationSlots.IndexOf('/') < 0)
+                if (string.IsNullOrEmpty(ModificationSlots))
                     return string.Empty;
 
                 StringBuilder strMounts = new StringBuilder();
@@ -5412,7 +5412,7 @@ namespace Chummer.Backend.Equipment
                 Tag = this,
                 ContextMenuStrip = cmsWeapon,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
@@ -6024,16 +6024,14 @@ namespace Chummer.Backend.Equipment
             if (objXmlAccessory == null) return false;
             string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
             XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
-            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
-                    strAllowedMount != strItem)))
+            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
+                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
             {
                 return false;
             }
             xmlMountNode = objXmlAccessory.SelectSingleNode("extramount");
-            if (lstMounts.Length == 0 || xmlMountNode != null && xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
-                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount =>
-                    strAllowedMount != strItem)))
+            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
+                !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
             {
                 return false;
             }

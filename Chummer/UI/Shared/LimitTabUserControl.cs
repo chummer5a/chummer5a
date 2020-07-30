@@ -145,7 +145,7 @@ namespace Chummer.UI.Shared
                     MakeDirty?.Invoke(null, null);
 
                     treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
-                    treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap(100);
+                    treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace Chummer.UI.Shared
             if (objNotes.Notes == strOldValue)
                 return;
             treNode.ForeColor = objNotes.PreferredColor;
-            treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+            treNode.ToolTipText = objNotes.Notes.WordWrap();
             MakeDirty?.Invoke(null,null);
         }
 
@@ -240,7 +240,7 @@ namespace Chummer.UI.Shared
                                 Tag = objImprovement.SourceName,
                                 ContextMenuStrip = cmsLimitModifierNotesOnly,
                                 ForeColor = objImprovement.PreferredColor,
-                                ToolTipText = objImprovement.Notes.WordWrap(100)
+                                ToolTipText = objImprovement.Notes.WordWrap()
                             };
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {

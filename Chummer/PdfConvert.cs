@@ -1,97 +1,80 @@
-/*  This file is part of Chummer5a.
- *
- *  Chummer5a is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Chummer5a is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  You can obtain the full source code for Chummer5a at
- *  https://github.com/chummer5a/chummer5a
- */
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
+using System.Web;
 using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Globalization;
-using System.Runtime.Serialization;
 
 namespace Codaxy.WkHtmlToPdf
 {
-    [Serializable]
     public class PdfConvertException : Exception
     {
-        public PdfConvertException() : base() { }
-        public PdfConvertException(string msg) : base(msg) { }
-        public PdfConvertException(string msg, Exception innerException) : base(msg, innerException) { }
-        protected PdfConvertException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        public PdfConvertException(String msg) : base(msg) { }
     }
 
-    [Serializable]
     public class PdfConvertTimeoutException : PdfConvertException
     {
         public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.") { }
-        public PdfConvertTimeoutException(string msg) : base("HTML to PDF conversion process has not finished in the given period.") { }
-        public PdfConvertTimeoutException(string msg, Exception innerException) : base("HTML to PDF conversion process has not finished in the given period.") { }
-        protected PdfConvertTimeoutException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     public class PdfOutput
     {
-        public string OutputFilePath { get; set; }
+        public String OutputFilePath { get; set; }
         public Stream OutputStream { get; set; }
         public Action<PdfDocument, byte[]> OutputCallback { get; set; }
     }
 
     public class PdfDocument
     {
-        public string Url { get; set; }
-        public string Html { get; set; }
-        public string HeaderUrl { get; set; }
-        public string FooterUrl { get; set; }
-        public string HeaderLeft { get; set; }
-        public string HeaderCenter { get; set; }
-        public string HeaderRight { get; set; }
-        public string FooterLeft { get; set; }
-        public string FooterCenter { get; set; }
-        public string FooterRight { get; set; }
+        public String Url { get; set; }
+        public String Html { get; set; }
+        public String HeaderUrl { get; set; }
+        public String FooterUrl { get; set; }
+        public String HeaderLeft { get; set; }
+        public String HeaderCenter { get; set; }
+        public String HeaderRight { get; set; }
+        public String FooterLeft { get; set; }
+        public String FooterCenter { get; set; }
+        public String FooterRight { get; set; }
         public object State { get; set; }
+
         public Dictionary<string, string> Cookies { get; } = new Dictionary<string, string>();
         public Dictionary<string, string> ExtraParams { get; } = new Dictionary<string, string>();
         public string HeaderFontSize { get; set; }
         public string FooterFontSize { get; set; }
         public string HeaderFontName { get; set; }
         public string FooterFontName { get; set; }
+
     }
 
     public class PdfConvertEnvironment
     {
-        public string TempFolderPath { get; set; }
-        public string WkHtmlToPdfPath { get; set; }
+        public String TempFolderPath { get; set; }
+        public String WkHtmlToPdfPath { get; set; }
         public int Timeout { get; set; }
         public bool Debug { get; set; }
     }
 
-    public static class PdfConvert
+    public class PdfConvert
     {
-        static PdfConvertEnvironment s_E;
+        static PdfConvertEnvironment _e;
 
-        public static PdfConvertEnvironment Environment => s_E ?? (s_E = new PdfConvertEnvironment
+        public static PdfConvertEnvironment Environment
         {
-            TempFolderPath = Path.GetTempPath(),
-            WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
-            Timeout = 60000
-        });
+            get
+            {
+                if (_e == null)
+                    _e = new PdfConvertEnvironment
+                    {
+                        TempFolderPath = Path.GetTempPath(),
+                        WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
+                        Timeout = 60000
+                    };
+                return _e;
+            }
+        }
 
         private static string GetWkhtmlToPdfExeLocation()
         {
@@ -105,13 +88,13 @@ namespace Codaxy.WkHtmlToPdf
                     return filePath;
             }
 
-            string programFilesPath = System.Environment.GetEnvironmentVariable("ProgramFiles") ?? string.Empty;
+            string programFilesPath = System.Environment.GetEnvironmentVariable("ProgramFiles");
             filePath = Path.Combine(programFilesPath, @"wkhtmltopdf\wkhtmltopdf.exe");
 
             if (File.Exists(filePath))
                 return filePath;
 
-            string programFilesx86Path = System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") ?? string.Empty;
+            string programFilesx86Path = System.Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             filePath = Path.Combine(programFilesx86Path, @"wkhtmltopdf\wkhtmltopdf.exe");
 
             if (File.Exists(filePath))
@@ -137,94 +120,96 @@ namespace Codaxy.WkHtmlToPdf
             if (document.Html != null)
                 document.Url = "-";
 
-            string strOutputPdfFilePath;
-            bool blnDelete;
+            String outputPdfFilePath;
+            bool delete;
             if (woutput.OutputFilePath != null)
             {
-                strOutputPdfFilePath = woutput.OutputFilePath;
-                blnDelete = false;
+                outputPdfFilePath = woutput.OutputFilePath;
+                delete = false;
             }
             else
             {
-                strOutputPdfFilePath = Path.Combine(environment.TempFolderPath, Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture) + ".pdf");
-                blnDelete = true;
+                outputPdfFilePath = Path.Combine(environment.TempFolderPath, String.Format("{0}.pdf", Guid.NewGuid()));
+                delete = true;
             }
 
             if (!File.Exists(environment.WkHtmlToPdfPath))
-                throw new PdfConvertException("File '" + environment.WkHtmlToPdfPath + "' not found. Check if wkhtmltopdf application is installed.");
+                throw new PdfConvertException(String.Format("File '{0}' not found. Check if wkhtmltopdf application is installed.", environment.WkHtmlToPdfPath));
 
-            StringBuilder sbdParamsBuilder = new StringBuilder("--page-size A4 ");
+            StringBuilder paramsBuilder = new StringBuilder();
+            paramsBuilder.Append("--page-size A4 ");
 
             if (!string.IsNullOrEmpty(document.HeaderUrl))
             {
-                sbdParamsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
-                sbdParamsBuilder.Append("--margin-top 25 ");
-                sbdParamsBuilder.Append("--header-spacing 5 ");
+                paramsBuilder.AppendFormat("--header-html {0} ", document.HeaderUrl);
+                paramsBuilder.Append("--margin-top 25 ");
+                paramsBuilder.Append("--header-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.FooterUrl))
             {
-                sbdParamsBuilder.AppendFormat("--footer-html {0} ", document.FooterUrl);
-                sbdParamsBuilder.Append("--margin-bottom 25 ");
-                sbdParamsBuilder.Append("--footer-spacing 5 ");
+                paramsBuilder.AppendFormat("--footer-html {0} ", document.FooterUrl);
+                paramsBuilder.Append("--margin-bottom 25 ");
+                paramsBuilder.Append("--footer-spacing 5 ");
             }
             if (!string.IsNullOrEmpty(document.HeaderLeft))
-                sbdParamsBuilder.AppendFormat("--header-left \"{0}\" ", document.HeaderLeft);
+                paramsBuilder.AppendFormat("--header-left \"{0}\" ", document.HeaderLeft);
 
             if (!string.IsNullOrEmpty(document.HeaderCenter))
-                sbdParamsBuilder.AppendFormat("--header-center \"{0}\" ", document.HeaderCenter);
+                paramsBuilder.AppendFormat("--header-center \"{0}\" ", document.HeaderCenter);
 
             if (!string.IsNullOrEmpty(document.HeaderRight))
-                sbdParamsBuilder.AppendFormat("--header-right \"{0}\" ", document.HeaderRight);
+                paramsBuilder.AppendFormat("--header-right \"{0}\" ", document.HeaderRight);
 
             if (!string.IsNullOrEmpty(document.FooterLeft))
-                sbdParamsBuilder.AppendFormat("--footer-left \"{0}\" ", document.FooterLeft);
+                paramsBuilder.AppendFormat("--footer-left \"{0}\" ", document.FooterLeft);
 
             if (!string.IsNullOrEmpty(document.FooterCenter))
-                sbdParamsBuilder.AppendFormat("--footer-center \"{0}\" ", document.FooterCenter);
+                paramsBuilder.AppendFormat("--footer-center \"{0}\" ", document.FooterCenter);
 
             if (!string.IsNullOrEmpty(document.FooterRight))
-                sbdParamsBuilder.AppendFormat("--footer-right \"{0}\" ", document.FooterRight);
+                paramsBuilder.AppendFormat("--footer-right \"{0}\" ", document.FooterRight);
 
             if (!string.IsNullOrEmpty(document.HeaderFontSize))
-                sbdParamsBuilder.AppendFormat("--header-font-size \"{0}\" ", document.HeaderFontSize);
+                paramsBuilder.AppendFormat("--header-font-size \"{0}\" ", document.HeaderFontSize);
 
             if (!string.IsNullOrEmpty(document.FooterFontSize))
-                sbdParamsBuilder.AppendFormat("--footer-font-size \"{0}\" ", document.FooterFontSize);
+                paramsBuilder.AppendFormat("--footer-font-size \"{0}\" ", document.FooterFontSize);
 
             if (!string.IsNullOrEmpty(document.HeaderFontName))
-                sbdParamsBuilder.AppendFormat("--header-font-name \"{0}\" ", document.HeaderFontName);
+                paramsBuilder.AppendFormat("--header-font-name \"{0}\" ", document.HeaderFontName);
 
             if (!string.IsNullOrEmpty(document.FooterFontName))
-                sbdParamsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
+                paramsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
 
 
-            foreach (var extraParam in document.ExtraParams)
-                sbdParamsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
+            if (document.ExtraParams != null)
+                foreach (var extraParam in document.ExtraParams)
+                    paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
 
-            foreach (var cookie in document.Cookies)
-                sbdParamsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
+            if (document.Cookies != null)
+                foreach (var cookie in document.Cookies)
+                    paramsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
 
-            sbdParamsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, strOutputPdfFilePath);
+            paramsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, outputPdfFilePath);
 
             try
             {
-                StringBuilder sbdOutput = new StringBuilder();
-                StringBuilder sbdError = new StringBuilder();
+                StringBuilder output = new StringBuilder();
+                StringBuilder error = new StringBuilder();
 
                 using (Process process = new Process())
                 {
                     process.StartInfo.FileName = environment.WkHtmlToPdfPath;
-                    process.StartInfo.Arguments = sbdParamsBuilder.ToString();
+                    process.StartInfo.Arguments = paramsBuilder.ToString();
                     process.StartInfo.UseShellExecute = false;
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.RedirectStandardError = true;
                     process.StartInfo.RedirectStandardInput = true;
 
-                    AutoResetEvent errorWaitHandle = new AutoResetEvent(false);
-                    AutoResetEvent outputWaitHandle = new AutoResetEvent(false);
-                    try
+                    using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+                    using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
                     {
-                        void outputHandler(object sender, DataReceivedEventArgs e)
+                        DataReceivedEventHandler outputHandler = (sender, e) =>
                         {
                             if (e.Data == null)
                             {
@@ -232,11 +217,11 @@ namespace Codaxy.WkHtmlToPdf
                             }
                             else
                             {
-                                sbdOutput.AppendLine(e.Data);
+                                output.AppendLine(e.Data);
                             }
-                        }
+                        };
 
-                        void errorHandler(object sender, DataReceivedEventArgs e)
+                        DataReceivedEventHandler errorHandler = (sender, e) =>
                         {
                             if (e.Data == null)
                             {
@@ -244,9 +229,9 @@ namespace Codaxy.WkHtmlToPdf
                             }
                             else
                             {
-                                sbdError.AppendLine(e.Data);
+                                error.AppendLine(e.Data);
                             }
-                        }
+                        };
 
                         process.OutputDataReceived += outputHandler;
                         process.ErrorDataReceived += errorHandler;
@@ -260,21 +245,19 @@ namespace Codaxy.WkHtmlToPdf
 
                             if (document.Html != null)
                             {
-                                StreamWriter objStream = process.StandardInput;
-                                byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
-                                objStream.BaseStream.Write(buffer, 0, buffer.Length);
-                                objStream.WriteLine();
-                                objStream.Flush();
-                                objStream.Close();
+                                using (var stream = process.StandardInput)
+                                {
+                                    byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
+                                    stream.BaseStream.Write(buffer, 0, buffer.Length);
+                                    stream.WriteLine();
+                                }
                             }
 
                             if (process.WaitForExit(environment.Timeout) && outputWaitHandle.WaitOne(environment.Timeout) && errorWaitHandle.WaitOne(environment.Timeout))
                             {
-                                if (process.ExitCode != 0 && !File.Exists(strOutputPdfFilePath))
+                                if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
                                 {
-                                    throw new PdfConvertException(
-                                        string.Format(CultureInfo.InvariantCulture, "Html to PDF conversion of '{0}' failed. Wkhtmltopdf output:{1}{2}",
-                                            document.Url, System.Environment.NewLine, sbdError));
+                                    throw new PdfConvertException(String.Format("Html to PDF conversion of '{0}' failed. Wkhtmltopdf output: \r\n{1}", document.Url, error));
                                 }
                             }
                             else
@@ -291,37 +274,32 @@ namespace Codaxy.WkHtmlToPdf
                             process.ErrorDataReceived -= errorHandler;
                         }
                     }
-                    finally
-                    {
-                        errorWaitHandle?.Close();
-                        outputWaitHandle?.Close();
-                    }
                 }
 
 
                 if (woutput.OutputStream != null)
                 {
-                    using (Stream fs = new FileStream(strOutputPdfFilePath, FileMode.Open))
+                    using (Stream fs = new FileStream(outputPdfFilePath, FileMode.Open))
                     {
                         byte[] buffer = new byte[32 * 1024];
-                        int intRead;
+                        int read;
 
-                        while ((intRead = fs.Read(buffer, 0, buffer.Length)) > 0)
-                            woutput.OutputStream.Write(buffer, 0, intRead);
+                        while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+                            woutput.OutputStream.Write(buffer, 0, read);
                     }
                 }
 
                 if (woutput.OutputCallback != null)
                 {
-                    byte[] pdfFileBytes = File.ReadAllBytes(strOutputPdfFilePath);
+                    byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
                     woutput.OutputCallback(document, pdfFileBytes);
                 }
 
             }
             finally
             {
-                if (blnDelete && File.Exists(strOutputPdfFilePath))
-                    File.Delete(strOutputPdfFilePath);
+                if (delete && File.Exists(outputPdfFilePath))
+                    File.Delete(outputPdfFilePath);
             }
         }
 
@@ -335,7 +313,7 @@ namespace Codaxy.WkHtmlToPdf
     //{
     //    public static string GetProgramFilesx86Path()
     //    {
-    //        if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+    //        if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
     //        {
     //            return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
     //        }
@@ -363,7 +341,7 @@ namespace Codaxy.WkHtmlToPdf
     //    {
     //        FileInfo fi = new FileInfo(filename);
     //        response.ContentType = "application/force-download";
-    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + '\"');
+    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + "\"");
     //    }
     //}
 }

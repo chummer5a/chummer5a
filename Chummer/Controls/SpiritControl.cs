@@ -72,7 +72,7 @@ namespace Chummer
                 string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+                imgNotes.SetToolTip(strTooltip.WordWrap());
             }
             else
             {
@@ -85,7 +85,7 @@ namespace Chummer
                 string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap(100));
+                imgNotes.SetToolTip(strTooltip.WordWrap());
             }
 
             _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
@@ -287,7 +287,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objSpirit.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-            imgNotes.SetToolTip(strTooltip.WordWrap(100));
+            imgNotes.SetToolTip(strTooltip.WordWrap());
 
             ContactDetailChanged?.Invoke(this, e);
         }

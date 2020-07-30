@@ -733,7 +733,10 @@ namespace Chummer
                                 }
 
                                 foreach (Quality objQuality in lstOldPriorityQualities)
+                                {
+                                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                                     _objCharacter.Qualities.Remove(objQuality);
+                                }
 
                                 // Set starting magic
                                 int intTemp = 0;

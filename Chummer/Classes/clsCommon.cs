@@ -958,8 +958,18 @@ namespace Chummer
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
-
-            Uri uriPath = new Uri(objBookInfo.Path);
+            Uri uriPath = null;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException e)
+            {
+                string msg = "Path to book invalid: " + objBookInfo.Path + Environment.NewLine + Environment.NewLine +  e.Message;
+                Program.MainForm.ShowMessageBox(Program.MainForm, msg);
+                return;
+            }
+            
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return;

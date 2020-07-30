@@ -51,7 +51,7 @@ namespace Chummer
             if (objNotes.Notes != strOldValue)
             {
                 treNode.ForeColor = objNotes.PreferredColor;
-                treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+                treNode.ToolTipText = objNotes.Notes.WordWrap();
 
                 return true;
             }

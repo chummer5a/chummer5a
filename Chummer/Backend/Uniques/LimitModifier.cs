@@ -286,7 +286,7 @@ namespace Chummer
                 Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
             return objNode;
         }

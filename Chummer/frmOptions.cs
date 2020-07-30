@@ -630,9 +630,8 @@ namespace Chummer
 
         private void SetToolTips()
         {
-            const int width = 100;
             cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Tip_Options_TelemetryId", _strSelectedLanguage),
-                Properties.Settings.Default.UploadClientId).WordWrap(width));
+                Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo)).WordWrap());
         }
 
         private void PopulateLanguageList()
@@ -1147,7 +1146,7 @@ namespace Chummer
             if (useAI > UseAILogging.Info && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info)
             {
                 if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(256),
+                    LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(),
                     LanguageManager.GetString("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
                 {
@@ -1167,7 +1166,7 @@ namespace Chummer
             if (chkUseLogging.Checked && !GlobalOptions.UseLogging)
             {
                 if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(256),
+                    LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(),
                     LanguageManager.GetString("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
                 {

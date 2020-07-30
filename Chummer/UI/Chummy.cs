@@ -64,7 +64,7 @@ namespace Chummer
                 tmrTip.Start();
             }
 
-            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(100), this, _mouthCenter);
+            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(), this, _mouthCenter);
             _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).CreateNavigator().SelectSingleNode("/chummer/tips");
         }
         #region Event Handlers
@@ -200,7 +200,7 @@ namespace Chummer
         }
         private void ShowBalloonTip()
         {
-            _myToolTip.Show(HelpfulAdvice().WordWrap(100), this, _mouthCenter);
+            _myToolTip.Show(HelpfulAdvice().WordWrap(), this, _mouthCenter);
         }
 
         private void HideBalloonTip()

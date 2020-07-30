@@ -388,7 +388,7 @@ namespace Chummer
                 Tag = this,
                 ContextMenuStrip = cmsMartialArt,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
