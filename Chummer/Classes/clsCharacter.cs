@@ -8718,15 +8718,19 @@ namespace Chummer
                 int intREAAttributeModifiers = REA.AttributeModifiers;
                 string strSpace = LanguageManager.GetString("String_Space");
 
-                string strInit = REA.DisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalOptions.CultureInfo) + ')'
-                                 + strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                StringBuilder sbdInit = new StringBuilder(REA.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(REA.Value.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(INT.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(INT.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                 if(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
                 {
-                    strInit += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace +
-                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                    sbdInit.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers"))
+                        .Append(strSpace).Append('(')
+                        .Append((ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo))
+                        .Append(')');
                 }
 
-                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"), strInit, InitiativeDice.ToString(GlobalOptions.CultureInfo));
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"), sbdInit.ToString(), InitiativeDice.ToString(GlobalOptions.CultureInfo));
             }
         }
 
@@ -8788,11 +8792,14 @@ namespace Chummer
                     return string.Empty;
                 int intINTAttributeModifiers = INT.AttributeModifiers;
                 string strSpace = LanguageManager.GetString("String_Space");
-                string strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')' +
-                                 strSpace + '×' + strSpace + 2.ToString(GlobalOptions.CultureInfo);
+                StringBuilder sbdInit = new StringBuilder(INT.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(INT.Value.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('×').Append(strSpace).Append(2.ToString(GlobalOptions.CultureInfo));
                 if(intINTAttributeModifiers != 0 || WoundModifier != 0)
-                    strInit += LanguageManager.GetString("Tip_Modifiers") + strSpace + '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
-                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"), strInit, AstralInitiativeDice.ToString(GlobalOptions.CultureInfo));
+                    sbdInit.Append(LanguageManager.GetString("Tip_Modifiers"))
+                        .Append(strSpace).Append('(').Append((intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo)).Append(')');
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                    sbdInit.ToString(), AstralInitiativeDice.ToString(GlobalOptions.CultureInfo));
             }
         }
 
