@@ -922,13 +922,13 @@ namespace Chummer
             {
                 uriPath = new Uri(objBookInfo.Path);
             }
-            catch (UriFormatException e)
+            catch (UriFormatException)
             {
-                string msg = "Path to book invalid: " + objBookInfo.Path + Environment.NewLine + Environment.NewLine +  e.Message;
-                Program.MainForm.ShowMessageBox(Program.MainForm, msg);
+                // Silently swallow the error because PDF fetching is usually done in the background
+                objBookInfo.Path = string.Empty;
                 return;
             }
-            
+
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return;
