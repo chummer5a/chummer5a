@@ -2060,7 +2060,7 @@ namespace Chummer
                                             OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
                                                 ? "Message_CharacterOptions_DesyncBuildMethod"
                                                 : "Message_CharacterOptions_CannotLoadSetting"),
-                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)).WordWrap(),
                                     LanguageManager.GetString(
                                         OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
                                             ? "MessageTitle_CharacterOptions_DesyncBuildMethod"
@@ -2078,6 +2078,56 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strReplacementOptionsKey))
                                 strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
                             _strCharacterOptionsKey = strReplacementOptionsKey;
+                        }
+                        // Legacy load stuff
+                        else if (!Utils.IsUnitTest
+                                 && showWarnings
+                                 && (xmlCharacterNavigator.SelectSingleNode("sources/source") != null
+                                     || xmlCharacterNavigator.SelectSingleNode("customdatadirectorynames/directoryname") != null))
+                        {
+                            CharacterOptions objCurrentlyLoadedOptions = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
+                            HashSet<string> setBooks = new HashSet<string>();
+                            foreach (XPathNavigator xmlBook in xmlCharacterNavigator.Select("sources/source"))
+                                if (!string.IsNullOrEmpty(xmlBook.Value))
+                                    setBooks.Add(xmlBook.Value);
+                            // More books is fine, so just test if the stored book list is a subset of the current option's book list
+                            bool blnPromptConfirmSetting = !setBooks.IsProperSubsetOf(objCurrentlyLoadedOptions.Books);
+                            if (!blnPromptConfirmSetting)
+                            {
+                                List<string> lstCustomDataDirectoryNames = new List<string>();
+                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select("customdatadirectorynames/directoryname"))
+                                    if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
+                                        lstCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
+                                // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
+                                blnPromptConfirmSetting = lstCustomDataDirectoryNames.Count != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos.Count;
+                                if (!blnPromptConfirmSetting)
+                                {
+                                    // Check to make sure all the names are the same
+                                    for (int i = 0; i < lstCustomDataDirectoryNames.Count; ++i)
+                                    {
+                                        if (lstCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos[i].Name)
+                                        {
+                                            blnPromptConfirmSetting = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (blnPromptConfirmSetting)
+                            {
+                                DialogResult eShowBPResult = Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_CharacterOptions_DesyncBooksOrCustomData"),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)).WordWrap(),
+                                    LanguageManager.GetString("MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
+                                    MessageBoxButtons.YesNoCancel);
+                                if (eShowBPResult == DialogResult.Cancel)
+                                {
+                                    IsLoading = false;
+                                    return false;
+                                }
+                                blnShowSelectBP = eShowBPResult == DialogResult.Yes;
+                            }
                         }
 
                         Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];

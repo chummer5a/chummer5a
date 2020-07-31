@@ -9774,7 +9774,7 @@
     <!-- Region CharacterOptions Messages -->
     <string>
       <key>Message_CharacterOptions_DesyncBuildMethod</key>
-      <text>The settings file present that matches with the character's settings file ({0}) has a different build method. Select a different settings file with the same build method instead?</text>
+      <text>The settings file present that matches with the character's settings file ({0}) has a different build method.\n\nSelect a different settings file with the same build method instead?</text>
     </string>
     <string>
       <key>MessageTitle_CharacterOptions_DesyncBuildMethod</key>
@@ -9782,7 +9782,7 @@
     </string>
     <string>
       <key>Message_CharacterOptions_CannotLoadSetting</key>
-      <text>The character's settings file ({0}) could not be found. Select an existing settings file with the same build method instead?</text>
+      <text>The character's settings file ({0}) could not be found.\n\nSelect an existing settings file with the same build method instead?</text>
     </string>
     <string>
       <key>MessageTitle_CharacterOptions_CannotLoadSetting</key>
@@ -9795,6 +9795,14 @@
     <string>
       <key>MessageText_CharacterOptions_CannotLoadCharacter</key>
       <text>Cannot Load Character</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_DesyncBooksOrCustomData</key>
+      <text>This character was saved in an older version of Chummer5a, and the settings file present that matches with the character's settings file ({0}) has a different set of enabled sourcebooks and/or custom data directories.\n\nModify the settings file that this character will use?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DesyncBooksOrCustomData</key>
+      <text>Loaded Settings File Has Different Books and/or Custom Data Directories</text>
     </string>
     <!-- End Region-->
     <!-- Region Karma Value Strings -->

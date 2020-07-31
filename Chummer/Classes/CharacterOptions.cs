@@ -1061,10 +1061,83 @@ namespace Chummer
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
             }
 
+            XPathNavigator xmlLegacyCharacterNavigator = null;
+            // Legacy sweep by looking at MRU
+            if (!BuiltInOption && objXmlNode.SelectSingleNode("books/book") == null && objXmlNode.SelectSingleNode("customdatadirectorynames/directoryname") == null)
+            {
+                foreach (string strMRUCharacterFile in GlobalOptions.MostRecentlyUsedCharacters)
+                {
+                    XmlDocument objXmlDocument = new XmlDocument
+                    {
+                        XmlResolver = null
+                    };
+                    if (!File.Exists(strMRUCharacterFile))
+                        continue;
+                    try
+                    {
+                        using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                                objXmlDocument.Load(objXmlReader);
+                    }
+                    catch (XmlException)
+                    {
+                        continue;
+                    }
+                    xmlLegacyCharacterNavigator = objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+
+                    if (xmlLegacyCharacterNavigator == null)
+                        continue;
+
+                    string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNode("settings")?.Value;
+                    if (strLoopSettingsFile == _strFileName)
+                        break;
+                    xmlLegacyCharacterNavigator = null;
+                }
+
+                if (xmlLegacyCharacterNavigator == null)
+                {
+                    foreach (string strMRUCharacterFile in GlobalOptions.FavoritedCharacters)
+                    {
+                        XmlDocument objXmlDocument = new XmlDocument
+                        {
+                            XmlResolver = null
+                        };
+                        if (!File.Exists(strMRUCharacterFile))
+                            continue;
+                        try
+                        {
+                            using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                                    objXmlDocument.Load(objXmlReader);
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+                        xmlLegacyCharacterNavigator = objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+
+                        if (xmlLegacyCharacterNavigator == null)
+                            continue;
+
+                        string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNode("settings")?.Value;
+                        if (strLoopSettingsFile == _strFileName)
+                            break;
+                        xmlLegacyCharacterNavigator = null;
+                    }
+                }
+            }
+
             // Load Books.
             _lstBooks.Clear();
             foreach (XPathNavigator xmlBook in objXmlNode.Select("books/book"))
                 _lstBooks.Add(xmlBook.Value);
+            // Legacy sweep for sourcebooks
+            if (xmlLegacyCharacterNavigator != null)
+            {
+                foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.Select("sources/source"))
+                    if (!string.IsNullOrEmpty(xmlBook.Value))
+                        _lstBooks.Add(xmlBook.Value);
+            }
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
@@ -1074,45 +1147,55 @@ namespace Chummer
             foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
             {
                 string strDirectoryName = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
-                if (!string.IsNullOrEmpty(strDirectoryName))
+                if (string.IsNullOrEmpty(strDirectoryName))
+                    continue;
+                // Only load in directories that are either present in our GlobalOptions or are enabled
+                bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
+                if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
                 {
-                    // Only load in directories that are either present in our GlobalOptions or are enabled
-                    bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
-                    if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
+                    string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
+                    if (!string.IsNullOrEmpty(strOrder)
+                        && int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intOrder))
                     {
-                        string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
-                        if (!string.IsNullOrEmpty(strOrder)
-                            && int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intOrder))
-                        {
-                            intTopMostLoadOrder = Math.Max(intTopMostLoadOrder, intTopMostLoadOrder);
-                            _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                                new Tuple<int, bool>(intOrder, blnLoopEnabled));
-                        }
-                        else
-                            blnNeedToProcessInfosWithoutLoadOrder = true;
+                        intTopMostLoadOrder = Math.Max(intTopMostLoadOrder, intTopMostLoadOrder);
+                        _dicCustomDataDirectoryNames.Add(strDirectoryName,
+                            new Tuple<int, bool>(intOrder, blnLoopEnabled));
                     }
+                    else
+                        blnNeedToProcessInfosWithoutLoadOrder = true;
                 }
             }
+            // Legacy sweep for custom data directories
+            if (xmlLegacyCharacterNavigator != null)
+            {
+                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator.Select("customdatadirectorynames/directoryname"))
+                {
+                    string strDirectoryName = xmlCustomDataDirectoryName.Value;
+                    if (string.IsNullOrEmpty(strDirectoryName))
+                        continue;
+                    _dicCustomDataDirectoryNames.Add(strDirectoryName, new Tuple<int, bool>(intTopMostLoadOrder, true));
+                    ++intTopMostLoadOrder;
+                }
+            }
+
             // Add in the stragglers that didn't have any load order info
             if (blnNeedToProcessInfosWithoutLoadOrder)
             {
                 foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
                 {
                     string strDirectoryName = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
-                    if (!string.IsNullOrEmpty(strDirectoryName))
+                    if (string.IsNullOrEmpty(strDirectoryName))
+                        continue;
+                    string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
+                    if (string.IsNullOrEmpty(strOrder) || !int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _))
                     {
-                        string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
-                        if (string.IsNullOrEmpty(strOrder)
-                            || !int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _))
+                        // Only load in directories that are either present in our GlobalOptions or are enabled
+                        bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
+                        if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
                         {
-                            // Only load in directories that are either present in our GlobalOptions or are enabled
-                            bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
-                            if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
-                            {
-                                _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                                    new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
-                                ++intTopMostLoadOrder;
-                            }
+                            _dicCustomDataDirectoryNames.Add(strDirectoryName,
+                                new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
+                            ++intTopMostLoadOrder;
                         }
                     }
                 }
@@ -1136,6 +1219,12 @@ namespace Chummer
                     ++intTopMostLoadOrder;
                 }
             }
+
+            RecalculateEnabledCustomDataDirectories();
+
+            foreach (XmlNode xmlBook in XmlManager.Load("books.xml", EnabledCustomDataDirectoryPaths).SelectNodes("/chummer/books/book[permanent]/code"))
+                if (!string.IsNullOrEmpty(xmlBook.InnerText))
+                    _lstBooks.Add(xmlBook.InnerText);
 
             // Used to legacy sweep build settings.
             XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNode("defaultbuild");
@@ -1568,9 +1657,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
                 {
-                    strBookXPath.Append("source = \"");
-                    strBookXPath.Append(strBook);
-                    strBookXPath.Append("\" or ");
+                    strBookXPath.Append("source = \"").Append(strBook).Append("\" or ");
                 }
             }
             if (strBookXPath.Length >= 4)
