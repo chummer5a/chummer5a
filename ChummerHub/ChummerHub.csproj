@@ -172,8 +172,4 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet restore ChummerHub.csproj --packages .\packages" />
-  </Target>
-
 </Project>
