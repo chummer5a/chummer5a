@@ -77,9 +77,10 @@ namespace Chummer
             // nudDice
             // 
             this.nudDice.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudDice.AutoSize = true;
             this.nudDice.Location = new System.Drawing.Point(34, 3);
             this.nudDice.Name = "nudDice";
-            this.nudDice.Size = new System.Drawing.Size(100, 20);
+            this.nudDice.Size = new System.Drawing.Size(41, 20);
             this.nudDice.TabIndex = 1;
             this.nudDice.Value = new decimal(new int[] {
             1,
@@ -91,7 +92,7 @@ namespace Chummer
             // 
             this.lblD6.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblD6.AutoSize = true;
-            this.lblD6.Location = new System.Drawing.Point(140, 6);
+            this.lblD6.Location = new System.Drawing.Point(81, 6);
             this.lblD6.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblD6.Name = "lblD6";
             this.lblD6.Size = new System.Drawing.Size(21, 13);
@@ -142,8 +143,9 @@ namespace Chummer
             // tlpMain
             // 
             this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 3;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 151F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.lstResults, 0, 1);
@@ -200,14 +202,10 @@ namespace Chummer
             // nudGremlins
             // 
             this.nudGremlins.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudGremlins.AutoSize = true;
             this.nudGremlins.Location = new System.Drawing.Point(217, 173);
-            this.nudGremlins.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
             this.nudGremlins.Name = "nudGremlins";
-            this.nudGremlins.Size = new System.Drawing.Size(100, 20);
+            this.nudGremlins.Size = new System.Drawing.Size(41, 20);
             this.nudGremlins.TabIndex = 7;
             // 
             // lblGremlins
@@ -225,9 +223,10 @@ namespace Chummer
             // nudThreshold
             // 
             this.nudThreshold.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudThreshold.AutoSize = true;
             this.nudThreshold.Location = new System.Drawing.Point(217, 147);
             this.nudThreshold.Name = "nudThreshold";
-            this.nudThreshold.Size = new System.Drawing.Size(100, 20);
+            this.nudThreshold.Size = new System.Drawing.Size(41, 20);
             this.nudThreshold.TabIndex = 14;
             // 
             // chkRuleOf6
@@ -312,7 +311,7 @@ namespace Chummer
             this.flpRollParameters.Location = new System.Drawing.Point(0, 1);
             this.flpRollParameters.Margin = new System.Windows.Forms.Padding(0);
             this.flpRollParameters.Name = "flpRollParameters";
-            this.flpRollParameters.Size = new System.Drawing.Size(170, 26);
+            this.flpRollParameters.Size = new System.Drawing.Size(111, 26);
             this.flpRollParameters.TabIndex = 13;
             this.flpRollParameters.WrapContents = false;
             // 
@@ -320,7 +319,7 @@ namespace Chummer
             // 
             this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(167, 3);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(108, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(0, 0);
             this.flowLayoutPanel2.TabIndex = 12;

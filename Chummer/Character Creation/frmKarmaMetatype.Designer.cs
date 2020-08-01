@@ -78,7 +78,7 @@ namespace Chummer
             // tlpMetatypes
             // 
             this.tlpMetatypes.ColumnCount = 7;
-            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.999999F));
             this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19F));
             this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19F));
@@ -146,8 +146,7 @@ namespace Chummer
             // 
             // cboCategory
             // 
-            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(3, 3);
@@ -195,7 +194,9 @@ namespace Chummer
             // 
             // nudForce
             // 
-            this.nudForce.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nudForce.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudForce.AutoSize = true;
             this.nudForce.Location = new System.Drawing.Point(653, 80);
             this.nudForce.Maximum = new decimal(new int[] {
             20,
@@ -252,7 +253,6 @@ namespace Chummer
             // 
             this.chkBloodSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBloodSpirit.AutoSize = true;
-            this.chkBloodSpirit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkBloodSpirit.Location = new System.Drawing.Point(3, 5);
             this.chkBloodSpirit.Name = "chkBloodSpirit";
             this.chkBloodSpirit.Size = new System.Drawing.Size(79, 17);
@@ -267,7 +267,6 @@ namespace Chummer
             // 
             this.chkPossessionBased.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPossessionBased.AutoSize = true;
-            this.chkPossessionBased.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkPossessionBased.Location = new System.Drawing.Point(88, 5);
             this.chkPossessionBased.Name = "chkPossessionBased";
             this.chkPossessionBased.Size = new System.Drawing.Size(211, 17);
@@ -281,8 +280,7 @@ namespace Chummer
             // 
             // cboPossessionMethod
             // 
-            this.cboPossessionMethod.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboPossessionMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPossessionMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPossessionMethod.Enabled = false;
             this.cboPossessionMethod.FormattingEnabled = true;
@@ -482,11 +480,11 @@ namespace Chummer
             // 
             // lblMetavariantLabel
             // 
-            this.lblMetavariantLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMetavariantLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetavariantLabel.AutoSize = true;
             this.tlpMetatypes.SetColumnSpan(this.lblMetavariantLabel, 2);
             this.lblMetavariantLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMetavariantLabel.Location = new System.Drawing.Point(323, 109);
+            this.lblMetavariantLabel.Location = new System.Drawing.Point(323, 110);
             this.lblMetavariantLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetavariantLabel.Name = "lblMetavariantLabel";
             this.lblMetavariantLabel.Size = new System.Drawing.Size(78, 13);
@@ -496,7 +494,7 @@ namespace Chummer
             // 
             // lblKarmaLabel
             // 
-            this.lblKarmaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaLabel.AutoSize = true;
             this.tlpMetatypes.SetColumnSpan(this.lblKarmaLabel, 2);
             this.lblKarmaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -535,6 +533,7 @@ namespace Chummer
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Size = new System.Drawing.Size(156, 23);
             this.flpButtons.TabIndex = 71;
+            this.flpButtons.WrapContents = false;
             // 
             // cmdOK
             // 
@@ -578,8 +577,7 @@ namespace Chummer
             // 
             // cboMetavariant
             // 
-            this.cboMetavariant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboMetavariant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMetatypes.SetColumnSpan(this.cboMetavariant, 4);
             this.cboMetavariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetavariant.FormattingEnabled = true;

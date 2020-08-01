@@ -108,6 +108,7 @@ namespace Chummer
             // lblSource
             // 
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(354, 57);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -257,6 +258,7 @@ namespace Chummer
             // 
             // nudMinimumBP
             // 
+            this.nudMinimumBP.AutoSize = true;
             this.nudMinimumBP.Location = new System.Drawing.Point(63, 3);
             this.nudMinimumBP.Minimum = new decimal(new int[] {
             100,
@@ -264,13 +266,14 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMinimumBP.Name = "nudMinimumBP";
-            this.nudMinimumBP.Size = new System.Drawing.Size(100, 20);
+            this.nudMinimumBP.Size = new System.Drawing.Size(41, 20);
             this.nudMinimumBP.TabIndex = 16;
             this.nudMinimumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMinimumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
             // nudValueBP
             // 
+            this.nudValueBP.AutoSize = true;
             this.nudValueBP.Location = new System.Drawing.Point(63, 29);
             this.nudValueBP.Minimum = new decimal(new int[] {
             100,
@@ -278,13 +281,14 @@ namespace Chummer
             0,
             -2147483648});
             this.nudValueBP.Name = "nudValueBP";
-            this.nudValueBP.Size = new System.Drawing.Size(100, 20);
+            this.nudValueBP.Size = new System.Drawing.Size(41, 20);
             this.nudValueBP.TabIndex = 17;
             this.nudValueBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudValueBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
             // nudMaximumBP
             // 
+            this.nudMaximumBP.AutoSize = true;
             this.nudMaximumBP.Location = new System.Drawing.Point(63, 55);
             this.nudMaximumBP.Minimum = new decimal(new int[] {
             100,
@@ -292,7 +296,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMaximumBP.Name = "nudMaximumBP";
-            this.nudMaximumBP.Size = new System.Drawing.Size(100, 20);
+            this.nudMaximumBP.Size = new System.Drawing.Size(41, 20);
             this.nudMaximumBP.TabIndex = 18;
             this.nudMaximumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMaximumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
@@ -338,7 +342,7 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 3;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
@@ -422,7 +426,7 @@ namespace Chummer
             this.gpbKarmaFilter.Controls.Add(this.tlpKarmaFilter);
             this.gpbKarmaFilter.Location = new System.Drawing.Point(3, 3);
             this.gpbKarmaFilter.Name = "gpbKarmaFilter";
-            this.gpbKarmaFilter.Size = new System.Drawing.Size(172, 97);
+            this.gpbKarmaFilter.Size = new System.Drawing.Size(113, 97);
             this.gpbKarmaFilter.TabIndex = 25;
             this.gpbKarmaFilter.TabStop = false;
             this.gpbKarmaFilter.Tag = "Label_FilterByKarma";
@@ -448,7 +452,7 @@ namespace Chummer
             this.tlpKarmaFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpKarmaFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpKarmaFilter.Size = new System.Drawing.Size(166, 78);
+            this.tlpKarmaFilter.Size = new System.Drawing.Size(107, 78);
             this.tlpKarmaFilter.TabIndex = 0;
             // 
             // chkLimitList

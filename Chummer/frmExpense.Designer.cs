@@ -68,6 +68,7 @@ namespace Chummer
             // nudAmount
             // 
             this.nudAmount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudAmount.AutoSize = true;
             this.nudAmount.Location = new System.Drawing.Point(3, 3);
             this.nudAmount.Maximum = new decimal(new int[] {
             9999999,
@@ -80,7 +81,7 @@ namespace Chummer
             0,
             0});
             this.nudAmount.Name = "nudAmount";
-            this.nudAmount.Size = new System.Drawing.Size(80, 20);
+            this.nudAmount.Size = new System.Drawing.Size(65, 20);
             this.nudAmount.TabIndex = 1;
             this.nudAmount.Value = new decimal(new int[] {
             1,
@@ -177,15 +178,16 @@ namespace Chummer
             // nudPercent
             // 
             this.nudPercent.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudPercent.AutoSize = true;
             this.nudPercent.DecimalPlaces = 2;
-            this.nudPercent.Location = new System.Drawing.Point(89, 3);
+            this.nudPercent.Location = new System.Drawing.Point(74, 3);
             this.nudPercent.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.nudPercent.Name = "nudPercent";
-            this.nudPercent.Size = new System.Drawing.Size(80, 20);
+            this.nudPercent.Size = new System.Drawing.Size(56, 20);
             this.nudPercent.TabIndex = 2;
             this.nudPercent.Value = new decimal(new int[] {
             100,
@@ -198,7 +200,7 @@ namespace Chummer
             // 
             this.lblPercent.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPercent.AutoSize = true;
-            this.lblPercent.Location = new System.Drawing.Point(175, 6);
+            this.lblPercent.Location = new System.Drawing.Point(136, 6);
             this.lblPercent.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPercent.Name = "lblPercent";
             this.lblPercent.Size = new System.Drawing.Size(15, 13);

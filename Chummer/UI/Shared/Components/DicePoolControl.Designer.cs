@@ -46,8 +46,8 @@ namespace Chummer.UI.Shared.Components
             this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
             this.cmdRoll.Location = new System.Drawing.Point(40, 0);
             this.cmdRoll.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.cmdRoll.MinimumSize = new System.Drawing.Size(24, 24);
             this.cmdRoll.Name = "cmdRoll";
+            this.cmdRoll.Padding = new System.Windows.Forms.Padding(1);
             this.cmdRoll.Size = new System.Drawing.Size(24, 24);
             this.cmdRoll.TabIndex = 119;
             this.cmdRoll.UseVisualStyleBackColor = true;

@@ -122,7 +122,7 @@ namespace Chummer
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -173,7 +173,6 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 68;
             // 
@@ -189,14 +188,12 @@ namespace Chummer
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
             // 
-            this.lblESSDiscountLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCyberwareNotes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             // chkHideOverAvailLimit
             // 
             this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkHideOverAvailLimit, 4);
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 300);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 301);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 65;
@@ -210,6 +207,7 @@ namespace Chummer
             this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSearchLabel.AutoSize = true;
             this.lblSearchLabel.Location = new System.Drawing.Point(311, 6);
+            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSearchLabel.TabIndex = 0;
@@ -223,7 +221,7 @@ namespace Chummer
             this.chkHideBannedGrades.Checked = true;
             this.chkHideBannedGrades.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tableLayoutPanel1.SetColumnSpan(this.chkHideBannedGrades, 4);
-            this.chkHideBannedGrades.Location = new System.Drawing.Point(304, 277);
+            this.chkHideBannedGrades.Location = new System.Drawing.Point(304, 278);
             this.chkHideBannedGrades.Name = "chkHideBannedGrades";
             this.chkHideBannedGrades.Size = new System.Drawing.Size(178, 17);
             this.chkHideBannedGrades.TabIndex = 67;
@@ -234,11 +232,11 @@ namespace Chummer
             // 
             // lblCyberwareNotes
             // 
-            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareNotes.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCyberwareNotes.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblCyberwareNotes, 3);
-            this.lblCyberwareNotes.Location = new System.Drawing.Point(361, 255);
+            this.lblCyberwareNotes.Location = new System.Drawing.Point(361, 256);
+            this.lblCyberwareNotes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareNotes.Name = "lblCyberwareNotes";
             this.lblCyberwareNotes.Size = new System.Drawing.Size(41, 13);
             this.lblCyberwareNotes.TabIndex = 31;
@@ -250,7 +248,7 @@ namespace Chummer
             // 
             this.lblCyberwareNotesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCyberwareNotesLabel.AutoSize = true;
-            this.lblCyberwareNotesLabel.Location = new System.Drawing.Point(317, 258);
+            this.lblCyberwareNotesLabel.Location = new System.Drawing.Point(317, 256);
             this.lblCyberwareNotesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareNotesLabel.Name = "lblCyberwareNotesLabel";
             this.lblCyberwareNotesLabel.Size = new System.Drawing.Size(38, 13);
@@ -264,8 +262,9 @@ namespace Chummer
             // 
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
-            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(361, 231);
+            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 21;
@@ -277,7 +276,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(311, 233);
+            this.lblSourceLabel.Location = new System.Drawing.Point(311, 231);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -327,7 +326,7 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkShowOnlyAffordItems, 4);
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 323);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 324);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
             this.chkShowOnlyAffordItems.TabIndex = 72;
@@ -382,8 +381,8 @@ namespace Chummer
             // 
             this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupLabel.Location = new System.Drawing.Point(309, 180);
+            this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
             this.lblMarkupLabel.TabIndex = 40;
@@ -453,8 +452,8 @@ namespace Chummer
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label1.AutoSize = true;
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label1.Location = new System.Drawing.Point(16, 34);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(39, 13);
             this.label1.TabIndex = 24;
@@ -484,12 +483,13 @@ namespace Chummer
             this.flpMarkup.Location = new System.Drawing.Point(358, 174);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(127, 26);
+            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
             this.flpMarkup.TabIndex = 16;
             // 
             // nudMarkup
             // 
             this.nudMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMarkup.AutoSize = true;
             this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(3, 3);
             this.nudMarkup.Maximum = new decimal(new int[] {
@@ -503,7 +503,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMarkup.Name = "nudMarkup";
-            this.nudMarkup.Size = new System.Drawing.Size(100, 20);
+            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 41;
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
@@ -511,7 +511,7 @@ namespace Chummer
             // 
             this.lblMarkupPercentLabel.AutoSize = true;
             this.lblMarkupPercentLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(109, 0);
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(65, 0);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 26);
             this.lblMarkupPercentLabel.TabIndex = 42;
@@ -607,15 +607,16 @@ namespace Chummer
             this.flpRating.Location = new System.Drawing.Point(358, 102);
             this.flpRating.Margin = new System.Windows.Forms.Padding(0);
             this.flpRating.Name = "flpRating";
-            this.flpRating.Size = new System.Drawing.Size(139, 26);
+            this.flpRating.Size = new System.Drawing.Size(80, 26);
             this.flpRating.TabIndex = 73;
             this.flpRating.WrapContents = false;
             // 
             // nudRating
             // 
+            this.nudRating.AutoSize = true;
             this.nudRating.Location = new System.Drawing.Point(3, 3);
             this.nudRating.Name = "nudRating";
-            this.nudRating.Size = new System.Drawing.Size(100, 20);
+            this.nudRating.Size = new System.Drawing.Size(41, 20);
             this.nudRating.TabIndex = 3;
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
@@ -623,7 +624,7 @@ namespace Chummer
             // 
             this.lblRatingNALabel.AutoSize = true;
             this.lblRatingNALabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(109, 0);
+            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 0);
             this.lblRatingNALabel.Name = "lblRatingNALabel";
             this.lblRatingNALabel.Size = new System.Drawing.Size(27, 26);
             this.lblRatingNALabel.TabIndex = 15;
@@ -632,7 +633,6 @@ namespace Chummer
             this.lblRatingNALabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblRatingNALabel.Visible = false;
             // 
-            this.lblESSDiscountPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             // lblAvailLabel
             // 
             this.lblAvailLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -675,8 +675,8 @@ namespace Chummer
             // 
             this.lblTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTest.AutoSize = true;
-            this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTest.Location = new System.Drawing.Point(504, 231);
+            this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTest.Name = "lblTest";
             this.lblTest.Size = new System.Drawing.Size(19, 13);
             this.lblTest.TabIndex = 14;
@@ -718,7 +718,7 @@ namespace Chummer
             this.flpDiscount.Location = new System.Drawing.Point(301, 76);
             this.flpDiscount.Margin = new System.Windows.Forms.Padding(0);
             this.flpDiscount.Name = "flpDiscount";
-            this.flpDiscount.Size = new System.Drawing.Size(229, 26);
+            this.flpDiscount.Size = new System.Drawing.Size(185, 26);
             this.flpDiscount.TabIndex = 76;
             this.flpDiscount.WrapContents = false;
             // 
@@ -726,9 +726,10 @@ namespace Chummer
             // 
             this.lblESSDiscountLabel.AutoSize = true;
             this.lblESSDiscountLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblESSDiscountLabel.Location = new System.Drawing.Point(3, 0);
+            this.lblESSDiscountLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblESSDiscountLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblESSDiscountLabel.Name = "lblESSDiscountLabel";
-            this.lblESSDiscountLabel.Size = new System.Drawing.Size(96, 26);
+            this.lblESSDiscountLabel.Size = new System.Drawing.Size(96, 14);
             this.lblESSDiscountLabel.TabIndex = 6;
             this.lblESSDiscountLabel.Tag = "Label_SelectCyberware_ESSDiscount";
             this.lblESSDiscountLabel.Text = "Essence Discount:";
@@ -737,6 +738,7 @@ namespace Chummer
             // nudESSDiscount
             // 
             this.nudESSDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudESSDiscount.AutoSize = true;
             this.nudESSDiscount.DecimalPlaces = 2;
             this.nudESSDiscount.Location = new System.Drawing.Point(105, 3);
             this.nudESSDiscount.Minimum = new decimal(new int[] {
@@ -745,7 +747,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudESSDiscount.Name = "nudESSDiscount";
-            this.nudESSDiscount.Size = new System.Drawing.Size(100, 20);
+            this.nudESSDiscount.Size = new System.Drawing.Size(56, 20);
             this.nudESSDiscount.TabIndex = 7;
             this.nudESSDiscount.ValueChanged += new System.EventHandler(this.nudESSDiscount_ValueChanged);
             // 
@@ -753,9 +755,10 @@ namespace Chummer
             // 
             this.lblESSDiscountPercentLabel.AutoSize = true;
             this.lblESSDiscountPercentLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblESSDiscountPercentLabel.Location = new System.Drawing.Point(211, 0);
+            this.lblESSDiscountPercentLabel.Location = new System.Drawing.Point(167, 6);
+            this.lblESSDiscountPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblESSDiscountPercentLabel.Name = "lblESSDiscountPercentLabel";
-            this.lblESSDiscountPercentLabel.Size = new System.Drawing.Size(15, 26);
+            this.lblESSDiscountPercentLabel.Size = new System.Drawing.Size(15, 14);
             this.lblESSDiscountPercentLabel.TabIndex = 8;
             this.lblESSDiscountPercentLabel.Text = "%";
             this.lblESSDiscountPercentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

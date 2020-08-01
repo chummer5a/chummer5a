@@ -28,27 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtRevisionHistory = new System.Windows.Forms.TextBox();
+            this.rtbHistory = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
-            // txtRevisionHistory
+            // rtbHistory
             // 
-            this.txtRevisionHistory.BackColor = System.Drawing.Color.White;
-            this.txtRevisionHistory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRevisionHistory.Location = new System.Drawing.Point(9, 9);
-            this.txtRevisionHistory.Multiline = true;
-            this.txtRevisionHistory.Name = "txtRevisionHistory";
-            this.txtRevisionHistory.ReadOnly = true;
-            this.txtRevisionHistory.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtRevisionHistory.Size = new System.Drawing.Size(766, 543);
-            this.txtRevisionHistory.TabIndex = 0;
+            this.rtbHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbHistory.Location = new System.Drawing.Point(9, 9);
+            this.rtbHistory.Name = "rtbHistory";
+            this.rtbHistory.ReadOnly = true;
+            this.rtbHistory.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbHistory.Size = new System.Drawing.Size(766, 543);
+            this.rtbHistory.TabIndex = 0;
+            this.rtbHistory.Text = "";
             // 
             // frmHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.txtRevisionHistory);
+            this.Controls.Add(this.rtbHistory);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -62,12 +62,11 @@
             this.Text = "Chummer Revision History";
             this.Load += new System.EventHandler(this.frmHistory_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtRevisionHistory;
+        private System.Windows.Forms.RichTextBox rtbHistory;
     }
 }

@@ -11721,11 +11721,11 @@ namespace Chummer
 
                 MentorSpirit objMentorSpirit = MentorSpirits[0];
                 string strSpace = LanguageManager.GetString("String_Space");
-                return LanguageManager.GetString("Label_SelectMentorSpirit_Advantage")
-                       + strSpace + objMentorSpirit.DisplayAdvantage(GlobalOptions.Language)
-                       + Environment.NewLine + Environment.NewLine
-                       + LanguageManager.GetString("Label_SelectMetamagic_Disadvantage")
-                       + strSpace + objMentorSpirit.Disadvantage;
+                StringBuilder sbdReturn = new StringBuilder(LanguageManager.GetString("Label_SelectMentorSpirit_Advantage"))
+                    .Append(strSpace).AppendLine(objMentorSpirit.DisplayAdvantage(GlobalOptions.Language))
+                    .AppendLine().Append(LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"))
+                    .Append(strSpace).AppendLine(objMentorSpirit.Disadvantage);
+                return sbdReturn.ToString().WordWrap();
             }
         }
 

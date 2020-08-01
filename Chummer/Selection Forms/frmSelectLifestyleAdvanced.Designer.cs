@@ -31,10 +31,10 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -256,6 +256,7 @@ namespace Chummer
             // 
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(389, 293);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -444,23 +445,23 @@ namespace Chummer
             this.treLifestyleQualities.HideSelection = false;
             this.treLifestyleQualities.Location = new System.Drawing.Point(3, 32);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode17.Name = "nodPositiveLifestyleQualities";
-            treeNode17.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
-            treeNode17.Text = "Positive Qualities";
-            treeNode18.Name = "nodNegativeLifestyleQualities";
-            treeNode18.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
-            treeNode18.Text = "Negative Qualities";
-            treeNode19.Name = "nodLifestyleEntertainments";
-            treeNode19.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode19.Text = "Entertainments";
-            treeNode20.Name = "nodFreeMatrixGrids";
-            treeNode20.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
-            treeNode20.Text = "Free Matrix Grids";
+            treeNode5.Name = "nodPositiveLifestyleQualities";
+            treeNode5.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
+            treeNode5.Text = "Positive Qualities";
+            treeNode6.Name = "nodNegativeLifestyleQualities";
+            treeNode6.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
+            treeNode6.Text = "Negative Qualities";
+            treeNode7.Name = "nodLifestyleEntertainments";
+            treeNode7.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode7.Text = "Entertainments";
+            treeNode8.Name = "nodFreeMatrixGrids";
+            treeNode8.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
+            treeNode8.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20});
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8});
             this.tableLayoutPanel1.SetRowSpan(this.treLifestyleQualities, 15);
             this.treLifestyleQualities.Size = new System.Drawing.Size(295, 388);
             this.treLifestyleQualities.TabIndex = 53;
@@ -678,7 +679,7 @@ namespace Chummer
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());

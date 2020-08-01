@@ -386,7 +386,7 @@ namespace Chummer
             // treCharacterList
             // 
             this.treCharacterList.AllowDrop = true;
-            this.treCharacterList.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treCharacterList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treCharacterList.Location = new System.Drawing.Point(3, 3);
             this.treCharacterList.Name = "treCharacterList";
             this.tlpCharacterRoster.SetRowSpan(this.treCharacterList, 9);
@@ -426,8 +426,9 @@ namespace Chummer
             // tlpCharacterRoster
             // 
             this.tlpCharacterRoster.AutoSize = true;
+            this.tlpCharacterRoster.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCharacterRoster.ColumnCount = 4;
-            this.tlpCharacterRoster.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpCharacterRoster.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCharacterRoster.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCharacterRoster.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpCharacterRoster.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());

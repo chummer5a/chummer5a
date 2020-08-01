@@ -56,9 +56,11 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpTopButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.tlpTopButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdCancel
@@ -288,6 +290,7 @@ namespace Chummer
             // nudMarkup
             // 
             this.nudMarkup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMarkup.AutoSize = true;
             this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(361, 238);
             this.nudMarkup.Maximum = new decimal(new int[] {
@@ -332,7 +335,6 @@ namespace Chummer
             // 
             // treMods
             // 
-            this.tlpMain.SetColumnSpan(this.treMods, 2);
             this.treMods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treMods.Location = new System.Drawing.Point(3, 32);
             this.treMods.Name = "treMods";
@@ -344,7 +346,8 @@ namespace Chummer
             // cmdDeleteMod
             // 
             this.cmdDeleteMod.AutoSize = true;
-            this.cmdDeleteMod.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cmdDeleteMod.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDeleteMod.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteMod.Location = new System.Drawing.Point(153, 3);
             this.cmdDeleteMod.Name = "cmdDeleteMod";
             this.cmdDeleteMod.Size = new System.Drawing.Size(145, 23);
@@ -357,7 +360,8 @@ namespace Chummer
             // cmdAddMod
             // 
             this.cmdAddMod.AutoSize = true;
-            this.cmdAddMod.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cmdAddMod.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddMod.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddMod.Location = new System.Drawing.Point(3, 3);
             this.cmdAddMod.Name = "cmdAddMod";
             this.cmdAddMod.Size = new System.Drawing.Size(144, 23);
@@ -397,37 +401,35 @@ namespace Chummer
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 5;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 151F));
+            this.tlpMain.ColumnCount = 4;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Controls.Add(this.cmdAddMod, 0, 0);
-            this.tlpMain.Controls.Add(this.cmdDeleteMod, 1, 0);
-            this.tlpMain.Controls.Add(this.lblSize, 2, 1);
-            this.tlpMain.Controls.Add(this.lblControl, 2, 3);
+            this.tlpMain.Controls.Add(this.lblSize, 1, 1);
+            this.tlpMain.Controls.Add(this.lblControl, 1, 3);
             this.tlpMain.Controls.Add(this.treMods, 0, 1);
-            this.tlpMain.Controls.Add(this.lblVisbility, 2, 2);
-            this.tlpMain.Controls.Add(this.lblFlexibility, 2, 4);
-            this.tlpMain.Controls.Add(this.cboSize, 3, 1);
-            this.tlpMain.Controls.Add(this.cboFlexibility, 3, 4);
-            this.tlpMain.Controls.Add(this.lblAvailability, 3, 5);
-            this.tlpMain.Controls.Add(this.lblAvailabilityLabel, 2, 5);
-            this.tlpMain.Controls.Add(this.lblSourceLabel, 2, 10);
-            this.tlpMain.Controls.Add(this.lblMarkupLabel, 2, 9);
-            this.tlpMain.Controls.Add(this.lblSource, 3, 10);
-            this.tlpMain.Controls.Add(this.lblMarkupPercentLabel, 4, 9);
-            this.tlpMain.Controls.Add(this.nudMarkup, 3, 9);
-            this.tlpMain.Controls.Add(this.lblSlotsLabel, 2, 6);
-            this.tlpMain.Controls.Add(this.lblCostLabel, 2, 7);
-            this.tlpMain.Controls.Add(this.chkFreeItem, 2, 8);
-            this.tlpMain.Controls.Add(this.lblCost, 3, 7);
-            this.tlpMain.Controls.Add(this.lblSlots, 3, 6);
-            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 2, 11);
-            this.tlpMain.Controls.Add(this.cboVisibility, 3, 2);
-            this.tlpMain.Controls.Add(this.cboControl, 3, 3);
+            this.tlpMain.Controls.Add(this.lblVisbility, 1, 2);
+            this.tlpMain.Controls.Add(this.lblFlexibility, 1, 4);
+            this.tlpMain.Controls.Add(this.cboSize, 2, 1);
+            this.tlpMain.Controls.Add(this.cboFlexibility, 2, 4);
+            this.tlpMain.Controls.Add(this.lblAvailability, 2, 5);
+            this.tlpMain.Controls.Add(this.lblAvailabilityLabel, 1, 5);
+            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 10);
+            this.tlpMain.Controls.Add(this.lblMarkupLabel, 1, 9);
+            this.tlpMain.Controls.Add(this.lblSource, 2, 10);
+            this.tlpMain.Controls.Add(this.lblMarkupPercentLabel, 3, 9);
+            this.tlpMain.Controls.Add(this.nudMarkup, 2, 9);
+            this.tlpMain.Controls.Add(this.lblSlotsLabel, 1, 6);
+            this.tlpMain.Controls.Add(this.lblCostLabel, 1, 7);
+            this.tlpMain.Controls.Add(this.chkFreeItem, 1, 8);
+            this.tlpMain.Controls.Add(this.lblCost, 2, 7);
+            this.tlpMain.Controls.Add(this.lblSlots, 2, 6);
+            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 1, 11);
+            this.tlpMain.Controls.Add(this.cboVisibility, 2, 2);
+            this.tlpMain.Controls.Add(this.cboControl, 2, 3);
+            this.tlpMain.Controls.Add(this.tlpTopButtons, 0, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -461,6 +463,24 @@ namespace Chummer
             this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 70;
             // 
+            // tlpTopButtons
+            // 
+            this.tlpTopButtons.AutoSize = true;
+            this.tlpTopButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTopButtons.ColumnCount = 2;
+            this.tlpTopButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTopButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTopButtons.Controls.Add(this.cmdAddMod, 0, 0);
+            this.tlpTopButtons.Controls.Add(this.cmdDeleteMod, 1, 0);
+            this.tlpTopButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTopButtons.Location = new System.Drawing.Point(0, 0);
+            this.tlpTopButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTopButtons.Name = "tlpTopButtons";
+            this.tlpTopButtons.RowCount = 1;
+            this.tlpTopButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpTopButtons.Size = new System.Drawing.Size(301, 29);
+            this.tlpTopButtons.TabIndex = 71;
+            // 
             // frmCreateWeaponMount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -480,6 +500,8 @@ namespace Chummer
             this.tlpMain.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.tlpTopButtons.ResumeLayout(false);
+            this.tlpTopButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -514,5 +536,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private BufferedTableLayoutPanel tlpTopButtons;
     }
 }

@@ -36,7 +36,7 @@ namespace Chummer
             // Display the contents of the changelog.txt file in the TextBox.
             try
             {
-                txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"));
+                rtbHistory.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"));
             }
             catch
             {
@@ -44,8 +44,8 @@ namespace Chummer
                 Close();
                 return;
             }
-            txtRevisionHistory.SelectionStart = 0;
-            txtRevisionHistory.SelectionLength = 0;
+            rtbHistory.SelectionStart = 0;
+            rtbHistory.SelectionLength = 0;
         }
         #endregion
     }

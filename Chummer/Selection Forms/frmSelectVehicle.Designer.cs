@@ -395,6 +395,7 @@ namespace Chummer
             // 
             this.lblSource.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblSource, 2);
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(362, 257);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -457,8 +458,8 @@ namespace Chummer
             // 
             // nudUsedVehicleDiscount
             // 
-            this.nudUsedVehicleDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudUsedVehicleDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudUsedVehicleDiscount.AutoSize = true;
             this.nudUsedVehicleDiscount.DecimalPlaces = 2;
             this.nudUsedVehicleDiscount.Location = new System.Drawing.Point(156, 3);
             this.nudUsedVehicleDiscount.Maximum = new decimal(new int[] {
@@ -472,7 +473,7 @@ namespace Chummer
             0,
             0});
             this.nudUsedVehicleDiscount.Name = "nudUsedVehicleDiscount";
-            this.nudUsedVehicleDiscount.Size = new System.Drawing.Size(100, 20);
+            this.nudUsedVehicleDiscount.Size = new System.Drawing.Size(50, 20);
             this.nudUsedVehicleDiscount.TabIndex = 24;
             this.nudUsedVehicleDiscount.Value = new decimal(new int[] {
             20,
@@ -485,7 +486,7 @@ namespace Chummer
             // lblUsedVehicleDiscountPercentLabel
             // 
             this.lblUsedVehicleDiscountPercentLabel.AutoSize = true;
-            this.lblUsedVehicleDiscountPercentLabel.Location = new System.Drawing.Point(262, 6);
+            this.lblUsedVehicleDiscountPercentLabel.Location = new System.Drawing.Point(212, 6);
             this.lblUsedVehicleDiscountPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblUsedVehicleDiscountPercentLabel.Name = "lblUsedVehicleDiscountPercentLabel";
             this.lblUsedVehicleDiscountPercentLabel.Size = new System.Drawing.Size(15, 13);
@@ -495,8 +496,8 @@ namespace Chummer
             // 
             // nudMarkup
             // 
-            this.nudMarkup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMarkup.AutoSize = true;
             this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(3, 3);
             this.nudMarkup.Maximum = new decimal(new int[] {
@@ -510,7 +511,7 @@ namespace Chummer
             0,
             -2147352576});
             this.nudMarkup.Name = "nudMarkup";
-            this.nudMarkup.Size = new System.Drawing.Size(100, 20);
+            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 28;
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
@@ -529,7 +530,7 @@ namespace Chummer
             // lblMarkupPercentLabel
             // 
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(109, 6);
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(65, 6);
             this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
@@ -613,7 +614,7 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 5;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -732,7 +733,7 @@ namespace Chummer
             this.flpDiscount.Location = new System.Drawing.Point(301, 199);
             this.flpDiscount.Margin = new System.Windows.Forms.Padding(0);
             this.flpDiscount.Name = "flpDiscount";
-            this.flpDiscount.Size = new System.Drawing.Size(280, 26);
+            this.flpDiscount.Size = new System.Drawing.Size(230, 26);
             this.flpDiscount.TabIndex = 70;
             // 
             // flpMarkup
@@ -745,7 +746,7 @@ namespace Chummer
             this.flpMarkup.Location = new System.Drawing.Point(359, 225);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(127, 26);
+            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
             this.flpMarkup.TabIndex = 71;
             // 
             // flpCheckBoxes

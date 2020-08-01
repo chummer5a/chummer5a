@@ -50,7 +50,6 @@ namespace Chummer
             this.lblPDFAppPath = new System.Windows.Forms.Label();
             this.chkHideCharts = new System.Windows.Forms.CheckBox();
             this.lblPDFParametersLabel = new System.Windows.Forms.Label();
-            this.chkHideCharacterRoster = new System.Windows.Forms.CheckBox();
             this.grpTimeFormat = new System.Windows.Forms.GroupBox();
             this.bufferedTableLayoutPanel3 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtTimeFormat = new System.Windows.Forms.TextBox();
@@ -105,13 +104,15 @@ namespace Chummer
             this.bufferedTableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtDateFormat = new System.Windows.Forms.TextBox();
             this.txtDateFormatView = new System.Windows.Forms.TextBox();
-            this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
             this.lblMugshotCompression = new System.Windows.Forms.Label();
             this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
             this.cboMugshotCompression = new Chummer.ElasticComboBox();
             this.flpMugshotCompressionQuality = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMugshotCompressionQuality = new System.Windows.Forms.Label();
             this.nudMugshotCompressionQuality = new System.Windows.Forms.NumericUpDown();
+            this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
+            this.chkHideCharacterRoster = new System.Windows.Forms.CheckBox();
+            this.chkHideMasterIndex = new System.Windows.Forms.CheckBox();
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
@@ -330,14 +331,13 @@ namespace Chummer
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpPlugins = new Chummer.BufferedTableLayoutPanel(this.components);
             this.grpAvailablePlugins = new System.Windows.Forms.GroupBox();
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.panelPluginOption = new System.Windows.Forms.Panel();
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.chkHideMasterIndex = new System.Windows.Forms.CheckBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -430,7 +430,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
             this.tabGitHubIssues.SuspendLayout();
             this.tabPlugins.SuspendLayout();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
+            this.tlpPlugins.SuspendLayout();
             this.grpAvailablePlugins.SuspendLayout();
             this.flpOKCancel.SuspendLayout();
             this.SuspendLayout();
@@ -538,7 +538,7 @@ namespace Chummer
             // 
             this.tlpGlobal.AutoSize = true;
             this.tlpGlobal.ColumnCount = 2;
-            this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpGlobal.Controls.Add(this.grpSelectedSourcebook, 1, 1);
             this.tlpGlobal.Controls.Add(this.tlpGlobalOptions, 1, 0);
@@ -655,6 +655,7 @@ namespace Chummer
             // nudPDFOffset
             // 
             this.nudPDFOffset.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudPDFOffset.AutoSize = true;
             this.nudPDFOffset.Location = new System.Drawing.Point(3, 4);
             this.nudPDFOffset.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.nudPDFOffset.Minimum = new decimal(new int[] {
@@ -663,7 +664,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudPDFOffset.Name = "nudPDFOffset";
-            this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
+            this.nudPDFOffset.Size = new System.Drawing.Size(41, 20);
             this.nudPDFOffset.TabIndex = 16;
             this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
             // 
@@ -672,7 +673,7 @@ namespace Chummer
             this.cmdPDFTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdPDFTest.AutoSize = true;
             this.cmdPDFTest.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdPDFTest.Location = new System.Drawing.Point(53, 3);
+            this.cmdPDFTest.Location = new System.Drawing.Point(50, 3);
             this.cmdPDFTest.Name = "cmdPDFTest";
             this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
             this.cmdPDFTest.TabIndex = 17;
@@ -811,21 +812,6 @@ namespace Chummer
             this.lblPDFParametersLabel.TabIndex = 19;
             this.lblPDFParametersLabel.Tag = "Label_Options_PDFParameters";
             this.lblPDFParametersLabel.Text = "PDF Parameters:";
-            // 
-            // chkHideCharacterRoster
-            // 
-            this.chkHideCharacterRoster.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkHideCharacterRoster.AutoSize = true;
-            this.tlpGlobalOptions.SetColumnSpan(this.chkHideCharacterRoster, 3);
-            this.chkHideCharacterRoster.Location = new System.Drawing.Point(406, 364);
-            this.chkHideCharacterRoster.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkHideCharacterRoster.Name = "chkHideCharacterRoster";
-            this.chkHideCharacterRoster.Size = new System.Drawing.Size(149, 17);
-            this.chkHideCharacterRoster.TabIndex = 35;
-            this.chkHideCharacterRoster.Tag = "Checkbox_Options_HideCharacterRoster";
-            this.chkHideCharacterRoster.Text = "Hide the Character Roster";
-            this.chkHideCharacterRoster.UseVisualStyleBackColor = true;
-            this.chkHideCharacterRoster.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // grpTimeFormat
             // 
@@ -1570,23 +1556,6 @@ namespace Chummer
             this.txtDateFormatView.Size = new System.Drawing.Size(327, 20);
             this.txtDateFormatView.TabIndex = 47;
             // 
-            // chkCreateBackupOnCareer
-            // 
-            this.chkCreateBackupOnCareer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkCreateBackupOnCareer.AutoSize = true;
-            this.chkCreateBackupOnCareer.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.tlpGlobalOptions.SetColumnSpan(this.chkCreateBackupOnCareer, 3);
-            this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(3, 439);
-            this.chkCreateBackupOnCareer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkCreateBackupOnCareer.Name = "chkCreateBackupOnCareer";
-            this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(333, 17);
-            this.chkCreateBackupOnCareer.TabIndex = 24;
-            this.chkCreateBackupOnCareer.Tag = "Checkbox_Option_CreateBackupOnCareer";
-            this.chkCreateBackupOnCareer.Text = "Create backup of characters before moving them to Career Mode";
-            this.chkCreateBackupOnCareer.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkCreateBackupOnCareer.UseVisualStyleBackColor = true;
-            this.chkCreateBackupOnCareer.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // lblMugshotCompression
             // 
             this.lblMugshotCompression.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -1601,6 +1570,7 @@ namespace Chummer
             // 
             // nudBrowserVersion
             // 
+            this.nudBrowserVersion.AutoSize = true;
             this.nudBrowserVersion.Location = new System.Drawing.Point(199, 488);
             this.nudBrowserVersion.Maximum = new decimal(new int[] {
             11,
@@ -1613,7 +1583,7 @@ namespace Chummer
             0,
             0});
             this.nudBrowserVersion.Name = "nudBrowserVersion";
-            this.nudBrowserVersion.Size = new System.Drawing.Size(48, 20);
+            this.nudBrowserVersion.Size = new System.Drawing.Size(35, 20);
             this.nudBrowserVersion.TabIndex = 54;
             this.nudBrowserVersion.Value = new decimal(new int[] {
             8,
@@ -1645,7 +1615,7 @@ namespace Chummer
             this.flpMugshotCompressionQuality.Location = new System.Drawing.Point(403, 511);
             this.flpMugshotCompressionQuality.Margin = new System.Windows.Forms.Padding(0);
             this.flpMugshotCompressionQuality.Name = "flpMugshotCompressionQuality";
-            this.flpMugshotCompressionQuality.Size = new System.Drawing.Size(134, 26);
+            this.flpMugshotCompressionQuality.Size = new System.Drawing.Size(127, 26);
             this.flpMugshotCompressionQuality.TabIndex = 68;
             // 
             // lblMugshotCompressionQuality
@@ -1662,9 +1632,10 @@ namespace Chummer
             // nudMugshotCompressionQuality
             // 
             this.nudMugshotCompressionQuality.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMugshotCompressionQuality.AutoSize = true;
             this.nudMugshotCompressionQuality.Location = new System.Drawing.Point(83, 3);
             this.nudMugshotCompressionQuality.Name = "nudMugshotCompressionQuality";
-            this.nudMugshotCompressionQuality.Size = new System.Drawing.Size(48, 20);
+            this.nudMugshotCompressionQuality.Size = new System.Drawing.Size(41, 20);
             this.nudMugshotCompressionQuality.TabIndex = 68;
             this.nudMugshotCompressionQuality.Value = new decimal(new int[] {
             90,
@@ -1672,6 +1643,52 @@ namespace Chummer
             0,
             0});
             this.nudMugshotCompressionQuality.ValueChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkCreateBackupOnCareer
+            // 
+            this.chkCreateBackupOnCareer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkCreateBackupOnCareer.AutoSize = true;
+            this.chkCreateBackupOnCareer.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkCreateBackupOnCareer, 3);
+            this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(3, 439);
+            this.chkCreateBackupOnCareer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCreateBackupOnCareer.Name = "chkCreateBackupOnCareer";
+            this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(333, 17);
+            this.chkCreateBackupOnCareer.TabIndex = 24;
+            this.chkCreateBackupOnCareer.Tag = "Checkbox_Option_CreateBackupOnCareer";
+            this.chkCreateBackupOnCareer.Text = "Create backup of characters before moving them to Career Mode";
+            this.chkCreateBackupOnCareer.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkCreateBackupOnCareer.UseVisualStyleBackColor = true;
+            this.chkCreateBackupOnCareer.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkHideCharacterRoster
+            // 
+            this.chkHideCharacterRoster.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkHideCharacterRoster.AutoSize = true;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkHideCharacterRoster, 3);
+            this.chkHideCharacterRoster.Location = new System.Drawing.Point(406, 364);
+            this.chkHideCharacterRoster.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkHideCharacterRoster.Name = "chkHideCharacterRoster";
+            this.chkHideCharacterRoster.Size = new System.Drawing.Size(149, 17);
+            this.chkHideCharacterRoster.TabIndex = 35;
+            this.chkHideCharacterRoster.Tag = "Checkbox_Options_HideCharacterRoster";
+            this.chkHideCharacterRoster.Text = "Hide the Character Roster";
+            this.chkHideCharacterRoster.UseVisualStyleBackColor = true;
+            this.chkHideCharacterRoster.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkHideMasterIndex
+            // 
+            this.chkHideMasterIndex.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkHideMasterIndex.AutoSize = true;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkHideMasterIndex, 3);
+            this.chkHideMasterIndex.Location = new System.Drawing.Point(406, 339);
+            this.chkHideMasterIndex.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkHideMasterIndex.Name = "chkHideMasterIndex";
+            this.chkHideMasterIndex.Size = new System.Drawing.Size(130, 17);
+            this.chkHideMasterIndex.TabIndex = 69;
+            this.chkHideMasterIndex.Tag = "Checkbox_Options_HideMasterIndex";
+            this.chkHideMasterIndex.Text = "Hide the Master Index";
+            this.chkHideMasterIndex.UseVisualStyleBackColor = true;
             // 
             // gpbEditSourcebookInfo
             // 
@@ -1712,13 +1729,13 @@ namespace Chummer
             // 
             this.tlpCharacterOptions.AutoSize = true;
             this.tlpCharacterOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpCharacterOptions.ColumnCount = 6;
-            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 2.499993F));
-            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.99994F));
-            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.99994F));
-            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.500166F));
-            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.99995F));
+            this.tlpCharacterOptions.ColumnCount = 5;
+            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.49998F));
+            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.99993F));
+            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.500161F));
+            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.99992F));
+            this.tlpCharacterOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpCharacterOptions.Controls.Add(this.chkPrintNotes, 1, 15);
             this.tlpCharacterOptions.Controls.Add(this.chkPrintExpenses, 1, 13);
             this.tlpCharacterOptions.Controls.Add(this.chkPrintSkillsWithZeroRating, 1, 12);
@@ -1732,13 +1749,13 @@ namespace Chummer
             this.tlpCharacterOptions.Controls.Add(this.chkDontRoundEssenceInternally, 1, 11);
             this.tlpCharacterOptions.Controls.Add(this.chkDronemods, 1, 5);
             this.tlpCharacterOptions.Controls.Add(this.chkRestrictRecoil, 1, 7);
-            this.tlpCharacterOptions.Controls.Add(this.nudNuyenDecimalsMinimum, 4, 8);
-            this.tlpCharacterOptions.Controls.Add(this.nudNuyenDecimalsMaximum, 4, 9);
-            this.tlpCharacterOptions.Controls.Add(this.nudEssenceDecimals, 4, 10);
-            this.tlpCharacterOptions.Controls.Add(this.chkDronemodsMaximumPilot, 2, 6);
-            this.tlpCharacterOptions.Controls.Add(this.chkPrintFreeExpenses, 2, 14);
+            this.tlpCharacterOptions.Controls.Add(this.nudNuyenDecimalsMinimum, 3, 8);
+            this.tlpCharacterOptions.Controls.Add(this.nudNuyenDecimalsMaximum, 3, 9);
+            this.tlpCharacterOptions.Controls.Add(this.nudEssenceDecimals, 3, 10);
+            this.tlpCharacterOptions.Controls.Add(this.chkDronemodsMaximumPilot, 1, 6);
+            this.tlpCharacterOptions.Controls.Add(this.chkPrintFreeExpenses, 1, 14);
             this.tlpCharacterOptions.Controls.Add(this.lblLimbCount, 1, 0);
-            this.tlpCharacterOptions.Controls.Add(this.cboLimbCount, 3, 0);
+            this.tlpCharacterOptions.Controls.Add(this.cboLimbCount, 2, 0);
             this.tlpCharacterOptions.Controls.Add(this.cmdEnableSourcebooks, 0, 16);
             this.tlpCharacterOptions.Controls.Add(this.gpbSourcebook, 0, 0);
             this.tlpCharacterOptions.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1769,8 +1786,8 @@ namespace Chummer
             // 
             this.chkPrintNotes.AutoSize = true;
             this.chkPrintNotes.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintNotes, 5);
-            this.chkPrintNotes.Location = new System.Drawing.Point(304, 381);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintNotes, 4);
+            this.chkPrintNotes.Location = new System.Drawing.Point(304, 377);
             this.chkPrintNotes.Name = "chkPrintNotes";
             this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
             this.chkPrintNotes.TabIndex = 14;
@@ -1784,8 +1801,8 @@ namespace Chummer
             // 
             this.chkPrintExpenses.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintExpenses.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintExpenses, 5);
-            this.chkPrintExpenses.Location = new System.Drawing.Point(304, 332);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintExpenses, 4);
+            this.chkPrintExpenses.Location = new System.Drawing.Point(304, 330);
             this.chkPrintExpenses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintExpenses.Name = "chkPrintExpenses";
             this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
@@ -1799,8 +1816,8 @@ namespace Chummer
             // 
             this.chkPrintSkillsWithZeroRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintSkillsWithZeroRating.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintSkillsWithZeroRating, 5);
-            this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(304, 307);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintSkillsWithZeroRating, 4);
+            this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(304, 305);
             this.chkPrintSkillsWithZeroRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
             this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(229, 17);
@@ -1814,7 +1831,7 @@ namespace Chummer
             // 
             this.chkDontUseCyberlimbCalculation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontUseCyberlimbCalculation.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkDontUseCyberlimbCalculation, 5);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkDontUseCyberlimbCalculation, 4);
             this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(304, 31);
             this.chkDontUseCyberlimbCalculation.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDontUseCyberlimbCalculation.Name = "chkDontUseCyberlimbCalculation";
@@ -1829,7 +1846,7 @@ namespace Chummer
             // 
             this.chkAllowSkillDiceRolling.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowSkillDiceRolling.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkAllowSkillDiceRolling, 5);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkAllowSkillDiceRolling, 4);
             this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(304, 56);
             this.chkAllowSkillDiceRolling.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
@@ -1844,7 +1861,7 @@ namespace Chummer
             // 
             this.chkEnforceCapacity.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkEnforceCapacity.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkEnforceCapacity, 5);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkEnforceCapacity, 4);
             this.chkEnforceCapacity.Location = new System.Drawing.Point(304, 81);
             this.chkEnforceCapacity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkEnforceCapacity.Name = "chkEnforceCapacity";
@@ -1859,7 +1876,7 @@ namespace Chummer
             // 
             this.chkLicenseEachRestrictedItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLicenseEachRestrictedItem.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkLicenseEachRestrictedItem, 5);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkLicenseEachRestrictedItem, 4);
             this.chkLicenseEachRestrictedItem.Location = new System.Drawing.Point(304, 106);
             this.chkLicenseEachRestrictedItem.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLicenseEachRestrictedItem.Name = "chkLicenseEachRestrictedItem";
@@ -1874,8 +1891,8 @@ namespace Chummer
             // 
             this.lblEssenceDecimals.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssenceDecimals.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.lblEssenceDecimals, 3);
-            this.lblEssenceDecimals.Location = new System.Drawing.Point(454, 260);
+            this.tlpCharacterOptions.SetColumnSpan(this.lblEssenceDecimals, 2);
+            this.lblEssenceDecimals.Location = new System.Drawing.Point(455, 258);
             this.lblEssenceDecimals.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceDecimals.Name = "lblEssenceDecimals";
             this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
@@ -1887,8 +1904,8 @@ namespace Chummer
             // 
             this.lblNuyenDecimalsMaximumLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNuyenDecimalsMaximumLabel.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.lblNuyenDecimalsMaximumLabel, 3);
-            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(426, 234);
+            this.tlpCharacterOptions.SetColumnSpan(this.lblNuyenDecimalsMaximumLabel, 2);
+            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(427, 232);
             this.lblNuyenDecimalsMaximumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMaximumLabel.Name = "lblNuyenDecimalsMaximumLabel";
             this.lblNuyenDecimalsMaximumLabel.Size = new System.Drawing.Size(258, 13);
@@ -1900,8 +1917,8 @@ namespace Chummer
             // 
             this.lblNuyenDecimalsMinimumLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNuyenDecimalsMinimumLabel.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.lblNuyenDecimalsMinimumLabel, 3);
-            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(429, 208);
+            this.tlpCharacterOptions.SetColumnSpan(this.lblNuyenDecimalsMinimumLabel, 2);
+            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(430, 206);
             this.lblNuyenDecimalsMinimumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMinimumLabel.Name = "lblNuyenDecimalsMinimumLabel";
             this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(255, 13);
@@ -1913,8 +1930,8 @@ namespace Chummer
             // 
             this.chkDontRoundEssenceInternally.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontRoundEssenceInternally.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkDontRoundEssenceInternally, 5);
-            this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(304, 283);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkDontRoundEssenceInternally, 4);
+            this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(304, 281);
             this.chkDontRoundEssenceInternally.Name = "chkDontRoundEssenceInternally";
             this.chkDontRoundEssenceInternally.Size = new System.Drawing.Size(349, 17);
             this.chkDontRoundEssenceInternally.TabIndex = 18;
@@ -1927,7 +1944,7 @@ namespace Chummer
             // 
             this.chkDronemods.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDronemods.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkDronemods, 5);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkDronemods, 4);
             this.chkDronemods.Location = new System.Drawing.Point(304, 131);
             this.chkDronemods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDronemods.Name = "chkDronemods";
@@ -1942,8 +1959,8 @@ namespace Chummer
             // 
             this.chkRestrictRecoil.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRestrictRecoil.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkRestrictRecoil, 5);
-            this.chkRestrictRecoil.Location = new System.Drawing.Point(304, 181);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkRestrictRecoil, 4);
+            this.chkRestrictRecoil.Location = new System.Drawing.Point(304, 179);
             this.chkRestrictRecoil.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkRestrictRecoil.Name = "chkRestrictRecoil";
             this.chkRestrictRecoil.Size = new System.Drawing.Size(258, 17);
@@ -1956,7 +1973,8 @@ namespace Chummer
             // nudNuyenDecimalsMinimum
             // 
             this.nudNuyenDecimalsMinimum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(690, 205);
+            this.nudNuyenDecimalsMinimum.AutoSize = true;
+            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(691, 203);
             this.nudNuyenDecimalsMinimum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -1970,7 +1988,8 @@ namespace Chummer
             // nudNuyenDecimalsMaximum
             // 
             this.nudNuyenDecimalsMaximum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(690, 231);
+            this.nudNuyenDecimalsMaximum.AutoSize = true;
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(691, 229);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -1984,7 +2003,8 @@ namespace Chummer
             // nudEssenceDecimals
             // 
             this.nudEssenceDecimals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudEssenceDecimals.Location = new System.Drawing.Point(690, 257);
+            this.nudEssenceDecimals.AutoSize = true;
+            this.nudEssenceDecimals.Location = new System.Drawing.Point(691, 255);
             this.nudEssenceDecimals.Name = "nudEssenceDecimals";
             this.nudEssenceDecimals.Size = new System.Drawing.Size(62, 20);
             this.nudEssenceDecimals.TabIndex = 17;
@@ -1999,9 +2019,9 @@ namespace Chummer
             // 
             this.chkDronemodsMaximumPilot.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDronemodsMaximumPilot.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkDronemodsMaximumPilot, 4);
-            this.chkDronemodsMaximumPilot.Location = new System.Drawing.Point(326, 156);
-            this.chkDronemodsMaximumPilot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkDronemodsMaximumPilot, 3);
+            this.chkDronemodsMaximumPilot.Location = new System.Drawing.Point(324, 155);
+            this.chkDronemodsMaximumPilot.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkDronemodsMaximumPilot.Name = "chkDronemodsMaximumPilot";
             this.chkDronemodsMaximumPilot.Size = new System.Drawing.Size(214, 17);
             this.chkDronemodsMaximumPilot.TabIndex = 37;
@@ -2014,9 +2034,9 @@ namespace Chummer
             // 
             this.chkPrintFreeExpenses.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintFreeExpenses.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintFreeExpenses, 4);
-            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(326, 357);
-            this.chkPrintFreeExpenses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tlpCharacterOptions.SetColumnSpan(this.chkPrintFreeExpenses, 3);
+            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(324, 354);
+            this.chkPrintFreeExpenses.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkPrintFreeExpenses.Name = "chkPrintFreeExpenses";
             this.chkPrintFreeExpenses.Size = new System.Drawing.Size(208, 17);
             this.chkPrintFreeExpenses.TabIndex = 13;
@@ -2029,8 +2049,7 @@ namespace Chummer
             // 
             this.lblLimbCount.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblLimbCount.AutoSize = true;
-            this.tlpCharacterOptions.SetColumnSpan(this.lblLimbCount, 2);
-            this.lblLimbCount.Location = new System.Drawing.Point(371, 7);
+            this.lblLimbCount.Location = new System.Drawing.Point(372, 7);
             this.lblLimbCount.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLimbCount.Name = "lblLimbCount";
             this.lblLimbCount.Size = new System.Drawing.Size(131, 13);
@@ -2044,7 +2063,7 @@ namespace Chummer
             this.tlpCharacterOptions.SetColumnSpan(this.cboLimbCount, 2);
             this.cboLimbCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLimbCount.FormattingEnabled = true;
-            this.cboLimbCount.Location = new System.Drawing.Point(508, 3);
+            this.cboLimbCount.Location = new System.Drawing.Point(509, 3);
             this.cboLimbCount.Name = "cboLimbCount";
             this.cboLimbCount.Size = new System.Drawing.Size(244, 21);
             this.cboLimbCount.TabIndex = 1;
@@ -2120,10 +2139,9 @@ namespace Chummer
             // 
             // tlpKarmaCostsList
             // 
-            this.tlpKarmaCostsList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpKarmaCostsList.AutoScroll = true;
+            this.tlpKarmaCostsList.AutoSize = true;
+            this.tlpKarmaCostsList.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpKarmaCostsList.ColumnCount = 8;
             this.tlpKarmaCostsList.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpKarmaCostsList.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -2256,6 +2274,7 @@ namespace Chummer
             this.tlpKarmaCostsList.Controls.Add(this.lblNuyenPerBP, 5, 22);
             this.tlpKarmaCostsList.Controls.Add(this.nudNuyenPerBP, 6, 22);
             this.tlpKarmaCostsList.Controls.Add(this.flpKarmaInitiation, 0, 21);
+            this.tlpKarmaCostsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKarmaCostsList.Location = new System.Drawing.Point(3, 3);
             this.tlpKarmaCostsList.Name = "tlpKarmaCostsList";
             this.tlpKarmaCostsList.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
@@ -2288,8 +2307,8 @@ namespace Chummer
             // 
             // nudKarmaMysticAdeptPowerPoint
             // 
-            this.nudKarmaMysticAdeptPowerPoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMysticAdeptPowerPoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMysticAdeptPowerPoint.AutoSize = true;
             this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(184, 575);
             this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
             this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(60, 20);
@@ -2324,8 +2343,8 @@ namespace Chummer
             // 
             // nudKarmaSpecialization
             // 
-            this.nudKarmaSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpecialization.AutoSize = true;
             this.nudKarmaSpecialization.Location = new System.Drawing.Point(184, 3);
             this.nudKarmaSpecialization.Name = "nudKarmaSpecialization";
             this.nudKarmaSpecialization.Size = new System.Drawing.Size(60, 20);
@@ -2334,8 +2353,8 @@ namespace Chummer
             // 
             // nudKarmaNewAIAdvancedProgram
             // 
-            this.nudKarmaNewAIAdvancedProgram.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIAdvancedProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIAdvancedProgram.AutoSize = true;
             this.nudKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(546, 523);
             this.nudKarmaNewAIAdvancedProgram.Name = "nudKarmaNewAIAdvancedProgram";
             this.nudKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(60, 20);
@@ -2355,8 +2374,7 @@ namespace Chummer
             // 
             // nudKarmaInitiationFlat
             // 
-            this.nudKarmaInitiationFlat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaInitiationFlat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaInitiationFlat.AutoSize = true;
             this.nudKarmaInitiationFlat.Location = new System.Drawing.Point(339, 549);
             this.nudKarmaInitiationFlat.Name = "nudKarmaInitiationFlat";
@@ -2366,8 +2384,8 @@ namespace Chummer
             // 
             // nudKarmaWeaponFocus
             // 
-            this.nudKarmaWeaponFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaWeaponFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaWeaponFocus.AutoSize = true;
             this.nudKarmaWeaponFocus.Location = new System.Drawing.Point(546, 471);
             this.nudKarmaWeaponFocus.Name = "nudKarmaWeaponFocus";
             this.nudKarmaWeaponFocus.Size = new System.Drawing.Size(60, 20);
@@ -2400,8 +2418,8 @@ namespace Chummer
             // 
             // nudKarmaNewAIProgram
             // 
-            this.nudKarmaNewAIProgram.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIProgram.AutoSize = true;
             this.nudKarmaNewAIProgram.Location = new System.Drawing.Point(546, 497);
             this.nudKarmaNewAIProgram.Name = "nudKarmaNewAIProgram";
             this.nudKarmaNewAIProgram.Size = new System.Drawing.Size(60, 20);
@@ -2446,8 +2464,8 @@ namespace Chummer
             // 
             // nudKarmaKnowledgeSpecialization
             // 
-            this.nudKarmaKnowledgeSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaKnowledgeSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaKnowledgeSpecialization.AutoSize = true;
             this.nudKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(184, 29);
             this.nudKarmaKnowledgeSpecialization.Name = "nudKarmaKnowledgeSpecialization";
             this.nudKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(60, 20);
@@ -2456,8 +2474,8 @@ namespace Chummer
             // 
             // nudKarmaRitualSpellcastingFocus
             // 
-            this.nudKarmaRitualSpellcastingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaRitualSpellcastingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaRitualSpellcastingFocus.AutoSize = true;
             this.nudKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(546, 341);
             this.nudKarmaRitualSpellcastingFocus.Name = "nudKarmaRitualSpellcastingFocus";
             this.nudKarmaRitualSpellcastingFocus.Size = new System.Drawing.Size(60, 20);
@@ -2491,8 +2509,8 @@ namespace Chummer
             // 
             // nudKarmaNewKnowledgeSkill
             // 
-            this.nudKarmaNewKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewKnowledgeSkill.AutoSize = true;
             this.nudKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(184, 55);
             this.nudKarmaNewKnowledgeSkill.Name = "nudKarmaNewKnowledgeSkill";
             this.nudKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(60, 20);
@@ -2556,8 +2574,8 @@ namespace Chummer
             // 
             // nudKarmaFlexibleSignatureFocus
             // 
-            this.nudKarmaFlexibleSignatureFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaFlexibleSignatureFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaFlexibleSignatureFocus.AutoSize = true;
             this.nudKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(546, 237);
             this.nudKarmaFlexibleSignatureFocus.Name = "nudKarmaFlexibleSignatureFocus";
             this.nudKarmaFlexibleSignatureFocus.Size = new System.Drawing.Size(60, 20);
@@ -2566,8 +2584,8 @@ namespace Chummer
             // 
             // nudKarmaSpellShapingFocus
             // 
-            this.nudKarmaSpellShapingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpellShapingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpellShapingFocus.AutoSize = true;
             this.nudKarmaSpellShapingFocus.Location = new System.Drawing.Point(546, 445);
             this.nudKarmaSpellShapingFocus.Name = "nudKarmaSpellShapingFocus";
             this.nudKarmaSpellShapingFocus.Size = new System.Drawing.Size(60, 20);
@@ -2576,8 +2594,8 @@ namespace Chummer
             // 
             // nudKarmaMetamagic
             // 
-            this.nudKarmaMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMetamagic.AutoSize = true;
             this.nudKarmaMetamagic.Location = new System.Drawing.Point(546, 3);
             this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
             this.nudKarmaMetamagic.Size = new System.Drawing.Size(60, 20);
@@ -2610,8 +2628,8 @@ namespace Chummer
             // 
             // nudKarmaCarryover
             // 
-            this.nudKarmaCarryover.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaCarryover.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaCarryover.AutoSize = true;
             this.nudKarmaCarryover.Location = new System.Drawing.Point(184, 523);
             this.nudKarmaCarryover.Name = "nudKarmaCarryover";
             this.nudKarmaCarryover.Size = new System.Drawing.Size(60, 20);
@@ -2668,8 +2686,8 @@ namespace Chummer
             // 
             // nudKarmaEnemy
             // 
-            this.nudKarmaEnemy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaEnemy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaEnemy.AutoSize = true;
             this.nudKarmaEnemy.Location = new System.Drawing.Point(184, 497);
             this.nudKarmaEnemy.Name = "nudKarmaEnemy";
             this.nudKarmaEnemy.Size = new System.Drawing.Size(60, 20);
@@ -2703,8 +2721,8 @@ namespace Chummer
             // 
             // nudKarmaContact
             // 
-            this.nudKarmaContact.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaContact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaContact.AutoSize = true;
             this.nudKarmaContact.Location = new System.Drawing.Point(184, 471);
             this.nudKarmaContact.Name = "nudKarmaContact";
             this.nudKarmaContact.Size = new System.Drawing.Size(60, 20);
@@ -2738,8 +2756,8 @@ namespace Chummer
             // 
             // nudKarmaSustainingFocus
             // 
-            this.nudKarmaSustainingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSustainingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSustainingFocus.AutoSize = true;
             this.nudKarmaSustainingFocus.Location = new System.Drawing.Point(546, 419);
             this.nudKarmaSustainingFocus.Name = "nudKarmaSustainingFocus";
             this.nudKarmaSustainingFocus.Size = new System.Drawing.Size(60, 20);
@@ -2748,8 +2766,8 @@ namespace Chummer
             // 
             // nudKarmaJoinGroup
             // 
-            this.nudKarmaJoinGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaJoinGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaJoinGroup.AutoSize = true;
             this.nudKarmaJoinGroup.Location = new System.Drawing.Point(546, 29);
             this.nudKarmaJoinGroup.Name = "nudKarmaJoinGroup";
             this.nudKarmaJoinGroup.Size = new System.Drawing.Size(60, 20);
@@ -2793,8 +2811,8 @@ namespace Chummer
             // 
             // nudKarmaLeaveGroup
             // 
-            this.nudKarmaLeaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaLeaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaLeaveGroup.AutoSize = true;
             this.nudKarmaLeaveGroup.Location = new System.Drawing.Point(546, 55);
             this.nudKarmaLeaveGroup.Name = "nudKarmaLeaveGroup";
             this.nudKarmaLeaveGroup.Size = new System.Drawing.Size(60, 20);
@@ -2803,8 +2821,8 @@ namespace Chummer
             // 
             // nudKarmaSummoningFocus
             // 
-            this.nudKarmaSummoningFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSummoningFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSummoningFocus.AutoSize = true;
             this.nudKarmaSummoningFocus.Location = new System.Drawing.Point(546, 393);
             this.nudKarmaSummoningFocus.Name = "nudKarmaSummoningFocus";
             this.nudKarmaSummoningFocus.Size = new System.Drawing.Size(60, 20);
@@ -2826,8 +2844,8 @@ namespace Chummer
             // 
             // nudKarmaManeuver
             // 
-            this.nudKarmaManeuver.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaManeuver.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaManeuver.AutoSize = true;
             this.nudKarmaManeuver.Location = new System.Drawing.Point(184, 419);
             this.nudKarmaManeuver.Name = "nudKarmaManeuver";
             this.nudKarmaManeuver.Size = new System.Drawing.Size(60, 20);
@@ -2861,8 +2879,8 @@ namespace Chummer
             // 
             // nudKarmaNewActiveSkill
             // 
-            this.nudKarmaNewActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewActiveSkill.AutoSize = true;
             this.nudKarmaNewActiveSkill.Location = new System.Drawing.Point(184, 81);
             this.nudKarmaNewActiveSkill.Name = "nudKarmaNewActiveSkill";
             this.nudKarmaNewActiveSkill.Size = new System.Drawing.Size(60, 20);
@@ -2894,8 +2912,8 @@ namespace Chummer
             // 
             // nudKarmaComplexFormSkillsoft
             // 
-            this.nudKarmaComplexFormSkillsoft.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaComplexFormSkillsoft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaComplexFormSkillsoft.AutoSize = true;
             this.nudKarmaComplexFormSkillsoft.Location = new System.Drawing.Point(184, 367);
             this.nudKarmaComplexFormSkillsoft.Name = "nudKarmaComplexFormSkillsoft";
             this.nudKarmaComplexFormSkillsoft.Size = new System.Drawing.Size(60, 20);
@@ -2951,8 +2969,8 @@ namespace Chummer
             // 
             // nudKarmaNuyenPer
             // 
-            this.nudKarmaNuyenPer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNuyenPer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNuyenPer.AutoSize = true;
             this.nudKarmaNuyenPer.Location = new System.Drawing.Point(184, 445);
             this.nudKarmaNuyenPer.Maximum = new decimal(new int[] {
             9999,
@@ -3003,8 +3021,8 @@ namespace Chummer
             // 
             // nudKarmaSpirit
             // 
-            this.nudKarmaSpirit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpirit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpirit.AutoSize = true;
             this.nudKarmaSpirit.Location = new System.Drawing.Point(184, 393);
             this.nudKarmaSpirit.Name = "nudKarmaSpirit";
             this.nudKarmaSpirit.Size = new System.Drawing.Size(60, 20);
@@ -3013,8 +3031,8 @@ namespace Chummer
             // 
             // nudKarmaAlchemicalFocus
             // 
-            this.nudKarmaAlchemicalFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaAlchemicalFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaAlchemicalFocus.AutoSize = true;
             this.nudKarmaAlchemicalFocus.Location = new System.Drawing.Point(546, 81);
             this.nudKarmaAlchemicalFocus.Name = "nudKarmaAlchemicalFocus";
             this.nudKarmaAlchemicalFocus.Size = new System.Drawing.Size(60, 20);
@@ -3036,8 +3054,8 @@ namespace Chummer
             // 
             // nudKarmaComplexFormOption
             // 
-            this.nudKarmaComplexFormOption.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaComplexFormOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaComplexFormOption.AutoSize = true;
             this.nudKarmaComplexFormOption.Location = new System.Drawing.Point(184, 341);
             this.nudKarmaComplexFormOption.Name = "nudKarmaComplexFormOption";
             this.nudKarmaComplexFormOption.Size = new System.Drawing.Size(60, 20);
@@ -3095,8 +3113,8 @@ namespace Chummer
             // 
             // nudKarmaNewSkillGroup
             // 
-            this.nudKarmaNewSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewSkillGroup.AutoSize = true;
             this.nudKarmaNewSkillGroup.Location = new System.Drawing.Point(184, 107);
             this.nudKarmaNewSkillGroup.Name = "nudKarmaNewSkillGroup";
             this.nudKarmaNewSkillGroup.Size = new System.Drawing.Size(60, 20);
@@ -3117,8 +3135,8 @@ namespace Chummer
             // 
             // nudKarmaBanishingFocus
             // 
-            this.nudKarmaBanishingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaBanishingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaBanishingFocus.AutoSize = true;
             this.nudKarmaBanishingFocus.Location = new System.Drawing.Point(546, 107);
             this.nudKarmaBanishingFocus.Name = "nudKarmaBanishingFocus";
             this.nudKarmaBanishingFocus.Size = new System.Drawing.Size(60, 20);
@@ -3162,8 +3180,8 @@ namespace Chummer
             // 
             // nudKarmaImproveKnowledgeSkill
             // 
-            this.nudKarmaImproveKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveKnowledgeSkill.AutoSize = true;
             this.nudKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(184, 133);
             this.nudKarmaImproveKnowledgeSkill.Name = "nudKarmaImproveKnowledgeSkill";
             this.nudKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(60, 20);
@@ -3172,8 +3190,8 @@ namespace Chummer
             // 
             // nudKarmaQiFocus
             // 
-            this.nudKarmaQiFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaQiFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaQiFocus.AutoSize = true;
             this.nudKarmaQiFocus.Location = new System.Drawing.Point(546, 315);
             this.nudKarmaQiFocus.Name = "nudKarmaQiFocus";
             this.nudKarmaQiFocus.Size = new System.Drawing.Size(60, 20);
@@ -3229,8 +3247,8 @@ namespace Chummer
             // 
             // nudKarmaBindingFocus
             // 
-            this.nudKarmaBindingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaBindingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaBindingFocus.AutoSize = true;
             this.nudKarmaBindingFocus.Location = new System.Drawing.Point(546, 133);
             this.nudKarmaBindingFocus.Name = "nudKarmaBindingFocus";
             this.nudKarmaBindingFocus.Size = new System.Drawing.Size(60, 20);
@@ -3239,8 +3257,8 @@ namespace Chummer
             // 
             // nudKarmaPowerFocus
             // 
-            this.nudKarmaPowerFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaPowerFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaPowerFocus.AutoSize = true;
             this.nudKarmaPowerFocus.Location = new System.Drawing.Point(546, 289);
             this.nudKarmaPowerFocus.Name = "nudKarmaPowerFocus";
             this.nudKarmaPowerFocus.Size = new System.Drawing.Size(60, 20);
@@ -3296,8 +3314,8 @@ namespace Chummer
             // 
             // nudKarmaImproveActiveSkill
             // 
-            this.nudKarmaImproveActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveActiveSkill.AutoSize = true;
             this.nudKarmaImproveActiveSkill.Location = new System.Drawing.Point(184, 159);
             this.nudKarmaImproveActiveSkill.Name = "nudKarmaImproveActiveSkill";
             this.nudKarmaImproveActiveSkill.Size = new System.Drawing.Size(60, 20);
@@ -3306,8 +3324,8 @@ namespace Chummer
             // 
             // nudKarmaMaskingFocus
             // 
-            this.nudKarmaMaskingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMaskingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMaskingFocus.AutoSize = true;
             this.nudKarmaMaskingFocus.Location = new System.Drawing.Point(546, 263);
             this.nudKarmaMaskingFocus.Name = "nudKarmaMaskingFocus";
             this.nudKarmaMaskingFocus.Size = new System.Drawing.Size(60, 20);
@@ -3352,8 +3370,8 @@ namespace Chummer
             // 
             // nudKarmaCenteringFocus
             // 
-            this.nudKarmaCenteringFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaCenteringFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaCenteringFocus.AutoSize = true;
             this.nudKarmaCenteringFocus.Location = new System.Drawing.Point(546, 159);
             this.nudKarmaCenteringFocus.Name = "nudKarmaCenteringFocus";
             this.nudKarmaCenteringFocus.Size = new System.Drawing.Size(60, 20);
@@ -3385,8 +3403,8 @@ namespace Chummer
             // 
             // nudKarmaCounterspellingFocus
             // 
-            this.nudKarmaCounterspellingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaCounterspellingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaCounterspellingFocus.AutoSize = true;
             this.nudKarmaCounterspellingFocus.Location = new System.Drawing.Point(546, 185);
             this.nudKarmaCounterspellingFocus.Name = "nudKarmaCounterspellingFocus";
             this.nudKarmaCounterspellingFocus.Size = new System.Drawing.Size(60, 20);
@@ -3430,8 +3448,8 @@ namespace Chummer
             // 
             // nudKarmaImproveSkillGroup
             // 
-            this.nudKarmaImproveSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveSkillGroup.AutoSize = true;
             this.nudKarmaImproveSkillGroup.Location = new System.Drawing.Point(184, 185);
             this.nudKarmaImproveSkillGroup.Name = "nudKarmaImproveSkillGroup";
             this.nudKarmaImproveSkillGroup.Size = new System.Drawing.Size(60, 20);
@@ -3440,8 +3458,8 @@ namespace Chummer
             // 
             // nudKarmaDisenchantingFocus
             // 
-            this.nudKarmaDisenchantingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaDisenchantingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaDisenchantingFocus.AutoSize = true;
             this.nudKarmaDisenchantingFocus.Location = new System.Drawing.Point(546, 211);
             this.nudKarmaDisenchantingFocus.Name = "nudKarmaDisenchantingFocus";
             this.nudKarmaDisenchantingFocus.Size = new System.Drawing.Size(60, 20);
@@ -3487,8 +3505,8 @@ namespace Chummer
             // 
             // nudKarmaAttribute
             // 
-            this.nudKarmaAttribute.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaAttribute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaAttribute.AutoSize = true;
             this.nudKarmaAttribute.Location = new System.Drawing.Point(184, 211);
             this.nudKarmaAttribute.Name = "nudKarmaAttribute";
             this.nudKarmaAttribute.Size = new System.Drawing.Size(60, 20);
@@ -3534,8 +3552,8 @@ namespace Chummer
             // 
             // nudKarmaQuality
             // 
-            this.nudKarmaQuality.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaQuality.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaQuality.AutoSize = true;
             this.nudKarmaQuality.Location = new System.Drawing.Point(184, 237);
             this.nudKarmaQuality.Name = "nudKarmaQuality";
             this.nudKarmaQuality.Size = new System.Drawing.Size(60, 20);
@@ -3544,8 +3562,8 @@ namespace Chummer
             // 
             // nudKarmaImproveComplexForm
             // 
-            this.nudKarmaImproveComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaImproveComplexForm.AutoSize = true;
             this.nudKarmaImproveComplexForm.Location = new System.Drawing.Point(184, 315);
             this.nudKarmaImproveComplexForm.Name = "nudKarmaImproveComplexForm";
             this.nudKarmaImproveComplexForm.Size = new System.Drawing.Size(60, 20);
@@ -3592,8 +3610,8 @@ namespace Chummer
             // 
             // nudKarmaSpell
             // 
-            this.nudKarmaSpell.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpell.AutoSize = true;
             this.nudKarmaSpell.Location = new System.Drawing.Point(184, 263);
             this.nudKarmaSpell.Name = "nudKarmaSpell";
             this.nudKarmaSpell.Size = new System.Drawing.Size(60, 20);
@@ -3615,8 +3633,8 @@ namespace Chummer
             // 
             // nudKarmaNewComplexForm
             // 
-            this.nudKarmaNewComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewComplexForm.AutoSize = true;
             this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(184, 289);
             this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
             this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(60, 20);
@@ -3625,8 +3643,8 @@ namespace Chummer
             // 
             // nudMetatypeCostsKarmaMultiplier
             // 
-            this.nudMetatypeCostsKarmaMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMetatypeCostsKarmaMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMetatypeCostsKarmaMultiplier.AutoSize = true;
             this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(546, 549);
             this.nudMetatypeCostsKarmaMultiplier.Maximum = new decimal(new int[] {
             10,
@@ -3674,8 +3692,8 @@ namespace Chummer
             // 
             // nudNuyenPerBP
             // 
-            this.nudNuyenPerBP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudNuyenPerBP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudNuyenPerBP.AutoSize = true;
             this.nudNuyenPerBP.Location = new System.Drawing.Point(546, 575);
             this.nudNuyenPerBP.Maximum = new decimal(new int[] {
             100000,
@@ -3913,11 +3931,11 @@ namespace Chummer
             this.tlpHouseRules.Controls.Add(this.label1, 5, 17);
             this.tlpHouseRules.Controls.Add(this.chkCyberlimbAttributeBonusCap, 4, 17);
             this.tlpHouseRules.Controls.Add(this.chkIgnoreArt, 0, 0);
-            this.tlpHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit, 5, 7);
+            this.tlpHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit, 4, 7);
             this.tlpHouseRules.Controls.Add(this.chkUseTotalValueForFreeKnowledge, 4, 3);
             this.tlpHouseRules.Controls.Add(this.chkExceedNegativeQualities, 4, 6);
             this.tlpHouseRules.Controls.Add(this.chkEnemyKarmaQualityLimit, 0, 21);
-            this.tlpHouseRules.Controls.Add(this.chkExceedPositiveQualitiesCostDoubled, 5, 5);
+            this.tlpHouseRules.Controls.Add(this.chkExceedPositiveQualitiesCostDoubled, 4, 5);
             this.tlpHouseRules.Controls.Add(this.chkExceedPositiveQualities, 4, 4);
             this.tlpHouseRules.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
             this.tlpHouseRules.Controls.Add(this.chkCompensateSkillGroupKarmaDifference, 0, 20);
@@ -3961,7 +3979,7 @@ namespace Chummer
             this.tlpHouseRules.Location = new System.Drawing.Point(9, 9);
             this.tlpHouseRules.Name = "tlpHouseRules";
             this.tlpHouseRules.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.tlpHouseRules.RowCount = 22;
+            this.tlpHouseRules.RowCount = 23;
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -3984,22 +4002,23 @@ namespace Chummer
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRules.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
             this.tlpHouseRules.Size = new System.Drawing.Size(1214, 550);
             this.tlpHouseRules.TabIndex = 39;
             // 
             // nudCyberlimbAttributeBonusCap
             // 
-            this.nudCyberlimbAttributeBonusCap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudCyberlimbAttributeBonusCap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudCyberlimbAttributeBonusCap.AutoSize = true;
             this.nudCyberlimbAttributeBonusCap.Enabled = false;
-            this.nudCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(1038, 429);
+            this.nudCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(1055, 403);
             this.nudCyberlimbAttributeBonusCap.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.nudCyberlimbAttributeBonusCap.Name = "nudCyberlimbAttributeBonusCap";
-            this.nudCyberlimbAttributeBonusCap.Size = new System.Drawing.Size(83, 20);
+            this.nudCyberlimbAttributeBonusCap.Size = new System.Drawing.Size(84, 20);
             this.nudCyberlimbAttributeBonusCap.TabIndex = 48;
             this.nudCyberlimbAttributeBonusCap.Value = new decimal(new int[] {
             4,
@@ -4010,10 +4029,10 @@ namespace Chummer
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1020, 432);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.label1.Location = new System.Drawing.Point(1037, 405);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(12, 13);
             this.label1.TabIndex = 47;
@@ -4021,15 +4040,12 @@ namespace Chummer
             // 
             // chkCyberlimbAttributeBonusCap
             // 
-            this.chkCyberlimbAttributeBonusCap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkCyberlimbAttributeBonusCap.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCyberlimbAttributeBonusCap.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkCyberlimbAttributeBonusCap, 2);
-            this.chkCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(595, 430);
-            this.chkCyberlimbAttributeBonusCap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(604, 404);
             this.chkCyberlimbAttributeBonusCap.Name = "chkCyberlimbAttributeBonusCap";
-            this.chkCyberlimbAttributeBonusCap.Size = new System.Drawing.Size(408, 18);
+            this.chkCyberlimbAttributeBonusCap.Size = new System.Drawing.Size(234, 17);
             this.chkCyberlimbAttributeBonusCap.TabIndex = 46;
             this.chkCyberlimbAttributeBonusCap.Tag = "Checkbox_Options_CyberlimbAttributeBonusCap";
             this.chkCyberlimbAttributeBonusCap.Text = "Override maximum Bonus cap for Cyberlimbs";
@@ -4038,15 +4054,12 @@ namespace Chummer
             // 
             // chkIgnoreArt
             // 
-            this.chkIgnoreArt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkIgnoreArt.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreArt.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkIgnoreArt, 4);
             this.chkIgnoreArt.Location = new System.Drawing.Point(3, 4);
-            this.chkIgnoreArt.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkIgnoreArt.Name = "chkIgnoreArt";
-            this.chkIgnoreArt.Size = new System.Drawing.Size(586, 18);
+            this.chkIgnoreArt.Size = new System.Drawing.Size(235, 17);
             this.chkIgnoreArt.TabIndex = 1;
             this.chkIgnoreArt.Tag = "Checkbox_Options_IgnoreArt";
             this.chkIgnoreArt.Text = "Ignore Art Requirements from Street Grimoire";
@@ -4055,18 +4068,15 @@ namespace Chummer
             // 
             // chkExceedNegativeQualitiesLimit
             // 
-            this.chkExceedNegativeQualitiesLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkExceedNegativeQualitiesLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedNegativeQualitiesLimit.AutoSize = true;
             this.chkExceedNegativeQualitiesLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpHouseRules.SetColumnSpan(this.chkExceedNegativeQualitiesLimit, 4);
             this.chkExceedNegativeQualitiesLimit.Enabled = false;
-            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(624, 181);
-            this.chkExceedNegativeQualitiesLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(624, 170);
+            this.chkExceedNegativeQualitiesLimit.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkExceedNegativeQualitiesLimit.Name = "chkExceedNegativeQualitiesLimit";
-            this.tlpHouseRules.SetRowSpan(this.chkExceedNegativeQualitiesLimit, 2);
-            this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(560, 40);
+            this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(503, 17);
             this.chkExceedNegativeQualitiesLimit.TabIndex = 18;
             this.chkExceedNegativeQualitiesLimit.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
             this.chkExceedNegativeQualitiesLimit.Text = "Characters do not gain Karma from taking Negative Qualities in excess of their Ga" +
@@ -4077,15 +4087,12 @@ namespace Chummer
             // 
             // chkUseTotalValueForFreeKnowledge
             // 
-            this.chkUseTotalValueForFreeKnowledge.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkUseTotalValueForFreeKnowledge.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkUseTotalValueForFreeKnowledge, 5);
-            this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(595, 81);
-            this.chkUseTotalValueForFreeKnowledge.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(604, 78);
             this.chkUseTotalValueForFreeKnowledge.Name = "chkUseTotalValueForFreeKnowledge";
-            this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(589, 17);
+            this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(312, 17);
             this.chkUseTotalValueForFreeKnowledge.TabIndex = 24;
             this.chkUseTotalValueForFreeKnowledge.Tag = "Checkbox_Options_UseTotalValueForFreeKnowledge";
             this.chkUseTotalValueForFreeKnowledge.Text = "Free Knowledge Points use the augmented LOG+INT values";
@@ -4094,15 +4101,12 @@ namespace Chummer
             // 
             // chkExceedNegativeQualities
             // 
-            this.chkExceedNegativeQualities.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkExceedNegativeQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedNegativeQualities.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkExceedNegativeQualities, 5);
-            this.chkExceedNegativeQualities.Location = new System.Drawing.Point(595, 156);
-            this.chkExceedNegativeQualities.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkExceedNegativeQualities.Location = new System.Drawing.Point(604, 147);
             this.chkExceedNegativeQualities.Name = "chkExceedNegativeQualities";
-            this.chkExceedNegativeQualities.Size = new System.Drawing.Size(589, 17);
+            this.chkExceedNegativeQualities.Size = new System.Drawing.Size(278, 17);
             this.chkExceedNegativeQualities.TabIndex = 17;
             this.chkExceedNegativeQualities.Tag = "Checkbox_Options_ExceedNegativeQualities";
             this.chkExceedNegativeQualities.Text = "Allow characters to exceed their Negative Quality limit";
@@ -4111,16 +4115,13 @@ namespace Chummer
             // 
             // chkEnemyKarmaQualityLimit
             // 
-            this.chkEnemyKarmaQualityLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkEnemyKarmaQualityLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkEnemyKarmaQualityLimit.AutoSize = true;
             this.chkEnemyKarmaQualityLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpHouseRules.SetColumnSpan(this.chkEnemyKarmaQualityLimit, 4);
-            this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(3, 531);
-            this.chkEnemyKarmaQualityLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(3, 498);
             this.chkEnemyKarmaQualityLimit.Name = "chkEnemyKarmaQualityLimit";
-            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(586, 17);
+            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(389, 17);
             this.chkEnemyKarmaQualityLimit.TabIndex = 37;
             this.chkEnemyKarmaQualityLimit.Tag = "Checkbox_Options_EnemyKarmaQualityLimit";
             this.chkEnemyKarmaQualityLimit.Text = "Karma spent on enemies counts towards negative Quality limit in create mode";
@@ -4129,16 +4130,14 @@ namespace Chummer
             // 
             // chkExceedPositiveQualitiesCostDoubled
             // 
-            this.chkExceedPositiveQualitiesCostDoubled.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkExceedPositiveQualitiesCostDoubled.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedPositiveQualitiesCostDoubled.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkExceedPositiveQualitiesCostDoubled, 4);
             this.chkExceedPositiveQualitiesCostDoubled.Enabled = false;
-            this.chkExceedPositiveQualitiesCostDoubled.Location = new System.Drawing.Point(624, 131);
-            this.chkExceedPositiveQualitiesCostDoubled.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkExceedPositiveQualitiesCostDoubled.Location = new System.Drawing.Point(624, 124);
+            this.chkExceedPositiveQualitiesCostDoubled.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkExceedPositiveQualitiesCostDoubled.Name = "chkExceedPositiveQualitiesCostDoubled";
-            this.chkExceedPositiveQualitiesCostDoubled.Size = new System.Drawing.Size(560, 17);
+            this.chkExceedPositiveQualitiesCostDoubled.Size = new System.Drawing.Size(367, 17);
             this.chkExceedPositiveQualitiesCostDoubled.TabIndex = 16;
             this.chkExceedPositiveQualitiesCostDoubled.Tag = "Checkbox_Options_ExceedPositiveQualitiesCostDoubled";
             this.chkExceedPositiveQualitiesCostDoubled.Text = "Use Career costs for all Positive Quality karma costs in excess of the limit";
@@ -4147,15 +4146,12 @@ namespace Chummer
             // 
             // chkExceedPositiveQualities
             // 
-            this.chkExceedPositiveQualities.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkExceedPositiveQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedPositiveQualities.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkExceedPositiveQualities, 5);
-            this.chkExceedPositiveQualities.Location = new System.Drawing.Point(595, 106);
-            this.chkExceedPositiveQualities.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkExceedPositiveQualities.Location = new System.Drawing.Point(604, 101);
             this.chkExceedPositiveQualities.Name = "chkExceedPositiveQualities";
-            this.chkExceedPositiveQualities.Size = new System.Drawing.Size(589, 17);
+            this.chkExceedPositiveQualities.Size = new System.Drawing.Size(272, 17);
             this.chkExceedPositiveQualities.TabIndex = 15;
             this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
             this.chkExceedPositiveQualities.Text = "Allow characters to exceed their Positive Quality limit";
@@ -4164,15 +4160,12 @@ namespace Chummer
             // 
             // chkUnarmedSkillImprovements
             // 
-            this.chkUnarmedSkillImprovements.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkUnarmedSkillImprovements.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUnarmedSkillImprovements.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkUnarmedSkillImprovements, 4);
-            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 30);
-            this.chkUnarmedSkillImprovements.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 29);
             this.chkUnarmedSkillImprovements.Name = "chkUnarmedSkillImprovements";
-            this.chkUnarmedSkillImprovements.Size = new System.Drawing.Size(586, 17);
+            this.chkUnarmedSkillImprovements.Size = new System.Drawing.Size(372, 17);
             this.chkUnarmedSkillImprovements.TabIndex = 0;
             this.chkUnarmedSkillImprovements.Tag = "Checkbox_Options_UnarmedSkillImprovements";
             this.chkUnarmedSkillImprovements.Text = "Unarmed Combat-based Weapons Benefit from Unarmed Attack Bonuses";
@@ -4181,15 +4174,12 @@ namespace Chummer
             // 
             // chkCompensateSkillGroupKarmaDifference
             // 
-            this.chkCompensateSkillGroupKarmaDifference.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkCompensateSkillGroupKarmaDifference, 4);
-            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 506);
-            this.chkCompensateSkillGroupKarmaDifference.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 475);
             this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
-            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(586, 17);
+            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
             this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
             this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
             this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
@@ -4198,15 +4188,12 @@ namespace Chummer
             // 
             // chkCyberlegMovement
             // 
-            this.chkCyberlegMovement.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkCyberlegMovement.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCyberlegMovement.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkCyberlegMovement, 4);
-            this.chkCyberlegMovement.Location = new System.Drawing.Point(3, 55);
-            this.chkCyberlegMovement.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCyberlegMovement.Location = new System.Drawing.Point(3, 53);
             this.chkCyberlegMovement.Name = "chkCyberlegMovement";
-            this.chkCyberlegMovement.Size = new System.Drawing.Size(586, 18);
+            this.chkCyberlegMovement.Size = new System.Drawing.Size(184, 17);
             this.chkCyberlegMovement.TabIndex = 2;
             this.chkCyberlegMovement.Tag = "Checkbox_Options_CyberlegMovement";
             this.chkCyberlegMovement.Text = "Use Cyberleg Stats for Movement";
@@ -4215,15 +4202,12 @@ namespace Chummer
             // 
             // chkMysAdeptSecondMAGAttribute
             // 
-            this.chkMysAdeptSecondMAGAttribute.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkMysAdeptSecondMAGAttribute.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkMysAdeptSecondMAGAttribute, 4);
-            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 481);
-            this.chkMysAdeptSecondMAGAttribute.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 452);
             this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
-            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(586, 17);
+            this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
             this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
             this.chkMysAdeptSecondMAGAttribute.Tag = "Checkbox_Options_MysAdeptSecondMAGAttribute";
             this.chkMysAdeptSecondMAGAttribute.Text = "Mystic Adepts use second MAG attribute for Adept abilities instead of special PP " +
@@ -4233,15 +4217,12 @@ namespace Chummer
             // 
             // chkDontDoubleQualityPurchases
             // 
-            this.chkDontDoubleQualityPurchases.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkDontDoubleQualityPurchases.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontDoubleQualityPurchases.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkDontDoubleQualityPurchases, 4);
-            this.chkDontDoubleQualityPurchases.Location = new System.Drawing.Point(3, 81);
-            this.chkDontDoubleQualityPurchases.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkDontDoubleQualityPurchases.Location = new System.Drawing.Point(3, 78);
             this.chkDontDoubleQualityPurchases.Name = "chkDontDoubleQualityPurchases";
-            this.chkDontDoubleQualityPurchases.Size = new System.Drawing.Size(586, 17);
+            this.chkDontDoubleQualityPurchases.Size = new System.Drawing.Size(352, 17);
             this.chkDontDoubleQualityPurchases.TabIndex = 5;
             this.chkDontDoubleQualityPurchases.Tag = "Checkbox_Options_DontDoubleQualityPurchases";
             this.chkDontDoubleQualityPurchases.Text = "Don\'t double the cost of purchasing Positive Qualities in Career Mode";
@@ -4250,15 +4231,12 @@ namespace Chummer
             // 
             // chkAllowPointBuySpecializationsOnKarmaSkills
             // 
-            this.chkAllowPointBuySpecializationsOnKarmaSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowPointBuySpecializationsOnKarmaSkills.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkAllowPointBuySpecializationsOnKarmaSkills, 4);
-            this.chkAllowPointBuySpecializationsOnKarmaSkills.Location = new System.Drawing.Point(3, 456);
-            this.chkAllowPointBuySpecializationsOnKarmaSkills.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Location = new System.Drawing.Point(3, 429);
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Name = "chkAllowPointBuySpecializationsOnKarmaSkills";
-            this.chkAllowPointBuySpecializationsOnKarmaSkills.Size = new System.Drawing.Size(586, 17);
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.Size = new System.Drawing.Size(366, 17);
             this.chkAllowPointBuySpecializationsOnKarmaSkills.TabIndex = 34;
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Tag = "Checkbox_Options_AllowPointBuySpecializationsOnKarmaSkills";
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Text = "Allow skill points to be used to buy specializations for karma-bought skills";
@@ -4267,15 +4245,12 @@ namespace Chummer
             // 
             // chkDontDoubleQualityRefunds
             // 
-            this.chkDontDoubleQualityRefunds.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkDontDoubleQualityRefunds.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontDoubleQualityRefunds.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkDontDoubleQualityRefunds, 4);
-            this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(3, 106);
-            this.chkDontDoubleQualityRefunds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(3, 101);
             this.chkDontDoubleQualityRefunds.Name = "chkDontDoubleQualityRefunds";
-            this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(586, 17);
+            this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(350, 17);
             this.chkDontDoubleQualityRefunds.TabIndex = 21;
             this.chkDontDoubleQualityRefunds.Tag = "Checkbox_Options_DontDoubleNegativeQualityRefunds";
             this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
@@ -4284,15 +4259,12 @@ namespace Chummer
             // 
             // chkReverseAttributePriorityOrder
             // 
-            this.chkReverseAttributePriorityOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkReverseAttributePriorityOrder.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkReverseAttributePriorityOrder.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkReverseAttributePriorityOrder, 4);
-            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(3, 430);
-            this.chkReverseAttributePriorityOrder.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(3, 404);
             this.chkReverseAttributePriorityOrder.Name = "chkReverseAttributePriorityOrder";
-            this.chkReverseAttributePriorityOrder.Size = new System.Drawing.Size(586, 18);
+            this.chkReverseAttributePriorityOrder.Size = new System.Drawing.Size(251, 17);
             this.chkReverseAttributePriorityOrder.TabIndex = 33;
             this.chkReverseAttributePriorityOrder.Tag = "Checkbox_Options_ReverseAttributePriorityOrder";
             this.chkReverseAttributePriorityOrder.Text = "Spend Karma on Attributes before Priority Points";
@@ -4303,7 +4275,7 @@ namespace Chummer
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1020, 6);
+            this.label2.Location = new System.Drawing.Point(1037, 6);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(12, 13);
@@ -4312,15 +4284,12 @@ namespace Chummer
             // 
             // chkStrictSkillGroups
             // 
-            this.chkStrictSkillGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkStrictSkillGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkStrictSkillGroups.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkStrictSkillGroups, 4);
-            this.chkStrictSkillGroups.Location = new System.Drawing.Point(3, 131);
-            this.chkStrictSkillGroups.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkStrictSkillGroups.Location = new System.Drawing.Point(3, 124);
             this.chkStrictSkillGroups.Name = "chkStrictSkillGroups";
-            this.chkStrictSkillGroups.Size = new System.Drawing.Size(586, 17);
+            this.chkStrictSkillGroups.Size = new System.Drawing.Size(304, 17);
             this.chkStrictSkillGroups.TabIndex = 6;
             this.chkStrictSkillGroups.Tag = "Checkbox_Options_StrictSkillGroups";
             this.chkStrictSkillGroups.Text = "Strict interprentation of breaking skill groups in create mode";
@@ -4332,7 +4301,7 @@ namespace Chummer
             this.nudContactMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudContactMultiplier.Enabled = false;
-            this.nudContactMultiplier.Location = new System.Drawing.Point(1038, 3);
+            this.nudContactMultiplier.Location = new System.Drawing.Point(1055, 3);
             this.nudContactMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -4344,7 +4313,7 @@ namespace Chummer
             0,
             0});
             this.nudContactMultiplier.Name = "nudContactMultiplier";
-            this.nudContactMultiplier.Size = new System.Drawing.Size(83, 20);
+            this.nudContactMultiplier.Size = new System.Drawing.Size(84, 20);
             this.nudContactMultiplier.TabIndex = 11;
             this.nudContactMultiplier.Value = new decimal(new int[] {
             3,
@@ -4355,15 +4324,12 @@ namespace Chummer
             // 
             // chkPrioritySpellsAsAdeptPowers
             // 
-            this.chkPrioritySpellsAsAdeptPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkPrioritySpellsAsAdeptPowers.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkPrioritySpellsAsAdeptPowers, 4);
-            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(3, 405);
-            this.chkPrioritySpellsAsAdeptPowers.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(3, 380);
             this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
-            this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(586, 17);
+            this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(325, 17);
             this.chkPrioritySpellsAsAdeptPowers.TabIndex = 31;
             this.chkPrioritySpellsAsAdeptPowers.Tag = "Checkbox_Option_PrioritySpellsAsAdeptPowers";
             this.chkPrioritySpellsAsAdeptPowers.Text = "Allow spending of free spells from Magic Priority as power points";
@@ -4372,15 +4338,12 @@ namespace Chummer
             // 
             // chkAllowInitiation
             // 
-            this.chkAllowInitiation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAllowInitiation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowInitiation.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkAllowInitiation, 4);
-            this.chkAllowInitiation.Location = new System.Drawing.Point(3, 181);
-            this.chkAllowInitiation.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowInitiation.Location = new System.Drawing.Point(3, 170);
             this.chkAllowInitiation.Name = "chkAllowInitiation";
-            this.chkAllowInitiation.Size = new System.Drawing.Size(586, 17);
+            this.chkAllowInitiation.Size = new System.Drawing.Size(227, 17);
             this.chkAllowInitiation.TabIndex = 7;
             this.chkAllowInitiation.Tag = "Checkbox_Options_AllowInitiation";
             this.chkAllowInitiation.Text = "Allow Initiation/Submersion in Create mode";
@@ -4389,15 +4352,12 @@ namespace Chummer
             // 
             // chkFreeMartialArtSpecialization
             // 
-            this.chkFreeMartialArtSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkFreeMartialArtSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeMartialArtSpecialization.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkFreeMartialArtSpecialization, 4);
-            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 380);
-            this.chkFreeMartialArtSpecialization.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 357);
             this.chkFreeMartialArtSpecialization.Name = "chkFreeMartialArtSpecialization";
-            this.chkFreeMartialArtSpecialization.Size = new System.Drawing.Size(586, 17);
+            this.chkFreeMartialArtSpecialization.Size = new System.Drawing.Size(281, 17);
             this.chkFreeMartialArtSpecialization.TabIndex = 30;
             this.chkFreeMartialArtSpecialization.Tag = "Checkbox_Option_FreeMartialArtSpecialization";
             this.chkFreeMartialArtSpecialization.Text = "Allow Martial Arts to grant a free specialisation in a skill";
@@ -4406,15 +4366,12 @@ namespace Chummer
             // 
             // chkAllowCyberwareESSDiscounts
             // 
-            this.chkAllowCyberwareESSDiscounts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAllowCyberwareESSDiscounts.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowCyberwareESSDiscounts.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkAllowCyberwareESSDiscounts, 4);
-            this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(3, 229);
-            this.chkAllowCyberwareESSDiscounts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(3, 216);
             this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
-            this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(586, 17);
+            this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(279, 17);
             this.chkAllowCyberwareESSDiscounts.TabIndex = 19;
             this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
             this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
@@ -4423,15 +4380,12 @@ namespace Chummer
             // 
             // chkMysAdPp
             // 
-            this.chkMysAdPp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkMysAdPp.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMysAdPp.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkMysAdPp, 4);
-            this.chkMysAdPp.Location = new System.Drawing.Point(3, 355);
-            this.chkMysAdPp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMysAdPp.Location = new System.Drawing.Point(3, 334);
             this.chkMysAdPp.Name = "chkMysAdPp";
-            this.chkMysAdPp.Size = new System.Drawing.Size(586, 17);
+            this.chkMysAdPp.Size = new System.Drawing.Size(280, 17);
             this.chkMysAdPp.TabIndex = 29;
             this.chkMysAdPp.Tag = "Checkbox_Option_AllowMysadPowerPointCareer";
             this.chkMysAdPp.Text = "Allow Mystic Adepts to buy power points during career";
@@ -4440,15 +4394,12 @@ namespace Chummer
             // 
             // chkESSLossReducesMaximumOnly
             // 
-            this.chkESSLossReducesMaximumOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkESSLossReducesMaximumOnly.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkESSLossReducesMaximumOnly.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkESSLossReducesMaximumOnly, 4);
-            this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(3, 254);
-            this.chkESSLossReducesMaximumOnly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(3, 239);
             this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
-            this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(586, 17);
+            this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
             this.chkESSLossReducesMaximumOnly.TabIndex = 20;
             this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
             this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
@@ -4457,15 +4408,12 @@ namespace Chummer
             // 
             // chkAlternateMetatypeAttributeKarma
             // 
-            this.chkAlternateMetatypeAttributeKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAlternateMetatypeAttributeKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAlternateMetatypeAttributeKarma.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkAlternateMetatypeAttributeKarma, 4);
-            this.chkAlternateMetatypeAttributeKarma.Location = new System.Drawing.Point(3, 330);
-            this.chkAlternateMetatypeAttributeKarma.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAlternateMetatypeAttributeKarma.Location = new System.Drawing.Point(3, 311);
             this.chkAlternateMetatypeAttributeKarma.Name = "chkAlternateMetatypeAttributeKarma";
-            this.chkAlternateMetatypeAttributeKarma.Size = new System.Drawing.Size(586, 17);
+            this.chkAlternateMetatypeAttributeKarma.Size = new System.Drawing.Size(411, 17);
             this.chkAlternateMetatypeAttributeKarma.TabIndex = 28;
             this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
             this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
@@ -4474,15 +4422,12 @@ namespace Chummer
             // 
             // chkUseCalculatedPublicAwareness
             // 
-            this.chkUseCalculatedPublicAwareness.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkUseCalculatedPublicAwareness.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUseCalculatedPublicAwareness.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkUseCalculatedPublicAwareness, 4);
-            this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(3, 279);
-            this.chkUseCalculatedPublicAwareness.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(3, 262);
             this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
-            this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(586, 17);
+            this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
             this.chkUseCalculatedPublicAwareness.TabIndex = 22;
             this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
             this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
@@ -4491,10 +4436,10 @@ namespace Chummer
             // 
             // nudDroneArmorMultiplier
             // 
-            this.nudDroneArmorMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudDroneArmorMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudDroneArmorMultiplier.AutoSize = true;
             this.nudDroneArmorMultiplier.Enabled = false;
-            this.nudDroneArmorMultiplier.Location = new System.Drawing.Point(447, 303);
+            this.nudDroneArmorMultiplier.Location = new System.Drawing.Point(454, 285);
             this.nudDroneArmorMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -4506,7 +4451,7 @@ namespace Chummer
             0,
             0});
             this.nudDroneArmorMultiplier.Name = "nudDroneArmorMultiplier";
-            this.nudDroneArmorMultiplier.Size = new System.Drawing.Size(83, 20);
+            this.nudDroneArmorMultiplier.Size = new System.Drawing.Size(84, 20);
             this.nudDroneArmorMultiplier.TabIndex = 26;
             this.nudDroneArmorMultiplier.Value = new decimal(new int[] {
             2,
@@ -4517,10 +4462,10 @@ namespace Chummer
             // 
             // label4
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(429, 306);
-            this.label4.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.label4.Location = new System.Drawing.Point(436, 287);
+            this.label4.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(12, 13);
             this.label4.TabIndex = 27;
@@ -4528,14 +4473,11 @@ namespace Chummer
             // 
             // chkDroneArmorMultiplier
             // 
-            this.chkDroneArmorMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkDroneArmorMultiplier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDroneArmorMultiplier.AutoSize = true;
-            this.chkDroneArmorMultiplier.Location = new System.Drawing.Point(3, 304);
-            this.chkDroneArmorMultiplier.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkDroneArmorMultiplier.Location = new System.Drawing.Point(3, 286);
             this.chkDroneArmorMultiplier.Name = "chkDroneArmorMultiplier";
-            this.chkDroneArmorMultiplier.Size = new System.Drawing.Size(379, 18);
+            this.chkDroneArmorMultiplier.Size = new System.Drawing.Size(252, 17);
             this.chkDroneArmorMultiplier.TabIndex = 25;
             this.chkDroneArmorMultiplier.Tag = "Checkbox_Options_DroneArmorMultiplier";
             this.chkDroneArmorMultiplier.Text = "Limit Drone Armor Enhance ment to Drone Body";
@@ -4544,15 +4486,12 @@ namespace Chummer
             // 
             // chkContactMultiplier
             // 
-            this.chkContactMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkContactMultiplier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkContactMultiplier.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkContactMultiplier, 2);
-            this.chkContactMultiplier.Location = new System.Drawing.Point(595, 4);
-            this.chkContactMultiplier.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkContactMultiplier.Location = new System.Drawing.Point(604, 4);
             this.chkContactMultiplier.Name = "chkContactMultiplier";
-            this.chkContactMultiplier.Size = new System.Drawing.Size(408, 18);
+            this.chkContactMultiplier.Size = new System.Drawing.Size(228, 17);
             this.chkContactMultiplier.TabIndex = 9;
             this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
             this.chkContactMultiplier.Text = "Override Contact Points Charisma Multiplier";
@@ -4561,15 +4500,12 @@ namespace Chummer
             // 
             // chkKnowledgeMultiplier
             // 
-            this.chkKnowledgeMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkKnowledgeMultiplier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKnowledgeMultiplier.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkKnowledgeMultiplier, 2);
-            this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(595, 55);
-            this.chkKnowledgeMultiplier.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(604, 53);
             this.chkKnowledgeMultiplier.Name = "chkKnowledgeMultiplier";
-            this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(408, 18);
+            this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(259, 17);
             this.chkKnowledgeMultiplier.TabIndex = 12;
             this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
             this.chkKnowledgeMultiplier.Text = "Override Knowledge Points (INT + LOG) Multiplier";
@@ -4580,7 +4516,7 @@ namespace Chummer
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1020, 57);
+            this.label3.Location = new System.Drawing.Point(1037, 55);
             this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(12, 13);
@@ -4592,7 +4528,7 @@ namespace Chummer
             this.nudKnowledgeMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKnowledgeMultiplier.Enabled = false;
-            this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(1038, 54);
+            this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(1055, 52);
             this.nudKnowledgeMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -4604,7 +4540,7 @@ namespace Chummer
             0,
             0});
             this.nudKnowledgeMultiplier.Name = "nudKnowledgeMultiplier";
-            this.nudKnowledgeMultiplier.Size = new System.Drawing.Size(83, 20);
+            this.nudKnowledgeMultiplier.Size = new System.Drawing.Size(84, 20);
             this.nudKnowledgeMultiplier.TabIndex = 14;
             this.nudKnowledgeMultiplier.Value = new decimal(new int[] {
             2,
@@ -4615,15 +4551,12 @@ namespace Chummer
             // 
             // chkUseTotalValueForFreeContacts
             // 
-            this.chkUseTotalValueForFreeContacts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkUseTotalValueForFreeContacts.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUseTotalValueForFreeContacts.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkUseTotalValueForFreeContacts, 5);
-            this.chkUseTotalValueForFreeContacts.Location = new System.Drawing.Point(595, 30);
-            this.chkUseTotalValueForFreeContacts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUseTotalValueForFreeContacts.Location = new System.Drawing.Point(604, 29);
             this.chkUseTotalValueForFreeContacts.Name = "chkUseTotalValueForFreeContacts";
-            this.chkUseTotalValueForFreeContacts.Size = new System.Drawing.Size(589, 17);
+            this.chkUseTotalValueForFreeContacts.Size = new System.Drawing.Size(261, 17);
             this.chkUseTotalValueForFreeContacts.TabIndex = 23;
             this.chkUseTotalValueForFreeContacts.Tag = "Checkbox_Options_UseTotalValueForFreeContacts";
             this.chkUseTotalValueForFreeContacts.Text = "Free Contacts use the augmented Charisma value";
@@ -4632,15 +4565,12 @@ namespace Chummer
             // 
             // chkIgnoreComplexFormLimit
             // 
-            this.chkIgnoreComplexFormLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkIgnoreComplexFormLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreComplexFormLimit.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkIgnoreComplexFormLimit, 5);
-            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(595, 405);
-            this.chkIgnoreComplexFormLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(604, 380);
             this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
-            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(589, 17);
+            this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(215, 17);
             this.chkIgnoreComplexFormLimit.TabIndex = 43;
             this.chkIgnoreComplexFormLimit.Tag = "Checkbox_Options_IgnoreComplexFormLimit";
             this.chkIgnoreComplexFormLimit.Text = "Ignore complex form limit in Career mode";
@@ -4649,15 +4579,12 @@ namespace Chummer
             // 
             // chkSpecialKarmaCost
             // 
-            this.chkSpecialKarmaCost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkSpecialKarmaCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSpecialKarmaCost.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkSpecialKarmaCost, 5);
-            this.chkSpecialKarmaCost.Location = new System.Drawing.Point(595, 380);
-            this.chkSpecialKarmaCost.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSpecialKarmaCost.Location = new System.Drawing.Point(604, 357);
             this.chkSpecialKarmaCost.Name = "chkSpecialKarmaCost";
-            this.chkSpecialKarmaCost.Size = new System.Drawing.Size(589, 17);
+            this.chkSpecialKarmaCost.Size = new System.Drawing.Size(373, 17);
             this.chkSpecialKarmaCost.TabIndex = 42;
             this.chkSpecialKarmaCost.Tag = "Checkbox_Options_SpecialKarmaCost";
             this.chkSpecialKarmaCost.Text = "Karma cost for increasing Special Attributes is reduced with Essence Loss";
@@ -4666,15 +4593,12 @@ namespace Chummer
             // 
             // chkMoreLethalGameplay
             // 
-            this.chkMoreLethalGameplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkMoreLethalGameplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMoreLethalGameplay.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkMoreLethalGameplay, 5);
-            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(595, 304);
-            this.chkMoreLethalGameplay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(604, 286);
             this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
-            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(589, 18);
+            this.chkMoreLethalGameplay.Size = new System.Drawing.Size(297, 17);
             this.chkMoreLethalGameplay.TabIndex = 41;
             this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
             this.chkMoreLethalGameplay.Text = "Use 4th Edition Rules for More Lethal Gameplay (SR4 75)";
@@ -4683,15 +4607,12 @@ namespace Chummer
             // 
             // chkExtendAnyDetectionSpell
             // 
-            this.chkExtendAnyDetectionSpell.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkExtendAnyDetectionSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExtendAnyDetectionSpell.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkExtendAnyDetectionSpell, 5);
-            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(595, 279);
-            this.chkExtendAnyDetectionSpell.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(604, 262);
             this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
-            this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(589, 17);
+            this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(332, 17);
             this.chkExtendAnyDetectionSpell.TabIndex = 40;
             this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
             this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version";
@@ -4700,15 +4621,12 @@ namespace Chummer
             // 
             // chkAllowSkillRegrouping
             // 
-            this.chkAllowSkillRegrouping.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowSkillRegrouping.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkAllowSkillRegrouping, 5);
-            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(595, 229);
-            this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(604, 216);
             this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
-            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(589, 17);
+            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
             this.chkAllowSkillRegrouping.TabIndex = 39;
             this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
             this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
@@ -4717,15 +4635,12 @@ namespace Chummer
             // 
             // chkNoArmorEncumbrance
             // 
-            this.chkNoArmorEncumbrance.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkNoArmorEncumbrance.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkNoArmorEncumbrance.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkNoArmorEncumbrance, 5);
-            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(595, 254);
-            this.chkNoArmorEncumbrance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(604, 239);
             this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
-            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(589, 17);
+            this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(139, 17);
             this.chkNoArmorEncumbrance.TabIndex = 38;
             this.chkNoArmorEncumbrance.Tag = "Checkbox_Options_NoArmorEncumbrance";
             this.chkNoArmorEncumbrance.Text = "No Armor Encumbrance";
@@ -4734,15 +4649,12 @@ namespace Chummer
             // 
             // chkIncreasedImprovedAbilityModifier
             // 
-            this.chkIncreasedImprovedAbilityModifier.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkIncreasedImprovedAbilityModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIncreasedImprovedAbilityModifier.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkIncreasedImprovedAbilityModifier, 5);
-            this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(595, 355);
-            this.chkIncreasedImprovedAbilityModifier.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(604, 334);
             this.chkIncreasedImprovedAbilityModifier.Name = "chkIncreasedImprovedAbilityModifier";
-            this.chkIncreasedImprovedAbilityModifier.Size = new System.Drawing.Size(589, 17);
+            this.chkIncreasedImprovedAbilityModifier.Size = new System.Drawing.Size(332, 17);
             this.chkIncreasedImprovedAbilityModifier.TabIndex = 44;
             this.chkIncreasedImprovedAbilityModifier.Tag = "Checkbox_Options_IncreasedImprovedAbilityModifier";
             this.chkIncreasedImprovedAbilityModifier.Text = "Improved Ability is capped by Learned Rating x 1.5 instead of 0.5";
@@ -4751,15 +4663,12 @@ namespace Chummer
             // 
             // chkAllowFreeGrids
             // 
-            this.chkAllowFreeGrids.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAllowFreeGrids.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowFreeGrids.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkAllowFreeGrids, 5);
-            this.chkAllowFreeGrids.Location = new System.Drawing.Point(595, 330);
-            this.chkAllowFreeGrids.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowFreeGrids.Location = new System.Drawing.Point(604, 311);
             this.chkAllowFreeGrids.Name = "chkAllowFreeGrids";
-            this.chkAllowFreeGrids.Size = new System.Drawing.Size(589, 17);
+            this.chkAllowFreeGrids.Size = new System.Drawing.Size(460, 17);
             this.chkAllowFreeGrids.TabIndex = 45;
             this.chkAllowFreeGrids.Tag = "Checkbox_Options_AllowFreeGrids";
             this.chkAllowFreeGrids.Text = "Allow Free Grid Subscription Qualities for lifestyles even if Hard Targets is not" +
@@ -4769,8 +4678,9 @@ namespace Chummer
             // 
             // chkAllowTechnomancerSchooling
             // 
+            this.chkAllowTechnomancerSchooling.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowTechnomancerSchooling.AutoSize = true;
-            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 205);
+            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 193);
             this.chkAllowTechnomancerSchooling.Name = "chkAllowTechnomancerSchooling";
             this.chkAllowTechnomancerSchooling.Size = new System.Drawing.Size(273, 17);
             this.chkAllowTechnomancerSchooling.TabIndex = 45;
@@ -4781,8 +4691,9 @@ namespace Chummer
             // 
             // chkUsePointsOnBrokenGroups
             // 
+            this.chkUsePointsOnBrokenGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUsePointsOnBrokenGroups.AutoSize = true;
-            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 155);
+            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 147);
             this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
             this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
             this.chkUsePointsOnBrokenGroups.TabIndex = 49;
@@ -4793,9 +4704,10 @@ namespace Chummer
             // 
             // chkUnclampAttributeMinimum
             // 
+            this.chkUnclampAttributeMinimum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUnclampAttributeMinimum.AutoSize = true;
             this.tlpHouseRules.SetColumnSpan(this.chkUnclampAttributeMinimum, 2);
-            this.chkUnclampAttributeMinimum.Location = new System.Drawing.Point(595, 455);
+            this.chkUnclampAttributeMinimum.Location = new System.Drawing.Point(604, 429);
             this.chkUnclampAttributeMinimum.Name = "chkUnclampAttributeMinimum";
             this.chkUnclampAttributeMinimum.Size = new System.Drawing.Size(328, 17);
             this.chkUnclampAttributeMinimum.TabIndex = 50;
@@ -4832,7 +4744,7 @@ namespace Chummer
             // tabPlugins
             // 
             this.tabPlugins.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPlugins.Controls.Add(this.bufferedTableLayoutPanel1);
+            this.tabPlugins.Controls.Add(this.tlpPlugins);
             this.tabPlugins.Location = new System.Drawing.Point(4, 22);
             this.tabPlugins.Name = "tabPlugins";
             this.tabPlugins.Padding = new System.Windows.Forms.Padding(9);
@@ -4841,24 +4753,23 @@ namespace Chummer
             this.tabPlugins.Tag = "Tab_Options_Plugins";
             this.tabPlugins.Text = "Plugins";
             // 
-            // bufferedTableLayoutPanel1
+            // tlpPlugins
             // 
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel1.ColumnCount = 2;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.grpAvailablePlugins, 0, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.panelPluginOption, 1, 0);
-            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.bufferedTableLayoutPanel1.MinimumSize = new System.Drawing.Size(823, 516);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 1;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 550F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(1214, 550);
-            this.bufferedTableLayoutPanel1.TabIndex = 0;
+            this.tlpPlugins.AutoSize = true;
+            this.tlpPlugins.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpPlugins.ColumnCount = 2;
+            this.tlpPlugins.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpPlugins.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpPlugins.Controls.Add(this.grpAvailablePlugins, 0, 0);
+            this.tlpPlugins.Controls.Add(this.panelPluginOption, 1, 0);
+            this.tlpPlugins.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpPlugins.Location = new System.Drawing.Point(9, 9);
+            this.tlpPlugins.MinimumSize = new System.Drawing.Size(823, 516);
+            this.tlpPlugins.Name = "tlpPlugins";
+            this.tlpPlugins.RowCount = 1;
+            this.tlpPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpPlugins.Size = new System.Drawing.Size(1214, 550);
+            this.tlpPlugins.TabIndex = 0;
             // 
             // grpAvailablePlugins
             // 
@@ -4937,20 +4848,6 @@ namespace Chummer
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // chkHideMasterIndex
-            // 
-            this.chkHideMasterIndex.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkHideMasterIndex.AutoSize = true;
-            this.tlpGlobalOptions.SetColumnSpan(this.chkHideMasterIndex, 3);
-            this.chkHideMasterIndex.Location = new System.Drawing.Point(406, 339);
-            this.chkHideMasterIndex.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkHideMasterIndex.Name = "chkHideMasterIndex";
-            this.chkHideMasterIndex.Size = new System.Drawing.Size(130, 17);
-            this.chkHideMasterIndex.TabIndex = 69;
-            this.chkHideMasterIndex.Tag = "Checkbox_Options_HideMasterIndex";
-            this.chkHideMasterIndex.Text = "Hide the Master Index";
-            this.chkHideMasterIndex.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -5091,8 +4988,8 @@ namespace Chummer
             this.tabGitHubIssues.PerformLayout();
             this.tabPlugins.ResumeLayout(false);
             this.tabPlugins.PerformLayout();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
+            this.tlpPlugins.ResumeLayout(false);
+            this.tlpPlugins.PerformLayout();
             this.grpAvailablePlugins.ResumeLayout(false);
             this.flpOKCancel.ResumeLayout(false);
             this.flpOKCancel.PerformLayout();
@@ -5398,7 +5295,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabGitHubIssues;
         private System.Windows.Forms.Button cmdUploadPastebin;
         private System.Windows.Forms.TabPage tabPlugins;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private BufferedTableLayoutPanel tlpPlugins;
         private System.Windows.Forms.GroupBox grpAvailablePlugins;
         private System.Windows.Forms.CheckedListBox clbPlugins;
         private System.Windows.Forms.Panel panelPluginOption;

@@ -371,7 +371,7 @@ namespace Chummer
 
                 if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
                 {
-                    Size = new Size(1280, 720);
+                    Size = new Size(LogicalToDeviceUnits(1280), LogicalToDeviceUnits(720));
                     StartPosition = FormStartPosition.CenterScreen;
                 }
                 else
@@ -388,6 +388,7 @@ namespace Chummer
                     WindowState = FormWindowState.Maximized;
 
                 mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
+                tabForms.ItemSize = new Size(LogicalToDeviceUnits(0), LogicalToDeviceUnits(18));
             }
         }
 
@@ -1730,6 +1731,11 @@ namespace Chummer
             {
                 objShared.DoPrint();
             }
+        }
+
+        private void frmChummerMain_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            tabForms.ItemSize = new Size(tabForms.ItemSize.Width * e.DeviceDpiNew / e.DeviceDpiOld, tabForms.ItemSize.Height * e.DeviceDpiNew / e.DeviceDpiOld);
         }
     }
 }

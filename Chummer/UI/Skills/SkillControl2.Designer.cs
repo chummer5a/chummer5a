@@ -150,8 +150,8 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
             this.btnCareerIncrease.Location = new System.Drawing.Point(55, 0);
             this.btnCareerIncrease.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.btnCareerIncrease.MinimumSize = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.Name = "btnCareerIncrease";
+            this.btnCareerIncrease.Padding = new System.Windows.Forms.Padding(1);
             this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
             this.btnCareerIncrease.TabIndex = 21;
             this.btnCareerIncrease.ToolTipText = "";
@@ -312,8 +312,8 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.Image = global::Chummer.Properties.Resources.add;
             this.btnAddSpec.Location = new System.Drawing.Point(319, 0);
             this.btnAddSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.btnAddSpec.MinimumSize = new System.Drawing.Size(24, 24);
             this.btnAddSpec.Name = "btnAddSpec";
+            this.btnAddSpec.Padding = new System.Windows.Forms.Padding(1);
             this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
             this.btnAddSpec.TabIndex = 23;
             this.btnAddSpec.ToolTipText = "";

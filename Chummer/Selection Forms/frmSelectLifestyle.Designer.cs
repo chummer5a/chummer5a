@@ -70,8 +70,8 @@ namespace Chummer
             // 
             this.lblLifestyles.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblLifestyles.AutoSize = true;
-            this.lblLifestyles.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyles.Location = new System.Drawing.Point(322, 33);
+            this.lblLifestyles.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLifestyles.Name = "lblLifestyles";
             this.lblLifestyles.Size = new System.Drawing.Size(48, 13);
             this.lblLifestyles.TabIndex = 2;
@@ -152,8 +152,8 @@ namespace Chummer
             // 
             this.lblCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCost.AutoSize = true;
+            this.lblCost.Location = new System.Drawing.Point(376, 134);
             this.lblCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCost.Location = new System.Drawing.Point(376, 133);
             this.lblCost.Name = "lblCost";
             this.lblCost.Size = new System.Drawing.Size(34, 13);
             this.lblCost.TabIndex = 19;
@@ -183,6 +183,7 @@ namespace Chummer
             // nudPercentage
             // 
             this.nudPercentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudPercentage.AutoSize = true;
             this.nudPercentage.DecimalPlaces = 2;
             this.nudPercentage.Location = new System.Drawing.Point(376, 105);
             this.nudPercentage.Maximum = new decimal(new int[] {
@@ -191,7 +192,7 @@ namespace Chummer
             0,
             131072});
             this.nudPercentage.Name = "nudPercentage";
-            this.nudPercentage.Size = new System.Drawing.Size(100, 20);
+            this.nudPercentage.Size = new System.Drawing.Size(56, 20);
             this.nudPercentage.TabIndex = 17;
             this.nudPercentage.Value = new decimal(new int[] {
             100,
@@ -217,8 +218,9 @@ namespace Chummer
             // 
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSource.Location = new System.Drawing.Point(376, 159);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSource.Location = new System.Drawing.Point(376, 157);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 21;
@@ -241,9 +243,10 @@ namespace Chummer
             // nudRoommates
             // 
             this.nudRoommates.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudRoommates.AutoSize = true;
             this.nudRoommates.Location = new System.Drawing.Point(376, 56);
             this.nudRoommates.Name = "nudRoommates";
-            this.nudRoommates.Size = new System.Drawing.Size(100, 20);
+            this.nudRoommates.Size = new System.Drawing.Size(41, 20);
             this.nudRoommates.TabIndex = 15;
             this.nudRoommates.ValueChanged += new System.EventHandler(this.nudRoommates_ValueChanged);
             // 
@@ -264,7 +267,7 @@ namespace Chummer
             // 
             this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.treQualities, 0, 0);

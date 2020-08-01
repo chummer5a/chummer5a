@@ -903,7 +903,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.asterisk_orange,
                 Name = "tsToggleFav",
-                Size = new Size(180, 22),
+                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                 Tag = "Menu_ToggleFavorite"
             };
             tsToggleFav.Click += tsToggleFav_Click;
@@ -914,7 +914,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.page_refresh,
                 Name = "tsSort",
-                Size = new Size(180, 22),
+                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                 Tag = "Menu_Sort"
             };
             tsSort.Click += tsSort_Click;
@@ -925,7 +925,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.delete,
                 Name = "tsDelete",
-                Size = new Size(180, 22),
+                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                 Tag = "Menu_Delete"
             };
             tsDelete.Click += tsDelete_Click;
@@ -935,7 +935,7 @@ namespace Chummer
             ContextMenuStrip cmsRoster = new ContextMenuStrip
             {
                 Name = "cmsRoster",
-                Size = new Size(181, 114)
+                Size = new Size(LogicalToDeviceUnits(181), LogicalToDeviceUnits(114))
             };
             cmsRoster.Items.AddRange(new ToolStripItem[]
             {
@@ -957,7 +957,7 @@ namespace Chummer
                 {
                     Image = Properties.Resources.door_out,
                     Name = "tsCloseOpenCharacter",
-                    Size = new Size(180, 22),
+                    Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                     Tag = "Menu_Close"
                 };
                 tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
