@@ -4141,7 +4141,7 @@
         <skill rating="4">Unarmed Combat</skill>
       </skills>
       <source>HS</source>
-      <page>40</page>
+      <page>39</page>
     </metatype>
     <metatype>
       <id>5adc42b0-97c7-495e-824b-828147fd8250</id>
@@ -14738,82 +14738,6 @@
       </skills>
       <source>HP</source>
       <page>75</page>
-    </metatype>
-    <metatype>
-      <id>fde9e842-9a09-437d-bde9-61eaf4ccfd68</id>
-      <name>Ross Seal</name>
-      <category>Paranormal Critters</category>
-      <karma>0</karma>
-      <bodmin>8</bodmin>
-      <bodmax>8</bodmax>
-      <bodaug>8</bodaug>
-      <agimin>4</agimin>
-      <agimax>4</agimax>
-      <agiaug>4</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
-      <strmin>6</strmin>
-      <strmax>6</strmax>
-      <straug>6</straug>
-      <chamin>2</chamin>
-      <chamax>2</chamax>
-      <chaaug>2</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>4</wilmin>
-      <wilmax>4</wilmax>
-      <wilaug>4</wilaug>
-      <inimin>2</inimin>
-      <inimax>12</inimax>
-      <iniaug>12</iniaug>
-      <edgmin>3</edgmin>
-      <edgmax>3</edgmax>
-      <edgaug>3</edgaug>
-      <magmin>3</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <movement>15/40</movement>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>1</min>
-          <max>6</max>
-          <aug>6</aug>
-          <val>3</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power select="Claw/Bite: DV 5P, AP 0">Natural Weapon</power>
-      </powers>
-      <skills>
-        <skill rating="3">Intimidation</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="2">Swimming</skill>
-        <skill rating="1">Tracking</skill>
-        <skill rating="4">Unarmed Combat</skill>
-      </skills>
-      <source>HP</source>
-      <page>76</page>
     </metatype>
     <metatype>
       <id>1598214f-42a0-472d-82bf-d9e3c3043067</id>
@@ -36341,7 +36265,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>1f8cce52-528a-459e-9073-664a5c0a3f65</id>
@@ -36435,7 +36359,7 @@
             <skill rating="F">Unarmed Combat</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>3bab449b-69b4-48ee-8cf7-a12076229e77</id>
@@ -36530,7 +36454,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>abeec57c-5ce9-4a98-8428-eb157b246c55</id>
@@ -36625,7 +36549,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>044fd5d9-cf58-4cc4-9abe-2894dac3a3e8</id>
@@ -36721,7 +36645,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>1795f129-a91b-4c3d-b769-832ba7d31106</id>
@@ -36814,8 +36738,8 @@
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
-          <source>SM</source>
-          <page>151</page>
+          <source>SG</source>
+          <page>97</page>
         </metavariant>
         <metavariant>
           <id>c77cb5a4-136e-4c8e-8053-34f0758d229a</id>
@@ -36911,7 +36835,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>97</page>
         </metavariant>
         <metavariant>
           <id>0dcff289-e299-4332-8bc4-df3054e9122b</id>
@@ -37006,7 +36930,7 @@
             <skill rating="F">Unarmed Combat</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>98</page>
         </metavariant>
       </metavariants>
     </metatype>
@@ -37556,7 +37480,7 @@
             <skill rating="F">Unarmed Combat</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>2688fbb9-b25e-4cf0-b2b6-9e12af572931</id>
@@ -37649,7 +37573,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>32217c33-d541-4e1e-92f5-0e00dc97fd52</id>
@@ -37742,7 +37666,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>f0859288-273e-4d5d-97e7-e6fcecd1054f</id>
@@ -37836,7 +37760,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>ccfb2871-88e1-4f14-ba26-ef94def6b78b</id>
@@ -37927,8 +37851,8 @@
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
-          <source>SM</source>
-          <page>151</page>
+          <source>SG</source>
+          <page>97</page>
         </metavariant>
         <metavariant>
           <id>310eeb6e-a35a-48c7-a030-aeec99f246e8</id>
@@ -38022,7 +37946,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>97</page>
         </metavariant>
         <metavariant>
           <id>7ce5110c-0273-44d1-add5-8dc0e1f4fc1a</id>
@@ -38115,7 +38039,7 @@
             <skill rating="F">Unarmed Combat</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>98</page>
         </metavariant>
       </metavariants>
     </metatype>
@@ -38632,7 +38556,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>0fabfb20-20b9-4cae-9ffd-fec7887fb61e</id>
@@ -38735,7 +38659,7 @@
             <skill rating="F">Unarmed Combat</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>ed98f096-8bae-4c2c-9303-1588b9e91889</id>
@@ -38839,7 +38763,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>67e4d63e-feed-413a-a81e-259a627bd30a</id>
@@ -38943,7 +38867,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>f2381af9-57b8-40b0-a08f-7d8e78c4753e</id>
@@ -39048,7 +38972,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>96</page>
         </metavariant>
         <metavariant>
           <id>c5f570ae-c93b-4f1b-ae9e-62bbfbbc0d66</id>
@@ -39150,8 +39074,8 @@
             <skill rating="F">Spellcasting</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
-          <source>SM</source>
-          <page>151</page>
+          <source>SG</source>
+          <page>97</page>
         </metavariant>
         <metavariant>
           <id>b8df7f1b-8b73-4a8b-a305-0f1b7b96797e</id>
@@ -39256,7 +39180,7 @@
             <skill rating="F">Flight</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>97</page>
         </metavariant>
         <metavariant>
           <id>bfb38749-9dcf-427f-b9b8-dadfbd891b23</id>
@@ -39360,7 +39284,7 @@
             <skill rating="F">Unarmed Combat</skill>
           </skills>
           <source>SG</source>
-          <page>95</page>
+          <page>98</page>
         </metavariant>
       </metavariants>
     </metatype>

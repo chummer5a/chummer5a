@@ -114,7 +114,7 @@
         <selecttext />
       </bonus>
       <source>CF</source>
-      <page>72</page>
+      <page>71</page>
     </grade>
     <grade>
       <id>e77b7a1f-1c7b-4494-b9b5-6dcb5b61010b</id>
@@ -5459,7 +5459,7 @@
       <avail>12F</avail>
       <cost>Rating * 500</cost>
       <source>CF</source>
-      <page>149</page>
+      <page>150</page>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>

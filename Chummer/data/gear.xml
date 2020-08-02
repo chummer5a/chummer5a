@@ -1344,7 +1344,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>TSG</source>
-      <page>19</page>
+      <page>29</page>
       <avail>12F</avail>
       <addweapon>Rocket: Incendiary</addweapon>
       <cost>1900</cost>
@@ -1609,7 +1609,7 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>54</page>
+      <page>55</page>
       <avail>Rating*2F</avail>
       <cost>Rating*50</cost>
       <addweapon rating="{Rating}">Grenade: Douser</addweapon>
@@ -1620,7 +1620,7 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>55</page>
+      <page>56</page>
       <avail>Rating*2R</avail>
       <cost>Rating*50</cost>
       <addweapon rating="{Rating}">Grenade: DumDum</addweapon>
