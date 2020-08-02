@@ -260,7 +260,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("allowed", string.Join(",", _lstAllowedFreeLifestyles));
+            objWriter.WriteElementString("allowed", _lstAllowedFreeLifestyles?.Length > 0
+                ? string.Join(",", _lstAllowedFreeLifestyles)
+                : string.Empty);
             if (Bonus != null)
                 objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
             else
@@ -652,7 +654,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (Type != QualityType.Entertainment && Type != QualityType.Contracts) return false;
+                if (Type != QualityType.Entertainment && Type != QualityType.Contracts)
+                    return false;
                 return _lstAllowedFreeLifestyles != null && !string.IsNullOrEmpty(ParentLifestyle?.BaseLifestyle) &&
                        _lstAllowedFreeLifestyles.Any(strLifestyle =>
                            strLifestyle == Lifestyle.GetEquivalentLifestyle(ParentLifestyle.BaseLifestyle) ||
