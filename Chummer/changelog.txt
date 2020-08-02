@@ -71,6 +71,7 @@ Data Changes:
 - Fixed incorrect Concealability and Spec settings for the SK/Onotari Arms Silent Claw Stiletto.
 - Fixed Neocortial Neural Amplifiers not listing the correct condition modifier.
 - Spirit Affinity no longer lists Watcher and Homunculus spirits among its recommendations.
+- Ares Briefcase Shield no longer has two different sourcebook references between its armor and weapon entries.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
