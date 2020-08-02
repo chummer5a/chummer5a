@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -210,11 +209,7 @@ namespace Chummer
             if (objOldSelectedValue != null)
             {
                 MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry)objOldSelectedValue;
-                ListItem objSelectedItem = _lstItems.FirstOrDefault(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
-                if (objSelectedItem.Value != null)
-                    lstItems.SelectedItem = objSelectedItem;
-                else
-                    lstItems.SelectedIndex = -1;
+                lstItems.SelectedIndex = lstFilteredItems.FindIndex(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
             }
             else
                 lstItems.SelectedIndex = -1;
