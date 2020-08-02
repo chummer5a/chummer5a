@@ -44,10 +44,10 @@ namespace ChummerHub.Client.UI
             // 
             this.tlpShareMain.AutoSize = true;
             this.tlpShareMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpShareMain.ColumnCount = 3;
+            this.tlpShareMain.ColumnCount = 2;
             this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.59574F));
-            this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.40426F));
+            this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpShareMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpShareMain.Controls.Add(this.lStatus, 0, 0);
             this.tlpShareMain.Controls.Add(this.tbStatus, 1, 0);
             this.tlpShareMain.Controls.Add(this.pgbStatus, 0, 1);
@@ -63,12 +63,12 @@ namespace ChummerHub.Client.UI
             this.tlpShareMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpShareMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpShareMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpShareMain.Size = new System.Drawing.Size(641, 270);
+            this.tlpShareMain.Size = new System.Drawing.Size(652, 270);
             this.tlpShareMain.TabIndex = 0;
             // 
             // lStatus
             // 
-            this.lStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lStatus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lStatus.AutoSize = true;
             this.lStatus.Location = new System.Drawing.Point(3, 86);
             this.lStatus.Name = "lStatus";
@@ -78,28 +78,27 @@ namespace ChummerHub.Client.UI
             // 
             // tbStatus
             // 
-            this.tlpShareMain.SetColumnSpan(this.tbStatus, 2);
             this.tbStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbStatus.Location = new System.Drawing.Point(49, 3);
             this.tbStatus.Multiline = true;
             this.tbStatus.Name = "tbStatus";
-            this.tbStatus.Size = new System.Drawing.Size(589, 180);
+            this.tbStatus.Size = new System.Drawing.Size(600, 180);
             this.tbStatus.TabIndex = 1;
             // 
             // pgbStatus
             // 
-            this.pgbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpShareMain.SetColumnSpan(this.pgbStatus, 3);
+            this.tlpShareMain.SetColumnSpan(this.pgbStatus, 2);
+            this.pgbStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pgbStatus.Location = new System.Drawing.Point(3, 189);
             this.pgbStatus.Name = "pgbStatus";
-            this.pgbStatus.Size = new System.Drawing.Size(635, 23);
+            this.pgbStatus.Size = new System.Drawing.Size(646, 23);
             this.pgbStatus.TabIndex = 2;
             // 
             // lLink
             // 
-            this.lLink.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lLink.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lLink.AutoSize = true;
-            this.lLink.Location = new System.Drawing.Point(3, 221);
+            this.lLink.Location = new System.Drawing.Point(13, 221);
             this.lLink.Name = "lLink";
             this.lLink.Size = new System.Drawing.Size(30, 13);
             this.lLink.TabIndex = 3;
@@ -108,23 +107,23 @@ namespace ChummerHub.Client.UI
             // tbLink
             // 
             this.tbLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpShareMain.SetColumnSpan(this.tbLink, 2);
             this.tbLink.Location = new System.Drawing.Point(49, 218);
             this.tbLink.Name = "tbLink";
             this.tbLink.ReadOnly = true;
-            this.tbLink.Size = new System.Drawing.Size(589, 20);
+            this.tbLink.Size = new System.Drawing.Size(600, 20);
             this.tbLink.TabIndex = 4;
             // 
             // bOk
             // 
             this.bOk.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.tlpShareMain.SetColumnSpan(this.bOk, 3);
+            this.bOk.AutoSize = true;
+            this.tlpShareMain.SetColumnSpan(this.bOk, 2);
             this.bOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.bOk.Location = new System.Drawing.Point(283, 244);
+            this.bOk.Location = new System.Drawing.Point(288, 244);
             this.bOk.Name = "bOk";
             this.bOk.Size = new System.Drawing.Size(75, 23);
             this.bOk.TabIndex = 5;
-            this.bOk.Text = "Ok";
+            this.bOk.Text = "OK";
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.BOk_Click);
             // 
@@ -132,9 +131,11 @@ namespace ChummerHub.Client.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpShareMain);
             this.Name = "ucSINnerShare";
-            this.Size = new System.Drawing.Size(641, 270);
+            this.Size = new System.Drawing.Size(652, 270);
             this.tlpShareMain.ResumeLayout(false);
             this.tlpShareMain.PerformLayout();
             this.ResumeLayout(false);

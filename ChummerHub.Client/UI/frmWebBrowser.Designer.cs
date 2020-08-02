@@ -39,7 +39,7 @@ namespace ChummerHub.Client.UI
             this.webBrowser2.Location = new System.Drawing.Point(3, 3);
             this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser2.Name = "webBrowser2";
-            this.webBrowser2.Size = new System.Drawing.Size(1095, 791);
+            this.webBrowser2.Size = new System.Drawing.Size(1258, 675);
             this.webBrowser2.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -57,7 +57,7 @@ namespace ChummerHub.Client.UI
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1101, 797);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1264, 681);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // frmWebBrowser
@@ -67,8 +67,9 @@ namespace ChummerHub.Client.UI
             this.AutoScroll = true;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1101, 797);
+            this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.DoubleBuffered = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmWebBrowser";

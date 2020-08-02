@@ -674,6 +674,9 @@ namespace Chummer
         {
             get
             {
+                if (Utils.IsDesignerMode)
+                    return new List<ListItem>();
+
                 if (_lstLanguages == null)
                 {
                     string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");

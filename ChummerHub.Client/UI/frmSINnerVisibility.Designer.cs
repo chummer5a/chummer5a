@@ -28,67 +28,70 @@ namespace ChummerHub.Client.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.ucSINnerVisibility1 = new ChummerHub.Client.UI.ucSINnerVisibility();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.bOk = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.ucSINnerVisibility1 = new ChummerHub.Client.UI.ucSINnerVisibility();
+            this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.ucSINnerVisibility1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.bOk, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(304, 276);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.ucSINnerVisibility1, 0, 0);
+            this.tlpMain.Controls.Add(this.bOk, 0, 1);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(0, 0);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 2;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(304, 281);
+            this.tlpMain.TabIndex = 0;
+            // 
+            // bOk
+            // 
+            this.bOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.bOk.AutoSize = true;
+            this.tlpMain.SetColumnSpan(this.bOk, 2);
+            this.bOk.Location = new System.Drawing.Point(114, 255);
+            this.bOk.Name = "bOk";
+            this.bOk.Size = new System.Drawing.Size(75, 23);
+            this.bOk.TabIndex = 2;
+            this.bOk.Text = "OK";
+            this.bOk.UseVisualStyleBackColor = true;
+            this.bOk.Click += new System.EventHandler(this.BOk_Click);
             // 
             // ucSINnerVisibility1
             // 
             this.ucSINnerVisibility1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.SetColumnSpan(this.ucSINnerVisibility1, 2);
+            this.tlpMain.SetColumnSpan(this.ucSINnerVisibility1, 2);
             this.ucSINnerVisibility1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ucSINnerVisibility1.Location = new System.Drawing.Point(3, 3);
             this.ucSINnerVisibility1.MyVisibility = null;
             this.ucSINnerVisibility1.Name = "ucSINnerVisibility1";
-            this.ucSINnerVisibility1.Size = new System.Drawing.Size(298, 241);
+            this.ucSINnerVisibility1.Size = new System.Drawing.Size(298, 246);
             this.ucSINnerVisibility1.TabIndex = 1;
-            // 
-            // bOk
-            // 
-            this.bOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.tableLayoutPanel1.SetColumnSpan(this.bOk, 2);
-            this.bOk.Location = new System.Drawing.Point(114, 250);
-            this.bOk.Name = "bOk";
-            this.bOk.Size = new System.Drawing.Size(75, 23);
-            this.bOk.TabIndex = 2;
-            this.bOk.Text = "Ok";
-            this.bOk.UseVisualStyleBackColor = true;
-            this.bOk.Click += new System.EventHandler(this.BOk_Click);
             // 
             // frmSINnerVisibility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(304, 276);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.ClientSize = new System.Drawing.Size(304, 281);
+            this.Controls.Add(this.tlpMain);
+            this.DoubleBuffered = true;
             this.Name = "frmSINnerVisibility";
             this.Text = "frmSINnerVisibility";
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private ucSINnerVisibility ucSINnerVisibility1;
         private System.Windows.Forms.Button bOk;
     }
