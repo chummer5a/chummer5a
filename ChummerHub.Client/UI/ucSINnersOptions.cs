@@ -139,18 +139,19 @@ namespace ChummerHub.Client.UI
                 return;
             }
             var sinnerurl = client.BaseUri.ToString();
-            if (Settings.Default.SINnerUrls.Contains("http://sinners-beta.azurewebsites.net/"))
+            while (Settings.Default.SINnerUrls.Contains("http://chummer.azurewebsites.net/"))
             {
-                Settings.Default.SINnerUrls.Remove("http://sinners-beta.azurewebsites.net/");
-                Settings.Default.SINnerUrls.Add("https://sinners-beta.azurewebsites.net/");
+                Settings.Default.SINnerUrls.Remove("http://chummer.azurewebsites.net/");
                 Settings.Default.Save();
             }
+            Settings.Default.SINnerUrls.Add("https://chummer.azurewebsites.net/");
+            Settings.Default.Save();
             cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;
             cbSINnerUrl.SelectedItem = sinnerurl;
             cbVisibilityIsPublic.Checked = Settings.Default.VisibilityIsPublic;
             cbIgnoreWarnings.Checked = Settings.Default.IgnoreWarningsOnOpening;
             cbOpenChummerFromSharedLinks.Checked = Settings.Default.OpenChummerFromSharedLinks;
-            cbSINnerUrl.Enabled = false;
+            cbSINnerUrl.Enabled = true;
             rbListUserMode.SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0;
             cbVisibilityIsPublic.BindingContext = new BindingContext();
             if (StaticUtils.UserRoles?.Count == 0)

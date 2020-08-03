@@ -331,23 +331,25 @@ namespace ChummerHub.Client.Backend
                 var assembly = Assembly.GetAssembly(typeof(frmChummerMain));
                 Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0
                     ? "https://sinners.azurewebsites.net"
-                    : "https://sinners-beta.azurewebsites.net";
+                    : "https://chummer.azurewebsites.net";
                 if (Debugger.IsAttached)
                 {
-                    try
-                    {
-                        string local = "http://localhost:5000/";
-                        var request = WebRequest.Create(new Uri(local));
-                        WebResponse response = request.GetResponse();
-                        Settings.Default.SINnerUrl = local;
-                        Log.Info("Connected to " + local + ".");
-                    }
-                    catch (Exception)
-                    {
-                        Settings.Default.SINnerUrl = "https://sinners-beta.azurewebsites.net";
-                        Log.Info("Connected to " + Settings.Default.SINnerUrl + ".");
-                    }
+                    Settings.Default.SINnerUrl = "https://chummer.azurewebsites.net";
+                    //try
+                    //{
+                    //    string local = "http://localhost:5000/";
+                    //    var request = WebRequest.Create(new Uri(local));
+                    //    WebResponse response = request.GetResponse();
+                    //    Settings.Default.SINnerUrl = local;
+                    //    Log.Info("Connected to " + local + ".");
+                    //}
+                    //catch (Exception)
+                    //{
+                        
+                        
+                    //}
                 }
+                Log.Info("Connected to " + Settings.Default.SINnerUrl + ".");
 
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
@@ -632,7 +634,7 @@ namespace ChummerHub.Client.Backend
             }
 
 
-            if (!string.IsNullOrEmpty(rb.ErrorText) || rb.MyException != null)
+            if (!string.IsNullOrEmpty(rb?.ErrorText) || rb?.MyException != null)
             {
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
@@ -644,7 +646,7 @@ namespace ChummerHub.Client.Backend
                             {
                                 TopMost = true
                             };
-                            if (rb.ErrorText.Length > 600)
+                            if (rb?.ErrorText.Length > 600)
                                 rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
                             frmSIN.SINnerResponseUI.Result = rb;
                             frmSIN.DoThreadSafe(() =>
