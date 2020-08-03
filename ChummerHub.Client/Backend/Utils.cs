@@ -168,8 +168,8 @@ namespace ChummerHub.Client.Backend
         {
             if (uri == null)
                 throw new ArgumentNullException(nameof(uri));
-            if (string.IsNullOrEmpty(cookieData))
-                throw new ArgumentNullException(nameof(cookieData));
+            //if (string.IsNullOrEmpty(cookieData))
+            //    throw new ArgumentNullException(nameof(cookieData));
             CookieContainer cookies = null;
             try
             {

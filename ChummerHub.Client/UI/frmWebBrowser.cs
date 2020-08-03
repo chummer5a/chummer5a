@@ -5,6 +5,7 @@ using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using Newtonsoft.Json;
 using NLog;
+using SINners;
 using SINners.Models;
 
 namespace ChummerHub.Client.UI
@@ -71,14 +72,15 @@ namespace ChummerHub.Client.UI
                         Log.Error("Cloud not create an instance of SINnersclient!");
                         return;
                     }
-
-                    using (var user = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true))
+                    //var body = client.GetUserByAuthorizationAsync().Result;
+                    using (var user = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(false))
                     {
-                        if (user.Body?.CallSuccess == true)
+                        var body = user.Body;
+                        if (body?.CallSuccess == true)
                         {
-                            if (user.Body != null)
+                            login = true;
+                            Program.MainForm.Invoke(new Action(() =>
                             {
-                                login = true;
                                 SINnerVisibility tempvis;
                                 if (!string.IsNullOrEmpty(Settings.Default.SINnerVisibility))
                                 {
@@ -93,13 +95,16 @@ namespace ChummerHub.Client.UI
                                     };
                                 }
 
-                                tempvis.AddVisibilityForEmail(user.Body.MyApplicationUser?.Email);
+                            
+                                tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
                                 Close();
-                            }
-                            else
-                            {
-                                login = false;
-                            }
+                            }));
+                            
+
+                        }
+                        else
+                        {
+                            login = false;
                         }
                     }
                 }

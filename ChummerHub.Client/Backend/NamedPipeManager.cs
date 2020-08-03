@@ -35,6 +35,8 @@ namespace ChummerHub.Client.Backend
             {
                 if (!(pipeName is string pipeNameString))
                     throw new ArgumentNullException(nameof(pipeName));
+                if (Thread.CurrentThread.Name == null)
+                    Thread.CurrentThread.Name = "PipeThread to receive Chummerfiles to open";
                 PipeSecurity ps = new PipeSecurity();
                 System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
                 PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
