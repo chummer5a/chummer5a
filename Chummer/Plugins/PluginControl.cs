@@ -215,6 +215,7 @@ namespace Chummer.Plugins
                 Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
 
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+                path = Path.GetFullPath(path);
                 if (!Directory.Exists(path))
                 {
                     string msg = "Directory " + path + " not found. No Plugins will be available.";
@@ -223,7 +224,7 @@ namespace Chummer.Plugins
                 catalog = new AggregateCatalog();
 
                 var plugindirectories = Directory.GetDirectories(path);
-                if (plugindirectories.Length > 0)
+                if (plugindirectories.Length == 0)
                 {
                     throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
                 }
