@@ -47,20 +47,20 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl = new System.Windows.Forms.ComboBox();
             this.tbHelptext = new System.Windows.Forms.TextBox();
             this.cbUploadOnSave = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.tbTempDownloadPath = new System.Windows.Forms.TextBox();
             this.bMultiUpload = new System.Windows.Forms.Button();
             this.bLogin = new System.Windows.Forms.Button();
             this.tlpAccount = new System.Windows.Forms.TableLayoutPanel();
             this.cbRoles = new System.Windows.Forms.ComboBox();
             this.lUsername = new System.Windows.Forms.Label();
+            this.tlpTempFolder = new System.Windows.Forms.TableLayoutPanel();
+            this.tbTempDownloadPath = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.gpPublicMode = new System.Windows.Forms.GroupBox();
             this.tlpPublicMode = new System.Windows.Forms.TableLayoutPanel();
             this.cbIgnoreWarnings = new System.Windows.Forms.CheckBox();
             this.cbOpenChummerFromSharedLinks = new System.Windows.Forms.CheckBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
-            this.tlpTempFolder = new System.Windows.Forms.TableLayoutPanel();
             this.tlpAllOptions.SuspendLayout();
             this.gpRadioOnlyPublic.SuspendLayout();
             this.rbListUserMode.SuspendLayout();
@@ -69,9 +69,9 @@ namespace ChummerHub.Client.UI
             this.gbVisibility.SuspendLayout();
             this.tlpVisibility.SuspendLayout();
             this.tlpAccount.SuspendLayout();
+            this.tlpTempFolder.SuspendLayout();
             this.gpPublicMode.SuspendLayout();
             this.tlpPublicMode.SuspendLayout();
-            this.tlpTempFolder.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpAllOptions
@@ -303,26 +303,6 @@ namespace ChummerHub.Client.UI
             this.cbUploadOnSave.Text = "Upload on Save Automatically (\"onlinemode\")";
             this.cbUploadOnSave.UseVisualStyleBackColor = true;
             // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 8);
-            this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(87, 13);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Download Folder";
-            // 
-            // tbTempDownloadPath
-            // 
-            this.tbTempDownloadPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTempDownloadPath.Location = new System.Drawing.Point(96, 4);
-            this.tbTempDownloadPath.Name = "tbTempDownloadPath";
-            this.tbTempDownloadPath.ReadOnly = true;
-            this.tbTempDownloadPath.Size = new System.Drawing.Size(308, 20);
-            this.tbTempDownloadPath.TabIndex = 14;
-            // 
             // bMultiUpload
             // 
             this.bMultiUpload.AutoSize = true;
@@ -389,6 +369,45 @@ namespace ChummerHub.Client.UI
             this.lUsername.Text = "User";
             this.lUsername.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // tlpTempFolder
+            // 
+            this.tlpTempFolder.AutoSize = true;
+            this.tlpTempFolder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTempFolder.ColumnCount = 2;
+            this.tlpOptions.SetColumnSpan(this.tlpTempFolder, 2);
+            this.tlpTempFolder.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTempFolder.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTempFolder.Controls.Add(this.tbTempDownloadPath, 1, 0);
+            this.tlpTempFolder.Controls.Add(this.label3, 0, 0);
+            this.tlpTempFolder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTempFolder.Location = new System.Drawing.Point(0, 133);
+            this.tlpTempFolder.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTempFolder.Name = "tlpTempFolder";
+            this.tlpTempFolder.RowCount = 1;
+            this.tlpTempFolder.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTempFolder.Size = new System.Drawing.Size(407, 29);
+            this.tlpTempFolder.TabIndex = 19;
+            // 
+            // tbTempDownloadPath
+            // 
+            this.tbTempDownloadPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbTempDownloadPath.Location = new System.Drawing.Point(96, 4);
+            this.tbTempDownloadPath.Name = "tbTempDownloadPath";
+            this.tbTempDownloadPath.ReadOnly = true;
+            this.tbTempDownloadPath.Size = new System.Drawing.Size(308, 20);
+            this.tbTempDownloadPath.TabIndex = 14;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 8);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(87, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Download Folder";
+            // 
             // gpPublicMode
             // 
             this.gpPublicMode.AutoSize = true;
@@ -444,25 +463,6 @@ namespace ChummerHub.Client.UI
             this.cbOpenChummerFromSharedLinks.Text = "Open Chummer from Shared Links";
             this.cbOpenChummerFromSharedLinks.UseVisualStyleBackColor = true;
             // 
-            // tlpTempFolder
-            // 
-            this.tlpTempFolder.AutoSize = true;
-            this.tlpTempFolder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpTempFolder.ColumnCount = 2;
-            this.tlpOptions.SetColumnSpan(this.tlpTempFolder, 2);
-            this.tlpTempFolder.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpTempFolder.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTempFolder.Controls.Add(this.tbTempDownloadPath, 1, 0);
-            this.tlpTempFolder.Controls.Add(this.label3, 0, 0);
-            this.tlpTempFolder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTempFolder.Location = new System.Drawing.Point(0, 133);
-            this.tlpTempFolder.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpTempFolder.Name = "tlpTempFolder";
-            this.tlpTempFolder.RowCount = 1;
-            this.tlpTempFolder.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTempFolder.Size = new System.Drawing.Size(407, 29);
-            this.tlpTempFolder.TabIndex = 19;
-            // 
             // ucSINnersOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -487,12 +487,12 @@ namespace ChummerHub.Client.UI
             this.tlpVisibility.PerformLayout();
             this.tlpAccount.ResumeLayout(false);
             this.tlpAccount.PerformLayout();
+            this.tlpTempFolder.ResumeLayout(false);
+            this.tlpTempFolder.PerformLayout();
             this.gpPublicMode.ResumeLayout(false);
             this.gpPublicMode.PerformLayout();
             this.tlpPublicMode.ResumeLayout(false);
             this.tlpPublicMode.PerformLayout();
-            this.tlpTempFolder.ResumeLayout(false);
-            this.tlpTempFolder.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
