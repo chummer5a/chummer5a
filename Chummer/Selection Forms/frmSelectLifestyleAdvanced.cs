@@ -548,7 +548,7 @@ namespace Chummer
 
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                objQuality.SetSourceDetail(lblSource);
+                objQuality.SetSourceDetail(lblQualitySource);
                 cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
             }
             else
