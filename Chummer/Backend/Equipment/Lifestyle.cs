@@ -525,7 +525,7 @@ namespace Chummer.Backend.Equipment
             xmlLifestyleNode.TryGetInt32FieldQuickly("security", ref intMinSec);
 
             // Calculate the cost of Positive Qualities.
-            foreach (LifestyleQuality objQuality in LifestyleQualities)
+            foreach (LifestyleQuality objQuality in LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn))
             {
                 intMinArea -= objQuality.Area;
                 intMinComfort -= objQuality.Comfort;
@@ -817,7 +817,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int i = LP - Comforts - Area - Security + Roommates + BonusLP;
-                i = LifestyleQualities.Aggregate(i, (current, lq) => current - lq.LP);
+                i = LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn).Aggregate(i, (current, lq) => current - lq.LP);
 
                 return i;
             }
@@ -932,9 +932,12 @@ namespace Chummer.Backend.Equipment
             set => _intSecurityMaximum = value;
         }
 
-        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Sum(lq => lq.ComfortMaximum);
-        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Sum(lq => lq.SecurityMaximum);
-        public int TotalAreaMaximum     => AreaMaximum     + LifestyleQualities.Sum(lq => lq.AreaMaximum);
+        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.ComfortMaximum);
+        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.SecurityMaximum);
+        public int TotalAreaMaximum     => AreaMaximum     + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.AreaMaximum);
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
@@ -1099,7 +1102,7 @@ namespace Chummer.Backend.Equipment
                     d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false, BaseLifestyle);
                 }
 
-                d += LifestyleQualities.Sum(lq => lq.Multiplier);
+                d += LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Multiplier);
                 d += 100M;
                 return Math.Max(d / 100, 0);
             }
@@ -1108,21 +1111,27 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public int TotalArea => BaseArea + Area + LifestyleQualities.Sum(lq => lq.Area);
+        public int TotalArea => BaseArea + Area + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Area);
 
         /// <summary>
         /// Total Comfort of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public int TotalComforts => BaseComforts + Comforts + LifestyleQualities.Sum(lq => lq.Comfort);
+        public int TotalComforts => BaseComforts + Comforts + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Comfort);
 
         /// <summary>
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Sum(lq => lq.Security);
+        public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Security);
 
-        public decimal AreaDelta     => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Sum(lq => lq.Area)), 0);
-        public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Sum(lq => lq.Comfort)), 0);
-        public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Sum(lq => lq.Security)), 0);
+        public decimal AreaDelta     => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Area)), 0);
+        public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Comfort)), 0);
+        public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Security)), 0);
 
         public string FormattedArea => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseArea.ToString(GlobalOptions.CultureInfo),
@@ -1142,7 +1151,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
-        public decimal BaseCostMultiplier => LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100.0m;
+        public decimal BaseCostMultiplier => LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.BaseMultiplier) / 100.0m;
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.
@@ -1164,7 +1174,7 @@ namespace Chummer.Backend.Equipment
 
                 decimal decExtraAssetCost = 0;
                 decimal decContractCost = 0;
-                foreach (LifestyleQuality objQuality in LifestyleQualities)
+                foreach (LifestyleQuality objQuality in LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn))
                 {
                     //Add the flat cost from Qualities.
                     if (objQuality.Type == QualityType.Contracts)

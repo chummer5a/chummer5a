@@ -959,7 +959,7 @@
       <name>Not a Home</name>
       <category>Negative</category>
       <lp>-1</lp>
-      <comforts>-1</comforts>
+      <comfortsmaximum>-1</comfortsmaximum>
       <source>RF</source>
       <page>226</page>
     </quality>
