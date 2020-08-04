@@ -49,17 +49,17 @@ namespace Chummer
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(438, 63);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 63);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // lblLoadingInfo
             // 
-            this.lblLoadingInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblLoadingInfo.AutoSize = true;
+            this.lblLoadingInfo.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblLoadingInfo.Location = new System.Drawing.Point(3, 12);
             this.lblLoadingInfo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLoadingInfo.Name = "lblLoadingInfo";
-            this.lblLoadingInfo.Size = new System.Drawing.Size(83, 13);
+            this.lblLoadingInfo.Size = new System.Drawing.Size(440, 13);
             this.lblLoadingInfo.TabIndex = 0;
             this.lblLoadingInfo.Tag = "String_Initializing";
             this.lblLoadingInfo.Text = "Loading [Item]...";
@@ -69,7 +69,7 @@ namespace Chummer
             this.pgbLoadingProgress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 34);
             this.pgbLoadingProgress.Name = "pgbLoadingProgress";
-            this.pgbLoadingProgress.Size = new System.Drawing.Size(432, 26);
+            this.pgbLoadingProgress.Size = new System.Drawing.Size(440, 26);
             this.pgbLoadingProgress.Step = 1;
             this.pgbLoadingProgress.TabIndex = 1;
             // 
@@ -78,14 +78,14 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(456, 81);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(464, 81);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(480, 10000);
             this.MinimizeBox = false;
             this.Name = "frmLoading";
             this.Padding = new System.Windows.Forms.Padding(9);

@@ -58,8 +58,8 @@ namespace Chummer
             // 
             // nudPercent
             // 
-            this.nudPercent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudPercent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudPercent.AutoSize = true;
             this.nudPercent.DecimalPlaces = 2;
             this.nudPercent.Location = new System.Drawing.Point(71, 3);
             this.nudPercent.Maximum = new decimal(new int[] {
@@ -73,7 +73,7 @@ namespace Chummer
             0,
             131072});
             this.nudPercent.Name = "nudPercent";
-            this.nudPercent.Size = new System.Drawing.Size(57, 20);
+            this.nudPercent.Size = new System.Drawing.Size(62, 20);
             this.nudPercent.TabIndex = 1;
             this.nudPercent.Value = new decimal(new int[] {
             50,
@@ -114,7 +114,7 @@ namespace Chummer
             // 
             this.lblPercentLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPercentLabel.AutoSize = true;
-            this.lblPercentLabel.Location = new System.Drawing.Point(134, 6);
+            this.lblPercentLabel.Location = new System.Drawing.Point(139, 6);
             this.lblPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPercentLabel.Name = "lblPercentLabel";
             this.lblPercentLabel.Size = new System.Drawing.Size(15, 13);
@@ -163,7 +163,7 @@ namespace Chummer
             this.flpSellAmount.Location = new System.Drawing.Point(0, 4);
             this.flpSellAmount.Margin = new System.Windows.Forms.Padding(0);
             this.flpSellAmount.Name = "flpSellAmount";
-            this.flpSellAmount.Size = new System.Drawing.Size(152, 26);
+            this.flpSellAmount.Size = new System.Drawing.Size(157, 26);
             this.flpSellAmount.TabIndex = 4;
             // 
             // frmSellItem

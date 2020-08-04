@@ -7903,7 +7903,7 @@ namespace Chummer
                     _blnMAGEnabled = value;
                     if(value)
                     {
-                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
                         {
                             ResetCachedEssence();
@@ -7921,15 +7921,104 @@ namespace Chummer
                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
                                     || x.ImproveSource == Improvement.ImprovementSource.Heritage)
                                 && x.Enabled);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstMAGEnablingQualityIds = Improvements.Where(x =>
+                                    x.ImproveType == Improvement.ImprovementType.Attribute
+                                    && x.ImprovedName == "MAG"
+                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstMAGEnablingQualityIds.Count; ++i)
+                                {
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == lstMAGEnablingQualityIds[i]);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            if (Improvements.Any(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                && x.Enabled))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstMAGEnablingQualityIds.AddRange(Improvements.Where(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                && x.Enabled).Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
                             foreach(Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                   && objImprovement.Enabled)
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement)
+                                {
+                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    {
+                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                        while (objQuality != null)
+                                        {
+                                            if (objQuality.OriginSource == QualitySource.Metatype
+                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                                || objQuality.OriginSource == QualitySource.BuiltIn
+                                                || objQuality.OriginSource == QualitySource.LifeModule
+                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            {
+                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                    && x.ImprovedName == objQuality.InternalId
+                                                    && x.Enabled);
+                                                if (objParentImprovement == null)
+                                                    break;
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                {
+                                                    blnCountImprovement = true;
+                                                    break;
+                                                }
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                {
+                                                    // Qualities that add other qualities get added to the list to be checked, too
+                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
+                                                }
+                                                else
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
@@ -8108,7 +8197,7 @@ namespace Chummer
                     _blnRESEnabled = value;
                     if(value)
                     {
-                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
                         {
                             ResetCachedEssence();
@@ -8126,15 +8215,104 @@ namespace Chummer
                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
                                     || x.ImproveSource == Improvement.ImprovementSource.Heritage)
                                 && x.Enabled);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstRESEnablingQualityIds = Improvements.Where(x =>
+                                    x.ImproveType == Improvement.ImprovementType.Attribute
+                                    && x.ImprovedName == "RES"
+                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstRESEnablingQualityIds.Count; ++i)
+                                {
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == lstRESEnablingQualityIds[i]);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            if (Improvements.Any(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                && x.Enabled))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstRESEnablingQualityIds.AddRange(Improvements.Where(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                && x.Enabled).Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
-                            foreach(Improvement objImprovement in Improvements)
+                            foreach (Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                   && objImprovement.Enabled)
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement)
+                                {
+                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    {
+                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                        while (objQuality != null)
+                                        {
+                                            if (objQuality.OriginSource == QualitySource.Metatype
+                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                                || objQuality.OriginSource == QualitySource.BuiltIn
+                                                || objQuality.OriginSource == QualitySource.LifeModule
+                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            {
+                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                    && x.ImprovedName == objQuality.InternalId
+                                                    && x.Enabled);
+                                                if (objParentImprovement == null)
+                                                    break;
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                {
+                                                    blnCountImprovement = true;
+                                                    break;
+                                                }
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                {
+                                                    // Qualities that add other qualities get added to the list to be checked, too
+                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
+                                                }
+                                                else
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
@@ -8234,7 +8412,7 @@ namespace Chummer
                     _blnDEPEnabled = value;
                     if(value)
                     {
-                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
                         {
                             ResetCachedEssence();
@@ -8252,15 +8430,104 @@ namespace Chummer
                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
                                     || x.ImproveSource == Improvement.ImprovementSource.Heritage)
                                 && x.Enabled);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstDEPEnablingQualityIds = Improvements.Where(x =>
+                                    x.ImproveType == Improvement.ImprovementType.Attribute
+                                    && x.ImprovedName == "DEP"
+                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstDEPEnablingQualityIds.Count; ++i)
+                                {
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == lstDEPEnablingQualityIds[i]);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            if (Improvements.Any(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                && x.Enabled))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstDEPEnablingQualityIds.AddRange(Improvements.Where(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                && x.Enabled).Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
-                            foreach(Improvement objImprovement in Improvements)
+                            foreach (Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                   && objImprovement.Enabled)
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement)
+                                {
+                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    {
+                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                        while (objQuality != null)
+                                        {
+                                            if (objQuality.OriginSource == QualitySource.Metatype
+                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                                || objQuality.OriginSource == QualitySource.BuiltIn
+                                                || objQuality.OriginSource == QualitySource.LifeModule
+                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            {
+                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                    && x.ImprovedName == objQuality.InternalId
+                                                    && x.Enabled);
+                                                if (objParentImprovement == null)
+                                                    break;
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                {
+                                                    blnCountImprovement = true;
+                                                    break;
+                                                }
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                {
+                                                    // Qualities that add other qualities get added to the list to be checked, too
+                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
+                                                }
+                                                else
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
@@ -8658,15 +8925,19 @@ namespace Chummer
                 int intREAAttributeModifiers = REA.AttributeModifiers;
                 string strSpace = LanguageManager.GetString("String_Space");
 
-                string strInit = REA.DisplayAbbrev + strSpace + '(' + REA.Value.ToString(GlobalOptions.CultureInfo) + ')'
-                                 + strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')';
+                StringBuilder sbdInit = new StringBuilder(REA.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(REA.Value.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('+').Append(strSpace).Append(INT.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(INT.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                 if(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) != 0 || intINTAttributeModifiers != 0 || intREAAttributeModifiers != 0 || WoundModifier != 0)
                 {
-                    strInit += strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Modifiers") + strSpace +
-                               '(' + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
+                    sbdInit.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers"))
+                        .Append(strSpace).Append('(')
+                        .Append((ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative) + intINTAttributeModifiers + intREAAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo))
+                        .Append(')');
                 }
 
-                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"), strInit, InitiativeDice.ToString(GlobalOptions.CultureInfo));
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"), sbdInit.ToString(), InitiativeDice.ToString(GlobalOptions.CultureInfo));
             }
         }
 
@@ -8728,11 +8999,14 @@ namespace Chummer
                     return string.Empty;
                 int intINTAttributeModifiers = INT.AttributeModifiers;
                 string strSpace = LanguageManager.GetString("String_Space");
-                string strInit = INT.DisplayAbbrev + strSpace + '(' + INT.Value.ToString(GlobalOptions.CultureInfo) + ')' +
-                                 strSpace + '×' + strSpace + 2.ToString(GlobalOptions.CultureInfo);
+                StringBuilder sbdInit = new StringBuilder(INT.DisplayAbbrev)
+                    .Append(strSpace).Append('(').Append(INT.Value.ToString(GlobalOptions.CultureInfo)).Append(')')
+                    .Append(strSpace).Append('×').Append(strSpace).Append(2.ToString(GlobalOptions.CultureInfo));
                 if(intINTAttributeModifiers != 0 || WoundModifier != 0)
-                    strInit += LanguageManager.GetString("Tip_Modifiers") + strSpace + '(' + (intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo) + ')';
-                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"), strInit, AstralInitiativeDice.ToString(GlobalOptions.CultureInfo));
+                    sbdInit.Append(LanguageManager.GetString("Tip_Modifiers"))
+                        .Append(strSpace).Append('(').Append((intINTAttributeModifiers + WoundModifier).ToString(GlobalOptions.CultureInfo)).Append(')');
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Initiative"),
+                    sbdInit.ToString(), AstralInitiativeDice.ToString(GlobalOptions.CultureInfo));
             }
         }
 
@@ -11599,10 +11873,11 @@ namespace Chummer
 
                 MentorSpirit objMentorSpirit = MentorSpirits[0];
                 string strSpace = LanguageManager.GetString("String_Space");
-                return string.Concat(LanguageManager.GetString("Label_SelectMentorSpirit_Advantage"),
-                       strSpace, objMentorSpirit.DisplayAdvantage(GlobalOptions.Language),
-                       Environment.NewLine, Environment.NewLine, LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"),
-                       strSpace, objMentorSpirit.Disadvantage);
+                StringBuilder sbdReturn = new StringBuilder(LanguageManager.GetString("Label_SelectMentorSpirit_Advantage"))
+                    .Append(strSpace).AppendLine(objMentorSpirit.DisplayAdvantage(GlobalOptions.Language))
+                    .AppendLine().Append(LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"))
+                    .Append(strSpace).AppendLine(objMentorSpirit.Disadvantage);
+                return sbdReturn.ToString().WordWrap();
             }
         }
 

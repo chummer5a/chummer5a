@@ -70,6 +70,7 @@ namespace Chummer
             // lblCritterPowerSource
             // 
             this.lblCritterPowerSource.AutoSize = true;
+            this.lblCritterPowerSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblCritterPowerSource.Location = new System.Drawing.Point(362, 183);
             this.lblCritterPowerSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCritterPowerSource.Name = "lblCritterPowerSource";
@@ -214,8 +215,8 @@ namespace Chummer
             // 
             // nudCritterPowerRating
             // 
-            this.nudCritterPowerRating.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudCritterPowerRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudCritterPowerRating.AutoSize = true;
             this.nudCritterPowerRating.Enabled = false;
             this.nudCritterPowerRating.Location = new System.Drawing.Point(3, 3);
             this.nudCritterPowerRating.Minimum = new decimal(new int[] {
@@ -224,7 +225,7 @@ namespace Chummer
             0,
             0});
             this.nudCritterPowerRating.Name = "nudCritterPowerRating";
-            this.nudCritterPowerRating.Size = new System.Drawing.Size(75, 20);
+            this.nudCritterPowerRating.Size = new System.Drawing.Size(41, 20);
             this.nudCritterPowerRating.TabIndex = 14;
             this.nudCritterPowerRating.Value = new decimal(new int[] {
             1,
@@ -367,9 +368,9 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 3;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
             this.tlpMain.Controls.Add(this.flowLayoutPanel1, 2, 6);
             this.tlpMain.Controls.Add(this.lblSearchLabel, 1, 0);
@@ -437,7 +438,7 @@ namespace Chummer
             // lblRatingNALabel
             // 
             this.lblRatingNALabel.AutoSize = true;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(84, 6);
+            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 6);
             this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 7);
             this.lblRatingNALabel.Name = "lblRatingNALabel";
             this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);

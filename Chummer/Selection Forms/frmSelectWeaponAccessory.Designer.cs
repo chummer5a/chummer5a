@@ -206,9 +206,9 @@ namespace Chummer
             // 
             // lblSource
             // 
-            this.lblSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(377, 236);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -244,8 +244,8 @@ namespace Chummer
             // 
             // nudMarkup
             // 
-            this.nudMarkup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMarkup.AutoSize = true;
             this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(3, 3);
             this.nudMarkup.Maximum = new decimal(new int[] {
@@ -259,7 +259,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMarkup.Name = "nudMarkup";
-            this.nudMarkup.Size = new System.Drawing.Size(100, 20);
+            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 13;
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
@@ -278,7 +278,7 @@ namespace Chummer
             // lblMarkupPercentLabel
             // 
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(109, 6);
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(65, 6);
             this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
@@ -309,6 +309,7 @@ namespace Chummer
             // 
             // nudRating
             // 
+            this.nudRating.AutoSize = true;
             this.nudRating.Enabled = false;
             this.nudRating.Location = new System.Drawing.Point(3, 3);
             this.nudRating.Minimum = new decimal(new int[] {
@@ -317,7 +318,7 @@ namespace Chummer
             0,
             0});
             this.nudRating.Name = "nudRating";
-            this.nudRating.Size = new System.Drawing.Size(100, 20);
+            this.nudRating.Size = new System.Drawing.Size(41, 20);
             this.nudRating.TabIndex = 14;
             this.nudRating.Value = new decimal(new int[] {
             1,
@@ -340,13 +341,13 @@ namespace Chummer
             // 
             // cboMount
             // 
+            this.cboMount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.SetColumnSpan(this.cboMount, 3);
-            this.cboMount.Dock = System.Windows.Forms.DockStyle.Left;
             this.cboMount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMount.FormattingEnabled = true;
             this.cboMount.Location = new System.Drawing.Point(377, 54);
             this.cboMount.Name = "cboMount";
-            this.cboMount.Size = new System.Drawing.Size(100, 21);
+            this.cboMount.Size = new System.Drawing.Size(226, 21);
             this.cboMount.TabIndex = 20;
             this.cboMount.TooltipText = "";
             this.cboMount.SelectedIndexChanged += new System.EventHandler(this.cboMount_SelectedIndexChanged);
@@ -367,13 +368,13 @@ namespace Chummer
             // 
             // cboExtraMount
             // 
+            this.cboExtraMount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.SetColumnSpan(this.cboExtraMount, 3);
-            this.cboExtraMount.Dock = System.Windows.Forms.DockStyle.Left;
             this.cboExtraMount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboExtraMount.FormattingEnabled = true;
             this.cboExtraMount.Location = new System.Drawing.Point(377, 81);
             this.cboExtraMount.Name = "cboExtraMount";
-            this.cboExtraMount.Size = new System.Drawing.Size(100, 21);
+            this.cboExtraMount.Size = new System.Drawing.Size(226, 21);
             this.cboExtraMount.TabIndex = 41;
             this.cboExtraMount.TooltipText = "";
             this.cboExtraMount.SelectedIndexChanged += new System.EventHandler(this.cboExtraMount_SelectedIndexChanged);
@@ -409,7 +410,7 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 5;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -514,7 +515,7 @@ namespace Chummer
             // lblRatingNALabel
             // 
             this.lblRatingNALabel.AutoSize = true;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(109, 6);
+            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 6);
             this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 7);
             this.lblRatingNALabel.Name = "lblRatingNALabel";
             this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);

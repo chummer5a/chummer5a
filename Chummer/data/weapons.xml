@@ -7179,7 +7179,7 @@
       <avail>8R</avail>
       <cost>350</cost>
       <source>RG</source>
-      <page>54</page>
+      <page>53</page>
       <ammoname>Bola: Standard</ammoname>
       <range>Heavy Pistols</range>
       <required>
@@ -7491,7 +7491,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>RF</source>
-      <page>115</page>
+      <page>116</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <useskill>Unarmed Combat</useskill>
@@ -7512,7 +7512,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>RF</source>
-      <page>118</page>
+      <page>117</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <useskill>Unarmed Combat</useskill>
@@ -7711,7 +7711,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>91</page>
+      <page>90</page>
       <allowaccessory>False</allowaccessory>
       <cyberware>True</cyberware>
       <hide />
@@ -7823,7 +7823,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>122</page>
+      <page>120</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <spec>Natural Weapons</spec>
@@ -7999,7 +7999,7 @@
       <avail>0</avail>
       <cost>0</cost>
       <source>CF</source>
-      <page>90</page>
+      <page>88</page>
       <allowaccessory>False</allowaccessory>
       <hide />
       <useskill>Unarmed Combat</useskill>
@@ -9280,7 +9280,7 @@
       <avail>14R</avail>
       <cost>0</cost>
       <source>CA</source>
-      <page>137</page>
+      <page>136</page>
       <hide />
       <spec>Shields</spec>
     </weapon>
@@ -14951,7 +14951,7 @@
       <avail>({Rating}*2)F</avail>
       <cost>{Rating}*50</cost>
       <source>KC</source>
-      <page>53</page>
+      <page>55</page>
       <maxrating>100000</maxrating>
       <range>Standard Grenade</range>
       <spec>Non-Aerodynamic</spec>
@@ -14973,7 +14973,7 @@
       <avail>({Rating}*2)R</avail>
       <cost>{Rating}*50</cost>
       <source>KC</source>
-      <page>53</page>
+      <page>56</page>
       <maxrating>100000</maxrating>
       <range>Standard Grenade</range>
       <spec>Non-Aerodynamic</spec>

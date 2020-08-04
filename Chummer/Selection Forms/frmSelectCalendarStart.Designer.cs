@@ -63,6 +63,7 @@ namespace Chummer
             // 
             this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudYear.AutoSize = true;
             this.nudYear.Location = new System.Drawing.Point(41, 31);
             this.nudYear.Maximum = new decimal(new int[] {
             9000,
@@ -99,6 +100,7 @@ namespace Chummer
             // 
             this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMonth.AutoSize = true;
             this.nudMonth.Location = new System.Drawing.Point(152, 31);
             this.nudMonth.Maximum = new decimal(new int[] {
             12,
@@ -136,6 +138,7 @@ namespace Chummer
             // 
             this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudWeek.AutoSize = true;
             this.nudWeek.Location = new System.Drawing.Point(262, 31);
             this.nudWeek.Maximum = new decimal(new int[] {
             5,

@@ -174,12 +174,12 @@ namespace Chummer
 
         private void cmdPrint_Click(object sender, EventArgs e)
         {
-            webBrowser1.ShowPrintDialog();
+            webViewer.ShowPrintDialog();
         }
 
         private void tsPrintPreview_Click(object sender, EventArgs e)
         {
-            webBrowser1.ShowPrintPreviewDialog();
+            webViewer.ShowPrintPreviewDialog();
         }
 
         private void tsSaveAsHTML_Click(object sender, EventArgs e)
@@ -198,7 +198,7 @@ namespace Chummer
                 strSaveFile += ".htm";
 
             using (TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
-                objWriter.Write(webBrowser1.DocumentText);
+                objWriter.Write(webViewer.DocumentText);
         }
 
         private void tsSaveAsXml_Click(object sender, EventArgs e)
@@ -268,10 +268,10 @@ namespace Chummer
             tsPrintPreview.Enabled = false;
             tsSaveAsHtml.Enabled = false;
             cmdSaveAsPdf.Enabled = false;
-            webBrowser1.DocumentText =
+            webViewer.DocumentText =
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" +
                 "<head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head>" +
-                "<body style=\"width:100%;height:" + webBrowser1.Height.ToString(GlobalOptions.InvariantCultureInfo) + ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
+                "<body style=\"width:100%;height:" + webViewer.Height.ToString(GlobalOptions.InvariantCultureInfo) + ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
                 strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />").Replace("\r", string.Empty) +
                 "</body></html>";
         }
@@ -450,7 +450,7 @@ namespace Chummer
                         // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                         {
-                            webBrowser1.DocumentText = objReader.ReadToEnd();
+                            webViewer.DocumentText = objReader.ReadToEnd();
                         }
                     }
                     else
@@ -464,7 +464,7 @@ namespace Chummer
                             File.WriteAllText(_strFilePathName, strOutput);
                         }
 
-                        webBrowser1.Url = new Uri("file:///" + _strFilePathName);
+                        webViewer.Url = new Uri("file:///" + _strFilePathName);
                     }
                 }
             }
@@ -534,7 +534,7 @@ namespace Chummer
 
             PdfDocument objPdfDocument = new PdfDocument
             {
-                Html = webBrowser1.DocumentText
+                Html = webViewer.DocumentText
             };
             objPdfDocument.ExtraParams.Add("encoding", "UTF-8");
             objPdfDocument.ExtraParams.Add("dpi", "300");

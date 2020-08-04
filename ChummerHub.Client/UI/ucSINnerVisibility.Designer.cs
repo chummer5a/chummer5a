@@ -35,8 +35,10 @@ namespace ChummerHub.Client.UI
             this.bVisibilityAddEmail = new System.Windows.Forms.Button();
             this.bVisibilityRemove = new System.Windows.Forms.Button();
             this.cbVisibleInGroups = new System.Windows.Forms.CheckBox();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.gpVisibilityToUserList.SuspendLayout();
             this.tlpVisibilityToUsers.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // gpVisibilityToUserList
@@ -57,15 +59,13 @@ namespace ChummerHub.Client.UI
             // 
             this.tlpVisibilityToUsers.AutoSize = true;
             this.tlpVisibilityToUsers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpVisibilityToUsers.ColumnCount = 3;
+            this.tlpVisibilityToUsers.ColumnCount = 2;
             this.tlpVisibilityToUsers.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpVisibilityToUsers.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpVisibilityToUsers.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpVisibilityToUsers.Controls.Add(this.clbVisibilityToUsers, 0, 0);
             this.tlpVisibilityToUsers.Controls.Add(this.tbVisibilityAddEmail, 0, 1);
-            this.tlpVisibilityToUsers.Controls.Add(this.bVisibilityAddEmail, 1, 1);
-            this.tlpVisibilityToUsers.Controls.Add(this.bVisibilityRemove, 2, 1);
             this.tlpVisibilityToUsers.Controls.Add(this.cbVisibleInGroups, 0, 2);
+            this.tlpVisibilityToUsers.Controls.Add(this.tlpButtons, 1, 1);
             this.tlpVisibilityToUsers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVisibilityToUsers.Location = new System.Drawing.Point(3, 16);
             this.tlpVisibilityToUsers.Name = "tlpVisibilityToUsers";
@@ -78,7 +78,7 @@ namespace ChummerHub.Client.UI
             // 
             // clbVisibilityToUsers
             // 
-            this.tlpVisibilityToUsers.SetColumnSpan(this.clbVisibilityToUsers, 3);
+            this.tlpVisibilityToUsers.SetColumnSpan(this.clbVisibilityToUsers, 2);
             this.clbVisibilityToUsers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.clbVisibilityToUsers.FormattingEnabled = true;
             this.clbVisibilityToUsers.Location = new System.Drawing.Point(3, 3);
@@ -92,15 +92,17 @@ namespace ChummerHub.Client.UI
             this.tbVisibilityAddEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVisibilityAddEmail.Location = new System.Drawing.Point(3, 164);
             this.tbVisibilityAddEmail.Name = "tbVisibilityAddEmail";
-            this.tbVisibilityAddEmail.Size = new System.Drawing.Size(171, 20);
+            this.tbVisibilityAddEmail.Size = new System.Drawing.Size(182, 20);
             this.tbVisibilityAddEmail.TabIndex = 1;
             // 
             // bVisibilityAddEmail
             // 
-            this.bVisibilityAddEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityAddEmail.Location = new System.Drawing.Point(180, 163);
+            this.bVisibilityAddEmail.AutoSize = true;
+            this.bVisibilityAddEmail.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bVisibilityAddEmail.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bVisibilityAddEmail.Location = new System.Drawing.Point(3, 3);
             this.bVisibilityAddEmail.Name = "bVisibilityAddEmail";
-            this.bVisibilityAddEmail.Size = new System.Drawing.Size(62, 23);
+            this.bVisibilityAddEmail.Size = new System.Drawing.Size(57, 23);
             this.bVisibilityAddEmail.TabIndex = 2;
             this.bVisibilityAddEmail.Text = "Add";
             this.bVisibilityAddEmail.UseVisualStyleBackColor = true;
@@ -108,10 +110,12 @@ namespace ChummerHub.Client.UI
             // 
             // bVisibilityRemove
             // 
-            this.bVisibilityRemove.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bVisibilityRemove.Location = new System.Drawing.Point(248, 163);
+            this.bVisibilityRemove.AutoSize = true;
+            this.bVisibilityRemove.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bVisibilityRemove.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bVisibilityRemove.Location = new System.Drawing.Point(66, 3);
             this.bVisibilityRemove.Name = "bVisibilityRemove";
-            this.bVisibilityRemove.Size = new System.Drawing.Size(63, 23);
+            this.bVisibilityRemove.Size = new System.Drawing.Size(57, 23);
             this.bVisibilityRemove.TabIndex = 3;
             this.bVisibilityRemove.Text = "Remove";
             this.bVisibilityRemove.UseVisualStyleBackColor = true;
@@ -119,16 +123,33 @@ namespace ChummerHub.Client.UI
             // 
             // cbVisibleInGroups
             // 
-            this.cbVisibleInGroups.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cbVisibleInGroups.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbVisibleInGroups.AutoSize = true;
-            this.tlpVisibilityToUsers.SetColumnSpan(this.cbVisibleInGroups, 3);
-            this.cbVisibleInGroups.Location = new System.Drawing.Point(106, 192);
+            this.tlpVisibilityToUsers.SetColumnSpan(this.cbVisibleInGroups, 2);
+            this.cbVisibleInGroups.Location = new System.Drawing.Point(105, 192);
             this.cbVisibleInGroups.Name = "cbVisibleInGroups";
-            this.cbVisibleInGroups.Size = new System.Drawing.Size(101, 17);
+            this.cbVisibleInGroups.Size = new System.Drawing.Size(104, 17);
             this.cbVisibleInGroups.TabIndex = 4;
-            this.cbVisibleInGroups.Text = "visible in groups";
+            this.cbVisibleInGroups.Text = "Visible in Groups";
             this.cbVisibleInGroups.UseVisualStyleBackColor = true;
             this.cbVisibleInGroups.Click += new System.EventHandler(this.CbVisibleInGroups_Click);
+            // 
+            // tlpButtons
+            // 
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.bVisibilityAddEmail, 0, 0);
+            this.tlpButtons.Controls.Add(this.bVisibilityRemove, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(188, 160);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(126, 29);
+            this.tlpButtons.TabIndex = 5;
             // 
             // ucSINnerVisibility
             // 
@@ -142,6 +163,8 @@ namespace ChummerHub.Client.UI
             this.gpVisibilityToUserList.PerformLayout();
             this.tlpVisibilityToUsers.ResumeLayout(false);
             this.tlpVisibilityToUsers.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -156,5 +179,6 @@ namespace ChummerHub.Client.UI
         private System.Windows.Forms.Button bVisibilityAddEmail;
         private System.Windows.Forms.Button bVisibilityRemove;
         private System.Windows.Forms.CheckBox cbVisibleInGroups;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

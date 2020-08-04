@@ -95,6 +95,7 @@ namespace Chummer
             // lblSource
             // 
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(361, 57);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -279,7 +280,7 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 3;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.txtSearch, 2, 0);

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -75,6 +76,20 @@ namespace Chummer
         {
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
+                HashSet<string> setValidCodes = new HashSet<string>();
+                XmlNodeList lstBookNodes = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book/code");
+                if (lstBookNodes?.Count > 0)
+                {
+                    foreach (XmlNode xmlBookNode in lstBookNodes)
+                    {
+                        setValidCodes.Add(xmlBookNode.InnerText);
+                    }
+                }
+
+                string strSourceFilter = setValidCodes.Count > 0
+                    ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")) + ')'
+                    : "source";
+
                 ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
@@ -85,7 +100,7 @@ namespace Chummer
                         if (xmlBaseNode != null)
                         {
                             bool blnLoopFileNameHasItems = false;
-                            foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[source and page]"))
+                            foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " + strSourceFilter + ']'))
                             {
                                 blnLoopFileNameHasItems = true;
                                 string strName = xmlItemNode.SelectSingleNode("name")?.Value;
@@ -123,19 +138,53 @@ namespace Chummer
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
                 {
-                    Dictionary<Tuple<string, SourceString>, HashSet<string>> dicHelper = new Dictionary<Tuple<string, SourceString>, HashSet<string>>(lstItemsForLoading.Count);
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    Dictionary<string, List<ListItem>> dicHelper = new Dictionary<string, List<ListItem>>(lstItemsForLoading.Count);
                     foreach (ListItem objItem in lstItemsForLoading)
                     {
                         MasterIndexEntry objEntry = (MasterIndexEntry)objItem.Value;
-                        Tuple<string, SourceString> objKey = new Tuple<string, SourceString>(objEntry.DisplayName.ToUpperInvariant(), objEntry.DisplaySource);
-                        if (dicHelper.TryGetValue(objKey, out HashSet<string> setFileNames))
+                        string strKey = objEntry.DisplayName.ToUpperInvariant();
+                        if (dicHelper.TryGetValue(strKey, out List<ListItem> lstExistingItems))
                         {
-                            setFileNames.UnionWith(objEntry.FileNames);
+                            ListItem objExistingItem = lstExistingItems.FirstOrDefault(x =>
+                                objEntry.DisplaySource.Equals(((MasterIndexEntry) x.Value).DisplaySource));
+                            if (objExistingItem.Value != null)
+                            {
+                                ((MasterIndexEntry)objExistingItem.Value).FileNames.UnionWith(objEntry.FileNames);
+                            }
+                            else
+                            {
+                                List<ListItem> lstItemsNeedingNameChanges = lstExistingItems.Where(x => !objEntry.FileNames.IsSubsetOf(((MasterIndexEntry) x.Value).FileNames)).ToList();
+                                if (lstItemsNeedingNameChanges.Count == 0)
+                                {
+                                    _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
+                                    lstExistingItems.Add(objItem);
+                                }
+                                else
+                                {
+                                    ListItem objItemToAdd = new ListItem(objItem.Value,
+                                        objItem.Name + strSpace + '[' + string.Join(',' + strSpace, objEntry.FileNames) + ']');
+                                    _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
+                                    lstExistingItems.Add(objItemToAdd);
+
+                                    foreach (ListItem objToRename in lstItemsNeedingNameChanges)
+                                    {
+                                        _lstItems.Remove(objToRename);
+                                        lstExistingItems.Remove(objToRename);
+
+                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
+                                        objItemToAdd = new ListItem(objToRename.Value,
+                                            objExistingEntry.DisplayName + strSpace + '[' + string.Join(',' + strSpace, objExistingEntry.FileNames) + ']');
+                                        _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
+                                        lstExistingItems.Add(objItemToAdd);
+                                    }
+                                }
+                            }
                         }
                         else
                         {
                             _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
-                            dicHelper.Add(objKey, objEntry.FileNames);
+                            dicHelper.Add(strKey, new List<ListItem>(objItem.Yield()));
                         }
                     }
                     _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
@@ -196,8 +245,14 @@ namespace Chummer
                     MasterIndexEntry objItemEntry = (MasterIndexEntry)objItem.Value;
                     if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
                         continue;
-                    if (!string.IsNullOrEmpty(strSearchFilter) && objItemEntry.DisplayName.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase) == -1)
-                        continue;
+                    if (!string.IsNullOrEmpty(strSearchFilter))
+                    {
+                        string strDisplayNameNoFile = objItemEntry.DisplayName;
+                        if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
+                            strDisplayNameNoFile = strDisplayNameNoFile.Substring(0, strDisplayNameNoFile.LastIndexOf('[')).Trim();
+                        if (strDisplayNameNoFile.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase) == -1)
+                            continue;
+                    }
                     lstFilteredItems.Add(objItem);
                 }
             }
@@ -210,11 +265,7 @@ namespace Chummer
             if (objOldSelectedValue != null)
             {
                 MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry)objOldSelectedValue;
-                ListItem objSelectedItem = _lstItems.FirstOrDefault(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
-                if (objSelectedItem.Value != null)
-                    lstItems.SelectedItem = objSelectedItem;
-                else
-                    lstItems.SelectedIndex = -1;
+                lstItems.SelectedIndex = lstFilteredItems.FindIndex(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
             }
             else
                 lstItems.SelectedIndex = -1;

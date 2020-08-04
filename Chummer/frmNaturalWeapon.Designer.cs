@@ -102,7 +102,7 @@ namespace Chummer
             // 
             this.lblDV.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDV.AutoSize = true;
-            this.lblDV.Location = new System.Drawing.Point(40, 60);
+            this.lblDV.Location = new System.Drawing.Point(40, 59);
             this.lblDV.Name = "lblDV";
             this.lblDV.Size = new System.Drawing.Size(25, 13);
             this.lblDV.TabIndex = 4;
@@ -124,6 +124,7 @@ namespace Chummer
             // nudDVMod
             // 
             this.nudDVMod.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudDVMod.AutoSize = true;
             this.nudDVMod.Location = new System.Drawing.Point(121, 3);
             this.nudDVMod.Maximum = new decimal(new int[] {
             10,
@@ -136,17 +137,17 @@ namespace Chummer
             0,
             -2147483648});
             this.nudDVMod.Name = "nudDVMod";
-            this.nudDVMod.Size = new System.Drawing.Size(55, 20);
+            this.nudDVMod.Size = new System.Drawing.Size(35, 20);
             this.nudDVMod.TabIndex = 7;
             // 
             // lblDVPlus
             // 
             this.lblDVPlus.AutoSize = true;
             this.lblDVPlus.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblDVPlus.Location = new System.Drawing.Point(102, 0);
-            this.lblDVPlus.MinimumSize = new System.Drawing.Size(0, 27);
+            this.lblDVPlus.Location = new System.Drawing.Point(102, 3);
+            this.lblDVPlus.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.lblDVPlus.Name = "lblDVPlus";
-            this.lblDVPlus.Size = new System.Drawing.Size(13, 27);
+            this.lblDVPlus.Size = new System.Drawing.Size(13, 17);
             this.lblDVPlus.TabIndex = 6;
             this.lblDVPlus.Text = "+";
             this.lblDVPlus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -154,7 +155,8 @@ namespace Chummer
             // nudAP
             // 
             this.nudAP.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudAP.Location = new System.Drawing.Point(71, 83);
+            this.nudAP.AutoSize = true;
+            this.nudAP.Location = new System.Drawing.Point(71, 82);
             this.nudAP.Maximum = new decimal(new int[] {
             10,
             0,
@@ -166,14 +168,14 @@ namespace Chummer
             0,
             -2147483648});
             this.nudAP.Name = "nudAP";
-            this.nudAP.Size = new System.Drawing.Size(60, 20);
+            this.nudAP.Size = new System.Drawing.Size(35, 20);
             this.nudAP.TabIndex = 9;
             // 
             // lblAP
             // 
             this.lblAP.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAP.AutoSize = true;
-            this.lblAP.Location = new System.Drawing.Point(41, 86);
+            this.lblAP.Location = new System.Drawing.Point(41, 85);
             this.lblAP.Name = "lblAP";
             this.lblAP.Size = new System.Drawing.Size(24, 13);
             this.lblAP.TabIndex = 8;
@@ -212,26 +214,27 @@ namespace Chummer
             // nudReach
             // 
             this.nudReach.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudReach.Location = new System.Drawing.Point(71, 109);
+            this.nudReach.AutoSize = true;
+            this.nudReach.Location = new System.Drawing.Point(71, 108);
             this.nudReach.Maximum = new decimal(new int[] {
-            3,
+            10,
             0,
             0,
             0});
             this.nudReach.Minimum = new decimal(new int[] {
-            3,
+            10,
             0,
             0,
             -2147483648});
             this.nudReach.Name = "nudReach";
-            this.nudReach.Size = new System.Drawing.Size(60, 20);
+            this.nudReach.Size = new System.Drawing.Size(35, 20);
             this.nudReach.TabIndex = 13;
             // 
             // lblReach
             // 
             this.lblReach.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblReach.AutoSize = true;
-            this.lblReach.Location = new System.Drawing.Point(23, 112);
+            this.lblReach.Location = new System.Drawing.Point(23, 111);
             this.lblReach.Name = "lblReach";
             this.lblReach.Size = new System.Drawing.Size(42, 13);
             this.lblReach.TabIndex = 12;
@@ -244,7 +247,7 @@ namespace Chummer
             this.cboDVType.Dock = System.Windows.Forms.DockStyle.Left;
             this.cboDVType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDVType.FormattingEnabled = true;
-            this.cboDVType.Location = new System.Drawing.Point(182, 3);
+            this.cboDVType.Location = new System.Drawing.Point(162, 3);
             this.cboDVType.Name = "cboDVType";
             this.cboDVType.Size = new System.Drawing.Size(61, 21);
             this.cboDVType.TabIndex = 14;
@@ -253,6 +256,7 @@ namespace Chummer
             // tlpMain
             // 
             this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -292,7 +296,7 @@ namespace Chummer
             this.flowLayoutPanel1.Location = new System.Drawing.Point(68, 53);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(378, 27);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(378, 26);
             this.flowLayoutPanel1.TabIndex = 14;
             this.flowLayoutPanel1.WrapContents = false;
             // 
@@ -316,6 +320,7 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(464, 201);
             this.Controls.Add(this.tlpMain);

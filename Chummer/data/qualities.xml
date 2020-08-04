@@ -584,7 +584,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit" allowedit="True" />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit[not(contains(name, 'Watcher') or contains(name, 'Homonculus'))]" allowedit="True" />
       </bonus>
       <required>
         <oneof>

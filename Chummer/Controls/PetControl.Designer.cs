@@ -63,7 +63,7 @@ namespace Chummer
             // 
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Location = new System.Drawing.Point(709, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(705, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(48, 23);
             this.cmdDelete.TabIndex = 18;
@@ -110,28 +110,26 @@ namespace Chummer
             // 
             // imgLink
             // 
+            this.imgLink.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgLink.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(658, 0);
-            this.imgLink.Margin = new System.Windows.Forms.Padding(0);
-            this.imgLink.MinimumSize = new System.Drawing.Size(24, 24);
+            this.imgLink.Location = new System.Drawing.Point(661, 3);
             this.imgLink.Name = "imgLink";
-            this.imgLink.Size = new System.Drawing.Size(24, 30);
-            this.imgLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.imgLink.Size = new System.Drawing.Size(16, 24);
+            this.imgLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imgLink.TabIndex = 17;
             this.imgLink.TabStop = false;
             this.imgLink.Click += new System.EventHandler(this.imgLink_Click);
             // 
             // imgNotes
             // 
+            this.imgNotes.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(682, 0);
-            this.imgNotes.Margin = new System.Windows.Forms.Padding(0);
-            this.imgNotes.MinimumSize = new System.Drawing.Size(24, 24);
+            this.imgNotes.Location = new System.Drawing.Point(683, 3);
             this.imgNotes.Name = "imgNotes";
-            this.imgNotes.Size = new System.Drawing.Size(24, 30);
-            this.imgNotes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.imgNotes.Size = new System.Drawing.Size(16, 24);
+            this.imgNotes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imgNotes.TabIndex = 21;
             this.imgNotes.TabStop = false;
             this.imgNotes.Click += new System.EventHandler(this.imgNotes_Click);
@@ -195,7 +193,7 @@ namespace Chummer
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(760, 30);
+            this.tlpMain.Size = new System.Drawing.Size(756, 30);
             this.tlpMain.TabIndex = 25;
             // 
             // PetControl
@@ -209,7 +207,7 @@ namespace Chummer
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(0, 30);
             this.Name = "PetControl";
-            this.Size = new System.Drawing.Size(760, 30);
+            this.Size = new System.Drawing.Size(756, 30);
             this.Load += new System.EventHandler(this.PetControl_Load);
             this.cmsContact.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).EndInit();

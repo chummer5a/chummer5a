@@ -108,7 +108,7 @@ namespace Chummer
             // 
             // txtSearch
             // 
-            this.txtSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(354, 3);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(249, 20);
@@ -117,7 +117,7 @@ namespace Chummer
             // 
             // lblSearch
             // 
-            this.lblSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSearch.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSearch.AutoSize = true;
             this.lblSearch.Location = new System.Drawing.Point(304, 6);
             this.lblSearch.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -129,8 +129,7 @@ namespace Chummer
             // 
             // lblBP
             // 
-            this.lblBP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblBP.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblBP.AutoSize = true;
             this.lblBP.Location = new System.Drawing.Point(354, 32);
             this.lblBP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -141,7 +140,7 @@ namespace Chummer
             // 
             // lblBPLabel
             // 
-            this.lblBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblBPLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblBPLabel.AutoSize = true;
             this.lblBPLabel.Location = new System.Drawing.Point(308, 32);
             this.lblBPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -153,7 +152,9 @@ namespace Chummer
             // 
             // lblSource
             // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(354, 57);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -163,7 +164,7 @@ namespace Chummer
             // 
             // lblSourceLabel
             // 
-            this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
             this.lblSourceLabel.Location = new System.Drawing.Point(304, 57);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -175,9 +176,9 @@ namespace Chummer
             // 
             // lblStageLabel
             // 
-            this.lblStageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblStageLabel.AutoSize = true;
-            this.lblStageLabel.Location = new System.Drawing.Point(310, 82);
+            this.lblStageLabel.Location = new System.Drawing.Point(310, 83);
             this.lblStageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblStageLabel.Name = "lblStageLabel";
             this.lblStageLabel.Size = new System.Drawing.Size(38, 13);
@@ -202,10 +203,10 @@ namespace Chummer
             this.chkLimitList.Checked = true;
             this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpMain.SetColumnSpan(this.chkLimitList, 2);
-            this.chkLimitList.Location = new System.Drawing.Point(304, 107);
-            this.chkLimitList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkLimitList.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.chkLimitList.Location = new System.Drawing.Point(304, 374);
             this.chkLimitList.Name = "chkLimitList";
-            this.chkLimitList.Size = new System.Drawing.Size(189, 17);
+            this.chkLimitList.Size = new System.Drawing.Size(299, 17);
             this.chkLimitList.TabIndex = 26;
             this.chkLimitList.Tag = "Checkbox_SelectLifeModule_LimitList";
             this.chkLimitList.Text = "Show only Life Modules I can take";
@@ -230,7 +231,7 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 3;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
@@ -284,6 +285,7 @@ namespace Chummer
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Size = new System.Drawing.Size(237, 23);
             this.flpButtons.TabIndex = 28;
+            this.flpButtons.WrapContents = false;
             // 
             // frmSelectLifeModule
             // 

@@ -43,7 +43,7 @@ namespace Chummer
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.cboXSLT = new Chummer.ElasticComboBox();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.webViewer = new System.Windows.Forms.WebBrowser();
             this.cboLanguage = new Chummer.ElasticComboBox();
             this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
@@ -155,17 +155,17 @@ namespace Chummer
             this.lblCharacterSheet.Text = "Character Sheet:";
             this.lblCharacterSheet.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // webBrowser1
+            // webViewer
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.webBrowser1, 6);
-            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser1.Location = new System.Drawing.Point(3, 32);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(760, 508);
-            this.webBrowser1.TabIndex = 5;
-            this.webBrowser1.WebBrowserShortcutsEnabled = false;
+            this.tableLayoutPanel1.SetColumnSpan(this.webViewer, 6);
+            this.webViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webViewer.Location = new System.Drawing.Point(3, 32);
+            this.webViewer.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webViewer.Name = "webViewer";
+            this.webViewer.ScriptErrorsSuppressed = true;
+            this.webViewer.Size = new System.Drawing.Size(760, 508);
+            this.webViewer.TabIndex = 5;
+            this.webViewer.WebBrowserShortcutsEnabled = false;
             // 
             // cboLanguage
             // 
@@ -190,7 +190,7 @@ namespace Chummer
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.webBrowser1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.webViewer, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.cmdPrint, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.cboXSLT, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.cboLanguage, 4, 0);
@@ -255,7 +255,7 @@ namespace Chummer
         internal System.Windows.Forms.ToolStripMenuItem tsSaveAsHtml;
         private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
         private SplitButton cmdSaveAsPdf;
-        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser webViewer;
         private ElasticComboBox cboLanguage;
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;

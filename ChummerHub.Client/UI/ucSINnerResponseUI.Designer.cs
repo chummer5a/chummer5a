@@ -46,7 +46,7 @@
             this.tlpSINnerResponseUI.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpSINnerResponseUI.ColumnCount = 2;
             this.tlpSINnerResponseUI.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSINnerResponseUI.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSINnerResponseUI.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpSINnerResponseUI.Controls.Add(this.label1, 0, 0);
             this.tlpSINnerResponseUI.Controls.Add(this.tbSINnerResponseErrorText, 1, 0);
             this.tlpSINnerResponseUI.Controls.Add(this.gbSINnerResponseMyException, 0, 1);
@@ -55,50 +55,48 @@
             this.tlpSINnerResponseUI.Controls.Add(this.tbInstallationId, 1, 2);
             this.tlpSINnerResponseUI.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpSINnerResponseUI.Location = new System.Drawing.Point(0, 0);
-            this.tlpSINnerResponseUI.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tlpSINnerResponseUI.Name = "tlpSINnerResponseUI";
             this.tlpSINnerResponseUI.RowCount = 4;
             this.tlpSINnerResponseUI.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSINnerResponseUI.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpSINnerResponseUI.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSINnerResponseUI.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSINnerResponseUI.Size = new System.Drawing.Size(602, 416);
+            this.tlpSINnerResponseUI.Size = new System.Drawing.Size(430, 200);
             this.tlpSINnerResponseUI.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 55);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(14, 36);
+            this.label1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(86, 20);
+            this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Response:";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tbSINnerResponseErrorText
             // 
-            this.tbSINnerResponseErrorText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSINnerResponseErrorText.BackColor = System.Drawing.SystemColors.Control;
-            this.tbSINnerResponseErrorText.Location = new System.Drawing.Point(114, 5);
-            this.tbSINnerResponseErrorText.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.tbSINnerResponseErrorText.MinimumSize = new System.Drawing.Size(148, 121);
+            this.tbSINnerResponseErrorText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbSINnerResponseErrorText.Location = new System.Drawing.Point(78, 3);
             this.tbSINnerResponseErrorText.Multiline = true;
             this.tbSINnerResponseErrorText.Name = "tbSINnerResponseErrorText";
-            this.tbSINnerResponseErrorText.Size = new System.Drawing.Size(484, 121);
+            this.tbSINnerResponseErrorText.Size = new System.Drawing.Size(349, 80);
             this.tbSINnerResponseErrorText.TabIndex = 2;
             this.tbSINnerResponseErrorText.VisibleChanged += new System.EventHandler(this.TbSINnerResponseErrorText_VisibleChanged);
             // 
             // gbSINnerResponseMyException
             // 
+            this.gbSINnerResponseMyException.AutoSize = true;
+            this.gbSINnerResponseMyException.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpSINnerResponseUI.SetColumnSpan(this.gbSINnerResponseMyException, 2);
             this.gbSINnerResponseMyException.Controls.Add(this.tbSINnerResponseMyExpection);
             this.gbSINnerResponseMyException.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbSINnerResponseMyException.Location = new System.Drawing.Point(4, 136);
-            this.gbSINnerResponseMyException.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gbSINnerResponseMyException.Location = new System.Drawing.Point(3, 89);
             this.gbSINnerResponseMyException.Name = "gbSINnerResponseMyException";
-            this.gbSINnerResponseMyException.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.gbSINnerResponseMyException.Size = new System.Drawing.Size(594, 203);
+            this.gbSINnerResponseMyException.Size = new System.Drawing.Size(424, 53);
             this.gbSINnerResponseMyException.TabIndex = 3;
             this.gbSINnerResponseMyException.TabStop = false;
             this.gbSINnerResponseMyException.Text = "Details";
@@ -107,59 +105,57 @@
             // 
             this.tbSINnerResponseMyExpection.BackColor = System.Drawing.SystemColors.Control;
             this.tbSINnerResponseMyExpection.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbSINnerResponseMyExpection.Location = new System.Drawing.Point(4, 24);
-            this.tbSINnerResponseMyExpection.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tbSINnerResponseMyExpection.Location = new System.Drawing.Point(3, 16);
             this.tbSINnerResponseMyExpection.Multiline = true;
             this.tbSINnerResponseMyExpection.Name = "tbSINnerResponseMyExpection";
-            this.tbSINnerResponseMyExpection.Size = new System.Drawing.Size(586, 174);
+            this.tbSINnerResponseMyExpection.Size = new System.Drawing.Size(418, 34);
             this.tbSINnerResponseMyExpection.TabIndex = 0;
             // 
             // bOk
             // 
-            this.bOk.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.bOk.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.bOk.AutoSize = true;
             this.bOk.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpSINnerResponseUI.SetColumnSpan(this.bOk, 2);
-            this.bOk.Location = new System.Drawing.Point(259, 381);
-            this.bOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.bOk.Location = new System.Drawing.Point(184, 174);
             this.bOk.Name = "bOk";
-            this.bOk.Padding = new System.Windows.Forms.Padding(22, 0, 22, 0);
-            this.bOk.Size = new System.Drawing.Size(83, 30);
+            this.bOk.Padding = new System.Windows.Forms.Padding(15, 0, 15, 0);
+            this.bOk.Size = new System.Drawing.Size(62, 23);
             this.bOk.TabIndex = 0;
-            this.bOk.Text = "Ok";
+            this.bOk.Text = "OK";
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.BOk_Click);
             // 
             // lInstallationId
             // 
-            this.lInstallationId.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lInstallationId.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lInstallationId.AutoSize = true;
-            this.lInstallationId.Location = new System.Drawing.Point(3, 350);
+            this.lInstallationId.Location = new System.Drawing.Point(3, 151);
+            this.lInstallationId.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lInstallationId.Name = "lInstallationId";
-            this.lInstallationId.Size = new System.Drawing.Size(104, 20);
+            this.lInstallationId.Size = new System.Drawing.Size(69, 13);
             this.lInstallationId.TabIndex = 4;
             this.lInstallationId.Text = "Installation Id";
             // 
             // tbInstallationId
             // 
             this.tbInstallationId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbInstallationId.Location = new System.Drawing.Point(113, 347);
+            this.tbInstallationId.Location = new System.Drawing.Point(78, 148);
             this.tbInstallationId.Name = "tbInstallationId";
             this.tbInstallationId.ReadOnly = true;
-            this.tbInstallationId.Size = new System.Drawing.Size(486, 26);
+            this.tbInstallationId.Size = new System.Drawing.Size(349, 20);
             this.tbInstallationId.TabIndex = 5;
             // 
             // ucSINnerResponseUI
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpSINnerResponseUI);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MinimumSize = new System.Drawing.Size(300, 308);
+            this.MinimumSize = new System.Drawing.Size(200, 200);
             this.Name = "ucSINnerResponseUI";
-            this.Size = new System.Drawing.Size(602, 416);
+            this.Size = new System.Drawing.Size(430, 200);
             this.tlpSINnerResponseUI.ResumeLayout(false);
             this.tlpSINnerResponseUI.PerformLayout();
             this.gbSINnerResponseMyException.ResumeLayout(false);

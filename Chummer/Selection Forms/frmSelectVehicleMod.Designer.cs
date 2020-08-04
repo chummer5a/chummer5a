@@ -137,10 +137,11 @@ namespace Chummer
             // 
             // nudRating
             // 
+            this.nudRating.AutoSize = true;
             this.nudRating.Enabled = false;
             this.nudRating.Location = new System.Drawing.Point(3, 3);
             this.nudRating.Name = "nudRating";
-            this.nudRating.Size = new System.Drawing.Size(100, 20);
+            this.nudRating.Size = new System.Drawing.Size(41, 20);
             this.nudRating.TabIndex = 14;
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
@@ -267,6 +268,7 @@ namespace Chummer
             // lblSource
             // 
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(362, 257);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -327,6 +329,7 @@ namespace Chummer
             // 
             // nudMarkup
             // 
+            this.nudMarkup.AutoSize = true;
             this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(3, 3);
             this.nudMarkup.Maximum = new decimal(new int[] {
@@ -340,7 +343,7 @@ namespace Chummer
             0,
             -2147352576});
             this.nudMarkup.Name = "nudMarkup";
-            this.nudMarkup.Size = new System.Drawing.Size(100, 20);
+            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 17;
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
@@ -359,7 +362,7 @@ namespace Chummer
             // lblMarkupPercentLabel
             // 
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(109, 6);
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(65, 6);
             this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
@@ -455,7 +458,7 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 5;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -539,7 +542,7 @@ namespace Chummer
             // lblRatingNALabel
             // 
             this.lblRatingNALabel.AutoSize = true;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(109, 6);
+            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 6);
             this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 7);
             this.lblRatingNALabel.Name = "lblRatingNALabel";
             this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);

@@ -103,8 +103,10 @@ namespace Chummer.UI.Powers
             // 
             // tlpMain
             // 
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 1;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.flpButtons, 0, 0);
             this.tlpMain.Controls.Add(this.flpLabels, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -114,7 +116,7 @@ namespace Chummer.UI.Powers
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(830, 611);
+            this.tlpMain.Size = new System.Drawing.Size(480, 80);
             this.tlpMain.TabIndex = 11;
             // 
             // flpButtons
@@ -125,7 +127,7 @@ namespace Chummer.UI.Powers
             this.flpButtons.Controls.Add(this.cmdAddPower);
             this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(548, 0);
+            this.flpButtons.Location = new System.Drawing.Point(198, 0);
             this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtons.Name = "flpButtons";
             this.flpButtons.Size = new System.Drawing.Size(282, 29);
@@ -144,15 +146,19 @@ namespace Chummer.UI.Powers
             this.flpLabels.Name = "flpLabels";
             this.flpLabels.Size = new System.Drawing.Size(160, 13);
             this.flpLabels.TabIndex = 1;
+            this.flpLabels.WrapContents = false;
             // 
             // PowersTabUserControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MinimumSize = new System.Drawing.Size(480, 80);
             this.Name = "PowersTabUserControl";
-            this.Size = new System.Drawing.Size(830, 611);
+            this.Size = new System.Drawing.Size(480, 80);
             this.Load += new System.EventHandler(this.PowersTabUserControl_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
@@ -161,6 +167,7 @@ namespace Chummer.UI.Powers
             this.flpLabels.ResumeLayout(false);
             this.flpLabels.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

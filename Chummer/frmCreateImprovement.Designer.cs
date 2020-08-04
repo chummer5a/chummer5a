@@ -130,6 +130,7 @@ namespace Chummer
             // 
             // nudVal
             // 
+            this.nudVal.AutoSize = true;
             this.nudVal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVal.Location = new System.Drawing.Point(107, 85);
             this.nudVal.Minimum = new decimal(new int[] {
@@ -138,7 +139,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudVal.Name = "nudVal";
-            this.nudVal.Size = new System.Drawing.Size(53, 20);
+            this.nudVal.Size = new System.Drawing.Size(41, 20);
             this.nudVal.TabIndex = 8;
             // 
             // lblName
@@ -164,6 +165,7 @@ namespace Chummer
             // 
             // nudMin
             // 
+            this.nudMin.AutoSize = true;
             this.nudMin.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudMin.Location = new System.Drawing.Point(107, 111);
             this.nudMin.Minimum = new decimal(new int[] {
@@ -172,7 +174,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMin.Name = "nudMin";
-            this.nudMin.Size = new System.Drawing.Size(53, 20);
+            this.nudMin.Size = new System.Drawing.Size(41, 20);
             this.nudMin.TabIndex = 11;
             // 
             // lblMin
@@ -189,6 +191,7 @@ namespace Chummer
             // 
             // nudMax
             // 
+            this.nudMax.AutoSize = true;
             this.nudMax.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudMax.Location = new System.Drawing.Point(107, 137);
             this.nudMax.Minimum = new decimal(new int[] {
@@ -197,7 +200,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMax.Name = "nudMax";
-            this.nudMax.Size = new System.Drawing.Size(53, 20);
+            this.nudMax.Size = new System.Drawing.Size(41, 20);
             this.nudMax.TabIndex = 13;
             // 
             // lblMax
@@ -214,6 +217,7 @@ namespace Chummer
             // 
             // nudAug
             // 
+            this.nudAug.AutoSize = true;
             this.nudAug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudAug.Location = new System.Drawing.Point(107, 163);
             this.nudAug.Minimum = new decimal(new int[] {
@@ -222,7 +226,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudAug.Name = "nudAug";
-            this.nudAug.Size = new System.Drawing.Size(53, 20);
+            this.nudAug.Size = new System.Drawing.Size(41, 20);
             this.nudAug.TabIndex = 15;
             // 
             // lblAug
@@ -277,7 +281,7 @@ namespace Chummer
             // 
             this.chkApplyToRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkApplyToRating.AutoSize = true;
-            this.chkApplyToRating.Location = new System.Drawing.Point(166, 86);
+            this.chkApplyToRating.Location = new System.Drawing.Point(154, 86);
             this.chkApplyToRating.Name = "chkApplyToRating";
             this.chkApplyToRating.Size = new System.Drawing.Size(98, 17);
             this.chkApplyToRating.TabIndex = 9;
@@ -289,7 +293,7 @@ namespace Chummer
             // 
             this.chkFree.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFree.AutoSize = true;
-            this.chkFree.Location = new System.Drawing.Point(166, 112);
+            this.chkFree.Location = new System.Drawing.Point(154, 112);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(50, 17);
             this.chkFree.TabIndex = 19;
@@ -300,6 +304,7 @@ namespace Chummer
             // tlpMain
             // 
             this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 5;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());

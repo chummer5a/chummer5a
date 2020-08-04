@@ -339,6 +339,7 @@ namespace Chummer
             // nudNumberOfEffects
             // 
             this.nudNumberOfEffects.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudNumberOfEffects.AutoSize = true;
             this.nudNumberOfEffects.Location = new System.Drawing.Point(109, 3);
             this.nudNumberOfEffects.Maximum = new decimal(new int[] {
             10,
@@ -351,7 +352,7 @@ namespace Chummer
             0,
             0});
             this.nudNumberOfEffects.Name = "nudNumberOfEffects";
-            this.nudNumberOfEffects.Size = new System.Drawing.Size(42, 20);
+            this.nudNumberOfEffects.Size = new System.Drawing.Size(35, 20);
             this.nudNumberOfEffects.TabIndex = 48;
             this.nudNumberOfEffects.Value = new decimal(new int[] {
             1,
@@ -594,6 +595,7 @@ namespace Chummer
             // 
             this.flpModifiers.AutoScroll = true;
             this.flpModifiers.AutoSize = true;
+            this.flpModifiers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.SetColumnSpan(this.flpModifiers, 3);
             this.flpModifiers.Controls.Add(this.chkModifier1);
             this.flpModifiers.Controls.Add(this.chkModifier2);
@@ -627,7 +629,7 @@ namespace Chummer
             this.flpModifier3.Location = new System.Drawing.Point(0, 46);
             this.flpModifier3.Margin = new System.Windows.Forms.Padding(0);
             this.flpModifier3.Name = "flpModifier3";
-            this.flpModifier3.Size = new System.Drawing.Size(154, 26);
+            this.flpModifier3.Size = new System.Drawing.Size(147, 26);
             this.flpModifier3.TabIndex = 2;
             this.flpModifier3.WrapContents = false;
             // 

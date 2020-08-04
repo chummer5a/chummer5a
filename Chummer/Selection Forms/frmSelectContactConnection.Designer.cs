@@ -53,8 +53,7 @@ namespace Chummer
             // 
             // cboMembership
             // 
-            this.cboMembership.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboMembership.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMembership.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMembership.FormattingEnabled = true;
             this.cboMembership.Location = new System.Drawing.Point(140, 29);
@@ -78,8 +77,7 @@ namespace Chummer
             // 
             // cboAreaOfInfluence
             // 
-            this.cboAreaOfInfluence.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboAreaOfInfluence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAreaOfInfluence.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAreaOfInfluence.FormattingEnabled = true;
             this.cboAreaOfInfluence.Location = new System.Drawing.Point(140, 56);
@@ -103,8 +101,7 @@ namespace Chummer
             // 
             // cboMagicalResources
             // 
-            this.cboMagicalResources.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboMagicalResources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMagicalResources.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMagicalResources.FormattingEnabled = true;
             this.cboMagicalResources.Location = new System.Drawing.Point(140, 83);
@@ -128,8 +125,7 @@ namespace Chummer
             // 
             // cboMatrixResources
             // 
-            this.cboMatrixResources.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboMatrixResources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMatrixResources.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMatrixResources.FormattingEnabled = true;
             this.cboMatrixResources.Location = new System.Drawing.Point(140, 110);
@@ -178,7 +174,8 @@ namespace Chummer
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
+            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 15;
@@ -191,7 +188,8 @@ namespace Chummer
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(84, 3);
+            this.cmdOK.Location = new System.Drawing.Point(78, 0);
+            this.cmdOK.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 14;
@@ -214,8 +212,7 @@ namespace Chummer
             // 
             // txtGroupName
             // 
-            this.txtGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGroupName.Location = new System.Drawing.Point(140, 3);
             this.txtGroupName.Name = "txtGroupName";
             this.txtGroupName.Size = new System.Drawing.Size(223, 20);
@@ -237,9 +234,9 @@ namespace Chummer
             // 
             // chkFreeContact
             // 
-            this.chkFreeContact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkFreeContact.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.chkFreeContact.AutoSize = true;
-            this.chkFreeContact.Location = new System.Drawing.Point(47, 163);
+            this.chkFreeContact.Location = new System.Drawing.Point(47, 165);
             this.chkFreeContact.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFreeContact.Name = "chkFreeContact";
             this.chkFreeContact.Size = new System.Drawing.Size(87, 17);
@@ -291,14 +288,15 @@ namespace Chummer
             // 
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(204, 194);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(210, 200);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(162, 29);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
             this.flowLayoutPanel1.TabIndex = 14;
             // 
             // frmSelectContactConnection

@@ -93,11 +93,11 @@ namespace Chummer
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tsbSave = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbPrint = new System.Windows.Forms.ToolStripButton();
             this.printPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tabForms = new System.Windows.Forms.TabControl();
             this.mnuProcessFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSave = new System.Windows.Forms.ToolStripMenuItem();
@@ -689,14 +689,6 @@ namespace Chummer
             this.tsbSave.Text = "Save";
             this.tsbSave.Visible = false;
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.toolStripSeparator1.MergeIndex = 5;
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(111, 6);
-            this.toolStripSeparator1.Visible = false;
-            // 
             // tsbPrint
             // 
             this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -717,14 +709,6 @@ namespace Chummer
             this.printPreviewToolStripButton.Text = "Print Preview";
             this.printPreviewToolStripButton.Visible = false;
             // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.toolStripSeparator2.MergeIndex = 7;
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(111, 6);
-            this.toolStripSeparator2.Visible = false;
-            // 
             // helpToolStripButton
             // 
             this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -734,6 +718,22 @@ namespace Chummer
             this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.helpToolStripButton.Text = "Help";
             this.helpToolStripButton.Visible = false;
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator1.MergeIndex = 5;
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(111, 6);
+            this.toolStripSeparator1.Visible = false;
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator2.MergeIndex = 7;
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(111, 6);
+            this.toolStripSeparator2.Visible = false;
             // 
             // tabForms
             // 
@@ -831,6 +831,7 @@ namespace Chummer
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmChummerMain_Closing);
             this.Load += new System.EventHandler(this.frmChummerMain_Load);
             this.MdiChildActivate += new System.EventHandler(this.frmChummerMain_MdiChildActivate);
+            this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.frmChummerMain_DpiChanged);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmChummerMain_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.frmChummerMain_DragEnter);
             this.menuStrip.ResumeLayout(false);

@@ -13072,7 +13072,7 @@ namespace Chummer
                             chkCmBox.Text = intModifiers.ToString(GlobalOptions.CultureInfo);
                         }
                         else
-                            chkCmBox.Text = string.Empty;
+                            chkCmBox.Text = " "; // Non-breaking save to help with DPI stuff
                     }
                     else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
                     {
@@ -13083,7 +13083,7 @@ namespace Chummer
                     else
                     {
                         chkCmBox.Visible = false;
-                        chkCmBox.Text = string.Empty;
+                        chkCmBox.Text = " "; // Non-breaking save to help with DPI stuff
                     }
                 }
             }
