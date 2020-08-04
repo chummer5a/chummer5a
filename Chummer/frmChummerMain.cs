@@ -866,16 +866,17 @@ namespace Chummer
         {
             if(e.Button == MouseButtons.Right)
             {
-                string strFileName = ((ToolStripMenuItem)sender).Text;
-                strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-
-                GlobalOptions.FavoritedCharacters.Add(strFileName);
+                string strFileName = ((ToolStripMenuItem)sender).Tag as string;
+                if (!string.IsNullOrEmpty(strFileName))
+                    GlobalOptions.FavoritedCharacters.Add(strFileName);
             }
         }
 
         private async void mnuStickyMRU_Click(object sender, EventArgs e)
         {
-            string strFileName = ((ToolStripMenuItem)sender).Text;
+            string strFileName = ((ToolStripMenuItem)sender).Tag as string;
+            if (string.IsNullOrEmpty(strFileName))
+                return;
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
@@ -887,10 +888,13 @@ namespace Chummer
         {
             if(e.Button == MouseButtons.Right)
             {
-                string strFileName = ((ToolStripMenuItem)sender).Text;
+                string strFileName = ((ToolStripMenuItem)sender).Tag as string;
 
-                GlobalOptions.FavoritedCharacters.Remove(strFileName);
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                if (!string.IsNullOrEmpty(strFileName))
+                {
+                    GlobalOptions.FavoritedCharacters.Remove(strFileName);
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                }
             }
         }
 
@@ -1531,8 +1535,9 @@ namespace Chummer
 
                     if(i < GlobalOptions.FavoritedCharacters.Count)
                     {
-                        objItem.Visible = true;
                         objItem.Text = GlobalOptions.FavoritedCharacters[i];
+                        objItem.Tag = GlobalOptions.FavoritedCharacters[i];
+                        objItem.Visible = true;
                     }
                     else
                     {
@@ -1552,6 +1557,7 @@ namespace Chummer
             mnuMRU8.Visible = false;
             mnuMRU9.Visible = false;
 
+            string strSpace = LanguageManager.GetString("String_Space");
             int i2 = 0;
             for(int i = 0; i < GlobalOptions.MaxMruSize; ++i)
             {
@@ -1597,11 +1603,15 @@ namespace Chummer
                                 continue;
                         }
 
-                        objItem.Visible = true;
-                        if(i2 == 9)
-                            objItem.Text = "1&0 " + strFile;
+                        if (i2 <= 9 && i2 >= 0)
+                        {
+                            string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);
+                            objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
+                        }
                         else
-                            objItem.Text = '&' + (i + 1).ToString(GlobalOptions.InvariantCultureInfo) + ' ' + strFile;
+                            objItem.Text = (i2 + 1).ToString(GlobalOptions.CultureInfo) + strSpace + strFile;
+                        objItem.Tag = strFile;
+                        objItem.Visible = true;
 
                         ++i2;
                     }
