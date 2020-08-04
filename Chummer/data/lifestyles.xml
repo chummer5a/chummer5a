@@ -148,7 +148,7 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
-      <lp>3</lp>
+      <lp>4</lp>
       <multiplier>0</multiplier>
       <source>RF</source>
       <page>216</page>
@@ -204,7 +204,7 @@
     <comfort>
       <name>Bolt Hole</name>
       <minimum>1</minimum>
-      <limit>3</limit>
+      <limit>2</limit>
     </comfort>
     <comfort>
       <name>Street</name>
