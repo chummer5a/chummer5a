@@ -49,21 +49,33 @@ namespace Chummer
         /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
         public void Reset(int intMaxProgressBarValue = 100)
         {
-            pgbLoadingProgress.Value = 0;
-            pgbLoadingProgress.Maximum = intMaxProgressBarValue;
-            lblLoadingInfo.Text = LanguageManager.GetString("String_Initializing");
+            this.DoThreadSafe(() =>
+            {
+                pgbLoadingProgress.Value = 0;
+                pgbLoadingProgress.Maximum = intMaxProgressBarValue;
+                lblLoadingInfo.Text = LanguageManager.GetString("String_Initializing");
+            });
         }
 
         /// <summary>
         /// Performs a single step on the underlying ProgressBar
         /// </summary>
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
-        public void PerformStep(string strStepName)
+        public void PerformStep(string strStepName = "")
         {
-            pgbLoadingProgress.PerformStep();
-            lblLoadingInfo.Text = string.IsNullOrEmpty(strStepName)
-                ? LanguageManager.GetString("String_Loading")
-                : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
+            this.DoThreadSafe(() =>
+            {
+                pgbLoadingProgress.PerformStep();
+                lblLoadingInfo.Text = (string.IsNullOrEmpty(strStepName)
+                    ? LanguageManager.GetString("String_Loading")
+                    : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName))
+                                      + LanguageManager.GetString("String_Space")
+                                      + '('
+                                      + pgbLoadingProgress.Value.ToString(GlobalOptions.CultureInfo)
+                                      + '/'
+                                      + pgbLoadingProgress.Maximum.ToString(GlobalOptions.CultureInfo)
+                                      + ')';
+            });
         }
     }
 }
