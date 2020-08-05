@@ -84,7 +84,6 @@ namespace Chummer.Backend.Equipment
         private int _intLongBurst;
         private int _intFullBurst;
         private int _intSuppressive;
-        private string _strAddMode = string.Empty;
         private string _strAmmoReplace = string.Empty;
         private int _intAmmoBonus;
         private int _intSortOrder;
@@ -229,7 +228,14 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
             objXmlAccessory.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlAccessory.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
-            objXmlAccessory.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+            string strTemp = string.Empty;
+            if (objXmlAccessory.TryGetStringFieldQuickly("addmode", ref strTemp))
+            {
+                if (string.IsNullOrEmpty(_strFireMode))
+                    _strFireMode = strTemp;
+                else if (!_strFireMode.Contains(strTemp))
+                    _strFireMode += '/' + strTemp;
+            }
             objXmlAccessory.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objXmlAccessory.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
@@ -351,7 +357,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("apreplace", _strAPReplace);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("addmode", _strAddMode);
             objWriter.WriteElementString("singleshot", _intSingleShot.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("shortburst", _intShortBurst.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("longburst", _intLongBurst.ToString(GlobalOptions.InvariantCultureInfo));
@@ -462,7 +467,14 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ap", ref _strAP);
             objNode.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             objNode.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
-            objNode.TryGetStringFieldQuickly("addmode", ref _strAddMode);
+            string strTemp = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("addmode", ref strTemp))
+            {
+                if (string.IsNullOrEmpty(_strFireMode))
+                    _strFireMode = strTemp;
+                else if (!_strFireMode.Contains(strTemp))
+                    _strFireMode += '/' + strTemp;
+            }
             objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
             objNode.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
@@ -1174,15 +1186,6 @@ namespace Chummer.Backend.Equipment
         {
             get => _intAccessoryCostMultiplier;
             set => _intAccessoryCostMultiplier = value;
-        }
-
-        /// <summary>
-        /// Additional Weapon Firing Mode.
-        /// </summary>
-        public string AddMode
-        {
-            get => _strAddMode;
-            set => _strAddMode = value;
         }
 
         /// <summary>
