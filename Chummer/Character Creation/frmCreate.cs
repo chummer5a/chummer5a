@@ -9587,7 +9587,7 @@ namespace Chummer
                         nudCyberwareRating.Minimum = 1;
                     nudCyberwareRating.Maximum = intGearMaxRatingValue;
                     nudCyberwareRating.Value = objGear.Rating;
-                    nudCyberwareRating.Enabled = nudCyberwareRating.Minimum != nudCyberwareRating.Maximum && string.IsNullOrEmpty(objCyberware.ParentID); ;
+                    nudCyberwareRating.Enabled = nudCyberwareRating.Minimum != nudCyberwareRating.Maximum && string.IsNullOrEmpty(objGear.ParentID);
                     nudCyberwareRating.Visible = true;
                     lblCyberwareRatingLabel.Visible = true;
                 }
