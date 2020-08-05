@@ -9685,7 +9685,7 @@ namespace Chummer
                     nudCyberwareRating.Minimum = objCyberware.MinRating;
                     nudCyberwareRating.Value = objCyberware.Rating;
                     nudCyberwareRating.Visible = true;
-                    nudCyberwareRating.Enabled = nudCyberwareRating.Maximum != nudCyberwareRating.Minimum;
+                    nudCyberwareRating.Enabled = nudCyberwareRating.Maximum != nudCyberwareRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID); ;
                     lblCyberwareRatingLabel.Visible = true;
                 }
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
@@ -9762,7 +9762,7 @@ namespace Chummer
                         nudCyberwareRating.Minimum = 1;
                     nudCyberwareRating.Maximum = intGearMaxRatingValue;
                     nudCyberwareRating.Value = objGear.Rating;
-                    nudCyberwareRating.Enabled = nudCyberwareRating.Minimum != nudCyberwareRating.Maximum;
+                    nudCyberwareRating.Enabled = nudCyberwareRating.Minimum != nudCyberwareRating.Maximum && string.IsNullOrEmpty(objCyberware.ParentID); ;
                     nudCyberwareRating.Visible = true;
                     lblCyberwareRatingLabel.Visible = true;
                 }
@@ -10299,7 +10299,7 @@ namespace Chummer
                     nudArmorRating.Visible = true;
                     nudArmorRating.Maximum = objArmorMod.MaximumRating;
                     nudArmorRating.Value = objArmorMod.Rating;
-                    nudArmorRating.Enabled = true;
+                    nudArmorRating.Enabled = !objArmorMod.IncludedInArmor;
                 }
                 else
                 {
@@ -10342,7 +10342,7 @@ namespace Chummer
                     int intMinRatingValue = objSelectedGear.MinRatingValue;
                     nudArmorRating.Minimum = intMinRatingValue;
                     nudArmorRating.Value = objSelectedGear.Rating;
-                    nudArmorRating.Enabled = intMinRatingValue != intMaxRatingValue;
+                    nudArmorRating.Enabled = intMinRatingValue != intMaxRatingValue && string.IsNullOrEmpty(objSelectedGear.ParentID);
                 }
                 else
                 {
@@ -10502,7 +10502,7 @@ namespace Chummer
                         nudGearRating.Minimum = 1;
                     nudGearRating.Maximum = objGear.MaxRatingValue;
                     nudGearRating.Value = objGear.Rating;
-                    nudGearRating.Enabled = nudGearRating.Minimum != nudGearRating.Maximum;
+                    nudGearRating.Enabled = nudGearRating.Minimum != nudGearRating.Maximum && string.IsNullOrEmpty(objGear.ParentID);
                 }
                 else
                 {
@@ -11831,7 +11831,7 @@ namespace Chummer
                     nudVehicleRating.Maximum = objCyberware.MaxRating;
                     nudVehicleRating.Minimum = objCyberware.MinRating;
                     nudVehicleRating.Value = objCyberware.Rating;
-                    nudVehicleRating.Enabled = nudVehicleRating.Maximum == nudVehicleRating.Minimum;
+                    nudVehicleRating.Enabled = nudVehicleRating.Maximum == nudVehicleRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID); ;
                     nudVehicleRating.Visible = true;
                     lblVehicleRatingLabel.Visible = true;
                 }
@@ -11878,7 +11878,7 @@ namespace Chummer
                 {
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
-                    nudVehicleRating.Enabled = true;
+                    nudVehicleRating.Enabled = string.IsNullOrEmpty(objGear.ParentID);
                     nudVehicleRating.Maximum = intGearMaxRatingValue;
                     nudVehicleRating.Value = objGear.Rating;
                 }

@@ -165,7 +165,7 @@ namespace Chummer
                 // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
                 // Update the Form itself.
                 string strControlTag = frmForm.Tag?.ToString();
-                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
                     frmForm.Text = GetString(strControlTag, strIntoLanguage);
                 else if (frmForm.Text.StartsWith('['))
                     frmForm.Text = string.Empty;
@@ -192,7 +192,7 @@ namespace Chummer
                 if (objChild is Label || objChild is Button || objChild is CheckBox)
                 {
                     string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
                         objChild.Text = GetString(strControlTag, strIntoLanguage);
                     else if (objChild.Text.StartsWith('['))
                         objChild.Text = string.Empty;
@@ -209,7 +209,7 @@ namespace Chummer
                     foreach (ColumnHeader objHeader in lstList.Columns)
                     {
                         string strControlTag = objHeader.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
                             objHeader.Text = GetString(strControlTag, strIntoLanguage);
                         else if (objHeader.Text.StartsWith('['))
                             objHeader.Text = string.Empty;
@@ -220,7 +220,7 @@ namespace Chummer
                     foreach (TabPage tabPage in objTabControl.TabPages)
                     {
                         string strControlTag = tabPage.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
                             tabPage.Text = GetString(strControlTag, strIntoLanguage);
                         else if (tabPage.Text.StartsWith('['))
                             tabPage.Text = string.Empty;
@@ -236,7 +236,7 @@ namespace Chummer
                 else if (objChild is GroupBox)
                 {
                     string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
                         objChild.Text = GetString(strControlTag, strIntoLanguage);
                     else if (objChild.Text.StartsWith('['))
                         objChild.Text = string.Empty;
@@ -304,7 +304,7 @@ namespace Chummer
             tssItem.RightToLeft = eIntoRightToLeft;
 
             string strControlTag = tssItem.Tag?.ToString();
-            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid())
+            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
                 tssItem.Text = GetString(strControlTag, strIntoLanguage);
             else if (tssItem.Text.StartsWith('['))
                 tssItem.Text = string.Empty;
