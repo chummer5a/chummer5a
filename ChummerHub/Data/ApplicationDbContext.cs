@@ -56,7 +56,7 @@ namespace ChummerHub.Data
                     error = true;
                 }
             }
-            if (error == true)
+            if (error)
             {
                 int counter = 0;
                 string wholeMessage = "Error while validating Entities:" + Environment.NewLine;

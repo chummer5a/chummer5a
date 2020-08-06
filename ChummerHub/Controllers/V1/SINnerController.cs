@@ -97,10 +97,10 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 var sinnerseq = await (from a in _context.SINners
-                                .Include(a => a.MyGroup)
-                                .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                                       where a.Id == sinnerid
-                                       select a).ToListAsync();
+                        .Include(a => a.MyGroup)
+                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    where a.Id == sinnerid
+                    select a).ToListAsync();
                 if (!sinnerseq.Any())
                 {
                     throw new ArgumentException("Could not find id(1) " + sinnerid.ToString());
@@ -118,23 +118,10 @@ namespace ChummerHub.Controllers.V1
                     string msg = "Chummer " + chummerFile.Id + " does not have a valid DownloadUrl!";
                     throw new ArgumentException(msg);
                 }
-                bool oktoDownload = false;
-                if ((!oktoDownload) && (chummerFile.SINnerMetaData.Visibility.IsPublic == true))
-                {
-                    oktoDownload = true;
-                }
-                if ((!oktoDownload) && (chummerFile.MyGroup != null && chummerFile.MyGroup.IsPublic == true))
-                {
-                    oktoDownload = true;
-                }
-                if ((!oktoDownload) && (chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null)))
-                {
-                    oktoDownload = true;
-                }
-                if ((!oktoDownload) && (user != null && chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
-                {
-                    oktoDownload = true;
-                }
+                bool oktoDownload = chummerFile.SINnerMetaData.Visibility.IsPublic
+                                    || chummerFile.MyGroup != null && chummerFile.MyGroup.IsPublic
+                                    || chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null)
+                                    || !string.IsNullOrEmpty(user?.Email) && chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => user.Email.Equals(a.EMail, StringComparison.OrdinalIgnoreCase));
 
                 if (!oktoDownload)
                 {
@@ -256,34 +243,23 @@ namespace ChummerHub.Controllers.V1
                 {
                     return NotFound(res);
                 }
-                bool oktoDownload = false;
-                if ((!oktoDownload) && (sin.SINnerMetaData.Visibility.IsPublic == true))
-                {
-                    oktoDownload = true;
-                }
-                if ((!oktoDownload) && (sin.MyGroup != null && sin.MyGroup.IsPublic == true))
-                {
-                    oktoDownload = true;
-                }
-                if ((!oktoDownload) && (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
-                {
-                    oktoDownload = true;
-                }
+                bool oktoDownload = sin.SINnerMetaData.Visibility.IsPublic
+                                    || (sin.MyGroup != null && sin.MyGroup.IsPublic)
+                                    || (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => user.Email.Equals(a.EMail, StringComparison.OrdinalIgnoreCase)));
                 if (!oktoDownload)
                 {
-                    var e = new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + id.ToString());
+                    var e = new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + id);
                     res = new ResultSinnerGetSINById(e);
                     return BadRequest(res);
                 }
                 sin.LastDownload = DateTime.Now;
                 await _context.SaveChangesAsync();
                 res = new ResultSinnerGetSINById(sin);
-                if (sin.SINnerMetaData.Visibility.IsPublic == true)
+                if (sin.SINnerMetaData.Visibility.IsPublic)
                     return Ok(res);
 
 
-                var list = (from a in sin.SINnerMetaData.Visibility.UserRights where a.EMail?.ToUpperInvariant() == user.NormalizedEmail select a);
-                if (list.Any())
+                if (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => user.NormalizedEmail.Equals(a.EMail, StringComparison.OrdinalIgnoreCase)))
                     return Ok(res);
 
                 var e1 = new NoUserRightException("SINner is not viewable for public or groupmembers.");
@@ -321,7 +297,7 @@ namespace ChummerHub.Controllers.V1
                     .Where(a => a.SINnerId == id)
                     .ToListAsync();
                 res = new ResultSinnerGetSINnerVisibilityById(list);
-                if ((list == null || (!list.Any())))
+                if (list == null || list.Count == 0)
                 {
                     return NotFound(res);
                 }
@@ -368,7 +344,7 @@ namespace ChummerHub.Controllers.V1
                 List<SINner> download = new List<SINner>();
                 foreach (var sin in sinseq)
                 {
-                    if (sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null && a.CanEdit == true))
+                    if (sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null && a.CanEdit))
                         download.Add(sin);
                     else if ((user != null &&
                                             sin.SINnerMetaData.Visibility.UserRights.Any(a =>
@@ -443,7 +419,7 @@ namespace ChummerHub.Controllers.V1
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", sin.Id.ToString());
-                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName);
                     telemetry.Metrics.Add("FileSize", uploadedFile.Length);
                     tc.TrackEvent(telemetry);
                 }
@@ -477,7 +453,7 @@ namespace ChummerHub.Controllers.V1
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
                     telemetry.Properties.Add("SINnerId", dbsinner?.Id?.ToString());
-                    telemetry.Properties.Add("FileName", uploadedFile.FileName?.ToString());
+                    telemetry.Properties.Add("FileName", uploadedFile.FileName);
                     telemetry.Metrics.Add("FileSize", uploadedFile.Length);
                     tc.TrackException(telemetry);
                 }
@@ -504,16 +480,15 @@ namespace ChummerHub.Controllers.V1
         public async Task<IActionResult> GetThumbnailById(Guid? SINnerId, int? index)
         {
             var temppath = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
-            string filename = SINnerId.Value + Guid.NewGuid().ToString() + ".zip";
+            string filename = SINnerId != null ? SINnerId.Value.ToString() : string.Empty;
+            filename += Guid.NewGuid().ToString() + ".zip";
             string filepath = Path.Combine(temppath, filename);
             try
             {
                 if (index == null)
                     index = 0;
-                var sinnerseq = await (from a in _context.SINners
-                                       where a.Id == SINnerId
-                                       select a).ToListAsync();
-                if (!sinnerseq.Any())
+                var sinnerseq = await _context.SINners.Where(a => a.Id == SINnerId).ToListAsync();
+                if (sinnerseq.Count == 0)
                     return NotFound("SINner " + SINnerId + " not found!");
                 var net = new System.Net.WebClient();
 
@@ -526,14 +501,14 @@ namespace ChummerHub.Controllers.V1
 
                 if (!System.IO.File.Exists(filename))
                 {
-                    Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl);
+                    Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl ?? string.Empty);
                     net.DownloadFile(downloadUri, filename);
                 }
 
                 if (!System.IO.File.Exists(filename))
                 {
-                    return NotFound("Could not download sinner " + SINnerId + " from " +
-                                    sinnerseq.FirstOrDefault()?.DownloadUrl + ".");
+                    return NotFound("Could not download sinner " + SINnerId + " from "
+                                    + (sinnerseq.FirstOrDefault()?.DownloadUrl ?? string.Empty) + ".");
                 }
 
                 using (var file = System.IO.File.OpenRead(filename))
@@ -566,13 +541,13 @@ namespace ChummerHub.Controllers.V1
                                         }
                                         else
                                         {
-                                            throw new ArgumentNullException("index",
+                                            throw new ArgumentNullException(nameof(index),
                                                 "The FirstChild-Node with this index seems to be null!");
                                         }
                                     }
                                     else
                                     {
-                                        throw new ArgumentNullException("index",
+                                        throw new ArgumentNullException(nameof(index),
                                             "Childnode with this index seems to be null!");
                                     }
                                 }
@@ -622,8 +597,6 @@ namespace ChummerHub.Controllers.V1
                     System.IO.File.Delete(filename);
                 }
             }
-
-
         }
 
 
@@ -646,7 +619,7 @@ namespace ChummerHub.Controllers.V1
                     {
                         foreach (var singleerr in err)
                         {
-                            msg += Environment.NewLine + "\t" + singleerr.ToString();
+                            msg += Environment.NewLine + "\t" + singleerr;
                         }
 
                     }
@@ -790,9 +763,7 @@ namespace ChummerHub.Controllers.V1
                     sinner.SINnerMetaData.Tags.RemoveAll(a => a == null);
                     foreach (Tag tag in sinner.SINnerMetaData.Tags)
                     {
-                        if (tag == null)
-                            continue;
-                        tag.SetSinnerIdRecursive(sinner.Id);
+                        tag?.SetSinnerIdRecursive(sinner.Id);
                     }
 
                     sinner.UploadClientId = uploadInfo.Client.Id;
@@ -883,11 +854,13 @@ namespace ChummerHub.Controllers.V1
 
                     if (sinner.MyGroup?.Id != null && sinner.MyGroup?.Id != Guid.Empty)
                     {
-                        if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == sinner.MyGroup.Id))
-                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                        if (user.FavoriteGroups.All(a => a.FavoriteGuid != sinner.MyGroup.Id))
+                        {
+                            user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup
                             {
                                 FavoriteGuid = sinner.MyGroup.Id.Value
                             });
+                        }
                     }
                     
                     if (user != null)
@@ -906,11 +879,13 @@ namespace ChummerHub.Controllers.V1
 
                         if (oldsinner == null)
                         {
-                            if (!user.FavoriteGroups.Any(a => a.FavoriteGuid == sinner.Id))
-                                user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup()
+                            if (user.FavoriteGroups.All(a => a.FavoriteGuid != sinner.Id))
+                            {
+                                user.FavoriteGroups.Add(new ApplicationUserFavoriteGroup
                                 {
                                     FavoriteGuid = sinner.Id.Value
                                 });
+                            }
                         }
 
                         await _context.SaveChangesAsync();
@@ -1029,13 +1004,12 @@ namespace ChummerHub.Controllers.V1
                     }
                 }
 
-                List<Guid> myids = (from a in uploadInfo.SINners select a.Id.Value).ToList();
                 List<SINner> sinlist = new List<SINner>();
-                foreach (var id in myids)
+                foreach (var id in uploadInfo.SINners.Where(a => a.Id != null).Select(a => a.Id.Value))
                 {
-                    var sin = from a in _context.SINners where a.Id == id select a;
-                    if (sin.Any())
-                        sinlist.Add(sin.FirstOrDefault());
+                    var sin = _context.SINners.FirstOrDefault(a => a.Id == id);
+                    if (sin != null)
+                        sinlist.Add(sin);
                 }
                 res = new ResultSinnerPostSIN(sinlist);
                 switch (returncode)
@@ -1199,7 +1173,7 @@ namespace ChummerHub.Controllers.V1
         {
             if (id == Guid.Empty)
             {
-                throw new ArgumentNullException("id", "Id is empty!");
+                throw new ArgumentNullException(nameof(id), "Id is empty!");
             }
 
             SINner dbsinner = null;
@@ -1231,7 +1205,7 @@ namespace ChummerHub.Controllers.V1
                                      &&
                                      ((!string.IsNullOrEmpty(a.EMail) && a.EMail.ToUpperInvariant() == normEmail)
                                        || (a.EMail == null))
-                                     && a.CanEdit == true
+                                     && a.CanEdit
                                select a).ToList();
             if (dbsinnerseq.Any())
             {

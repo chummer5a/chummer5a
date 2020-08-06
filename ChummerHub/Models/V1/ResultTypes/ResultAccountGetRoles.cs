@@ -28,10 +28,7 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetRoles.ResultAccountGetRoles(IList<string>)'
         {
             PossibleRoles = new List<string>();
-            if (roles != null)
-                Roles = roles.ToList();
-            else
-                Roles = new List<string>();
+            Roles = roles != null ? roles.ToList() : new List<string>();
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultAccountGetRoles.ResultAccountGetRoles(IList<string>, IList<string>)'
