@@ -79,6 +79,7 @@ Data Changes:
 - Corrected multiple instances where an item with two different entries had two different sourcebook references.
 - Bolt Hole now properly starts with 4 LPs instead of 3, and now properly has a C&N maximum of 2 instead of 3.
 - Not a Home now properly modifies the maximum rating of C&N instead of its value.
+- SINner (Corporate Limited) now properly allows characters to define their own entry instead of picking from suggestions.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
