@@ -45,6 +45,11 @@ Application Fixes:
 - Added a Master Index tab that lets users search the entire Chummer database for any entry and quickly view its sourcebook reference (and click it to open up a linked PDF). This does cause the program's initial startup time to be noticeably longer than before, so it can be disabled in the Options menu for those who do not want to use it.
 - Added Group Contact Karma to the tooltip for Positive Qualities in create mode.
 - Opening multiple character files simultaneously is now a lot less likely to cause the program to crash.
+- Gear, Armor Mods, and Cyberware that are granted for free by something can no longer have their ratings directly altered during character creation.
+- Ammo and Weapon Accessories that modify damage, AP, and/or firing modes now stack appropriately with Ammo and Weapon Accessories that replace damage, AP, and/or firing mods.
+- Weapon Accessories that contain the word "Flechette" in their name no longer lower AP by 5 for weapons with an (f) damage type in a hardcoded fashion.
+- Custom Fit (Stack) now works on armor types other than those in the High-Fashion Armor Clothing category. This is only relevant for custom data.
+- Armor that subtracts from the character's total armor now works properly.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -72,6 +77,8 @@ Data Changes:
 - Fixed Neocortial Neural Amplifiers not listing the correct condition modifier.
 - Spirit Affinity no longer lists Watcher and Homunculus spirits among its recommendations.
 - Corrected multiple instances where an item with two different entries had two different sourcebook references.
+- Bolt Hole now properly starts with 4 LPs instead of 3, and now properly has a C&N maximum of 2 instead of 3.
+- Not a Home now properly modifies the maximum rating of C&N instead of its value.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

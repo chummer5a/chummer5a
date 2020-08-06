@@ -45,7 +45,7 @@
   </PropertyGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.48.0.2021" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.48.0.2026" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.14.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.14.0" />

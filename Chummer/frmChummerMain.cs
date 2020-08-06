@@ -104,6 +104,46 @@ namespace Chummer
             }
         }
 
+        private static readonly string[] s_astrPreloadFileNames =
+        {
+            "actions.xml",
+            "armor.xml",
+            "bioware.xml",
+            "books.xml",
+            "complexforms.xml",
+            "contacts.xml",
+            "critters.xml",
+            "critterpowers.xml",
+            "cyberware.xml",
+            "drugcomponents.xml",
+            "echoes.xml",
+            "gameplayoptions.xml",
+            "gear.xml",
+            "improvements.xml",
+            "licenses.xml",
+            "lifemodules.xml",
+            "lifestyles.xml",
+            "martialarts.xml",
+            "mentors.xml",
+            "metamagic.xml",
+            "metatypes.xml",
+            "options.xml",
+            "packs.xml",
+            "powers.xml",
+            "priorities.xml",
+            "programs.xml",
+            "qualities.xml",
+            "ranges.xml",
+            "sheets.xml",
+            "skills.xml",
+            "spells.xml",
+            "spiritpowers.xml",
+            "streams.xml",
+            "traditions.xml",
+            "vehicles.xml",
+            "weapons.xml"
+        };
+
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
         private void frmChummerMain_Load(object sender, EventArgs e)
@@ -189,50 +229,23 @@ namespace Chummer
 
                     using (_frmLoading = new frmLoading { CharacterFile = Text })
                     {
-                        _frmLoading.Reset(3);
+                        _frmLoading.Reset(3 + s_astrPreloadFileNames.Length);
                         _frmLoading.Show();
 
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
-                            Parallel.Invoke(
-                                () => XmlManager.Load("actions.xml"),
-                                () => XmlManager.Load("armor.xml"),
-                                () => XmlManager.Load("bioware.xml"),
-                                () => XmlManager.Load("books.xml"),
-                                () => XmlManager.Load("complexforms.xml"),
-                                () => XmlManager.Load("contacts.xml"),
-                                () => XmlManager.Load("critters.xml"),
-                                () => XmlManager.Load("critterpowers.xml"),
-                                () => XmlManager.Load("cyberware.xml"),
-                                () => XmlManager.Load("drugcomponents.xml"),
-                                () => XmlManager.Load("echoes.xml"),
-                                () => XmlManager.Load("gameplayoptions.xml"),
-                                () => XmlManager.Load("gear.xml"),
-                                () => XmlManager.Load("improvements.xml"),
-                                () => XmlManager.Load("licenses.xml"),
-                                () => XmlManager.Load("lifemodules.xml"),
-                                () => XmlManager.Load("lifestyles.xml"),
-                                () => XmlManager.Load("martialarts.xml"),
-                                () => XmlManager.Load("mentors.xml"),
-                                () => XmlManager.Load("metamagic.xml"),
-                                () => XmlManager.Load("metatypes.xml"),
-                                () => XmlManager.Load("options.xml"),
-                                () => XmlManager.Load("packs.xml"),
-                                () => XmlManager.Load("powers.xml"),
-                                () => XmlManager.Load("priorities.xml"),
-                                () => XmlManager.Load("programs.xml"),
-                                () => XmlManager.Load("qualities.xml"),
-                                () => XmlManager.Load("ranges.xml"),
-                                () => XmlManager.Load("sheets.xml"),
-                                () => XmlManager.Load("skills.xml"),
-                                () => XmlManager.Load("spells.xml"),
-                                () => XmlManager.Load("spiritpowers.xml"),
-                                () => XmlManager.Load("streams.xml"),
-                                () => XmlManager.Load("traditions.xml"),
-                                () => XmlManager.Load("vehicles.xml"),
-                                () => XmlManager.Load("weapons.xml")
-                            );
+                            // Hacky, but necessary because innards of Parallel.ForEach would end up invoking
+                            // a UI function that would wait for Parallel.ForEach to finish, causing the program
+                            // to lock up. Task.Run() delegates Parallel.ForEach to a new thread, preventing this.
+                            Task.Run(() =>
+                            {
+                                Parallel.ForEach(s_astrPreloadFileNames, x =>
+                                {
+                                    XmlManager.Load(x);
+                                    _frmLoading.PerformStep(Application.ProductName);
+                                });
+                            });
                             //Timekeeper.Finish("cache_load");
                         }
 
@@ -245,47 +258,53 @@ namespace Chummer
                         string[] strArgs = Environment.GetCommandLineArgs();
                         ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
                         bool blnShowTest = false;
-                        object blnShowTestLock = new object();
-                        if (!Utils.IsUnitTest)
+                        if (!Utils.IsUnitTest && strArgs.Length > 1)
                         {
+                            object blnShowTestLock = new object();
                             try
                             {
-                                Parallel.For(1, strArgs.Length, i =>
+                                // Hacky, but necessary because innards of Parallel.For would end up invoking
+                                // a UI function that would wait for Parallel.For to finish, causing the program
+                                // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+                                Task.Run(() =>
                                 {
-                                    if (strArgs[i] == "/test")
+                                    Parallel.For(1, strArgs.Length, i =>
                                     {
-                                        lock (blnShowTestLock)
-                                            blnShowTest = true;
-                                    }
-                                    else if ((strArgs[i] == "/help")
-                                             || (strArgs[i] == "?")
-                                             || (strArgs[i] == "/?"))
-                                    {
-                                        string msg = "Commandline parameters are either " + Environment.NewLine;
-                                        msg += "\t/test" + Environment.NewLine;
-                                        msg += "\t/help" + Environment.NewLine;
-                                        msg += "\t(filename to open)" + Environment.NewLine;
-                                        msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
-                                        Console.WriteLine(msg);
-                                    }
-                                    else if (strArgs[i].Contains("/plugin"))
-                                    {
-                                        Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArgs[i]);
-                                    }
-                                    else if (!strArgs[i].StartsWith('/'))
-                                    {
-                                        if (!File.Exists(strArgs[i]))
+                                        if (strArgs[i] == "/test")
                                         {
-                                            throw new ArgumentException(
-                                                "Chummer started with unknown command line arguments: " +
-                                                strArgs.Aggregate((j, k) => j + " " + k));
+                                            lock (blnShowTestLock)
+                                                blnShowTest = true;
                                         }
+                                        else if ((strArgs[i] == "/help")
+                                                 || (strArgs[i] == "?")
+                                                 || (strArgs[i] == "/?"))
+                                        {
+                                            string msg = "Commandline parameters are either " + Environment.NewLine;
+                                            msg += "\t/test" + Environment.NewLine;
+                                            msg += "\t/help" + Environment.NewLine;
+                                            msg += "\t(filename to open)" + Environment.NewLine;
+                                            msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
+                                            Console.WriteLine(msg);
+                                        }
+                                        else if (strArgs[i].Contains("/plugin"))
+                                        {
+                                            Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArgs[i]);
+                                        }
+                                        else if (!strArgs[i].StartsWith('/'))
+                                        {
+                                            if (!File.Exists(strArgs[i]))
+                                            {
+                                                throw new ArgumentException(
+                                                    "Chummer started with unknown command line arguments: " +
+                                                    strArgs.Aggregate((j, k) => j + " " + k));
+                                            }
 
-                                        if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i]))
-                                            return;
-                                        Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
-                                        lstCharactersToLoad.Add(objLoopCharacter);
-                                    }
+                                            if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i]))
+                                                return;
+                                            Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
+                                            lstCharactersToLoad.Add(objLoopCharacter);
+                                        }
+                                    });
                                 });
                             }
                             catch (Exception ex)
@@ -847,16 +866,17 @@ namespace Chummer
         {
             if(e.Button == MouseButtons.Right)
             {
-                string strFileName = ((ToolStripMenuItem)sender).Text;
-                strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-
-                GlobalOptions.FavoritedCharacters.Add(strFileName);
+                string strFileName = ((ToolStripMenuItem)sender).Tag as string;
+                if (!string.IsNullOrEmpty(strFileName))
+                    GlobalOptions.FavoritedCharacters.Add(strFileName);
             }
         }
 
         private async void mnuStickyMRU_Click(object sender, EventArgs e)
         {
-            string strFileName = ((ToolStripMenuItem)sender).Text;
+            string strFileName = ((ToolStripMenuItem)sender).Tag as string;
+            if (string.IsNullOrEmpty(strFileName))
+                return;
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
@@ -868,10 +888,13 @@ namespace Chummer
         {
             if(e.Button == MouseButtons.Right)
             {
-                string strFileName = ((ToolStripMenuItem)sender).Text;
+                string strFileName = ((ToolStripMenuItem)sender).Tag as string;
 
-                GlobalOptions.FavoritedCharacters.Remove(strFileName);
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                if (!string.IsNullOrEmpty(strFileName))
+                {
+                    GlobalOptions.FavoritedCharacters.Remove(strFileName);
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                }
             }
         }
 
@@ -1067,11 +1090,17 @@ namespace Chummer
             string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             Character[] lstCharacters = new Character[s.Length];
             object lstCharactersLock = new object();
-            Parallel.For(0, s.Length, i =>
+            // Hacky, but necessary because innards of Parallel.For would end up invoking
+            // a UI function that would wait for Parallel.For to finish, causing the program
+            // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+            Task.Run(() =>
             {
-                Character objLoopCharacter = LoadCharacter(s[i]).Result;
-                lock(lstCharactersLock)
-                    lstCharacters[i] = objLoopCharacter;
+                Parallel.For(0, s.Length, i =>
+                {
+                    Character objLoopCharacter = LoadCharacter(s[i]).Result;
+                    lock (lstCharactersLock)
+                        lstCharacters[i] = objLoopCharacter;
+                });
             });
             Cursor = objOldCursor;
             Program.MainForm.OpenCharacterList(lstCharacters);
@@ -1107,8 +1136,6 @@ namespace Chummer
         /// <returns></returns>
         public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            if (_frmLoading?.IsDisposed == false)
-                return ShowMessageBox(_frmLoading, message, caption, buttons, icon);
             return ShowMessageBox(this, message, caption, buttons, icon);
         }
 
@@ -1160,7 +1187,10 @@ namespace Chummer
                 }
             }
 
-            return CenterableMessageBox.Show(this, message, caption, buttons, icon, defaultButton);
+            return CenterableMessageBox.Show(_frmLoading?.IsDisposed == false
+                ? _frmLoading
+                : this as IWin32Window,
+                message, caption, buttons, icon, defaultButton);
         }
 
         public delegate DialogResult PassStringStringReturnDialogResultDelegate(
@@ -1305,11 +1335,17 @@ namespace Chummer
                         _frmLoading.Show();
                         Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                         object lstCharactersLock = new object();
-                        Parallel.For(0, lstCharacters.Length, i =>
+                        // Hacky, but necessary because innards of Parallel.For would end up invoking
+                        // a UI function that would wait for Parallel.For to finish, causing the program
+                        // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+                        Task.Run(() =>
                         {
-                            Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
-                            lock (lstCharactersLock)
-                                lstCharacters[i] = objLoopCharacter;
+                            Parallel.For(0, lstCharacters.Length, i =>
+                            {
+                                Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
+                                lock (lstCharactersLock)
+                                    lstCharacters[i] = objLoopCharacter;
+                            });
                         });
                         Program.MainForm.OpenCharacterList(lstCharacters);
                     }
@@ -1499,8 +1535,9 @@ namespace Chummer
 
                     if(i < GlobalOptions.FavoritedCharacters.Count)
                     {
-                        objItem.Visible = true;
                         objItem.Text = GlobalOptions.FavoritedCharacters[i];
+                        objItem.Tag = GlobalOptions.FavoritedCharacters[i];
+                        objItem.Visible = true;
                     }
                     else
                     {
@@ -1520,6 +1557,7 @@ namespace Chummer
             mnuMRU8.Visible = false;
             mnuMRU9.Visible = false;
 
+            string strSpace = LanguageManager.GetString("String_Space");
             int i2 = 0;
             for(int i = 0; i < GlobalOptions.MaxMruSize; ++i)
             {
@@ -1565,11 +1603,15 @@ namespace Chummer
                                 continue;
                         }
 
-                        objItem.Visible = true;
-                        if(i2 == 9)
-                            objItem.Text = "1&0 " + strFile;
+                        if (i2 <= 9 && i2 >= 0)
+                        {
+                            string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);
+                            objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
+                        }
                         else
-                            objItem.Text = '&' + (i + 1).ToString(GlobalOptions.InvariantCultureInfo) + ' ' + strFile;
+                            objItem.Text = (i2 + 1).ToString(GlobalOptions.CultureInfo) + strSpace + strFile;
+                        objItem.Tag = strFile;
+                        objItem.Visible = true;
 
                         ++i2;
                     }

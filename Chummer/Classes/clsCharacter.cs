@@ -1860,7 +1860,7 @@ namespace Chummer
                     XmlNode xmlRootQualitiesNode;
                     using (_ = Timekeeper.StartSyncron("load_xml", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep("XML"));
+                        frmLoadingForm?.PerformStep("XML");
 
                         if (!File.Exists(_strFileName))
                             return false;
@@ -1890,7 +1890,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
                         objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                         xmlCharacterNavigator =
                             objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
@@ -2267,7 +2267,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
                         // Improvements.
                         objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
                         foreach (XmlNode objXmlMentor in objXmlNodeList)
@@ -2284,7 +2284,7 @@ namespace Chummer
                     _lstInternalIdsNeedingReapplyImprovements.Clear();
                     using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
                         // Improvements.
                         objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
                         string strCharacterInnerXml = objXmlCharacter.InnerXml;
@@ -2368,7 +2368,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
                         // Contacts.
                         foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
                         {
@@ -2382,7 +2382,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_quality", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
                         // Qualities
 
                         objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
@@ -2593,7 +2593,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_attributes", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
                         AttributeSection.Load(objXmlCharacter);
                     }
 
@@ -2607,7 +2607,7 @@ namespace Chummer
                             xmlCharacterNavigator.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
                         }
 
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition"));
                         // Attempt to load in the character's tradition (or equivalent for Technomancers)
                         string strTemp = string.Empty;
                         if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) &&
@@ -2705,7 +2705,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
                         _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
                         _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
 
@@ -2724,7 +2724,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_loc", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
                         // Locations.
                         objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
                         foreach (XmlNode objXmlLocation in objXmlLocationList)
@@ -2836,7 +2836,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_armor", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
                         // Armor.
                         objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
                         foreach (XmlNode objXmlArmor in objXmlNodeList)
@@ -2851,7 +2851,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
                         // Weapons.
                         objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
                         foreach (XmlNode objXmlWeapon in objXmlNodeList)
@@ -2866,7 +2866,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
                         // Drugs.
                         objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
                         foreach (XmlNode objXmlDrug in objXmlNodeList)
@@ -2881,7 +2881,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
                         // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
                         Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
                         // Cyberware/Bioware.
@@ -3070,7 +3070,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_spells", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
                         // Spells.
                         objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
                         foreach (XmlNode objXmlSpell in objXmlNodeList)
@@ -3085,7 +3085,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
                         // Powers.
                         bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version(5, 198, 26);
                         objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
@@ -3132,7 +3132,7 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                     {
 
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
                         // Spirits/Sprites.
                         foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
                         {
@@ -3153,7 +3153,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_complex", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
                         // Compex Forms/Technomancer Programs.
                         objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
                         foreach (XmlNode objXmlComplexForm in objXmlNodeList)
@@ -3168,7 +3168,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
                         // Compex Forms/Technomancer Programs.
                         objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
                         foreach (XmlNode objXmlProgram in objXmlNodeList)
@@ -3183,7 +3183,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_marts", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
                         // Martial Arts.
                         objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
                         foreach (XmlNode objXmlArt in objXmlNodeList)
@@ -3213,7 +3213,7 @@ namespace Chummer
 #endif
                     using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
                         // Limit Modifiers.
                         objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
                         foreach (XmlNode objXmlLimit in objXmlNodeList)
@@ -3228,7 +3228,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
                         // Lifestyles.
                         objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
                         foreach (XmlNode objXmlLifestyle in objXmlNodeList)
@@ -3243,7 +3243,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_gear", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
                         // <gears>
                         objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
                         foreach (XmlNode objXmlGear in objXmlNodeList)
@@ -3317,7 +3317,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_car", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
                         // Vehicles.
                         objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
                         foreach (XmlNode objXmlVehicle in objXmlNodeList)
@@ -3332,7 +3332,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_mmagic", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
                         // Metamagics/Echoes.
                         objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
                         foreach (XmlNode objXmlMetamagic in objXmlNodeList)
@@ -3347,7 +3347,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_arts", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
                         // Arts
                         objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
                         foreach (XmlNode objXmlArt in objXmlNodeList)
@@ -3362,7 +3362,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_ench", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
                         // Enhancements
                         objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
                         foreach (XmlNode objXmlEnhancement in objXmlNodeList)
@@ -3377,7 +3377,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_cpow", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
                         // Critter Powers.
                         objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
                         foreach (XmlNode objXmlPower in objXmlNodeList)
@@ -3392,7 +3392,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_foci", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
                         // Foci.
                         objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
                         foreach (XmlNode objXmlFocus in objXmlNodeList)
@@ -3407,7 +3407,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_init", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
                         // Initiation Grades.
                         objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
                         foreach (XmlNode objXmlGrade in objXmlNodeList)
@@ -3420,7 +3420,7 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_init");
                     }
 
-                    frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Expenses")));
+                    frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Expenses"));
                     // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
                     // they shouldn't get loaded in create mode because they shouldn't be there.
                     if (Created)
@@ -3452,7 +3452,7 @@ namespace Chummer
 #endif
                     using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
                         // Improvement Groups.
                         XmlNodeList objXmlGroupList = objXmlCharacter.SelectNodes("improvementgroups/improvementgroup");
                         foreach (XmlNode objXmlGroup in objXmlGroupList)
@@ -3465,7 +3465,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
                         // Calendar.
                         XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
                         foreach (XmlNode objXmlWeek in objXmlWeekList)
@@ -3480,7 +3480,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
                         // Look for the unarmed attack
                         bool blnFoundUnarmed = false;
                         foreach (Weapon objWeapon in _lstWeapons)
@@ -3704,7 +3704,7 @@ namespace Chummer
                     // Refresh certain improvements
                     using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                     {
-                        frmLoadingForm.DoThreadSafe(() => frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements")));
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
                         IsLoading = false;
                         // Refresh permanent attribute changes due to essence loss
                         RefreshEssenceLossImprovements();
@@ -7963,7 +7963,7 @@ namespace Chummer
                     _blnMAGEnabled = value;
                     if(value)
                     {
-                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
                         {
                             ResetCachedEssence();
@@ -7981,15 +7981,104 @@ namespace Chummer
                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
                                     || x.ImproveSource == Improvement.ImprovementSource.Heritage)
                                 && x.Enabled);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstMAGEnablingQualityIds = Improvements.Where(x =>
+                                    x.ImproveType == Improvement.ImprovementType.Attribute
+                                    && x.ImprovedName == "MAG"
+                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstMAGEnablingQualityIds.Count; ++i)
+                                {
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == lstMAGEnablingQualityIds[i]);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            if (Improvements.Any(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                && x.Enabled))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstMAGEnablingQualityIds.AddRange(Improvements.Where(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                && x.Enabled).Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
                             foreach(Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                   && objImprovement.Enabled)
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement)
+                                {
+                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    {
+                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                        while (objQuality != null)
+                                        {
+                                            if (objQuality.OriginSource == QualitySource.Metatype
+                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                                || objQuality.OriginSource == QualitySource.BuiltIn
+                                                || objQuality.OriginSource == QualitySource.LifeModule
+                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            {
+                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                    && x.ImprovedName == objQuality.InternalId
+                                                    && x.Enabled);
+                                                if (objParentImprovement == null)
+                                                    break;
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                {
+                                                    blnCountImprovement = true;
+                                                    break;
+                                                }
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                {
+                                                    // Qualities that add other qualities get added to the list to be checked, too
+                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
+                                                }
+                                                else
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
@@ -8168,7 +8257,7 @@ namespace Chummer
                     _blnRESEnabled = value;
                     if(value)
                     {
-                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
                         {
                             ResetCachedEssence();
@@ -8186,15 +8275,104 @@ namespace Chummer
                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
                                     || x.ImproveSource == Improvement.ImprovementSource.Heritage)
                                 && x.Enabled);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstRESEnablingQualityIds = Improvements.Where(x =>
+                                    x.ImproveType == Improvement.ImprovementType.Attribute
+                                    && x.ImprovedName == "RES"
+                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstRESEnablingQualityIds.Count; ++i)
+                                {
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == lstRESEnablingQualityIds[i]);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            if (Improvements.Any(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                && x.Enabled))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstRESEnablingQualityIds.AddRange(Improvements.Where(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                && x.Enabled).Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
-                            foreach(Improvement objImprovement in Improvements)
+                            foreach (Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                   && objImprovement.Enabled)
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement)
+                                {
+                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    {
+                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                        while (objQuality != null)
+                                        {
+                                            if (objQuality.OriginSource == QualitySource.Metatype
+                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                                || objQuality.OriginSource == QualitySource.BuiltIn
+                                                || objQuality.OriginSource == QualitySource.LifeModule
+                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            {
+                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                    && x.ImprovedName == objQuality.InternalId
+                                                    && x.Enabled);
+                                                if (objParentImprovement == null)
+                                                    break;
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                {
+                                                    blnCountImprovement = true;
+                                                    break;
+                                                }
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                {
+                                                    // Qualities that add other qualities get added to the list to be checked, too
+                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
+                                                }
+                                                else
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
@@ -8294,7 +8472,7 @@ namespace Chummer
                     _blnDEPEnabled = value;
                     if(value)
                     {
-                        // Career mode, so no extra calculations need tobe done for EssenceAtSpecialStart
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
                         {
                             ResetCachedEssence();
@@ -8312,15 +8490,104 @@ namespace Chummer
                                     || x.ImproveSource == Improvement.ImprovementSource.Metavariant
                                     || x.ImproveSource == Improvement.ImprovementSource.Heritage)
                                 && x.Enabled);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstDEPEnablingQualityIds = Improvements.Where(x =>
+                                    x.ImproveType == Improvement.ImprovementType.Attribute
+                                    && x.ImprovedName == "DEP"
+                                    && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                    && x.Enabled).Select(x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstDEPEnablingQualityIds.Count; ++i)
+                                {
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == lstDEPEnablingQualityIds[i]);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            if (Improvements.Any(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && (x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || x.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                && x.Enabled))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstDEPEnablingQualityIds.AddRange(Improvements.Where(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                && x.Enabled).Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>();
-                            foreach(Improvement objImprovement in Improvements)
+                            foreach (Improvement objImprovement in Improvements)
                             {
-                                if((!blnCountOnlyPriorityOrMetatypeGivenBonuses
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                    || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                   && objImprovement.Enabled)
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement)
+                                {
+                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    {
+                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                        while (objQuality != null)
+                                        {
+                                            if (objQuality.OriginSource == QualitySource.Metatype
+                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                                || objQuality.OriginSource == QualitySource.BuiltIn
+                                                || objQuality.OriginSource == QualitySource.LifeModule
+                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            {
+                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                    && x.ImprovedName == objQuality.InternalId
+                                                    && x.Enabled);
+                                                if (objParentImprovement == null)
+                                                    break;
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
+                                                {
+                                                    blnCountImprovement = true;
+                                                    break;
+                                                }
+                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                                {
+                                                    // Qualities that add other qualities get added to the list to be checked, too
+                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
+                                                }
+                                                else
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
                                     if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
@@ -9943,80 +10210,81 @@ namespace Chummer
         {
             get
             {
+                List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped && objArmor.Encumbrance).ToList();
+                if (lstArmorsToConsider.Count == 0)
+                    return 0;
+                Armor objHighestArmor = null;
                 int intHighest = 0;
                 int intHighestNoCustomStack = 0;
-                string strHighest = string.Empty;
-
-                if(Armor.Count == 0) return 0;
+                int intTotalClothing = 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   !objArmor.ArmorValue.StartsWith('+') && objArmor.Equipped))
+                // This is used for Custom-Fit armour's stacking.
+                foreach (Armor objArmor in lstArmorsToConsider)
                 {
+                    if ((objArmor.ArmorValue.StartsWith('+')
+                         || objArmor.ArmorValue.StartsWith('-'))
+                        && objArmor.Category != "Clothing")
+                        continue;
                     int intArmorValue = objArmor.TotalArmor;
                     int intCustomStackBonus = 0;
                     string strArmorName = objArmor.Name;
-                    if(objArmor.Category == "High-Fashion Armor Clothing")
+                    foreach (Armor a in lstArmorsToConsider)
                     {
-                        foreach(Armor a in Armor.Where(a =>
-                           (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) &&
-                           a.Equipped))
-                        {
-                            if(a.ArmorMods.Any(objMod =>
-                               objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
-                                intCustomStackBonus += Convert.ToInt32(a.ArmorOverrideValue, GlobalOptions.InvariantCultureInfo);
-                        }
+                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                      && objMod.Extra == strArmorName
+                                                      && objMod.Equipped))
+                            intCustomStackBonus += a.TotalOverrideArmor;
                     }
 
-                    if(intArmorValue + intCustomStackBonus > intHighest)
+                    if (objArmor.Category == "Clothing")
+                        intTotalClothing += intArmorValue + intCustomStackBonus;
+                    else if (intArmorValue + intCustomStackBonus > intHighest)
                     {
                         intHighest = intArmorValue + intCustomStackBonus;
                         intHighestNoCustomStack = intArmorValue;
-                        strHighest = strArmorName;
+                        objHighestArmor = objArmor;
                     }
                 }
 
                 int intArmor = intHighestNoCustomStack;
 
-                // Run through the list of Armor currently worn again and look at Clothing items that start with '+' since they stack with eachother.
-                int intClothing = 0;
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                   objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped))
+                if (intTotalClothing > intHighest)
                 {
-                    if(objArmor.ArmorValue.StartsWith('+'))
-                        intClothing += objArmor.TotalArmor;
-                    else
-                        intClothing += objArmor.TotalOverrideArmor;
-                }
-
-                if(intClothing > intHighest)
-                {
-                    intArmor = intClothing;
-                    strHighest = string.Empty;
+                    objHighestArmor = null;
+                    intArmor = intTotalClothing;
                 }
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with '+' since they stack with the highest Armor.
                 int intStacking = 0;
-                foreach(Armor objArmor in Armor.Where(objArmor =>
-                   (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                   objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped))
+                foreach (Armor objArmor in lstArmorsToConsider)
                 {
+                    if (!objArmor.ArmorValue.StartsWith('+')
+                        && !objArmor.ArmorValue.StartsWith('-')
+                        && !objArmor.ArmorOverrideValue.StartsWith('+')
+                        && !objArmor.ArmorOverrideValue.StartsWith('-')
+                        || objArmor.Category == "Clothing"
+                        || objArmor == objHighestArmor)
+                        continue;
                     bool blnDoAdd = true;
-                    if(objArmor.Category == "High-Fashion Armor Clothing")
+                    bool blnCustomFit = false;
+                    if (objHighestArmor != null)
                     {
-                        foreach(ArmorMod objMod in objArmor.ArmorMods)
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
-                            if(objMod.Name == "Custom Fit (Stack)")
+                            if (objMod.Name == "Custom Fit (Stack)")
                             {
-                                blnDoAdd = objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest);
+                                blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
+                                blnCustomFit = true;
                                 break;
                             }
                         }
                     }
 
-                    if(blnDoAdd)
+                    if (blnDoAdd)
                     {
-                        if(objArmor.ArmorValue.StartsWith('+'))
+                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('+')))
                             intStacking += objArmor.TotalArmor;
                         else
                             intStacking += objArmor.TotalOverrideArmor;
@@ -10741,64 +11009,68 @@ namespace Chummer
         {
             get
             {
-                string strHighest = string.Empty;
+                List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped && objArmor.Encumbrance).ToList();
+                if (lstArmorsToConsider.Count == 0)
+                    return 0;
+                Armor objHighestArmor = null;
                 int intHighest = 0;
-                int intTotalA = 0;
+                int intTotalClothing = 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 // This is used for Custom-Fit armour's stacking.
-                foreach (Armor objArmor in Armor.Where(objArmor =>
-                    objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+')))
+                foreach (Armor objArmor in lstArmorsToConsider)
                 {
+                    if ((objArmor.ArmorValue.StartsWith('+')
+                         || objArmor.ArmorValue.StartsWith('-'))
+                        && objArmor.Category != "Clothing")
+                        continue;
                     int intLoopTotal = objArmor.TotalArmor;
                     string strArmorName = objArmor.Name;
-                    if (objArmor.Category == "High-Fashion Armor Clothing")
+                    foreach (Armor a in lstArmorsToConsider)
                     {
-                        foreach (Armor a in Armor.Where(a =>
-                            (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) &&
-                            a.Equipped && objArmor.Encumbrance))
-                        {
-                            if (a.ArmorMods.Any(objMod =>
-                                objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strArmorName))
-                                intLoopTotal += Convert.ToInt32(a.ArmorOverrideValue, GlobalOptions.InvariantCultureInfo);
-                        }
+                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                      && objMod.Extra == strArmorName
+                                                      && objMod.Equipped))
+                            intLoopTotal += a.TotalOverrideArmor;
                     }
 
-                    if (intLoopTotal > intHighest)
+                    if (objArmor.Category == "Clothing")
+                        intTotalClothing += intLoopTotal;
+                    else if (intLoopTotal > intHighest)
                     {
                         intHighest = intLoopTotal;
-                        strHighest = strArmorName;
+                        objHighestArmor = objArmor;
                     }
                 }
 
-                // Run through the list of Armor currently worn again and look at Clothing items that start with '+' since they stack with eachother.
-                int intClothing = 0;
-                foreach (Armor objArmor in Armor.Where(objArmor =>
-                    (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                    objArmor.Name != strHighest && objArmor.Category == "Clothing" && objArmor.Equipped && objArmor.Encumbrance))
+                int intTotalA = 0;
+                // Highest armor was overwritten by Clothing '+' values, so factor those '+' values into encumbrance
+                if (intTotalClothing > intHighest)
                 {
-                    if (objArmor.ArmorValue.StartsWith('+'))
-                        intClothing += objArmor.TotalArmor;
-                    else
-                        intClothing += objArmor.TotalOverrideArmor;
+                    objHighestArmor = null;
+                    intTotalA = intTotalClothing;
                 }
 
-                if (intClothing > intHighest)
+                foreach (Armor objArmor in lstArmorsToConsider)
                 {
-                    strHighest = string.Empty;
-                }
-
-                foreach (Armor objArmor in Armor.Where(objArmor =>
-                    (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) &&
-                    objArmor.Name != strHighest && objArmor.Category != "Clothing" && objArmor.Equipped && objArmor.Encumbrance))
-                {
+                    if (!objArmor.ArmorValue.StartsWith('+')
+                        && !objArmor.ArmorValue.StartsWith('-')
+                        && !objArmor.ArmorOverrideValue.StartsWith('+')
+                        && !objArmor.ArmorOverrideValue.StartsWith('-')
+                        || objArmor.Category == "Clothing"
+                        || objArmor == objHighestArmor)
+                        continue;
                     bool blnDoAdd = true;
-                    if (objArmor.Category == "High-Fashion Armor Clothing")
+                    bool blnCustomFit = false;
+                    if (objHighestArmor != null)
                     {
                         foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
                             if (objMod.Name == "Custom Fit (Stack)")
                             {
-                                blnDoAdd = objMod.Extra == strHighest && !string.IsNullOrEmpty(strHighest);
+                                blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
+                                blnCustomFit = true;
                                 break;
                             }
                         }
@@ -10806,16 +11078,12 @@ namespace Chummer
 
                     if (blnDoAdd)
                     {
-                        if (objArmor.ArmorValue.StartsWith('+'))
+                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('+')))
                             intTotalA += objArmor.TotalArmor;
                         else
                             intTotalA += objArmor.TotalOverrideArmor;
                     }
                 }
-
-                // Highest armor was overwritten by Clothing '+' values, so factor those '+' values into encumbrance
-                if (string.IsNullOrEmpty(strHighest))
-                    intTotalA += intClothing;
 
                 // calculate armor encumbrance
                 int intSTRTotalValue = STR.TotalValue;
