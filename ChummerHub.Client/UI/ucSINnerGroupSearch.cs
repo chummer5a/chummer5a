@@ -900,7 +900,7 @@ namespace ChummerHub.Client.UI
 
                 if (tvGroupSearchResult.SelectedNode?.Tag is SINnerSearchGroup sel)
                 {
-                    @group = new SINnerGroup(sel);
+                    group = new SINnerGroup(sel);
                 }
 
                 using (frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false))

@@ -586,7 +586,6 @@ namespace Chummer.Plugins
 
         private async void mnuSINnersArchetypes_Click(object sender, EventArgs e)
         {
-            SINSearchGroupResult ssgr = null;
             HttpOperationResponse<ResultGroupGetSearchGroups> res = null;
             try
             {
@@ -596,6 +595,7 @@ namespace Chummer.Plugins
                     res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes").ConfigureAwait(true);
                     if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                         return;
+                    SINSearchGroupResult ssgr;
                     if (result.CallSuccess == true)
                     {
                         ssgr = result.MySearchGroupResult;
@@ -626,8 +626,6 @@ namespace Chummer.Plugins
                             }
                         });
                     }
-
-                    ssgr = null;
                 }
             }
             catch (ArgumentNullException)
@@ -1097,16 +1095,14 @@ namespace Chummer.Plugins
                         string SINnerIdvalue = argument.Substring(5);
                         SINnerIdvalue = SINnerIdvalue.Trim('/');
                         int transactionInt = SINnerIdvalue.IndexOf(':');
-                        string transaction = null;
-                        int callbackInt = -1;
                         string callback = null;
                         if (transactionInt != -1)
                         {
-                            transaction = SINnerIdvalue.Substring(transactionInt);
+                            string transaction = SINnerIdvalue.Substring(transactionInt);
                             SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
                             SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
                             transaction = transaction.TrimStart(':');
-                            callbackInt = transaction.IndexOf(':');
+                            int callbackInt = transaction.IndexOf(':');
                             if (callbackInt != -1)
                             {
                                 callback = transaction.Substring(callbackInt);

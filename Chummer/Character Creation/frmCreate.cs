@@ -9510,7 +9510,7 @@ namespace Chummer
                     nudCyberwareRating.Minimum = objCyberware.MinRating;
                     nudCyberwareRating.Value = objCyberware.Rating;
                     nudCyberwareRating.Visible = true;
-                    nudCyberwareRating.Enabled = nudCyberwareRating.Maximum != nudCyberwareRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID); ;
+                    nudCyberwareRating.Enabled = nudCyberwareRating.Maximum != nudCyberwareRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID);
                     lblCyberwareRatingLabel.Visible = true;
                 }
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
@@ -11656,7 +11656,7 @@ namespace Chummer
                     nudVehicleRating.Maximum = objCyberware.MaxRating;
                     nudVehicleRating.Minimum = objCyberware.MinRating;
                     nudVehicleRating.Value = objCyberware.Rating;
-                    nudVehicleRating.Enabled = nudVehicleRating.Maximum == nudVehicleRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID); ;
+                    nudVehicleRating.Enabled = nudVehicleRating.Maximum == nudVehicleRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID);
                     nudVehicleRating.Visible = true;
                     lblVehicleRatingLabel.Visible = true;
                 }

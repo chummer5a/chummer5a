@@ -41,7 +41,7 @@ namespace SINners.Models
                 Program.MainForm.ShowMessageBox("Please enter a valid email address!");
                 return;
             }
-            SINnerUserRight ur = UserRightsObservable.FirstOrDefault(a => email != null && a != null && a.EMail != null && a.EMail.Equals(email, StringComparison.OrdinalIgnoreCase)) ?? new SINnerUserRight
+            SINnerUserRight ur = UserRightsObservable.FirstOrDefault(a => email != null && a?.EMail != null && a.EMail.Equals(email, StringComparison.OrdinalIgnoreCase)) ?? new SINnerUserRight
             {
                 EMail = email,
                 CanEdit = true,
