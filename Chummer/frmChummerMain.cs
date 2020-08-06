@@ -407,7 +407,6 @@ namespace Chummer
                     WindowState = FormWindowState.Maximized;
 
                 mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
-                tabForms.ItemSize = new Size(LogicalToDeviceUnits(0), LogicalToDeviceUnits(18));
             }
         }
 
@@ -1777,7 +1776,9 @@ namespace Chummer
 
         private void frmChummerMain_DpiChanged(object sender, DpiChangedEventArgs e)
         {
-            tabForms.ItemSize = new Size(tabForms.ItemSize.Width * e.DeviceDpiNew / e.DeviceDpiOld, tabForms.ItemSize.Height * e.DeviceDpiNew / e.DeviceDpiOld);
+            tabForms.ItemSize = new Size(
+                tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
+                tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
         }
     }
 }
