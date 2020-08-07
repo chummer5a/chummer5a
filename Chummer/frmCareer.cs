@@ -1214,7 +1214,7 @@ namespace Chummer
                 }
 
                 // Trash the global variables and dispose of the Form.
-                if (Program.MainForm.OpenCharacters.All(x => x != CharacterObject && !x.LinkedCharacters.Contains(CharacterObject)))
+                if (Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
 
                 Dispose(true);

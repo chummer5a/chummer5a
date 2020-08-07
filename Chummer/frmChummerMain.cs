@@ -146,7 +146,7 @@ namespace Chummer
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
-        private void frmChummerMain_Load(object sender, EventArgs e)
+        private async void frmChummerMain_Load(object sender, EventArgs e)
         {
             using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
@@ -238,7 +238,7 @@ namespace Chummer
                             // Hacky, but necessary because innards of Parallel.ForEach would end up invoking
                             // a UI function that would wait for Parallel.ForEach to finish, causing the program
                             // to lock up. Task.Run() delegates Parallel.ForEach to a new thread, preventing this.
-                            Task.Run(() =>
+                            await Task.Run(() =>
                             {
                                 Parallel.ForEach(s_astrPreloadFileNames, x =>
                                 {
@@ -266,7 +266,7 @@ namespace Chummer
                                 // Hacky, but necessary because innards of Parallel.For would end up invoking
                                 // a UI function that would wait for Parallel.For to finish, causing the program
                                 // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                                Task.Run(() =>
+                                await Task.Run(() =>
                                 {
                                     Parallel.For(1, strArgs.Length, i =>
                                     {
@@ -1081,7 +1081,7 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
 
-        private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
             Cursor objOldCursor = Cursor;
             Cursor = Cursors.WaitCursor;
@@ -1092,7 +1092,7 @@ namespace Chummer
             // Hacky, but necessary because innards of Parallel.For would end up invoking
             // a UI function that would wait for Parallel.For to finish, causing the program
             // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 Parallel.For(0, s.Length, i =>
                 {
@@ -1135,7 +1135,7 @@ namespace Chummer
         /// <returns></returns>
         public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            return ShowMessageBox(this, message, caption, buttons, icon);
+            return ShowMessageBox(null, message, caption, buttons, icon);
         }
 
         public DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
@@ -1149,7 +1149,7 @@ namespace Chummer
             }
 
             if (owner == null)
-                owner = this;
+                owner = _frmLoading?.IsDisposed == false ? _frmLoading : this as Control;
 
             if (owner.InvokeRequired)
             {
@@ -1303,7 +1303,7 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -1337,7 +1337,7 @@ namespace Chummer
                         // Hacky, but necessary because innards of Parallel.For would end up invoking
                         // a UI function that would wait for Parallel.For to finish, causing the program
                         // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                        Task.Run(() =>
+                        await Task.Run(() =>
                         {
                             Parallel.For(0, lstCharacters.Length, i =>
                             {
