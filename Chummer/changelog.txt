@@ -50,6 +50,7 @@ Application Fixes:
 - Weapon Accessories that contain the word "Flechette" in their name no longer lower AP by 5 for weapons with an (f) damage type in a hardcoded fashion.
 - Custom Fit (Stack) now works on armor types other than those in the High-Fashion Armor Clothing category. This is only relevant for custom data.
 - Armor that subtracts from the character's total armor now works properly.
+- Changing the ratings of Cyberlimb Customization 'ware now properly updates the character's displayed attribute values when appropriate.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
