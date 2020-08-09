@@ -9067,21 +9067,23 @@ namespace Chummer
 
             if (blnDoUIUpdate)
             {
-                string strContactPoints = CharacterObject.ContactPointsUsed.ToString(GlobalOptions.CultureInfo);
+                StringBuilder sbdContactPoints = new StringBuilder(CharacterObject.ContactPointsUsed.ToString(GlobalOptions.CultureInfo));
                 if (CharacterObject.FriendsInHighPlaces)
                 {
-                    strContactPoints += '/' + Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalOptions.CultureInfo);
+                    sbdContactPoints.Append('/').Append(Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalOptions.CultureInfo));
                 }
-                strContactPoints += strOf + intContactPoints.ToString(GlobalOptions.CultureInfo);
+                sbdContactPoints.Append(strOf).Append(intContactPoints.ToString(GlobalOptions.CultureInfo));
                 if (CharacterObject.FriendsInHighPlaces)
                 {
-                    strContactPoints += '/' + (CharacterObject.CHA.Value * 4).ToString(GlobalOptions.CultureInfo);
+                    sbdContactPoints.Append('/').Append((CharacterObject.CHA.Value * 4).ToString(GlobalOptions.CultureInfo));
                 }
                 if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
                 {
-                    strContactPoints += strSpace + '(' + intPointsInContacts.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints + ')';
+                    sbdContactPoints.Append(strSpace).Append('(').Append(intPointsInContacts.ToString(GlobalOptions.CultureInfo))
+                        .Append(strSpace).Append(strPoints).Append(')');
                 }
 
+                string strContactPoints = sbdContactPoints.ToString();
                 lblContactsBP.Text = strContactPoints;
                 lblContactPoints.Text = strContactPoints;
 
