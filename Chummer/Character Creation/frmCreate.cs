@@ -464,6 +464,7 @@ namespace Chummer
                             nameof(Tradition.DrainValue));
                         lblDrainAttributesValue.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
+                        CharacterObject.MagicTradition.SetSourceDetail(lblTraditionSource);
 
                         lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DisplayDrainExpression));

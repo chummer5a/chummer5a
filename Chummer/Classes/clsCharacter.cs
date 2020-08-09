@@ -11993,7 +11993,7 @@ namespace Chummer
                     .Append(strSpace).AppendLine(objMentorSpirit.DisplayAdvantage(GlobalOptions.Language))
                     .AppendLine().Append(LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"))
                     .Append(strSpace).AppendLine(objMentorSpirit.Disadvantage);
-                return sbdReturn.ToString().WordWrap();
+                return sbdReturn.ToString().WordWrap(96);
             }
         }
 
