@@ -9091,8 +9091,6 @@ namespace Chummer
                 lblAttributesBP.Text = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
                 lblPBuildSpecial.Text = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
 
-                tabSkillUc.MissingDatabindingsWorkaround();
-
                 lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                 lblBuildMartialArts.SetToolTip(strMartialArtsBPToolTip.ToString());
 

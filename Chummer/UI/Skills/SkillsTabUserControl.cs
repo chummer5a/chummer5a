@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
@@ -56,17 +57,15 @@ namespace Chummer.UI.Skills
             _lstSortKnowledgeList = GenerateKnowledgeSortList();
         }
 
-        public void MissingDatabindingsWorkaround()
-        {
-            if (!_objCharacter.Created)
-                UpdateKnoSkillRemaining();
-        }
-
         private void UpdateKnoSkillRemaining()
         {
-            lblKnowledgeSkillPoints.Text = _objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo)
-                                           + LanguageManager.GetString("String_Of")
-                                           + _objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalOptions.CultureInfo);
+            StringBuilder sbdText = new StringBuilder(_objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo))
+                .Append(LanguageManager.GetString("String_Of"))
+                .Append(_objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalOptions.CultureInfo));
+            int intSkillPointsSpentOnKnoSkills = _objCharacter.SkillsSection.SkillPointsSpentOnKnoskills;
+            if (intSkillPointsSpentOnKnoSkills != 0)
+                sbdText.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent"), intSkillPointsSpentOnKnoSkills);
+            lblKnowledgeSkillPoints.Text = sbdText.ToString();
         }
 
         private Character _objCharacter;
@@ -246,9 +245,23 @@ namespace Chummer.UI.Skills
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
             _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
+            _objCharacter.SkillsSection.PropertyChanged += SkillsSectionOnPropertyChanged;
             ResumeLayout(true);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+        }
+
+        private void SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SkillsSection.KnowledgeSkillPointsRemain)
+                || e.PropertyName == nameof(SkillsSection.KnowledgeSkillPoints)
+                || e.PropertyName == nameof(SkillsSection.SkillPointsSpentOnKnoskills))
+            {
+                if (_objCharacter?.Created == false)
+                {
+                    UpdateKnoSkillRemaining();
+                }
+            }
         }
 
         private void RefreshSkillGroupLabels()
@@ -350,6 +363,7 @@ namespace Chummer.UI.Skills
                 _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
                 _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
                 _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
+                _objCharacter.SkillsSection.PropertyChanged -= SkillsSectionOnPropertyChanged;
             }
         }
 

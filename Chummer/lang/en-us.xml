@@ -4331,6 +4331,10 @@
       <text>Free Knowledge Skill Points Remaining:</text>
     </string>
     <string>
+      <key>String_PlusSkillPointsSpent</key>
+      <text>, Plus {0} Skill Point(s) Spent</text>
+    </string>
+    <string>
       <key>Label_CustomKnowledgeSkillsReminder</key>
       <text>Remember, you can always write in custom skills and specializations!</text>
     </string>

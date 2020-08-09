@@ -51,6 +51,7 @@ Application Fixes:
 - Custom Fit (Stack) now works on armor types other than those in the High-Fashion Armor Clothing category. This is only relevant for custom data.
 - Armor that subtracts from the character's total armor now works properly.
 - Changing the ratings of Cyberlimb Customization 'ware now properly updates the character's displayed attribute values when appropriate.
+- If skill points have been spent on knowledge skills, a reminder/explanation that this has happened now shows up in the Skills tab.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -114,6 +115,7 @@ Changed/New Strings:
 - Label_MasterIndex_SourceClickReminder
 - Checkbox_Options_HideMasterIndex
 - Label_GroupContacts
+- String_PlusSkillPointsSpent
 
 Build 212
 Application Changes:
