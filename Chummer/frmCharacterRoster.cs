@@ -44,7 +44,7 @@ namespace Chummer
         //public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }
 
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
-        private bool _blnSkipUpdate;
+        private bool _blnSkipUpdate = true;
 
         public frmCharacterRoster()
         {
@@ -100,6 +100,7 @@ namespace Chummer
             SetMyEventHandlers();
             LoadCharacters();
             UpdateCharacter(null);
+            _blnSkipUpdate = false;
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
@@ -113,7 +114,9 @@ namespace Chummer
                 return;
 
             SuspendLayout();
+            _blnSkipUpdate = true;
             LoadCharacters(false, false, true, false);
+            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -123,7 +126,8 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            if(e?.Text != "mru")
+            _blnSkipUpdate = true;
+            if (e?.Text != "mru")
             {
                 try
                 {
@@ -140,6 +144,7 @@ namespace Chummer
             {
                 LoadCharacters(false, true, true, false);
             }
+            _blnSkipUpdate = false;
             ResumeLayout();
         }
 

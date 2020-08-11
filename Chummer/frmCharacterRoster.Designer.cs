@@ -389,7 +389,7 @@ namespace Chummer
             this.treCharacterList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treCharacterList.Location = new System.Drawing.Point(3, 3);
             this.treCharacterList.Name = "treCharacterList";
-            this.tlpCharacterRoster.SetRowSpan(this.treCharacterList, 9);
+            this.tlpCharacterRoster.SetRowSpan(this.treCharacterList, 10);
             this.treCharacterList.ShowNodeToolTips = true;
             this.treCharacterList.Size = new System.Drawing.Size(295, 537);
             this.treCharacterList.TabIndex = 0;
@@ -401,6 +401,7 @@ namespace Chummer
             // 
             // lblSettings
             // 
+            this.lblSettings.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSettings.AutoSize = true;
             this.lblSettings.Location = new System.Drawing.Point(397, 181);
             this.lblSettings.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -412,7 +413,7 @@ namespace Chummer
             // 
             // lblSettingsLabel
             // 
-            this.lblSettingsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSettingsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSettingsLabel.AutoSize = true;
             this.lblSettingsLabel.Location = new System.Drawing.Point(324, 181);
             this.lblSettingsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -433,7 +434,7 @@ namespace Chummer
             this.tlpCharacterRoster.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpCharacterRoster.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCharacterRoster.Controls.Add(this.lblSettings, 2, 7);
-            this.tlpCharacterRoster.Controls.Add(this.tabCharacterText, 1, 8);
+            this.tlpCharacterRoster.Controls.Add(this.tabCharacterText, 1, 9);
             this.tlpCharacterRoster.Controls.Add(this.lblCharacterAliasLabel, 1, 1);
             this.tlpCharacterRoster.Controls.Add(this.treCharacterList, 0, 0);
             this.tlpCharacterRoster.Controls.Add(this.picMugshot, 3, 0);
@@ -454,7 +455,8 @@ namespace Chummer
             this.tlpCharacterRoster.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCharacterRoster.Location = new System.Drawing.Point(9, 9);
             this.tlpCharacterRoster.Name = "tlpCharacterRoster";
-            this.tlpCharacterRoster.RowCount = 9;
+            this.tlpCharacterRoster.RowCount = 10;
+            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -472,7 +474,7 @@ namespace Chummer
             this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picMugshot.Location = new System.Drawing.Point(463, 3);
             this.picMugshot.Name = "picMugshot";
-            this.tlpCharacterRoster.SetRowSpan(this.picMugshot, 8);
+            this.tlpCharacterRoster.SetRowSpan(this.picMugshot, 9);
             this.picMugshot.Size = new System.Drawing.Size(300, 300);
             this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 21;
