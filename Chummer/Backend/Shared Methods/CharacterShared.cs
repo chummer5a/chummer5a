@@ -6523,9 +6523,9 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             bool blnAddAgain;
 
-            using (new CursorWait(this))
+            do
             {
-                do
+                using (new CursorWait(this))
                 {
                     using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
@@ -6630,8 +6630,8 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
 
                     IsDirty = true;
-                } while (blnAddAgain);
-            }
+                }
+            } while (blnAddAgain);
         }
         #endregion
     }

@@ -1157,7 +1157,7 @@ namespace Chummer.Plugins
 
         private static async Task<Character> MainFormLoadChar(string fileToLoad)
         {
-            using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileToLoad })
+            using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = fileToLoad })
             {
                 //already open
                 Character objCharacter = MainForm.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);

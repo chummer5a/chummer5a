@@ -870,10 +870,9 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileName})
+                using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = fileName })
                 {
                     frmLoadingForm.Reset(36);
-                    frmLoadingForm.TopMost = true;
                     frmLoadingForm.Show();
                     if (!await objCharacter.Load(frmLoadingForm, false).ConfigureAwait(true))
                         return null;
@@ -1112,7 +1111,9 @@ namespace ChummerHub.Client.Backend
                     {
                     }
                 }
-                Log.Info("Post of " + ce.MySINnerFile.Id + " finished.");
+                Log.Info("Post of " + (ce.MySINnerFile.Id != null
+                    ? ce.MySINnerFile.Id.Value.ToString("D", GlobalOptions.InvariantCultureInfo)
+                    : string.Empty) + " finished.");
             }
             catch (Exception ex)
             {

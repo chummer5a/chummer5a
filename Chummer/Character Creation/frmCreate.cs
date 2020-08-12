@@ -185,9 +185,10 @@ namespace Chummer
                 {
                     using (new CursorWait(this))
                     {
-                        if (!CharacterObject.IsCritter && CharacterObject.BuildMethod == CharacterBuildMethod.Karma && CharacterObject.BuildKarma == 0 ||
-                            CharacterObject.BuildMethod == CharacterBuildMethod.Priority &&
-                            CharacterObject.BuildKarma == 0)
+                        if ((!CharacterObject.IsCritter
+                             && CharacterObject.BuildMethod == CharacterBuildMethod.Karma
+                             || CharacterObject.BuildMethod == CharacterBuildMethod.Priority)
+                            && CharacterObject.BuildKarma == 0)
                         {
                             _blnFreestyle = true;
                             tslKarmaRemaining.Visible = false;
@@ -9326,10 +9327,7 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (frmLoading frmLoadingForm = new frmLoading
-                {
-                    CharacterFile = CharacterObject.FileName
-                })
+                using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = CharacterObject.FileName })
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();

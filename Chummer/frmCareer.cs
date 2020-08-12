@@ -227,7 +227,7 @@ namespace Chummer
                             //chtKarma.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
                             //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
 
-                            chkJoinGroup.Checked = CharacterObject.GroupMember;
+                            chkJoinGroup.Checked = CharacterObject?.GroupMember ?? false;
                             chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
                             // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -2609,20 +2609,11 @@ namespace Chummer
             string strOpenFile = string.Empty;
             using (new CursorWait(this))
             {
-                using (Character objMerge = new Character
+                using (Character objMerge = new Character { FileName = CharacterObject.FileName })
                 {
-                    FileName = CharacterObject.FileName
-                })
-                {
-                    using (Character objVessel = new Character
+                    using (Character objVessel = new Character { FileName = strFileName })
                     {
-                        FileName = strFileName
-                    })
-                    {
-                        using (frmLoading frmLoadingForm = new frmLoading
-                        {
-                            CharacterFile = objVessel.FileName
-                        })
+                        using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = objVessel.FileName })
                         {
                             frmLoadingForm.Reset(77);
                             frmLoadingForm.Show();
@@ -2814,15 +2805,9 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // Load the Spirit's save file into a new Merge character.
-                using (Character objMerge = new Character
+                using (Character objMerge = new Character { FileName = CharacterObject.FileName })
                 {
-                    FileName = CharacterObject.FileName
-                })
-                {
-                    using (frmLoading frmLoadingForm = new frmLoading
-                    {
-                        CharacterFile = objMerge.FileName
-                    })
+                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = objMerge.FileName })
                     {
                         frmLoadingForm.Reset(36);
                         frmLoadingForm.Show();
@@ -13109,7 +13094,7 @@ namespace Chummer
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = CharacterObject.FileName})
+                using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = CharacterObject.FileName })
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();

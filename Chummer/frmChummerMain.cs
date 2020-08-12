@@ -1307,7 +1307,7 @@ namespace Chummer
 
                     if (lstFilesToOpen.Count > 0)
                     {
-                        using (_frmLoading = new frmLoading {CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen)})
+                        using (_frmLoading = new frmLoading { CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen) })
                         {
                             _frmLoading.Reset(35 * lstFilesToOpen.Count);
                             _frmLoading.Show();
@@ -1416,7 +1416,7 @@ namespace Chummer
                 };
                 if (blnShowErrors && _frmLoading?.IsDisposed != false)
                 {
-                    using (_frmLoading = new frmLoading {CharacterFile = objCharacter.FileName})
+                    using (_frmLoading = new frmLoading { CharacterFile = objCharacter.FileName })
                     {
                         _frmLoading.Reset(35);
                         _frmLoading.Show();

@@ -40,6 +40,7 @@ namespace Chummer
         public frmLoading()
         {
             InitializeComponent();
+            TopMost = true;
             this.TranslateWinForm();
         }
 
