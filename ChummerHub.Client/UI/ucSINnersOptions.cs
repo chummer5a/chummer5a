@@ -270,34 +270,32 @@ namespace ChummerHub.Client.UI
 
         public async Task<string> GetUserEmail()
         {
-            try
+            using (new CursorWait(this, true))
             {
-                UseWaitCursor = true;
-                var client = StaticUtils.GetClient();
-                if (client == null)
-                    return null;
-                var result = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true);
-                string strEmail = result.Body?.MyApplicationUser.Email;
-                result.Dispose();
-                if (!string.IsNullOrEmpty(strEmail))
+                try
                 {
-                    Settings.Default.UserEmail = strEmail;
-                    Settings.Default.Save();
+                    var client = StaticUtils.GetClient();
+                    if (client == null)
+                        return null;
+                    string strEmail;
+                    using (var result = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true))
+                        strEmail = result.Body?.MyApplicationUser.Email;
+                    if (!string.IsNullOrEmpty(strEmail))
+                    {
+                        Settings.Default.UserEmail = strEmail;
+                        Settings.Default.Save();
+                    }
+                    return strEmail;
                 }
-                return strEmail;
-            }
-            catch (SerializationException)
-            {
-                LoginStatus = false;
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Log.Warn(ex);
-            }
-            finally
-            {
-                UseWaitCursor = false;
+                catch (SerializationException)
+                {
+                    LoginStatus = false;
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(ex);
+                }
             }
             return null;
         }
@@ -388,12 +386,12 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private async Task<IList<string>> GetRolesStatus(UserControl sender)
+        private async Task<IList<string>> GetRolesStatus(Control sender)
         {
             HttpOperationResponse<ResultAccountGetRoles> myresult = null;
             try
             {
-                using (new CursorWait(true, sender))
+                using (new CursorWait(sender, true))
                 {
                     var client = StaticUtils.GetClient();
                     if (client == null)
@@ -405,13 +403,13 @@ namespace ChummerHub.Client.UI
                     {
                         if (myresultbody.CallSuccess == true)
                         {
-                            StaticUtils.UserRoles = myresultbody.Roles;
-                            if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Any())
+                            StaticUtils.UserRoles = myresultbody.Roles.ToList();
+                            if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Count > 0)
                             {
                                 LoginStatus = true;
                             }
 
-                            StaticUtils.PossibleRoles = myresultbody.PossibleRoles;
+                            StaticUtils.PossibleRoles = myresultbody.PossibleRoles.ToList();
                         }
 
                         //bBackup.Visible = StaticUtils.UserRoles.Contains("Administrator");
@@ -523,7 +521,7 @@ namespace ChummerHub.Client.UI
         private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1)
         {
             string folderName = folderBrowserDialog1.SelectedPath;
-            using (new CursorWait(true, this))
+            using (new CursorWait(this, true))
             {
                 try
                 {
@@ -584,7 +582,7 @@ namespace ChummerHub.Client.UI
             {
                 DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
                 FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
-                using (new CursorWait(true, this))
+                using (new CursorWait(this, true))
                 {
                     var client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)
@@ -630,7 +628,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
+                Program.MainForm.ShowMessageBox(ex.Message);
             }
         }
 

@@ -420,13 +420,13 @@ namespace Chummer
             Log.Info("cmdRestart_Click");
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempPath))
             {
-                Cursor = Cursors.WaitCursor;
+                Application.UseWaitCursor = true;
                 cmdUpdate.Enabled = false;
                 cmdRestart.Enabled = false;
                 cmdCleanReinstall.Enabled = false;
                 if (!CreateBackupZip())
                 {
-                    Cursor = Cursors.Default;
+                    Application.UseWaitCursor = false;
                     return;
                 }
 
@@ -483,13 +483,13 @@ namespace Chummer
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempPath))
             {
-                Cursor = Cursors.WaitCursor;
+                Application.UseWaitCursor = true;
                 cmdUpdate.Enabled = false;
                 cmdRestart.Enabled = false;
                 cmdCleanReinstall.Enabled = false;
                 if (!CreateBackupZip())
                 {
-                    Cursor = Cursors.Default;
+                    Application.UseWaitCursor = false;
                     return;
                 }
 

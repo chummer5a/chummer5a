@@ -78,14 +78,10 @@ namespace Chummer.UI.Skills
 
         private void SkillsTabUserControl_Load(object sender, EventArgs e)
         {
-            if (_objCharacter == null)
-            {
-                if (ParentForm != null)
-                    ParentForm.Cursor = Cursors.WaitCursor;
+            if (_objCharacter != null)
+                return;
+            using (new CursorWait(this))
                 RealLoad();
-                if (ParentForm != null)
-                    ParentForm.Cursor = Cursors.Default;
-            }
         }
 
         public void RealLoad()

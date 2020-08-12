@@ -217,13 +217,14 @@ namespace Chummer
             if (_objContact.LinkedCharacter != null)
             {
                 Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
-                Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                using (new CursorWait(this))
                 {
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
-                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    {
+                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
+                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                    }
                 }
-                Cursor = Cursors.Default;
             }
             else
             {

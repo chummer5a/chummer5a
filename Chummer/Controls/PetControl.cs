@@ -105,13 +105,14 @@ namespace Chummer
             if (_objContact.LinkedCharacter != null)
             {
                 Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
-                Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                using (new CursorWait(this))
                 {
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
-                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    {
+                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
+                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                    }
                 }
-                Cursor = Cursors.Default;
             }
             else
             {
@@ -156,18 +157,19 @@ namespace Chummer
 
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                Cursor = Cursors.WaitCursor;
-                _objContact.FileName = openFileDialog.FileName;
-                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile"));
+                using (new CursorWait(this))
+                {
+                    _objContact.FileName = openFileDialog.FileName;
+                    imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile"));
 
-                // Set the relative path.
-                Uri uriApplication = new Uri(Utils.GetStartupPath);
-                Uri uriFile = new Uri(_objContact.FileName);
-                Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objContact.RelativeFileName = "../" + uriRelative;
+                    // Set the relative path.
+                    Uri uriApplication = new Uri(Utils.GetStartupPath);
+                    Uri uriFile = new Uri(_objContact.FileName);
+                    Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+                    _objContact.RelativeFileName = "../" + uriRelative;
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
-                Cursor = Cursors.Default;
+                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                }
             }
         }
 

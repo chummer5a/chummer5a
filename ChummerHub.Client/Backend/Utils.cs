@@ -66,13 +66,13 @@ namespace ChummerHub.Client.Backend
         private static CookieContainer _AuthorizationCookieContainer;
 
         private static List<string> _userRoles;
-        public static IList<string> UserRoles
+        public static List<string> UserRoles
         {
             get
             {
                 if (_userRoles == null)
                 {
-                    using (new CursorWait(false))
+                    using (new CursorWait())
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...
@@ -97,13 +97,13 @@ namespace ChummerHub.Client.Backend
         }
 
         private static List<string> _possibleRoles;
-        public static IList<string> PossibleRoles
+        public static List<string> PossibleRoles
         {
             get
             {
                 if (_possibleRoles == null)
                 {
-                    using (new CursorWait(false))
+                    using (new CursorWait())
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...
@@ -131,7 +131,7 @@ namespace ChummerHub.Client.Backend
                 try
                 {
                     if (_AuthorizationCookieContainer == null
-                    || string.IsNullOrEmpty(Settings.Default.CookieData))
+                        || string.IsNullOrEmpty(Settings.Default.CookieData))
                     {
                         Uri uri = new Uri(Settings.Default.SINnerUrl);
                         string cookieData = Settings.Default.CookieData;
@@ -533,7 +533,7 @@ namespace ChummerHub.Client.Backend
                 ResultAccountGetSinnersByAuthorization res = response.Body;
                 var result = res.MySINSearchGroupResult;
                 if (result?.Roles != null)
-                    StaticUtils.UserRoles = result.Roles;
+                    StaticUtils.UserRoles = result.Roles.ToList();
 
                 string info = "Connected to SINners in version " + result?.Version?.AssemblyVersion + ".";
                 Log.Info(info);
@@ -885,8 +885,7 @@ namespace ChummerHub.Client.Backend
             }
             catch (Exception ex)
             {
-                string msg = "Exception while loading " + fileName + ":";
-                msg += Environment.NewLine + ex;
+                string msg = "Exception while loading " + fileName + ":" + Environment.NewLine + ex;
                 Log.Warn(msg);
                 /* run your code here */
                 Program.MainForm.ShowMessageBox(msg);
@@ -916,7 +915,7 @@ namespace ChummerHub.Client.Backend
             {
                 try
                 {
-                    using (new CursorWait(true, PluginHandler.MainForm))
+                    using (new CursorWait(PluginHandler.MainForm, true))
                     {
                         if (args.Item1.KeyCode == Keys.Delete)
                         {
@@ -924,7 +923,7 @@ namespace ChummerHub.Client.Backend
                             if (sinner.Id != null)
                                 client.Delete(sinner.Id.Value);
                             objCache.ErrorText = "deleted!";
-                            PluginHandler.MainForm.DoThreadSafe(() =>
+                            PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
                             {
                                 PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                             });
@@ -951,12 +950,12 @@ namespace ChummerHub.Client.Backend
                 {
                     if (sinner.Id == null)
                         return;
-                    using (new CursorWait(true, PluginHandler.MainForm))
+                    using (new CursorWait(PluginHandler.MainForm, true))
                     {
                         var client = StaticUtils.GetClient();
                         client.Delete(sinner.Id.Value);
                         objCache.ErrorText = "deleted!";
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
                         {
                             PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         });
@@ -979,7 +978,7 @@ namespace ChummerHub.Client.Backend
 
         private static async void OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
         {
-            using (new CursorWait(true, PluginHandler.MainForm))
+            using (new CursorWait(PluginHandler.MainForm, true))
             {
                 if (string.IsNullOrEmpty(sinner.FilePath))
                 {
@@ -1030,38 +1029,36 @@ namespace ChummerHub.Client.Backend
                 }
                 PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers();
                 PluginHandler.MySINnerLoading = null;
-
             });
         }
 
 
         private static void SwitchToCharacter(Character objOpenCharacter)
         {
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            using (new CursorWait(PluginHandler.MainForm, true))
             {
-                using (new CursorWait(true, PluginHandler.MainForm))
+                PluginHandler.MainForm.DoThreadSafe(() =>
                 {
-                    if (objOpenCharacter == null ||
-                    !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
+                    if (objOpenCharacter == null
+                        || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
                     {
                         PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
                     }
-                }
-            });
+                });
+            }
         }
 
         private static async void SwitchToCharacter(CharacterCache objCache)
         {
-            PluginHandler.MainForm.DoThreadSafe(async () =>
+            using (new CursorWait(PluginHandler.MainForm, true))
             {
-                using (new CursorWait(true, PluginHandler.MainForm))
+                PluginHandler.MainForm.DoThreadSafe(async () =>
                 {
                     Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
                                                  ?? await PluginHandler.MainForm.LoadCharacter(objCache.FilePath).ConfigureAwait(true);
                     SwitchToCharacter(objOpenCharacter);
-                }
-            });
-
+                });
+            }
         }
 
         public static async Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINnerAsync(CharacterExtended ce)
@@ -1207,17 +1204,17 @@ namespace ChummerHub.Client.Backend
                             HttpStatusCode myStatus = res?.Response?.StatusCode ?? HttpStatusCode.NotFound;
                             if(!StaticUtils.IsUnitTest)
                             {
-                                PluginHandler.MainForm.DoThreadSafe(() =>
+                                if (myStatus != HttpStatusCode.OK)
                                 {
-                                    if(myStatus != HttpStatusCode.OK)
-                                    {
-                                        Program.MainForm.ShowMessageBox(msg);
-                                    }
-                                    using (new CursorWait(true, PluginHandler.MainForm))
+                                    Program.MainForm.ShowMessageBox(msg);
+                                }
+                                using (new CursorWait(PluginHandler.MainForm, true))
+                                {
+                                    PluginHandler.MainForm.DoThreadSafe(() =>
                                     {
                                         PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                                    }
-                                });
+                                    });
+                                }
                             }
                         }
                         else
@@ -1228,10 +1225,7 @@ namespace ChummerHub.Client.Backend
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        PluginHandler.MainForm.DoThreadSafe(() =>
-                        {
-                            Program.MainForm.ShowMessageBox(e.Message);
-                        });
+                        Program.MainForm.ShowMessageBox(e.Message);
                     }
                 }
             }
@@ -1271,14 +1265,14 @@ namespace ChummerHub.Client.Backend
 
                                 if (!StaticUtils.IsUnitTest)
                                 {
-                                    PluginHandler.MainForm.DoThreadSafe(() =>
+                                    using (new CursorWait(PluginHandler.MainForm, true))
                                     {
-                                        using (new CursorWait(true, PluginHandler.MainForm))
+                                        PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
                                         {
                                             PluginHandler.MainForm.CharacterRoster.LoadCharacters(false,
                                                 false, false);
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
                             }
 
@@ -1292,10 +1286,7 @@ namespace ChummerHub.Client.Backend
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        PluginHandler.MainForm.DoThreadSafe(() =>
-                        {
-                            Program.MainForm.ShowMessageBox(e.Message);
-                        });
+                        Program.MainForm.ShowMessageBox(e.Message);
                     }
                 }
             }

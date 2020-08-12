@@ -83,7 +83,7 @@ namespace Chummer
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver -= treCharacterList_OnDefaultDragOver;
-                OnMyMouseDown -= OnDefaultMouseDown;
+                OnMyMouseDown = null;
 
                 if(watcherCharacterRosterFolder != null)
                 {
@@ -645,26 +645,18 @@ namespace Chummer
                 if (objSelectedNode.Tag == null) return;
                 if(objSelectedNode.Tag is CharacterCache objCache)
                 {
-                    try
+                    using (new CursorWait(this))
                     {
                         objCache.OnMyDoubleClick(sender, e);
                         objSelectedNode.Text = objCache.CalculatedName();
-                        Cursor = Cursors.WaitCursor;
                     }
-                    finally
-                    {
-                        Cursor = Cursors.Default;
-                    }
-
                 }
             }
         }
         private void treCharacterList_OnDefaultKeyDown(object sender, KeyEventArgs e)
         {
-
             TreeNode t = treCharacterList.SelectedNode;
-
-            var objCache = t?.Tag as CharacterCache;
+            CharacterCache objCache = t?.Tag as CharacterCache;
             objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
         }
 
@@ -675,7 +667,7 @@ namespace Chummer
 
         private void treCharacterList_OnDefaultDragOver(object sender, DragEventArgs e)
         {
-            if(!(sender is TreeView treSenderView))
+            if(!(sender is TreeView treSenderView) || e == null)
                 return;
             Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
             TreeNode objNode = treSenderView.GetNodeAt(pt);
@@ -863,18 +855,17 @@ namespace Chummer
         private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if(objSelectedNode == null || objSelectedNode.Level <= 0)
+            if(objSelectedNode?.Tag == null || objSelectedNode.Level <= 0)
                 return;
             string strFile = objSelectedNode.Tag.ToString();
             if(string.IsNullOrEmpty(strFile))
                 return;
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-            Cursor = Cursors.WaitCursor;
-            if(objOpenCharacter != null)
+            if (objOpenCharacter != null)
             {
-                Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
+                using (new CursorWait(this))
+                    Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
             }
-            Cursor = Cursors.Default;
         }
 
         private void TreCharacterList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)

@@ -418,7 +418,7 @@ namespace Chummer.Plugins
                     return;
                 }
                 input.OnSaveCompleted = null;
-                using (new CursorWait(true, MainForm))
+                using (new CursorWait(MainForm, true))
                 {
                     using (var ce = GetMyCe(input))
                     {
@@ -589,7 +589,7 @@ namespace Chummer.Plugins
             HttpOperationResponse<ResultGroupGetSearchGroups> res = null;
             try
             {
-                using (new CursorWait(true, MainForm))
+                using (new CursorWait(MainForm, true))
                 {
                     var client = StaticUtils.GetClient();
                     res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes").ConfigureAwait(true);
@@ -600,14 +600,13 @@ namespace Chummer.Plugins
                     {
                         ssgr = result.MySearchGroupResult;
                         var ssgr1 = ssgr;
-                        MainForm.CharacterRoster.DoThreadSafe(() =>
+                        using (new CursorWait(MainForm, true))
                         {
-                            using (new CursorWait(true, MainForm))
+                            MainForm.CharacterRoster.DoThreadSafe(() =>
                             {
                                 if (ssgr1 != null && ssgr1.SinGroups?.Count > 0)
                                 {
-                                    var list = ssgr1.SinGroups.Where(a => a.Groupname == "Archetypes").ToList();
-                                    var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list).ToList();
+                                    var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(ssgr1.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList();
                                     foreach (var node in nodelist)
                                     {
                                         MyTreeNodes2Add.AddOrUpdate(node.Name, node,
@@ -621,10 +620,10 @@ namespace Chummer.Plugins
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No archetypes found!");
+                                    MainForm.ShowMessageBox("No archetypes found!");
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
             }
@@ -649,7 +648,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(true, MainForm))
+                using (new CursorWait(MainForm, true))
                 {
                     using (frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null)
                     {
@@ -714,7 +713,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(true, frmCharRoster))
+                using (new CursorWait(frmCharRoster, true))
                 {
                     IEnumerable<TreeNode> res = null;
                     if (Settings.Default.UserModeRegistered)
@@ -792,7 +791,7 @@ namespace Chummer.Plugins
             //TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
             try
             {
-                using (new CursorWait(true, MainForm.CharacterRoster))
+                using (new CursorWait(MainForm.CharacterRoster, true))
                 {
                     var MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null).ConfigureAwait(true);
                     var item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);

@@ -129,19 +129,19 @@ namespace Chummer
                 return;
             }
 
-            Cursor = Cursors.WaitCursor;
-            // Attempt to load the character and make sure it's a valid character file.
-            _objCharacter.FileName = openFileDialog.FileName;
-            try
+            using (new CursorWait(this))
             {
-                _objCharacter.Load();
-                Cursor = Cursors.Default;
-            }
-            catch
-            {
-                Cursor = Cursors.Default;
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                // Attempt to load the character and make sure it's a valid character file.
+                _objCharacter.FileName = openFileDialog.FileName;
+                try
+                {
+                    _objCharacter.Load();
+                }
+                catch
+                {
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
 
             // Make sure the character is named.

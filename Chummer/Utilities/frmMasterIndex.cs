@@ -228,92 +228,93 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            List<ListItem> lstFilteredItems;
-            if (txtSearch.TextLength == 0 && string.IsNullOrEmpty(cboFile.SelectedValue?.ToString()))
+            using (new CursorWait(this))
             {
-                lstFilteredItems = _lstItems;
-            }
-            else
-            {
-                lstFilteredItems = new List<ListItem>(_lstItems.Count);
-                string strFileFilter = cboFile.SelectedValue?.ToString() ?? string.Empty;
-                string strSearchFilter = txtSearch.Text;
-                foreach (ListItem objItem in _lstItems)
+                List<ListItem> lstFilteredItems;
+                if (txtSearch.TextLength == 0 && string.IsNullOrEmpty(cboFile.SelectedValue?.ToString()))
                 {
-                    MasterIndexEntry objItemEntry = (MasterIndexEntry)objItem.Value;
-                    if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
-                        continue;
-                    if (!string.IsNullOrEmpty(strSearchFilter))
-                    {
-                        string strDisplayNameNoFile = objItemEntry.DisplayName;
-                        if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
-                            strDisplayNameNoFile = strDisplayNameNoFile.Substring(0, strDisplayNameNoFile.LastIndexOf('[')).Trim();
-                        if (strDisplayNameNoFile.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase) == -1)
-                            continue;
-                    }
-                    lstFilteredItems.Add(objItem);
+                    lstFilteredItems = _lstItems;
                 }
-            }
+                else
+                {
+                    lstFilteredItems = new List<ListItem>(_lstItems.Count);
+                    string strFileFilter = cboFile.SelectedValue?.ToString() ?? string.Empty;
+                    string strSearchFilter = txtSearch.Text;
+                    foreach (ListItem objItem in _lstItems)
+                    {
+                        MasterIndexEntry objItemEntry = (MasterIndexEntry) objItem.Value;
+                        if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
+                            continue;
+                        if (!string.IsNullOrEmpty(strSearchFilter))
+                        {
+                            string strDisplayNameNoFile = objItemEntry.DisplayName;
+                            if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
+                                strDisplayNameNoFile = strDisplayNameNoFile.Substring(0, strDisplayNameNoFile.LastIndexOf('[')).Trim();
+                            if (strDisplayNameNoFile.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase) == -1)
+                                continue;
+                        }
 
-            object objOldSelectedValue = lstItems.SelectedValue;
-            lstItems.BeginUpdate();
-            _blnSkipRefresh = true;
-            lstItems.DataSource = lstFilteredItems;
-            _blnSkipRefresh = false;
-            if (objOldSelectedValue != null)
-            {
-                MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry)objOldSelectedValue;
-                lstItems.SelectedIndex = lstFilteredItems.FindIndex(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
+                        lstFilteredItems.Add(objItem);
+                    }
+                }
+
+                object objOldSelectedValue = lstItems.SelectedValue;
+                lstItems.BeginUpdate();
+                _blnSkipRefresh = true;
+                lstItems.DataSource = lstFilteredItems;
+                _blnSkipRefresh = false;
+                if (objOldSelectedValue != null)
+                {
+                    MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry) objOldSelectedValue;
+                    lstItems.SelectedIndex = lstFilteredItems.FindIndex(x => ((MasterIndexEntry) x.Value).Equals(objOldSelectedEntry));
+                }
+                else
+                    lstItems.SelectedIndex = -1;
+
+                lstItems.EndUpdate();
             }
-            else
-                lstItems.SelectedIndex = -1;
-            lstItems.EndUpdate();
-            Cursor = objOldCursor;
         }
 
         private void lstItems_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            SuspendLayout();
-            if (lstItems.SelectedValue is MasterIndexEntry objEntry)
+            using (new CursorWait(this))
             {
-                lblSourceLabel.Visible = true;
-                lblSource.Visible = true;
-                lblSourceClickReminder.Visible = true;
-                lblSource.Text = objEntry.DisplaySource.ToString();
-                lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
-                if (!_dicCachedNotes.TryGetValue(objEntry, out string strNotes))
+                if (lstItems.SelectedValue is MasterIndexEntry objEntry)
                 {
-                    strNotes = CommonFunctions.GetTextFromPDF(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
-
-                    if (string.IsNullOrEmpty(strNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    lblSourceLabel.Visible = true;
+                    lblSource.Visible = true;
+                    lblSourceClickReminder.Visible = true;
+                    lblSource.Text = objEntry.DisplaySource.ToString();
+                    lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
+                    if (!_dicCachedNotes.TryGetValue(objEntry, out string strNotes))
                     {
-                        // don't check again it is not translated
-                        if (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage || objEntry.Source.Page != objEntry.DisplaySource.Page)
+                        strNotes = CommonFunctions.GetTextFromPDF(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
+
+                        if (string.IsNullOrEmpty(strNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                         {
-                            strNotes = CommonFunctions.GetTextFromPDF(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                            // don't check again it is not translated
+                            if (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage || objEntry.Source.Page != objEntry.DisplaySource.Page)
+                            {
+                                strNotes = CommonFunctions.GetTextFromPDF(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                            }
                         }
+
+                        _dicCachedNotes.TryAdd(objEntry, strNotes);
                     }
 
-                    _dicCachedNotes.TryAdd(objEntry, strNotes);
+                    rtbNotes.Text = strNotes;
+                    rtbNotes.Visible = true;
                 }
-                rtbNotes.Text = strNotes;
-                rtbNotes.Visible = true;
+                else
+                {
+                    lblSourceLabel.Visible = false;
+                    lblSource.Visible = false;
+                    lblSourceClickReminder.Visible = false;
+                    rtbNotes.Visible = false;
+                }
             }
-            else
-            {
-                lblSourceLabel.Visible = false;
-                lblSource.Visible = false;
-                lblSourceClickReminder.Visible = false;
-                rtbNotes.Visible = false;
-            }
-            ResumeLayout();
-            Cursor = objOldCursor;
         }
 
         private readonly struct MasterIndexEntry
