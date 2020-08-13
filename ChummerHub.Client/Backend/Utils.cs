@@ -1427,7 +1427,7 @@ namespace ChummerHub.Client.Backend
                 if (objCache?.DownLoadRunning != null && objCache.DownLoadRunning.Status == TaskStatus.Running)
                     return objCache.DownLoadRunning;
                 Log.Info("Downloading SINner: " + sinner?.Id);
-                Task<string> returntask = Task.Factory.StartNew(() =>
+                Task<string> returntask = Task.Run(() =>
                 {
                     string filepath = DownloadFile(sinner, objCache).Result;
                     if (objCache != null)

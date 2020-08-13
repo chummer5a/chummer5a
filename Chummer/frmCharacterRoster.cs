@@ -321,7 +321,6 @@ namespace Chummer
                     {
                         ConcurrentBag<KeyValuePair<TreeNode,string>> bagNodes = new ConcurrentBag<KeyValuePair<TreeNode, string>>();
                         Parallel.ForEach(dicWatch, i => bagNodes.Add(new KeyValuePair<TreeNode, string>(CacheCharacter(i.Key), i.Value)));
-
                         if(blnAddWatchNode)
                         {
                             foreach (string s in dicWatch.Values.Distinct())
@@ -329,7 +328,6 @@ namespace Chummer
                                 if (s == "Watch") continue;
                                 objWatchNode.Nodes.Add(new TreeNode(s){Tag = s});
                             }
-
                             foreach (KeyValuePair<TreeNode, string> kvtNode in bagNodes)
                             {
                                 if (kvtNode.Value == "Watch")
@@ -347,28 +345,26 @@ namespace Chummer
                                     }
                                 }
                             }
-
                         }
                     }
                 },
-                () =>
+                async () =>
                 {
                     foreach(IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                     {
-#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
-                        var t = Task.Factory.StartNew<ICollection<TreeNode>>(() =>
+                        List<TreeNode> lstNodes = await Task.Run(() =>
                         {
                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin);
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
-                            if(task.Result != null)
+                            if (task.Result != null)
                             {
                                 return task.Result.OrderBy(a => a.Text).ToList();
                             }
                             return new List<TreeNode>();
                         });
-                        t.ContinueWith(nodelist =>
+                        await Task.Run(() =>
                         {
-                            foreach(TreeNode node in nodelist.Result)
+                            foreach(TreeNode node in lstNodes)
                             {
                                 TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
                                 Program.MainForm.DoThreadSafe(() =>
@@ -412,7 +408,6 @@ namespace Chummer
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
                         });
-#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
@@ -496,8 +491,12 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
-                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error")
-                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
+                objNode.ToolTipText += Environment.NewLine
+                                       + Environment.NewLine
+                                       + LanguageManager.GetString("String_Error")
+                                       + LanguageManager.GetString("String_Colon")
+                                       + Environment.NewLine
+                                       + objCache.ErrorText;
             }
             return objNode;
         }
@@ -681,7 +680,7 @@ namespace Chummer
                 }
             }
 
-            // Clear the background colour for all other Nodes.
+            // Clear the background color for all other Nodes.
             treCharacterList.ClearNodeBackground(objNode);
         }
 
@@ -877,7 +876,7 @@ namespace Chummer
             if (e.Node.Tag != null)
             {
                 string strTag = e.Node.Tag.ToString();
-                if (!String.IsNullOrEmpty(strTag))
+                if (!string.IsNullOrEmpty(strTag))
                     e.Node.ContextMenuStrip = CreateContextMenuStrip(
                         strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                         && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));

@@ -314,9 +314,7 @@ namespace Chummer.Plugins
                                 callback = WebUtility.UrlDecode(callback);
                             }
                             var task = Task.Run(async () =>
-                            {
-                                await StaticUtils.WebCall(callback, 10, "Sending Open Character Request").ConfigureAwait(true);
-                            });
+                                await StaticUtils.WebCall(callback, 10, "Sending Open Character Request").ConfigureAwait(true));
                             task.Wait();
                         }
                     }

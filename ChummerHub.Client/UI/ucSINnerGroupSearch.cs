@@ -818,13 +818,7 @@ namespace ChummerHub.Client.UI
         {
             if (Visible)
             {
-                Task.Factory.StartNew(() =>
-                {
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
-                        bSearch_Click(this, new EventArgs());
-                    });
-                });
+                Task.Run(() => this.DoThreadSafe(() => bSearch_Click(this, e)));
             }
         }
 
