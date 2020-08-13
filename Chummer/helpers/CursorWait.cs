@@ -84,6 +84,8 @@ namespace Chummer
             if (_blnDisposed)
                 return;
 
+            if (_objControlTopParent?.IsDisposed == false)
+                _objControlTopParent.DoThreadSafe(() => _objControlTopParent.Cursor = _objOldCursorTopParent);
             if (_objControl?.IsDisposed != false)
             {
                 if (_blnTopMostWaitCursor)
@@ -95,7 +97,6 @@ namespace Chummer
             else
             {
                 _objControl.DoThreadSafe(() => _objControl.Cursor = _objOldCursor);
-                _objControlTopParent?.DoThreadSafe(() => _objControlTopParent.Cursor = _objOldCursorTopParent);
                 if (_blnControlIsForm)
                     _objControl.ResumeLayout();
             }
