@@ -84,18 +84,14 @@ namespace Chummer
                 string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
 
             //lets write that in separate lines to see where the exception is thrown
-            if (GlobalOptions.HideMasterIndex)
-                MasterIndex = null;
-            else
+            if (!GlobalOptions.HideMasterIndex)
             {
                 MasterIndex = new frmMasterIndex
                 {
                     MdiParent = this
                 };
             }
-            if (GlobalOptions.HideCharacterRoster)
-                CharacterRoster = null;
-            else
+            if (!GlobalOptions.HideCharacterRoster)
             {
                 CharacterRoster = new frmCharacterRoster
                 {
@@ -309,10 +305,7 @@ namespace Chummer
                             }
                             catch (Exception ex)
                             {
-                                if (op_frmChummerMain.MyDependencyTelemetry != null)
-                                    op_frmChummerMain.MyDependencyTelemetry.Success = false;
-                                if (op_frmChummerMain.MyRequestTelemetry != null)
-                                    op_frmChummerMain.MyRequestTelemetry.Success = false;
+                                op_frmChummerMain.SetSuccess(false);
                                 ExceptionTelemetry ext = new ExceptionTelemetry(ex)
                                 {
                                     SeverityLevel = SeverityLevel.Warning
@@ -326,7 +319,8 @@ namespace Chummer
 
                         if (MasterIndex != null)
                         {
-                            MasterIndex.WindowState = FormWindowState.Maximized;
+                            if (CharacterRoster == null)
+                                MasterIndex.WindowState = FormWindowState.Maximized;
                             MasterIndex.Show();
                         }
 
@@ -340,8 +334,16 @@ namespace Chummer
                         OpenCharacterList(lstCharactersToLoad);
                         if (CharacterRoster != null)
                         {
-                            CharacterRoster.WindowState = FormWindowState.Maximized;
+                            if (MasterIndex == null)
+                                CharacterRoster.WindowState = FormWindowState.Maximized;
                             CharacterRoster.Show();
+                        }
+
+                        // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                        if (MasterIndex != null && CharacterRoster != null)
+                        {
+                            MasterIndex.WindowState = FormWindowState.Maximized;
+                            CharacterRoster.WindowState = FormWindowState.Maximized;
                         }
                     }
 
@@ -357,10 +359,7 @@ namespace Chummer
                 {
                     if (op_frmChummerMain != null)
                     {
-                        if (op_frmChummerMain.MyDependencyTelemetry != null)
-                            op_frmChummerMain.MyDependencyTelemetry.Success = false;
-                        if (op_frmChummerMain.MyRequestTelemetry != null)
-                            op_frmChummerMain.MyRequestTelemetry.Success = false;
+                        op_frmChummerMain.SetSuccess(false);
                         op_frmChummerMain.tc.TrackException(ex);
                     }
 
@@ -833,10 +832,14 @@ namespace Chummer
 
                 frmCareer frmNewCharacter = new frmCareer(objCharacter)
                 {
-                    MdiParent = this,
-                    WindowState = FormWindowState.Maximized
+                    MdiParent = this
                 };
+                if (MdiChildren.Length <= 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
                 frmNewCharacter.Show();
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                if (MdiChildren.Length > 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
             }
         }
 
@@ -1272,10 +1275,14 @@ namespace Chummer
                 OpenCharacters.Add(objCharacter);
                 frmCreate frmNewCharacter = new frmCreate(objCharacter)
                 {
-                    MdiParent = this,
-                    WindowState = FormWindowState.Maximized
+                    MdiParent = this
                 };
+                if (MdiChildren.Length <= 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
                 frmNewCharacter.Show();
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                if (MdiChildren.Length > 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
             }
         }
 
@@ -1359,30 +1366,19 @@ namespace Chummer
                 FormWindowState wsPreference = OpenCharacterForms.Any(x => x.WindowState != FormWindowState.Maximized)
                     ? FormWindowState.Normal
                     : FormWindowState.Maximized;
+                List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
                 foreach (Character objCharacter in lstCharacters)
                 {
                     if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                         continue;
                     //Timekeeper.Start("load_event_time");
-                    // Show the character form.
-                    if (!objCharacter.Created)
-                    {
-                        frmCreate frmCharacter = new frmCreate(objCharacter)
-                        {
-                            MdiParent = this,
-                            WindowState = wsPreference
-                        };
-                        frmCharacter.Show();
-                    }
-                    else
-                    {
-                        frmCareer frmCharacter = new frmCareer(objCharacter)
-                        {
-                            MdiParent = this,
-                            WindowState = wsPreference
-                        };
-                        frmCharacter.Show();
-                    }
+                    // Show the character forms.
+                    CharacterShared frmNewCharacter = objCharacter.Created
+                        ? (CharacterShared) new frmCareer(objCharacter)
+                        : new frmCreate(objCharacter);
+                    frmNewCharacter.MdiParent = this;
+                    frmNewCharacter.Show();
+                    lstNewFormsToProcess.Add(frmNewCharacter);
 
                     if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
                         GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
@@ -1391,6 +1387,9 @@ namespace Chummer
 
                     //Timekeeper.Finish("load_event_time");
                 }
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
+                    frmNewCharacter.WindowState = wsPreference;
             }
         }
 
