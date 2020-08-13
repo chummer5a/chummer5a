@@ -1168,7 +1168,6 @@ namespace Chummer.Plugins
                         FileName = fileToLoad
                     };
                     frmLoadingForm.Reset(36);
-                    frmLoadingForm.TopMost = true;
                     frmLoadingForm.Show();
                     if (await objCharacter.Load(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening).ConfigureAwait(true))
                         MainForm.OpenCharacters.Add(objCharacter);

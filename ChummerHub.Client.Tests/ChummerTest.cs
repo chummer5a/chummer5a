@@ -66,7 +66,7 @@ namespace ChummerHub.Client.Tests
                         {
                             frmCharacterForm.MdiParent = MainForm;
                             frmCharacterForm.WindowState = FormWindowState.Minimized;
-                            frmCharacterForm.Show();
+                            frmCharacterForm.Show(MainForm);
                             using (ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl())
                             {
                                 var ce = await sINnersUsercontrol.SetCharacterFrom(frmCharacterForm);

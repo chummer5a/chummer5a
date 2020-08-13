@@ -148,7 +148,7 @@ namespace Chummer.Tests
             Debug.WriteLine("Unit test initialized for: LoadCharacterForms()");
             frmChummerMain frmOldMainForm = Program.MainForm;
             Program.MainForm = MainForm; // Set program Main form to Unit test version
-            MainForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would acutally display it).
+            MainForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
@@ -162,7 +162,7 @@ namespace Chummer.Tests
                         {
                             frmCharacterForm.MdiParent = MainForm;
                             frmCharacterForm.WindowState = FormWindowState.Minimized;
-                            frmCharacterForm.Show();
+                            frmCharacterForm.Show(MainForm);
                             frmCharacterForm.Close();
                         }
                     }
