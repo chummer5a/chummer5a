@@ -636,27 +636,24 @@ namespace ChummerHub.Client.Backend
 
             if (!string.IsNullOrEmpty(rb?.ErrorText) || rb?.MyException != null)
             {
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                Log.Warn("SINners WebService returned: " + rb.ErrorText);
+                await Task.Run(() =>
                 {
-                    Log.Warn("SINners WebService returned: " + rb.ErrorText);
-                    Thread show = new Thread(() => {
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        var frmSIN = new frmSINnerResponse
                         {
-                            var frmSIN = new frmSINnerResponse
-                            {
-                                TopMost = true
-                            };
-                            if (rb?.ErrorText.Length > 600)
-                                rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
-                            frmSIN.SINnerResponseUI.Result = rb;
-                            frmSIN.DoThreadSafe(() =>
-                            {
-                                Log.Trace("Showing Dialog for frmSINnerResponse()");
-                                frmSIN.Show();
-                            });
+                            TopMost = true
+                        };
+                        if (rb?.ErrorText.Length > 600)
+                            rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
+                        frmSIN.SINnerResponseUI.Result = rb;
+                        frmSIN.DoThreadSafe(() =>
+                        {
+                            Log.Trace("Showing Dialog for frmSINnerResponse()");
+                            frmSIN.Show();
                         });
                     });
-                    show.Start();
                 });
             }
             return ResponseBody;

@@ -6412,8 +6412,11 @@ namespace Chummer
             }
         }
 
+        private bool _blnSkipQualityLevelChanged;
         private void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
+            if (_blnSkipQualityLevelChanged)
+                return;
             // Locate the selected Quality.
             if (treQualities.SelectedNode?.Tag is Quality objSelectedQuality)
             {
@@ -6497,16 +6500,9 @@ namespace Chummer
                     {
                         blnRequireUpdate = true;
                         //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
-                        var tempthread = new System.Threading.Thread(() =>
-                        {
-                            System.Threading.Thread.CurrentThread.IsBackground = false;
-                            System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.BelowNormal;
-                            this.DoThreadSafe(() =>
-                            {
-                                CharacterObject.Qualities.Add(objQuality);
-                            });
-                        });
-                        tempthread.Start();
+                        _blnSkipQualityLevelChanged = true;
+                        CharacterObject.Qualities.Add(objQuality);
+                        _blnSkipQualityLevelChanged = false;
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
