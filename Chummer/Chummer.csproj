@@ -16,6 +16,7 @@
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TransformOnBuild>True</TransformOnBuild>
+	<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
     <PublishUrl>M:\Chummer 5\</PublishUrl>
     <Install>false</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -41,6 +42,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <TransformOnBuild>True</TransformOnBuild>
+	<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -55,6 +57,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <TransformOnBuild>True</TransformOnBuild>
+	<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
