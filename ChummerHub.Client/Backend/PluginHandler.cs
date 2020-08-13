@@ -652,7 +652,7 @@ namespace Chummer.Plugins
                     {
                         TopMost = true
                     })
-                        frmSearch.Show(MainForm);
+                        frmSearch.Show();
                 }
 
             }
@@ -954,7 +954,7 @@ namespace Chummer.Plugins
                 })
                 {
                     share.MyUcSINnerShare.MyCharacterCache = objCache;
-                    share.Show(MainForm);
+                    share.Show();
                     try
                     {
                         await share.MyUcSINnerShare.DoWork().ConfigureAwait(true);
@@ -974,7 +974,7 @@ namespace Chummer.Plugins
                 })
                 {
                     share.MyUcSINnerShare.MySINnerSearchGroup = ssg;
-                    share.Show(MainForm);
+                    share.Show();
                     try
                     {
                         await share.MyUcSINnerShare.DoWork().ConfigureAwait(true);

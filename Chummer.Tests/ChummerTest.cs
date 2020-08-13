@@ -66,13 +66,14 @@ namespace Chummer.Tests
             }
         }
 
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void LoadThenSave()
+        public void Load1ThenSave()
         {
-            Debug.WriteLine("Unit test initialized for: LoadThenSave()");
+            Debug.WriteLine("Unit test initialized for: Load1ThenSave()");
 
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
-            string strTestPath = Path.Combine(strPath, nameof(LoadThenSave) + '-' + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
+            string strTestPath = Path.Combine(strPath, nameof(Load1ThenSave) + '-' + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
             DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
@@ -88,13 +89,14 @@ namespace Chummer.Tests
             objTestPath.Delete(true);
         }
 
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void LoadThenSaveIsDeterministic()
+        public void Load2ThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: LoadThenSaveIsDeterministic()");
+            Debug.WriteLine("Unit test initialized for: Load2ThenSaveIsDeterministic()");
 
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
-            string strTestPath = Path.Combine(strPath, nameof(LoadThenSaveIsDeterministic) + '-' + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
+            string strTestPath = Path.Combine(strPath, nameof(Load2ThenSaveIsDeterministic) + '-' + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
             DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
@@ -120,8 +122,11 @@ namespace Chummer.Tests
                                 .WithTest(testFileStream)
                                 .CheckForIdentical()
                                 .WithNodeFilter(x => x.Name != "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                                .WithNodeMatcher(new DefaultNodeMatcher(ElementSelectors.Or(ElementSelectors.ByNameAndText,
-                                    ElementSelectors.ByName)))
+                                .WithNodeMatcher(
+                                    new DefaultNodeMatcher(
+                                        ElementSelectors.Or(
+                                            ElementSelectors.ByNameAndText,
+                                            ElementSelectors.ByName)))
                                 .IgnoreWhitespace()
                                 .Build();
                             foreach (Difference diff in myDiff.Differences)
@@ -142,10 +147,11 @@ namespace Chummer.Tests
             objTestPath.Delete(true);
         }
 
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void LoadCharacterForms()
+        public void Load3CharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: LoadCharacterForms()");
+            Debug.WriteLine("Unit test initialized for: Load3CharacterForms()");
             frmChummerMain frmOldMainForm = Program.MainForm;
             Program.MainForm = MainForm; // Set program Main form to Unit test version
             MainForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
@@ -162,7 +168,7 @@ namespace Chummer.Tests
                         {
                             frmCharacterForm.MdiParent = MainForm;
                             frmCharacterForm.WindowState = FormWindowState.Minimized;
-                            frmCharacterForm.Show(MainForm);
+                            frmCharacterForm.Show();
                             frmCharacterForm.Close();
                         }
                     }

@@ -40,7 +40,7 @@ namespace Chummer
         public frmLoading()
         {
             InitializeComponent();
-            TopMost = true;
+            TopMost = !Utils.IsUnitTest;
             this.TranslateWinForm();
         }
 
