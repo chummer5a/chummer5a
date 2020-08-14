@@ -117,6 +117,7 @@ Changed/New Strings:
 - Checkbox_Options_HideMasterIndex
 - Label_GroupContacts
 - String_PlusSkillPointsSpent
+- String_CapacityRemaining
 
 Build 212
 Application Changes:

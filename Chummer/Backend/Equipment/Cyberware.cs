@@ -3747,6 +3747,19 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string DisplayCapacity
+        {
+            get
+            {
+                if (Capacity.Contains('[') && !Capacity.Contains("/[")) return CalculatedCapacity;
+                string strRemaining = LanguageManager.GetString("String_CapacityRemaining");
+                strRemaining = strRemaining.Replace("{0}", CalculatedCapacity);
+                strRemaining = strRemaining.Replace("{1}", CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo));
+                return strRemaining;
+
+            }
+        }
+
         /// <summary>
         /// Base Cyberlimb Strength (before modifiers and customization).
         /// </summary>

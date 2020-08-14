@@ -9597,8 +9597,8 @@ namespace Chummer
                     nudCyberwareRating.Enabled = nudCyberwareRating.Maximum != nudCyberwareRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID);
                     lblCyberwareRatingLabel.Visible = true;
                 }
-                lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining") + ')';
+
+                lblCyberwareCapacity.Text = objCyberware.DisplayCapacity;
                 lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal) || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                 {
@@ -9682,8 +9682,8 @@ namespace Chummer
                     nudCyberwareRating.Visible = false;
                     lblCyberwareRatingLabel.Visible = false;
                 }
-                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining") + ')';
+
+                lblCyberwareCapacity.Text = objGear.DisplayCapacity;
                 lblCyberwareCost.Text =
                     objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberlimbAGILabel.Visible = false;
@@ -10063,8 +10063,7 @@ namespace Chummer
                 }
                 lblWeaponCapacityLabel.Visible = true;
                 lblWeaponCapacity.Visible = true;
-                lblWeaponCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
-                                         + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblWeaponCapacity.Text = objGear.DisplayCapacity;
                 lblWeaponAvail.Text = objGear.DisplayTotalAvail;
                 lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponSlotsLabel.Visible = false;
@@ -10162,8 +10161,7 @@ namespace Chummer
                 lblArmorValue.Visible = true;
                 lblArmorValue.Text = objArmor.DisplayArmorValue;
                 lblArmorAvail.Text = objArmor.DisplayTotalAvail;
-                lblArmorCapacity.Text = objArmor.CalculatedCapacity + strSpace + '(' + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
-                                        + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblArmorCapacity.Text = objArmor.DisplayCapacity;
                 lblArmorRatingLabel.Visible = false;
                 nudArmorRating.Visible = false;
                 lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -10468,8 +10466,7 @@ namespace Chummer
                 {
                     lblGearCost.Text = objGear.Cost + '¥';
                 }
-                lblGearCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
-                                       + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblGearCapacity.Text = objGear.DisplayCapacity;
                 chkGearEquipped.Visible = true;
                 chkGearEquipped.Checked = objGear.Equipped;
                 // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
