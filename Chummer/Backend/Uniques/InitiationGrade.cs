@@ -71,7 +71,11 @@ namespace Chummer
             if (intGrade > 0 && blnTechnomancer && _objCharacter.TechnomancerEnabled && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue
                 && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
             {
-                int intResonanceRecovered = (int)Math.Min(Math.Ceiling(0.5m * intGrade), Math.Ceiling(_objCharacter.CyberwareEssence));
+                decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
+                int intResonanceRecovered = (int)Math.Min(Math.Ceiling(0.5m * intGrade),
+                     Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
+                        ? Math.Ceiling(_objCharacter.CyberwareEssence)
+                        : Math.Floor(_objCharacter.CyberwareEssence));
                 // Cannot increase RES to be more than what it would be without any Essence loss.
                 intResonanceRecovered = _objCharacter.Options.ESSLossReducesMaximumOnly
                     ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - _objCharacter.RES.TotalMaximum)
