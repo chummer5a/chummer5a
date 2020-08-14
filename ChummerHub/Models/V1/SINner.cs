@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace ChummerHub.Models.V1
 {
-    [DebuggerDisplay("SINner {Id}")]
+    [DebuggerDisplay("SINner {" + nameof(Id) + "}")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner'
     public class SINner : SINnerUploadAble
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner'

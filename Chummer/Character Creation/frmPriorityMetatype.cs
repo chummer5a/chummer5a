@@ -608,244 +608,257 @@ namespace Chummer
             string strSkill2 = cboSkill2.SelectedValue?.ToString();
             string strSkill3 = cboSkill3.SelectedValue?.ToString();
 
-            if ((cboSkill1.Visible && string.IsNullOrEmpty(strSkill1)) ||
-                (cboSkill2.Visible && string.IsNullOrEmpty(strSkill2)) ||
-                (cboSkill3.Visible && string.IsNullOrEmpty(strSkill3)))
+            if ((cboSkill1.Visible && string.IsNullOrEmpty(strSkill1))
+                || (cboSkill2.Visible && string.IsNullOrEmpty(strSkill2))
+                || (cboSkill3.Visible && string.IsNullOrEmpty(strSkill3)))
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectSkill"), LanguageManager.GetString("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if ((cboSkill1.Visible && cboSkill2.Visible && strSkill1 == strSkill2) ||
-                (cboSkill1.Visible && cboSkill3.Visible && strSkill1 == strSkill3) ||
-                (cboSkill2.Visible && cboSkill3.Visible && strSkill2 == strSkill3))
+            if ((cboSkill1.Visible && cboSkill2.Visible && strSkill1 == strSkill2)
+                || (cboSkill1.Visible && cboSkill3.Visible && strSkill1 == strSkill3)
+                || (cboSkill2.Visible && cboSkill3.Visible && strSkill2 == strSkill3))
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_Duplicate"), LanguageManager.GetString("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            Cursor = Cursors.WaitCursor;
-
-            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedMetatype))
+            using (new CursorWait(this))
             {
-                XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"" + strSelectedMetatype + "\"]");
-                if (objXmlMetatype == null)
+                string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strSelectedMetatype))
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Cursor = Cursors.Default;
-                    return;
-                }
-
-                string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
-                string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
-
-                // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
-                    strSelectedMetavariant = "Human";
-                XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
-                strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
-                int intForce = nudForce.Visible ? decimal.ToInt32(nudForce.Value) : 0;
-
-                if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
-                    || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
-                    _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
-
-                string strOldSpecialPriority = _objCharacter.SpecialPriority;
-                string strOldTalentPriority = _objCharacter.TalentPriority;
-
-                // begin priority based character settings
-                // Load the Priority information.
-
-                // Set the character priority selections
-                _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text, GlobalOptions.CultureInfo);
-                _objCharacter.MetatypePriority = cboHeritage.SelectedValue.ToString();
-                _objCharacter.AttributesPriority = cboAttributes.SelectedValue.ToString();
-                _objCharacter.SpecialPriority = cboTalent.SelectedValue.ToString();
-                _objCharacter.SkillsPriority = cboSkills.SelectedValue.ToString();
-                _objCharacter.ResourcesPriority = cboResources.SelectedValue.ToString();
-                _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
-                _objCharacter.PriorityBonusSkillList.Clear();
-                if (cboSkill1.Visible)
-                    _objCharacter.PriorityBonusSkillList.Add(strSkill1);
-                if (cboSkill2.Visible)
-                    _objCharacter.PriorityBonusSkillList.Add(strSkill2);
-                if (cboSkill3.Visible)
-                    _objCharacter.PriorityBonusSkillList.Add(strSkill3);
-
-                // Set starting nuyen
-                XPathNodeIterator xmlResourcesPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Resources\" and value = \"" + _objCharacter.ResourcesPriority + "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
-                foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
-                {
-                    if (xmlResourcesPriorityList.Count == 1 || xmlResourcesPriority.SelectSingleNode("prioritytable") != null)
+                    XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = \"" + strSelectedMetatype + "\"]");
+                    if (objXmlMetatype == null)
                     {
-                        decimal decResources = 0;
-                        if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
-                            _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
-                        break;
+                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return;
                     }
-                }
 
+                    string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
+                    string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
 
-                if ("Aspected Magician".Equals(cboTalents.SelectedValue))
-                {
-                    _objCharacter.Pushtext.Push(strSkill1);
-                }
-                else if ("Enchanter".Equals(cboTalents.SelectedValue))
-                {
-                    _objCharacter.Pushtext.Push(strSkill1);
-                }
-                XmlNode charNode =
-                    strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString()
-                        ? objXmlMetatype
-                        : objXmlMetavariant ?? objXmlMetatype;
+                    // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+                    if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
+                        strSelectedMetavariant = "Human";
+                    XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+                    strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
+                    int intForce = nudForce.Visible ? decimal.ToInt32(nudForce.Value) : 0;
 
-                bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
+                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
+                        || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
+                        _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode,
+                            _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
 
-                if (strOldSpecialPriority != _objCharacter.SpecialPriority || strOldTalentPriority != _objCharacter.SpecialPriority)
-                {
-                    List<Quality> lstOldPriorityQualities = _objCharacter.Qualities.Where(x=> x.OriginSource == QualitySource.Heritage).ToList();
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    int intMaxModifier = 0;
-                    bool blnRemoveFreeSkills = true;
-                    XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + _objCharacter.SpecialPriority +
-                                                                                                  "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
-                    foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
+                    string strOldSpecialPriority = _objCharacter.SpecialPriority;
+                    string strOldTalentPriority = _objCharacter.TalentPriority;
+
+                    // begin priority based character settings
+                    // Load the Priority information.
+
+                    // Set the character priority selections
+                    _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text, GlobalOptions.CultureInfo);
+                    _objCharacter.MetatypePriority = cboHeritage.SelectedValue.ToString();
+                    _objCharacter.AttributesPriority = cboAttributes.SelectedValue.ToString();
+                    _objCharacter.SpecialPriority = cboTalent.SelectedValue.ToString();
+                    _objCharacter.SkillsPriority = cboSkills.SelectedValue.ToString();
+                    _objCharacter.ResourcesPriority = cboResources.SelectedValue.ToString();
+                    _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
+                    _objCharacter.PriorityBonusSkillList.Clear();
+                    if (cboSkill1.Visible)
+                        _objCharacter.PriorityBonusSkillList.Add(strSkill1);
+                    if (cboSkill2.Visible)
+                        _objCharacter.PriorityBonusSkillList.Add(strSkill2);
+                    if (cboSkill3.Visible)
+                        _objCharacter.PriorityBonusSkillList.Add(strSkill3);
+
+                    // Set starting nuyen
+                    XPathNodeIterator xmlResourcesPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Resources\" and value = \"" + _objCharacter.ResourcesPriority +
+                                                                                                 "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
+                    foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
                     {
-                        if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNode("prioritytable") != null)
+                        if (xmlResourcesPriorityList.Count == 1 || xmlResourcesPriority.SelectSingleNode("prioritytable") != null)
                         {
-                            XPathNavigator xmlTalentPriorityNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + _objCharacter.TalentPriority + "\"]");
-
-                            if (xmlTalentPriorityNode != null)
+                            if (xmlResourcesPriorityList.Count == 1 || xmlResourcesPriority.SelectSingleNode("gameplayoption") != null)
                             {
-                                // Create the Qualities that come with the Talent.
-                                foreach (XPathNavigator objXmlQualityItem in xmlTalentPriorityNode.Select("qualities/quality"))
-                                {
-                                    XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlQualityItem.Value + "\"]");
-                                    Quality objQuality = new Quality(_objCharacter);
-                                    string strForceValue = objXmlQualityItem.SelectSingleNode("@select")?.Value ?? string.Empty;
-                                    objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);
-                                    Quality objExistingQuality = lstOldPriorityQualities.FirstOrDefault(x => x.SourceIDString == objQuality.SourceIDString && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
-                                    if (objExistingQuality != null)
-                                        lstOldPriorityQualities.Remove(objExistingQuality);
-                                    else
-                                        _objCharacter.Qualities.Add(objQuality);
-                                }
-
-                                foreach (Quality objQuality in lstOldPriorityQualities)
-                                {
-                                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                                    _objCharacter.Qualities.Remove(objQuality);
-                                }
-
-                                // Set starting magic
-                                int intTemp = 0;
-                                _objCharacter.MAG.MetatypeMinimum =
-                                    xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp) ? intTemp : 1;
-                                _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
-                                _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp)
-                                    ? intTemp
-                                    : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
-                                // Set starting resonance
-                                _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;
-                                _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
-                                _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp)
-                                    ? intTemp
-                                    : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["resmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
-                                // Set starting depth
-                                _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 1;
-                                _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
-                                _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
-                                _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp)
-                                    ? intTemp
-                                    : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["depmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
-
-                                // Set Free Skills/Skill Groups
-                                int intFreeLevels = 0;
-                                Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
-                                XPathNavigator objTalentSkillValNode = xmlTalentPriorityNode.SelectSingleNode("skillval");
-                                if (objTalentSkillValNode == null || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
-                                {
-                                    objTalentSkillValNode = xmlTalentPriorityNode.SelectSingleNode("skillgroupval");
-                                    if (objTalentSkillValNode != null && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
-                                    {
-                                        eType = Improvement.ImprovementType.SkillGroupBase;
-                                    }
-                                }
-
-                                blnRemoveFreeSkills = false;
-                                AddFreeSkills(intFreeLevels, eType);
+                                decimal decResources = 0;
+                                if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
+                                    _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
+                                break;
                             }
-
-                            break;
                         }
                     }
 
-                    if (blnRemoveFreeSkills)
-                        ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Heritage
-                                                                                                                   && (x.ImproveType == Improvement.ImprovementType.SkillBase
-                                                                                                                       || x.ImproveType == Improvement.ImprovementType.SkillGroupBase)).ToList());
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in lstWeapons)
-                        _objCharacter.Weapons.Add(objWeapon);
-                }
 
-                // Set Special Attributes
-                _objCharacter.Special = Convert.ToInt32(lblSpecialAttributes.Text, GlobalOptions.CultureInfo);
-                _objCharacter.TotalSpecial = _objCharacter.Special;
-
-                // Set Attributes
-                XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Attributes\" and value = \"" + _objCharacter.AttributesPriority + "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
-                foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
-                {
-                    if (objXmlAttributesPriorityList.Count == 1 || objXmlAttributesPriority.SelectSingleNode("prioritytable") != null)
+                    if ("Aspected Magician".Equals(cboTalents.SelectedValue))
                     {
-                        int intAttributes = 0;
-                        objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
-                        if (boolHalveAttributePriorityPoints)
-                            intAttributes /= 2;
-                        _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
-                        break;
+                        _objCharacter.Pushtext.Push(strSkill1);
+                    }
+                    else if ("Enchanter".Equals(cboTalents.SelectedValue))
+                    {
+                        _objCharacter.Pushtext.Push(strSkill1);
+                    }
+
+                    XmlNode charNode =
+                        strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString()
+                            ? objXmlMetatype
+                            : objXmlMetavariant ?? objXmlMetatype;
+
+                    bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
+                    if (strOldSpecialPriority != _objCharacter.SpecialPriority || strOldTalentPriority != _objCharacter.SpecialPriority)
+                    {
+                        List<Quality> lstOldPriorityQualities = _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Heritage).ToList();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                        int intMaxModifier = 0;
+                        bool blnRemoveFreeSkills = true;
+                        XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = \"" + _objCharacter.SpecialPriority +
+                                                                                                      "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
+                        foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
+                        {
+                            if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNode("gameplayoption") != null)
+                            {
+                                XPathNavigator xmlTalentPriorityNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + _objCharacter.TalentPriority + "\"]");
+
+                                if (xmlTalentPriorityNode != null)
+                                {
+                                    // Create the Qualities that come with the Talent.
+                                    foreach (XPathNavigator objXmlQualityItem in xmlTalentPriorityNode.Select("qualities/quality"))
+                                    {
+                                        XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlQualityItem.Value + "\"]");
+                                        Quality objQuality = new Quality(_objCharacter);
+                                        string strForceValue = objXmlQualityItem.SelectSingleNode("@select")?.Value ?? string.Empty;
+                                        objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);
+                                        Quality objExistingQuality = lstOldPriorityQualities.FirstOrDefault(x => x.SourceIDString == objQuality.SourceIDString && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
+                                        if (objExistingQuality != null)
+                                            lstOldPriorityQualities.Remove(objExistingQuality);
+                                        else
+                                            _objCharacter.Qualities.Add(objQuality);
+                                    }
+
+                                    foreach (Quality objQuality in lstOldPriorityQualities)
+                                    {
+                                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                                        _objCharacter.Qualities.Remove(objQuality);
+                                    }
+
+                                    // Set starting magic
+                                    int intTemp = 0;
+                                    _objCharacter.MAG.MetatypeMinimum =
+                                        xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp) ? intTemp : 1;
+                                    _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
+                                    _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp)
+                                        ? intTemp
+                                        : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
+                                    // Set starting resonance
+                                    _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;
+                                    _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
+                                    _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp)
+                                        ? intTemp
+                                        : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["resmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
+                                    // Set starting depth
+                                    _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 1;
+                                    _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
+                                    _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
+                                    _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp)
+                                        ? intTemp
+                                        : Convert.ToInt32(CommonFunctions.ExpressionToString(charNode["depmax"]?.InnerText, intForce, intMaxModifier), GlobalOptions.InvariantCultureInfo);
+
+                                    // Set Free Skills/Skill Groups
+                                    int intFreeLevels = 0;
+                                    Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
+                                    XPathNavigator objTalentSkillValNode = xmlTalentPriorityNode.SelectSingleNode("skillval");
+                                    if (objTalentSkillValNode == null || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                    {
+                                        objTalentSkillValNode = xmlTalentPriorityNode.SelectSingleNode("skillgroupval");
+                                        if (objTalentSkillValNode != null && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                        {
+                                            eType = Improvement.ImprovementType.SkillGroupBase;
+                                        }
+                                    }
+
+                                    blnRemoveFreeSkills = false;
+                                    AddFreeSkills(intFreeLevels, eType);
+                                }
+
+                                break;
+                            }
+                        }
+
+                        if (blnRemoveFreeSkills)
+                            ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Heritage
+                                                                                                                       && (x.ImproveType == Improvement.ImprovementType.SkillBase
+                                                                                                                           || x.ImproveType == Improvement.ImprovementType.SkillGroupBase)).ToList());
+                        // Add any created Weapons to the character.
+                        foreach (Weapon objWeapon in lstWeapons)
+                            _objCharacter.Weapons.Add(objWeapon);
+                    }
+
+                    // Set Special Attributes
+                    _objCharacter.Special = Convert.ToInt32(lblSpecialAttributes.Text, GlobalOptions.CultureInfo);
+                    _objCharacter.TotalSpecial = _objCharacter.Special;
+
+                    // Set Attributes
+                    XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Attributes\" and value = \"" + _objCharacter.AttributesPriority +
+                                                                                                     "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
+                    foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
+                    {
+                        if (objXmlAttributesPriorityList.Count == 1 || objXmlAttributesPriority.SelectSingleNode("prioritytable") != null)
+                        {
+                            if (objXmlAttributesPriorityList.Count == 1 || objXmlAttributesPriority.SelectSingleNode("gameplayoption") != null)
+                            {
+                                int intAttributes = 0;
+                                objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
+                                if (boolHalveAttributePriorityPoints)
+                                    intAttributes /= 2;
+                                _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Set Skills and Skill Groups
+                    XPathNodeIterator objXmlSkillsPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Skills\" and value = \"" + _objCharacter.SkillsPriority +
+                                                                                                 "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
+                    foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
+                    {
+                        if (objXmlSkillsPriorityList.Count == 1 || objXmlSkillsPriority.SelectSingleNode("prioritytable") != null)
+                        {
+                            if (objXmlSkillsPriorityList.Count == 1 || objXmlSkillsPriority.SelectSingleNode("gameplayoption") != null)
+                            {
+                                int intTemp = 0;
+                                if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
+                                    _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
+                                if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
+                                    _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
+                                break;
+                            }
+                        }
+
+                        // Sprites can never have Physical Attributes
+                        if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite", StringComparison.Ordinal))
+                        {
+                            _objCharacter.BOD.AssignLimits("0", "0", "0");
+                            _objCharacter.AGI.AssignLimits("0", "0", "0");
+                            _objCharacter.REA.AssignLimits("0", "0", "0");
+                            _objCharacter.STR.AssignLimits("0", "0", "0");
+                            _objCharacter.MAG.AssignLimits("0", "0", "0");
+                            _objCharacter.MAGAdept.AssignLimits("0", "0", "0");
+                        }
+
+                        // Set free contact points
+                        _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
+
+                        DialogResult = DialogResult.OK;
+                        Close();
                     }
                 }
-
-                // Set Skills and Skill Groups
-                XPathNodeIterator objXmlSkillsPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Skills\" and value = \"" + _objCharacter.SkillsPriority + "\" and (not(prioritytable) or prioritytable = \"" + _objCharacter.Options.PriorityTable + "\")]");
-                foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
+                else
                 {
-                    if (objXmlSkillsPriorityList.Count == 1 || objXmlSkillsPriority.SelectSingleNode("prioritytable") != null)
-                    {
-                        int intTemp = 0;
-                        if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
-                            _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
-                        if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
-                            _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
-                        break;
-                    }
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-                // Sprites can never have Physical Attributes
-                if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite", StringComparison.Ordinal))
-                {
-                    _objCharacter.BOD.AssignLimits("0", "0", "0");
-                    _objCharacter.AGI.AssignLimits("0", "0", "0");
-                    _objCharacter.REA.AssignLimits("0", "0", "0");
-                    _objCharacter.STR.AssignLimits("0", "0", "0");
-                    _objCharacter.MAG.AssignLimits("0", "0", "0");
-                    _objCharacter.MAGAdept.AssignLimits("0", "0", "0");
-                }
-
-                // Set free contact points
-                _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
-
-                DialogResult = DialogResult.OK;
-                Close();
             }
-            else
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            Cursor = Cursors.Default;
         }
 
         private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type)

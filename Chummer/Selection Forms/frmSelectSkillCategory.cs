@@ -35,7 +35,7 @@ namespace Chummer
         {
             InitializeComponent();
             this.TranslateWinForm();
-            _objXmlDocument = objCharacter?.LoadData("skills.xml") ?? XmlManager.Load("skills.xml");
+            _objXmlDocument = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectSkillCategory_Load(object sender, EventArgs e)

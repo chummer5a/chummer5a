@@ -122,11 +122,12 @@ namespace Chummer
 
             if(!_blnLoading)
             {
-                Cursor = Cursors.WaitCursor;
-                _blnLoading = true;
-                TranslateForm();
-                _blnLoading = false;
-                Cursor = Cursors.Default;
+                using (new CursorWait(this))
+                {
+                    _blnLoading = true;
+                    TranslateForm();
+                    _blnLoading = false;
+                }
             }
 
             OptionsChanged(sender, e);
@@ -139,30 +140,30 @@ namespace Chummer
 
         private void cmdVerify_Click(object sender, EventArgs e)
         {
-            Cursor = Cursors.WaitCursor;
-            LanguageManager.VerifyStrings(_strSelectedLanguage);
-            Cursor = Cursors.Default;
+            using (new CursorWait(this))
+                LanguageManager.VerifyStrings(_strSelectedLanguage);
         }
 
         private void cmdVerifyData_Click(object sender, EventArgs e)
         {
-            Cursor = Cursors.WaitCursor;
-            // Build a list of Sourcebooks that will be passed to the Verify method.
-            // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-            HashSet<string> setBooks = new HashSet<string>();
-            foreach(ListItem objItem in lstGlobalSourcebookInfos.Items)
+            using (new CursorWait(this))
             {
-                string strItemValue = objItem.Value?.ToString();
-                setBooks.Add(strItemValue);
+	            // Build a list of Sourcebooks that will be passed to the Verify method.
+	            // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
+	            HashSet<string> setBooks = new HashSet<string>();
+	            foreach(ListItem objItem in lstGlobalSourcebookInfos.Items)
+	            {
+	                string strItemValue = objItem.Value?.ToString();
+	                setBooks.Add(strItemValue);
+	            }
+	
+	            string strSelectedLanguage = _strSelectedLanguage;
+	            XmlManager.Verify(strSelectedLanguage, setBooks);
+
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
+                Program.MainForm.ShowMessageBox(this, string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
+                    LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            string strSelectedLanguage = _strSelectedLanguage;
-            XmlManager.Verify(strSelectedLanguage, setBooks);
-
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
-            Program.MainForm.ShowMessageBox(this, string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
-                LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Cursor = Cursors.Default;
         }
 
         private void cmdPDFAppPath_Click(object sender, EventArgs e)
@@ -1086,7 +1087,7 @@ namespace Chummer
         {
             clbPlugins.Items.Clear();
             if (Program.PluginLoader.MyPlugins.Count == 0) return;
-            using (new CursorWait(false, this))
+            using (new CursorWait(this))
             {
                 foreach (var plugin in Program.PluginLoader.MyPlugins)
                 {
@@ -1127,7 +1128,7 @@ namespace Chummer
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            using (new CursorWait(false, this))
+            using (new CursorWait(this))
             {
                 var plugin = clbPlugins.Items[e.Index];
                 if (GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
@@ -1135,7 +1136,6 @@ namespace Chummer
                 GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
                 OptionsChanged(sender, e);
             }
-
         }
 
         private void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)

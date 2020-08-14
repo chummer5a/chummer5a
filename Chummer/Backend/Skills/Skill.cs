@@ -1566,6 +1566,10 @@ namespace Chummer.Backend.Skills
                         )
                     )
                 ),
+                new DependencyGraphNode<string, Skill>(nameof(CanAffordSpecialization),
+                    new DependencyGraphNode<string, Skill>(nameof(CanHaveSpecs)),
+                    new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating))
+                ),
                 new DependencyGraphNode<string, Skill>(nameof(AllowDelete), x => x.IsKnowledgeSkill,
                     new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.ForcedName)),
                     new DependencyGraphNode<string, Skill>(nameof(FreeBase)),

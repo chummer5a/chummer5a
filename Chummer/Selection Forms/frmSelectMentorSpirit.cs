@@ -30,7 +30,6 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
-        private readonly bool _blnEverShowMentorMask;
 
         #region Control Events
         public frmSelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
@@ -44,7 +43,6 @@ namespace Chummer
                 Tag = "Title_SelectMentorSpirit_Paragon";
 
             this.TranslateWinForm();
-            _blnEverShowMentorMask = strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)

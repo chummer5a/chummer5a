@@ -2271,8 +2271,11 @@ namespace Chummer.Backend.Equipment
             {
                 intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
             }
-            bool blnDamageReplaced = false;
+            if (_objCharacter.Options.MoreLethalGameplay)
+                intImprove += 2;
 
+            bool blnDamageReplaced = false;
+            StringBuilder sbdBonusDamage = new StringBuilder();
             // Add in the DV bonus from any Weapon Mods.
             foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
@@ -2285,9 +2288,7 @@ namespace Chummer.Backend.Equipment
                     }
                     // Adjust the Weapon's Damage.
                     if (!string.IsNullOrEmpty(objAccessory.Damage))
-                    {
-                        strDamage += " + " + objAccessory.Damage;
-                    }
+                        sbdBonusDamage.Append(" + ").Append(objAccessory.Damage);
                     if (!string.IsNullOrEmpty(objAccessory.DamageReplacement))
                     {
                         blnDamageReplaced = true;
@@ -2295,10 +2296,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            if (intImprove != 0)
-                strDamage += " + " + intImprove.ToString(GlobalOptions.InvariantCultureInfo);
-
-            int intBonus = _objCharacter.Options.MoreLethalGameplay ? 2 : 0;
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2315,12 +2312,14 @@ namespace Chummer.Backend.Equipment
                             strDamageExtra = objGear.FlechetteWeaponBonus["damagetype"].InnerText;
                         }
                         // Adjust the Weapon's Damage.
-                        if (objGear.FlechetteWeaponBonus["damage"] != null)
-                            strDamage += " + " + objGear.FlechetteWeaponBonus["damage"].InnerText;
-                        if (objGear.FlechetteWeaponBonus["damagereplace"] != null)
+                        string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            sbdBonusDamage.Append(" + ").Append(strTemp);
+                        strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
                         {
                             blnDamageReplaced = true;
-                            strDamage = objGear.FlechetteWeaponBonus["damagereplace"].InnerText;
+                            strDamage = strTemp;
                         }
                     }
                     else if (objGear.WeaponBonus != null)
@@ -2332,12 +2331,14 @@ namespace Chummer.Backend.Equipment
                             strDamageExtra = objGear.WeaponBonus["damagetype"].InnerText;
                         }
                         // Adjust the Weapon's Damage.
-                        if (objGear.WeaponBonus["damage"] != null)
-                            strDamage += " + " + objGear.WeaponBonus["damage"].InnerText;
-                        if (objGear.WeaponBonus["damagereplace"] != null)
+                        string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            sbdBonusDamage.Append(" + ").Append(strTemp);
+                        strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
                         {
                             blnDamageReplaced = true;
-                            strDamage = objGear.WeaponBonus["damagereplace"].InnerText;
+                            strDamage = strTemp;
                         }
                     }
 
@@ -2352,12 +2353,14 @@ namespace Chummer.Backend.Equipment
                                 strDamageExtra = objChild.FlechetteWeaponBonus["damagetype"].InnerText;
                             }
                             // Adjust the Weapon's Damage.
-                            if (objChild.FlechetteWeaponBonus["damage"] != null)
-                                strDamage += " + " + objChild.FlechetteWeaponBonus["damage"].InnerText;
-                            if (objChild.FlechetteWeaponBonus["damagereplace"] != null)
+                            string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
+                                sbdBonusDamage.Append(" + ").Append(strTemp);
+                            strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
                             {
                                 blnDamageReplaced = true;
-                                strDamage = objGear.FlechetteWeaponBonus["damagereplace"].InnerText;
+                                strDamage = strTemp;
                             }
                         }
                         else if (objChild.WeaponBonus != null)
@@ -2369,17 +2372,22 @@ namespace Chummer.Backend.Equipment
                                 strDamageExtra = objChild.WeaponBonus["damagetype"].InnerText;
                             }
                             // Adjust the Weapon's Damage.
-                            if (objChild.WeaponBonus["damage"] != null)
-                                strDamage += " + " + objChild.WeaponBonus["damage"].InnerText;
-                            if (objChild.WeaponBonus["damagereplace"] != null)
+                            string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
+                                sbdBonusDamage.Append(" + ").Append(strTemp);
+                            strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strTemp))
                             {
                                 blnDamageReplaced = true;
-                                strDamage = objChild.WeaponBonus["damagereplace"].InnerText;
+                                strDamage = strTemp;
                             }
                         }
                     }
                 }
             }
+
+            if (sbdBonusDamage.Length > 0)
+                strDamage += sbdBonusDamage.ToString();
 
             string strReturn;
             if (!blnDamageReplaced)
@@ -2396,7 +2404,7 @@ namespace Chummer.Backend.Equipment
                         if (blnIsSuccess)
                         {
                             int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
-                            intDamage += intBonus;
+                            intDamage += intImprove;
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
@@ -2465,7 +2473,7 @@ namespace Chummer.Backend.Equipment
                         if (blnIsSuccess)
                         {
                             int intDamage = Convert.ToInt32(Math.Ceiling((double)objProcess));
-                            intDamage += intBonus;
+                            intDamage += intImprove;
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
@@ -2494,7 +2502,8 @@ namespace Chummer.Backend.Equipment
             // Translate the Damage Code.
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
+                strReturn = strReturn
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
                     .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
                     .CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
                     .CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
@@ -2671,24 +2680,26 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
-        public bool AllowSingleShot =>
-            WeaponType == "Melee" && Ammo != "0" || _blnAllowSingleShot && (AllowMode(LanguageManager.GetString("String_ModeSingleShot")) ||
-                                                                            AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic")));
+        public bool AllowSingleShot => WeaponType == "Melee"
+                                       && Ammo != "0"
+                                       || _blnAllowSingleShot
+                                       && (AllowMode(LanguageManager.GetString("String_ModeSingleShot"))
+                                           || AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic")));
 
-        public bool AllowShortBurst => _blnAllowShortBurst && (
-                                           AllowMode(LanguageManager.GetString("String_ModeBurstFire")) ||
-                                           AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic")) ||
-                                           AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+        public bool AllowShortBurst => _blnAllowShortBurst
+                                       && (AllowMode(LanguageManager.GetString("String_ModeBurstFire"))
+                                           || AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic"))
+                                           || AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
 
-        public bool AllowLongBurst => _blnAllowLongBurst && (
-                                          AllowMode(LanguageManager.GetString("String_ModeBurstFire")) ||
-                                          AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
+        public bool AllowLongBurst => _blnAllowLongBurst
+                                      && (AllowMode(LanguageManager.GetString("String_ModeBurstFire"))
+                                          || AllowMode(LanguageManager.GetString("String_ModeFullAutomatic")));
 
-        public bool AllowFullBurst =>
-            _blnAllowFullBurst && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+        public bool AllowFullBurst => _blnAllowFullBurst
+                                      && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
-        public bool AllowSuppressive =>
-            _blnAllowSuppressive && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
+        public bool AllowSuppressive => _blnAllowSuppressive
+                                        && AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
         /// <summary>
         /// The Weapon's Firing Mode including Modifications in the program's current language.
@@ -2702,6 +2713,7 @@ namespace Chummer.Backend.Equipment
         {
             // Move the contents of the array to a list so it's easier to work with.
             HashSet<string> lstModes = new HashSet<string>(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
+            HashSet<string> lstNewModes = new HashSet<string>();
 
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
@@ -2719,11 +2731,11 @@ namespace Chummer.Backend.Equipment
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
                                 foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                    lstModes.Add(strMode);
+                                    lstNewModes.Add(strMode);
                             }
                             else
                             {
-                                lstModes.Add(strFireMode);
+                                lstNewModes.Add(strFireMode);
                             }
                         }
                         strFireMode = objGear.FlechetteWeaponBonus["modereplace"]?.InnerText;
@@ -2751,11 +2763,11 @@ namespace Chummer.Backend.Equipment
                             {
                                 // Move the contents of the array to a list so it's easier to work with.
                                 foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                    lstModes.Add(strMode);
+                                    lstNewModes.Add(strMode);
                             }
                             else
                             {
-                                lstModes.Add(strFireMode);
+                                lstNewModes.Add(strFireMode);
                             }
                         }
                         strFireMode = objGear.WeaponBonus["modereplace"]?.InnerText;
@@ -2787,11 +2799,11 @@ namespace Chummer.Backend.Equipment
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                        lstModes.Add(strMode);
+                                        lstNewModes.Add(strMode);
                                 }
                                 else
                                 {
-                                    lstModes.Add(strFireMode);
+                                    lstNewModes.Add(strFireMode);
                                 }
                             }
                             strFireMode = objChild.FlechetteWeaponBonus["modereplace"]?.InnerText;
@@ -2819,11 +2831,11 @@ namespace Chummer.Backend.Equipment
                                 {
                                     // Move the contents of the array to a list so it's easier to work with.
                                     foreach (string strMode in strFireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                        lstModes.Add(strMode);
+                                        lstNewModes.Add(strMode);
                                 }
                                 else
                                 {
-                                    lstModes.Add(strFireMode);
+                                    lstNewModes.Add(strFireMode);
                                 }
                             }
 
@@ -2844,50 +2856,45 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
+                }
+            }
 
-                    // Do the same for any accessories/modifications.
-                    foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            // Do the same for any accessories/modifications.
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (!objAccessory.Equipped)
+                    continue;
+                if (!string.IsNullOrEmpty(objAccessory.FireMode))
+                {
+                    if (objAccessory.FireMode.Contains('/'))
                     {
-                        if (!objAccessory.Equipped) continue;
-                        if (!string.IsNullOrEmpty(objAccessory.FireMode))
-                        {
-                            if (objAccessory.FireMode.Contains('/'))
-                            {
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in objAccessory.FireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                    lstModes.Add(strMode);
-                            }
-                            else
-                            {
-                                lstModes.Add(objAccessory.FireMode);
-                            }
-                        }
+                        // Move the contents of the array to a list so it's easier to work with.
+                        foreach (string strMode in objAccessory.FireMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            lstNewModes.Add(strMode);
+                    }
+                    else
+                    {
+                        lstNewModes.Add(objAccessory.FireMode);
+                    }
+                }
 
-                        if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
-                        {
-                            lstModes.Clear();
-                            if (objAccessory.FireModeReplacement.Contains('/'))
-                            {
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in objAccessory.FireModeReplacement.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                    lstModes.Add(strMode);
-                            }
-                            else
-                            {
-                                lstModes.Add(objAccessory.FireModeReplacement);
-                            }
-
-                            break;
-                        }
+                if (!string.IsNullOrEmpty(objAccessory.FireModeReplacement))
+                {
+                    lstModes.Clear();
+                    if (objAccessory.FireModeReplacement.Contains('/'))
+                    {
+                        // Move the contents of the array to a list so it's easier to work with.
+                        foreach (string strMode in objAccessory.FireModeReplacement.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
+                            lstModes.Add(strMode);
+                    }
+                    else
+                    {
+                        lstModes.Add(objAccessory.FireModeReplacement);
                     }
                 }
             }
 
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                if (objAccessory.Equipped && !string.IsNullOrEmpty(objAccessory.AddMode))
-                    lstModes.Add(objAccessory.AddMode);
-            }
+            lstModes.UnionWith(lstNewModes);
 
             StringBuilder sbdReturn = new StringBuilder();
             if (lstModes.Contains("SS"))
@@ -3038,7 +3045,8 @@ namespace Chummer.Backend.Equipment
         {
             string strAP = AP;
 
-            int bonusAP = 0;
+            int intImprove = 0;
+            StringBuilder sbdBonusAP = new StringBuilder();
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
             {
@@ -3053,7 +3061,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
                     if (!string.IsNullOrEmpty(strAPAdd))
-                        bonusAP += Convert.ToInt32(strAPAdd, GlobalOptions.InvariantCultureInfo);
+                        sbdBonusAP.Append(" + ").Append(strAPAdd);
                 }
                 else if (objGear?.WeaponBonus != null)
                 {
@@ -3064,7 +3072,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
                     if (!string.IsNullOrEmpty(strAPAdd))
-                        bonusAP += Convert.ToInt32(strAPAdd, GlobalOptions.InvariantCultureInfo);
+                        sbdBonusAP.Append(" + ").Append(strAPAdd);
                 }
 
                 if (_objCharacter != null)
@@ -3073,7 +3081,7 @@ namespace Chummer.Backend.Equipment
                     if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
                         _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                     {
-                        bonusAP += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
+                        intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
                     }
                 }
             }
@@ -3083,37 +3091,30 @@ namespace Chummer.Backend.Equipment
                 // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
                 if (!(objAccessory.DamageType.Contains("(f)") && Damage.Contains("(f)")))
                 {
-                    // Armor-Piercing Flechettes (and any other that might come along that does not explicitly add +5 AP) should instead reduce
-                    // the AP for Flechette-only Weapons which have the standard Flechette +5 AP built into their stats.
-                    if (Damage.Contains("(f)") && objAccessory.Name.Contains("Flechette"))
-                    {
-                        bonusAP -= 5;
-                    }
-                    else
-                    {
-                        // Change the Weapon's AP value.
-                        if (!string.IsNullOrEmpty(objAccessory.APReplacement))
-                            strAP = objAccessory.APReplacement;
-                        // Adjust the Weapon's AP value.
-                        if (!string.IsNullOrEmpty(objAccessory.AP))
-                            bonusAP += Convert.ToInt32(objAccessory.AP, GlobalOptions.InvariantCultureInfo);
-                    }
+                    // Change the Weapon's AP value.
+                    if (!string.IsNullOrEmpty(objAccessory.APReplacement))
+                        strAP = objAccessory.APReplacement;
+                    // Adjust the Weapon's AP value.
+                    if (!string.IsNullOrEmpty(objAccessory.AP))
+                        sbdBonusAP.Append(" + ").Append(objAccessory.AP);
                 }
             }
 
             if (strAP == "-")
                 strAP = "0";
+            if (sbdBonusAP.Length > 0)
+                strAP += sbdBonusAP.ToString();
 
-            StringBuilder objAP = new StringBuilder(strAP);
-            objAP.CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
-            ProcessAttributesInXPath(objAP, strAP);
+            StringBuilder sbdAP = new StringBuilder(strAP)
+                .CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+            ProcessAttributesInXPath(sbdAP, strAP);
 
             int intAP;
             try
             {
                 // Replace the division sign with "div" since we're using XPath.
-                objAP.Replace("/", " div ");
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objAP.ToString(), out bool blnIsSuccess);
+                sbdAP.Replace("/", " div ");
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAP = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
                 else
@@ -3134,7 +3135,7 @@ namespace Chummer.Backend.Equipment
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
                 return strLanguage == GlobalOptions.DefaultLanguage ? strAP : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
-            intAP += bonusAP;
+            intAP += intImprove;
             if (intAP == 0)
                 return "-";
             if (intAP > 0)

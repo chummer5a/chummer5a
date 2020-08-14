@@ -35,7 +35,7 @@ namespace Chummer
         {
             InitializeComponent();
             this.TranslateWinForm();
-            _objXmlDocument = objCharacter?.LoadData("spells.xml") ?? XmlManager.Load("spells.xml");
+            _objXmlDocument = XmlManager.Load("spells.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectSpellCategory_Load(object sender, EventArgs e)

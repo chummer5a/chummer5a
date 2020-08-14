@@ -39,7 +39,7 @@ namespace ChummerHub.Models.V1.Examples
                 Client = new UploadClient()
                 {
                     Id = id,
-                    ChummerVersion = System.Reflection.Assembly.GetAssembly(typeof(UploadInfoObjectExample)).GetName().Version.ToString(),
+                    ChummerVersion = System.Reflection.Assembly.GetAssembly(typeof(UploadInfoObjectExample))?.GetName().Version?.ToString(),
                 }
             };
             return info;

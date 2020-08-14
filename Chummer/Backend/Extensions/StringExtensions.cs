@@ -995,7 +995,7 @@ namespace Chummer
         /// <param name="strText">Text to be word wrapped</param>
         /// <param name="intWidth">Width, in characters, to which the text should be word wrapped</param>
         /// <returns>The modified text</returns>
-        public static string WordWrap(this string strText, int intWidth = 256)
+        public static string WordWrap(this string strText, int intWidth = 128)
         {
             // Lucidity checks
             if (string.IsNullOrEmpty(strText))

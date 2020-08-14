@@ -958,7 +958,7 @@ namespace Chummer
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
-            Uri uriPath = null;
+            Uri uriPath;
             try
             {
                 uriPath = new Uri(objBookInfo.Path);

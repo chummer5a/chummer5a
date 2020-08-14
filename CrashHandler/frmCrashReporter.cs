@@ -140,13 +140,13 @@ namespace CrashHandler
 		}
 		private static string Md5Hash(string strInput)
 		{
-			StringBuilder strbldHash = new StringBuilder();
+			StringBuilder sbdHash = new StringBuilder();
 			byte[] achrBytes = _md5provider.ComputeHash(new UTF8Encoding().GetBytes(strInput));
-			for (int i = 0; i < achrBytes.Length; i++)
-			{
-			    strbldHash.Append(achrBytes[i].ToString("x2"));
-			}
-			return strbldHash.ToString();
+			foreach (var chrByte in achrBytes)
+            {
+                sbdHash.Append(chrByte.ToString("x2"));
+            }
+			return sbdHash.ToString();
 		}
 	}
 }

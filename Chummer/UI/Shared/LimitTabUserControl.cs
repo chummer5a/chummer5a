@@ -49,12 +49,10 @@ namespace Chummer.UI.Shared
 
         private void LimitTabUserControl_Load(object sender, EventArgs e)
         {
-            if (_objCharacter != null) return;
-            if (ParentForm != null)
-                ParentForm.Cursor = Cursors.WaitCursor;
-            RealLoad();
-            if (ParentForm != null)
-                ParentForm.Cursor = Cursors.Default;
+            if (_objCharacter != null)
+                return;
+            using (new CursorWait(this))
+                RealLoad();
         }
 
         public void RealLoad()

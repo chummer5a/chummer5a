@@ -167,15 +167,10 @@ namespace ChummerHub.Client.UI
                                 bool blnSuccess = true;
                                 if (c == null)
                                 {
-                                    c = new Character
-                                    {
-                                        FileName = MyCharacterCache.FilePath
-                                    };
-                                    using (frmLoading frmLoadingForm = new frmLoading
-                                        {CharacterFile = MyCharacterCache.FilePath})
+                                    c = new Character { FileName = MyCharacterCache.FilePath };
+                                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = MyCharacterCache.FilePath })
                                     {
                                         frmLoadingForm.Reset(36);
-                                        frmLoadingForm.TopMost = true;
                                         frmLoadingForm.Show();
                                         myState.StatusText = "Loading chummer file...";
                                         myState.CurrentProgress += 10;

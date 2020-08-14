@@ -120,7 +120,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                using (new CursorWait(true, this))
+                using (new CursorWait(this, true))
                 {
                     Settings.Default.CookieData = null;
                     Settings.Default.Save();

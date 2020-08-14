@@ -314,9 +314,7 @@ namespace Chummer.Plugins
                                 callback = WebUtility.UrlDecode(callback);
                             }
                             var task = Task.Run(async () =>
-                            {
-                                await StaticUtils.WebCall(callback, 10, "Sending Open Character Request").ConfigureAwait(true);
-                            });
+                                await StaticUtils.WebCall(callback, 10, "Sending Open Character Request").ConfigureAwait(true));
                             task.Wait();
                         }
                     }
@@ -418,7 +416,7 @@ namespace Chummer.Plugins
                     return;
                 }
                 input.OnSaveCompleted = null;
-                using (new CursorWait(true, MainForm))
+                using (new CursorWait(MainForm, true))
                 {
                     using (var ce = GetMyCe(input))
                     {
@@ -586,28 +584,27 @@ namespace Chummer.Plugins
 
         private async void mnuSINnersArchetypes_Click(object sender, EventArgs e)
         {
-            SINSearchGroupResult ssgr = null;
             HttpOperationResponse<ResultGroupGetSearchGroups> res = null;
             try
             {
-                using (new CursorWait(true, MainForm))
+                using (new CursorWait(MainForm, true))
                 {
                     var client = StaticUtils.GetClient();
                     res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes").ConfigureAwait(true);
                     if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                         return;
+                    SINSearchGroupResult ssgr;
                     if (result.CallSuccess == true)
                     {
                         ssgr = result.MySearchGroupResult;
                         var ssgr1 = ssgr;
-                        MainForm.CharacterRoster.DoThreadSafe(() =>
+                        using (new CursorWait(MainForm, true))
                         {
-                            using (new CursorWait(true, MainForm))
+                            MainForm.CharacterRoster.DoThreadSafe(() =>
                             {
                                 if (ssgr1 != null && ssgr1.SinGroups?.Count > 0)
                                 {
-                                    var list = ssgr1.SinGroups.Where(a => a.Groupname == "Archetypes").ToList();
-                                    var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list).ToList();
+                                    var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(ssgr1.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList();
                                     foreach (var node in nodelist)
                                     {
                                         MyTreeNodes2Add.AddOrUpdate(node.Name, node,
@@ -621,13 +618,11 @@ namespace Chummer.Plugins
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No archetypes found!");
+                                    MainForm.ShowMessageBox("No archetypes found!");
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
-
-                    ssgr = null;
                 }
             }
             catch (ArgumentNullException)
@@ -651,13 +646,13 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(true, MainForm))
+                using (new CursorWait(MainForm, true))
                 {
                     using (frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null)
                     {
                         TopMost = true
                     })
-                        frmSearch.Show(MainForm);
+                        frmSearch.Show();
                 }
 
             }
@@ -716,7 +711,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(true, frmCharRoster))
+                using (new CursorWait(frmCharRoster, true))
                 {
                     IEnumerable<TreeNode> res = null;
                     if (Settings.Default.UserModeRegistered)
@@ -794,7 +789,7 @@ namespace Chummer.Plugins
             //TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
             try
             {
-                using (new CursorWait(true, MainForm.CharacterRoster))
+                using (new CursorWait(MainForm.CharacterRoster, true))
                 {
                     var MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null).ConfigureAwait(true);
                     var item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);
@@ -959,7 +954,7 @@ namespace Chummer.Plugins
                 })
                 {
                     share.MyUcSINnerShare.MyCharacterCache = objCache;
-                    share.Show(MainForm);
+                    share.Show();
                     try
                     {
                         await share.MyUcSINnerShare.DoWork().ConfigureAwait(true);
@@ -979,7 +974,7 @@ namespace Chummer.Plugins
                 })
                 {
                     share.MyUcSINnerShare.MySINnerSearchGroup = ssg;
-                    share.Show(MainForm);
+                    share.Show();
                     try
                     {
                         await share.MyUcSINnerShare.DoWork().ConfigureAwait(true);
@@ -1097,16 +1092,14 @@ namespace Chummer.Plugins
                         string SINnerIdvalue = argument.Substring(5);
                         SINnerIdvalue = SINnerIdvalue.Trim('/');
                         int transactionInt = SINnerIdvalue.IndexOf(':');
-                        string transaction = null;
-                        int callbackInt = -1;
                         string callback = null;
                         if (transactionInt != -1)
                         {
-                            transaction = SINnerIdvalue.Substring(transactionInt);
+                            string transaction = SINnerIdvalue.Substring(transactionInt);
                             SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
                             SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
                             transaction = transaction.TrimStart(':');
-                            callbackInt = transaction.IndexOf(':');
+                            int callbackInt = transaction.IndexOf(':');
                             if (callbackInt != -1)
                             {
                                 callback = transaction.Substring(callbackInt);
@@ -1162,7 +1155,7 @@ namespace Chummer.Plugins
 
         private static async Task<Character> MainFormLoadChar(string fileToLoad)
         {
-            using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = fileToLoad })
+            using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = fileToLoad })
             {
                 //already open
                 Character objCharacter = MainForm.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);
@@ -1173,7 +1166,6 @@ namespace Chummer.Plugins
                         FileName = fileToLoad
                     };
                     frmLoadingForm.Reset(36);
-                    frmLoadingForm.TopMost = true;
                     frmLoadingForm.Show();
                     if (await objCharacter.Load(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening).ConfigureAwait(true))
                         MainForm.OpenCharacters.Add(objCharacter);

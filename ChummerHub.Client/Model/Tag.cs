@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace SINners.Models
 {
-    [DebuggerDisplay("{Display}")]
+    [DebuggerDisplay("{" + nameof(Display) + "}")]
     public partial class Tag
     {
         [IgnoreDataMember]

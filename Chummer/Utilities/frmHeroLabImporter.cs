@@ -51,17 +51,17 @@ namespace Chummer
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                Cursor = Cursors.WaitCursor;
-                string strSelectedFile = openFileDialog.FileName;
-                TreeNode objNode = CacheCharacters(strSelectedFile);
-                if (objNode != null)
+                using (new CursorWait(this))
                 {
-                    treCharacterList.Nodes.Clear();
-                    treCharacterList.Nodes.Add(objNode);
-                    treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                    string strSelectedFile = openFileDialog.FileName;
+                    TreeNode objNode = CacheCharacters(strSelectedFile);
+                    if (objNode != null)
+                    {
+                        treCharacterList.Nodes.Clear();
+                        treCharacterList.Nodes.Add(objNode);
+                        treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                    }
                 }
-
-                Cursor = Cursors.Default;
             }
         }
 
@@ -466,27 +466,39 @@ namespace Chummer
                     string strCharacterId = _lstCharacterCache[intIndex]?.CharacterId;
                     if (!string.IsNullOrEmpty(strFile) && !string.IsNullOrEmpty(strCharacterId))
                     {
-                        Cursor objOldCursor = Cursor;
-                        Cursor = Cursors.WaitCursor;
-                        cmdImport.Enabled = false;
-                        cmdSelectFile.Enabled = false;
-
-                        Character objCharacter = new Character();
-
-                        Program.MainForm.OpenCharacters.Add(objCharacter);
-                        //Timekeeper.Start("load_file");
-                        bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId).ConfigureAwait(true);
-                        //Timekeeper.Finish("load_file");
-                        if (!blnLoaded)
+                        string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+                        if (!File.Exists(strFilePath))
                         {
-                            Program.MainForm.OpenCharacters.Remove(objCharacter);
-                            Cursor = objOldCursor;
-                            cmdImport.Enabled = true;
-                            cmdSelectFile.Enabled = true;
-                            return;
+                            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+                                using (new CursorWait(this))
+                                    using (frmOptions frmOptions = new frmOptions())
+                                        frmOptions.ShowDialog(this);
+                            }
                         }
 
-                        Program.MainForm.OpenCharacter(objCharacter);
+                        using (new CursorWait(this))
+                        {
+                            cmdImport.Enabled = false;
+                            cmdSelectFile.Enabled = false;
+                            
+                            Character objCharacter = new Character();
+
+                            Program.MainForm.OpenCharacters.Add(objCharacter);
+                            //Timekeeper.Start("load_file");
+                            bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId).ConfigureAwait(true);
+                            //Timekeeper.Finish("load_file");
+                            if (!blnLoaded)
+                            {
+                                Program.MainForm.OpenCharacters.Remove(objCharacter);
+                                cmdImport.Enabled = true;
+                                cmdSelectFile.Enabled = true;
+                                return;
+                            }
+
+                            Program.MainForm.OpenCharacter(objCharacter);
+                        }
+
                         Close();
                     }
                 }
