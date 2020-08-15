@@ -40,7 +40,7 @@ namespace ChummerHub.Services.GoogleDrive
         private readonly ILogger _logger;
 
         private static string _contentType = "application/octet-stream";
-        private static string _folderId = "";
+        private static string _folderId = string.Empty;
         readonly IConfiguration Configuration;
 
 

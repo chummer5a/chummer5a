@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using Newtonsoft.Json;
+using SINnerGroup = ChummerHub.Models.V1.SINnerGroup;
 
 //using Swashbuckle.AspNetCore.Filters;
 
@@ -189,11 +190,14 @@ namespace ChummerHub.Controllers.V1
 
                 if (returnGroup.MyParentGroup != null)
                 {
-                    returnGroup.MyParentGroup.PasswordHash = "";
+                    returnGroup.MyParentGroup.PasswordHash = string.Empty;
                     returnGroup.MyParentGroup.MyGroups = new List<SINnerGroup>();
                 }
-                returnGroup.PasswordHash = "";
-                returnGroup.MyGroups = RemovePWHashRecursive(returnGroup.MyGroups);
+                returnGroup.PasswordHash = string.Empty;
+                if (returnGroup.MyGroups == null)
+                    returnGroup.MyGroups = new List<SINnerGroup>();
+                else
+                    RemovePWHashRecursive(returnGroup.MyGroups);
                 res = new ResultGroupPutGroupInGroup(returnGroup);
                 var logmessage = JsonConvert.SerializeObject(res, Formatting.Indented);
                 logmessage = "PutGroupInGroup returns Object ResultGroupPutGroupInGroup: " + Environment.NewLine +
@@ -689,7 +693,10 @@ namespace ChummerHub.Controllers.V1
                 await context.SaveChangesAsync();
                 if (sin.MyGroup != null)
                 {
-                    sin.MyGroup.MyGroups = RemovePWHashRecursive(sin.MyGroup.MyGroups);
+                    if (sin.MyGroup.MyGroups == null)
+                        sin.MyGroup.MyGroups = new List<SINnerGroup>();
+                    else
+                        RemovePWHashRecursive(sin.MyGroup.MyGroups);
                     if (sin.MyGroup.MyParentGroup != null)
                     {
                         sin.MyGroup.MyParentGroup.PasswordHash = string.Empty;
@@ -767,8 +774,11 @@ namespace ChummerHub.Controllers.V1
                     return NotFound(res);
                 }
 
-                group.MyGroups = RemovePWHashRecursive(group.MyGroups);
-                group.PasswordHash = null;
+                if (group.MyGroups == null)
+                    group.MyGroups = new List<SINnerGroup>();
+                else
+                    RemovePWHashRecursive(group.MyGroups);
+                group.PasswordHash = string.Empty;
                 if (group.MyParentGroup != null)
                 {
                     group.MyParentGroup.PasswordHash = string.Empty;
@@ -957,7 +967,10 @@ namespace ChummerHub.Controllers.V1
                     result.SINGroups.Add(ssg);
                 }
 
-                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                if (result.SINGroups == null)
+                    result.SINGroups = new List<SINnerSearchGroup>();
+                else
+                    RemovePWHashRecursive(result.SINGroups);
 
                 return result;
 
@@ -1341,7 +1354,10 @@ namespace ChummerHub.Controllers.V1
                         }
                     }
 
-                    result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                    if (result.SINGroups == null)
+                        result.SINGroups = new List<SINnerSearchGroup>();
+                    else
+                        RemovePWHashRecursive(result.SINGroups);
                     if (user != null)
                     {
                         //now add owned SINners
@@ -1393,7 +1409,10 @@ namespace ChummerHub.Controllers.V1
                             ownedGroup.MySINSearchGroups.Add(ssg);
                         }
                     }
-                    result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                    if (result.SINGroups == null)
+                        result.SINGroups = new List<SINnerSearchGroup>();
+                    else
+                        RemovePWHashRecursive(result.SINGroups);
                     t.Complete();
                     return result;
                 }
@@ -1442,11 +1461,8 @@ namespace ChummerHub.Controllers.V1
                     user = await _signInManager.UserManager.GetUserAsync(User);
                 if (!ModelState.IsValid)
                 {
-                    var errors = ModelState.Select(x => x.Value.Errors)
-                        .Where(y => y.Count > 0)
-                        .ToList();
                     string msg = "ModelState is invalid: ";
-                    foreach (var err in errors)
+                    foreach (var err in ModelState.Select(x => x.Value.Errors).Where(y => y.Count > 0))
                     {
                         foreach (var singleerr in err)
                         {
@@ -1460,7 +1476,10 @@ namespace ChummerHub.Controllers.V1
                 SINSearchGroupResult result = new SINSearchGroupResult();
                 var range = await GetSinSearchGroupResultById(groupid, user);
                 result.SINGroups.Add(range);
-                result.SINGroups = RemovePWHashRecursive(result.SINGroups);
+                if (result.SINGroups == null)
+                    result.SINGroups = new List<SINnerSearchGroup>();
+                else
+                    RemovePWHashRecursive(result.SINGroups);
                 res = new ResultGroupGetSearchGroups(result);
                 Ok(res);
             }
@@ -1485,32 +1504,32 @@ namespace ChummerHub.Controllers.V1
             return NotFound(res);
         }
 
-        private static List<SINnerSearchGroup> RemovePWHashRecursive(List<SINnerSearchGroup> sINGroups)
+        private static void RemovePWHashRecursive(IEnumerable<SINnerSearchGroup> sINGroups)
         {
-            if (sINGroups == null)
-                return new List<SINnerSearchGroup>();
             foreach (var group in sINGroups)
             {
                 if (!string.IsNullOrEmpty(group.PasswordHash))
                 {
                     group.HasPassword = true;
-                    group.PasswordHash = "";
+                    group.PasswordHash = string.Empty;
                 }
-                group.MyGroups = RemovePWHashRecursive(group.MyGroups);
+                if (group.MyGroups == null)
+                    group.MyGroups = new List<SINnerGroup>();
+                else
+                    RemovePWHashRecursive(group.MyGroups);
             }
-            return sINGroups;
         }
 
-        private static List<SINnerGroup> RemovePWHashRecursive(List<SINnerGroup> sINGroups)
+        private static void RemovePWHashRecursive(IEnumerable<SINnerGroup> sINGroups)
         {
-            if (sINGroups == null)
-                return new List<SINnerGroup>();
             foreach (var group in sINGroups)
             {
                 group.PasswordHash = string.Empty;
-                group.MyGroups = RemovePWHashRecursive(group.MyGroups);
+                if (group.MyGroups == null)
+                    group.MyGroups = new List<SINnerGroup>();
+                else
+                    RemovePWHashRecursive(group.MyGroups);
             }
-            return sINGroups;
         }
 
         private async Task<SINnerSearchGroup> GetSinSearchGroupResultById(Guid? groupid, ApplicationUser askingUser,
@@ -1596,12 +1615,16 @@ namespace ChummerHub.Controllers.V1
                 }
 
                 if (ssg != null)
-                    ssg.MyGroups = RemovePWHashRecursive(ssg.MyGroups);
+                {
+                    if (ssg.MyGroups == null)
+                        ssg.MyGroups = new List<SINnerGroup>();
+                    else
+                        RemovePWHashRecursive(ssg.MyGroups);
+                }
+
                 t.Complete();
                 return ssg;
-
             }
-
         }
     }
 }

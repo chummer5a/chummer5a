@@ -18,6 +18,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -832,8 +833,7 @@ namespace ChummerHub.Controllers.V1
                         string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
                         msg += Environment.NewLine + Environment.NewLine + "LastChange: " + dbsinner.LastChange;
                         _logger.LogInformation(msg);
-                        List<Tag> taglist = sinner.SINnerMetaData.Tags;
-                        UpdateEntityEntries(taglist);
+                        UpdateEntityEntries(sinner.SINnerMetaData.Tags);
                     }
                     else
                     {
@@ -959,12 +959,12 @@ namespace ChummerHub.Controllers.V1
                             telemetry.Properties.Add("User", user?.Email);
                             telemetry.Properties.Add("SINnerId", sinner?.Id?.ToString());
                             telemetry.Properties.Add("Procedure", ex.Procedure);
-                            string allerrors = "";
+                            StringBuilder allerrors = new StringBuilder();
                             foreach (var error in ex.Errors)
                             {
-                                allerrors += error + Environment.NewLine;
+                                allerrors.AppendLine(error.ToString());
                             }
-                            telemetry.Properties.Add("Errors", allerrors);
+                            telemetry.Properties.Add("Errors", allerrors.ToString());
                             tc.TrackException(telemetry);
                         }
                         catch (Exception ex1)
@@ -1032,7 +1032,7 @@ namespace ChummerHub.Controllers.V1
 
 
 
-        private void UpdateEntityEntries(List<Tag> taglist)
+        private void UpdateEntityEntries(IEnumerable<Tag> taglist)
         {
             foreach (var item in taglist)
             {
@@ -1049,7 +1049,7 @@ namespace ChummerHub.Controllers.V1
         /// <summary>
         /// Store the MetaData for chummerfiles (to get a Id).
         /// This Id can be used to store the actual file with PUT afterwards.
-        /// Alternativly, the DownloadUrl can be set directly from the Client.
+        /// Alternatively, the DownloadUrl can be set directly from the Client.
         /// </summary>
         /// <param name="uploadInfo"></param>
         /// <returns></returns>

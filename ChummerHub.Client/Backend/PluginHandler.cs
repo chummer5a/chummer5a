@@ -1052,7 +1052,7 @@ namespace Chummer.Plugins
 
         }
 
-        private static string fileNameToLoad = "";
+        private static string fileNameToLoad = string.Empty;
 
         public static async void HandleNamedPipe_OpenRequest(string argument)
         {

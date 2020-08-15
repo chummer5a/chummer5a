@@ -70,7 +70,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                string hash = "";
+                string hash = string.Empty;
                 using (var op_shareChummer = Timekeeper.StartSyncron("Share Group", null,
                     CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                 {
@@ -153,7 +153,7 @@ namespace ChummerHub.Client.UI
                     MyUserState myState = new MyUserState(this);
                     CharacterExtended ce = null;
                     var client = StaticUtils.GetClient();
-                    string sinnerid = "";
+                    string sinnerid = string.Empty;
                     Guid SINid = Guid.Empty;
 
                     try

@@ -133,8 +133,8 @@ namespace ChummerHub.Controllers
                 res = new ResultAccountGetUserByEmail(user);
                 if (user == null)
                     return NotFound(res);
-                user.PasswordHash = "";
-                user.SecurityStamp = "";
+                user.PasswordHash = string.Empty;
+                user.SecurityStamp = string.Empty;
                 return Ok(res);
             }
             catch (Exception e)
@@ -155,7 +155,7 @@ namespace ChummerHub.Controllers
         public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password, string start_ip_address, string end_ip_address)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetAddSqlDbUser(string, string, string, string)'
         {
-            string result = "";
+            string result = string.Empty;
             try
             {
                 if (string.IsNullOrEmpty(username))
@@ -330,8 +330,8 @@ namespace ChummerHub.Controllers
                 if (user == null)
                     return NotFound();
                 await SeedData.EnsureRole(Program.MyHost.Services, user.Id, userrole, _roleManager, _userManager);
-                user.PasswordHash = "";
-                user.SecurityStamp = "";
+                user.PasswordHash = string.Empty;
+                user.SecurityStamp = string.Empty;
                 return Ok(user);
             }
             catch (Exception e)
@@ -373,8 +373,8 @@ namespace ChummerHub.Controllers
                 if (user == null)
                     return NotFound(res);
 
-                user.PasswordHash = "";
-                user.SecurityStamp = "";
+                user.PasswordHash = string.Empty;
+                user.SecurityStamp = string.Empty;
                 return Ok(res);
             }
             catch (Exception e)
@@ -561,17 +561,17 @@ namespace ChummerHub.Controllers
                     ssg.Groupname = user.UserName;
                     ssg.Id = Guid.Empty;
                     var worklist = user.FavoriteGroups.Select(a => a.FavoriteGuid).ToList();
-                    var groupworklist = await _context.SINnerGroups
+                    var groupworklist = _context.SINnerGroups
                         .Include(a => a.MyGroups)
                         .ThenInclude(b => b.MyGroups)
                         .ThenInclude(c => c.MyGroups)
                         .ThenInclude(d => d.MyGroups)
-                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value)).ToListAsync();
+                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value));
                     ssg.MySINSearchGroups = await RecursiveBuildGroupMembers(groupworklist, user);
-                    var memberworklist = await _context.SINners
+                    var memberworklist = _context.SINners
                         .Include(a => a.MyGroup)
                         .Include(a => a.SINnerMetaData.Visibility)
-                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value)).ToListAsync();
+                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value));
                     foreach (var member in memberworklist)
                     {
                         if (member.SINnerMetaData?.Visibility?.IsGroupVisible == false)
@@ -630,7 +630,7 @@ namespace ChummerHub.Controllers
             }
         }
 
-        private async Task<List<SINnerSearchGroup>> RecursiveBuildGroupMembers(List<SINnerGroup> groupworklist, ApplicationUser user)
+        private async Task<List<SINnerSearchGroup>> RecursiveBuildGroupMembers(IEnumerable<SINnerGroup> groupworklist, ApplicationUser user)
         {
             List<SINnerSearchGroup> addlist = new List<SINnerSearchGroup>();
             foreach (var singroup in groupworklist)

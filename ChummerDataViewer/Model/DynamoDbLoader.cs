@@ -132,7 +132,7 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		private static void WriteCrashToDb(Dictionary<string, AttributeValue> attributeValues)
+		private static void WriteCrashToDb(IDictionary<string, AttributeValue> attributeValues)
 		{
 			Guid guid = Guid.Parse(attributeValues["crash_id"].S);
             if (Version.TryParse(attributeValues["version"].S, out Version version))
