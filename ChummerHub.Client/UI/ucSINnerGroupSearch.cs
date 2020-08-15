@@ -40,13 +40,9 @@ namespace ChummerHub.Client.UI
                         }
                         else if (_mySINSearchGroupResult.SinGroups != null)
                         {
-                            bJoinGroup.Enabled = _mySINSearchGroupResult.SinGroups.Any();
-                            var rootseq = (from a in MySINSearchGroupResult?.SinGroups select a).ToList();
-                            List<TreeNode> nodes = CreateTreeViewNodes(rootseq);
-                            this.DoThreadSafe(() =>
-                            {
-                                tvGroupSearchResult.Nodes.AddRange(nodes.ToArray());
-                            });
+                            bJoinGroup.Enabled = _mySINSearchGroupResult.SinGroups.Count > 0;
+                            TreeNode[] nodes = CreateTreeViewNodes(_mySINSearchGroupResult.SinGroups).ToArray();
+                            tvGroupSearchResult.DoThreadSafe(() => tvGroupSearchResult.Nodes.AddRange(nodes));
                         }
                     });
                 }
@@ -58,7 +54,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private List<TreeNode> CreateTreeViewNodes(IList<SINnerSearchGroup> sinGroups)
+        private List<TreeNode> CreateTreeViewNodes(IEnumerable<SINnerSearchGroup> sinGroups)
         {
             var res = new List<TreeNode>();
             if (sinGroups == null)

@@ -160,26 +160,23 @@ namespace ChummerHub.Controllers.V1
             {
                 if (String.IsNullOrEmpty(Hash))
                     throw new ArgumentException("hash is empty: " + Hash);
-                var foundseq = (from a in _context.SINnerGroups.Include(a => a.MyGroups) where a.Hash == Hash select a).ToList();
-                if (!foundseq.Any())
+                if (!_context.SINnerGroups.Include(a => a.MyGroups).Any(a => a.Hash == Hash))
                 {
-                    var nullseq = (from a in _context.SINnerGroups where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToList();
-                    foreach (var nullSinner in nullseq)
+                    foreach (var nullSinner in _context.SINnerGroups.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"))
                     {
                         string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
                         TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
                         tc?.TrackTrace(tt);
                     }
                 }
-                foundseq = (from a in _context.SINnerGroups where a.Hash == Hash select a).ToList();
+                var sgi = _context.SINnerGroups.FirstOrDefault(a => a.Hash == Hash);
                 _context.SaveChanges();
 #if DEBUG
                 if (Debugger.IsAttached)
-                    foundseq = (from a in _context.SINnerGroups select a).Take(1).ToList();
+                    sgi = _context.SINnerGroups.FirstOrDefault();
 #endif 
-                if (foundseq.Any())
+                if (sgi != null)
                 {
-                    var sgi = foundseq.FirstOrDefault();
                     var user = _signInManager.UserManager.GetUserAsync(User).Result;
                     SINnerSearchGroup sg = new SINnerSearchGroup(sgi, user);
                     string transactionId = $"{Guid.NewGuid().ToString().GetHashCode():X}";

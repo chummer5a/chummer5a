@@ -437,7 +437,7 @@ namespace ChummerHub.Controllers.V1
 
                         foreach (var sinner in sinnerseq)
                         {
-                            if (sinner.SINnerMetaData.Visibility.UserRights.Any() == false)
+                            if (sinner.SINnerMetaData.Visibility.UserRights.Count == 0)
                             {
                                 res = new ResultGroupPostGroup(e: new HubException(message: "Sinner  " + sinner.Id + ": Visibility contains no entries!"));
                                 return BadRequest(error: res);
@@ -932,11 +932,11 @@ namespace ChummerHub.Controllers.V1
                 List<Guid?> groupfoundseq = new List<Guid?>();
                 if (!string.IsNullOrEmpty(Groupname))
                 {
-                    groupfoundseq = await (from a in _context.SINnerGroups
-                                           where a.Groupname.ToLowerInvariant().Contains(Groupname.ToLowerInvariant())
-                                           && (a.Language == language || string.IsNullOrEmpty(language))
-                                           select a.Id).ToListAsync();
-                    if (!groupfoundseq.Any())
+                    string strGroupNameUpper = Groupname.ToUpperInvariant();
+                    groupfoundseq = await _context.SINnerGroups.Where(a => a.Groupname.ToUpperInvariant().Contains(strGroupNameUpper)
+                                                                           && (a.Language == language || string.IsNullOrEmpty(language)))
+                        .Select(a => a.Id).ToListAsync();
+                    if (groupfoundseq.Count == 0)
                     {
                         throw new ArgumentException("No group found with the given parameter: " + Groupname);
                     }

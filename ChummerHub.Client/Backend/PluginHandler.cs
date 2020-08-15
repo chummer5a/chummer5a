@@ -1174,10 +1174,7 @@ namespace Chummer.Plugins
                 }
                 MainForm.DoThreadSafe(() =>
                 {
-                    var foundform = from a in MainForm.OpenCharacterForms
-                        where a.CharacterObject == objCharacter
-                        select a;
-                    if (foundform.Any())
+                    if (MainForm.OpenCharacterForms.Any(a => a.CharacterObject == objCharacter))
                     {
                         MainForm.SwitchToOpenCharacter(objCharacter, false);
                     }

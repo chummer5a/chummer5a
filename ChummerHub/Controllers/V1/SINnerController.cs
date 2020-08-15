@@ -96,28 +96,21 @@ namespace ChummerHub.Controllers.V1
                     throw new ArgumentException("ModelState is invalid!");
                 }
 
-                var sinnerseq = await (from a in _context.SINners
-                        .Include(a => a.MyGroup)
-                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    where a.Id == sinnerid
-                    select a).ToListAsync();
-                if (!sinnerseq.Any())
-                {
-                    throw new ArgumentException("Could not find id(1) " + sinnerid.ToString());
-                }
-                ApplicationUser user = null;
-                if (!string.IsNullOrEmpty(User?.Identity?.Name))
-                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                var chummerFile = sinnerseq.FirstOrDefault();
+                var chummerFile = await _context.SINners
+                    .Include(a => a.MyGroup)
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights).Where(a => a.Id == sinnerid).FirstOrDefaultAsync();
                 if (chummerFile == null)
                 {
-                    throw new ArgumentException("Could not find id(2) " + sinnerid.ToString());
+                    throw new ArgumentException("Could not find id " + sinnerid.ToString());
                 }
                 if (string.IsNullOrEmpty(chummerFile.DownloadUrl))
                 {
                     string msg = "Chummer " + chummerFile.Id + " does not have a valid DownloadUrl!";
                     throw new ArgumentException(msg);
                 }
+                ApplicationUser user = null;
+                if (!string.IsNullOrEmpty(User?.Identity?.Name))
+                    user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 bool oktoDownload = chummerFile.SINnerMetaData.Visibility.IsPublic
                                     || chummerFile.MyGroup != null && chummerFile.MyGroup.IsPublic
                                     || chummerFile.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null)
@@ -189,19 +182,18 @@ namespace ChummerHub.Controllers.V1
                     return NotFound(res);
                 }
 
-                var groupseq = await (from a in _context.SINners.Include(a => a.MyGroup)
-                        .Include(b => b.MyGroup.MySettings)
-                                      where a.Id == id
-                                      select a.MyGroup).ToListAsync();
+                var group = await _context.SINners
+                    .Include(a => a.MyGroup)
+                    .Include(b => b.MyGroup.MySettings).FirstOrDefaultAsync(a => a.Id == id);
 
 
-                if (!groupseq.Any())
+                if (group == null)
                 {
                     return NoContent();
                 }
                 else
                 {
-                    res = new ResultSinnerGetSINnerGroupFromSINerById(groupseq.FirstOrDefault());
+                    res = new ResultSinnerGetSINnerGroupFromSINerById(group.MyGroup);
                     return Ok(res);
                 }
 
@@ -335,7 +327,7 @@ namespace ChummerHub.Controllers.V1
                     .Include(a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
                     .Where(a => a.Alias == id).ToListAsync();
-                if (!sinseq.Any())
+                if (sinseq.Count == 0)
                 {
                     var e = new ArgumentException("SINner with Alias " + id + " does not exist.");
                     res = new ResultSinnerGetOwnedSINByAlias(e);
@@ -346,9 +338,8 @@ namespace ChummerHub.Controllers.V1
                 {
                     if (sin.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == null && a.CanEdit))
                         download.Add(sin);
-                    else if ((user != null &&
-                                            sin.SINnerMetaData.Visibility.UserRights.Any(a =>
-                                                a.EMail?.ToLowerInvariant() == user.Email.ToLowerInvariant())))
+                    else if (user != null
+                             && sin.SINnerMetaData.Visibility.UserRights.Any(a => user.Email.Equals(a.EMail, StringComparison.OrdinalIgnoreCase)))
                     {
                         download.Add(sin);
                     }
@@ -701,12 +692,12 @@ namespace ChummerHub.Controllers.V1
                         oldsinner.SINnerMetaData.Visibility.UserRights.Clear();
                         _context.UserRights.RemoveRange(olduserrights);
                         //check if ANY visibility-data was uploaded
-                        if (sinner.SINnerMetaData.Visibility.UserRights.Any())
+                        if (sinner.SINnerMetaData.Visibility.UserRights.Count > 0)
                         {
                             bool userfound = false;
                             foreach (var ur in sinner.SINnerMetaData.Visibility.UserRights)
                             {
-                                if (ur.EMail.ToLowerInvariant() == user?.Email.ToLowerInvariant())
+                                if (ur.EMail.Equals(user?.Email, StringComparison.OrdinalIgnoreCase))
                                 {
                                     ur.CanEdit = true;
                                     userfound = true;
@@ -780,10 +771,10 @@ namespace ChummerHub.Controllers.V1
                         var alltags = await _context.Tags.Where(a => a.SINnerId == dbsinner.Id).Select(a => a.Id).ToListAsync();
                         foreach (var id in alltags)
                         {
-                            var tag = from a in _context.Tags where a.Id == id select a;
-                            if (tag.Any())
+                            var tag = _context.Tags.FirstOrDefault(a => a.Id == id);
+                            if (tag != null)
                             {
-                                _context.Tags.Remove(tag.FirstOrDefault());
+                                _context.Tags.Remove(tag);
                             }
                         }
                         _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
@@ -1179,35 +1170,28 @@ namespace ChummerHub.Controllers.V1
             SINner dbsinner = null;
             if (allincludes)
             {
-                dbsinner = await (from a in _context.SINners
-                        .Include(a => a.SINnerMetaData)
-                        .Include(a => a.SINnerMetaData.Visibility)
-                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                        //.Include(a => a.MyExtendedAttributes)
-                        .Include(a => a.MyGroup)
-                                  where a.Id == id
-                                  select a).FirstOrDefaultAsync();
+                dbsinner = await _context.SINners
+                    .Include(a => a.SINnerMetaData)
+                    .Include(a => a.SINnerMetaData.Visibility)
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    //.Include(a => a.MyExtendedAttributes)
+                    .Include(a => a.MyGroup).Where(a => a.Id == id).FirstOrDefaultAsync();
             }
             else
             {
-                dbsinner = await (from a in _context.SINners
-                        .Include(a => a.MyGroup)
-                                  where a.Id == id
-                                  select a).FirstOrDefaultAsync();
+                dbsinner = await _context.SINners
+                    .Include(a => a.MyGroup).Where(a => a.Id == id).FirstOrDefaultAsync();
             }
 
             if (dbsinner == null)
                 return null;
             string normEmail = user?.NormalizedEmail;
             string userName = user?.UserName;
-            var dbsinnerseq = (from a in _context.UserRights
-                               where a.SINnerId == id
-                                     &&
-                                     ((!string.IsNullOrEmpty(a.EMail) && a.EMail.ToUpperInvariant() == normEmail)
-                                       || (a.EMail == null))
-                                     && a.CanEdit
-                               select a).ToList();
-            if (dbsinnerseq.Any())
+            if (_context.UserRights.Any(a => a.SINnerId == id
+                                             && ((!string.IsNullOrEmpty(a.EMail)
+                                                  && a.EMail.ToUpperInvariant() == normEmail)
+                                                 || a.EMail == null)
+                                             && a.CanEdit))
             {
                 return dbsinner;
             }
