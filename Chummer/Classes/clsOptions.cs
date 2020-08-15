@@ -29,9 +29,9 @@ using System.Linq;
 using System.Xml;
 using iText.Kernel.Pdf;
 using Microsoft.Win32;
-using MersenneTwister;
 using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
+using Xoshiro.PRNG64;
 
 namespace Chummer
 {
@@ -276,7 +276,7 @@ namespace Chummer
 
         public const int MaxStackLimit = 1024;
 
-        public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
+        public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(new XoRoShiRo128starstar());
 
         // Omae Information.
         private static bool _omaeEnabled;
