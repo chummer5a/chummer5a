@@ -41,13 +41,11 @@ namespace ChummerHub.Data
         public override int SaveChanges()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SaveChanges()'
         {
-            var entities = from e in ChangeTracker.Entries()
-                           where e.State == EntityState.Added
-                               || e.State == EntityState.Modified
-                           select e.Entity;
             bool error = false;
             Collection<ValidationResult> validationResults = new Collection<ValidationResult>();
-            foreach (var entity in entities)
+            foreach (var entity in ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+                .Select(e => e.Entity))
             {
                 var validationContext = new ValidationContext(entity);
                 //Validator.ValidateObject(entity, validationContext);
@@ -63,7 +61,7 @@ namespace ChummerHub.Data
                 foreach (var valResult in validationResults)
                 {
                     counter++;
-                    string msg = "Members " + valResult.MemberNames.Aggregate((a, b) => a + ", " + b) + " not valid: ";
+                    string msg = "Members " + string.Join(", ", valResult.MemberNames) + " not valid: ";
                     msg += valResult.ErrorMessage;
                     wholeMessage += msg + Environment.NewLine;
                 }

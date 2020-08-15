@@ -69,28 +69,25 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                if (String.IsNullOrEmpty(Hash))
+                if (string.IsNullOrEmpty(Hash))
                     throw new ArgumentException("hash is empty: " + Hash);
-                var foundseq = _context.SINners.Where(a => a.Hash == Hash).ToList();
-                if (foundseq.Count == 0)
+                if (!_context.SINners.Any(a => a.Hash == Hash))
                 {
-                    var nullseq = (from a in _context.SINners where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToList();
-                    foreach (var nullSinner in nullseq)
+                    foreach (var nullSinner in _context.SINners.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"))
                     {
                         string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
                         TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
                         tc?.TrackTrace(tt);
                     }
                 }
-                foundseq = _context.SINners.Where(a => a.Hash == Hash).ToList();
+                var sinner = _context.SINners.FirstOrDefault(a => a.Hash == Hash);
                 _context.SaveChanges();
 #if DEBUG
                 if (Debugger.IsAttached)
-                    foundseq = _context.SINners.Take(1).ToList();
+                    sinner = _context.SINners.FirstOrDefault();
 #endif 
-                if (foundseq.Count > 0)
+                if (sinner != null)
                 {
-                    var sinner = foundseq.First();
                     string transactionId = $"{Guid.NewGuid().ToString().GetHashCode():X}";
                     string chummerUrl = "chummer://plugin:SINners:Load:" + sinner.Id + ":" + transactionId;
                     string postbackUrl = "https://shadowsprawl.com/api/chummer/upload";
@@ -158,7 +155,7 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                if (String.IsNullOrEmpty(Hash))
+                if (string.IsNullOrEmpty(Hash))
                     throw new ArgumentException("hash is empty: " + Hash);
                 if (!_context.SINnerGroups.Include(a => a.MyGroups).Any(a => a.Hash == Hash))
                 {
@@ -250,13 +247,11 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                if (String.IsNullOrEmpty(Hash))
+                if (string.IsNullOrEmpty(Hash))
                     throw new ArgumentException("hash is empty: " + Hash);
-                var foundseq = await _context.SINners.Where(a => a.Hash == Hash).ToListAsync();
-                if (foundseq.Count == 0)
+                if (!_context.SINners.Any(a => a.Hash == Hash))
                 {
-                    var nullseq = await _context.SINners.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC").ToListAsync();
-                    foreach (var nullSinner in nullseq)
+                    foreach (var nullSinner in _context.SINners.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"))
                     {
                         string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
                         TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
@@ -264,11 +259,10 @@ namespace ChummerHub.Controllers.V1
                     }
                 }
 
-                foundseq = await _context.SINners.Where(a => a.Hash == Hash).ToListAsync();
+                var sinner = await _context.SINners.FirstOrDefaultAsync(a => a.Hash == Hash);
                 await _context.SaveChangesAsync();
-                if (foundseq.Count > 0)
+                if (sinner != null)
                 {
-                    var sinner = foundseq.First();
                     string url = "chummer://plugin:SINners:Load:" + sinner.Id;
                     sinner.LastDownload = DateTime.Now;
                     await _context.SaveChangesAsync();

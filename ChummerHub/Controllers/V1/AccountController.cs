@@ -71,8 +71,7 @@ namespace ChummerHub.Controllers
             ResultAccountGetPossibleRoles res;
             try
             {
-                var roles = await _context.Roles.ToListAsync();
-                var list = (from a in roles select a.Name).ToList();
+                var list = await _context.Roles.Select(a => a.Name).ToListAsync();
                 res = new ResultAccountGetPossibleRoles(list);
                 return Ok(res);
             }
@@ -105,8 +104,7 @@ namespace ChummerHub.Controllers
                     await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
-                var possibleRoles = await _context.Roles.ToListAsync();
-                var list = (from a in possibleRoles select a.Name).ToList();
+                var list = await _context.Roles.Select(a => a.Name).ToListAsync();
                 res = new ResultAccountGetRoles(roles, list);
 
                 return Ok(res);

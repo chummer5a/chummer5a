@@ -108,10 +108,8 @@ namespace ChummerHub.Controllers.V1
                     res = new ResultGroupPutGroupInGroup(e);
                     return BadRequest(res);
                 }
-                
-                SINnerGroup myGroup = await (from a in _context.SINnerGroups
-                    where a.Id == GroupId
-                    select a).FirstOrDefaultAsync();
+
+                SINnerGroup myGroup = await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Id == GroupId);
                 if (myGroup == null)
                 {
                     var e = new ArgumentException("Group with Id " + GroupId.ToString() + " not found.");
@@ -138,9 +136,7 @@ namespace ChummerHub.Controllers.V1
                     }
                     else
                     {
-                        parentGroup = await (from a in _context.SINnerGroups
-                            where a.Id == parentGroupId
-                            select a).FirstOrDefaultAsync();
+                        parentGroup = await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Id == parentGroupId);
                         if (parentGroup == null)
                         {
                             var e = new ArgumentException("Parentgroup with Id " + parentGroupId?.ToString() +

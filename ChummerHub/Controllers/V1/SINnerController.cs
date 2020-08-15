@@ -667,14 +667,13 @@ namespace ChummerHub.Controllers.V1
                             tag.TagValueFloat = null;
                     }
 
-                    var oldsinner = (from a in _context.SINners
-                            //.Include(a => a.MyExtendedAttributes)
-                            .Include(a => a.SINnerMetaData)
-                            .Include(a => a.SINnerMetaData.Visibility)
-                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                            .Include(b => b.MyGroup)
-                                     where a.Id == sinner.Id
-                                     select a).FirstOrDefault();
+                    var oldsinner = await _context.SINners
+                        //.Include(a => a.MyExtendedAttributes)
+                        .Include(a => a.SINnerMetaData)
+                        .Include(a => a.SINnerMetaData.Visibility)
+                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                        .Include(b => b.MyGroup)
+                        .Where(a => a.Id == sinner.Id).FirstOrDefaultAsync();
                     if (oldsinner != null)
                     {
                         var canedit = await CheckIfUpdateSINnerFile(oldsinner.Id.Value, user);
@@ -1117,11 +1116,11 @@ namespace ChummerHub.Controllers.V1
                     res = new ResultSinnerDelete(e);
                     return BadRequest(res);
                 }
-                var olduserrights = await (from a in _context.UserRights where a.SINnerId == sinner.Id select a).ToListAsync();
+                var olduserrights = await _context.UserRights.Where(a => a.SINnerId == sinner.Id).ToListAsync();
                 _context.UserRights.RemoveRange(olduserrights);
-                var oldtags = await (from a in _context.Tags where a.SINnerId == sinner.Id select a).ToListAsync();
+                var oldtags = await _context.Tags.Where(a => a.SINnerId == sinner.Id).ToListAsync();
                 _context.Tags.RemoveRange(oldtags);
-                var oldsinners = await (from a in _context.SINners where a.Id == sinner.Id select a).ToListAsync();
+                var oldsinners = await _context.SINners.Where(a => a.Id == sinner.Id).ToListAsync();
                 foreach (var oldsin in oldsinners)
                 {
                     if (_context.SINnerVisibility.Contains(oldsin.SINnerMetaData.Visibility))
