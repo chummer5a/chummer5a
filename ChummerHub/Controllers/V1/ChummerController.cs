@@ -11,12 +11,8 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using System.Text;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using ChummerHub.Models.V1;
 using Newtonsoft.Json;
 
@@ -85,7 +81,7 @@ namespace ChummerHub.Controllers.V1
 #if DEBUG
                 if (Debugger.IsAttached)
                     sinner = _context.SINners.FirstOrDefault();
-#endif 
+#endif
                 if (sinner != null)
                 {
                     string transactionId = $"{Guid.NewGuid().ToString().GetHashCode():X}";
@@ -97,10 +93,10 @@ namespace ChummerHub.Controllers.V1
                     StringBuilder sb = new StringBuilder("<html>")
                         .AppendFormat(@"<body onload='document.forms[""form""].submit()'>")
                         .AppendFormat("<form name='form' action='{0}' method='post'>", postbackUrl)
-                        .AppendFormat("<input type='hidden' name='guid' value='{0}'>", sinner?.Id)
+                        .AppendFormat("<input type='hidden' name='guid' value='{0}'>", sinner.Id)
                         .AppendFormat("<input type='hidden' name='Environment' value='{0}'>", mypath)
-                        .AppendFormat("<input type='hidden' name='CharName' value='{0}'>", sinner?.Alias);
-                    Uri escape = new Uri(sinner?.DownloadUrl);
+                        .AppendFormat("<input type='hidden' name='CharName' value='{0}'>", sinner.Alias);
+                    Uri escape = new Uri(sinner.DownloadUrl);
                     string escapestr = $"{escape.Scheme}://{escape.Host}{escape.AbsolutePath}";
                     escapestr += Uri.EscapeDataString(escape.Query);
                     sb.AppendFormat("<input type='hidden' name='DownloadUrl' value='{0}'>", escapestr);
@@ -110,7 +106,7 @@ namespace ChummerHub.Controllers.V1
                     sb.AppendFormat("<input type='hidden' name='ChummerUrl' value='{0}'>", chummeruri)
                         .AppendFormat("<input type='hidden' name='TransactionId' value='{0}'>", transactionId)
                         .AppendFormat("<input type='hidden' name='StatusCallback' value='{0}'>", urlcallback)
-                        .AppendFormat("<input type='hidden' name='UploadDateTime' value='{0}'>", sinner?.UploadDateTime)
+                        .AppendFormat("<input type='hidden' name='UploadDateTime' value='{0}'>", sinner.UploadDateTime)
                         .AppendFormat("<input type='hidden' name='OpenChummer' value='{0}'>", open);
                     // Other params go here
                     sb.Append("</form></body></html>");
@@ -171,7 +167,7 @@ namespace ChummerHub.Controllers.V1
 #if DEBUG
                 if (Debugger.IsAttached)
                     sgi = _context.SINnerGroups.FirstOrDefault();
-#endif 
+#endif
                 if (sgi != null)
                 {
                     var user = _signInManager.UserManager.GetUserAsync(User).Result;

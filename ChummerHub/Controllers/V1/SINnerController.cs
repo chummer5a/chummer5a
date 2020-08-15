@@ -38,8 +38,8 @@ namespace ChummerHub.Controllers.V1
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
-        private readonly SignInManager<ApplicationUser> _signInManager = null;
-        private readonly UserManager<ApplicationUser> _userManager = null;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly TelemetryClient tc;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.SINnerController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
@@ -481,7 +481,7 @@ namespace ChummerHub.Controllers.V1
                 var sinnerseq = await _context.SINners.Where(a => a.Id == SINnerId).ToListAsync();
                 if (sinnerseq.Count == 0)
                     return NotFound("SINner " + SINnerId + " not found!");
-                var net = new System.Net.WebClient();
+                var net = new WebClient();
 
                 if (System.IO.File.Exists(filepath))
                 {
@@ -624,7 +624,7 @@ namespace ChummerHub.Controllers.V1
                 {
                     if (!UploadClientExists(uploadInfo.Client.Id))
                     {
-                        _context.UploadClients.Add(uploadInfo.Client);
+                        await _context.UploadClients.AddAsync(uploadInfo.Client);
                     }
                     else
                     {
@@ -704,7 +704,7 @@ namespace ChummerHub.Controllers.V1
 
                                 ur.Id = Guid.NewGuid();
                                 ur.SINnerId = sinner.Id;
-                                _context.UserRights.Add(ur);
+                                await _context.UserRights.AddAsync(ur);
                             }
                             if (!userfound)
                             {
@@ -716,7 +716,7 @@ namespace ChummerHub.Controllers.V1
                                     EMail = user?.Email
                                 };
                                 sinner.SINnerMetaData.Visibility.UserRights.Add(ownUser);
-                                _context.UserRights.Add(ownUser);
+                                await _context.UserRights.AddAsync(ownUser);
                             }
                         }
                         else
@@ -852,7 +852,7 @@ namespace ChummerHub.Controllers.V1
                             });
                         }
                     }
-                    
+
                     if (user != null)
                         user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
@@ -908,7 +908,6 @@ namespace ChummerHub.Controllers.V1
                     }
                     catch (DbUpdateException ex)
                     {
-                        
                         res = new ResultSinnerPostSIN(ex);
                         foreach (var entry in ex.Entries)
                         {
@@ -1208,8 +1207,7 @@ namespace ChummerHub.Controllers.V1
                         return dbsinner;
                 }
             }
-            throw new ChummerHub.NoUserRightException(userName, dbsinner.Id);
-
+            throw new NoUserRightException(userName, dbsinner.Id);
         }
 
         private bool UploadClientExists(Guid id)

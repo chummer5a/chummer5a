@@ -47,8 +47,9 @@ namespace ChummerHub.Services.Application_Insights
                 {
                     foreach (DictionaryEntry de in exception.Exception.Data)
                     {
-                        if (!exception.Properties.ContainsKey(de.Key.ToString()))
-                            exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
+                        string strKey = de.Key.ToString();
+                        if (!string.IsNullOrEmpty(strKey) && !exception.Properties.ContainsKey(strKey))
+                            exception.Properties.Add(strKey, de.Value?.ToString());
                     }
                 }
             }

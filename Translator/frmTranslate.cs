@@ -23,7 +23,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -906,7 +905,8 @@ namespace Translator
             XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = ("\t"), Indent = true};
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
-                objXmlDocument.Save(xwWriter);
+                if (xwWriter != null)
+                    objXmlDocument.Save(xwWriter);
             }
         }
 

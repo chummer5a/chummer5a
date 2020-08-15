@@ -38,7 +38,8 @@ namespace ChummerHub.Controllers.V1
                     // TODO: decide which value should be written to database
                     // proposedValues[property] = <value to be saved>;
                 }
-                entry.OriginalValues.SetValues(databaseValues);
+                if (databaseValues != null)
+                    entry.OriginalValues.SetValues(databaseValues);
                 var e = new NotSupportedException(
                     "(Codepoint 3) Don't know how to handle concurrency conflicts for "
                     + entry.Metadata.Name + ": " + msg);

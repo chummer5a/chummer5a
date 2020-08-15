@@ -266,8 +266,9 @@ namespace ChummerHub.Client.UI
                                         myState.CurrentProgress = 35;
                                         ReportProgress(myState.CurrentProgress, myState);
                                         myState.ProgressSteps = 10;
-                                        var uploadtask = await ce.Upload(myState, op_uploadChummer).ConfigureAwait(true);
-                                        SINid = ce.MySINnerFile.Id.Value;
+                                        await ce.Upload(myState, op_uploadChummer).ConfigureAwait(true);
+                                        if (ce.MySINnerFile.Id != null)
+                                            SINid = ce.MySINnerFile.Id.Value;
                                         using (var result = await client.GetSINByIdWithHttpMessagesAsync(SINid).ConfigureAwait(true))
                                         {
                                             if (result == null)

@@ -101,7 +101,7 @@ namespace ChummerHub.Controllers
                 var user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user.EmailConfirmed)
                 {
-                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
+                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
                 var list = await _context.Roles.Select(a => a.Name).ToListAsync();
@@ -175,7 +175,7 @@ namespace ChummerHub.Controllers
                 }
                 if (string.IsNullOrEmpty(Startup.ConnectionStringToMasterSqlDb))
                 {
-                    throw new ArgumentNullException("Startup.ConnectionStringToMasterSqlDB");
+                    throw new ArgumentNullException(nameof(Startup.ConnectionStringToMasterSqlDb));
                 }
 
 
@@ -414,7 +414,7 @@ namespace ChummerHub.Controllers
                 if (!roles.Contains("Administrator"))
                     return Unauthorized();
                 var count = await _context.SINners.CountAsync();
-                using (var transaction = _context.Database.BeginTransaction())
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     _context.UserRights.RemoveRange(_context.UserRights.ToList());
                     _context.SINnerComments.RemoveRange(_context.SINnerComments.ToList());
@@ -427,7 +427,7 @@ namespace ChummerHub.Controllers
                     await _context.SaveChangesAsync();
                     // Commit transaction if all commands succeed, transaction will auto-rollback
                     // when disposed if either commands fails
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                 }
                 return Ok("Reseted " + count + " SINners");
             }
@@ -464,7 +464,7 @@ namespace ChummerHub.Controllers
             try
             {
 #if DEBUG
-                System.Diagnostics.Trace.TraceInformation("Users is NOT checked in Debug!");
+                Trace.TraceInformation("Users is NOT checked in Debug!");
 #else
                 var user = await _signInManager.UserManager.GetUserAsync(User);
                 if(user == null)
@@ -551,7 +551,7 @@ namespace ChummerHub.Controllers
             using (var t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
-                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                    IsolationLevel = IsolationLevel.ReadUncommitted
                 }, TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
@@ -624,7 +624,7 @@ namespace ChummerHub.Controllers
                 }
                 finally
                 {
-                    Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.AvailabilityTelemetry("GetSINnersByAuthorization", DateTimeOffset.Now, sw.Elapsed, "Azure", res.CallSuccess, res.ErrorText);
+                    AvailabilityTelemetry telemetry = new AvailabilityTelemetry("GetSINnersByAuthorization", DateTimeOffset.Now, sw.Elapsed, "Azure", res.CallSuccess, res.ErrorText);
                     tc?.TrackAvailability(telemetry);
                 }
             }

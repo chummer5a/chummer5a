@@ -21,7 +21,6 @@ using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
 using SINners.Models;
-using MessageBox = System.Windows.MessageBox;
 using Resources = Chummer.Properties.Resources;
 
 namespace Chummer.Plugins
@@ -593,10 +592,9 @@ namespace Chummer.Plugins
                     res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes").ConfigureAwait(true);
                     if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                         return;
-                    SINSearchGroupResult ssgr;
                     if (result.CallSuccess == true)
                     {
-                        ssgr = result.MySearchGroupResult;
+                        SINSearchGroupResult ssgr = result.MySearchGroupResult;
                         var ssgr1 = ssgr;
                         using (new CursorWait(MainForm, true))
                         {

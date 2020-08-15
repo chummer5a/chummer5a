@@ -52,7 +52,7 @@ namespace ChummerHub.Controllers.V1
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
-            this.tc = telemetry;
+            tc = telemetry;
         }
 
 
@@ -195,7 +195,7 @@ namespace ChummerHub.Controllers.V1
                 returnGroup.PasswordHash = "";
                 returnGroup.MyGroups = RemovePWHashRecursive(returnGroup.MyGroups);
                 res = new ResultGroupPutGroupInGroup(returnGroup);
-                var logmessage = Newtonsoft.Json.JsonConvert.SerializeObject(res, Formatting.Indented);
+                var logmessage = JsonConvert.SerializeObject(res, Formatting.Indented);
                 logmessage = "PutGroupInGroup returns Object ResultGroupPutGroupInGroup: " + Environment.NewLine +
                              logmessage;
                 _logger.LogDebug(logmessage);
@@ -380,7 +380,7 @@ namespace ChummerHub.Controllers.V1
                     {
                         user = await _signInManager.UserManager.FindByNameAsync(userName: User.Identity.Name);
                         var roles = await _userManager.GetRolesAsync(user: user);
-                        if (!roles.Contains(item: "GroupAdmin") || roles.Contains(item: storegroup?.MyAdminIdentityRole))
+                        if (!roles.Contains(item: "GroupAdmin") || roles.Contains(item: storegroup.MyAdminIdentityRole))
                         {
 
                             string msg = "A group with the name " + mygroup.Groupname +
@@ -407,11 +407,11 @@ namespace ChummerHub.Controllers.V1
 
                         mygroup.MyParentGroup = null; //parentGroup;
                         //parentGroup?.MyGroups.Add(item: mygroup);
-                        _context.SINnerGroups.Add(entity: mygroup);
+                        await _context.SINnerGroups.AddAsync(entity: mygroup);
                         returncode = HttpStatusCode.Created;
                     }
 
-                    if (mygroup?.Id != null)
+                    if (mygroup.Id != null)
                     {
                         if (user.FavoriteGroups.All(predicate: a => a.FavoriteGuid != mygroup.Id.Value))
                             user.FavoriteGroups.Add(item: new ApplicationUserFavoriteGroup()
@@ -704,7 +704,7 @@ namespace ChummerHub.Controllers.V1
                 try
                 {
                     if (tc == null)
-                        tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                        tc = new TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry telemetry =
                         new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
                     telemetry.Properties.Add("User", user?.Email);
@@ -1008,8 +1008,8 @@ namespace ChummerHub.Controllers.V1
             {
                 var r = await GetSearchGroupsInternal(Groupname, UsernameOrEmail, SINnerName, Language);
                 res = new ResultGroupGetSearchGroups(r);
-                string teststring = Newtonsoft.Json.JsonConvert.SerializeObject(res);
-                var returnObj = Newtonsoft.Json.JsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(teststring);
+                string teststring = JsonConvert.SerializeObject(res);
+                var returnObj = JsonConvert.DeserializeObject<ResultGroupGetSearchGroups>(teststring);
                 try
                 {
 
@@ -1213,7 +1213,7 @@ namespace ChummerHub.Controllers.V1
 
             if (members.Count < 2 && members.Contains(sinner))
             {
-                if (@group.MyGroups == null || @group.MyGroups.Count == 0)
+                if (group.MyGroups == null || group.MyGroups.Count == 0)
                 {
                     //delete group
                     _context.SINnerGroups.Remove(group);
@@ -1233,7 +1233,7 @@ namespace ChummerHub.Controllers.V1
                 using (var t = new TransactionScope(TransactionScopeOption.Required,
                     new TransactionOptions
                     {
-                        IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                        IsolationLevel = IsolationLevel.ReadUncommitted
 
                     }, TransactionScopeAsyncFlowOption.Enabled))
                 {
@@ -1521,7 +1521,7 @@ namespace ChummerHub.Controllers.V1
             using (var t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
-                    IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                    IsolationLevel = IsolationLevel.ReadUncommitted
 
                 }, TransactionScopeAsyncFlowOption.Enabled))
             {
