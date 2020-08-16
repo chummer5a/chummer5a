@@ -273,8 +273,11 @@ namespace Chummer.Backend.Equipment
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                                 decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlAccessoryGearName?.InnerText.CleanXPath() + " and category = " +
-                                                                                     objXmlAccessoryGear["category"]?.InnerText.CleanXPath() + "]");
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                                "/chummer/gears/gear[name = {0} and category = {1}]",
+                                objXmlAccessoryGearName.InnerText.CleanXPath(),
+                                objXmlAccessoryGear["category"].InnerText.CleanXPath()));
+
                             Gear objGear = new Gear(_objCharacter);
 
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -1253,11 +1256,12 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]")
-                    : XmlManager.Load("weapons.xml", strLanguage)
-                        .SelectSingleNode("/chummer/accessories/accessory[id = \"" + SourceIDString +  "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/accessories/accessory[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/accessories/accessory[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

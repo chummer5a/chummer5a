@@ -592,8 +592,10 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/powers/power[name = \"" + Name + "\"]"
-                        : "/chummer/powers/power[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+                        ? "/chummer/powers/power[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/powers/power[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

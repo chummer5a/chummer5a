@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -301,10 +302,11 @@ namespace Chummer.UI.Powers
                 {
                     if (o1 is Power objPower1 && o2 is Power objPower2)
                         return objPower1.Rating - objPower2.Rating;
-                    string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
-                                 o2.GetType() + " in the ratingColumn." + Environment.NewLine;
-                    msg += "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(msg, nameof(o1));
+                    StringBuilder msg = new StringBuilder("Can't sort an Object of Type ")
+                        .Append(o1.GetType()).Append(" against another one of Type ")
+                        .Append(o2.GetType()).AppendLine(" in the ratingColumn.")
+                        .Append("Both objects SHOULD be of the type \"Power\".");
+                    throw new ArgumentException(msg.ToString(), nameof(o1));
                 },
             };
 

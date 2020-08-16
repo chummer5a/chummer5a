@@ -269,11 +269,11 @@ namespace Chummer
             tsSaveAsHtml.Enabled = false;
             cmdSaveAsPdf.Enabled = false;
             webViewer.DocumentText =
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" +
-                "<head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head>" +
-                "<body style=\"width:100%;height:" + webViewer.Height.ToString(GlobalOptions.InvariantCultureInfo) + ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
-                strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />").Replace("\r", string.Empty) +
-                "</body></html>";
+                new StringBuilder("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:")
+                    .Append(webViewer.Height.ToString(GlobalOptions.InvariantCultureInfo))
+                    .Append(";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">")
+                    .Append(strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />").FastEscape('\r'))
+                    .Append("</body></html>").ToString();
         }
 
         /// <summary>

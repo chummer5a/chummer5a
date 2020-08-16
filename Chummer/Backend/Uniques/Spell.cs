@@ -858,11 +858,12 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("spells.xml", strLanguage)
-                        .SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]")
-                    : XmlManager.Load("spells.xml", strLanguage)
-                        .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/spells/spell[id = \"{0}\" or id = \"{1}\"]", SourceIDString, SourceIDString.ToUpperInvariant()));
+                _objCachedMyXmlNode = XmlManager.Load("spells.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/spells/spell[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/spells/spell[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

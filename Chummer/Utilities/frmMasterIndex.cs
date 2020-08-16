@@ -21,6 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -87,7 +88,9 @@ namespace Chummer
                 }
 
                 string strSourceFilter = setValidCodes.Count > 0
-                    ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")) + ')'
+                    ? new StringBuilder("(")
+                        .Append(string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")))
+                        .Append(')').ToString()
                     : "source";
 
                 ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();

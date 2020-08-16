@@ -18,6 +18,7 @@
  */
 using System;
 using System.Globalization;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -44,8 +45,9 @@ namespace Chummer
             Code = CommonFunctions.LanguageBookShort(strCode, Language);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language) +
-                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
+            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strCode, Language))
+                .Append(_strCachedSpace).Append(LanguageManager.GetString("String_Page", strLanguage))
+                .Append(_strCachedSpace).Append(_intPage.ToString(CultureInfo)).ToString();
         }
 
         public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null)
@@ -57,8 +59,9 @@ namespace Chummer
             Code = CommonFunctions.LanguageBookShort(strSource, Language);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
-                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
+            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language))
+                .Append(_strCachedSpace).Append(LanguageManager.GetString("String_Page", strLanguage))
+                .Append(_strCachedSpace).Append(_intPage.ToString(CultureInfo)).ToString();
         }
 
         public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null)
@@ -70,8 +73,9 @@ namespace Chummer
             Code = CommonFunctions.LanguageBookShort(strSource, Language);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language) +
-                                _strCachedSpace + LanguageManager.GetString("String_Page", strLanguage) + _strCachedSpace + _intPage.ToString(CultureInfo);
+            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language))
+                .Append(_strCachedSpace).Append(LanguageManager.GetString("String_Page", strLanguage))
+                .Append(_strCachedSpace).Append(_intPage.ToString(CultureInfo)).ToString();
         }
 
         public override string ToString()

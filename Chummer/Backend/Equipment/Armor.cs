@@ -1579,11 +1579,12 @@ namespace Chummer.Backend.Equipment
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = SourceID == Guid.Empty
-                ? XmlManager.Load("armor.xml", strLanguage)
-                    .SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]")
-                : XmlManager.Load("armor.xml", strLanguage)
-                    .SelectSingleNode("/chummer/armors/armor[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+            _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/armors/armor[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/armors/armor[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

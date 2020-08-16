@@ -659,9 +659,13 @@ namespace Chummer
                     }
                 }
                 string strSpace = LanguageManager.GetString("String_Space");
-                Text = Application.ProductName + strSpace + '-' + strSpace +
-                       LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion + strSpace + '-' + strSpace +
-                       string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
+                Text = new StringBuilder(Application.ProductName)
+                    .Append(strSpace).Append('-')
+                    .Append(strSpace).Append(LanguageManager.GetString("String_Version"))
+                    .Append(strSpace).Append(_strCurrentVersion)
+                    .Append(strSpace).Append('-')
+                    .Append(strSpace).AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"),
+                        Utils.CachedGitVersion).ToString();
             }
         }
 

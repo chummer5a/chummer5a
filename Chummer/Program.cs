@@ -26,6 +26,7 @@ using System.Linq;
  using System.Reflection;
  using System.Runtime;
  using System.Runtime.InteropServices;
+ using System.Text;
  using System.Threading;
  using System.Threading.Tasks;
  using System.Windows.Forms;
@@ -79,11 +80,11 @@ namespace Chummer
                         string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language, false);
                         if (string.IsNullOrEmpty(strMessage))
                             strMessage = ex.ToString();
-                        strPostErrorMessage += strMessage;
+                        strPostErrorMessage = strMessage;
                     }
                     catch (Exception ex)
                     {
-                        strPostErrorMessage += ex.ToString();
+                        strPostErrorMessage = ex.ToString();
                     }
                 }
                 IsMono = Type.GetType("Mono.Runtime") != null;
@@ -168,17 +169,17 @@ namespace Chummer
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
+                if (LanguageManager.ManagerErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
+                if (GlobalOptions.ErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(GlobalOptions.ErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -265,7 +266,13 @@ namespace Chummer
                         TelemetryConfiguration.Active.DisableTelemetry = true;
 
                     Log.Info(strInfo);
-                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo) + ").");
+                    Log.Info(new StringBuilder("Logging options are set to ")
+                        .Append(GlobalOptions.UseLogging)
+                        .Append(" and Upload-Options are set to ")
+                        .Append(GlobalOptions.UseLoggingApplicationInsights)
+                        .Append(" (Installation-Id: ")
+                        .Append(Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo))
+                        .Append(").").ToString());
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -339,8 +346,9 @@ namespace Chummer
                                     {
                                         if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
                                         {
-                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!"
-                                                         + Environment.NewLine + "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                            string msg = new StringBuilder("Plugin ").Append(whatplugin)
+                                                .AppendLine(" is not enabled in the options!")
+                                                .Append("If you want to use command-line arguments, please enable this plugin and restart the program.").ToString();
                                             Log.Warn(msg);
                                             MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }

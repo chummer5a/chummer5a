@@ -26,6 +26,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using iText.Kernel.Pdf;
 using Microsoft.Win32;
@@ -233,7 +234,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
 
-        public static string ErrorMessage { get; } = string.Empty;
+        public static StringBuilder ErrorMessage { get; } = new StringBuilder();
         public static event TextEventHandler MRUChanged;
         public static event PropertyChangedEventHandler ClipboardChanged;
 
@@ -425,9 +426,9 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                if(!string.IsNullOrEmpty(ErrorMessage))
-                    ErrorMessage += Environment.NewLine + Environment.NewLine;
-                ErrorMessage += ex.ToString();
+                if(ErrorMessage.Length > 0)
+                    ErrorMessage.AppendLine().AppendLine();
+                ErrorMessage.Append(ex);
             }
             if (_objBaseChummerKey == null)
                 return;

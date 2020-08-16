@@ -604,7 +604,9 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlChildName = xmlChildNode["name"];
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
             XmlDocument xmlDocument = xmlChildNode.OwnerDocument ?? XmlManager.Load("gear.xml");
-            XmlNode xmlChildDataNode = xmlDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlChildName?.InnerText.CleanXPath() + " and category = " + xmlChildNode["category"]?.InnerText.CleanXPath() + "]");
+            XmlNode xmlChildDataNode = xmlDocument.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                "/chummer/gears/gear[name = {0} and category = {1}]",
+                xmlChildName?.InnerText.CleanXPath(), xmlChildNode["category"]?.InnerText.CleanXPath()));
             if (xmlChildDataNode == null)
                 return;
             int intChildRating = Convert.ToInt32(xmlChildNode["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
@@ -2111,9 +2113,12 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
-                    ? "/chummer/gears/gear[(name = \"" + strName + "\" and category = \"" + strCategory + "\")]"
-                    : "/chummer/gears/gear[(id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant()
-                      + "\") or (name = " + strNameWithQuotes + " and category = \"" + Category + "\")]");
+                        ? string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/gears/gear[name = {0} and category = \"{1}\"]",
+                            strNameWithQuotes, Category)
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/gears/gear[(id = \"{0}\" or id = \"{1}\") or (name = {2} and category = \"{3}\")]",
+                            SourceIDString, SourceIDString.ToUpperInvariant(), strNameWithQuotes, Category));
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??

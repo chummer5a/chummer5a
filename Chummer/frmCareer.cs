@@ -13194,7 +13194,6 @@ namespace Chummer
                 return;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
             if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus hasWirelessBonus)
             {
@@ -14122,8 +14121,6 @@ namespace Chummer
             {
                 lblGearRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
             }
-
-            string strSpace = LanguageManager.GetString("String_Space");
 
             if (treGear.SelectedNode?.Tag is Gear objGear)
             {
@@ -17336,7 +17333,7 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (treCyberware.SelectedNode.Tag is IHasWirelessBonus obj)
+            if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkCyberwareWireless.Checked;
             }
@@ -17346,18 +17343,17 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (treWeapons.SelectedNode.Tag is IHasWirelessBonus obj)
+            if (treWeapons.SelectedNode?.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkWeaponWireless.Checked;
             }
-
         }
 
         private void chkArmorWireless_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (treArmor.SelectedNode.Tag is IHasWirelessBonus obj)
+            if (treArmor.SelectedNode?.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkArmorWireless.Checked;
             }
