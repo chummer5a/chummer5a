@@ -619,10 +619,11 @@ namespace Chummer.Backend.Equipment
                 StringBuilder sb = new StringBuilder();
                 if (Duration > 0)
                 {
-                    sb.Append(Duration.ToString(GlobalOptions.CultureInfo) + strSpace);
+                    sb.Append(Duration.ToString(GlobalOptions.CultureInfo)).Append(strSpace);
                     if (DurationDice > 0)
                     {
-                        sb.Append('x' + strSpace + DurationDice.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_D6") + strSpace);
+                        sb.Append('x').Append(strSpace).Append(DurationDice.ToString(GlobalOptions.CultureInfo))
+                            .Append(LanguageManager.GetString("String_D6")).Append(strSpace);
                     }
                 }
 

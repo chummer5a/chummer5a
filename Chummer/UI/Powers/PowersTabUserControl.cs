@@ -323,10 +323,11 @@ namespace Chummer.UI.Powers
                 {
                     if (o1 is Power objPower1 && o2 is Power objPower2)
                         return objPower1.TotalRating - objPower2.TotalRating;
-                    string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
-                                 o2.GetType() + " in the totalRatingColumn." + Environment.NewLine;
-                    msg += "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(msg, nameof(o1));
+                    StringBuilder msg = new StringBuilder("Can't sort an Object of Type ")
+                        .Append(o1.GetType()).Append(" against another one of Type ")
+                        .Append(o2.GetType()).AppendLine(" in the totalRatingColumn.")
+                        .Append("Both objects SHOULD be of the type \"Power\".");
+                    throw new ArgumentException(msg.ToString(), nameof(o1));
                 },
             };
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));

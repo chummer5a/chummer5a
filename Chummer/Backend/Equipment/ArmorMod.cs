@@ -1224,7 +1224,8 @@ namespace Chummer.Backend.Equipment
                         blnRestrictedGearUsed = true;
                         strRestrictedItem = Parent == null
                             ? CurrentDisplayName
-                            : CurrentDisplayName + LanguageManager.GetString("String_Space") + '('+ Parent.CurrentDisplayName + ')';
+                            : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})",
+                                CurrentDisplayName, LanguageManager.GetString("String_Space"), Parent.CurrentDisplayName);
                     }
                     else
                     {

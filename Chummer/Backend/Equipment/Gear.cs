@@ -504,7 +504,8 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode objChoiceNode in objXmlNodeList)
                             {
                                 XmlNode objXmlLoopGear =
-                                    xmlDocument.SelectSingleNode("/chummer/gears/gear[name = " + objChoiceNode["name"]?.InnerText.CleanXPath() + " and category = " + objChoiceNode["category"]?.InnerText.CleanXPath() + "]");
+                                    xmlDocument.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/gears/gear[name = {0} and category = {1}]",
+                                        objChoiceNode["name"]?.InnerText.CleanXPath(), objChoiceNode["category"]?.InnerText.CleanXPath()));
                                 if (objXmlLoopGear == null)
                                     continue;
                                 XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
@@ -1252,7 +1253,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
             if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint) + ')');
+                objWriter.WriteElementString("name", string.Format(GlobalOptions.InvariantCultureInfo, "{0}{1}({2})",
+                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint)));
             else
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
 
@@ -2114,11 +2116,11 @@ namespace Chummer.Backend.Equipment
                 string strNameWithQuotes = Name.CleanXPath();
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
                         ? string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/gears/gear[name = {0} and category = \"{1}\"]",
-                            strNameWithQuotes, Category)
+                            "/chummer/gears/gear[name = {0} and category = {1}]",
+                            strName.CleanXPath(), strCategory.CleanXPath())
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/gears/gear[(id = \"{0}\" or id = \"{1}\") or (name = {2} and category = \"{3}\")]",
-                            SourceIDString, SourceIDString.ToUpperInvariant(), strNameWithQuotes, Category));
+                            "/chummer/gears/gear[(id = \"{0}\" or id = \"{1}\") or (name = {2} and category = {3})]",
+                            SourceIDString, SourceIDString.ToUpperInvariant(), strNameWithQuotes, Category.CleanXPath()));
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
@@ -3062,7 +3064,8 @@ namespace Chummer.Backend.Equipment
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = Parent == null
                                 ? CurrentDisplayName
-                                : CurrentDisplayName + LanguageManager.GetString("String_Space") + '(' + Parent + ')';
+                                : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})",
+                                    CurrentDisplayName, LanguageManager.GetString("String_Space"), Parent);
                         }
                         else
                         {

@@ -26,6 +26,7 @@ using Chummer.Backend.Equipment;
 using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Chummer.Annotations;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
@@ -1141,10 +1142,10 @@ namespace Chummer
                 if (blnTitleWithColon)
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
                 // add the title
-                string strResultContent = strArray[intTitleIndex] + Environment.NewLine;
+                StringBuilder sbdResultContent = new StringBuilder(strArray[intTitleIndex]).AppendLine();
                 // if we have extra info add it keeping the line breaks
                 if (intExtraAllCapsInfo > 0)
-                    strResultContent += string.Join(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo) + Environment.NewLine;
+                    sbdResultContent.AppendJoin(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo).AppendLine();
                 int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
                 // this is the best we can do for now, it will still mangle spell blocks a bit
                 for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
@@ -1156,17 +1157,17 @@ namespace Chummer
                         if (char.IsPunctuation(chrLastChar))
                         {
                             if (chrLastChar == '-')
-                                strResultContent += strContentString.Substring(0, strContentString.Length - 1);
+                                sbdResultContent.Append(strContentString.Substring(0, strContentString.Length - 1));
                             else
-                                strResultContent += strContentString + Environment.NewLine;
+                                sbdResultContent.AppendLine(strContentString);
                         }
                         else
                         {
-                            strResultContent += strContentString + ' ';
+                            sbdResultContent.Append(strContentString).Append(' ');
                         }
                     }
                 }
-                return strResultContent;
+                return sbdResultContent.ToString();
             }
             return string.Empty;
         }

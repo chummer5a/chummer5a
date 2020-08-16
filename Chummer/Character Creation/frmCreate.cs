@@ -11153,20 +11153,21 @@ namespace Chummer
                     strIncrementString = LanguageManager.GetString("String_Months");
                     break;
             }
-            lblLifestyleMonthsLabel.Text = strIncrementString + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent"), objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
+            lblLifestyleMonthsLabel.Text = strIncrementString + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent"), objLifestyle.IncrementsRequiredForPermanent);
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
+                StringBuilder sbdQualities = new StringBuilder()
+                    .AppendJoin(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(",");
 
-                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement)
-                                        + LanguageManager.GetString("String_Space")
-                                        + '[' + objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo) + "%]");
+                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                        .Append(LanguageManager.GetString("String_Space")).Append('[')
+                        .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)).Append("%]");
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)
@@ -11174,7 +11175,7 @@ namespace Chummer
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(",");
 
-                    sbdQualities.Append(string.Join(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName)));
+                    sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                 }
 
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
@@ -12183,7 +12184,7 @@ namespace Chummer
                     foreach (Skill objSkill in CharacterObject.SkillsSection.Skills.Where(s => s.Specializations.Count > 1))
                     {
                         sbdMessage.AppendLine().Append(objSkill.CurrentDisplayName)
-                            .Append(LanguageManager.GetString("String_Space")).Append('(').Append(string.Join(',' + LanguageManager.GetString("String_Space"), objSkill.Specializations.Select(x => x.CurrentDisplayName))).Append(')');
+                            .Append(LanguageManager.GetString("String_Space")).Append('(').AppendJoin(',' + LanguageManager.GetString("String_Space"), objSkill.Specializations.Select(x => x.CurrentDisplayName)).Append(')');
                     }
                 }
 

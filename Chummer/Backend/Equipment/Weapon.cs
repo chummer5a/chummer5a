@@ -2246,7 +2246,7 @@ namespace Chummer.Backend.Equipment
                     strCategory = "Unarmed Combat";
                 }
 
-                string strUseSkill = Skill?.Name;
+                string strUseSkill = Skill?.Name ?? string.Empty;
 
                 string strExoticMelee = "Exotic Melee Weapon (" + UseSkillSpec + ')';
                 string strExoticRanged = "Exotic Ranged Weapon (" + UseSkillSpec + ')';
@@ -3822,7 +3822,8 @@ namespace Chummer.Backend.Equipment
         {
             int intTotalAccuracy = TotalAccuracy;
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
-                return intAccuracy.ToString(objCulture) + LanguageManager.GetString("String_Space", strLanguage) + '(' + intTotalAccuracy.ToString(objCulture) + ')';
+                return string.Format(objCulture, "{0}{1}({2})",
+                    intAccuracy, LanguageManager.GetString("String_Space", strLanguage), intTotalAccuracy);
             return intTotalAccuracy.ToString(objCulture);
         }
         /// <summary>
@@ -5426,7 +5427,8 @@ namespace Chummer.Backend.Equipment
                             blnRestrictedGearUsed = true;
                             strRestrictedItem = Parent == null
                                 ? CurrentDisplayName
-                                : CurrentDisplayName + LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
+                                : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})",
+                                    CurrentDisplayName, LanguageManager.GetString("String_Space"), Parent.CurrentDisplayName);
                         }
                         else
                         {

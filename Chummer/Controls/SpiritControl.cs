@@ -21,7 +21,8 @@ using System.Collections.Generic;
  using System.ComponentModel;
  using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 using Chummer.Backend.Uniques;
@@ -480,7 +481,9 @@ namespace Chummer
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
                         Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                        FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
+                        FileName = new StringBuilder(strCritterName)
+                            .Append(strSpace).Append('(').Append(LanguageManager.GetString(_objSpirit.RatingLabel))
+                            .Append(strSpace).Append(_objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo)).Append(").chum5").ToString()
                     })
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)

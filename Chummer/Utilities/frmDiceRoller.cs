@@ -19,7 +19,8 @@
  using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -134,8 +135,8 @@ namespace Chummer
                 if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
                     int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie") +
-                                                                                                                  strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
+                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
+                        LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
                     if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                     {
                         if (intBubbleDieResult <= intGlitchMin)
@@ -145,31 +146,35 @@ namespace Chummer
             }
 
             lblResultsLabel.Visible = true;
-            lblResults.Text = string.Empty;
+            StringBuilder sbdResults = new StringBuilder();
             if (intGlitchCount >= intGlitchThreshold)
             {
                 if (intHitCount > 0)
                 {
                     if (nudThreshold.Value > 0)
                     {
-                        lblResults.Text += LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure") +
-                                           strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
+                        sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value
+                            ? "String_DiceRoller_Success" : "String_DiceRoller_Failure")).Append(strSpace).Append('(');
                     }
-                    else
-                        lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount);
+                    sbdResults.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"),
+                        intHitCount);
+                    if (nudThreshold.Value > 0)
+                        sbdResults.Append(')');
                 }
                 else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_CriticalGlitch");
+                    sbdResults.Append(LanguageManager.GetString("String_DiceRoller_CriticalGlitch"));
             }
             else if (nudThreshold.Value > 0)
             {
-                lblResults.Text += LanguageManager.GetString(intHitCount >= nudThreshold.Value ? "String_DiceRoller_Success" : "String_DiceRoller_Failure") +
-                                   strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
+                sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value
+                                      ? "String_DiceRoller_Success" : "String_DiceRoller_Failure"))
+                    .Append(strSpace).Append('(').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount).Append(')');
             }
             else
-                lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
+                sbdResults.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
 
-            lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace + lstRandom.Sum().ToString(GlobalOptions.CultureInfo);
+            sbdResults.AppendLine().AppendLine().Append(LanguageManager.GetString("Label_DiceRoller_Sum")).Append(strSpace).Append(lstRandom.Sum().ToString(GlobalOptions.CultureInfo));
+            lblResults.Text = sbdResults.ToString();
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
             lstResults.ValueMember = nameof(ListItem.Value);
@@ -285,9 +290,8 @@ namespace Chummer
                 if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
                 {
                     int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie")
-                                                                                                           + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
-
+                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
+                        LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
                     if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                     {
                         if (intBubbleDieResult <= intGlitchMin)
@@ -298,35 +302,34 @@ namespace Chummer
 
 
             lblResultsLabel.Visible = true;
-            lblResults.Text = string.Empty;
+            StringBuilder sbdResults = new StringBuilder();
             if (intGlitchCount >= intGlitchThreshold)
             {
                 if (intHitCount > 0)
                 {
                     if (nudThreshold.Value > 0)
                     {
-                        if (intHitCount >= nudThreshold.Value)
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
-                        else
-                            lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
+                        sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value
+                            ? "String_DiceRoller_Success" : "String_DiceRoller_Failure")).Append(strSpace).Append('(');
                     }
-                    else
-                        lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount);
+                    sbdResults.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"),
+                        intHitCount);
+                    if (nudThreshold.Value > 0)
+                        sbdResults.Append(')');
                 }
                 else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_CriticalGlitch");
+                    sbdResults.Append(LanguageManager.GetString("String_DiceRoller_CriticalGlitch"));
             }
             else if (nudThreshold.Value > 0)
             {
-                if (intHitCount >= nudThreshold.Value)
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
-                else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Glitch"), intHitCount.ToString(GlobalOptions.CultureInfo)) + ')';
+                sbdResults.Append(LanguageManager.GetString(intHitCount >= nudThreshold.Value
+                        ? "String_DiceRoller_Success" : "String_DiceRoller_Failure"))
+                    .Append(strSpace).Append('(').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount).Append(')');
             }
             else
-                lblResults.Text += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
+                sbdResults.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
 
-            lblResults.Text += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace + (lstRandom.Sum() + intKeepSum).ToString(GlobalOptions.CultureInfo);
+            sbdResults.AppendLine().AppendLine().Append(LanguageManager.GetString("Label_DiceRoller_Sum")).Append(strSpace).Append((lstRandom.Sum() + intKeepSum).ToString(GlobalOptions.CultureInfo));
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
             lstResults.ValueMember = nameof(ListItem.Value);

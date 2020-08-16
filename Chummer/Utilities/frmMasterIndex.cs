@@ -89,7 +89,7 @@ namespace Chummer
 
                 string strSourceFilter = setValidCodes.Count > 0
                     ? new StringBuilder("(")
-                        .Append(string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")))
+                        .AppendJoin(" or ", setValidCodes.Select(x => "source = \'" + x + "\'"))
                         .Append(')').ToString()
                     : "source";
 
@@ -166,7 +166,8 @@ namespace Chummer
                                 else
                                 {
                                     ListItem objItemToAdd = new ListItem(objItem.Value,
-                                        objItem.Name + strSpace + '[' + string.Join(',' + strSpace, objEntry.FileNames) + ']');
+                                        new StringBuilder(objItem.Name)
+                                            .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objEntry.FileNames).Append(']').ToString());
                                     _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                     lstExistingItems.Add(objItemToAdd);
 
@@ -177,7 +178,8 @@ namespace Chummer
 
                                         MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
                                         objItemToAdd = new ListItem(objToRename.Value,
-                                            objExistingEntry.DisplayName + strSpace + '[' + string.Join(',' + strSpace, objExistingEntry.FileNames) + ']');
+                                            new StringBuilder(objExistingEntry.DisplayName)
+                                                .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objExistingEntry.FileNames).Append(']').ToString());
                                         _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                         lstExistingItems.Add(objItemToAdd);
                                     }

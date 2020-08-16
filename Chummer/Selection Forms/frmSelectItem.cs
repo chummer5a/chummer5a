@@ -18,7 +18,9 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Linq;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 
@@ -53,24 +55,20 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
                 {
-                    string strAmmoName = objGear.DisplayNameShort(GlobalOptions.Language);
+                    StringBuilder sbdAmmoName = new StringBuilder(objGear.DisplayNameShort(GlobalOptions.Language));
                     // Retrieve the plugin information if it has any.
                     if (objGear.Children.Count > 0)
                     {
-                        string strPlugins = string.Empty;
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
-                        }
-                        // Remove the trailing comma.
-                        strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
                         // Append the plugin information to the name.
-                        strAmmoName += strSpace + '[' + strPlugins + ']';
+                        sbdAmmoName.Append(strSpace).Append('[')
+                            .AppendJoin(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalOptions.Language)))
+                            .Append(']');
                     }
                     if (objGear.Rating > 0)
-                        strAmmoName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
-                    strAmmoName += strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
-                    lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
+                        sbdAmmoName.Append(strSpace).Append('(').Append(LanguageManager.GetString(objGear.RatingLabel))
+                            .Append(strSpace).Append(objGear.Rating.ToString(GlobalOptions.CultureInfo)).Append(')');
+                    sbdAmmoName.Append(strSpace).Append('x').Append(objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
+                    lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                 }
             }
             else if (_strMode == "Vehicles")

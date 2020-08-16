@@ -376,7 +376,7 @@ namespace Chummer.Backend.Attributes
         /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
         /// </summary>
         public string DisplayValue => HasModifiers
-            ? Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + '(' + TotalValue.ToString(GlobalOptions.CultureInfo) + ')'
+            ? string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", Value, LanguageManager.GetString("String_Space"), TotalValue)
             : Value.ToString(GlobalOptions.CultureInfo);
 
         /// <summary>
@@ -693,10 +693,9 @@ namespace Chummer.Backend.Attributes
         public string AugmentedMetatypeLimits => string.Format(GlobalOptions.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
             LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
 
-        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) +
-            LanguageManager.GetString("String_Of") +
-            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space")
-            + LanguageManager.GetString("String_Remaining");
+        public string CareerRemainingString => new StringBuilder(TotalValue.ToString(GlobalOptions.CultureInfo))
+            .Append(LanguageManager.GetString("String_Of")).Append(Value.ToString(GlobalOptions.CultureInfo))
+            .Append(LanguageManager.GetString("String_Space")).Append(LanguageManager.GetString("String_Remaining")).ToString();
         #endregion
 
         #region Methods

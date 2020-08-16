@@ -94,12 +94,12 @@ namespace Chummer
 
         public static void Log()
         {
-            StringBuilder sb = new StringBuilder("Time statistics" + Environment.NewLine);
+            StringBuilder sb = new StringBuilder().AppendLine("Time statistics");
 
             foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {
-                sb.AppendLine(string.Format(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}",
-                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1));
+                sb.AppendFormat(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}",
+                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1).AppendLine();
             }
 
             string strined = sb.ToString();

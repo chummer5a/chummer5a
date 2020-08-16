@@ -310,7 +310,7 @@ namespace Chummer
                 {
                     if (sbdDuplicatesNames.Length != 0)
                         sbdDuplicatesNames.AppendLine();
-                    sbdDuplicatesNames.Append(string.Join(Environment.NewLine, lstDuplicateNames));
+                    sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                 }
                 Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
                     , LanguageManager.GetString("Message_DuplicateGuidWarning")
@@ -589,12 +589,14 @@ namespace Chummer
                                 // Only do this if the child has the name or id field since this is what we must match on.
                                 if (sbdFilter.Length > 0)
                                 {
-                                    StringBuilder sbdParentNodeFilter = new StringBuilder(objParentNode.Attributes?.Count > 0
-                                        ? string.Join(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
-                                            "@" + x.Name + " = " + x.Value.Replace("&amp;", "&").CleanXPath()))
-                                        : string.Empty);
-                                    if (sbdParentNodeFilter.Length > 0)
-                                        sbdParentNodeFilter.Insert(0, '[').Append(']');
+                                    StringBuilder sbdParentNodeFilter = new StringBuilder();
+                                    if (objParentNode.Attributes?.Count > 0)
+                                    {
+                                        sbdParentNodeFilter.AppendJoin(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
+                                            "@" + x.Name + " = " + x.Value.Replace("&amp;", "&").CleanXPath()));
+                                        if (sbdParentNodeFilter.Length > 0)
+                                            sbdParentNodeFilter.Insert(0, '[').Append(']');
+                                    }
                                     sbdParentNodeFilter.Insert(0, "/chummer/" + objParentNode.Name).Append('/').Append(objChild.Name);
                                     sbdFilter.Insert(0, '[').Append(']')
                                         .Insert(0, sbdParentNodeFilter.ToString());

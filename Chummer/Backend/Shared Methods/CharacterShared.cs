@@ -6198,8 +6198,8 @@ namespace Chummer
                 dlgOpenFileDialog.Filter = string.Format(
                     GlobalOptions.InvariantCultureInfo,
                     LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" + LanguageManager.GetString("DialogFilter_All"),
-                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
-                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension).ToArray()));
+                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension))),
+                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
 
                 if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
