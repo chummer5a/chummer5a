@@ -1111,7 +1111,7 @@ namespace Chummer
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade");
                             cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveInitiateGrade");
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal")
-                                .CheapReplace("{0}", ()=> CharacterObjectOptions.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
+                                .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
                             gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType");
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup");
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_InitiationGroup")
@@ -8929,9 +8929,11 @@ namespace Chummer
                         || lblSpellsBP != null
                         || lblBuildRitualsBP != null))
                 {
-                    string strFormat = "{0}" + strSpace + "×" + strSpace + "{1}" + strSpace
-                                       + LanguageManager.GetString("String_Karma") + strSpace + "=" + strSpace + "{2}"
-                                       + strSpace + LanguageManager.GetString("String_Karma");
+                    string strFormat = new StringBuilder("{0}")
+                        .Append(strSpace).Append("×").Append(strSpace).Append("{1}")
+                        .Append(strSpace).Append(LanguageManager.GetString("String_Karma"))
+                        .Append(strSpace).Append("=").Append(strSpace).Append("{2}")
+                        .Append(strSpace).Append(LanguageManager.GetString("String_Karma")).ToString();
                     lblSpellsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
                     lblBuildRitualsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
                     lblBuildPrepsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
@@ -8974,7 +8976,8 @@ namespace Chummer
                     else
                     {
                         //TODO: Make the costs render better, currently looks wrong as hell
-                        strFormat = "{0}" + strOf + limitMod.ToString(GlobalOptions.CultureInfo) + strColon + strSpace + "{1}" + strSpace + strPoints;
+                        strFormat = new StringBuilder("{0}").Append(strOf).Append(limitMod.ToString(GlobalOptions.CultureInfo)).Append(strColon)
+                            .Append(strSpace).Append("{1}").Append(strSpace).Append(strPoints).ToString();
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
                                 string.Format(GlobalOptions.CultureInfo, strFormat, prepPoints, intPrepPointsUsed);
@@ -9192,20 +9195,23 @@ namespace Chummer
 
                 lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
 
-                string strComplexFormsBP;
+                StringBuilder sbdComplexFormsBP = new StringBuilder();
                 if (CharacterObject.CFPLimit > 0)
                 {
-                    strComplexFormsBP = intFormsPointsUsed.ToString(GlobalOptions.CultureInfo) + strOf + CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo);
+                    sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalOptions.CultureInfo)).Append(strOf).Append(CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo));
                     if (intFormsPointsUsed > CharacterObject.CFPLimit)
                     {
-                        strComplexFormsBP += strColon + strSpace + ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
+                        sbdComplexFormsBP.Append(strColon).Append(strSpace)
+                            .Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo))
+                            .Append(strSpace).Append(strPoints);
                     }
                 }
                 else
                 {
-                    strComplexFormsBP = ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
+                    sbdComplexFormsBP.Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo))
+                        .Append(strSpace).Append(strPoints);
                 }
-                lblComplexFormsBP.Text = strComplexFormsBP;
+                lblComplexFormsBP.Text = sbdComplexFormsBP.ToString();
 
                 lblAINormalProgramsBP.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
                 lblAIAdvancedProgramsBP.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalOptions.CultureInfo) + strSpace + strPoints;
@@ -9517,7 +9523,8 @@ namespace Chummer
 
             if (treCyberware.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblCyberwareRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblCyberwareRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -9751,7 +9758,8 @@ namespace Chummer
 
             if (treWeapons.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblWeaponRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblWeaponRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
             if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot && CharacterObject.Improvements.Any(i =>
@@ -10142,7 +10150,8 @@ namespace Chummer
 
             if (treArmor.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblArmorRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblArmorRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -10381,7 +10390,8 @@ namespace Chummer
 
             if (treGear.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblGearRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblGearRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -11243,7 +11253,7 @@ namespace Chummer
 
             if (treVehicles.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                lblVehicleRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                     LanguageManager.GetString(objHasRating.RatingLabel));
             }
             // Locate the selected Vehicle.

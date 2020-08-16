@@ -15936,8 +15936,7 @@ namespace Chummer
                         }
 
                         Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_FailedLoad")
-                                .Replace("{0}", ex.Message),
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"), ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
@@ -15951,8 +15950,8 @@ namespace Chummer
                             Log.Error(ex);
                         }
                         Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_FailedLoad")
-                                .Replace("{0}", ex.Message),
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
@@ -15966,8 +15965,8 @@ namespace Chummer
                             Log.Error(ex);
                         }
                         Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_FailedLoad")
-                                .Replace("{0}", ex.Message),
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
@@ -16211,12 +16210,10 @@ namespace Chummer
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
                         if (xmlGameplayOption == null)
                         {
-                            string strMessage = LanguageManager
-                                .GetString("Message_MissingGameplayOption")
-                                .Replace("{0}", GameplayOption);
+                            string strMessage = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_MissingGameplayOption"),
+                                GameplayOption);
                             if (Program.MainForm.ShowMessageBox(strMessage,
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title",
-                                        GlobalOptions.Language),
+                                    LanguageManager.GetString("Message_MissingGameplayOption_Title"),
                                     MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))

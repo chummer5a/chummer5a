@@ -258,7 +258,7 @@ namespace Chummer
 
                     string strRatingLabel = objXmlGear.SelectSingleNode("ratinglabel")?.Value;
                     lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                        ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                             LanguageManager.GetString(strRatingLabel))
                         : LanguageManager.GetString("Label_Rating");
                 }
@@ -1091,8 +1091,8 @@ namespace Chummer
                 {
                     // Add after sort so that it's always at the end
                     lstGears.Add(new ListItem(string.Empty,
-                        LanguageManager.GetString("String_RestrictedItemsHidden")
-                        .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                            intOverLimit)));
                 }
                 lstGear.BeginUpdate();
                 string strOldSelected = lstGear.SelectedValue?.ToString();

@@ -1503,12 +1503,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (CalculatedCapacity.Contains('[') && !CalculatedCapacity.Contains("/[")) return CalculatedCapacity;
-                string strRemaining = LanguageManager.GetString("String_CapacityRemaining");
-                strRemaining = strRemaining.Replace("{0}", CalculatedCapacity);
-                strRemaining = strRemaining.Replace("{1}", CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo));
-                return strRemaining;
-
+                if (CalculatedCapacity.Contains('[') && !CalculatedCapacity.Contains("/["))
+                    return CalculatedCapacity;
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+                    CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo));
             }
         }
 

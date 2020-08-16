@@ -385,8 +385,8 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstMods.Add(new ListItem(string.Empty,
-                    LanguageManager.GetString("String_RestrictedItemsHidden")
-                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        intOverLimit)));
             }
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
@@ -684,15 +684,14 @@ namespace Chummer
 
 
                 lblRatingLabel.Text = xmlVehicleMod.SelectSingleNode("ratinglabel") != null
-                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
-                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value,
-                            GlobalOptions.Language))
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value))
                     : LanguageManager.GetString("Label_Rating");
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else

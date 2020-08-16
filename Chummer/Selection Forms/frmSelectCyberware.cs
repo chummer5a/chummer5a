@@ -320,7 +320,7 @@ namespace Chummer
 
                 string strRatingLabel = xmlCyberware.SelectSingleNode("ratinglabel")?.Value;
                 lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                         LanguageManager.GetString(strRatingLabel))
                     : LanguageManager.GetString("Label_Rating");
 
@@ -1172,8 +1172,8 @@ namespace Chummer
                 {
                     // Add after sort so that it's always at the end
                     lstCyberwares.Add(new ListItem(string.Empty,
-                        LanguageManager.GetString("String_RestrictedItemsHidden")
-                        .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                            intOverLimit)));
                 }
                 string strOldSelected = lstCyberware.SelectedValue?.ToString();
                 _blnLoading = true;

@@ -860,12 +860,11 @@ namespace Chummer
                 StringBuilder sb = new StringBuilder();
                 if (Suppressed)
                 {
-                    sb.Append(LanguageManager.GetString("String_SuppressedBy").CheapReplace("{0}", () =>
-                        _objCharacter.GetObjectName(_objCharacter.Improvements.First(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled)) ??
-                        LanguageManager.GetString("String_Unknown")));
-                    sb.Append(Environment.NewLine);
+                    sb.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SuppressedBy"),
+                        _objCharacter.GetObjectName(_objCharacter.Improvements.FirstOrDefault(imp =>
+                            imp.ImproveType == Improvement.ImprovementType.DisableQuality
+                            && (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled))
+                        ?? LanguageManager.GetString("String_Unknown")).AppendLine();
                 }
                 sb.Append(_strNotes);
                 _strCachedNotes = sb.ToString();
