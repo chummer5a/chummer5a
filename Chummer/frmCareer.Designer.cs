@@ -3153,7 +3153,6 @@ namespace Chummer
             this.chkStunCM1.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM1.AutoSize = true;
             this.chkStunCM1.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM1.Location = new System.Drawing.Point(1, 1);
             this.chkStunCM1.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM1.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3171,7 +3170,6 @@ namespace Chummer
             this.chkStunCM2.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM2.AutoSize = true;
             this.chkStunCM2.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM2.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM2.Location = new System.Drawing.Point(27, 1);
             this.chkStunCM2.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM2.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3189,7 +3187,6 @@ namespace Chummer
             this.chkStunCM3.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM3.AutoSize = true;
             this.chkStunCM3.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM3.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM3.Location = new System.Drawing.Point(53, 1);
             this.chkStunCM3.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM3.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3207,7 +3204,6 @@ namespace Chummer
             this.chkStunCM4.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM4.AutoSize = true;
             this.chkStunCM4.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM4.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM4.Location = new System.Drawing.Point(1, 27);
             this.chkStunCM4.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM4.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3225,7 +3221,6 @@ namespace Chummer
             this.chkStunCM5.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM5.AutoSize = true;
             this.chkStunCM5.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM5.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM5.Location = new System.Drawing.Point(27, 27);
             this.chkStunCM5.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM5.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3243,7 +3238,6 @@ namespace Chummer
             this.chkStunCM6.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM6.AutoSize = true;
             this.chkStunCM6.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM6.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM6.Location = new System.Drawing.Point(53, 27);
             this.chkStunCM6.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM6.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3261,7 +3255,6 @@ namespace Chummer
             this.chkStunCM7.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM7.AutoSize = true;
             this.chkStunCM7.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM7.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM7.Location = new System.Drawing.Point(1, 53);
             this.chkStunCM7.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM7.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3279,7 +3272,6 @@ namespace Chummer
             this.chkStunCM8.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM8.AutoSize = true;
             this.chkStunCM8.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM8.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM8.Location = new System.Drawing.Point(27, 53);
             this.chkStunCM8.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM8.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3297,7 +3289,6 @@ namespace Chummer
             this.chkStunCM9.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM9.AutoSize = true;
             this.chkStunCM9.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM9.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM9.Location = new System.Drawing.Point(53, 53);
             this.chkStunCM9.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM9.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3315,7 +3306,6 @@ namespace Chummer
             this.chkStunCM10.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM10.AutoSize = true;
             this.chkStunCM10.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM10.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM10.Location = new System.Drawing.Point(1, 79);
             this.chkStunCM10.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM10.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3333,7 +3323,6 @@ namespace Chummer
             this.chkStunCM11.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM11.AutoSize = true;
             this.chkStunCM11.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM11.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM11.Location = new System.Drawing.Point(27, 79);
             this.chkStunCM11.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM11.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3351,7 +3340,6 @@ namespace Chummer
             this.chkStunCM12.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM12.AutoSize = true;
             this.chkStunCM12.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM12.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM12.Location = new System.Drawing.Point(53, 79);
             this.chkStunCM12.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM12.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3369,7 +3357,6 @@ namespace Chummer
             this.chkStunCM13.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM13.AutoSize = true;
             this.chkStunCM13.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM13.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM13.Location = new System.Drawing.Point(1, 105);
             this.chkStunCM13.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM13.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3387,7 +3374,6 @@ namespace Chummer
             this.chkStunCM14.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM14.AutoSize = true;
             this.chkStunCM14.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM14.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM14.Location = new System.Drawing.Point(27, 105);
             this.chkStunCM14.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM14.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3405,7 +3391,6 @@ namespace Chummer
             this.chkStunCM15.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM15.AutoSize = true;
             this.chkStunCM15.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM15.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM15.Location = new System.Drawing.Point(53, 105);
             this.chkStunCM15.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM15.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3423,7 +3408,6 @@ namespace Chummer
             this.chkStunCM16.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM16.AutoSize = true;
             this.chkStunCM16.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM16.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM16.Location = new System.Drawing.Point(1, 131);
             this.chkStunCM16.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM16.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3441,7 +3425,6 @@ namespace Chummer
             this.chkStunCM17.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM17.AutoSize = true;
             this.chkStunCM17.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM17.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM17.Location = new System.Drawing.Point(27, 131);
             this.chkStunCM17.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM17.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3459,7 +3442,6 @@ namespace Chummer
             this.chkStunCM18.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM18.AutoSize = true;
             this.chkStunCM18.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM18.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM18.Location = new System.Drawing.Point(53, 131);
             this.chkStunCM18.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM18.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3477,7 +3459,6 @@ namespace Chummer
             this.chkStunCM19.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM19.AutoSize = true;
             this.chkStunCM19.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM19.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM19.Location = new System.Drawing.Point(1, 157);
             this.chkStunCM19.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM19.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3495,7 +3476,6 @@ namespace Chummer
             this.chkStunCM20.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM20.AutoSize = true;
             this.chkStunCM20.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM20.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM20.Location = new System.Drawing.Point(27, 157);
             this.chkStunCM20.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM20.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3513,7 +3493,6 @@ namespace Chummer
             this.chkStunCM21.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM21.AutoSize = true;
             this.chkStunCM21.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM21.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM21.Location = new System.Drawing.Point(53, 157);
             this.chkStunCM21.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM21.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3531,7 +3510,6 @@ namespace Chummer
             this.chkStunCM22.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM22.AutoSize = true;
             this.chkStunCM22.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM22.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM22.Location = new System.Drawing.Point(1, 183);
             this.chkStunCM22.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM22.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3549,7 +3527,6 @@ namespace Chummer
             this.chkStunCM23.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM23.AutoSize = true;
             this.chkStunCM23.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM23.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM23.Location = new System.Drawing.Point(27, 183);
             this.chkStunCM23.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM23.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3567,7 +3544,6 @@ namespace Chummer
             this.chkStunCM24.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkStunCM24.AutoSize = true;
             this.chkStunCM24.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkStunCM24.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkStunCM24.Location = new System.Drawing.Point(53, 183);
             this.chkStunCM24.Margin = new System.Windows.Forms.Padding(1);
             this.chkStunCM24.MinimumSize = new System.Drawing.Size(24, 24);
@@ -3687,8 +3663,6 @@ namespace Chummer
             this.chkPhysicalCM1.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkPhysicalCM1.AutoSize = true;
             this.chkPhysicalCM1.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkPhysicalCM1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chkPhysicalCM1.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkPhysicalCM1.Location = new System.Drawing.Point(1, 1);
             this.chkPhysicalCM1.Margin = new System.Windows.Forms.Padding(1);
             this.chkPhysicalCM1.MinimumSize = new System.Drawing.Size(24, 24);
