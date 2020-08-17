@@ -736,8 +736,8 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstDrugs.Add(new ListItem(string.Empty,
-                    LanguageManager.GetString("String_RestrictedItemsHidden")
-                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        intOverLimit)));
             }
             string strOldSelected = lstDrug.SelectedValue?.ToString();
             _blnLoading = true;

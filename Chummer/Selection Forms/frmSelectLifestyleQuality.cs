@@ -154,9 +154,8 @@ namespace Chummer
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                objSourceString.SetControl(lblSource);
             }
             else
             {
@@ -544,7 +543,7 @@ namespace Chummer
 
             if (objXmlQuality.InnerXml.Contains("required"))
             {
-                string strRequirement = string.Empty;
+                StringBuilder sbdRequirement = new StringBuilder();
                 bool blnRequirementMet = true;
 
                 // Loop through the oneof requirements.
@@ -553,7 +552,7 @@ namespace Chummer
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
-                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_OneOf");
+                    StringBuilder sbdThisRequirement = new StringBuilder(Environment.NewLine).Append(LanguageManager.GetString("Message_SelectQuality_OneOf"));
                     XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes;
                     foreach (XmlNode objXmlRequired in objXmlOneOfList)
                     {
@@ -571,9 +570,10 @@ namespace Chummer
                                 if (!blnOneOfMet)
                                 {
                                     XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += objNode["translate"] != null
-                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
-                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
+                                    sbdThisRequirement.AppendLine().Append('\t')
+                                        .Append(objNode["translate"] != null
+                                            ? objNode["translate"].InnerText
+                                            : objXmlRequired.InnerText);
                                 }
                                 break;
                             case "characterquality":
@@ -589,9 +589,10 @@ namespace Chummer
                                 if (!blnOneOfMet)
                                 {
                                     XmlNode objNode = _objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += objNode["translate"] != null
-                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
-                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
+                                    sbdThisRequirement.AppendLine().Append('\t')
+                                        .Append(objNode["translate"] != null
+                                            ? objNode["translate"].InnerText
+                                            : objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metatype":
@@ -602,9 +603,10 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += objNode["translate"] != null
-                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
-                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
+                                    sbdThisRequirement.AppendLine().Append('\t')
+                                        .Append(objNode["translate"] != null
+                                            ? objNode["translate"].InnerText
+                                            : objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metatypecategory":
@@ -615,9 +617,10 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += objNode["translate"] != null
-                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
-                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
+                                    sbdThisRequirement.AppendLine().Append('\t')
+                                        .Append(objNode["translate"] != null
+                                            ? objNode["translate"].InnerText
+                                            : objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metavariant":
@@ -628,20 +631,24 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += objNode["translate"] != null
-                                        ? Environment.NewLine + '\t' + objNode["translate"].InnerText
-                                        : Environment.NewLine + '\t' + objXmlRequired.InnerText;
+                                    sbdThisRequirement.AppendLine().Append('\t')
+                                        .Append(objNode["translate"] != null
+                                            ? objNode["translate"].InnerText
+                                            : objXmlRequired.InnerText);
                                 }
                                 break;
                             case "inherited":
-                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit");
+                                sbdThisRequirement.AppendLine().Append('\t')
+                                    .Append(LanguageManager.GetString("Message_SelectQuality_Inherit"));
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnOneOfMet = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma"), objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t')
+                                        .AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma"),
+                                            objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -821,7 +828,7 @@ namespace Chummer
 
                     // Update the flag for requirements met.
                     blnRequirementMet = blnRequirementMet && blnOneOfMet;
-                    strRequirement += strThisRequirement;
+                    sbdRequirement.Append(sbdThisRequirement);
                 }
 
                 // Loop through the allof requirements.
@@ -829,7 +836,7 @@ namespace Chummer
                 foreach (XmlNode objXmlAllOf in objXmlRequiredList)
                 {
                     bool blnAllOfMet = true;
-                    string strThisRequirement = Environment.NewLine + LanguageManager.GetString("Message_SelectQuality_AllOf");
+                    StringBuilder sbdThisRequirement = new StringBuilder(Environment.NewLine).Append(LanguageManager.GetString("Message_SelectQuality_AllOf"));
                     XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
                     foreach (XmlNode objXmlRequired in objXmlAllOfList)
                     {
@@ -849,7 +856,7 @@ namespace Chummer
                                 if (!blnFound)
                                 {
                                     XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]/translate");
-                                    strThisRequirement += Environment.NewLine + '\t' + (objNode?.InnerText ?? objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t').Append(objNode?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metatype":
@@ -860,7 +867,7 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t').Append(objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metatypecategory":
@@ -871,7 +878,7 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/categories/category[. = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t').Append(objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "metavariant":
@@ -882,18 +889,18 @@ namespace Chummer
                                 {
                                     XmlNode objNode = _objMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]") ??
                                                       _objCritterDocument.SelectSingleNode("/chummer/metatypes/metatype/metavariants/metavariant[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    strThisRequirement += Environment.NewLine + '\t' + (objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t').Append(objNode["translate"]?.InnerText ?? objXmlRequired.InnerText);
                                 }
                                 break;
                             case "inherited":
-                                strThisRequirement += Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_Inherit");
+                                sbdThisRequirement.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_SelectQuality_Inherit"));
                                 break;
                             case "careerkarma":
                                 // Check Career Karma requirement.
                                 if (_objCharacter.CareerKarma >= Convert.ToInt32(objXmlRequired.InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnFound = true;
                                 else
-                                    strThisRequirement = Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma"), objXmlRequired.InnerText);
+                                    sbdThisRequirement.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma"), objXmlRequired.InnerText);
                                 break;
                             case "ess":
                                 // Check Essence requirement.
@@ -1071,17 +1078,19 @@ namespace Chummer
 
                     // Update the flag for requirements met.
                     blnRequirementMet = blnRequirementMet && blnAllOfMet;
-                    strRequirement += strThisRequirement;
+                    sbdRequirement.Append(sbdThisRequirement);
                 }
 
                 // The character has not met the requirements, so display a message and uncheck the item.
                 if (!blnRequirementMet)
                 {
-                    string strMessage = LanguageManager.GetString("Message_SelectQuality_QualityRequirement");
-                    strMessage += strRequirement;
-
                     if (blnShowMessage)
+                    {
+                        string strMessage = LanguageManager.GetString("Message_SelectQuality_QualityRequirement");
+                        strMessage += sbdRequirement.ToString();
                         Program.MainForm.ShowMessageBox(this, strMessage, LanguageManager.GetString("MessageTitle_SelectQuality_QualityRequirement"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
                     return false;
                 }
             }

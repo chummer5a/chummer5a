@@ -426,9 +426,8 @@ namespace Chummer.Backend.Skills
                 HashSet<string> hashSkillGuids = new HashSet<string>();
                 XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
                 XmlNodeList xmlSkillList = skillsDoc.SelectNodes(
-                    "/chummer/skills/skill[not(exotic) and ("
-                    + _objCharacter.Options.BookXPath() + ')'
-                    + SkillFilter(FilterOption.NonSpecial) + "]");
+                    string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
+                        _objCharacter.Options.BookXPath(), SkillFilter(FilterOption.NonSpecial)));
                 if (xmlSkillList != null)
                 {
                     foreach (XmlNode node in xmlSkillList)
@@ -441,7 +440,7 @@ namespace Chummer.Backend.Skills
 
                 foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                 {
-                    XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = \"" + skillId + "\"]");
+                    XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
                     if (objXmlSkillNode != null)
                     {
                         Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter);
@@ -801,12 +800,12 @@ namespace Chummer.Backend.Skills
         {
             //Build a crazy xpath to get everything we want to convert
 
-            string strXPath = "/character/expenses/expense[type = \'Karma\']/undo["
-                              + string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'"))
-                              + "]/objectid";
+            StringBuilder sbdXPath = new StringBuilder("/character/expenses/expense[type = \'Karma\']/undo[")
+                .Append(string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'")))
+                .Append("]/objectid");
 
             //Find everything
-            XmlNodeList lstNodesToChange = doc.SelectNodes(strXPath);
+            XmlNodeList lstNodesToChange = doc.SelectNodes(sbdXPath.ToString());
             if (lstNodesToChange != null)
             {
                 for (int i = 0; i < lstNodesToChange.Count; i++)
@@ -1091,7 +1090,9 @@ namespace Chummer.Backend.Skills
             //TODO less retarded way please
             // Load the Skills information.
             // Populate the Skills list.
-            using (XmlNodeList xmlSkillList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter, strName) + "]"))
+            using (XmlNodeList xmlSkillList = _objCharacter.LoadData("skills.xml")
+                .SelectNodes(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
+                    _objCharacter.Options.BookXPath(), SkillFilter(filter, strName))))
             {
                 // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
                 List<ListItem> lstSkillOrder = new List<ListItem>(xmlSkillList?.Count ?? 0);

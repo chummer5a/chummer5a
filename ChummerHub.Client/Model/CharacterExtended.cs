@@ -235,7 +235,7 @@ namespace ChummerHub.Client.Model
                                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                                     }
 
-                                    if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                                    if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
                                     {
                                         MySINnerFile.SiNnerMetaData.Visibility.UserRights =
                                             found.Body.MySINner.SiNnerMetaData.Visibility.UserRights;

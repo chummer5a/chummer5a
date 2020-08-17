@@ -328,8 +328,10 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("powers.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/enhancements/enhancement[name = \"{Name}\"]"
-                        : $"/chummer/enhancements/enhancement[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        ? "/chummer/enhancements/enhancement[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/enhancements/enhancement[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -106,7 +106,8 @@ namespace Chummer
                         string strLoopTechniqueName = xmlMartialArtsTechnique.SelectSingleNode("name")?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strLoopTechniqueName))
                         {
-                            XPathNavigator xmlTechniqueNode = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode("technique[name = \"" + strLoopTechniqueName + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                            XPathNavigator xmlTechniqueNode = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "technique[name = {0} and ({1})]",
+                                strLoopTechniqueName.CleanXPath(), _objCharacter.Options.BookXPath()));
                             if (xmlTechniqueNode != null)
                             {
                                 if (objTechniqueStringBuilder.Length > 0)
@@ -121,9 +122,8 @@ namespace Chummer
 
                     string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                    objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else

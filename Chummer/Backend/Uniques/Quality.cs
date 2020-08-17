@@ -862,12 +862,11 @@ namespace Chummer
                 StringBuilder sb = new StringBuilder();
                 if (Suppressed)
                 {
-                    sb.Append(LanguageManager.GetString("String_SuppressedBy").CheapReplace("{0}", () =>
-                        _objCharacter.GetObjectName(_objCharacter.Improvements.First(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled)) ??
-                        LanguageManager.GetString("String_Unknown")));
-                    sb.Append(Environment.NewLine);
+                    sb.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SuppressedBy"),
+                        _objCharacter.GetObjectName(_objCharacter.Improvements.FirstOrDefault(imp =>
+                            imp.ImproveType == Improvement.ImprovementType.DisableQuality
+                            && (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled))
+                        ?? LanguageManager.GetString("String_Unknown")).AppendLine();
                 }
                 sb.Append(_strNotes);
                 _strCachedNotes = sb.ToString();
@@ -921,8 +920,10 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("qualities.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/qualities/quality[name = \"{Name}\"]"
-                        : $"/chummer/qualities/quality[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        ? "/chummer/qualities/quality[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/qualities/quality[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -271,8 +271,10 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("martialarts.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/techniques/technique[name = \"{Name}\"]"
-                        : $"/chummer/techniques/technique[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        ? "/chummer/techniques/technique[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/techniques/technique[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

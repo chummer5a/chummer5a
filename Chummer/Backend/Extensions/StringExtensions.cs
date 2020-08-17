@@ -979,6 +979,136 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the objects to append.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendJoin<T>(this StringBuilder sbdInput, string strSeparator, IEnumerable<T> lstValues)
+        {
+            if (sbdInput == null)
+                throw new ArgumentNullException(nameof(sbdInput));
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            bool blnFirst = true;
+            foreach (T objValue in lstValues)
+            {
+                if (blnFirst)
+                    blnFirst = false;
+                else
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(objValue);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, IEnumerable<string> lstValues)
+        {
+            if (sbdInput == null)
+                throw new ArgumentNullException(nameof(sbdInput));
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            bool blnFirst = true;
+            foreach (string strValue in lstValues)
+            {
+                if (blnFirst)
+                    blnFirst = false;
+                else
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(strValue);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="astrValues">An array that contains the string to append.</param>
+        /// <param name="intStartIndex">The first element in <paramref name="astrValues" /> to use.</param>
+        /// <param name="intCount">The number of elements of <paramref name="astrValues" /> to use.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, string[] astrValues, int intStartIndex, int intCount)
+        {
+            if (sbdInput == null)
+                throw new ArgumentNullException(nameof(sbdInput));
+            if (astrValues == null)
+                throw new ArgumentNullException(nameof(astrValues));
+            if (intStartIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            if (intCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(intCount));
+            if (intStartIndex + intCount >= astrValues.Length)
+                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            for (int i = 0; i < intCount; ++i)
+            {
+                if (i > 0)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(astrValues[i + intStartIndex]);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="astrValues">An array that contains the string to append.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, params string[] astrValues)
+        {
+            if (sbdInput == null)
+                throw new ArgumentNullException(nameof(sbdInput));
+            if (astrValues == null)
+                throw new ArgumentNullException(nameof(astrValues));
+            for(int i = 0; i < astrValues.Length; ++i)
+            {
+                if (i > 0)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(astrValues[i]);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="aobjValues">An array that contains the objects to append.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendJoin(this StringBuilder sbdInput, string strSeparator, params object[] aobjValues)
+        {
+            if (sbdInput == null)
+                throw new ArgumentNullException(nameof(sbdInput));
+            if (aobjValues == null)
+                throw new ArgumentNullException(nameof(aobjValues));
+            for (int i = 0; i < aobjValues.Length; ++i)
+            {
+                if (i > 0)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(aobjValues[i]);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
         /// Tests whether a given string is a Guid. Returns false if not.
         /// </summary>
         /// <param name="strGuid">String to test.</param>

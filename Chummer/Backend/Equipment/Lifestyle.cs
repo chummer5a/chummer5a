@@ -379,7 +379,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
                 GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
-                _intBonusLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                _intBonusLP = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
 
             if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
             {
@@ -1075,8 +1075,10 @@ namespace Chummer.Backend.Equipment
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/lifestyles/lifestyle[name = \"{Name}\"]"
-                        : $"/chummer/lifestyles/lifestyle[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                        ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/lifestyles/lifestyle[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

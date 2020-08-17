@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -268,11 +269,13 @@ namespace Chummer
             else
                 strBonus = _intBonus.ToString(objCulture);
 
-            string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", strLanguage) + '[' + strBonus + ']';
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort)
+                .Append(strSpace).Append('[').Append(strBonus).Append(']');
             string strCondition = DisplayCondition(strLanguage);
             if (!string.IsNullOrEmpty(strCondition))
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strCondition + ')';
-            return strReturn;
+                sbdReturn.Append(strSpace).Append('(').Append(strCondition).Append(')');
+            return sbdReturn.ToString();
         }
         #endregion
 
@@ -315,7 +318,8 @@ namespace Chummer
             {
                 if (blnConfirmDelete)
                 {
-                    return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier")) && _objCharacter.LimitModifiers.Remove(this);
+                    return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier"))
+                           && _objCharacter.LimitModifiers.Remove(this);
                 }
             }
 

@@ -2712,8 +2712,10 @@ namespace Chummer.Backend.Equipment
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml",  strLanguage)
                 .SelectSingleNode(SourceID == Guid.Empty
-                    ? "/chummer/vehicles/vehicle[name = \"" + Name + "\"]"
-                    : "/chummer/vehicles/vehicle[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+                    ? "/chummer/vehicles/vehicle[name = " + Name.CleanXPath() + ']'
+                    : string.Format(GlobalOptions.InvariantCultureInfo,
+                        "/chummer/vehicles/vehicle[id = \"{0}\" or id = \"{1}\"]",
+                        SourceIDString, SourceIDString.ToUpperInvariant()));
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }

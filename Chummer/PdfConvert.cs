@@ -65,12 +65,12 @@ namespace Codaxy.WkHtmlToPdf
         {
             get
             {
-                return _e ?? (_e = new PdfConvertEnvironment
+                return _e = _e ?? new PdfConvertEnvironment
                 {
                     TempFolderPath = Path.GetTempPath(),
                     WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
                     Timeout = 60000
-                });
+                };
             }
         }
 

@@ -330,7 +330,7 @@ namespace ChummerHub.Client.UI
             {
                 using (new CursorWait(this, true))
                 {
-                    if (!myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                    if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
                     {
                         var client = StaticUtils.GetClient();
                         if (myUC.MyCE.MySINnerFile.Id != null)

@@ -18,7 +18,8 @@
  */
  using System;
 using System.Reflection;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -127,7 +128,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
             textBoxDescription.Text = strReturn;
-            textBoxContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames) + Environment.NewLine + "/u/Iridios";
+            textBoxContributors.Text += new StringBuilder(Environment.NewLine)
+                .AppendLine().AppendJoin(Environment.NewLine, Properties.Contributors.Usernames)
+                .AppendLine().Append("/u/Iridios").ToString();
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text");
         }
 

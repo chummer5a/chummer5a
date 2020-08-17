@@ -353,17 +353,18 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 string doc = "metamagic.xml";
-                string path = "metamagics/metamagic";
+                string path = "/chummer/metamagics/metamagic";
                 if (_eImprovementSource == Improvement.ImprovementSource.Echo)
                 {
                     doc = "echoes.xml";
-                    path = "echoes/echo";
+                    path = "/chummer/echoes/echo";
                 }
-
                 _objCachedMyXmlNode = _objCharacter.LoadData(doc, strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/{path}[name = \"{Name}\"]"
-                        : $"/chummer/{path}[id = \"{SourceIDString}\" or id = \"{SourceIDString}\"]");
+                        ? path + "[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "{0}[id = \"{1}\" or id = \"{2}\"]",
+                            path, SourceIDString, SourceIDString.ToUpperInvariant()));
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }

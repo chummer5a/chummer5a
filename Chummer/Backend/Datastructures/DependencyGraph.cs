@@ -73,13 +73,14 @@ namespace Chummer
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        /// <param name="objReturn">HashSet containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
-        private void CollectDependents(T2 objParentInstance, T objKey, HashSet<T> objReturn)
+        /// <param name="objReturn">Collection containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
+        private void CollectDependents(T2 objParentInstance, T objKey, ICollection<T> objReturn)
         {
             if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
             {
-                if (objReturn.Add(objLoopNode.MyObject))
+                if (!objReturn.Contains(objLoopNode.MyObject))
                 {
+                    objReturn.Add(objLoopNode.MyObject);
                     foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                     {
                         if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)

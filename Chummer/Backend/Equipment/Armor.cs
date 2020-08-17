@@ -1499,6 +1499,17 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string DisplayCapacity
+        {
+            get
+            {
+                if (CalculatedCapacity.Contains('[') && !CalculatedCapacity.Contains("/["))
+                    return CalculatedCapacity;
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+                    CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo));
+            }
+        }
+
         /// <summary>
         /// Capacity display style;
         /// </summary>
@@ -1567,9 +1578,11 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
             _objCachedMyXmlNode = _objCharacter.LoadData("armor.xml", strLanguage)
-                .SelectSingleNode(SourceID == Guid.Empty
-                    ? $"/chummer/armors/armor[name = \"{Name}\"]"
-                    : $"/chummer/armors/armor[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/armors/armor[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/armors/armor[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

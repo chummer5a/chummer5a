@@ -224,11 +224,12 @@ namespace Chummer.Backend
             }
             catch (Exception nex)
             {
-                Program.MainForm.ShowMessageBox("Failed to create crash report."
-                                                + Environment.NewLine + "Here is some information to help the developers figure out why:"
-                                                + Environment.NewLine + nex
-                                                + Environment.NewLine + "Crash information:"
-                                                + Environment.NewLine + ex);
+                Program.MainForm.ShowMessageBox(new StringBuilder()
+                    .AppendLine("Failed to create crash report.")
+                    .AppendLine("Here is some information to help the developers figure out why:")
+                    .AppendLine(nex.ToString())
+                    .AppendLine("Crash information:")
+                    .Append(ex).ToString());
             }
         }
     }

@@ -21,7 +21,6 @@ using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
 using SINners.Models;
-using MessageBox = System.Windows.MessageBox;
 using Resources = Chummer.Properties.Resources;
 
 namespace Chummer.Plugins
@@ -593,10 +592,9 @@ namespace Chummer.Plugins
                     res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes").ConfigureAwait(true);
                     if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                         return;
-                    SINSearchGroupResult ssgr;
                     if (result.CallSuccess == true)
                     {
-                        ssgr = result.MySearchGroupResult;
+                        SINSearchGroupResult ssgr = result.MySearchGroupResult;
                         var ssgr1 = ssgr;
                         using (new CursorWait(MainForm, true))
                         {
@@ -1054,7 +1052,7 @@ namespace Chummer.Plugins
 
         }
 
-        private static string fileNameToLoad = "";
+        private static string fileNameToLoad = string.Empty;
 
         public static async void HandleNamedPipe_OpenRequest(string argument)
         {
@@ -1174,10 +1172,7 @@ namespace Chummer.Plugins
                 }
                 MainForm.DoThreadSafe(() =>
                 {
-                    var foundform = from a in MainForm.OpenCharacterForms
-                        where a.CharacterObject == objCharacter
-                        select a;
-                    if (foundform.Any())
+                    if (MainForm.OpenCharacterForms.Any(a => a.CharacterObject == objCharacter))
                     {
                         MainForm.SwitchToOpenCharacter(objCharacter, false);
                     }

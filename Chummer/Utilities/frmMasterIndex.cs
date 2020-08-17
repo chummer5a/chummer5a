@@ -21,6 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -87,7 +88,9 @@ namespace Chummer
                 }
 
                 string strSourceFilter = setValidCodes.Count > 0
-                    ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")) + ')'
+                    ? new StringBuilder("(")
+                        .AppendJoin(" or ", setValidCodes.Select(x => "source = \'" + x + "\'"))
+                        .Append(')').ToString()
                     : "source";
 
                 ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
@@ -163,7 +166,8 @@ namespace Chummer
                                 else
                                 {
                                     ListItem objItemToAdd = new ListItem(objItem.Value,
-                                        objItem.Name + strSpace + '[' + string.Join(',' + strSpace, objEntry.FileNames) + ']');
+                                        new StringBuilder(objItem.Name)
+                                            .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objEntry.FileNames).Append(']').ToString());
                                     _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                     lstExistingItems.Add(objItemToAdd);
 
@@ -174,7 +178,8 @@ namespace Chummer
 
                                         MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
                                         objItemToAdd = new ListItem(objToRename.Value,
-                                            objExistingEntry.DisplayName + strSpace + '[' + string.Join(',' + strSpace, objExistingEntry.FileNames) + ']');
+                                            new StringBuilder(objExistingEntry.DisplayName)
+                                                .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objExistingEntry.FileNames).Append(']').ToString());
                                         _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                         lstExistingItems.Add(objItemToAdd);
                                     }

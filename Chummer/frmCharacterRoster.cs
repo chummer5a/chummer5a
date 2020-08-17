@@ -162,12 +162,10 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
-                            objCharacterNode.ToolTipText += Environment.NewLine
-                                                            + Environment.NewLine
-                                                            + LanguageManager.GetString("String_Error")
-                                                            + LanguageManager.GetString("String_Colon")
-                                                            + Environment.NewLine
-                                                            + objCache.ErrorText;
+                            objCharacterNode.ToolTipText += new StringBuilder()
+                                .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                                .AppendLine(LanguageManager.GetString("String_Colon"))
+                                .Append(objCache.ErrorText).ToString();
                         }
                         else
                             objCharacterNode.ForeColor = SystemColors.WindowText;
@@ -491,12 +489,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
-                objNode.ToolTipText += Environment.NewLine
-                                       + Environment.NewLine
-                                       + LanguageManager.GetString("String_Error")
-                                       + LanguageManager.GetString("String_Colon")
-                                       + Environment.NewLine
-                                       + objCache.ErrorText;
+                objNode.ToolTipText += new StringBuilder()
+                    .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                    .AppendLine(LanguageManager.GetString("String_Colon")).Append(objCache.ErrorText);
             }
             return objNode;
         }

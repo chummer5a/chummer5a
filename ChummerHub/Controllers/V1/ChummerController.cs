@@ -11,12 +11,8 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using System.Text;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using ChummerHub.Models.V1;
 using Newtonsoft.Json;
 
@@ -69,28 +65,25 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                if (String.IsNullOrEmpty(Hash))
+                if (string.IsNullOrEmpty(Hash))
                     throw new ArgumentException("hash is empty: " + Hash);
-                var foundseq = _context.SINners.Where(a => a.Hash == Hash).ToList();
-                if (foundseq.Count == 0)
+                if (!_context.SINners.Any(a => a.Hash == Hash))
                 {
-                    var nullseq = (from a in _context.SINners where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToList();
-                    foreach (var nullSinner in nullseq)
+                    foreach (var nullSinner in _context.SINners.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"))
                     {
                         string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
                         TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
                         tc?.TrackTrace(tt);
                     }
                 }
-                foundseq = _context.SINners.Where(a => a.Hash == Hash).ToList();
+                var sinner = _context.SINners.FirstOrDefault(a => a.Hash == Hash);
                 _context.SaveChanges();
 #if DEBUG
                 if (Debugger.IsAttached)
-                    foundseq = _context.SINners.Take(1).ToList();
-#endif 
-                if (foundseq.Count > 0)
+                    sinner = _context.SINners.FirstOrDefault();
+#endif
+                if (sinner != null)
                 {
-                    var sinner = foundseq.First();
                     string transactionId = $"{Guid.NewGuid().ToString().GetHashCode():X}";
                     string chummerUrl = "chummer://plugin:SINners:Load:" + sinner.Id + ":" + transactionId;
                     string postbackUrl = "https://shadowsprawl.com/api/chummer/upload";
@@ -100,10 +93,10 @@ namespace ChummerHub.Controllers.V1
                     StringBuilder sb = new StringBuilder("<html>")
                         .AppendFormat(@"<body onload='document.forms[""form""].submit()'>")
                         .AppendFormat("<form name='form' action='{0}' method='post'>", postbackUrl)
-                        .AppendFormat("<input type='hidden' name='guid' value='{0}'>", sinner?.Id)
+                        .AppendFormat("<input type='hidden' name='guid' value='{0}'>", sinner.Id)
                         .AppendFormat("<input type='hidden' name='Environment' value='{0}'>", mypath)
-                        .AppendFormat("<input type='hidden' name='CharName' value='{0}'>", sinner?.Alias);
-                    Uri escape = new Uri(sinner?.DownloadUrl);
+                        .AppendFormat("<input type='hidden' name='CharName' value='{0}'>", sinner.Alias);
+                    Uri escape = new Uri(sinner.DownloadUrl);
                     string escapestr = $"{escape.Scheme}://{escape.Host}{escape.AbsolutePath}";
                     escapestr += Uri.EscapeDataString(escape.Query);
                     sb.AppendFormat("<input type='hidden' name='DownloadUrl' value='{0}'>", escapestr);
@@ -113,7 +106,7 @@ namespace ChummerHub.Controllers.V1
                     sb.AppendFormat("<input type='hidden' name='ChummerUrl' value='{0}'>", chummeruri)
                         .AppendFormat("<input type='hidden' name='TransactionId' value='{0}'>", transactionId)
                         .AppendFormat("<input type='hidden' name='StatusCallback' value='{0}'>", urlcallback)
-                        .AppendFormat("<input type='hidden' name='UploadDateTime' value='{0}'>", sinner?.UploadDateTime)
+                        .AppendFormat("<input type='hidden' name='UploadDateTime' value='{0}'>", sinner.UploadDateTime)
                         .AppendFormat("<input type='hidden' name='OpenChummer' value='{0}'>", open);
                     // Other params go here
                     sb.Append("</form></body></html>");
@@ -158,28 +151,25 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                if (String.IsNullOrEmpty(Hash))
+                if (string.IsNullOrEmpty(Hash))
                     throw new ArgumentException("hash is empty: " + Hash);
-                var foundseq = (from a in _context.SINnerGroups.Include(a => a.MyGroups) where a.Hash == Hash select a).ToList();
-                if (!foundseq.Any())
+                if (!_context.SINnerGroups.Include(a => a.MyGroups).Any(a => a.Hash == Hash))
                 {
-                    var nullseq = (from a in _context.SINnerGroups where String.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC" select a).ToList();
-                    foreach (var nullSinner in nullseq)
+                    foreach (var nullSinner in _context.SINnerGroups.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"))
                     {
                         string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
                         TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
                         tc?.TrackTrace(tt);
                     }
                 }
-                foundseq = (from a in _context.SINnerGroups where a.Hash == Hash select a).ToList();
+                var sgi = _context.SINnerGroups.FirstOrDefault(a => a.Hash == Hash);
                 _context.SaveChanges();
 #if DEBUG
                 if (Debugger.IsAttached)
-                    foundseq = (from a in _context.SINnerGroups select a).Take(1).ToList();
-#endif 
-                if (foundseq.Any())
+                    sgi = _context.SINnerGroups.FirstOrDefault();
+#endif
+                if (sgi != null)
                 {
-                    var sgi = foundseq.FirstOrDefault();
                     var user = _signInManager.UserManager.GetUserAsync(User).Result;
                     SINnerSearchGroup sg = new SINnerSearchGroup(sgi, user);
                     string transactionId = $"{Guid.NewGuid().ToString().GetHashCode():X}";
@@ -253,13 +243,11 @@ namespace ChummerHub.Controllers.V1
         {
             try
             {
-                if (String.IsNullOrEmpty(Hash))
+                if (string.IsNullOrEmpty(Hash))
                     throw new ArgumentException("hash is empty: " + Hash);
-                var foundseq = await _context.SINners.Where(a => a.Hash == Hash).ToListAsync();
-                if (foundseq.Count == 0)
+                if (!_context.SINners.Any(a => a.Hash == Hash))
                 {
-                    var nullseq = await _context.SINners.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC").ToListAsync();
-                    foreach (var nullSinner in nullseq)
+                    foreach (var nullSinner in _context.SINners.Where(a => string.IsNullOrEmpty(a.Hash) || a.Hash == "25943ECC"))
                     {
                         string message = "Saving Hash for SINner " + nullSinner.Id + ": " + nullSinner.MyHash;
                         TraceTelemetry tt = new TraceTelemetry(message, SeverityLevel.Verbose);
@@ -267,11 +255,10 @@ namespace ChummerHub.Controllers.V1
                     }
                 }
 
-                foundseq = await _context.SINners.Where(a => a.Hash == Hash).ToListAsync();
+                var sinner = await _context.SINners.FirstOrDefaultAsync(a => a.Hash == Hash);
                 await _context.SaveChangesAsync();
-                if (foundseq.Count > 0)
+                if (sinner != null)
                 {
-                    var sinner = foundseq.First();
                     string url = "chummer://plugin:SINners:Load:" + sinner.Id;
                     sinner.LastDownload = DateTime.Now;
                     await _context.SaveChangesAsync();

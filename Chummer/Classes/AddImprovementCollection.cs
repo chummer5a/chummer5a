@@ -1751,7 +1751,9 @@ namespace Chummer.Classes
             {
                 string strName = xmlGearNode["name"]?.InnerText ?? string.Empty;
                 string strCategory = xmlGearNode["category"]?.InnerText ?? string.Empty;
-                XmlNode xmlGearDataNode = _objCharacter.LoadData("gear.xml").SelectSingleNode("/chummer/gears/gear[name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]");
+                XmlNode xmlGearDataNode = _objCharacter.LoadData("gear.xml").SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                    "/chummer/gears/gear[name = {0} and category = {1}]",
+                    strName.CleanXPath(), strCategory.CleanXPath()));
 
                 if (xmlGearDataNode == null)
                     throw new AbortedException();
@@ -5564,14 +5566,15 @@ namespace Chummer.Classes
             XmlNodeList objXmlNodeList;
             if (!string.IsNullOrEmpty(bonusNode.InnerText))
             {
-                objXmlNodeList = objXmlDocument.SelectNodes("/chummer/armors/armor[name starts-with " + bonusNode.InnerText + "(" + _objCharacter.Options.BookXPath() +
-                                                            ") and category = 'High-Fashion Armor Clothing' and mods[name = 'Custom Fit']]");
+                objXmlNodeList = objXmlDocument.SelectNodes(string.Format(GlobalOptions.InvariantCultureInfo,
+                    "/chummer/armors/armor[name starts-with {0}({1}) and mods[name = 'Custom Fit']]",
+                    bonusNode.InnerText, _objCharacter.Options.BookXPath()));
             }
             else
             {
                 objXmlNodeList =
                     objXmlDocument.SelectNodes("/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() +
-                                               ") and category = 'High-Fashion Armor Clothing' and mods[name = 'Custom Fit']]");
+                                               ") and mods[name = 'Custom Fit']]");
             }
 
             //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter) + "]");
@@ -5633,7 +5636,8 @@ namespace Chummer.Classes
             // Display the Select Item window and record the value that was entered.
             string strCategory = bonusNode["category"]?.InnerText;
             XmlNodeList objXmlNodeList = _objCharacter.LoadData("cyberware.xml").SelectNodes(!string.IsNullOrEmpty(strCategory)
-                ? "/chummer/cyberwares/cyberware[(category = '" + strCategory + "') and (" + _objCharacter.Options.BookXPath() + ")]"
+                ? string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/cyberwares/cyberware[(category = '{0}') and ({1})]",
+                    strCategory, _objCharacter.Options.BookXPath())
                 : "/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ")]");
 
             List<ListItem> list = new List<ListItem>(objXmlNodeList?.Count ?? 0);

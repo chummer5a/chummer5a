@@ -106,9 +106,8 @@ namespace Chummer
                 {
                     string strSource = objXmlMetamagic["source"]?.InnerText;
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                    objSourceString.SetControl(lblSource);
                 }
                 else
                 {

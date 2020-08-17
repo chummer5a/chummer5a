@@ -180,8 +180,8 @@ namespace Chummer
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
                 Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_DuplicateDrugComponentWarning")
-                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString(GlobalOptions.CultureInfo)));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"),
+                        objNodeData.DrugComponent.Limit));
                 return;
             }
 

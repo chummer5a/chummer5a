@@ -235,7 +235,7 @@ namespace Chummer
                         }
                         else
                         {
-                            return "(Formating error in  $DOLLAR" + macroName + " )";
+                            return "(Formating error in $DOLLAR" + macroName + ")";
                         }
                     }
 
@@ -252,12 +252,12 @@ namespace Chummer
                         return strDefault;
                     }
 
-                    return "(Unknown key " + macroPool + " in  $DOLLAR" + macroName + " )";
+                    return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ")";
                 }
 
                 return xmlUserMacroNode.Value;
             }
-            return "(Unknown Macro  $DOLLAR" + innerText.Substring(1) + " )";
+            return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ")";
         }
     }
 }

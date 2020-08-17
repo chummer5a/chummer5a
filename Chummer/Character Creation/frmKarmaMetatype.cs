@@ -73,9 +73,12 @@ namespace Chummer
                     if (!lstAlreadyProcessed.Contains(strInnerText))
                     {
                         lstAlreadyProcessed.Add(strInnerText);
-                        if (null != xmlMetatypesNode.SelectSingleNode("metatype[category = \"" + strInnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]"))
+                        if (null != xmlMetatypesNode.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                            "metatype[category = {0} and ({1})]",
+                            strInnerText.CleanXPath(), _objCharacter.Options.BookXPath())))
                         {
-                            lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                            lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value
+                                                                         ?? strInnerText));
                         }
                     }
                 }
@@ -109,7 +112,7 @@ namespace Chummer
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
                 string strPowerName = objPower.Name;
-                if (lstMethods.Any(x => x.Value.ToString() == strPowerName))
+                if (lstMethods.Any(x => strPowerName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
                 {
                     _strCurrentPossessionMethod = strPowerName;
                     break;
@@ -540,7 +543,8 @@ namespace Chummer
             {
                 List<ListItem> lstMetatypeItems = new List<ListItem>();
                 foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                    "metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedCategory + "\"]"))
+                    string.Format(GlobalOptions.InvariantCultureInfo, "metatypes/metatype[({0}) and category = {1}]",
+                        _objCharacter.Options.BookXPath(), strSelectedCategory.CleanXPath())))
                 {
                     string strId = xmlMetatype.SelectSingleNode("id")?.Value;
                     if (!string.IsNullOrEmpty(strId))

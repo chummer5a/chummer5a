@@ -17,7 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -55,9 +56,12 @@ namespace Chummer
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
-                             + strSpace + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
-                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
+            lblResult.Text = new StringBuilder(strSpace).Append('+')
+                .Append(strSpace).Append(Extra.ToString("#,0", GlobalOptions.CultureInfo)).Append(')')
+                .Append(strSpace).Append('×')
+                .Append(strSpace).Append(Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo))
+                .Append(strSpace).Append('=')
+                .Append(strSpace).Append(StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)).ToString();
         }
         #endregion
 

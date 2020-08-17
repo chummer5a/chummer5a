@@ -555,9 +555,7 @@ namespace Chummer.Backend.Uniques
                 strDrain = strDrain.CheapReplace(strAttribute, () =>
                 {
                     if(strAttribute == "MAGAdept")
-                        return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) +
-                               LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                               LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                        return LanguageManager.MAGAdeptString(strLanguage);
 
                     return LanguageManager.GetString("String_Attribute" + strAttribute + "Short", strLanguage);
                 });
@@ -616,8 +614,10 @@ namespace Chummer.Backend.Uniques
                     objToolTip.CheapReplace(strAttribute, () =>
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        return objAttrib.DisplayAbbrev + strSpace + '(' +
-                               objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
+                        return new StringBuilder(objAttrib.DisplayAbbrev)
+                            .Append(strSpace).Append('(')
+                            .Append(objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo))
+                            .Append(')').ToString();
                     });
                 }
 
@@ -627,10 +627,9 @@ namespace Chummer.Backend.Uniques
                         Type == TraditionType.MAG && objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance) &&
                         objLoopImprovement.Enabled)
                     {
-                        objToolTip.Append(strSpace + '+' + strSpace +
-                                          _objCharacter.GetObjectName(objLoopImprovement) +
-                                          strSpace + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        objToolTip.Append(strSpace).Append('+')
+                            .Append(strSpace).Append(_objCharacter.GetObjectName(objLoopImprovement))
+                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
@@ -920,11 +919,12 @@ namespace Chummer.Backend.Uniques
                 return null;
             if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _xmlCachedMyXmlNode = SourceID == Guid.Empty
-                    ? GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[name = \"" + Name + "\"]")
-                    : GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \""
-                                                                         + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
-
+                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/traditions/tradition[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _xmlCachedMyXmlNode;

@@ -13,14 +13,14 @@ namespace ChummerHub.Models.V1
 
     //    public SINnerExtended()
     //    {
-    //        JsonSummary = "";
+    //        JsonSummary = string.Empty;
     //        Id = Guid.Empty;
     //        SINnerId = Guid.Empty;
     //    }
 
     //    public SINnerExtended(SINner sinner)
     //    {
-    //        JsonSummary = "";
+    //        JsonSummary = string.Empty;
     //        //MySINner = null;
     //        Id = Guid.NewGuid();
     //        SINnerId = sinner.Id;

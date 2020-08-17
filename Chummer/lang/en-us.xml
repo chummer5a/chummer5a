@@ -10566,5 +10566,9 @@
       <text>Rivals of Sports Team</text>
     </string>
     <!-- End Region -->
+    <string>
+      <key>String_CapacityRemaining</key>
+      <text>{0} ({1} remaining)</text>
+    </string>
   </strings>
 </chummer>

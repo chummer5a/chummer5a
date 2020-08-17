@@ -6198,8 +6198,8 @@ namespace Chummer
                 dlgOpenFileDialog.Filter = string.Format(
                     GlobalOptions.InvariantCultureInfo,
                     LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" + LanguageManager.GetString("DialogFilter_All"),
-                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
-                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension).ToArray()));
+                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension))),
+                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
 
                 if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -6385,9 +6385,12 @@ namespace Chummer
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space");
-            string strTitle = _objCharacter.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + _objOptions.Name + ')';
+            StringBuilder sbdTitle = new StringBuilder(_objCharacter.CharacterName)
+                .Append(strSpace).Append('-').Append(strSpace).Append(FormMode)
+                .Append(strSpace).Append('(').Append(_objOptions.Name).Append(')');
             if (_blnIsDirty)
-                strTitle += '*';
+                sbdTitle.Append('*');
+            string strTitle = sbdTitle.ToString();
             this.DoThreadSafe(() => Text = strTitle);
         }
 

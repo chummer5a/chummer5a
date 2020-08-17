@@ -383,7 +383,7 @@ namespace Chummer.Backend.Attributes
         /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
         /// </summary>
         public string DisplayValue => HasModifiers
-            ? Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + '(' + TotalValue.ToString(GlobalOptions.CultureInfo) + ')'
+            ? string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", Value, LanguageManager.GetString("String_Space"), TotalValue)
             : Value.ToString(GlobalOptions.CultureInfo);
 
         /// <summary>
@@ -662,8 +662,7 @@ namespace Chummer.Backend.Attributes
         public string DisplayNameShort(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGShort", strLanguage)
-                       + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.MAGAdeptString(strLanguage);
 
             return LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
         }
@@ -671,8 +670,7 @@ namespace Chummer.Backend.Attributes
         public string DisplayNameLong(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage)
-                       + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.MAGAdeptString(strLanguage, true);
 
             return LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
         }
@@ -683,11 +681,12 @@ namespace Chummer.Backend.Attributes
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage)
-                       + strSpace + '(' + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ')'
-                       + strSpace + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return new StringBuilder(LanguageManager.GetString("String_AttributeMAGLong", strLanguage))
+                    .Append(strSpace).Append('(').Append(LanguageManager.GetString("String_AttributeMAGShort", strLanguage)).Append(')')
+                    .Append(strSpace).Append('(').Append(LanguageManager.GetString("String_DescAdept", strLanguage)).Append(')').ToString();
 
-            return DisplayNameLong(strLanguage) + strSpace + '(' + DisplayNameShort(strLanguage) + ')';
+            return new StringBuilder(DisplayNameLong(strLanguage))
+                .Append(strSpace).Append('(').Append(DisplayNameShort(strLanguage)).Append(')').ToString();
         }
 
         /// <summary>
@@ -701,10 +700,9 @@ namespace Chummer.Backend.Attributes
         public string AugmentedMetatypeLimits => string.Format(GlobalOptions.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
             LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
 
-        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) +
-            LanguageManager.GetString("String_Of") +
-            Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space")
-            + LanguageManager.GetString("String_Remaining");
+        public string CareerRemainingString => new StringBuilder(TotalValue.ToString(GlobalOptions.CultureInfo))
+            .Append(LanguageManager.GetString("String_Of")).Append(Value.ToString(GlobalOptions.CultureInfo))
+            .Append(LanguageManager.GetString("String_Space")).Append(LanguageManager.GetString("String_Remaining")).ToString();
         #endregion
 
         #region Methods
@@ -894,7 +892,9 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                return _strCachedToolTip = DisplayAbbrev + strSpace + '(' + Value.ToString(GlobalOptions.CultureInfo) + ')' + sbdModifier;
+                sbdModifier.Insert(0, '(' + Value.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Insert(0, DisplayAbbrev + strSpace);
+                return _strCachedToolTip = sbdModifier.ToString();
             }
         }
 
@@ -1267,8 +1267,7 @@ namespace Chummer.Backend.Attributes
         public string GetDisplayAbbrev(string strLanguage)
         {
             if (Abbrev == "MAGAdept")
-                return LanguageManager.GetString("String_AttributeMAGShort", strLanguage)
-                       + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                return LanguageManager.MAGAdeptString(strLanguage);
 
             return LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
         }

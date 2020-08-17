@@ -97,10 +97,9 @@ namespace ChummerHub.Models.V1
                     IsolationLevel = IsolationLevel.ReadUncommitted
                 }, TransactionScopeAsyncFlowOption.Enabled))
             {
-                List<SINner> result = new List<SINner>();
-                var userseq = await (from a in context.UserRights
-                                     where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit
-                                     select a.SINnerId).ToListAsync();
+                var userseq = await context.UserRights
+                    .Where(a => a.EMail == user.NormalizedEmail && a.CanEdit == canEdit)
+                    .Select(a => a.SINnerId).ToListAsync();
                 var sinseq = await context.SINners
                     .Include(a => a.MyGroup)
                     .Where(a => userseq.Contains(a.Id)).ToListAsync();

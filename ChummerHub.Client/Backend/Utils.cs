@@ -345,8 +345,8 @@ namespace ChummerHub.Client.Backend
                     //}
                     //catch (Exception)
                     //{
-                        
-                        
+
+
                     //}
                 }
                 Log.Info("Connected to " + Settings.Default.SINnerUrl + ".");
@@ -1217,7 +1217,7 @@ namespace ChummerHub.Client.Backend
                         }
                         else
                         {
-                            client.PutSIN(ce.MySINnerFile.Id ?? Guid.Empty, fs);
+                            await client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fs);
                         }
                     }
                     catch (Exception e)
@@ -1365,7 +1365,7 @@ namespace ChummerHub.Client.Backend
                             if (!File.Exists(zippedFile))
                             {
                                 var client = StaticUtils.GetClient();
-                                var filestream = client.GetDownloadFile(sinner.Id.Value);
+                                var filestream = await client.GetDownloadFileAsync(sinner.Id.Value);
                                 var array = ReadFully(filestream);
                                 File.WriteAllBytes(zippedFile, array);
                             }

@@ -1086,12 +1086,15 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
+                return _objCachedMyXmlNode;
             _strCachedXmlNodeLanguage = strLanguage;
             _objCachedMyXmlNode = _objCharacter.LoadData("armor.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? $"/chummer/mods/mod[name = \"{Name}\"]"
-                        : $"/chummer/mods/mod[id = \"{SourceIDString}\" or id = \"{SourceIDString.ToUpperInvariant()}\"]");
+                .SelectSingleNode(SourceID == Guid.Empty
+                    ? "/chummer/mods/mod[name = " + Name.CleanXPath() + ']'
+                    : string.Format(GlobalOptions.InvariantCultureInfo,
+                        "/chummer/mods/mod[id = \"{0}\" or id = \"{1}\"]",
+                        SourceIDString, SourceIDString.ToUpperInvariant()));
             return _objCachedMyXmlNode;
         }
         #endregion
@@ -1221,7 +1224,8 @@ namespace Chummer.Backend.Equipment
                         blnRestrictedGearUsed = true;
                         strRestrictedItem = Parent == null
                             ? CurrentDisplayName
-                            : CurrentDisplayName + LanguageManager.GetString("String_Space") + '('+ Parent.CurrentDisplayName + ')';
+                            : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})",
+                                CurrentDisplayName, LanguageManager.GetString("String_Space"), Parent.CurrentDisplayName);
                     }
                     else
                     {

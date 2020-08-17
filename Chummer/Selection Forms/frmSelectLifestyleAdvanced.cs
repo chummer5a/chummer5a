@@ -580,7 +580,7 @@ namespace Chummer
             if (chkBonusLPRandomize.Checked)
             {
                 nudBonusLP.Enabled = false;
-                nudBonusLP.Value = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                nudBonusLP.Value = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
             }
             else
             {
@@ -704,7 +704,7 @@ namespace Chummer
                 {
                     nudBonusLP.Enabled = false;
                     _blnSkipRefresh = true;
-                    nudBonusLP.Value = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    nudBonusLP.Value = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     _blnSkipRefresh = false;
                 }
                 else

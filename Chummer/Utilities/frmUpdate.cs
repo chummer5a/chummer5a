@@ -392,11 +392,13 @@ namespace Chummer
             }
             else
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date")
-                                        + strSpace + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"),
-                                            CurrentVersion)
-                                        + strSpace + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Latest_Version"),
-                                            LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable"), strLatestVersion);
+                lblUpdaterStatus.Text = new StringBuilder(LanguageManager.GetString("String_Up_To_Date"))
+                                            .Append(strSpace)
+                                            .AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"),
+                                                CurrentVersion)
+                                            .Append(strSpace)
+                                            .AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Latest_Version"),
+                                                LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable"), strLatestVersion).ToString();
                 if (intResult < 0)
                 {
                     cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date");
@@ -493,9 +495,9 @@ namespace Chummer
                     return;
                 }
 
-                HashSet<string> lstFilesToDelete = new HashSet<string>(Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories));
-                HashSet<string> lstFilesToNotDelete = new HashSet<string>();
-                foreach (string strFileToDelete in lstFilesToDelete)
+                HashSet<string> setFilesToDelete = new HashSet<string>(Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories));
+                HashSet<string> setFilesToNotDelete = new HashSet<string>();
+                foreach (string strFileToDelete in setFilesToDelete)
                 {
                     string strFileName = Path.GetFileName(strFileToDelete);
                     string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
@@ -510,11 +512,11 @@ namespace Chummer
                         && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))
                         || strFileName?.EndsWith(".old", StringComparison.OrdinalIgnoreCase) != false
                         || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                        lstFilesToNotDelete.Add(strFileToDelete);
+                        setFilesToNotDelete.Add(strFileToDelete);
                 }
-                lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));
+                setFilesToDelete.RemoveWhere(x => setFilesToNotDelete.Contains(x));
 
-                InstallUpdateFromZip(_strTempPath, lstFilesToDelete);
+                InstallUpdateFromZip(_strTempPath, setFilesToDelete);
             }
         }
 
@@ -548,7 +550,7 @@ namespace Chummer
             return true;
         }
 
-        private void InstallUpdateFromZip(string strZipPath, HashSet<string> lstFilesToDelete)
+        private void InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete)
         {
             bool blnDoRestart = true;
             // Copy over the archive from the temp directory.
@@ -622,14 +624,17 @@ namespace Chummer
                 {
                     //TODO: This will quite likely leave some wreckage behind. Introduce a sleep and scream after x seconds.
                     if (!IsFileLocked(strFileToDelete))
+                    {
                         try
                         {
                             File.Delete(strFileToDelete);
                         }
                         catch (IOException)
                         {
+                            Utils.BreakIfDebug();
                             lstBlocked.Add(strFileToDelete);
                         }
+                    }
                     else
                         Utils.BreakIfDebug();
                 }

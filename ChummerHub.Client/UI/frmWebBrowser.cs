@@ -5,7 +5,6 @@ using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using Newtonsoft.Json;
 using NLog;
-using SINners;
 using SINners.Models;
 
 namespace ChummerHub.Client.UI
@@ -95,12 +94,9 @@ namespace ChummerHub.Client.UI
                                     };
                                 }
 
-                            
                                 tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
                                 Close();
                             }));
-                            
-
                         }
                         else
                         {

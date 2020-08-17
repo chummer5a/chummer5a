@@ -52,8 +52,7 @@ namespace ChummerHub.Controllers.V1
             try
             {
                 _logger.LogTrace("Searching SINnerFile");
-                var result = _context.SINners.OrderByDescending(a => a.UploadDateTime).Take(20);
-                result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
+                var result = _context.SINners.Include(sinner => sinner.SINnerMetaData)
                     .ThenInclude(meta => meta.Tags)
                     .ThenInclude(tag => tag.Tags)
                     .ThenInclude(tag => tag.Tags)
@@ -81,17 +80,16 @@ namespace ChummerHub.Controllers.V1
             try
             {
                 _logger.LogTrace("AdminGetIds");
-                var result = await (from a in _context.SINners.Include(sinner => sinner.SINnerMetaData)
-                                    .ThenInclude(meta => meta.Visibility)
-                                    .ThenInclude(vis => vis.UserRights)
-                                    .Include(meta => meta.SINnerMetaData)
-                                    .ThenInclude(tag => tag.Tags)
-                                    .ThenInclude(tag => tag.Tags)
-                                    .ThenInclude(tag => tag.Tags)
-                                    .ThenInclude(tag => tag.Tags)
-                                    .ThenInclude(tag => tag.Tags)
-                                    .ThenInclude(tag => tag.Tags)
-                                    select a).ToListAsync();
+                var result = await _context.SINners.Include(sinner => sinner.SINnerMetaData)
+                    .ThenInclude(meta => meta.Visibility)
+                    .ThenInclude(vis => vis.UserRights)
+                    .Include(meta => meta.SINnerMetaData)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags)
+                    .ThenInclude(tag => tag.Tags).ToListAsync();
                 return result;
             }
             catch (Exception e)

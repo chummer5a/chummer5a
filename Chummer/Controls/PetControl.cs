@@ -20,7 +20,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -225,12 +226,15 @@ namespace Chummer
                         lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                         XmlNodeList xmlMetavariantsList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
                         if (xmlMetavariantsList != null)
+                        {
+                            string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                             foreach (XmlNode objXmlMetavariantNode in xmlMetavariantsList)
                             {
-                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
-                                if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
-                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpace + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText ?? string.Empty;
+                                if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalOptions.CultureInfo, strMetavariantFormat, objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName)));
                             }
+                        }
                     }
 
             lstMetatypes.Sort(CompareListItems.CompareNames);

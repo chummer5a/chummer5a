@@ -531,7 +531,7 @@ namespace ChummerHub.Client.UI
                     {
                         try
                         {
-                            if (!sinner.SiNnerMetaData.Tags.Any())
+                            if (sinner.SiNnerMetaData.Tags.Count == 0)
                             {
                                 Log.Error("Sinner " + sinner.Id + " has no Tags!");
                                 continue;
