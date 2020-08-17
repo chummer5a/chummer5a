@@ -216,7 +216,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -335,7 +335,7 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
-                    List<ListItem> lstQualities = new List<ListItem>();
+                    List<ListItem> lstQualities = new List<ListItem>(1);
                     using (XmlNodeList xmlLifestyleList = xmlLifestyles.SelectNodes("/chummer/lifestyles/lifestyle"))
                     {
                         if (xmlLifestyleList != null)
@@ -354,7 +354,7 @@ namespace Chummer.Backend.Equipment
                     })
                     {
                         frmSelect.SetGeneralItemsMode(lstQualities);
-                        frmSelect.ShowDialog();
+                        frmSelect.ShowDialog(Program.MainForm);
                         if (frmSelect.DialogResult == DialogResult.Cancel)
                             return;
                         _strBaseLifestyle = frmSelect.SelectedItem;
@@ -363,10 +363,23 @@ namespace Chummer.Backend.Equipment
             }
             if (_strBaseLifestyle == "Middle")
                 _strBaseLifestyle = "Medium";
+            // Legacy sweep for issues with Advanced Lifestyle selector not properly resetting values upon changes to the Base Lifestyle
+            if (_objCharacter.LastSavedVersion <= new Version(5, 212, 73)
+                && _strBaseLifestyle != "Street"
+                && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
+            {
+                XmlNode xmlDataNode = GetNode();
+                if (xmlDataNode != null)
+                {
+                    xmlDataNode.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
+                    xmlDataNode.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
+                    xmlDataNode.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
+                }
+            }
             if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
                 GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
-                _intBonusLP = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                _intBonusLP = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
 
             if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
             {
@@ -512,7 +525,7 @@ namespace Chummer.Backend.Equipment
             xmlLifestyleNode.TryGetInt32FieldQuickly("security", ref intMinSec);
 
             // Calculate the cost of Positive Qualities.
-            foreach (LifestyleQuality objQuality in LifestyleQualities)
+            foreach (LifestyleQuality objQuality in LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn))
             {
                 intMinArea -= objQuality.Area;
                 intMinComfort -= objQuality.Comfort;
@@ -534,6 +547,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("lifestyle");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", CustomName);
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -758,7 +773,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.ToList().Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole"))
+                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole").ToList())
                     {
                         LifestyleQualities.Remove(objQuality);
                     }
@@ -767,6 +782,24 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + value + "\"]");
                 if (xmlLifestyle != null)
                 {
+                    _strBaseLifestyle = string.Empty;
+                    _decCost = 0;
+                    _intDice = 0;
+                    _decMultiplier = 0;
+                    _strSource = string.Empty;
+                    _strPage = string.Empty;
+                    _intLP = 0;
+                    _decCostForArea = 0;
+                    _decCostForComforts = 0;
+                    _decCostForSecurity = 0;
+                    _blnAllowBonusLP = false;
+                    _eIncrement = LifestyleIncrement.Month;
+                    _intBaseComforts = 0;
+                    _intComfortsMaximum = 0;
+                    _intBaseArea = 0;
+                    _intAreaMaximum = 0;
+                    _intBaseSecurity = 0;
+                    _intSecurityMaximum = 0;
                     Create(xmlLifestyle);
                 }
             }
@@ -784,7 +817,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int i = LP - Comforts - Area - Security + Roommates + BonusLP;
-                i = LifestyleQualities.Aggregate(i, (current, lq) => current - lq.LP);
+                i = LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn).Aggregate(i, (current, lq) => current - lq.LP);
 
                 return i;
             }
@@ -899,9 +932,12 @@ namespace Chummer.Backend.Equipment
             set => _intSecurityMaximum = value;
         }
 
-        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Sum(lq => lq.ComfortMaximum);
-        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Sum(lq => lq.SecurityMaximum);
-        public int TotalAreaMaximum     => AreaMaximum     + LifestyleQualities.Sum(lq => lq.AreaMaximum);
+        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.ComfortMaximum);
+        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.SecurityMaximum);
+        public int TotalAreaMaximum     => AreaMaximum     + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.AreaMaximum);
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
@@ -1037,11 +1073,12 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("lifestyles.xml", strLanguage)
-                        .SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + Name + "\"]")
-                    : XmlManager.Load("lifestyles.xml", strLanguage)
-                        .SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/lifestyles/lifestyle[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1066,7 +1103,7 @@ namespace Chummer.Backend.Equipment
                     d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false, BaseLifestyle);
                 }
 
-                d += LifestyleQualities.Sum(lq => lq.Multiplier);
+                d += LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Multiplier);
                 d += 100M;
                 return Math.Max(d / 100, 0);
             }
@@ -1075,21 +1112,27 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public int TotalArea => BaseArea + Area + LifestyleQualities.Sum(lq => lq.Area);
+        public int TotalArea => BaseArea + Area + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Area);
 
         /// <summary>
         /// Total Comfort of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public int TotalComforts => BaseComforts + Comforts + LifestyleQualities.Sum(lq => lq.Comfort);
+        public int TotalComforts => BaseComforts + Comforts + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Comfort);
 
         /// <summary>
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
-        public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Sum(lq => lq.Security);
+        public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Security);
 
-        public decimal AreaDelta     => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Sum(lq => lq.Area)), 0);
-        public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Sum(lq => lq.Comfort)), 0);
-        public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Sum(lq => lq.Security)), 0);
+        public decimal AreaDelta     => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Area)), 0);
+        public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Comfort)), 0);
+        public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Security)), 0);
 
         public string FormattedArea => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseArea.ToString(GlobalOptions.CultureInfo),
@@ -1109,7 +1152,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
-        public decimal BaseCostMultiplier => LifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100.0m;
+        public decimal BaseCostMultiplier => LifestyleQualities.Where(x =>
+            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.BaseMultiplier) / 100.0m;
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.
@@ -1131,7 +1175,7 @@ namespace Chummer.Backend.Equipment
 
                 decimal decExtraAssetCost = 0;
                 decimal decContractCost = 0;
-                foreach (LifestyleQuality objQuality in LifestyleQualities)
+                foreach (LifestyleQuality objQuality in LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn))
                 {
                     //Add the flat cost from Qualities.
                     if (objQuality.Type == QualityType.Contracts)
@@ -1241,7 +1285,7 @@ namespace Chummer.Backend.Equipment
                 Tag = this,
                 ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
             return objNode;
         }
@@ -1261,49 +1305,49 @@ namespace Chummer.Backend.Equipment
         #endregion
         #endregion
 
-        private static readonly DependencyGraph<string> LifestyleDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(DisplayTotalMonthlyCost),
-                    new DependencyGraphNode<string>(nameof(TotalCost),
-                        new DependencyGraphNode<string>(nameof(TotalMonthlyCost),
-                            new DependencyGraphNode<string>(nameof(FormattedArea),
-                                new DependencyGraphNode<string>(nameof(AreaDelta),
-                                    new DependencyGraphNode<string>(nameof(TotalArea),
-                                        new DependencyGraphNode<string>(nameof(TotalAreaMaximum),
-                                            new DependencyGraphNode<string>(nameof(Area),
-                                                new DependencyGraphNode<string>(nameof(BaseArea)
+        private static readonly DependencyGraph<string, Lifestyle> LifestyleDependencyGraph =
+            new DependencyGraph<string, Lifestyle>(
+                new DependencyGraphNode<string, Lifestyle>(nameof(DisplayTotalMonthlyCost),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedArea),
+                                new DependencyGraphNode<string, Lifestyle>(nameof(AreaDelta),
+                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalArea),
+                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum),
+                                            new DependencyGraphNode<string, Lifestyle>(nameof(Area),
+                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseArea)
                                                 )))))),
-                            new DependencyGraphNode<string>(nameof(FormattedComforts),
-                                new DependencyGraphNode<string>(nameof(ComfortsDelta),
-                                    new DependencyGraphNode<string>(nameof(TotalComforts),
-                                        new DependencyGraphNode<string>(nameof(TotalComfortsMaximum),
-                                            new DependencyGraphNode<string>(nameof(Comforts),
-                                                new DependencyGraphNode<string>(nameof(BaseComforts)
+                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedComforts),
+                                new DependencyGraphNode<string, Lifestyle>(nameof(ComfortsDelta),
+                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalComforts),
+                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalComfortsMaximum),
+                                            new DependencyGraphNode<string, Lifestyle>(nameof(Comforts),
+                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseComforts)
                                                 )))))),
-                            new DependencyGraphNode<string>(nameof(FormattedSecurity),
-                                new DependencyGraphNode<string>(nameof(SecurityDelta),
-                                    new DependencyGraphNode<string>(nameof(TotalSecurity),
-                                        new DependencyGraphNode<string>(nameof(TotalSecurityMaximum),
-                                            new DependencyGraphNode<string>(nameof(Security),
-                                                new DependencyGraphNode<string>(nameof(BaseSecurity)
+                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedSecurity),
+                                new DependencyGraphNode<string, Lifestyle>(nameof(SecurityDelta),
+                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurity),
+                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurityMaximum),
+                                            new DependencyGraphNode<string, Lifestyle>(nameof(Security),
+                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseSecurity)
                                                 )))))),
-                            new DependencyGraphNode<string>(nameof(Increments)),
-                            new DependencyGraphNode<string>(nameof(CostForArea)),
-                            new DependencyGraphNode<string>(nameof(CostForComforts)),
-                            new DependencyGraphNode<string>(nameof(CostForSecurity))
+                            new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity))
                         ))),
-                new DependencyGraphNode<string>(nameof(TotalLP),
-                    new DependencyGraphNode<string>(nameof(Comforts)),
-                    new DependencyGraphNode<string>(nameof(Area)),
-                    new DependencyGraphNode<string>(nameof(Security)),
-                    new DependencyGraphNode<string>(nameof(Roommates)),
-                    new DependencyGraphNode<string>(nameof(BonusLP)),
-                    new DependencyGraphNode<string>(nameof(LifestyleQualities))
+                new DependencyGraphNode<string, Lifestyle>(nameof(TotalLP),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BonusLP)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
                         ),
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(CustomName)),
-                        new DependencyGraphNode<string>(nameof(DisplayNameShort)))
+                new DependencyGraphNode<string, Lifestyle>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(DisplayName),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CustomName)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(DisplayNameShort)))
                     ));
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -1320,10 +1364,10 @@ namespace Chummer.Backend.Equipment
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = LifestyleDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in LifestyleDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

@@ -571,7 +571,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             objXmlDocument.Load(objXmlReader);
                 }
                 catch (IOException)
@@ -587,7 +587,7 @@ namespace Chummer
             }
             else
             {
-                if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"), _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
@@ -599,7 +599,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 objXmlDocument.Load(objXmlReader);
                     }
                     catch (IOException)
@@ -976,11 +976,10 @@ namespace Chummer
                 strBookList = "Shadowrun 5th Edition";
                 GlobalOptions.ChummerRegistryKey.SetValue("books", strBookList);
             }
-            string[] strBooks = strBookList.Split(',');
 
             XmlDocument objXmlDocument = XmlManager.Load("books.xml");
 
-            foreach (string strBookName in strBooks)
+            foreach (string strBookName in strBookList.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.InnerText;
                 if (!string.IsNullOrEmpty(strCode))
@@ -1371,12 +1370,12 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public ICollection<string> Books => _lstBooks;
+        public HashSet<string> Books => _lstBooks;
 
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public IList<string> CustomDataDirectoryNames => _lstCustomDataDirectoryNames;
+        public List<string> CustomDataDirectoryNames => _lstCustomDataDirectoryNames;
 
         /// <summary>
         /// Setting name.

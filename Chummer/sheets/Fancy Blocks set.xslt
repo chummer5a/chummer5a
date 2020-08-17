@@ -3,6 +3,7 @@
 <!-- Created by AngelForest -->
 <!-- Prototype by Adam Schmidt -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
@@ -439,6 +440,13 @@
         <td style="white-space: nowrap;"><strong><xsl:value-of select="totalnotoriety" /></strong></td>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.PublicAwareness" /></td>
         <td style="white-space: nowrap;"><strong><xsl:value-of select="totalpublicawareness" /></strong></td></tr>
+      <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+        <tr>
+        <td style="white-space: nowrap;"><xsl:value-of select="$lang.AstralReputation" /></td>
+        <td style="white-space: nowrap;"><strong><xsl:value-of select="totalastralreputation" /></strong></td>
+        <td style="white-space: nowrap;"><xsl:value-of select="$lang.WildReputation" /></td>
+        <td style="white-space: nowrap;"><strong><xsl:value-of select="totalwildreputation" /></strong></td></tr>
+      </xsl:if>
       <tr><td colspan="4"><hr /></td></tr>
       <tr>
         <td style="white-space: nowrap;"><xsl:value-of select="$lang.Composure" /></td>
@@ -718,13 +726,12 @@
             </xsl:if>
             <span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="displayattribute" /></span>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
-              <xsl:variable name="SpecializationBonus" select="specbonus"/>
               <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />
                   </xsl:if>
-                  (<xsl:value-of select="name"/> +<xsl:value-of select="$SpecializationBonus"/>)
+                  (<xsl:value-of select="name"/> +<xsl:value-of select="specbonus"/>)
                 </xsl:for-each>
               </p>
             </xsl:if>
@@ -764,13 +771,12 @@
               (<xsl:value-of select="spec" />)
             </xsl:if>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
-              <xsl:variable name="SpecializationBonus" select="specbonus"/>
               <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />
                   </xsl:if>
-                  (<xsl:value-of select="name"/> +<xsl:value-of select="$SpecializationBonus"/>)
+                  (<xsl:value-of select="name"/> +<xsl:value-of select="specbonus"/>)
                 </xsl:for-each>
               </p>
             </xsl:if>
@@ -2132,7 +2138,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Description"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="description" />
           </xsl:call-template>
         </td></tr>
@@ -2143,7 +2149,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Background"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="background" />
           </xsl:call-template>
         </td></tr>
@@ -2154,7 +2160,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Concept"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="concept" />
           </xsl:call-template>
         </td></tr>
@@ -2220,7 +2226,7 @@
       <table class="stats description">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Notes"/>]</div></td></tr>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="notes" />
           </xsl:call-template>
         </td></tr>
@@ -2228,7 +2234,7 @@
           <tr><td><hr /></td></tr>
         </xsl:if>
         <tr><td>
-          <xsl:call-template name="PreserveLineBreaks">
+          <xsl:call-template name="PreserveHtml">
             <xsl:with-param name="text" select="gamenotes" />
           </xsl:call-template>
         </td></tr>

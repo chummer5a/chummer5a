@@ -97,7 +97,7 @@ namespace Chummer
         public CrashReportData(Guid repordGuid)
         {
             Id = repordGuid;
-            values = new List<KeyValuePair<string, Stream>>();
+            values = new List<KeyValuePair<string, Stream>>(1);
         }
 
         public CrashReportData AddDefaultData()

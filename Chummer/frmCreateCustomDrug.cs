@@ -32,7 +32,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
-		private readonly List<ListItem> _lstGrade = new List<ListItem>();
+		private readonly List<ListItem> _lstGrade = new List<ListItem>(10);
 		private readonly Character _objCharacter;
 	    private Drug _objDrug;
 	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
@@ -50,7 +50,7 @@ namespace Chummer
             this.TranslateWinForm();
             LoadData();
 
-            _lstSelectedDrugComponents = new List<clsNodeData>();
+            _lstSelectedDrugComponents = new List<clsNodeData>(5);
 
             string strLevelString = LanguageManager.GetString("String_Level");
             string strSpaceString = LanguageManager.GetString("String_Space");
@@ -105,7 +105,7 @@ namespace Chummer
 		/// </summary>
 		private void PopulateGrades()
 		{
-		    IList<Grade>  objGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
+		    List<Grade> objGradeList = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
 
 			_lstGrade.Clear();
 			foreach (Grade objGrade in objGradeList)
@@ -114,8 +114,8 @@ namespace Chummer
 			}
             cboGrade.BeginUpdate();
 			cboGrade.DataSource = null;
-			cboGrade.ValueMember = "Value";
-			cboGrade.DisplayMember = "Name";
+			cboGrade.ValueMember = nameof(ListItem.Value);
+			cboGrade.DisplayMember = nameof(ListItem.Name);
 			cboGrade.DataSource = _lstGrade;
             cboGrade.EndUpdate();
 		}
@@ -144,13 +144,13 @@ namespace Chummer
 		    // Make sure the suite and file name fields are populated.
 		    if (string.IsNullOrEmpty(txtDrugName.Text))
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_Name"), LanguageManager.GetString("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CustomDrug_Name"), LanguageManager.GetString("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
 		    }
 
 		    if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
 		    {
-		        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CustomDrug_MissingFoundation"), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CustomDrug_MissingFoundation"), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		        return;
             }
 
@@ -179,8 +179,8 @@ namespace Chummer
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
                 Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_DuplicateDrugComponentWarning")
-                        .Replace("{0}", objNodeData.DrugComponent.Limit.ToString(GlobalOptions.CultureInfo)));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"),
+                        objNodeData.DrugComponent.Limit));
                 return;
             }
 

@@ -128,7 +128,7 @@ namespace ChummerDataViewer.Model
 			resetEvent.Set();
 		}
 
-		private struct DownloadTask
+		private readonly struct DownloadTask
 		{
 			public Guid ReportGuid { get; }
 			public Uri Url { get; }

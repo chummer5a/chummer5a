@@ -76,7 +76,7 @@ namespace Chummer
             if (_objCharacter.IsAI)
                 return;
 
-            IList<Grade> lstGrades = _objCharacter.GetGradeList(_eSource);
+            List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource);
 
             using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
                 if (xmlSuiteList?.Count > 0)
@@ -95,8 +95,8 @@ namespace Chummer
                             lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
                         }
                     }
-            lstCyberware.ValueMember = "Value";
-            lstCyberware.DisplayMember = "Name";
+            lstCyberware.ValueMember = nameof(ListItem.Value);
+            lstCyberware.DisplayMember = nameof(ListItem.Name);
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)

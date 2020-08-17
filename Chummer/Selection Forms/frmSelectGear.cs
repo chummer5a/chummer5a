@@ -81,13 +81,13 @@ namespace Chummer
             // Load the Gear information.
             _xmlBaseGearDataNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseGearDataNode);
-            foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').Split(','))
+            foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 string strLoop = strCategory.Trim();
                 if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedCategories.Add(strLoop);
             }
 
-            foreach (string strName in strAllowedNames.TrimEndOnce(',').Split(','))
+            foreach (string strName in strAllowedNames.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 string strLoop = strName.Trim();
                 if (!string.IsNullOrWhiteSpace(strLoop)) _setAllowedNames.Add(strLoop);
@@ -148,8 +148,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -258,7 +258,7 @@ namespace Chummer
 
                     string strRatingLabel = objXmlGear.SelectSingleNode("ratinglabel")?.Value;
                     lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                        ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                        ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                             LanguageManager.GetString(strRatingLabel))
                         : LanguageManager.GetString("Label_Rating");
                 }
@@ -424,6 +424,11 @@ namespace Chummer
         /// Only items that consume Armor Capacity should be shown.
         /// </summary>
         public bool ShowArmorCapacityOnly { get; set; }
+
+        /// <summary>
+        /// Only items that are marked as being flechette ammo should be shown.
+        /// </summary>
+        public bool ShowFlechetteAmmoOnly { get; set; }
 
         /// <summary>
         /// Guid of Gear that was selected in the dialogue.
@@ -670,7 +675,7 @@ namespace Chummer
 
                     if (objCostNode.Value.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        string[] strValues = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                        string[] strValues = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         string strCost = "0";
                         if (nudRating.Value > 0)
                             strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim('[', ']');
@@ -741,7 +746,7 @@ namespace Chummer
 
                             if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                             {
-                                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                                 if (strValues.Length >= decimal.ToInt32(nudRating.Value))
                                     lblCapacity.Text = strValues[decimal.ToInt32(nudRating.Value) - 1];
                                 else
@@ -802,7 +807,7 @@ namespace Chummer
                             strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                         if (strCapacityText.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
-                            string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                            string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                             lblCapacity.Text = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                         }
                         else
@@ -841,7 +846,7 @@ namespace Chummer
             {
                 if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 
@@ -877,7 +882,7 @@ namespace Chummer
                     {
                         if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
-                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                             strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
                         }
 
@@ -947,7 +952,7 @@ namespace Chummer
             }
         }
 
-        private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             StringBuilder strFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
@@ -983,6 +988,8 @@ namespace Chummer
                 strFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
             else if (ShowNegativeCapacityOnly)
                 strFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
+            if (ShowFlechetteAmmoOnly)
+                strFilter.Append(" and isflechetteammo = 'True'");
             if (_objGearParent == null)
                 strFilter.Append(" and not(requireparent)");
             foreach (string strPrefix in ForceItemPrefixStrings)
@@ -993,7 +1000,7 @@ namespace Chummer
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private IList<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             string strSpace = LanguageManager.GetString("String_Space");
             int intOverLimit = 0;
@@ -1084,8 +1091,8 @@ namespace Chummer
                 {
                     // Add after sort so that it's always at the end
                     lstGears.Add(new ListItem(string.Empty,
-                        LanguageManager.GetString("String_RestrictedItemsHidden")
-                        .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                            intOverLimit)));
                 }
                 lstGear.BeginUpdate();
                 string strOldSelected = lstGear.SelectedValue?.ToString();

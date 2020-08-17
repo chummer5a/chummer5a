@@ -403,8 +403,8 @@ namespace Chummer
             nudBonusLP.DoDatabinding("Value", _objLifestyle,nameof(Lifestyle.BonusLP));
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
-            cboBaseLifestyle.ValueMember = "Value";
-            cboBaseLifestyle.DisplayMember = "Name";
+            cboBaseLifestyle.ValueMember = nameof(ListItem.Value);
+            cboBaseLifestyle.DisplayMember = nameof(ListItem.Name);
             cboBaseLifestyle.DataSource = lstLifestyles;
 
             cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;
@@ -414,21 +414,21 @@ namespace Chummer
             nudArea.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableArea));
             nudComforts.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableComforts));
             nudSecurity.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity));
-            nudArea.DoDatabinding("Maximum", _objLifestyle, nameof(Lifestyle.AreaDelta));
-            nudComforts.DoDatabinding("Maximum", _objLifestyle, nameof(Lifestyle.ComfortsDelta));
-            nudSecurity.DoDatabinding("Maximum", _objLifestyle, nameof(Lifestyle.SecurityDelta));
+            nudArea.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.AreaDelta));
+            nudComforts.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.ComfortsDelta));
+            nudSecurity.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.SecurityDelta));
             cboBaseLifestyle.DoDatabinding("SelectedValue",_objLifestyle,nameof(Lifestyle.BaseLifestyle));
             chkTrustFund.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.TrustFund));
-            chkTrustFund.DoDatabinding("Enabled",_objLifestyle,nameof(Lifestyle.IsTrustFundEligible));
+            chkTrustFund.DoOneWayDataBinding("Enabled",_objLifestyle,nameof(Lifestyle.IsTrustFundEligible));
             chkPrimaryTenant.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant));
-            lblCost.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
-            lblArea.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.FormattedArea));
-            lblComforts.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.FormattedComforts));
-            lblSecurity.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.FormattedSecurity));
-            lblAreaTotal.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalArea));
-            lblComfortTotal.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
-            lblSecurityTotal.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
-            lblTotalLP.DoDatabinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
+            lblCost.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
+            lblArea.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedArea));
+            lblComforts.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedComforts));
+            lblSecurity.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedSecurity));
+            lblAreaTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalArea));
+            lblComfortTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
+            lblSecurityTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
+            lblTotalLP.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
             if (cboBaseLifestyle.SelectedIndex == -1)
                 cboBaseLifestyle.SelectedIndex = 0;
             cboBaseLifestyle.EndUpdate();
@@ -548,7 +548,7 @@ namespace Chummer
 
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                objQuality.SetSourceDetail(lblSource);
+                objQuality.SetSourceDetail(lblQualitySource);
                 cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
             }
             else
@@ -580,7 +580,7 @@ namespace Chummer
             if (chkBonusLPRandomize.Checked)
             {
                 nudBonusLP.Enabled = false;
-                nudBonusLP.Value = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                nudBonusLP.Value = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
             }
             else
             {
@@ -615,12 +615,12 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (_objLifestyle.TotalLP < 0)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -704,7 +704,7 @@ namespace Chummer
                 {
                     nudBonusLP.Enabled = false;
                     _blnSkipRefresh = true;
-                    nudBonusLP.Value = 1 + GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    nudBonusLP.Value = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                     _blnSkipRefresh = false;
                 }
                 else

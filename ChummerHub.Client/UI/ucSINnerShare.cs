@@ -70,7 +70,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                string hash = "";
+                string hash = string.Empty;
                 using (var op_shareChummer = Timekeeper.StartSyncron("Share Group", null,
                     CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                 {
@@ -153,7 +153,7 @@ namespace ChummerHub.Client.UI
                     MyUserState myState = new MyUserState(this);
                     CharacterExtended ce = null;
                     var client = StaticUtils.GetClient();
-                    string sinnerid = "";
+                    string sinnerid = string.Empty;
                     Guid SINid = Guid.Empty;
 
                     try
@@ -167,15 +167,10 @@ namespace ChummerHub.Client.UI
                                 bool blnSuccess = true;
                                 if (c == null)
                                 {
-                                    c = new Character
-                                    {
-                                        FileName = MyCharacterCache.FilePath
-                                    };
-                                    using (frmLoading frmLoadingForm = new frmLoading
-                                        {CharacterFile = MyCharacterCache.FilePath})
+                                    c = new Character { FileName = MyCharacterCache.FilePath };
+                                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = MyCharacterCache.FilePath })
                                     {
                                         frmLoadingForm.Reset(36);
-                                        frmLoadingForm.TopMost = true;
                                         frmLoadingForm.Show();
                                         myState.StatusText = "Loading chummer file...";
                                         myState.CurrentProgress += 10;
@@ -271,8 +266,9 @@ namespace ChummerHub.Client.UI
                                         myState.CurrentProgress = 35;
                                         ReportProgress(myState.CurrentProgress, myState);
                                         myState.ProgressSteps = 10;
-                                        var uploadtask = await ce.Upload(myState, op_uploadChummer).ConfigureAwait(true);
-                                        SINid = ce.MySINnerFile.Id.Value;
+                                        await ce.Upload(myState, op_uploadChummer).ConfigureAwait(true);
+                                        if (ce.MySINnerFile.Id != null)
+                                            SINid = ce.MySINnerFile.Id.Value;
                                         using (var result = await client.GetSINByIdWithHttpMessagesAsync(SINid).ConfigureAwait(true))
                                         {
                                             if (result == null)

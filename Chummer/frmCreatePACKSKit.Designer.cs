@@ -48,19 +48,19 @@
             this.lblFileNameLabel = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpMain.SuspendLayout();
+            this.tlpTop.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkAttributes
             // 
+            this.chkAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAttributes.AutoSize = true;
-            this.chkAttributes.Location = new System.Drawing.Point(3, 56);
-            this.chkAttributes.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAttributes.Location = new System.Drawing.Point(3, 55);
             this.chkAttributes.Name = "chkAttributes";
             this.chkAttributes.Size = new System.Drawing.Size(70, 17);
             this.chkAttributes.TabIndex = 4;
@@ -70,9 +70,9 @@
             // 
             // chkQualities
             // 
+            this.chkQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkQualities.AutoSize = true;
-            this.chkQualities.Location = new System.Drawing.Point(3, 81);
-            this.chkQualities.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkQualities.Location = new System.Drawing.Point(3, 78);
             this.chkQualities.Name = "chkQualities";
             this.chkQualities.Size = new System.Drawing.Size(66, 17);
             this.chkQualities.TabIndex = 5;
@@ -82,9 +82,9 @@
             // 
             // chkStartingNuyen
             // 
+            this.chkStartingNuyen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkStartingNuyen.AutoSize = true;
-            this.chkStartingNuyen.Location = new System.Drawing.Point(3, 106);
-            this.chkStartingNuyen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkStartingNuyen.Location = new System.Drawing.Point(3, 101);
             this.chkStartingNuyen.Name = "chkStartingNuyen";
             this.chkStartingNuyen.Size = new System.Drawing.Size(96, 17);
             this.chkStartingNuyen.TabIndex = 6;
@@ -94,9 +94,9 @@
             // 
             // chkActiveSkills
             // 
+            this.chkActiveSkills.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkActiveSkills.AutoSize = true;
-            this.chkActiveSkills.Location = new System.Drawing.Point(3, 131);
-            this.chkActiveSkills.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkActiveSkills.Location = new System.Drawing.Point(3, 124);
             this.chkActiveSkills.Name = "chkActiveSkills";
             this.chkActiveSkills.Size = new System.Drawing.Size(83, 17);
             this.chkActiveSkills.TabIndex = 7;
@@ -106,9 +106,9 @@
             // 
             // chkKnowledgeSkills
             // 
+            this.chkKnowledgeSkills.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKnowledgeSkills.AutoSize = true;
-            this.chkKnowledgeSkills.Location = new System.Drawing.Point(3, 156);
-            this.chkKnowledgeSkills.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkKnowledgeSkills.Location = new System.Drawing.Point(3, 147);
             this.chkKnowledgeSkills.Name = "chkKnowledgeSkills";
             this.chkKnowledgeSkills.Size = new System.Drawing.Size(106, 17);
             this.chkKnowledgeSkills.TabIndex = 8;
@@ -118,9 +118,9 @@
             // 
             // chkMartialArts
             // 
+            this.chkMartialArts.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMartialArts.AutoSize = true;
-            this.chkMartialArts.Location = new System.Drawing.Point(3, 181);
-            this.chkMartialArts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMartialArts.Location = new System.Drawing.Point(3, 170);
             this.chkMartialArts.Name = "chkMartialArts";
             this.chkMartialArts.Size = new System.Drawing.Size(78, 17);
             this.chkMartialArts.TabIndex = 9;
@@ -130,9 +130,9 @@
             // 
             // chkSpells
             // 
+            this.chkSpells.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSpells.AutoSize = true;
-            this.chkSpells.Location = new System.Drawing.Point(3, 206);
-            this.chkSpells.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSpells.Location = new System.Drawing.Point(3, 193);
             this.chkSpells.Name = "chkSpells";
             this.chkSpells.Size = new System.Drawing.Size(54, 17);
             this.chkSpells.TabIndex = 10;
@@ -142,9 +142,9 @@
             // 
             // chkComplexForms
             // 
+            this.chkComplexForms.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkComplexForms.AutoSize = true;
-            this.chkComplexForms.Location = new System.Drawing.Point(166, 56);
-            this.chkComplexForms.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkComplexForms.Location = new System.Drawing.Point(166, 55);
             this.chkComplexForms.Name = "chkComplexForms";
             this.chkComplexForms.Size = new System.Drawing.Size(97, 17);
             this.chkComplexForms.TabIndex = 11;
@@ -154,9 +154,9 @@
             // 
             // chkCyberware
             // 
+            this.chkCyberware.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCyberware.AutoSize = true;
-            this.chkCyberware.Location = new System.Drawing.Point(166, 81);
-            this.chkCyberware.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCyberware.Location = new System.Drawing.Point(166, 78);
             this.chkCyberware.Name = "chkCyberware";
             this.chkCyberware.Size = new System.Drawing.Size(119, 17);
             this.chkCyberware.TabIndex = 12;
@@ -166,9 +166,9 @@
             // 
             // chkLifestyle
             // 
+            this.chkLifestyle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLifestyle.AutoSize = true;
-            this.chkLifestyle.Location = new System.Drawing.Point(166, 106);
-            this.chkLifestyle.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkLifestyle.Location = new System.Drawing.Point(166, 101);
             this.chkLifestyle.Name = "chkLifestyle";
             this.chkLifestyle.Size = new System.Drawing.Size(64, 17);
             this.chkLifestyle.TabIndex = 13;
@@ -178,9 +178,9 @@
             // 
             // chkArmor
             // 
+            this.chkArmor.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkArmor.AutoSize = true;
-            this.chkArmor.Location = new System.Drawing.Point(166, 131);
-            this.chkArmor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkArmor.Location = new System.Drawing.Point(166, 124);
             this.chkArmor.Name = "chkArmor";
             this.chkArmor.Size = new System.Drawing.Size(53, 17);
             this.chkArmor.TabIndex = 14;
@@ -190,9 +190,9 @@
             // 
             // chkWeapons
             // 
+            this.chkWeapons.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkWeapons.AutoSize = true;
-            this.chkWeapons.Location = new System.Drawing.Point(166, 156);
-            this.chkWeapons.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkWeapons.Location = new System.Drawing.Point(166, 147);
             this.chkWeapons.Name = "chkWeapons";
             this.chkWeapons.Size = new System.Drawing.Size(72, 17);
             this.chkWeapons.TabIndex = 15;
@@ -202,9 +202,9 @@
             // 
             // chkGear
             // 
+            this.chkGear.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkGear.AutoSize = true;
-            this.chkGear.Location = new System.Drawing.Point(166, 181);
-            this.chkGear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkGear.Location = new System.Drawing.Point(166, 170);
             this.chkGear.Name = "chkGear";
             this.chkGear.Size = new System.Drawing.Size(49, 17);
             this.chkGear.TabIndex = 16;
@@ -214,9 +214,9 @@
             // 
             // chkVehicles
             // 
+            this.chkVehicles.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkVehicles.AutoSize = true;
-            this.chkVehicles.Location = new System.Drawing.Point(166, 206);
-            this.chkVehicles.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkVehicles.Location = new System.Drawing.Point(166, 193);
             this.chkVehicles.Name = "chkVehicles";
             this.chkVehicles.Size = new System.Drawing.Size(66, 17);
             this.chkVehicles.TabIndex = 17;
@@ -226,7 +226,7 @@
             // 
             // lblNameLabel
             // 
-            this.lblNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNameLabel.AutoSize = true;
             this.lblNameLabel.Location = new System.Drawing.Point(3, 6);
             this.lblNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -235,11 +235,11 @@
             this.lblNameLabel.TabIndex = 0;
             this.lblNameLabel.Tag = "Label_CreatePACKSKit_KitName";
             this.lblNameLabel.Text = "Kit Name:";
+            this.lblNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtName
             // 
-            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtName.Location = new System.Drawing.Point(62, 3);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(261, 20);
@@ -247,8 +247,7 @@
             // 
             // txtFileName
             // 
-            this.txtFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFileName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFileName.Location = new System.Drawing.Point(62, 29);
             this.txtFileName.Name = "txtFileName";
             this.txtFileName.Size = new System.Drawing.Size(261, 20);
@@ -257,7 +256,7 @@
             // 
             // lblFileNameLabel
             // 
-            this.lblFileNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFileNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFileNameLabel.AutoSize = true;
             this.lblFileNameLabel.Location = new System.Drawing.Point(4, 32);
             this.lblFileNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -266,10 +265,11 @@
             this.lblFileNameLabel.TabIndex = 2;
             this.lblFileNameLabel.Tag = "Label_DataFile";
             this.lblFileNameLabel.Text = "Data File:";
+            this.lblFileNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
             this.cmdOK.Location = new System.Drawing.Point(81, 0);
             this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -283,7 +283,7 @@
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(0, 0);
@@ -296,78 +296,80 @@
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkAttributes, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkVehicles, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.chkComplexForms, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkSpells, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.chkGear, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.chkQualities, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.chkWeapons, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.chkMartialArts, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.chkCyberware, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.chkArmor, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.chkStartingNuyen, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkKnowledgeSkills, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.chkLifestyle, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkActiveSkills, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 8);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 9;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 263);
-            this.tableLayoutPanel1.TabIndex = 20;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.tlpTop, 0, 0);
+            this.tlpMain.Controls.Add(this.chkAttributes, 0, 1);
+            this.tlpMain.Controls.Add(this.chkVehicles, 1, 7);
+            this.tlpMain.Controls.Add(this.chkComplexForms, 1, 1);
+            this.tlpMain.Controls.Add(this.chkSpells, 0, 7);
+            this.tlpMain.Controls.Add(this.chkGear, 1, 6);
+            this.tlpMain.Controls.Add(this.chkQualities, 0, 2);
+            this.tlpMain.Controls.Add(this.chkWeapons, 1, 5);
+            this.tlpMain.Controls.Add(this.chkMartialArts, 0, 6);
+            this.tlpMain.Controls.Add(this.chkCyberware, 1, 2);
+            this.tlpMain.Controls.Add(this.chkArmor, 1, 4);
+            this.tlpMain.Controls.Add(this.chkStartingNuyen, 0, 3);
+            this.tlpMain.Controls.Add(this.chkKnowledgeSkills, 0, 5);
+            this.tlpMain.Controls.Add(this.chkLifestyle, 1, 3);
+            this.tlpMain.Controls.Add(this.chkActiveSkills, 0, 4);
+            this.tlpMain.Controls.Add(this.flpButtons, 0, 8);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 9;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(326, 263);
+            this.tlpMain.TabIndex = 20;
             // 
-            // tableLayoutPanel2
+            // tlpTop
             // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel2, 2);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.lblNameLabel, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.lblFileNameLabel, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.txtFileName, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.txtName, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(326, 52);
-            this.tableLayoutPanel2.TabIndex = 0;
+            this.tlpTop.AutoSize = true;
+            this.tlpTop.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTop.ColumnCount = 2;
+            this.tlpMain.SetColumnSpan(this.tlpTop, 2);
+            this.tlpTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTop.Controls.Add(this.lblNameLabel, 0, 0);
+            this.tlpTop.Controls.Add(this.lblFileNameLabel, 0, 1);
+            this.tlpTop.Controls.Add(this.txtFileName, 1, 1);
+            this.tlpTop.Controls.Add(this.txtName, 1, 0);
+            this.tlpTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTop.Location = new System.Drawing.Point(0, 0);
+            this.tlpTop.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTop.Name = "tlpTop";
+            this.tlpTop.RowCount = 2;
+            this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTop.Size = new System.Drawing.Size(326, 52);
+            this.tlpTop.TabIndex = 0;
             // 
-            // flowLayoutPanel1
+            // flpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(167, 237);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel1.TabIndex = 18;
+            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.SetColumnSpan(this.flpButtons, 2);
+            this.flpButtons.Controls.Add(this.cmdOK);
+            this.flpButtons.Controls.Add(this.cmdCancel);
+            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtons.Location = new System.Drawing.Point(167, 237);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(156, 23);
+            this.flpButtons.TabIndex = 18;
             // 
             // frmCreatePACKSKit
             // 
@@ -377,10 +379,11 @@
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(344, 281);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(360, 10000);
             this.MinimizeBox = false;
             this.Name = "frmCreatePACKSKit";
             this.Padding = new System.Windows.Forms.Padding(9);
@@ -388,12 +391,12 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreatePACKSKit";
             this.Text = "Create PACKS Kit";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.tlpTop.ResumeLayout(false);
+            this.tlpTop.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -421,8 +424,8 @@
         private System.Windows.Forms.Label lblFileNameLabel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpTop;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
     }
 }

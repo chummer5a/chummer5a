@@ -29,19 +29,21 @@ namespace Chummer
         public object DataSource { get; }
         public string DataMember { get; }
         public bool Negate { get; }
+        public bool OneWay { get; }
 
-        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool negate = false)
+        public NegatableBinding(string propertyName, object dataSource, string dataMember, bool negate = false, bool oneway = false)
         {
             PropertyName = propertyName;
             DataSource = dataSource;
             DataMember = dataMember;
             Negate = negate;
+            OneWay = oneway;
         }
 
         public static implicit operator Binding(NegatableBinding eb)
         {
             var binding = new Binding(eb.PropertyName, eb.DataSource, eb.DataMember, false,
-                DataSourceUpdateMode.OnPropertyChanged);
+                eb.OneWay ? DataSourceUpdateMode.Never : DataSourceUpdateMode.OnPropertyChanged);
             if (!eb.Negate) return binding;
             binding.Parse += NegateValue;
             binding.Format += NegateValue;

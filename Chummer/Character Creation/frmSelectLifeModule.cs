@@ -74,7 +74,7 @@ namespace Chummer
 
         private TreeNode[] BuildList(XmlNodeList xmlNodes)
         {
-            List<TreeNode> lstTreeNodes = new List<TreeNode>();
+            List<TreeNode> lstTreeNodes = new List<TreeNode>(xmlNodes.Count);
             for (int i = 0; i < xmlNodes.Count; i++)
             {
                 XmlNode xmlNode = xmlNodes[i];
@@ -195,7 +195,7 @@ namespace Chummer
             {
                 if (cboStage.DataSource == null)
                 {
-                    List<ListItem> Stages = new List<ListItem>()
+                    List<ListItem> Stages = new List<ListItem>(6)
                     {
                         new ListItem("0", LanguageManager.GetString("String_All"))
                     };
@@ -232,8 +232,8 @@ namespace Chummer
                         return 0;
                     });
 
-                    cboStage.ValueMember = "Value";
-                    cboStage.DisplayMember = "Name";
+                    cboStage.ValueMember = nameof(ListItem.Value);
+                    cboStage.DisplayMember = nameof(ListItem.Name);
                     cboStage.DataSource = Stages;
                 }
 

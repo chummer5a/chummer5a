@@ -34,7 +34,6 @@ using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
@@ -90,7 +89,7 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms.
         /// </summary>
-        protected struct TransportWrapper : IEquatable<TransportWrapper>
+        protected readonly struct TransportWrapper : IEquatable<TransportWrapper>
         {
             public Control Control { get; }
 
@@ -146,49 +145,47 @@ namespace Chummer
         /// </summary>
         protected void AutoSaveCharacter()
         {
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            string strAutosavePath;
-            try
+            using (new CursorWait(this))
             {
-                strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
-            }
-            catch (ArgumentException e)
-            {
-                Log.Error(e, "Path: " + Utils.GetStartupPath);
-                Cursor = objOldCursor;
-                return;
-            }
-
-            if (!Directory.Exists(strAutosavePath))
-            {
+                string strAutosavePath;
                 try
                 {
-                    Directory.CreateDirectory(strAutosavePath);
+                    strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
                 }
-                catch (UnauthorizedAccessException)
+                catch (ArgumentException e)
                 {
-                    Cursor = objOldCursor;
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
-                    AutosaveStopWatch.Restart();
+                    Log.Error(e, "Path: " + Utils.GetStartupPath);
                     return;
                 }
-            }
 
-            string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-            string strShowFileName = strFile[strFile.Length - 1];
+                if (!Directory.Exists(strAutosavePath))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(strAutosavePath);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        AutosaveStopWatch.Restart();
+                        return;
+                    }
+                }
 
-            if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.CharacterName;
-            var replaceChars = Path.GetInvalidFileNameChars();
-            foreach (var invalidChar in replaceChars)
-            {
-                strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+
+                if (string.IsNullOrEmpty(strShowFileName))
+                    strShowFileName = _objCharacter.CharacterName;
+                var replaceChars = Path.GetInvalidFileNameChars();
+                foreach (var invalidChar in replaceChars)
+                {
+                    strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                }
+
+                string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
+                _objCharacter.Save(strFilePath, false, false);
+                AutosaveStopWatch.Restart();
             }
-            string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-            _objCharacter.Save(strFilePath, false, false);
-            Cursor = objOldCursor;
-            AutosaveStopWatch.Restart();
         }
 
         /// <summary>
@@ -207,7 +204,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Warning_NoLimitFound"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Warning_NoLimitFound"));
                     return;
                 }
                 using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
@@ -256,13 +253,13 @@ namespace Chummer
                     if (treNode != null)
                     {
                         treNode.ForeColor = objNotes.PreferredColor;
-                        treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+                        treNode.ToolTipText = objNotes.Notes.WordWrap();
                     }
                 }
             }
         }
         #region Refresh Treeviews and Panels
-        protected void RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected void RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1)
         {
             if (pnlAttributes == null)
                 return;
@@ -270,14 +267,24 @@ namespace Chummer
             {
                 pnlAttributes.SuspendLayout();
                 pnlAttributes.Controls.Clear();
-
-                foreach (CharacterAttrib objAttrib in CharacterObject.AttributeSection.Attributes)
+                if (CharacterObject.AttributeSection.Attributes.Count > 0)
                 {
-                    AttributeControl objControl = new AttributeControl(objAttrib);
-                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                    pnlAttributes.Controls.Add(objControl);
-                    objControl.Width = pnlAttributes.Width;
-                    objControl.Anchor |= AnchorStyles.Right;
+                    int intNameWidth = lblName?.PreferredWidth ?? 0;
+                    Control[] aobjControls = new Control[CharacterObject.AttributeSection.Attributes.Count];
+                    for (int i = 0; i < CharacterObject.AttributeSection.Attributes.Count; ++i)
+                    {
+                        AttributeControl objControl = new AttributeControl(CharacterObject.AttributeSection.Attributes[i]);
+                        objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MinimumSize.Height);
+                        objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MaximumSize.Height);
+                        objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                        intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
+                        aobjControls[i] = objControl;
+                    }
+                    if (lblName != null)
+                        lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+                    foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                        objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                    pnlAttributes.Controls.AddRange(aobjControls);
                 }
                 pnlAttributes.ResumeLayout();
             }
@@ -287,14 +294,42 @@ namespace Chummer
                 {
                     case NotifyCollectionChangedAction.Add:
                         {
-                            foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.NewItems)
+                            bool blnVaryingAddedWidths = false;
+                            int intNewNameWidth = -1;
+                            Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
+                            for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
                             {
-                                AttributeControl objControl = new AttributeControl(objAttrib);
+                                AttributeControl objControl = new AttributeControl(notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MinimumSize.Height);
+                                objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MaximumSize.Height);
                                 objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                pnlAttributes.Controls.Add(objControl);
-                                objControl.Width = pnlAttributes.Width;
-                                objControl.Anchor |= AnchorStyles.Right;
+                                if (intNewNameWidth < 0)
+                                    intNewNameWidth = objControl.NameWidth;
+                                else if (intNewNameWidth < objControl.NameWidth)
+                                {
+                                    intNewNameWidth = objControl.NameWidth;
+                                    blnVaryingAddedWidths = true;
+                                }
+                                aobjControls[i] = objControl;
                             }
+
+                            int intOldNameWidth = lblName?.Width ?? (pnlAttributes.Controls.Count > 0 ? pnlAttributes.Controls[0].Width : 0);
+                            if (intNewNameWidth > intOldNameWidth)
+                            {
+                                if (lblName != null)
+                                    lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                                if (blnVaryingAddedWidths)
+                                    foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                        objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                            }
+                            else
+                            {
+                                foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                    objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                            }
+                            pnlAttributes.Controls.AddRange(aobjControls);
                         }
                         break;
                     case NotifyCollectionChangedAction.Remove:
@@ -337,19 +372,47 @@ namespace Chummer
                                     objAttrib.Karma = 0;
                                 }
                             }
-                            foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.NewItems)
+                            bool blnVaryingAddedWidths = false;
+                            int intNewNameWidth = -1;
+                            Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
+                            for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
                             {
-                                AttributeControl objControl = new AttributeControl(objAttrib);
+                                AttributeControl objControl = new AttributeControl(notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
+                                objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MinimumSize.Height);
+                                objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MaximumSize.Height);
                                 objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                pnlAttributes.Controls.Add(objControl);
-                                objControl.Width = pnlAttributes.Width;
-                                objControl.Anchor |= AnchorStyles.Right;
+                                if (intNewNameWidth < 0)
+                                    intNewNameWidth = objControl.NameWidth;
+                                else if (intNewNameWidth < objControl.NameWidth)
+                                {
+                                    intNewNameWidth = objControl.NameWidth;
+                                    blnVaryingAddedWidths = true;
+                                }
+                                aobjControls[i] = objControl;
                             }
+
+                            int intOldNameWidth = lblName?.Width ?? (pnlAttributes.Controls.Count > 0 ? pnlAttributes.Controls[0].Width : 0);
+                            if (intNewNameWidth > intOldNameWidth)
+                            {
+                                if (lblName != null)
+                                    lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                                if (blnVaryingAddedWidths)
+                                    foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                        objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                            }
+                            else
+                            {
+                                foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                    objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
+                            }
+                            pnlAttributes.Controls.AddRange(aobjControls);
                         }
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshAttributes(pnlAttributes);
+                            RefreshAttributes(pnlAttributes, null, lblName, intKarmaWidth, intValueWidth, intLimitsWidth);
                         }
                         break;
                 }
@@ -441,7 +504,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treSpells.FindNodeByTag(objSpell);
@@ -684,7 +747,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treAIPrograms.FindNodeByTag(objAIProgram);
@@ -807,7 +870,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treComplexForms.FindNodeByTag(objComplexForm);
@@ -1588,7 +1651,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
@@ -1752,7 +1815,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objQuality.Levels > 0)
@@ -1793,7 +1856,7 @@ namespace Chummer
 
             void AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality,treQualities);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode = null;
@@ -2033,7 +2096,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                     {
-                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>();
+                        List<Tuple<string, TreeNode>> lstMoveNodes = new List<Tuple<string, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                         foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
                             TreeNode objLocation = treImprovements.FindNode(strLocation, false);
@@ -2176,7 +2239,7 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Move:
                 {
-                    List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>();
+                    List<Tuple<Location, TreeNode>> lstMoveNodes = new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                     foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                     {
                         TreeNode objNode = treSelected.FindNodeByTag(objLocation, false);
@@ -2959,7 +3022,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParentNodes = new List<TreeNode>();
+                            List<TreeNode> lstOldParentNodes = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
 
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
@@ -3786,7 +3849,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -3953,7 +4016,7 @@ namespace Chummer
                                                             objNode.Checked = false;
                                                             if (!blnWarned)
                                                             {
-                                                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                 blnWarned = true;
                                                                 break;
                                                             }
@@ -4081,7 +4144,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objMartialArt.Techniques.RemoveTaggedCollectionChanged(treMartialArts);
@@ -4360,7 +4423,7 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParents = new List<TreeNode>();
+                            List<TreeNode> lstOldParents = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
@@ -4476,7 +4539,7 @@ namespace Chummer
                                 Tag = objImprovement.SourceName,
                                 ContextMenuStrip = cmsLimitModifier,
                                 ForeColor = objImprovement.PreferredColor,
-                                ToolTipText = objImprovement.Notes.WordWrap(100)
+                                ToolTipText = objImprovement.Notes.WordWrap()
                             };
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
@@ -5268,7 +5331,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5335,7 +5398,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5430,7 +5493,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5695,7 +5758,7 @@ namespace Chummer
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules && CharacterObjectOptions.EnemyKarmaQualityLimit)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit"), strEnemyPoints),
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit"), strEnemyPoints),
                     LanguageManager.GetString("MessageTitle_EnemyLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Contact objSenderContact = objSenderControl?.ContactObject;
                 if (objSenderContact != null)
@@ -5719,7 +5782,7 @@ namespace Chummer
             {
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strQualityPoints),
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strQualityPoints),
                         LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     Contact objSenderContact = objSenderControl?.ContactObject;
                     if (objSenderContact != null)
@@ -5775,7 +5838,7 @@ namespace Chummer
             {
                 // Show the Dialog.
                 // If the user cancels out, return early.
-                if (dlgOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.Cancel)
                     return;
 
                 try
@@ -5786,12 +5849,12 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    Program.MainForm.ShowMessageBox(this, ex.ToString());
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.MainForm.ShowMessageBox(ex.ToString());
+                    Program.MainForm.ShowMessageBox(this, ex.ToString());
                     return;
                 }
             }
@@ -6047,7 +6110,7 @@ namespace Chummer
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit) >= CharacterObject.CHA.Value)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BoundSpiritLimit"), LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_BoundSpiritLimit"), LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6068,7 +6131,7 @@ namespace Chummer
             if (CharacterObject.Created && CharacterObject.Spirits.Any(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered))
             {
                 // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time.
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_UnregisteredSpriteLimit"),
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_UnregisteredSpriteLimit"),
                     LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6080,7 +6143,7 @@ namespace Chummer
                     CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
                     CharacterObject.LOG.TotalValue)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RegisteredSpriteLimit"),
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_RegisteredSpriteLimit"),
                         LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -6135,8 +6198,8 @@ namespace Chummer
                 dlgOpenFileDialog.Filter = string.Format(
                     GlobalOptions.InvariantCultureInfo,
                     LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" + LanguageManager.GetString("DialogFilter_All"),
-                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
-                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension).ToArray()));
+                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension))),
+                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
 
                 if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -6322,9 +6385,12 @@ namespace Chummer
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space");
-            string strTitle = _objCharacter.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + _objOptions.Name + ')';
+            StringBuilder sbdTitle = new StringBuilder(_objCharacter.CharacterName)
+                .Append(strSpace).Append('-').Append(strSpace).Append(FormMode)
+                .Append(strSpace).Append('(').Append(_objOptions.Name).Append(')');
             if (_blnIsDirty)
-                strTitle += '*';
+                sbdTitle.Append('*');
+            string strTitle = sbdTitle.ToString();
             this.DoThreadSafe(() => Text = strTitle);
         }
 
@@ -6347,23 +6413,22 @@ namespace Chummer
                 }
             }
 
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            if (_objCharacter.Save())
+            using (new CursorWait(this))
             {
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
-                IsDirty = false;
-                Cursor = objOldCursor;
-
-                // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                if (blnDoCreated)
+                if (_objCharacter.Save())
                 {
-                    SaveCharacterAsCreated();
-                }
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                    IsDirty = false;
 
-                return true;
+                    // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
+                    if (blnDoCreated)
+                    {
+                        SaveCharacterAsCreated();
+                    }
+
+                    return true;
+                }
             }
-            Cursor = objOldCursor;
             return false;
         }
 
@@ -6386,8 +6451,7 @@ namespace Chummer
                 Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
             {
-                string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-                string strShowFileName = strFile[strFile.Length - 1];
+                string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
                 if (string.IsNullOrEmpty(strShowFileName))
                     strShowFileName = _objCharacter.CharacterName;
@@ -6464,113 +6528,113 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle))
+                using (new CursorWait(this))
                 {
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-                    objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
-                        objGear.Cost = "0";
-
-                    if (CharacterObject.Created)
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
-                        decimal decCost = objGear.TotalCost;
+                        frmPickGear.ShowDialog(this);
 
-                        // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
-                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
-                        {
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                    LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                LanguageManager.GetString("String_ExpensePurchaseVehicleGear") +
-                                LanguageManager.GetString("String_Space") +
-                                objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Nuyen -= decCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
-                            objExpense.Undo = objUndo;
-                        }
-                    }
-
-
-                    bool blnMatchFound = false;
-                    // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition" && frmPickGear.Stack)
-                    {
-                        foreach (Gear objVehicleGear in objSelectedVehicle.Gear.Where(objVehicleGear =>
-                            objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
-                            objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                            objVehicleGear.Children.SequenceEqual(objGear.Children)))
-                        {
-                            // A match was found, so increase the quantity instead.
-                            objVehicleGear.Quantity += objGear.Quantity;
-                            blnMatchFound = true;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
-                        }
-                    }
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    if (!blnMatchFound)
-                    {
-                        // Add the Gear to the Vehicle.
-                        objLocation?.Children.Add(objGear);
-                        objSelectedVehicle.Gear.Add(objGear);
-                        objGear.Parent = objSelectedVehicle;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                        foreach (Weapon objWeapon in lstWeapons)
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+
+                        if (objGear.InternalId.IsEmptyGuid())
+                            continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                            objGear.Cost = "0";
+
+                        if (CharacterObject.Created)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = objGear.TotalAvailTuple().Suffix;
+                            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                                decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                                decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.FreeCost)
+                            {
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
+                                        LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                    LanguageManager.GetString("String_ExpensePurchaseVehicleGear") +
+                                    LanguageManager.GetString("String_Space") +
+                                    objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
+                                objExpense.Undo = objUndo;
+                            }
+                        }
+
+
+                        bool blnMatchFound = false;
+                        // If this is Ammunition, see if the character already has it on them.
+                        if (objGear.Category == "Ammunition" && frmPickGear.Stack)
+                        {
+                            foreach (Gear objVehicleGear in objSelectedVehicle.Gear.Where(objVehicleGear =>
+                                objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
+                                objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
+                                objVehicleGear.Children.SequenceEqual(objGear.Children)))
+                            {
+                                // A match was found, so increase the quantity instead.
+                                objVehicleGear.Quantity += objGear.Quantity;
+                                blnMatchFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnMatchFound)
+                        {
+                            // Add the Gear to the Vehicle.
                             objLocation?.Children.Add(objGear);
-                            objWeapon.ParentVehicle = objSelectedVehicle;
-                            objSelectedVehicle.Weapons.Add(objWeapon);
+                            objSelectedVehicle.Gear.Add(objGear);
+                            objGear.Parent = objSelectedVehicle;
+
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                objLocation?.Children.Add(objGear);
+                                objWeapon.ParentVehicle = objSelectedVehicle;
+                                objSelectedVehicle.Weapons.Add(objWeapon);
+                            }
                         }
                     }
+
+                    IsCharacterUpdateRequested = true;
+
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
         #endregion
     }

@@ -60,7 +60,7 @@ namespace ChummerHub.Models
         public SINnerUploadAble()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerUploadAble.SINnerUploadAble()'
         {
-            this.DownloadUrl = "";
+            this.DownloadUrl = string.Empty;
         }
 
     }

@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Chummer;
 using ChummerHub.Client.Tests.Properties;
 using ChummerHub.Client.UI;
@@ -16,7 +17,31 @@ namespace ChummerHub.Client.Tests
     {
         //public static SINnersUsercontrol MySINnersUsercontrol = new SINnersUsercontrol();
 
-        public static frmChummerMain MainForm;
+        private static frmChummerMain _frmMainForm;
+        public static frmChummerMain MainForm
+        {
+            get
+            {
+                if (_frmMainForm == null)
+                {
+                    try
+                    {
+                        _frmMainForm = new frmChummerMain(true)
+                        {
+                            WindowState = FormWindowState.Minimized,
+                            ShowInTaskbar = false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used)
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e);
+                        Console.WriteLine(e);
+                    }
+                }
+                Assert.IsNotNull(_frmMainForm);
+                return _frmMainForm;
+            }
+        }
 
         [TestMethod]
         public async Task LoadCharacter()
@@ -24,8 +49,6 @@ namespace ChummerHub.Client.Tests
             Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            if (MainForm == null)
-                MainForm = new frmChummerMain(true);
             path = Path.Combine(path, "data");
             DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
             FileInfo[] Files = d.GetFiles("*.chum5"); //Getting Text files
@@ -34,32 +57,23 @@ namespace ChummerHub.Client.Tests
                 try
                 {
                     Debug.WriteLine("Loading: " + file.Name);
-                    Character c = await MainForm.LoadCharacter(file.FullName);
-                    if (c == null)
-                        continue;
-                    Debug.WriteLine("Character loaded: " + c.Name);
-                    if (c.Created)
+                    using (Character c = await MainForm.LoadCharacter(file.FullName))
                     {
-                        using (frmCareer career = new frmCareer(c))
+                        if (c == null)
+                            continue;
+                        Debug.WriteLine("Character loaded: " + c.Name);
+                        using (CharacterShared frmCharacterForm = c.Created ? (CharacterShared)new frmCareer(c) : new frmCreate(c))
                         {
-                            career.Show();
-                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
-                            var ce = await sINnersUsercontrol.SetCharacterFrom(career);
-                            await Utils.PostSINnerAsync(ce);
-                            await Utils.UploadChummerFileAsync(ce);
-                            career.Hide();
-                        }
-                    }
-                    else
-                    {
-                        using (frmCreate create = new frmCreate(c))
-                        {
-                            create.Show();
-                            ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl();
-                            var ce = await sINnersUsercontrol.SetCharacterFrom(create);
-                            await Utils.PostSINnerAsync(ce);
-                            await Utils.UploadChummerFileAsync(ce);
-                            create.Hide();
+                            frmCharacterForm.MdiParent = MainForm;
+                            frmCharacterForm.WindowState = FormWindowState.Minimized;
+                            frmCharacterForm.Show();
+                            using (ucSINnersUserControl sINnersUsercontrol = new ucSINnersUserControl())
+                            {
+                                var ce = await sINnersUsercontrol.SetCharacterFrom(frmCharacterForm);
+                                await Utils.PostSINnerAsync(ce);
+                                await Utils.UploadChummerFileAsync(ce);
+                            }
+                            frmCharacterForm.Close();
                         }
                     }
                 }

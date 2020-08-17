@@ -148,7 +148,7 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
-      <lp>3</lp>
+      <lp>4</lp>
       <multiplier>0</multiplier>
       <source>RF</source>
       <page>216</page>
@@ -204,7 +204,7 @@
     <comfort>
       <name>Bolt Hole</name>
       <minimum>1</minimum>
-      <limit>3</limit>
+      <limit>2</limit>
     </comfort>
     <comfort>
       <name>Street</name>
@@ -535,6 +535,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -578,47 +579,63 @@
     </quality>
     <quality>
       <id>c63bcf5f-fcb7-4193-bdae-2b32cdf50032</id>
-      <name>Merchandise: Goods (Avail 3)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 3)</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>544760af-1c45-4de7-a198-f9f7f86ec4b2</id>
-      <name>Merchandise: Goods (Avail 5)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 5)</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>5a7f93eb-7297-49a0-904e-466be3f3f454</id>
-      <name>Merchandise: Goods (Avail 7)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 7)</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>1ab883f5-3392-41c6-b4e3-b26dfc4b8aba</id>
-      <name>Merchandise: Goods (Avail 9)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 9)</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>35d712d8-ea04-4853-8b1f-89e079e043ce</id>
-      <name>Merchandise: Pawn Shop</name>
+      <name>Merchandise: Pawn Shop/Thrift Store</name>
       <category>Entertainment - Service</category>
       <lp>2</lp>
       <allowed>Commercial</allowed>
@@ -628,13 +645,14 @@
     </quality>
     <quality>
       <id>b8c84dbb-b59e-43e1-a07f-fa03802fe5af</id>
-      <name>Merchandise: Used Goods</name>
+      <name>Merchandise: Used Goods (Specific Item)</name>
       <category>Entertainment - Service</category>
       <lp>2</lp>
       <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
@@ -658,6 +676,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>223</page>
@@ -671,6 +690,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>200</cost>
       <page>223</page>
@@ -684,6 +704,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>75</cost>
       <page>223</page>
@@ -697,6 +718,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>223</page>
@@ -720,6 +742,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>50</cost>
       <page>223</page>
@@ -733,6 +756,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>75</cost>
       <page>222</page>
@@ -766,6 +790,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>300</cost>
       <page>224</page>
@@ -796,6 +821,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <bonus>
         <selectskill />
       </bonus>
@@ -812,6 +838,7 @@
         <selectskill />
       </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>2250</cost>
       <page>224</page>
@@ -932,7 +959,7 @@
       <name>Not a Home</name>
       <category>Negative</category>
       <lp>-1</lp>
-      <comforts>-1</comforts>
+      <comfortsmaximum>-1</comfortsmaximum>
       <source>RF</source>
       <page>226</page>
     </quality>
@@ -1150,6 +1177,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -1163,6 +1191,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>High,Luxury</allowed>
+	  <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>

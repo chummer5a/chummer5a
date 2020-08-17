@@ -26,6 +26,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -43,7 +44,7 @@ namespace Chummer
         //public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }
 
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
-        private bool _blnSkipUpdate;
+        private bool _blnSkipUpdate = true;
 
         public frmCharacterRoster()
         {
@@ -82,7 +83,7 @@ namespace Chummer
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver -= treCharacterList_OnDefaultDragOver;
-                OnMyMouseDown -= OnDefaultMouseDown;
+                OnMyMouseDown = null;
 
                 if(watcherCharacterRosterFolder != null)
                 {
@@ -99,6 +100,7 @@ namespace Chummer
             SetMyEventHandlers();
             LoadCharacters();
             UpdateCharacter(null);
+            _blnSkipUpdate = false;
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
@@ -112,7 +114,9 @@ namespace Chummer
                 return;
 
             SuspendLayout();
+            _blnSkipUpdate = true;
             LoadCharacters(false, false, true, false);
+            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -122,7 +126,8 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            if(e?.Text != "mru")
+            _blnSkipUpdate = true;
+            if (e?.Text != "mru")
             {
                 try
                 {
@@ -139,6 +144,7 @@ namespace Chummer
             {
                 LoadCharacters(false, true, true, false);
             }
+            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -156,18 +162,13 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
-                            objCharacterNode.ToolTipText += Environment.NewLine + Environment.NewLine
-                                                                                + LanguageManager.GetString(
-                                                                                    "String_Error",
-                                                                                    GlobalOptions.Language) +
-                                                                                LanguageManager.GetString(
-                                                                                    "String_Colon",
-                                                                                    GlobalOptions.Language)
-                                                                                + Environment.NewLine +
-                                                                                objCache.ErrorText;
+                            objCharacterNode.ToolTipText += new StringBuilder()
+                                .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                                .AppendLine(LanguageManager.GetString("String_Colon"))
+                                .Append(objCache.ErrorText).ToString();
                         }
                         else
-                            objCharacterNode.ForeColor = SystemColors.Window;
+                            objCharacterNode.ForeColor = SystemColors.WindowText;
                     }
                 }
             }
@@ -191,17 +192,15 @@ namespace Chummer
                 lstFavoritesNodes = new TreeNode[lstFavorites.Count];
             }
 
-            IList<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
+            List<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             Dictionary<string,string> dicWatch = new Dictionary<string, string>();
             int intWatchFolderCount = 0;
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
                 intWatchFolderCount++;
-                string[] objFiles = Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories);
-                for(int i = 0; i < objFiles.Length; ++i)
+                foreach (string strFile in Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
                 {
-                    string strFile = objFiles[i];
                     // Make sure we're not loading a character that was already loaded by the MRU list.
                     if (lstFavorites.Contains(strFile) ||
                         lstRecents.Contains(strFile))
@@ -213,7 +212,7 @@ namespace Chummer
                         continue;
                     }
 
-                    string strNewParent = objInfo.Directory.FullName.CheapReplace(GlobalOptions.CharacterRosterPath+"\\", () => "");
+                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalOptions.CharacterRosterPath+"\\", string.Empty);
                     dicWatch.Add(strFile,strNewParent);
                 }
 
@@ -247,9 +246,9 @@ namespace Chummer
                 {
                     string strFile = objCharacterForm.CharacterObject.FileName;
                     // Make sure we're not loading a character that was already loaded by the MRU list.
-                    if(lstFavorites.Contains(strFile) ||
-                        lstRecents.Contains(strFile) ||
-                        dicWatch.ContainsValue(strFile))
+                    if(lstFavorites.Contains(strFile)
+                       || lstRecents.Contains(strFile)
+                       || dicWatch.ContainsValue(strFile))
                         continue;
 
                     lstRecents.Add(strFile);
@@ -283,9 +282,8 @@ namespace Chummer
 
                         if(blnAddFavoriteNode)
                         {
-                            for(int i = 0; i < lstFavoritesNodes.Length; i++)
+                            foreach (TreeNode objNode in lstFavoritesNodes)
                             {
-                                TreeNode objNode = lstFavoritesNodes[i];
                                 if(objNode != null)
                                     objFavoriteNode.Nodes.Add(objNode);
                             }
@@ -307,9 +305,8 @@ namespace Chummer
 
                         if(blnAddRecentNode)
                         {
-                            for(int i = 0; i < lstRecentsNodes.Length; i++)
+                            foreach (TreeNode objNode in lstRecentsNodes)
                             {
-                                TreeNode objNode = lstRecentsNodes[i];
                                 if(objNode != null)
                                     objRecentNode.Nodes.Add(objNode);
                             }
@@ -322,7 +319,6 @@ namespace Chummer
                     {
                         ConcurrentBag<KeyValuePair<TreeNode,string>> bagNodes = new ConcurrentBag<KeyValuePair<TreeNode, string>>();
                         Parallel.ForEach(dicWatch, i => bagNodes.Add(new KeyValuePair<TreeNode, string>(CacheCharacter(i.Key), i.Value)));
-
                         if(blnAddWatchNode)
                         {
                             foreach (string s in dicWatch.Values.Distinct())
@@ -330,7 +326,6 @@ namespace Chummer
                                 if (s == "Watch") continue;
                                 objWatchNode.Nodes.Add(new TreeNode(s){Tag = s});
                             }
-
                             foreach (KeyValuePair<TreeNode, string> kvtNode in bagNodes)
                             {
                                 if (kvtNode.Value == "Watch")
@@ -348,28 +343,26 @@ namespace Chummer
                                     }
                                 }
                             }
-
                         }
                     }
                 },
-                () =>
+                async () =>
                 {
                     foreach(IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                     {
-#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
-                        var t = Task.Factory.StartNew<ICollection<TreeNode>>(() =>
+                        List<TreeNode> lstNodes = await Task.Run(() =>
                         {
                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin);
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
-                            if(task.Result != null)
+                            if (task.Result != null)
                             {
                                 return task.Result.OrderBy(a => a.Text).ToList();
                             }
                             return new List<TreeNode>();
                         });
-                        t.ContinueWith(nodelist =>
+                        await Task.Run(() =>
                         {
-                            foreach(TreeNode node in nodelist.Result)
+                            foreach(TreeNode node in lstNodes)
                             {
                                 TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
                                 Program.MainForm.DoThreadSafe(() =>
@@ -413,7 +406,6 @@ namespace Chummer
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
                         });
-#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
@@ -427,9 +419,8 @@ namespace Chummer
                 else
                 {
                     objFavoriteNode.Nodes.Clear();
-                    for (int i = 0; i < lstFavoritesNodes.Length; i++)
+                    foreach (TreeNode objNode in lstFavoritesNodes)
                     {
-                        TreeNode objNode = lstFavoritesNodes[i];
                         if(objNode != null)
                             objFavoriteNode.Nodes.Add(objNode);
                     }
@@ -448,9 +439,8 @@ namespace Chummer
                     try
                     {
                         objRecentNode.Nodes.Clear();
-                        for (int i = 0; i < lstRecentsNodes.Length; i++)
+                        foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            TreeNode objNode = lstRecentsNodes[i];
                             if (objNode != null)
                                 objRecentNode.Nodes.Add(objNode);
                         }
@@ -472,9 +462,8 @@ namespace Chummer
                 else
                 {
                     objWatchNode.Nodes.Clear();
-                    for(int i = 0; i < lstWatchNodes.Length; i++)
+                    foreach (TreeNode objNode in lstWatchNodes)
                     {
-                        TreeNode objNode = lstWatchNodes[i];
                         if(objNode != null)
                             objWatchNode.Nodes.Add(objNode);
                     }
@@ -500,8 +489,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
-                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error")
-                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
+                objNode.ToolTipText += new StringBuilder()
+                    .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                    .AppendLine(LanguageManager.GetString("String_Colon")).Append(objCache.ErrorText);
             }
             return objNode;
         }
@@ -514,6 +504,8 @@ namespace Chummer
         /// <param name="objCache"></param>
         public void UpdateCharacter(CharacterCache objCache)
         {
+            if (IsDisposed) // Safety check for external calls
+                return;
             if(objCache != null)
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");
@@ -574,15 +566,15 @@ namespace Chummer
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     }
 
-                    string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;
+                    StringBuilder sbdMetatype = new StringBuilder(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype);
 
                     if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                        strMetatype += LanguageManager.GetString("String_Space") + '(' + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                        sbdMetatype.Append(LanguageManager.GetString("String_Space")).Append('(').Append(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant).Append(')');
                     }
-                    lblMetatype.Text = strMetatype;
+                    lblMetatype.Text = sbdMetatype.ToString();
                 }
                 else
                     lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError");
@@ -647,26 +639,18 @@ namespace Chummer
                 if (objSelectedNode.Tag == null) return;
                 if(objSelectedNode.Tag is CharacterCache objCache)
                 {
-                    try
+                    using (new CursorWait(this))
                     {
                         objCache.OnMyDoubleClick(sender, e);
                         objSelectedNode.Text = objCache.CalculatedName();
-                        Cursor = Cursors.WaitCursor;
                     }
-                    finally
-                    {
-                        Cursor = Cursors.Default;
-                    }
-
                 }
             }
         }
         private void treCharacterList_OnDefaultKeyDown(object sender, KeyEventArgs e)
         {
-
             TreeNode t = treCharacterList.SelectedNode;
-
-            var objCache = t?.Tag as CharacterCache;
+            CharacterCache objCache = t?.Tag as CharacterCache;
             objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
         }
 
@@ -677,7 +661,7 @@ namespace Chummer
 
         private void treCharacterList_OnDefaultDragOver(object sender, DragEventArgs e)
         {
-            if(!(sender is TreeView treSenderView))
+            if(!(sender is TreeView treSenderView) || e == null)
                 return;
             Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
             TreeNode objNode = treSenderView.GetNodeAt(pt);
@@ -691,7 +675,7 @@ namespace Chummer
                 }
             }
 
-            // Clear the background colour for all other Nodes.
+            // Clear the background color for all other Nodes.
             treCharacterList.ClearNodeBackground(objNode);
         }
 
@@ -865,18 +849,17 @@ namespace Chummer
         private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if(objSelectedNode == null || objSelectedNode.Level <= 0)
+            if(objSelectedNode?.Tag == null || objSelectedNode.Level <= 0)
                 return;
             string strFile = objSelectedNode.Tag.ToString();
             if(string.IsNullOrEmpty(strFile))
                 return;
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-            Cursor = Cursors.WaitCursor;
-            if(objOpenCharacter != null)
+            if (objOpenCharacter != null)
             {
-                Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
+                using (new CursorWait(this))
+                    Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
             }
-            Cursor = Cursors.Default;
         }
 
         private void TreCharacterList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -888,8 +871,12 @@ namespace Chummer
             if (e.Node.Tag != null)
             {
                 string strTag = e.Node.Tag.ToString();
-                e.Node.ContextMenuStrip = CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                                                 && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                if (!string.IsNullOrEmpty(strTag))
+                    e.Node.ContextMenuStrip = CreateContextMenuStrip(
+                        strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                        && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                else
+                    e.Node.ContextMenuStrip = CreateContextMenuStrip(false);
             }
             foreach (var plugin in Program.PluginLoader.MyActivePlugins)
             {
@@ -906,7 +893,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.asterisk_orange,
                 Name = "tsToggleFav",
-                Size = new Size(180, 22),
+                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                 Tag = "Menu_ToggleFavorite"
             };
             tsToggleFav.Click += tsToggleFav_Click;
@@ -917,7 +904,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.page_refresh,
                 Name = "tsSort",
-                Size = new Size(180, 22),
+                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                 Tag = "Menu_Sort"
             };
             tsSort.Click += tsSort_Click;
@@ -928,7 +915,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.delete,
                 Name = "tsDelete",
-                Size = new Size(180, 22),
+                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                 Tag = "Menu_Delete"
             };
             tsDelete.Click += tsDelete_Click;
@@ -938,7 +925,7 @@ namespace Chummer
             ContextMenuStrip cmsRoster = new ContextMenuStrip
             {
                 Name = "cmsRoster",
-                Size = new Size(181, 114)
+                Size = new Size(LogicalToDeviceUnits(181), LogicalToDeviceUnits(114))
             };
             cmsRoster.Items.AddRange(new ToolStripItem[]
             {
@@ -960,7 +947,7 @@ namespace Chummer
                 {
                     Image = Properties.Resources.door_out,
                     Name = "tsCloseOpenCharacter",
-                    Size = new Size(180, 22),
+                    Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
                     Tag = "Menu_Close"
                 };
                 tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;

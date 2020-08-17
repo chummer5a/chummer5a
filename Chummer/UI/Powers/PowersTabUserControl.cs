@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -52,19 +53,15 @@ namespace Chummer.UI.Powers
         }
 
         private Character _objCharacter;
-        private readonly IList<Tuple<string, Predicate<Power>>> _dropDownList;
+        private readonly List<Tuple<string, Predicate<Power>>> _dropDownList;
         private bool _blnSearchMode;
 
         private void PowersTabUserControl_Load(object sender, EventArgs e)
         {
-            if (_objCharacter == null)
-            {
-                if (ParentForm != null)
-                    ParentForm.Cursor = Cursors.WaitCursor;
+            if (_objCharacter != null)
+                return;
+            using (new CursorWait(this))
                 RealLoad();
-                if (ParentForm != null)
-                    ParentForm.Cursor = Cursors.Default;
-            }
         }
 
         public void RealLoad()
@@ -99,17 +96,19 @@ namespace Chummer.UI.Powers
 
             //Visible = false;
             SuspendLayout();
-            DoubleBuffered = true;
 
-            lblPowerPoints.DoDatabinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
+            lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
 
             parts.TaskEnd("MakePowerDisplay()");
 
-            cboDisplayFilter.DataSource = _dropDownList;
+            cboDisplayFilter.BeginUpdate();
+            cboDisplayFilter.DataSource = null;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
+            cboDisplayFilter.DataSource = _dropDownList;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+            cboDisplayFilter.EndUpdate();
 
             parts.TaskEnd("_ddl databind");
 
@@ -118,8 +117,6 @@ namespace Chummer.UI.Powers
             //this.PerformLayout();
             parts.TaskEnd("visible");
 
-            _table.Height = pnlPowers.Height - _table.Top;
-            _table.Width = pnlPowers.Width - _table.Left;
             _table.Items = _objCharacter.Powers;
 
             parts.TaskEnd("resize");
@@ -130,14 +127,18 @@ namespace Chummer.UI.Powers
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
-        private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        private static List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
-            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
+            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>(4)
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"), power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"), power => power.Rating == 0)
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"),
+                    null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"),
+                    power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                    power => power.Rating > 0),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                    power => power.Rating == 0)
             };
 
             /*
@@ -257,7 +258,7 @@ namespace Chummer.UI.Powers
         {
             _table = new TableView<Power>
             {
-                Location = new Point(3, 3),
+                Dock = DockStyle.Fill,
                 ToolTip = _tipTooltip
             };
             // create columns
@@ -301,10 +302,11 @@ namespace Chummer.UI.Powers
                 {
                     if (o1 is Power objPower1 && o2 is Power objPower2)
                         return objPower1.Rating - objPower2.Rating;
-                    string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
-                                 o2.GetType() + " in the ratingColumn." + Environment.NewLine;
-                    msg += "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(msg, nameof(o1));
+                    StringBuilder msg = new StringBuilder("Can't sort an Object of Type ")
+                        .Append(o1.GetType()).Append(" against another one of Type ")
+                        .Append(o2.GetType()).AppendLine(" in the ratingColumn.")
+                        .Append("Both objects SHOULD be of the type \"Power\".");
+                    throw new ArgumentException(msg.ToString(), nameof(o1));
                 },
             };
 
@@ -321,10 +323,11 @@ namespace Chummer.UI.Powers
                 {
                     if (o1 is Power objPower1 && o2 is Power objPower2)
                         return objPower1.TotalRating - objPower2.TotalRating;
-                    string msg = "Can't sort an Object of Type " + o1.GetType() + " against another one of Type " +
-                                 o2.GetType() + " in the totalRatingColumn." + Environment.NewLine;
-                    msg += "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(msg, nameof(o1));
+                    StringBuilder msg = new StringBuilder("Can't sort an Object of Type ")
+                        .Append(o1.GetType()).Append(" against another one of Type ")
+                        .Append(o2.GetType()).AppendLine(" in the totalRatingColumn.")
+                        .Append("Both objects SHOULD be of the type \"Power\".");
+                    throw new ArgumentException(msg.ToString(), nameof(o1));
                 },
             };
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
@@ -403,7 +406,7 @@ namespace Chummer.UI.Powers
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
                         strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
-                    return strTooltip.WordWrap(100);
+                    return strTooltip.WordWrap();
                 })
             };
             noteColumn.AddDependency(nameof(Power.Notes));
@@ -446,7 +449,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(deleteColumn);
             _table.TranslateWinForm();
 
-            pnlPowers.Controls.Add(_table);
+            tlpMain.Controls.Add(_table, 0, 2);
         }
 
         private static Size GetImageSize(Image image)

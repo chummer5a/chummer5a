@@ -36,7 +36,7 @@ namespace Chummer
     public partial class frmViewer : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private List<Character> _lstCharacters = new List<Character>();
+        private List<Character> _lstCharacters = new List<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument {XmlResolver = null};
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading;
@@ -46,7 +46,7 @@ namespace Chummer
         private bool _blnQueueRefresherRun;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
         private bool _blnQueueOutputGeneratorRun;
-        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),Guid.NewGuid() + ".htm");
+        private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo) + ".htm");
         #region Control Events
         public frmViewer()
         {
@@ -83,6 +83,13 @@ namespace Chummer
 
             using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION"))
                 objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, GlobalOptions.EmulatedBrowserVersion * 1000, RegistryValueKind.DWord);
+
+            // These two needed to have WebBrowser control obey DPI settings for Chummer
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
+
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL"))
+                objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
 
             InitializeComponent();
             this.TranslateWinForm();
@@ -167,12 +174,12 @@ namespace Chummer
 
         private void cmdPrint_Click(object sender, EventArgs e)
         {
-            webBrowser1.ShowPrintDialog();
+            webViewer.ShowPrintDialog();
         }
 
         private void tsPrintPreview_Click(object sender, EventArgs e)
         {
-            webBrowser1.ShowPrintPreviewDialog();
+            webViewer.ShowPrintPreviewDialog();
         }
 
         private void tsSaveAsHTML_Click(object sender, EventArgs e)
@@ -186,8 +193,12 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
+            if (!strSaveFile.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
+                && !strSaveFile.EndsWith(".htm", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".htm";
+
             using (TextWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
-                objWriter.Write(webBrowser1.DocumentText);
+                objWriter.Write(webViewer.DocumentText);
         }
 
         private void tsSaveAsXml_Click(object sender, EventArgs e)
@@ -201,17 +212,20 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
+            if (!strSaveFile.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".xml";
+
             try
             {
                 _objCharacterXml.Save(strSaveFile);
             }
             catch (XmlException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Save_Error_Warning"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Save_Error_Warning"));
             }
         }
 
@@ -254,12 +268,12 @@ namespace Chummer
             tsPrintPreview.Enabled = false;
             tsSaveAsHtml.Enabled = false;
             cmdSaveAsPdf.Enabled = false;
-            webBrowser1.DocumentText =
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" +
-                "<head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head>" +
-                "<body style=\"width:100%;height:" + webBrowser1.Height.ToString(GlobalOptions.InvariantCultureInfo) + ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
-                strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />").Replace("\r", string.Empty) +
-                "</body></html>";
+            webViewer.DocumentText =
+                new StringBuilder("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:")
+                    .Append(webViewer.Height.ToString(GlobalOptions.InvariantCultureInfo))
+                    .Append(";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">")
+                    .Append(strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />").FastEscape('\r'))
+                    .Append("</body></html>").ToString();
         }
 
         /// <summary>
@@ -386,7 +400,7 @@ namespace Chummer
             {
                 string strReturn = "File not found when attempting to load " + _strSelectedSheet + Environment.NewLine;
                 Log.Debug(strReturn);
-                Program.MainForm.ShowMessageBox(strReturn);
+                Program.MainForm.ShowMessageBox(this, strReturn);
                 return;
             }
 #if DEBUG
@@ -404,7 +418,7 @@ namespace Chummer
                 Log.Debug(strReturn);
                 Log.Error("ERROR Message = " + ex.Message);
                 strReturn += ex.Message;
-                Program.MainForm.ShowMessageBox(strReturn);
+                Program.MainForm.ShowMessageBox(this, strReturn);
                 return;
             }
 
@@ -436,7 +450,7 @@ namespace Chummer
                         // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                         {
-                            webBrowser1.DocumentText = objReader.ReadToEnd();
+                            webViewer.DocumentText = objReader.ReadToEnd();
                         }
                     }
                     else
@@ -450,7 +464,7 @@ namespace Chummer
                             File.WriteAllText(_strFilePathName, strOutput);
                         }
 
-                        webBrowser1.Url = new Uri("file:///" + _strFilePathName);
+                        webViewer.Url = new Uri("file:///" + _strFilePathName);
                     }
                 }
             }
@@ -492,9 +506,12 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
+            if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                strSaveFile += ".pdf";
+
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                 return;
             }
             if (File.Exists(strSaveFile))
@@ -505,19 +522,19 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                     return;
                 }
             }
 
             PdfDocument objPdfDocument = new PdfDocument
             {
-                Html = webBrowser1.DocumentText
+                Html = webViewer.DocumentText
             };
             objPdfDocument.ExtraParams.Add("encoding", "UTF-8");
             objPdfDocument.ExtraParams.Add("dpi", "300");
@@ -526,7 +543,7 @@ namespace Chummer
             objPdfDocument.ExtraParams.Add("margin-left", "13");
             objPdfDocument.ExtraParams.Add("margin-right", "13");
             objPdfDocument.ExtraParams.Add("image-quality", "100");
-            objPdfDocument.ExtraParams.Add("print-media-type", "");
+            objPdfDocument.ExtraParams.Add("print-media-type", string.Empty);
 
             try
             {
@@ -559,18 +576,19 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                Program.MainForm.ShowMessageBox(this, ex.ToString());
             }
         }
 
-        private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
+        private static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
-            List<ListItem> lstSheets = new List<ListItem>();
+            List<ListItem> lstSheets;
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
             using (XmlNodeList lstSheetNodes = XmlManager.Load("sheets.xml", strLanguage, true).SelectNodes("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
-                if (lstSheetNodes != null)
+                lstSheets = new List<ListItem>(lstSheetNodes?.Count ?? 0);
+                if (lstSheetNodes?.Count > 0)
                 {
                     foreach (XmlNode xmlSheet in lstSheetNodes)
                     {
@@ -583,9 +601,9 @@ namespace Chummer
             return lstSheets;
         }
 
-        private static IList<ListItem> GetXslFilesFromOmaeDirectory()
+        private static List<ListItem> GetXslFilesFromOmaeDirectory()
         {
-            List<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>(5);
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
             string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
@@ -600,7 +618,7 @@ namespace Chummer
 
             return lstItems;
         }
-        private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             if (Directory.Exists(path))
             {
@@ -612,7 +630,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            IList<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
+            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
                 foreach (ListItem objFile in GetXslFilesFromOmaeDirectory())
@@ -620,8 +638,8 @@ namespace Chummer
             }
 
             cboXSLT.BeginUpdate();
-            cboXSLT.ValueMember = "Value";
-            cboXSLT.DisplayMember = "Name";
+            cboXSLT.ValueMember = nameof(ListItem.Value);
+            cboXSLT.DisplayMember = nameof(ListItem.Name);
             cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
@@ -640,8 +658,8 @@ namespace Chummer
             }
 
             myCboLanguage.BeginUpdate();
-            myCboLanguage.ValueMember = "Value";
-            myCboLanguage.DisplayMember = "Name";
+            myCboLanguage.ValueMember = nameof(ListItem.Value);
+            myCboLanguage.DisplayMember = nameof(ListItem.Name);
             myCboLanguage.DataSource = LstLanguages;
             myCboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (myCboLanguage.SelectedIndex == -1)
@@ -656,12 +674,14 @@ namespace Chummer
         {
             get
             {
+                if (Utils.IsDesignerMode)
+                    return new List<ListItem>();
+
                 if (_lstLanguages == null)
                 {
-                    _lstLanguages = new List<ListItem>();
                     string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
                     string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-
+                    _lstLanguages = new List<ListItem>(languageFilePaths.Length);
                     foreach (string filePath in languageFilePaths)
                     {
                         XmlDocument xmlDocument = new XmlDocument
@@ -672,7 +692,7 @@ namespace Chummer
                         try
                         {
                             using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                     xmlDocument.Load(objXmlReader);
                         }
                         catch (IOException)
@@ -715,7 +735,7 @@ namespace Chummer
         /// </summary>
         public void SetCharacters(params Character[] lstCharacters)
         {
-            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>();
+            _lstCharacters = lstCharacters != null ? new List<Character>(lstCharacters) : new List<Character>(1);
         }
         #endregion
 

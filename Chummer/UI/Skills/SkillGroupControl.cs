@@ -39,33 +39,32 @@ namespace Chummer.UI.Skills
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
-            lblName.DoDatabinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
-            lblName.DoDatabinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
+            lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
+            lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
 
-            nudSkill.Visible = !skillGroup.CharacterObject.Created && skillGroup.CharacterObject.BuildMethodHasSkillPoints;
-            nudKarma.Visible = !skillGroup.CharacterObject.Created;
-
-            btnCareerIncrease.Visible = skillGroup.CharacterObject.Created;
-            lblGroupRating.Visible = skillGroup.CharacterObject.Created;
-
-            if (_skillGroup.CharacterObject.Created)
+            if (skillGroup.CharacterObject.Created)
             {
-                btnCareerIncrease.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
-                btnCareerIncrease.DoDatabinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
+                flpRightCreate.Visible = false;
 
-                lblGroupRating.DoDatabinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
+                btnCareerIncrease.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
+                btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
+
+                lblGroupRating.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
             }
             else
             {
-                nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
-                nudKarma.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
-                nudKarma.DoDatabinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                flpRightCareer.Visible = false;
 
-                nudSkill.DoDatabinding("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints));
+                nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
+                nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
+                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+
+                nudSkill.DoOneWayDataBinding("Visible", _skillGroup.CharacterObject, nameof(Character.BuildMethodHasSkillPoints));
                 nudSkill.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Base));
-                nudSkill.DoDatabinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
-                nudSkill.DoDatabinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
+                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", _skillGroup.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
             }
+
             ResumeLayout();
             sw.TaskEnd("Create skillgroup");
         }
@@ -93,28 +92,16 @@ namespace Chummer.UI.Skills
 
         #region Properties
         public int NameWidth => lblName.PreferredWidth;
-        public int RatingWidth => _skillGroup.CharacterObject.Created ? lblGroupRating.PreferredWidth : nudSkill.Width;
         #endregion
 
         #region Methods
         /// <summary>
         /// Update the position of controls.
         /// </summary>
-        /// <param name="nameWidth">Width of the Name label</param>
-        /// <param name="ratingWidth">Width of the Rating label. Expected to be the width of the localised Label_SkillGroup_Broken string.</param>
-        public void MoveControls(int nameWidth, int ratingWidth)
+        /// <param name="intNameWidth">Width of the Name label</param>
+        public void MoveControls(int intNameWidth)
         {
-            lblName.Width = nameWidth;
-            if (_skillGroup.CharacterObject.Created)
-            {
-                lblGroupRating.Left = lblName.Left + nameWidth + 6;
-                btnCareerIncrease.Left = lblGroupRating.Left + ratingWidth + 6;
-            }
-            else
-            {
-                nudSkill.Left = lblName.Left + nameWidth + 6;
-                nudKarma.Left = nudSkill.Left + ratingWidth + 6;
-            }
+            lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
         }
         #endregion
 

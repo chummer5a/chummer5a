@@ -96,8 +96,8 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             _blnLoading = false;
             // Select the first Category in the list.
@@ -435,7 +435,7 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
             {
-                if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
+                if (chkHideOverAvailLimit.Checked && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
                 {
                     ++intOverLimit;
                     continue;
@@ -450,7 +450,7 @@ namespace Chummer
                         decCostMultiplier *= 0.9m;
                     if (_setDealerConnectionMaps?.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true) == true)
                         decCostMultiplier *= 0.9m;
-                    if (!SelectionShared.CheckNuyenRestriction(objXmlVehicle, _objCharacter.Nuyen, decCostMultiplier))
+                    if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
                     {
                         ++intOverLimit;
                         continue;
@@ -478,14 +478,14 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstVehicles.Add(new ListItem(string.Empty,
-                    LanguageManager.GetString("String_RestrictedItemsHidden")
-                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        intOverLimit)));
             }
             string strOldSelected = lstVehicle.SelectedValue?.ToString();
             _blnLoading = true;
             lstVehicle.BeginUpdate();
-            lstVehicle.ValueMember = "Value";
-            lstVehicle.DisplayMember = "Name";
+            lstVehicle.ValueMember = nameof(ListItem.Value);
+            lstVehicle.DisplayMember = nameof(ListItem.Name);
             lstVehicle.DataSource = lstVehicles;
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelected))

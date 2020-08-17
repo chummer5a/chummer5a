@@ -89,8 +89,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
@@ -135,8 +135,8 @@ namespace Chummer
             lstKit.Sort(CompareListItems.CompareNames);
             lstKits.BeginUpdate();
             lstKits.DataSource = null;
-            lstKits.ValueMember = "Value";
-            lstKits.DisplayMember = "Name";
+            lstKits.ValueMember = nameof(ListItem.Value);
+            lstKits.DisplayMember = nameof(ListItem.Name);
             lstKits.DataSource = lstKit;
             lstKits.EndUpdate();
 
@@ -156,7 +156,7 @@ namespace Chummer
             }
 
             treContents.Nodes.Clear();
-            string[] strIdentifiers = strSelectedKit.Split('<');
+            string[] strIdentifiers = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
             cmdDelete.Visible = strIdentifiers[1] == "Custom";
             XPathNavigator objXmlPack = _xmlBaseChummerNode.SelectSingleNode("packs/pack[name = " + strIdentifiers[0].CleanXPath() + " and category = \"" + strIdentifiers[1] + "\"]");
             if (objXmlPack == null)
@@ -887,7 +887,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (MessageBox.Show(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DeletePACKSKit"), strSelectedKit),
+            if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DeletePACKSKit"), strSelectedKit),
                     LanguageManager.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 
@@ -900,7 +900,7 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             objXmlDocument.Load(objXmlReader);
                 }
                 catch (IOException)
@@ -990,7 +990,7 @@ namespace Chummer
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
-            string[] objSelectedKit = strSelectedKit.Split('<');
+            string[] objSelectedKit = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
             _strSelectedKit = objSelectedKit[0];
             s_StrSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;

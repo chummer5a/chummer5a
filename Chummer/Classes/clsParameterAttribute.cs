@@ -49,13 +49,8 @@ namespace Chummer
         /// <param name="attribute"></param>
         public ParameterAttribute(Gear gear, string attribute)
         {
-            if (gear == null)
-                throw new ArgumentNullException(nameof(gear));
-            if (attribute == null)
-                throw new ArgumentNullException(nameof(attribute));
-
-            _gear = gear;
-            _attribute = attribute;
+            _gear = gear ?? throw new ArgumentNullException(nameof(gear));
+            _attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
 
             //If we have FixedValues use that
             //I wasn't to create array with rating as index for future, but
@@ -73,8 +68,7 @@ namespace Chummer
 
                 //double junk; //Not used, tryparse needs out
 
-                //LINQ magic to cast matchcollection to the double[]
-                List<double> lstValues = new List<double>();
+                List<double> lstValues = new List<double>(m2.Count);
                 foreach (Match objMatch in m2)
                 {
                     if (double.TryParse(objMatch.Groups[1].Value, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out double dblValue))

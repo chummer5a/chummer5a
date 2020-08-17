@@ -127,11 +127,11 @@ namespace Chummer
         private void ExportNormal()
         {
             // Look for the file extension information.
-            string strLine;
             string strExtension = "xml";
             string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
             using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
             {
+                string strLine;
                 while ((strLine = objFile.ReadLine()) != null)
                 {
                     if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
@@ -172,7 +172,8 @@ namespace Chummer
 
             MemoryStream objStream = new MemoryStream();
             using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
-                objXSLTransform.Transform(_objCharacterXML, null, objWriter);
+                if (objWriter != null)
+                    objXSLTransform.Transform(_objCharacterXML, null, objWriter);
             objStream.Position = 0;
 
             // Read in the resulting code and pass it to the browser.

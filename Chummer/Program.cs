@@ -26,6 +26,7 @@ using System.Linq;
  using System.Reflection;
  using System.Runtime;
  using System.Runtime.InteropServices;
+ using System.Text;
  using System.Threading;
  using System.Threading.Tasks;
  using System.Windows.Forms;
@@ -49,7 +50,7 @@ namespace Chummer
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _pluginLoader;
-        public static PluginControl PluginLoader => _pluginLoader ?? (_pluginLoader = new PluginControl());
+        public static PluginControl PluginLoader => _pluginLoader = _pluginLoader ?? new PluginControl();
 
 
         /// <summary>
@@ -79,11 +80,11 @@ namespace Chummer
                         string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language, false);
                         if (string.IsNullOrEmpty(strMessage))
                             strMessage = ex.ToString();
-                        strPostErrorMessage += strMessage;
+                        strPostErrorMessage = strMessage;
                     }
                     catch (Exception ex)
                     {
-                        strPostErrorMessage += ex.ToString();
+                        strPostErrorMessage = ex.ToString();
                     }
                 }
                 IsMono = Type.GetType("Mono.Runtime") != null;
@@ -168,27 +169,24 @@ namespace Chummer
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
+                if (LanguageManager.ManagerErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    using (Form objForm = new Form {TopMost = true})
-                        MessageBox.Show(objForm, LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
+                if (GlobalOptions.ErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    using (Form objForm = new Form { TopMost = true })
-                        MessageBox.Show(objForm, GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(GlobalOptions.ErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(strPostErrorMessage))
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    using (Form objForm = new Form { TopMost = true })
-                        MessageBox.Show(objForm, strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(strPostErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -268,7 +266,13 @@ namespace Chummer
                         TelemetryConfiguration.Active.DisableTelemetry = true;
 
                     Log.Info(strInfo);
-                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Properties.Settings.Default.UploadClientId + ").");
+                    Log.Info(new StringBuilder("Logging options are set to ")
+                        .Append(GlobalOptions.UseLogging)
+                        .Append(" and Upload-Options are set to ")
+                        .Append(GlobalOptions.UseLoggingApplicationInsights)
+                        .Append(" (Installation-Id: ")
+                        .Append(Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo))
+                        .Append(").").ToString());
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -290,6 +294,9 @@ namespace Chummer
                 {
                     Console.WriteLine(e);
                     Log.Error(e);
+#if DEBUG
+                    throw;
+#endif
                 }
 
                 //load the plugins and maybe work of any command line arguments
@@ -322,7 +329,7 @@ namespace Chummer
                                     string msg =
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                     Log.Warn(msg);
-                                    MessageBox.Show(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 }
                                 else
                                 {
@@ -339,10 +346,11 @@ namespace Chummer
                                     {
                                         if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
                                         {
-                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!"
-                                                         + Environment.NewLine + "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                            string msg = new StringBuilder("Plugin ").Append(whatplugin)
+                                                .AppendLine(" is not enabled in the options!")
+                                                .Append("If you want to use command-line arguments, please enable this plugin and restart the program.").ToString();
                                             Log.Warn(msg);
-                                            MessageBox.Show(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
                                     else
@@ -406,10 +414,12 @@ namespace Chummer
                     {
                         case 2://file not found - that means the alternate data-stream is not present.
                             break;
-                        case 5: Log.Warn(exception);
+                        case 5:
+                            Log.Warn(exception);
                             allUnblocked = false;
                             break;
-                        default: Log.Error(exception);
+                        default:
+                            Log.Error(exception);
                             allUnblocked = false;
                             break;
                     }

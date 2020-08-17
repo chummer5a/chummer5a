@@ -107,8 +107,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -350,7 +350,7 @@ namespace Chummer
                     if (sbdAccessories.Length > 0)
                         sbdAccessories.Length -= Environment.NewLine.Length;
                     AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, sbdAccessories.ToString(), objAvail, strSource, strCost);
@@ -446,7 +446,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
                             (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
                         {
-                            string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/');
+                            string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
                             if (astrParentDoubledCostModificationSlots.Contains(strMount) || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
                             {
                                 decCostMultiplier *= 2;
@@ -466,14 +466,14 @@ namespace Chummer
                 {
                     // Add after sort so that it's always at the end
                     lstWeapons.Add(new ListItem(string.Empty,
-                        LanguageManager.GetString("String_RestrictedItemsHidden")
-                        .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                            intOverLimit)));
                 }
                 string strOldSelected = lstWeapon.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstWeapon.BeginUpdate();
-                lstWeapon.ValueMember = "Value";
-                lstWeapon.DisplayMember = "Name";
+                lstWeapon.ValueMember = nameof(ListItem.Value);
+                lstWeapon.DisplayMember = nameof(ListItem.Name);
                 lstWeapon.DataSource = lstWeapons;
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
@@ -611,7 +611,7 @@ namespace Chummer
         public string LimitToCategories
         {
             // If passed an empty string, consume it and keep _strLimitToCategories as an empty hash.
-            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.Split(','));
+            set => _hashLimitToCategories = string.IsNullOrWhiteSpace(value) ? new HashSet<string>() : new HashSet<string>(value.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
         }
 
         public Weapon ParentWeapon { get; set; }

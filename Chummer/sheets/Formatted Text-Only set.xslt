@@ -8,6 +8,7 @@
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.MovementRate.xslt"/>
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
 
     <xsl:template match="/characters/character">
@@ -137,6 +138,15 @@
           <xsl:with-param name="length" select="40"/>
         </xsl:call-template>
         <xsl:value-of select="$lang.Memory"/>: <xsl:value-of select="memory"/>
+
+        <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+          <br/>
+          <xsl:call-template name="fnx-pad-r">
+            <xsl:with-param name="string" select="concat($lang.AstralReputation,': ',totalastralreputation)"/>
+            <xsl:with-param name="length" select="40"/>
+          </xsl:call-template>
+          <xsl:value-of select="$lang.WildReputation"/>: <xsl:value-of select="totalwildreputation"/>
+        </xsl:if>
 
                 <br/>
         <xsl:call-template name="fnx-pad-r">
@@ -583,7 +593,7 @@
                     <br/>
           == <xsl:value-of select="$lang.Description"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="description"/>
                     </xsl:call-template>
                 </xsl:if>
@@ -592,7 +602,7 @@
                     <br/>
                     <br/>== <xsl:value-of select="$lang.Background"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="background"/>
                     </xsl:call-template>
                 </xsl:if>
@@ -601,7 +611,7 @@
                     <br/>
                     <br/>== <xsl:value-of select="$lang.Concept"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="concept"/>
                     </xsl:call-template>
                 </xsl:if>
@@ -610,10 +620,10 @@
                     <br/>
                     <br/>== <xsl:value-of select="$lang.Notes"/> ==
           <br/>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="notes"/>
                     </xsl:call-template>
-                    <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:call-template name="PreserveHtml">
                         <xsl:with-param name="text" select="gamenotes"/>
                     </xsl:call-template>
                 </xsl:if>
@@ -660,7 +670,7 @@
         <xsl:with-param name="length" select="40"/>
       </xsl:call-template>
       <xsl:choose>
-        <xsl:when test="islanguage = 'True' and rating = 0">
+        <xsl:when test="isnativelanguage = 'True'">
           <xsl:value-of select="$lang.Native"/>
         </xsl:when>
         <xsl:otherwise>

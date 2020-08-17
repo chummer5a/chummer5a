@@ -84,7 +84,7 @@ namespace ChummerHub.Controllers.V1
                 return NotFound();
             }
             var list = await _context.SINners.Select(a => a.UploadClientId == id).ToListAsync();
-            if (!list.Any())
+            if (list.Count == 0)
                 return NotFound(id);
             return Ok(list);
         }

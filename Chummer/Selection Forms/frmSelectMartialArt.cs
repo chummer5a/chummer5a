@@ -106,7 +106,8 @@ namespace Chummer
                         string strLoopTechniqueName = xmlMartialArtsTechnique.SelectSingleNode("name")?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strLoopTechniqueName))
                         {
-                            XPathNavigator xmlTechniqueNode = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode("technique[name = \"" + strLoopTechniqueName + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                            XPathNavigator xmlTechniqueNode = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "technique[name = {0} and ({1})]",
+                                strLoopTechniqueName.CleanXPath(), _objCharacter.Options.BookXPath()));
                             if (xmlTechniqueNode != null)
                             {
                                 if (objTechniqueStringBuilder.Length > 0)
@@ -121,9 +122,8 @@ namespace Chummer
 
                     string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
@@ -232,8 +232,8 @@ namespace Chummer
             string strOldSelected = lstMartialArts.SelectedValue?.ToString();
             _blnLoading = true;
             lstMartialArts.BeginUpdate();
-            lstMartialArts.ValueMember = "Value";
-            lstMartialArts.DisplayMember = "Name";
+            lstMartialArts.ValueMember = nameof(ListItem.Value);
+            lstMartialArts.DisplayMember = nameof(ListItem.Name);
             lstMartialArts.DataSource = lstMartialArt;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

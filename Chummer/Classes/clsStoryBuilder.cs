@@ -44,7 +44,7 @@ namespace Chummer
             XmlDocument xdoc = XmlManager.Load("lifemodules.xml", strLanguage);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
-            List<XmlNode> modules = new List<XmlNode>();
+            List<XmlNode> modules = new List<XmlNode>(10);
 
             foreach (Quality quality in _objCharacter.Qualities)
             {
@@ -94,14 +94,14 @@ namespace Chummer
 
             int startingLength = story.Length;
 
-            string[] words;
+            IEnumerable<string> words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = Macro(innerText, xmlBaseMacrosNode).Split(' ', '\n', '\r', '\t');
+                words = Macro(innerText, xmlBaseMacrosNode).SplitNoAlloc(' ', '\n', '\r', '\t');
             }
             else
             {
-                words = innerText.Split(' ', '\n', '\r', '\t');
+                words = innerText.SplitNoAlloc(' ', '\n', '\r', '\t');
             }
 
             bool mfix = false;
@@ -235,7 +235,7 @@ namespace Chummer
                         }
                         else
                         {
-                            return "(Formating error in  $DOLLAR" + macroName + " )";
+                            return "(Formating error in $DOLLAR" + macroName + ")";
                         }
                     }
 
@@ -252,12 +252,12 @@ namespace Chummer
                         return strDefault;
                     }
 
-                    return "(Unknown key " + macroPool + " in  $DOLLAR" + macroName + " )";
+                    return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ")";
                 }
 
                 return xmlUserMacroNode.Value;
             }
-            return "(Unknown Macro  $DOLLAR" + innerText.Substring(1) + " )";
+            return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ")";
         }
     }
 }

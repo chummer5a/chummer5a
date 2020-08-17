@@ -38,13 +38,16 @@ namespace Chummer.UI.Shared.Components
             // 
             // cmdRoll
             // 
-            this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdRoll.AutoSize = true;
+            this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRoll.FlatAppearance.BorderSize = 0;
             this.cmdRoll.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
             this.cmdRoll.Location = new System.Drawing.Point(40, 0);
             this.cmdRoll.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.cmdRoll.Name = "cmdRoll";
+            this.cmdRoll.Padding = new System.Windows.Forms.Padding(1);
             this.cmdRoll.Size = new System.Drawing.Size(24, 24);
             this.cmdRoll.TabIndex = 119;
             this.cmdRoll.UseVisualStyleBackColor = true;
@@ -82,11 +85,12 @@ namespace Chummer.UI.Shared.Components
             // 
             // DicePoolControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpContainer);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.Name = "DicePoolControl";
             this.Size = new System.Drawing.Size(64, 24);

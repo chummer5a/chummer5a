@@ -47,10 +47,10 @@ namespace Chummer.Backend.Attributes
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = AttributeSectionDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in AttributeSectionDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -64,8 +64,8 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private static readonly DependencyGraph<string> AttributeSectionDependencyGraph =
-            new DependencyGraph<string>(
+        private static readonly DependencyGraph<string, AttributeSection> AttributeSectionDependencyGraph =
+            new DependencyGraph<string, AttributeSection>(
             );
 
         private ObservableCollection<CharacterAttrib> _colAttributes;
@@ -110,13 +110,13 @@ namespace Chummer.Backend.Attributes
         }
 
         private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
-        public static ReadOnlyCollection<string> AttributeStrings => Array.AsReadOnly(s_LstAttributeStrings);
+        public static ReadOnlyCollection<string> AttributeStrings { get; } = Array.AsReadOnly(s_LstAttributeStrings);
 
         private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
-        public static ReadOnlyCollection<string> PhysicalAttributes => Array.AsReadOnly(s_LstPhysicalAttributes);
+        public static ReadOnlyCollection<string> PhysicalAttributes { get; } = Array.AsReadOnly(s_LstPhysicalAttributes);
 
         private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
-        public static ReadOnlyCollection<string> MentalAttributes => Array.AsReadOnly(s_LstMentalAttributes);
+        public static ReadOnlyCollection<string> MentalAttributes { get; } = Array.AsReadOnly(s_LstMentalAttributes);
 
         public static string GetAttributeEnglishName(string strAbbrev)
         {
@@ -757,15 +757,14 @@ namespace Chummer.Backend.Attributes
         public CharacterAttrib GetAttributeByName(string abbrev)
         {
             bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created && _objCharacter.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
-            CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute) ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
+            CharacterAttrib objReturn = AttributeList.FirstOrDefault(att => att.Abbrev == abbrev && (att.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter) == blnGetShifterAttribute)
+                                        ?? SpecialAttributeList.FirstOrDefault(att => att.Abbrev == abbrev);
             return objReturn;
         }
 
         public BindingSource GetAttributeBindingByName(string abbrev)
         {
-            if (_dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding))
-                return objAttributeBinding;
-            return null;
+            return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
         }
 
         internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
@@ -797,9 +796,12 @@ namespace Chummer.Backend.Attributes
 
         internal void Reset()
         {
-            foreach (CharacterAttrib objAttribute in AttributeList.Concat(SpecialAttributeList))
+            // Keeping enumerations separate reduces heap allocations
+            foreach (CharacterAttrib objAttribute in AttributeList)
                 objAttribute.UnbindAttribute();
             AttributeList.Clear();
+            foreach (CharacterAttrib objAttribute in SpecialAttributeList)
+                objAttribute.UnbindAttribute();
             SpecialAttributeList.Clear();
             foreach (string strAttribute in AttributeStrings)
             {
@@ -852,12 +854,12 @@ namespace Chummer.Backend.Attributes
         /// Character's Attributes.
         /// </summary>
         [HubTag(true)]
-        public List<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>();
+        public List<CharacterAttrib> AttributeList { get; } = new List<CharacterAttrib>(8);
 
         /// <summary>
         /// Character's Attributes.
         /// </summary>
-        public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>();
+        public List<CharacterAttrib> SpecialAttributeList { get; } = new List<CharacterAttrib>(4);
 
         public CharacterAttrib.AttributeCategory AttributeCategory
         {

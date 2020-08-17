@@ -78,5 +78,23 @@ namespace Chummer
             foreach (T objItem in lstToAdd)
                 AddWithSort(lstCollection, objItem, comparer, blnReverse);
         }
+
+        public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            if (lstCollection.Count == 0)
+                return;
+            if (index >= lstCollection.Count)
+                throw new ArgumentException(nameof(index));
+            if (count == 0)
+                throw new ArgumentException(nameof(count));
+            for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
+                lstCollection.RemoveAt(i);
+        }
     }
 }

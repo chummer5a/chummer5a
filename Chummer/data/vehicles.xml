@@ -8421,7 +8421,7 @@
       <modslots>0</modslots>
       <seats>0</seats>
     </vehicle>
-	<vehicle>
+    <vehicle>
       <id>cd05b23c-f14d-4d76-8037-ec5d99c90cb0</id>
       <name>Jena Robotnik Araneus</name>
       <page>59</page>
@@ -8446,7 +8446,7 @@
       <mods>
         <name>Gecko Grips (Drone)</name>
         <name rating="1">Realistic Features</name>
-		<name select="Engineering laser">Special Equipment</name>
+        <name select="Engineering laser">Special Equipment</name>
       </mods>
       <modslots>0</modslots>
       <seats>0</seats>
@@ -9634,7 +9634,7 @@
     <!-- Missing: EMC Kommodore (Would require adjustments in code,
          since it uses building block where each part receives part of the slots) -->
     <!-- End Region -->
-	<!-- Region Hamburg -->
+    <!-- Region Hamburg -->
     <vehicle>
       <id>18f41586-7f0f-4ca1-8881-eccdabc3351d</id>
       <name>MK R/Evolution</name>
@@ -10142,8 +10142,8 @@
       <seats>2</seats>
     </vehicle>
     <!-- End Region -->
-    <!-- Region SOTA 2080 -->	
-	<vehicle>
+    <!-- Region SOTA 2080 -->
+    <vehicle>
       <id>1b47defa-56d5-4827-b57b-2b4d7b1051a0</id>
       <name>BMW GGX Sandleopard</name>
       <page>15</page>
@@ -10246,7 +10246,446 @@
         </gear>
       </gears>
     </vehicle>
-    <!-- End Region -->	
+    <!-- End Region -->
+    <!-- Region Krime Katalog -->
+    <vehicle>
+      <id>6c20873e-12bf-44a0-951a-5f2ffb213e31</id>
+      <name>Krime Runner</name>
+      <page>28</page>
+      <source>KK</source>
+      <accel>1</accel>
+      <armor>1</armor>
+      <avail>9R</avail>
+      <body>2</body>
+      <category>Drones: Mini</category>
+      <cost>1000</cost>
+      <handling>1</handling>
+      <pilot>4</pilot>
+      <sensor>1</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle>
+      <id>86ed663b-e9c4-4c53-89b4-3f31e199f9a1</id>
+      <name>Krime Wageslave PMV</name>
+      <page>30</page>
+      <source>KK</source>
+      <accel>2</accel>
+      <armor>5</armor>
+      <avail>-</avail>
+      <body>4</body>
+      <category>Cars</category>
+      <cost>10000</cost>
+      <handling>2/1</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>1</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="1">Metahuman Adjustment</name>
+      </mods>
+      <seats>1</seats>
+    </vehicle>
+    <vehicle>
+      <id>c80237db-ed5c-4c10-8c39-44ab8e64905e</id>
+      <name>Krime Bazoo Basic</name>
+      <page>31</page>
+      <source>KK</source>
+      <accel>1</accel>
+      <armor>5</armor>
+      <avail>-</avail>
+      <body>9</body>
+      <category>Cars</category>
+      <cost>22000</cost>
+      <handling>2/1</handling>
+      <pilot>1</pilot>
+      <seats>4</seats>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="4">Metahuman Adjustment</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>3bdfcc6a-e572-42c6-8e7f-532cb89f3c4d</id>
+      <name>Krime Bazoo Redline</name>
+      <page>31</page>
+      <source>KK</source>
+      <accel>2</accel>
+      <armor>5</armor>
+      <avail>3</avail>
+      <body>9</body>
+      <category>Cars</category>
+      <cost>25000</cost>
+      <handling>2/1</handling>
+      <pilot>1</pilot>
+      <seats>4</seats>
+      <sensor>1</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="4">Metahuman Adjustment</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>7bf3059c-b426-4697-91ce-dc62008724bc</id>
+      <name>Krime Bazoo Chrome</name>
+      <page>31</page>
+      <source>KK</source>
+      <accel>2</accel>
+      <armor>5</armor>
+      <avail>7</avail>
+      <body>9</body>
+      <category>Cars</category>
+      <cost>40000</cost>
+      <handling>2/1</handling>
+      <pilot>1</pilot>
+      <seats>4</seats>
+      <sensor>1</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="4">Metahuman Adjustment</name>
+        <name rating="2" select="Chrome">Yerzed Out</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>5e931c14-5ff6-4713-a644-77a798c322d9</id>
+      <name>Krime Big Bazoo Basic</name>
+      <page>31</page>
+      <source>KK</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>4</avail>
+      <body>9</body>
+      <category>Cars</category>
+      <cost>23000</cost>
+      <handling>1/3</handling>
+      <pilot>1</pilot>
+      <seats>4</seats>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="4">Metahuman Adjustment</name>
+        <name>Off-Road Suspension</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>8537776b-6bd1-4cf0-afb5-0e6939ef98cc</id>
+      <name>Krime Big Bazoo Redline</name>
+      <page>31</page>
+      <source>KK</source>
+      <accel>5</accel>
+      <armor>6</armor>
+      <avail>5</avail>
+      <body>9</body>
+      <category>Cars</category>
+      <cost>26000</cost>
+      <handling>1/3</handling>
+      <pilot>1</pilot>
+      <seats>4</seats>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="4">Metahuman Adjustment</name>
+        <name>Off-Road Suspension</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>cfcda666-a149-462d-835e-624d4e4aef26</id>
+      <name>Krime Big Bazoo Chrome</name>
+      <page>31</page>
+      <source>KK</source>
+      <accel>2</accel>
+      <armor>6</armor>
+      <avail>10</avail>
+      <body>9</body>
+      <category>Cars</category>
+      <cost>45000</cost>
+      <handling>1/3</handling>
+      <pilot>1</pilot>
+      <seats>4</seats>
+      <sensor>1</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="4">Metahuman Adjustment</name>
+        <name rating="2" select="Chrome">Yerzed Out</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>39293426-e13e-45b6-beeb-94726d2335ec</id>
+      <name>Krime SV-2 'Crashtest'</name>
+      <page>32</page>
+      <source>KK</source>
+      <accel>2</accel>
+      <armor>9</armor>
+      <avail>12</avail>
+      <body>11</body>
+      <category>Cars</category>
+      <cost>120000</cost>
+      <handling>3/1</handling>
+      <pilot>3</pilot>
+      <seats>2</seats>
+      <sensor>3</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name rating="1">Life Support</name>
+        <name rating="2">Metahuman Adjustment</name>
+        <name rating="3">Passenger Protection System</name>
+        <name rating="4">Personal Armor</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>958a937f-d255-41dd-a2ec-7f70c2956112</id>
+      <name>Krime Prowler</name>
+      <page>34</page>
+      <source>KK</source>
+      <accel>3</accel>
+      <armor>12</armor>
+      <avail>21R</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>145000</cost>
+      <handling>3/3</handling>
+      <pilot>3</pilot>
+      <seats>4</seats>
+      <sensor>3</sensor>
+      <speed>6</speed>
+      <powertrainmodslots>-14</powertrainmodslots>
+      <protectionmodslots>-14</protectionmodslots>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name select="Driver">Gun Port</name>
+        <name select="Passenger">Gun Port</name>
+        <name rating="3">Passenger Protection System</name>
+        <name rating="6">Personal Armor</name>
+        <name>GridLink</name>
+        <name rating="4">Metahuman Adjustment</name>
+        <name>Multifuel Engine</name>
+        <name>Ram Plate</name>
+        <name>Rigger Interface</name>
+        <name>Road Strip Ejector</name>
+        <name select="Driver">Searchlight</name>
+        <name select="Passenger">Searchlight</name>
+        <name>Winch (Enhanced)</name>
+        <name rating="1">Yerzed Out</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>24a64f71-af10-4426-8ca0-cc1b843c7e2c</id>
+      <name>Krime DeTruck Sports Truck</name>
+      <page>35</page>
+      <source>KK</source>
+      <accel>1</accel>
+      <armor>7</armor>
+      <avail>21R</avail>
+      <body>16</body>
+      <category>Trucks</category> <!-- Catalog picture does NOT look like a truck, but w/e -->
+      <cost>100000</cost>
+      <handling>4/4</handling>
+      <pilot>3</pilot>
+      <seats>3</seats>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Middle)</name>
+        <name rating="3">Metahuman Adjustment</name>
+        <name select="Open box storage">Special Equipment</name>
+        <name rating="1">Yerzed Out</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>9f19cbf7-bd50-49a0-8a94-af64a65feb2e</id>
+      <name>Krime Dix Prime Mover</name>
+      <page>37</page>
+      <source>KK</source>
+      <accel>1</accel>
+      <armor>15</armor>
+      <avail>20</avail>
+      <body>21</body>
+      <category>Trucks</category>
+      <cost>200000</cost>
+      <handling>2/3</handling>
+      <pilot>4</pilot>
+      <seats>2</seats>
+      <sensor>4</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name rating="4">Metahuman Adjustment</name>
+        <name>Multifuel Engine</name>
+        <name select="Open box storage">Special Equipment</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>61cb015d-236b-4236-a91a-f8ef3b2842c2</id>
+      <name>Krime Barco de Pesca</name>
+      <page>38</page>
+      <source>KK</source>
+      <accel>2</accel>
+      <armor>6</armor>
+      <avail>12</avail>
+      <body>18</body>
+      <category>Boats</category>
+      <cost>50000</cost>
+      <handling>2/4</handling>
+      <pilot>1</pilot>
+      <seats>6</seats>
+      <sensor>1</sensor>
+      <speed>1/7</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="6">Metahuman Adjustment</name>
+        <name>Multifuel Engine</name>
+        <name>Satellite Link</name>
+        <name select="Fishing nets and lines">Special Equipment</name>
+        <name select="Oversized fish freezer">Special Equipment</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>8b4ff5d5-e6cd-4b92-b7e1-e780a6539602</id>
+      <name>Krime Euskaldunak Tankette</name>
+      <page>41</page>
+      <source>KK</source>
+      <accel>2</accel>
+      <armor>20</armor>
+      <avail>24F</avail>
+      <body>7</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>200000</cost>
+      <handling>4</handling>
+      <pilot>4</pilot>
+      <seats>1</seats>
+      <sensor>4</sensor>
+      <speed>4</speed>
+      <powertrainmodslots>-7</powertrainmodslots>
+      <protectionmodslots>-7</protectionmodslots>
+      <weaponmodslots>-7</weaponmodslots>
+      <bodymodslots>-7</bodymodslots>
+      <electromagneticmodslots>-7</electromagneticmodslots>
+      <cosmeticmodslots>-3</cosmeticmodslots>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Street)</name>
+        <name rating="1">Metahuman Adjustment</name>
+        <name>Rigger Cocoon</name>
+        <name>Rigger Interface</name>
+        <name>Searchlight</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy [SR5]</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
+          <size>Standard [SR5]</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
+    </vehicle>
+    <!-- End Region -->
   </vehicles>
   <mods>
     <!-- Region Vehicle Weapon Mount -->
@@ -12852,7 +13291,7 @@
       </required>
     </mod>
     <!-- End Region -->
-	<!-- Region Rigger 5.0 German -->
+    <!-- Region Rigger 5.0 German -->
     <mod>
       <id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
       <name>Ejection seat</name>

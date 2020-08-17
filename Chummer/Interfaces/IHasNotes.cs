@@ -42,7 +42,7 @@ namespace Chummer
             string strOldValue = objNotes.Notes;
             using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
             {
-                frmItemNotes.ShowDialog();
+                frmItemNotes.ShowDialog(Program.MainForm);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return false;
 
@@ -51,7 +51,7 @@ namespace Chummer
             if (objNotes.Notes != strOldValue)
             {
                 treNode.ForeColor = objNotes.PreferredColor;
-                treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+                treNode.ToolTipText = objNotes.Notes.WordWrap();
 
                 return true;
             }

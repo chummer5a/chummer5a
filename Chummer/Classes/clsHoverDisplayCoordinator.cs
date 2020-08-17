@@ -23,7 +23,7 @@ using System.Collections.Generic;
 namespace Chummer
 {
     /// <summary>
-    /// This class allows you to cordinate multiple controls in a group and fire
+    /// This class allows you to coordinate multiple controls in a group and fire
     /// an event when the mouse leaves that group
     /// </summary>
     public class HoverDisplayCoordinator
@@ -32,7 +32,7 @@ namespace Chummer
         private readonly List<Control> _controls;
 
         //If it have left once we don't want to do it again. This limits flexibility
-        //but we don't need general pourpose and this is easier to implement
+        //but we don't need general purpose and this is easier to implement
         private bool _left;
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Chummer
         public event EventHandler OnAllLeave;
 
         /// <summary>
-        /// Create a new HoverDisplayCordinator
+        /// Create a new HoverDisplayCoordinator
         /// </summary>
         public HoverDisplayCoordinator()
         {
@@ -49,7 +49,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Create a new HoverDisplayCordinator
+        /// Create a new HoverDisplayCoordinator
+        /// </summary>
+        public HoverDisplayCoordinator(int intCapacity)
+        {
+            _controls = new List<Control>(intCapacity);
+        }
+
+        /// <summary>
+        /// Create a new HoverDisplayCoordinator
         /// </summary>
         /// <param name="collection">A collection of controls to include</param>
         public HoverDisplayCoordinator(IEnumerable<Control> collection)
@@ -58,7 +66,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Has the mouse allready left the group of controls once?
+        /// Has the mouse already left the group of controls once?
         /// </summary>
         public bool Left => _left;
 
@@ -92,7 +100,7 @@ namespace Chummer
         //This is our custom event added to each control to check mouse leave
         void control_MouseLeave(object sender, EventArgs e)
         {
-            //If it have allready left we don't want to check again
+            //If it have already left we don't want to check again
             if(_left) return;
 
             foreach (Control control in _controls)
@@ -106,7 +114,7 @@ namespace Chummer
 
             _left = true;  //Don't do again flag
 
-              //remove everything we have a listner on. Might not be necesary but afraid of GC leak
+              //remove everything we have a listener on. Might not be necessary but afraid of GC leak
              //Anybody can test this by uncommenting the lines below and triggering 100000 of those
             //then checking if memory usage changed
             foreach (Control control in _controls)
@@ -114,7 +122,7 @@ namespace Chummer
                 control.MouseLeave -= control_MouseLeave;
             }
 
-            //Don't call if nothing suscribed
+            //Don't call if nothing subscribed
             OnAllLeave?.Invoke(sender, e);
 
             //As we don't call after this we don't need to store references to potential dead controls

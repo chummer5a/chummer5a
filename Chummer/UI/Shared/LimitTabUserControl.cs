@@ -49,12 +49,10 @@ namespace Chummer.UI.Shared
 
         private void LimitTabUserControl_Load(object sender, EventArgs e)
         {
-            if (_objCharacter != null) return;
-            if (ParentForm != null)
-                ParentForm.Cursor = Cursors.WaitCursor;
-            RealLoad();
-            if (ParentForm != null)
-                ParentForm.Cursor = Cursors.Default;
+            if (_objCharacter != null)
+                return;
+            using (new CursorWait(this))
+                RealLoad();
         }
 
         public void RealLoad()
@@ -67,14 +65,14 @@ namespace Chummer.UI.Shared
                 _objCharacter = new Character();
             }
 
-            lblPhysical.DoDatabinding("Text", _objCharacter, nameof(Character.LimitPhysical));
-            lblPhysical.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
-            lblMental.DoDatabinding("Text", _objCharacter, nameof(Character.LimitMental));
-            lblMental.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitMentalToolTip));
-            lblSocial.DoDatabinding("Text", _objCharacter, nameof(Character.LimitSocial));
-            lblSocial.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitSocialToolTip));
-            lblAstral.DoDatabinding("Text", _objCharacter, nameof(Character.LimitAstral));
-            lblAstral.DoDatabinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
+            lblPhysical.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitPhysical));
+            lblPhysical.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
+            lblMental.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitMental));
+            lblMental.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitMentalToolTip));
+            lblSocial.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitSocial));
+            lblSocial.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitSocialToolTip));
+            lblAstral.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitAstral));
+            lblAstral.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
 
             _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
             RefreshLimitModifiers();
@@ -145,7 +143,7 @@ namespace Chummer.UI.Shared
                     MakeDirty?.Invoke(null, null);
 
                     treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
-                    treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap(100);
+                    treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
                 }
             }
         }
@@ -178,7 +176,7 @@ namespace Chummer.UI.Shared
             if (objNotes.Notes == strOldValue)
                 return;
             treNode.ForeColor = objNotes.PreferredColor;
-            treNode.ToolTipText = objNotes.Notes.WordWrap(100);
+            treNode.ToolTipText = objNotes.Notes.WordWrap();
             MakeDirty?.Invoke(null,null);
         }
 
@@ -240,7 +238,7 @@ namespace Chummer.UI.Shared
                                 Tag = objImprovement.SourceName,
                                 ContextMenuStrip = cmsLimitModifierNotesOnly,
                                 ForeColor = objImprovement.PreferredColor,
-                                ToolTipText = objImprovement.Notes.WordWrap(100)
+                                ToolTipText = objImprovement.Notes.WordWrap()
                             };
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
@@ -311,7 +309,7 @@ namespace Chummer.UI.Shared
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            List<TreeNode> lstOldParentNodes = new List<TreeNode>();
+                            List<TreeNode> lstOldParentNodes = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);

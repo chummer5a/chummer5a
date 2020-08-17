@@ -5,6 +5,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="xs.TitleName.xslt"/>
 
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
 
   <xsl:template match="/characters/character">
@@ -138,7 +139,7 @@
             <tr>
               <td class="label"><xsl:value-of select="$lang.Description"/>:</td>
               <td colspan="2" style="text-align: justify">
-                <xsl:call-template name="PreserveLineBreaks">
+                <xsl:call-template name="PreserveHtml">
                   <xsl:with-param name="text" select="description" />
                 </xsl:call-template>
               </td>
@@ -147,10 +148,10 @@
             <tr>
               <td class="label"><xsl:value-of select="$lang.Notes"/>:</td>
               <td colspan="2" style="text-align: justify">
-                <xsl:call-template name="PreserveLineBreaks">
+                <xsl:call-template name="PreserveHtml">
                   <xsl:with-param name="text" select="notes" />
                 </xsl:call-template>
-                <xsl:call-template name="PreserveLineBreaks">
+                <xsl:call-template name="PreserveHtml">
                   <xsl:with-param name="text" select="gamenotes" />
                 </xsl:call-template>
               </td>
@@ -159,7 +160,7 @@
             <tr>
               <td class="label"><xsl:value-of select="$lang.Background"/>:</td>
               <td colspan="2" style="text-align: justify">
-                <xsl:call-template name="PreserveLineBreaks">
+                <xsl:call-template name="PreserveHtml">
                   <xsl:with-param name="text" select="background" />
                 </xsl:call-template>
               </td>

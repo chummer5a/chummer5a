@@ -80,67 +80,56 @@ namespace ChummerHub.Models.V1
             {
                 try
                 {
-
+                    List<SINner> groupmembers;
+                    /*
+                    = await (context.SINners.Include(a => a.MyGroup)
+                        .Include(a => a.SINnerMetaData)
+                        .Include(a => a.SINnerMetaData.Visibility)
+                        .Where(a => a.MyGroup.Id == Id && Id != null
+                                                       && (a.SINnerMetaData.Visibility.IsGroupVisible
+                                                           || a.SINnerMetaData.Visibility.IsPublic)).ToListAsync();
+                    */
+                    if (addTags)
                     {
-                        List<SINner> groupmembers = null;
-                        /*await (from a in context.SINners
-                                .Include(a => a.MyGroup)
-                                .Include(a => a.SINnerMetaData)
-                                .Include(a => a.SINnerMetaData.Visibility)
-                                            where a.MyGroup.Id == this.Id
-                                                  && this.Id != null
-                                                  && ((a.SINnerMetaData.Visibility.IsGroupVisible == true)
-                                                      || (a.SINnerMetaData.Visibility.IsPublic == true))
-                                            select a).ToListAsync();
-                        */
-                        if (addTags)
-                        {
-                            groupmembers = await (from a in context.SINners
-                                    .Include(a => a.MyGroup)
-                                    .Include(a => a.SINnerMetaData)
-                                    .Include(a => a.SINnerMetaData.Visibility)
-                                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                                    .Include(a => a.SINnerMetaData.Tags)
-                                    .ThenInclude(b => b.Tags)
-                                    .ThenInclude(b => b.Tags)
-                                    .ThenInclude(b => b.Tags)
-                                    .ThenInclude(b => b.Tags)
-                                    .ThenInclude(b => b.Tags)
-                                                  where a.MyGroup.Id == Id
-                                                        && Id != null
-                                                  select a).ToListAsync();
-                        }
-                        else
-                        {
-                            groupmembers = await (from a in context.SINners
-                                                      //.Include(a => a.MyGroup)
-                                                      .Include(a => a.SINnerMetaData)
-                                                      //.Include(a => a.MyExtendedAttributes)
-                                                      .Include(a => a.SINnerMetaData.Visibility)
-                                                      .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                                                  where a.MyGroup.Id == Id
-                                                  && Id != null
-                                                  select a).ToListAsync();
-                        }
-
-                        var res = groupmembers;
-                        foreach (var member in res)
-                        {
-                            //if (member.MyExtendedAttributes == null)
-                            //    member.MyExtendedAttributes = new SINnerExtended(member);
-                            if (member.SINnerMetaData == null)
-                                member.SINnerMetaData = new SINnerMetaData();
-                            if (member.SINnerMetaData.Tags == null)
-                                member.SINnerMetaData.Tags = new List<Tag>();
-                            if (member.SINnerMetaData.Visibility == null)
-                                member.SINnerMetaData.Visibility = new SINnerVisibility();
-                            if (member.SINnerMetaData.Visibility.UserRights == null)
-                                member.SINnerMetaData.Visibility.UserRights = new List<SINnerUserRight>();
-                        }
-                        t.Complete();
-                        return res;
-
+                        groupmembers = await context.SINners
+                            .Include(a => a.MyGroup)
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                            .Include(a => a.SINnerMetaData.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .ThenInclude(b => b.Tags)
+                            .Where(a => a.MyGroup.Id == Id && Id != null).ToListAsync();
                     }
+                    else
+                    {
+                        groupmembers = await context.SINners
+                            //.Include(a => a.MyGroup)
+                            .Include(a => a.SINnerMetaData)
+                            //.Include(a => a.MyExtendedAttributes)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                            .Where(a => a.MyGroup.Id == Id && Id != null).ToListAsync();
+                    }
+
+                    foreach (var member in groupmembers)
+                    {
+                        //if (member.MyExtendedAttributes == null)
+                        //    member.MyExtendedAttributes = new SINnerExtended(member);
+                        if (member.SINnerMetaData == null)
+                            member.SINnerMetaData = new SINnerMetaData();
+                        if (member.SINnerMetaData.Tags == null)
+                            member.SINnerMetaData.Tags = new List<Tag>();
+                        if (member.SINnerMetaData.Visibility == null)
+                            member.SINnerMetaData.Visibility = new SINnerVisibility();
+                        if (member.SINnerMetaData.Visibility.UserRights == null)
+                            member.SINnerMetaData.Visibility.UserRights = new List<SINnerUserRight>();
+                    }
+                    t.Complete();
+                    return groupmembers;
                 }
                 catch (Exception e)
                 {

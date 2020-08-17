@@ -308,7 +308,7 @@ namespace Chummer
                     try
                     {
                         Armor objTemp = new Armor(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
                         objTemp.Create(objXmlGear, 0, lstWeapons, true, true, true);
 
                         Type objType = objTemp.GetType();
@@ -351,7 +351,7 @@ namespace Chummer
                     try
                     {
                         ArmorMod objTemp = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
                         objTemp.Create(objXmlGear, 1, lstWeapons, true, true);
 
                         Type objType = objTemp.GetType();
@@ -405,7 +405,7 @@ namespace Chummer
                         try
                         {
                             Gear objTemp = new Gear(_objCharacter);
-                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
                             objTemp.Create(objXmlGear, 1, lstWeapons, string.Empty, false);
 
                             Type objType = objTemp.GetType();
@@ -470,8 +470,8 @@ namespace Chummer
                         try
                         {
                             Cyberware objTemp = new Cyberware(_objCharacter);
-                            List<Weapon> lstWeapons = new List<Weapon>();
-                            List<Vehicle> objVehicles = new List<Vehicle>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            List<Vehicle> objVehicles = new List<Vehicle>(1);
                             objTemp.Create(objXmlGear, objTestGrade, objSource, 1, lstWeapons, objVehicles, false);
 
                             Type objType = objTemp.GetType();
@@ -526,7 +526,7 @@ namespace Chummer
                         Application.DoEvents();
                         try
                         {
-                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objTemp = new Quality(_objCharacter);
                             objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
 
@@ -697,7 +697,7 @@ namespace Chummer
                             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                             {
                                 XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                                List<Weapon> lstWeapons = new List<Weapon>();
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = string.Empty;
                                 if (objXmlQualityItem.Attributes["select"] != null)
@@ -712,7 +712,7 @@ namespace Chummer
                             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                             {
                                 XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                                List<Weapon> lstWeapons = new List<Weapon>();
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = string.Empty;
                                 if (objXmlQualityItem.Attributes["select"] != null)
@@ -872,7 +872,7 @@ namespace Chummer
                                 string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
                                 XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
                                 Gear objGear = new Gear(_objCharacter);
-                                List<Weapon> lstWeapons = new List<Weapon>();
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
                                 objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
                                 objGear.Cost = "0";
                                 _objCharacter.Gear.Add(objGear);

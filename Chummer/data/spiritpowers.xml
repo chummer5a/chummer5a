@@ -377,11 +377,6 @@
       <page>257</page>
     </power>
     <power>
-      <name>Storm</name>
-      <source>SR5</source>
-      <page>256</page>
-    </power>
-    <power>
       <name>Electron Storm</name>
       <source>SR5</source>
       <page>257</page>
@@ -393,11 +388,6 @@
     </power>
     <power>
       <name>Hash</name>
-      <source>SR5</source>
-      <page>256</page>
-    </power>
-    <power>
-      <name>Storm</name>
       <source>SR5</source>
       <page>257</page>
     </power>

@@ -3,7 +3,7 @@ branches:
   only:
   - master
 skip_tags: true
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 
@@ -115,9 +115,5 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
-#test:
-  # all except assemblies to test
-#  assemblies:
-#    except:
-#      - ChummerHub.Client.Tests.dll
-#      - '**\ChummerHub.Client.Tests.dll'
+test_script:
+- cmd: vstest.console /logger:Appveyor "%APPVEYOR_BUILD_FOLDER%\Chummer.Tests\bin\Release\Chummer.Tests.dll"

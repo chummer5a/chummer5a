@@ -76,7 +76,7 @@ namespace Chummer.UI.Editors
             this.tsControls.Location = new System.Drawing.Point(0, 0);
             this.tsControls.Name = "tsControls";
             this.tsControls.Padding = new System.Windows.Forms.Padding(3);
-            this.tsControls.Size = new System.Drawing.Size(480, 29);
+            this.tsControls.Size = new System.Drawing.Size(325, 29);
             this.tsControls.Stretch = true;
             this.tsControls.TabIndex = 0;
             // 
@@ -134,7 +134,7 @@ namespace Chummer.UI.Editors
             // tss1
             // 
             this.tss1.Name = "tss1";
-            this.tss1.Size = new System.Drawing.Size(6, 25);
+            this.tss1.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbFont
             // 
@@ -172,7 +172,7 @@ namespace Chummer.UI.Editors
             // tss2
             // 
             this.tss2.Name = "tss2";
-            this.tss2.Size = new System.Drawing.Size(6, 25);
+            this.tss2.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbAlignLeft
             // 
@@ -216,7 +216,7 @@ namespace Chummer.UI.Editors
             // tss3
             // 
             this.tss3.Name = "tss3";
-            this.tss3.Size = new System.Drawing.Size(6, 25);
+            this.tss3.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbUnorderedList
             // 
@@ -266,7 +266,7 @@ namespace Chummer.UI.Editors
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(480, 120);
+            this.tlpMain.Size = new System.Drawing.Size(325, 60);
             this.tlpMain.TabIndex = 1;
             // 
             // rtbContent
@@ -277,7 +277,7 @@ namespace Chummer.UI.Editors
             this.rtbContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbContent.Location = new System.Drawing.Point(3, 32);
             this.rtbContent.Name = "rtbContent";
-            this.rtbContent.Size = new System.Drawing.Size(474, 85);
+            this.rtbContent.Size = new System.Drawing.Size(319, 25);
             this.rtbContent.TabIndex = 1;
             this.rtbContent.TabStop = false;
             this.rtbContent.Text = "";
@@ -288,14 +288,15 @@ namespace Chummer.UI.Editors
             // 
             // RtfEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
-            this.MinimumSize = new System.Drawing.Size(0, 120);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MinimumSize = new System.Drawing.Size(0, 60);
             this.Name = "RtfEditor";
-            this.Size = new System.Drawing.Size(480, 120);
+            this.Size = new System.Drawing.Size(325, 60);
             this.tsControls.ResumeLayout(false);
             this.tsControls.PerformLayout();
             this.tlpMain.ResumeLayout(false);

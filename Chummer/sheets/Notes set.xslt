@@ -13,6 +13,7 @@
   <xsl:include href="xt.Metamagics.xslt"/>
   <xsl:include href="xt.Notes.xslt"/>
   <xsl:include href="xt.Nothing2Show.xslt"/>
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
   <xsl:include href="xt.Qualities.xslt"/>
   <xsl:include href="xt.RowSummary.xslt"/>

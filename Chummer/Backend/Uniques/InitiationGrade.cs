@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -63,6 +64,27 @@ namespace Chummer
             _blnGroup = blnGroup;
             _blnOrdeal = blnOrdeal;
             _blnSchooling = blnSchooling;
+            //TODO: I'm not happy with this.
+            //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
+            //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
+            //Whichever value is lower becomes the value of the improvement.
+            if (intGrade > 0 && blnTechnomancer && _objCharacter.TechnomancerEnabled && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue
+                && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
+            {
+                decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
+                int intResonanceRecovered = (int)Math.Min(Math.Ceiling(0.5m * intGrade),
+                     Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
+                        ? Math.Ceiling(_objCharacter.CyberwareEssence)
+                        : Math.Floor(_objCharacter.CyberwareEssence));
+                // Cannot increase RES to be more than what it would be without any Essence loss.
+                intResonanceRecovered = _objCharacter.Options.ESSLossReducesMaximumOnly
+                    ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - _objCharacter.RES.TotalMaximum)
+                    // +1 compared to normal because this Grade's effect has not been processed yet.
+                    : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() + 1 - _objCharacter.RES.Value);
+                ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
+                    _guiID.ToString("D", GlobalOptions.InvariantCultureInfo),
+                    Improvement.ImprovementType.Attribute, string.Empty, intResonanceRecovered, 1, 0, 0, intResonanceRecovered);
+            }
         }
 
         /// <summary>
@@ -112,6 +134,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("initiationgrade");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("group", Group.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalOptions.InvariantCultureInfo));
@@ -276,7 +299,7 @@ namespace Chummer
                 Text = Text(GlobalOptions.Language),
                 Tag = this,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
             return objNode;
         }
@@ -305,12 +328,9 @@ namespace Chummer
 
                 if (blnConfirmDelete)
                 {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade",
-                        GlobalOptions.Language)))
+                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
                         return false;
                 }
-
-                _objCharacter.InitiationGrades.Remove(this);
             }
             else if (_objCharacter.RESEnabled)
             {
@@ -322,15 +342,16 @@ namespace Chummer
 
                 if (blnConfirmDelete)
                 {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade",
-                        GlobalOptions.Language)))
+                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
                         return false;
                 }
 
-                _objCharacter.InitiationGrades.Remove(this);
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             }
             else
                 return false;
+
+            _objCharacter.InitiationGrades.Remove(this);
             return true;
         }
 

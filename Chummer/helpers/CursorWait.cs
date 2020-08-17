@@ -24,76 +24,84 @@ namespace Chummer
 {
     public class CursorWait : IDisposable
     {
-        readonly UserControl _control;
-        readonly Form _form;
-        public CursorWait(bool appStarting = false, UserControl control = null)
+        private static bool _blnTopMostWaitCursor;
+        private readonly bool _blnOldUseWaitCursor;
+        private readonly bool _blnControlIsForm;
+        private readonly Control _objControl;
+        private readonly Cursor _objOldCursor;
+        private readonly Form _objControlTopParent;
+        private readonly Cursor _objOldCursorTopParent;
+        public CursorWait(Control objControl = null, bool blnAppStarting = false)
         {
             // Wait
-            _control = control;
-            Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            Program.MainForm.DoThreadSafe(() =>
+            _objControl = objControl;
+            if (_objControl?.IsDisposed != false)
             {
-                if (_control == null)
+                if (!_blnTopMostWaitCursor)
+                {
+                    _blnTopMostWaitCursor = true;
+                    _blnOldUseWaitCursor = Application.UseWaitCursor;
                     Application.UseWaitCursor = true;
-                else
-                    _control.Cursor = Cursor.Current;
-            });
-        }
-
-        public CursorWait(bool appStarting = false)
-        {
-            Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            Program.MainForm.DoThreadSafe(() =>
+                }
+            }
+            else
             {
-                Application.UseWaitCursor = true;
-            });
-        }
+                _blnControlIsForm = objControl is Form;
+                Cursor objNewCursor = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
+                if (objNewCursor != Cursors.AppStarting && !_blnControlIsForm)
+                {
+                    if (_objControl is UserControl objUserControl)
+                    {
+                        _objControlTopParent = objUserControl.ParentForm;
+                    }
+                    else
+                    {
+                        for (Control objLoop = _objControl.Parent; objLoop != null; objLoop = objLoop.Parent)
+                        {
+                            if (objLoop is Form objLoopForm)
+                            {
+                                _objControlTopParent = objLoopForm;
+                                break;
+                            }
+                        }
+                    }
 
-        public CursorWait(bool appStarting = false, Form form = null)
-        {
-            // Wait
-            _form = form;
-            Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-            Program.MainForm.DoThreadSafe(() =>
-            {
-                if (_form == null)
-                    Application.UseWaitCursor = true;
-                else
-                    _form.Cursor = Cursor.Current;
-            });
-        }
+                    _objOldCursorTopParent = _objControlTopParent?.Cursor ?? Cursors.Default;
+                }
 
-        ~CursorWait()
-        {
-            Dispose(false);
+                _objOldCursor = _objControl.Cursor;
+                _objControl.DoThreadSafe(() => _objControl.Cursor = objNewCursor);
+                _objControlTopParent.DoThreadSafe(() => _objControlTopParent.Cursor = objNewCursor);
+                if (_blnControlIsForm)
+                    _objControl.SuspendLayout();
+            }
         }
 
         private bool _blnDisposed;
-        protected virtual void Dispose(bool blnDisposing)
-        {
-            if (_blnDisposed) return;
-
-            if (blnDisposing)
-            {
-                Program.MainForm.DoThreadSafe(() =>
-                {
-                    // Reset
-                    Cursor.Current = Cursors.Default;
-                    Application.UseWaitCursor = false;
-                    if (_control != null)
-                        _control.Cursor = Cursors.Default;
-                    if (_form != null)
-                        _form.Cursor = Cursors.Default;
-                });
-            }
-
-            _blnDisposed = true;
-        }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (_blnDisposed)
+                return;
+
+            if (_objControlTopParent?.IsDisposed == false)
+                _objControlTopParent.DoThreadSafe(() => _objControlTopParent.Cursor = _objOldCursorTopParent);
+            if (_objControl?.IsDisposed != false)
+            {
+                if (_blnTopMostWaitCursor)
+                {
+                    _blnTopMostWaitCursor = false;
+                    Application.UseWaitCursor = _blnOldUseWaitCursor;
+                }
+            }
+            else
+            {
+                _objControl.DoThreadSafe(() => _objControl.Cursor = _objOldCursor);
+                if (_blnControlIsForm)
+                    _objControl.ResumeLayout();
+            }
+
+            _blnDisposed = true;
         }
     }
 }

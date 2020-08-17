@@ -103,8 +103,8 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
@@ -197,7 +197,7 @@ namespace Chummer
 
                 string strRatingLabel = xmlArmor.SelectSingleNode("ratinglabel")?.Value;
                 lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                         LanguageManager.GetString(strRatingLabel))
                     : LanguageManager.GetString("Label_Rating");
             }
@@ -426,7 +426,7 @@ namespace Chummer
                             }
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= Environment.NewLine.Length;
-                            SourceString strSource = new SourceString(objArmor.Source, objArmor.DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+                            SourceString strSource = new SourceString(objArmor.Source, objArmor.DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
                             NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
 
                             tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail, strAccessories.ToString(), strSource, strCost);
@@ -482,14 +482,14 @@ namespace Chummer
                     {
                         // Add after sort so that it's always at the end
                         lstArmors.Add(new ListItem(string.Empty,
-                            LanguageManager.GetString("String_RestrictedItemsHidden")
-                            .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                                intOverLimit)));
                     }
                     _blnLoading = true;
                     string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();
-                    lstArmor.ValueMember = "Value";
-                    lstArmor.DisplayMember = "Name";
+                    lstArmor.ValueMember = nameof(ListItem.Value);
+                    lstArmor.DisplayMember = nameof(ListItem.Name);
                     lstArmor.DataSource = lstArmors;
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))

@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Chummer
 {
@@ -27,15 +26,15 @@ namespace Chummer
     /// This class is for managing directed graphs where each node is an object and each directed edge points from a given object to another object on which the first depends.
     /// When changing an object, this allows for any and all objects that depend on the first in some way to be fetched.
     /// </summary>
-    public sealed class DependencyGraph<T>
+    public sealed class DependencyGraph<T, T2>
     {
         /// <summary>
         /// Initializes a directed graph of dependent items based on a blueprint specified in the constructor.
         /// </summary>
         /// <param name="lstGraphNodes">Blueprints of nodes that should be followed when constructing the DependencyGraph. Make sure you use the correct DependencyGraphNode constructor!</param>
-        public DependencyGraph(params DependencyGraphNode<T>[] lstGraphNodes)
+        public DependencyGraph(params DependencyGraphNode<T, T2>[] lstGraphNodes)
         {
-            foreach (DependencyGraphNode<T> objGraphNode in lstGraphNodes)
+            foreach (DependencyGraphNode<T, T2> objGraphNode in lstGraphNodes)
             {
                 TryAddCopyToDictionary(objGraphNode);
             }
@@ -45,17 +44,21 @@ namespace Chummer
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
         /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
         /// </summary>
+        /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        public ICollection<T> GetWithAllDependents(T objKey)
+        public HashSet<T> GetWithAllDependents(T2 objParentInstance, T objKey)
         {
             HashSet<T> objReturn = new HashSet<T>();
-            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T> objLoopNode))
+            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
             {
                 if (objReturn.Add(objLoopNode.MyObject))
                 {
-                    foreach (DependencyGraphNode<T> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependencyCondition?.Invoke() != false).Select(x => x.Node))
+                    foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                     {
-                        CollectDependents(objDependant.MyObject, objReturn);
+                        if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
+                        {
+                            CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
+                        }
                     }
                 }
             }
@@ -68,17 +71,22 @@ namespace Chummer
         /// <summary>
         /// Collects the current key's object and all objects that depend on the current key into an ever-growing HashSet.
         /// </summary>
+        /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        /// <param name="objReturn">HashSet containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
-        private void CollectDependents(T objKey, HashSet<T> objReturn)
+        /// <param name="objReturn">Collection containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
+        private void CollectDependents(T2 objParentInstance, T objKey, ICollection<T> objReturn)
         {
-            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T> objLoopNode))
+            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
             {
-                if (objReturn.Add(objLoopNode.MyObject))
+                if (!objReturn.Contains(objLoopNode.MyObject))
                 {
-                    foreach (DependencyGraphNode<T> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependencyCondition?.Invoke() != false).Select(x => x.Node))
+                    objReturn.Add(objLoopNode.MyObject);
+                    foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                     {
-                        CollectDependents(objDependant.MyObject, objReturn);
+                        if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
+                        {
+                            CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
+                        }
                     }
                 }
             }
@@ -88,73 +96,77 @@ namespace Chummer
         /// Returns an enumerable containing the current key's object and all objects that depend on the current key.
         /// Warning: DependencyGraphs with any cycles will cause this method to never terminate!
         /// </summary>
+        /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        public IEnumerable<T> GetWithAllDependentsUnsafe(T objKey)
+        public IEnumerable<T> GetWithAllDependentsUnsafe(T2 objParentInstance, T objKey)
         {
-            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T> objLoopNode))
+            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
             {
                 yield return objLoopNode.MyObject;
-                foreach (DependencyGraphNode<T> objDependant in objLoopNode.UpStreamNodes.Where(x => x.DependencyCondition?.Invoke() != false).Select(x => x.Node))
+                foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                 {
-                    foreach (T objDependantObject in GetWithAllDependentsUnsafe(objDependant.MyObject))
+                    if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
                     {
-                        yield return objDependantObject;
+                        foreach (T objDependantObject in GetWithAllDependentsUnsafe(objParentInstance, objNode.Node.MyObject))
+                        {
+                            yield return objDependantObject;
+                        }
                     }
                 }
             }
         }
 
-        private readonly Dictionary<T, DependencyGraphNode<T>> _dicNodeDictionary = new Dictionary<T, DependencyGraphNode<T>>();
+        private readonly Dictionary<T, DependencyGraphNode<T, T2>> _dicNodeDictionary = new Dictionary<T, DependencyGraphNode<T, T2>>();
         /// <summary>
         /// Dictionary of nodes in the graph. This is where the graph is actually stored, and doubles as a fast way to get any node in the graph.
         /// It's an IReadOnlyDictionary because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.
         /// </summary>
-        public IReadOnlyDictionary<T, DependencyGraphNode<T>> NodeDictionary => _dicNodeDictionary;
+        public IReadOnlyDictionary<T, DependencyGraphNode<T, T2>> NodeDictionary => _dicNodeDictionary;
 
         /// <summary>
         /// Attempts to add a copy of a DependencyGraphNode to the internal dictionary.
         /// </summary>
         /// <param name="objDependencyGraphNode"></param>
         /// <returns></returns>
-        public DependencyGraphNode<T> TryAddCopyToDictionary(DependencyGraphNode<T> objDependencyGraphNode)
+        public DependencyGraphNode<T, T2> TryAddCopyToDictionary(DependencyGraphNode<T, T2> objDependencyGraphNode)
         {
             if (objDependencyGraphNode == null)
                 throw new ArgumentNullException(nameof(objDependencyGraphNode));
             T objLoopKey = objDependencyGraphNode.MyObject;
-            if (!NodeDictionary.TryGetValue(objLoopKey, out DependencyGraphNode<T> objExistingValue))
+            if (!NodeDictionary.TryGetValue(objLoopKey, out DependencyGraphNode<T, T2> objExistingValue))
             {
-                objExistingValue = new DependencyGraphNode<T>(objLoopKey, this);
+                objExistingValue = new DependencyGraphNode<T, T2>(objLoopKey, this);
                 // This is the first time the DependencyGraphNode object was attempted to be added to the dictionary, so don't do anything extra
                 _dicNodeDictionary.Add(objLoopKey, objExistingValue);
             }
 
             // Attempt to add all descendants of the current DependencyGraphNode to the SearchDictionary
-            foreach (DependencyGraphNodeWithCondition<T> objDownStreamNode in objDependencyGraphNode.DownStreamNodes)
+            foreach (DependencyGraphNodeWithCondition<T, T2> objDownStreamNode in objDependencyGraphNode.DownStreamNodes)
             {
-                if (!NodeDictionary.TryGetValue(objDownStreamNode.Node.MyObject, out DependencyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
+                if (!NodeDictionary.TryGetValue(objDownStreamNode.Node.MyObject, out DependencyGraphNode<T, T2> objLoopValue) || !objLoopValue.Initializing)
                 {
                     bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = true;
-                    DependencyGraphNode<T> objDownStreamNodeCopy = TryAddCopyToDictionary(objDownStreamNode.Node);
-                    objExistingValue.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(objDownStreamNodeCopy, objDownStreamNode.DependencyCondition));
-                    objDownStreamNodeCopy.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(objExistingValue, objDownStreamNode.DependencyCondition));
+                    DependencyGraphNode<T, T2> objDownStreamNodeCopy = TryAddCopyToDictionary(objDownStreamNode.Node);
+                    objExistingValue.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNodeCopy, objDownStreamNode.DependencyCondition));
+                    objDownStreamNodeCopy.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objExistingValue, objDownStreamNode.DependencyCondition));
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = false;
                 }
             }
 
             // Attempt to add all dependents of the current DependencyGraphNode to the SearchDictionary
-            foreach (DependencyGraphNodeWithCondition<T> objUpStreamNode in objDependencyGraphNode.UpStreamNodes)
+            foreach (DependencyGraphNodeWithCondition<T, T2> objUpStreamNode in objDependencyGraphNode.UpStreamNodes)
             {
-                if (!NodeDictionary.TryGetValue(objUpStreamNode.Node.MyObject, out DependencyGraphNode<T> objLoopValue) || !objLoopValue.Initializing)
+                if (!NodeDictionary.TryGetValue(objUpStreamNode.Node.MyObject, out DependencyGraphNode<T, T2> objLoopValue) || !objLoopValue.Initializing)
                 {
                     bool blnTempLoopValueInitializing = objLoopValue?.Initializing == false;
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = true;
-                    DependencyGraphNode<T> objUpStreamNodeCopy = TryAddCopyToDictionary(objUpStreamNode.Node);
-                    objExistingValue.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(objUpStreamNodeCopy, objUpStreamNode.DependencyCondition));
-                    objUpStreamNodeCopy.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T>(objExistingValue, objUpStreamNode.DependencyCondition));
+                    DependencyGraphNode<T, T2> objUpStreamNodeCopy = TryAddCopyToDictionary(objUpStreamNode.Node);
+                    objExistingValue.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objUpStreamNodeCopy, objUpStreamNode.DependencyCondition));
+                    objUpStreamNodeCopy.DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objExistingValue, objUpStreamNode.DependencyCondition));
                     if (blnTempLoopValueInitializing)
                         objLoopValue.Initializing = false;
                 }

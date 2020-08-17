@@ -42,20 +42,19 @@ namespace Chummer
             this.lblPercent = new System.Windows.Forms.Label();
             this.chkKarmaNuyenExchange = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpAmount = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.chkForceCareerVisible = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.flpAmount.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblKarma
             // 
-            this.lblKarma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarma.AutoSize = true;
             this.lblKarma.Location = new System.Drawing.Point(3, 6);
             this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -64,12 +63,12 @@ namespace Chummer
             this.lblKarma.TabIndex = 0;
             this.lblKarma.Tag = "Label_Expense_KarmaAmount";
             this.lblKarma.Text = "Karma Amount:";
+            this.lblKarma.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // nudAmount
             // 
-            this.nudAmount.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudAmount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudAmount.AutoSize = true;
             this.nudAmount.Location = new System.Drawing.Point(3, 3);
             this.nudAmount.Maximum = new decimal(new int[] {
             9999999,
@@ -82,7 +81,7 @@ namespace Chummer
             0,
             0});
             this.nudAmount.Name = "nudAmount";
-            this.nudAmount.Size = new System.Drawing.Size(84, 20);
+            this.nudAmount.Size = new System.Drawing.Size(65, 20);
             this.nudAmount.TabIndex = 1;
             this.nudAmount.Value = new decimal(new int[] {
             1,
@@ -92,31 +91,29 @@ namespace Chummer
             // 
             // lblDescription
             // 
-            this.lblDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDescription.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(19, 57);
+            this.lblDescription.Location = new System.Drawing.Point(19, 58);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(63, 14);
+            this.lblDescription.Size = new System.Drawing.Size(63, 13);
             this.lblDescription.TabIndex = 6;
             this.lblDescription.Tag = "Label_Expense_Description";
             this.lblDescription.Text = "Description:";
+            this.lblDescription.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtDescription
             // 
-            this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDescription.Location = new System.Drawing.Point(88, 54);
+            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDescription.Location = new System.Drawing.Point(88, 55);
             this.txtDescription.Name = "txtDescription";
-            this.txtDescription.Size = new System.Drawing.Size(278, 20);
+            this.txtDescription.Size = new System.Drawing.Size(355, 20);
             this.txtDescription.TabIndex = 7;
             this.txtDescription.Text = "Mission Reward";
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(0, 0);
@@ -131,7 +128,7 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
             this.cmdOK.Location = new System.Drawing.Point(81, 0);
             this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -145,11 +142,9 @@ namespace Chummer
             // 
             // chkRefund
             // 
-            this.chkRefund.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkRefund.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRefund.AutoSize = true;
             this.chkRefund.Location = new System.Drawing.Point(88, 81);
-            this.chkRefund.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkRefund.Name = "chkRefund";
             this.chkRefund.Size = new System.Drawing.Size(275, 17);
             this.chkRefund.TabIndex = 8;
@@ -159,43 +154,40 @@ namespace Chummer
             // 
             // datDate
             // 
-            this.datDate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.datDate.CustomFormat = "ddddd, MMMM dd, yyyy hh:mm tt";
+            this.datDate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.datDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.datDate.Location = new System.Drawing.Point(88, 28);
+            this.datDate.Location = new System.Drawing.Point(88, 29);
             this.datDate.Name = "datDate";
-            this.datDate.Size = new System.Drawing.Size(278, 20);
+            this.datDate.Size = new System.Drawing.Size(355, 20);
             this.datDate.TabIndex = 5;
             // 
             // lblDateLabel
             // 
-            this.lblDateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDateLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDateLabel.AutoSize = true;
-            this.lblDateLabel.Location = new System.Drawing.Point(49, 31);
+            this.lblDateLabel.Location = new System.Drawing.Point(49, 32);
             this.lblDateLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDateLabel.Name = "lblDateLabel";
-            this.lblDateLabel.Size = new System.Drawing.Size(33, 14);
+            this.lblDateLabel.Size = new System.Drawing.Size(33, 13);
             this.lblDateLabel.TabIndex = 4;
             this.lblDateLabel.Tag = "Label_Expense_Date";
             this.lblDateLabel.Text = "Date:";
+            this.lblDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // nudPercent
             // 
-            this.nudPercent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudPercent.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudPercent.AutoSize = true;
             this.nudPercent.DecimalPlaces = 2;
-            this.nudPercent.Location = new System.Drawing.Point(93, 3);
+            this.nudPercent.Location = new System.Drawing.Point(74, 3);
             this.nudPercent.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.nudPercent.Name = "nudPercent";
-            this.nudPercent.Size = new System.Drawing.Size(84, 20);
+            this.nudPercent.Size = new System.Drawing.Size(56, 20);
             this.nudPercent.TabIndex = 2;
             this.nudPercent.Value = new decimal(new int[] {
             100,
@@ -206,20 +198,22 @@ namespace Chummer
             // 
             // lblPercent
             // 
+            this.lblPercent.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPercent.AutoSize = true;
-            this.lblPercent.Location = new System.Drawing.Point(183, 6);
+            this.lblPercent.Location = new System.Drawing.Point(136, 6);
             this.lblPercent.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPercent.Name = "lblPercent";
             this.lblPercent.Size = new System.Drawing.Size(15, 13);
             this.lblPercent.TabIndex = 3;
             this.lblPercent.Text = "%";
+            this.lblPercent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblPercent.Visible = false;
             // 
             // chkKarmaNuyenExchange
             // 
+            this.chkKarmaNuyenExchange.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarmaNuyenExchange.AutoSize = true;
-            this.chkKarmaNuyenExchange.Location = new System.Drawing.Point(88, 106);
-            this.chkKarmaNuyenExchange.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkKarmaNuyenExchange.Location = new System.Drawing.Point(88, 104);
             this.chkKarmaNuyenExchange.Name = "chkKarmaNuyenExchange";
             this.chkKarmaNuyenExchange.Size = new System.Drawing.Size(161, 17);
             this.chkKarmaNuyenExchange.TabIndex = 11;
@@ -242,8 +236,8 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.datDate, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.txtDescription, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.flpAmount, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.flpButtons, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.chkForceCareerVisible, 1, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
@@ -256,39 +250,42 @@ namespace Chummer
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(369, 180);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 183);
             this.tableLayoutPanel1.TabIndex = 12;
             // 
-            // flowLayoutPanel2
+            // flpAmount
             // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Controls.Add(this.nudAmount);
-            this.flowLayoutPanel2.Controls.Add(this.nudPercent);
-            this.flowLayoutPanel2.Controls.Add(this.lblPercent);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(85, 0);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(284, 25);
-            this.flowLayoutPanel2.TabIndex = 13;
+            this.flpAmount.AutoSize = true;
+            this.flpAmount.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpAmount.Controls.Add(this.nudAmount);
+            this.flpAmount.Controls.Add(this.nudPercent);
+            this.flpAmount.Controls.Add(this.lblPercent);
+            this.flpAmount.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpAmount.Location = new System.Drawing.Point(85, 0);
+            this.flpAmount.Margin = new System.Windows.Forms.Padding(0);
+            this.flpAmount.Name = "flpAmount";
+            this.flpAmount.Size = new System.Drawing.Size(361, 26);
+            this.flpAmount.TabIndex = 13;
             // 
-            // flowLayoutPanel1
+            // flpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(210, 154);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel1.TabIndex = 12;
+            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.SetColumnSpan(this.flpButtons, 2);
+            this.flpButtons.Controls.Add(this.cmdOK);
+            this.flpButtons.Controls.Add(this.cmdCancel);
+            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpButtons.Location = new System.Drawing.Point(287, 157);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(156, 23);
+            this.flpButtons.TabIndex = 12;
             // 
             // chkForceCareerVisible
             // 
+            this.chkForceCareerVisible.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkForceCareerVisible.AutoSize = true;
-            this.chkForceCareerVisible.Location = new System.Drawing.Point(88, 130);
+            this.chkForceCareerVisible.Location = new System.Drawing.Point(88, 127);
             this.chkForceCareerVisible.Name = "chkForceCareerVisible";
             this.chkForceCareerVisible.Size = new System.Drawing.Size(167, 17);
             this.chkForceCareerVisible.TabIndex = 11;
@@ -303,11 +300,12 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(387, 198);
+            this.ClientSize = new System.Drawing.Size(464, 201);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(640, 10000);
             this.MinimizeBox = false;
             this.Name = "frmExpense";
             this.Padding = new System.Windows.Forms.Padding(9);
@@ -320,10 +318,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.flpAmount.ResumeLayout(false);
+            this.flpAmount.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -344,8 +342,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblPercent;
         private System.Windows.Forms.CheckBox chkKarmaNuyenExchange;
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
+        private System.Windows.Forms.FlowLayoutPanel flpAmount;
         private System.Windows.Forms.CheckBox chkForceCareerVisible;
     }
 }

@@ -17,6 +17,7 @@
   <xsl:include href="xt.Lifestyles.xslt"/>
   <xsl:include href="xt.MovementRate.xslt"/>
   <xsl:include href="xt.Notes.xslt"/>
+  <xsl:include href="xt.PreserveHtml.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
   <xsl:include href="xt.Qualities.xslt"/>
   <xsl:include href="xt.RangedWeapons.xslt"/>
@@ -167,6 +168,23 @@
                 </td>
                 <td width="16.67%"><xsl:value-of select="totalpublicawareness"/></td>
               </tr>
+              <xsl:if test="totalastralreputation != '0' or totalwildreputation != '0'">
+                <tr>
+                  <td width="16.66%" class="upper">
+                    <xsl:value-of select="$lang.AstralReputation"/>:
+                  </td>
+                  <td width="16.67%">
+                    <xsl:value-of select="totalastralreputation"/>
+                  </td>
+                  <td width="16.67%" class="upper">
+                    <xsl:value-of select="$lang.WildReputation"/>:
+                  </td>
+                  <td width="16.67%">
+                    <xsl:value-of select="totalwildreputation"/>
+                  </td>
+                  <td width="33.33%" class="upper" colspan="2" />
+                </tr>
+              </xsl:if>
               <tr>
                 <td width="16.66%" class="upper">
                   <xsl:value-of select="$lang.Composure"/>:

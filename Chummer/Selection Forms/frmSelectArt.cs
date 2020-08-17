@@ -178,8 +178,8 @@ namespace Chummer
             string strOldSelected = lstArt.SelectedValue?.ToString();
             _blnLoading = true;
             lstArt.BeginUpdate();
-            lstArt.ValueMember = "Value";
-            lstArt.DisplayMember = "Name";
+            lstArt.ValueMember = nameof(ListItem.Value);
+            lstArt.DisplayMember = nameof(ListItem.Name);
             lstArt.DataSource = lstArts;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

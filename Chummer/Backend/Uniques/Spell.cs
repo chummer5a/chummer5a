@@ -123,7 +123,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -218,10 +218,14 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("spell");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             if (Limited)
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("String_SpellLimited", strLanguageToPrint) + ')');
+                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
+                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellLimited", strLanguageToPrint)));
             else if (Alchemical)
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint) + '(' + LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint) + ')');
+                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
+                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint)));
             else
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -296,7 +300,7 @@ namespace Chummer
             set => _strDescriptors = value;
         }
 
-        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.Split(',').AsEnumerable());
+        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
 
         /// <summary>
         /// Translated Descriptors.
@@ -442,8 +446,9 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force") + strSpace + i.ToString(GlobalOptions.CultureInfo)
-                                      + LanguageManager.GetString("String_Colon") + strSpace + intDV);
+                        strTip.AppendLine().Append(LanguageManager.GetString("String_Force"))
+                            .Append(strSpace).Append(i.ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_Colon"))
+                            .Append(strSpace).Append(intDV.ToString(GlobalOptions.CultureInfo));
 
                         string strLabelFormat = strSpace + "({0}" + LanguageManager.GetString("String_Colon") + strSpace + "{1})";
                         if (Limited)
@@ -465,10 +470,11 @@ namespace Chummer
 
                 List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).ToList();
                 if (lstDrainImprovements.Count <= 0) return strTip.ToString();
-                strTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
+                strTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
                 foreach (Improvement objLoopImprovement in lstDrainImprovements)
                 {
-                    strTip.Append(Environment.NewLine + _objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
+                    strTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement))
+                        .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
                 }
 
                 return strTip.ToString();
@@ -582,9 +588,10 @@ namespace Chummer
             {
                 string strReturn = _strDV;
                 if (!Limited && (!Extended || Name.EndsWith("Extended", StringComparison.Ordinal)) && !RelevantImprovements(o =>
-                        o.ImproveType == Improvement.ImprovementType.DrainValue ||
-                         o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain ||
-                        o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).Any()) return strReturn;
+                        o.ImproveType == Improvement.ImprovementType.DrainValue
+                        || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                        || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
+                    return strReturn;
                 bool force = strReturn.StartsWith('F');
                 string strDV = strReturn.TrimStartOnce('F');
                 //Navigator can't do math on a single value, so inject a mathable value.
@@ -610,9 +617,9 @@ namespace Chummer
                 }
 
                 foreach (var improvement in RelevantImprovements(i =>
-                    i.ImproveType == Improvement.ImprovementType.DrainValue ||
-                    i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain ||
-                    i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
+                    i.ImproveType == Improvement.ImprovementType.DrainValue
+                    || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                    || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
                     strDV += string.Format(GlobalOptions.CultureInfo, " + {0:0;-0;0}", improvement.Value);
                 if (Limited)
                 {
@@ -721,7 +728,7 @@ namespace Chummer
         {
             string strReturn = strLanguage != GlobalOptions.DefaultLanguage ? GetNode(strLanguage)?["translate"]?.InnerText ?? Name : Name;
             if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
-                strReturn += ", " + LanguageManager.GetString("String_SpellExtended", strLanguage);
+                strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_SpellExtended", strLanguage);
 
             return strReturn;
         }
@@ -778,18 +785,15 @@ namespace Chummer
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Alchemy");
                 }
-                else if (Category == "Enchantments")
+                if (Category == "Enchantments")
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
                 }
-                else if (Category == "Rituals")
+                if (Category == "Rituals")
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
                 }
-                else
-                {
-                    return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
-                }
+                return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
             }
         }
 
@@ -806,14 +810,13 @@ namespace Chummer
                 {
                     intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
                     // Add any Specialization bonus if applicable.
-                    if (objSkill.HasSpecialization(Category))
-                        intReturn += _objCharacter.Options.SpecializationBonus;
+                    intReturn += Skill.GetSpecializationBonus(Category);
                 }
 
                 // Include any Improvements to the Spell's dicepool.
                 intReturn += RelevantImprovements(x =>
-                    x.ImproveType == Improvement.ImprovementType.SpellCategory ||
-                    x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value);
+                    x.ImproveType == Improvement.ImprovementType.SpellCategory
+                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value);
 
                 return intReturn;
             }
@@ -837,11 +840,11 @@ namespace Chummer
 
                 // Include any Improvements to the Spell Category or Spell Name.
                 return RelevantImprovements(x =>
-                    x.ImproveType == Improvement.ImprovementType.SpellCategory ||
-                    x.ImproveType == Improvement.ImprovementType.SpellDicePool).Aggregate(strReturn,
-                    (current, objImprovement) =>
-                        string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}{1}({4})", current, strSpace, "+", _objCharacter.GetObjectName(objImprovement), objImprovement.Value)
-                        );
+                    x.ImproveType == Improvement.ImprovementType.SpellCategory
+                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool)
+                    .Aggregate(strReturn, (current, objImprovement) =>
+                        string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}{1}({4})",
+                            current, strSpace, "+", _objCharacter.GetObjectName(objImprovement), objImprovement.Value));
             }
         }
 
@@ -857,11 +860,12 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("spells.xml", strLanguage)
-                        .SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]")
-                    : XmlManager.Load("spells.xml", strLanguage)
-                        .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/spells/spell[id = \"{0}\" or id = \"{1}\"]", SourceIDString, SourceIDString.ToUpperInvariant()));
+                _objCachedMyXmlNode = XmlManager.Load("spells.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/spells/spell[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/spells/spell[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -869,7 +873,7 @@ namespace Chummer
 
 
 
-        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false)
         {
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
             {
@@ -877,7 +881,11 @@ namespace Chummer
                 {
                     case Improvement.ImprovementType.SpellDicePool:
                         if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == SourceID.ToString())
+                        {
                             yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
+                        }
                         break;
                     case Improvement.ImprovementType.SpellCategory:
                         if (objImprovement.ImprovedName == Category)
@@ -893,25 +901,32 @@ namespace Chummer
                                 if (bestFocus != null)
                                 {
                                     yield return bestFocus;
+                                    if (blnExitAfterFirst)
+                                        yield break;
                                 }
 
                                 break;
                             }
 
                             yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
                         }
-
                         break;
                     case Improvement.ImprovementType.SpellCategoryDamage:
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
+                        {
                             yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
+                        }
                         break;
                     case Improvement.ImprovementType.SpellDescriptorDrain:
                     case Improvement.ImprovementType.SpellDescriptorDamage:
                         if (_hashDescriptors.Count > 0)
                         {
-                            HashSet<string> _hashImp = new HashSet<string>(objImprovement.ImprovedName.Split(','));
+                            HashSet<string> _hashImp = new HashSet<string>(objImprovement.ImprovedName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
                             bool allow = false;
                             foreach (string hash in _hashImp)
                             {
@@ -932,11 +947,17 @@ namespace Chummer
                             if (allow)
                             {
                                 yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
                             }
                         }
                         break;
                     case Improvement.ImprovementType.DrainValue:
+                    {
                         yield return objImprovement;
+                        if (blnExitAfterFirst)
+                            yield break;
+                    }
                         break;
                 }
             }
@@ -949,11 +970,10 @@ namespace Chummer
         {
             var list = _objCharacter.Foci
                 .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).ToList();
-            if (list.Any())
+            if (list.Count > 0)
             {
                 // get any bonded foci that add to the base magic stat and return the highest rated one's rating
-                var powerFocusRating = list.Select(x => x.Rating)
-                    .DefaultIfEmpty().Max();
+                var powerFocusRating = list.Select(x => x.Rating).Max();
 
                 // If our focus is higher, add in a partial bonus
                 if (powerFocusRating > 0 && powerFocusRating < objImprovement.Value)
@@ -971,10 +991,8 @@ namespace Chummer
                 }
                 return powerFocusRating > 0 ? null : objImprovement;
             }
-            else
-            {
-                return objImprovement;
-            }
+
+            return objImprovement;
         }
 
         #endregion
@@ -1000,7 +1018,7 @@ namespace Chummer
                 Tag = this,
                 ContextMenuStrip = cmsSpell,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             return objNode;

@@ -52,41 +52,41 @@
             this.tlpPassword.Location = new System.Drawing.Point(0, 0);
             this.tlpPassword.Name = "tlpPassword";
             this.tlpPassword.RowCount = 3;
-            this.tlpPassword.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpPassword.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpPassword.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpPassword.Size = new System.Drawing.Size(393, 125);
+            this.tlpPassword.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpPassword.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpPassword.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpPassword.Size = new System.Drawing.Size(384, 81);
             this.tlpPassword.TabIndex = 0;
             // 
             // bOk
             // 
-            this.bOk.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bOk.Location = new System.Drawing.Point(212, 97);
+            this.bOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.bOk.AutoSize = true;
+            this.bOk.Location = new System.Drawing.Point(207, 55);
             this.bOk.Name = "bOk";
             this.bOk.Size = new System.Drawing.Size(75, 23);
             this.bOk.TabIndex = 0;
-            this.bOk.Text = "Ok";
+            this.bOk.Text = "OK";
             this.bOk.UseVisualStyleBackColor = true;
             this.bOk.Click += new System.EventHandler(this.bOk_Click);
             // 
             // pbIcon
             // 
-            this.pbIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbIcon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbIcon.Location = new System.Drawing.Point(3, 3);
             this.pbIcon.Name = "pbIcon";
             this.tlpPassword.SetRowSpan(this.pbIcon, 3);
-            this.pbIcon.Size = new System.Drawing.Size(100, 119);
+            this.pbIcon.Size = new System.Drawing.Size(100, 75);
             this.pbIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbIcon.TabIndex = 1;
             this.pbIcon.TabStop = false;
             // 
             // lPasswordText
             // 
-            this.lPasswordText.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lPasswordText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lPasswordText.AutoSize = true;
-            this.lPasswordText.Location = new System.Drawing.Point(109, 24);
+            this.lPasswordText.Location = new System.Drawing.Point(109, 6);
+            this.lPasswordText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lPasswordText.Name = "lPasswordText";
             this.lPasswordText.Size = new System.Drawing.Size(56, 13);
             this.lPasswordText.TabIndex = 2;
@@ -94,10 +94,10 @@
             // 
             // tbPassword
             // 
-            this.tbPassword.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.tbPassword.Location = new System.Drawing.Point(109, 67);
+            this.tbPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbPassword.Location = new System.Drawing.Point(109, 28);
             this.tbPassword.Name = "tbPassword";
-            this.tbPassword.Size = new System.Drawing.Size(194, 20);
+            this.tbPassword.Size = new System.Drawing.Size(272, 20);
             this.tbPassword.TabIndex = 3;
             this.tbPassword.UseSystemPasswordChar = true;
             // 
@@ -105,7 +105,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(393, 125);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(384, 81);
             this.Controls.Add(this.tlpPassword);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "frmSINnerPassword";

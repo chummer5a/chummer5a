@@ -38,8 +38,8 @@ namespace Chummer.Backend.Equipment
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
-        private string _strName = "";
-        private string _strCategory = "";
+        private string _strName = string.Empty;
+        private string _strCategory = string.Empty;
         private string _strAvailability = "0";
         private string _strDuration;
         private string _strDescription = string.Empty;
@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
         private List<string> _lstCachedInfos = new List<string>();
         private Dictionary<string, int> _dicCachedLimits = new Dictionary<string, int>();
         private List<XmlNode> _lstCachedQualities = new List<XmlNode>();
-        private string _strGrade = "";
+        private string _strGrade = string.Empty;
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
@@ -197,7 +197,8 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("drug");
-
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -618,10 +619,11 @@ namespace Chummer.Backend.Equipment
                 StringBuilder sb = new StringBuilder();
                 if (Duration > 0)
                 {
-                    sb.Append(Duration.ToString(GlobalOptions.CultureInfo) + strSpace);
+                    sb.Append(Duration.ToString(GlobalOptions.CultureInfo)).Append(strSpace);
                     if (DurationDice > 0)
                     {
-                        sb.Append('x' + strSpace + DurationDice.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_D6") + strSpace);
+                        sb.Append('x').Append(strSpace).Append(DurationDice.ToString(GlobalOptions.CultureInfo))
+                            .Append(LanguageManager.GetString("String_D6")).Append(strSpace);
                     }
                 }
 
@@ -756,7 +758,7 @@ namespace Chummer.Backend.Equipment
                 Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
@@ -969,6 +971,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    if (objXmlSelectedQuality == null)
+                        continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
                     string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
@@ -1030,12 +1034,12 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[name = \"" + Name + "\"]")
-                    : XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString + "\"]");
-
+                _objCachedMyXmlNode = XmlManager.Load("drugcomponents.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/drugcomponents/drugcomponent[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/drugcomponents/drugcomponent[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1275,14 +1279,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = DisplayNameShort(strLanguage);
+            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
             if (Level != 0)
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                strReturn += strSpace + '(' + LanguageManager.GetString("String_Level", strLanguage) + strSpace + Level.ToString(objCulture) + ')';
+                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString("String_Level", strLanguage))
+                    .Append(strSpace).Append(Level.ToString(objCulture)).Append(')');
             }
 
-            return strReturn;
+            return sbdReturn.ToString();
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -1363,7 +1368,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCostExpression = strValues[Math.Max(Math.Min(Level, strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 
@@ -1605,11 +1610,12 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[name = \"" + Name + "\"]")
-                    : XmlManager.Load("drugcomponents.xml", strLanguage)
-                        .SelectSingleNode("/chummer/drugcomponents/drugcomponent[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("drugcomponents.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/drugcomponents/drugcomponent[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/drugcomponents/drugcomponent[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

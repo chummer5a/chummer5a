@@ -41,12 +41,13 @@ namespace Chummer
             // 
             // lblDescription
             // 
+            this.lblDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDescription.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblDescription, 3);
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(359, 26);
+            this.lblDescription.Size = new System.Drawing.Size(360, 26);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Tag = "Label_LifestyleNuyen_Description";
             this.lblDescription.Text = "Roll the number of dice shown below and enter the result to determine your charac" +
@@ -68,7 +69,7 @@ namespace Chummer
             // 
             // lblDice
             // 
-            this.lblDice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDice.AutoSize = true;
             this.lblDice.Location = new System.Drawing.Point(71, 44);
             this.lblDice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -81,6 +82,7 @@ namespace Chummer
             // 
             // lblResult
             // 
+            this.lblResult.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblResult.AutoSize = true;
             this.lblResult.Location = new System.Drawing.Point(214, 44);
             this.lblResult.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -92,8 +94,7 @@ namespace Chummer
             // 
             // nudDiceResult
             // 
-            this.nudDiceResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudDiceResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudDiceResult.Location = new System.Drawing.Point(158, 41);
             this.nudDiceResult.Name = "nudDiceResult";
             this.nudDiceResult.Size = new System.Drawing.Size(50, 20);
@@ -102,10 +103,8 @@ namespace Chummer
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -115,6 +114,7 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblDice, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.cmdOK, 0, 2);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
@@ -133,9 +133,10 @@ namespace Chummer
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(384, 111);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(480, 10000);
             this.MinimizeBox = false;
             this.Name = "frmLifestyleNuyen";
             this.Padding = new System.Windows.Forms.Padding(9);

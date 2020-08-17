@@ -132,7 +132,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
+            List<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
             foreach (Grade objGrade in lstGrades)
             {
                 if (objGrade.Name == strValue)

@@ -166,7 +166,7 @@ namespace Chummer
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
-            List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>();
+            List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>(1);
             while (!string.IsNullOrEmpty(strReturn))
             {
                 int intOpeningBracketIndex = strReturn.IndexOf('{');
@@ -317,7 +317,7 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intNameIndex))
                         {
-                            string[] lstNames = _objCharacter.Name.Split(' ');
+                            string[] lstNames = _objCharacter.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                             return lstNames[Math.Max(Math.Min(intNameIndex, lstNames.Length - 1), 0)];
                         }
 
@@ -353,7 +353,7 @@ namespace Chummer
                     }
                 case "$Index":
                 {
-                    string[] strArgumentsSplit = strArguments.Split('|');
+                    string[] strArgumentsSplit = strArguments.Split('|', StringSplitOptions.RemoveEmptyEntries);
                     int intArgumentsCount = strArgumentsSplit.Length;
                     if (intArgumentsCount > 2 && int.TryParse(strArgumentsSplit[0], out int intIndex))
                     {
@@ -421,7 +421,8 @@ namespace Chummer
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage)
-                .SelectSingleNode("/chummer/stories/story[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+                .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/stories/story[id = \"{0}\" or id = \"{1}\"]",
+                    SourceIDString, SourceIDString.ToUpperInvariant()));
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }

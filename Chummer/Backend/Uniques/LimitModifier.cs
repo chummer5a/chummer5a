@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -122,6 +123,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("limitmodifier");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("condition", LanguageManager.TranslateExtra(Condition, strLanguageToPrint));
@@ -267,11 +269,13 @@ namespace Chummer
             else
                 strBonus = _intBonus.ToString(objCulture);
 
-            string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", strLanguage) + '[' + strBonus + ']';
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort)
+                .Append(strSpace).Append('[').Append(strBonus).Append(']');
             string strCondition = DisplayCondition(strLanguage);
             if (!string.IsNullOrEmpty(strCondition))
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strCondition + ')';
-            return strReturn;
+                sbdReturn.Append(strSpace).Append('(').Append(strCondition).Append(')');
+            return sbdReturn.ToString();
         }
         #endregion
 
@@ -285,7 +289,7 @@ namespace Chummer
                 Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
             return objNode;
         }
@@ -314,8 +318,8 @@ namespace Chummer
             {
                 if (blnConfirmDelete)
                 {
-                    return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
-                               GlobalOptions.Language)) && _objCharacter.LimitModifiers.Remove(this);
+                    return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier"))
+                           && _objCharacter.LimitModifiers.Remove(this);
                 }
             }
 

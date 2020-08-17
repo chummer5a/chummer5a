@@ -46,7 +46,7 @@ namespace Chummer
             _xmlGameplayOptionsDataGameplayOptionsNode = XmlManager.Load("gameplayoptions.xml").GetFastNavigator().SelectSingleNode("/chummer/gameplayoptions");
 
             // Populate the Build Method list.
-            List<ListItem> lstBuildMethod = new List<ListItem>
+            List<ListItem> lstBuildMethod = new List<ListItem>(4)
             {
                 new ListItem("Karma", LanguageManager.GetString("String_Karma")),
                 new ListItem("Priority", LanguageManager.GetString("String_Priority")),
@@ -67,7 +67,7 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
             // Populate the Gameplay Options list.
-            List<ListItem> lstGameplayOptions = new List<ListItem>();
+            List<ListItem> lstGameplayOptions = new List<ListItem>(10);
             if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
             {
                 foreach (XPathNavigator objXmlGameplayOption in _xmlGameplayOptionsDataGameplayOptionsNode.Select("gameplayoption"))
@@ -100,8 +100,8 @@ namespace Chummer
             }
 
             cboGamePlay.BeginUpdate();
-            cboGamePlay.ValueMember = "Value";
-            cboGamePlay.DisplayMember = "Name";
+            cboGamePlay.ValueMember = nameof(ListItem.Value);
+            cboGamePlay.DisplayMember = nameof(ListItem.Name);
             cboGamePlay.DataSource = lstGameplayOptions;
             cboGamePlay.SelectedValue = _strDefaultOption;
             cboGamePlay.EndUpdate();
@@ -110,7 +110,10 @@ namespace Chummer
 
             if (blnUseCurrentValues)
             {
-                cboGamePlay.SelectedValue = _objCharacter.GameplayOption;
+                string strGameplayOption = _objCharacter.GameplayOption;
+                if (!string.IsNullOrEmpty(_objCharacter.PriorityArray))
+                    strGameplayOption += '|' + _objCharacter.PriorityArray;
+                cboGamePlay.SelectedValue = strGameplayOption;
                 if (cboGamePlay.SelectedIndex == -1)
                     cboGamePlay.SelectedValue = _strDefaultOption;
 
@@ -122,12 +125,17 @@ namespace Chummer
 
                 _intQualityLimits = _objCharacter.GameplayOptionQualityLimit;
                 chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
-                nudMaxAvail.Value = objCharacter.MaximumAvailability;
+                nudMaxAvail.Value = Math.Min(objCharacter.MaximumAvailability, nudMaxAvail.Maximum);
                 nudSumtoTen.Value = objCharacter.SumtoTen;
             }
             else if (_xmlGameplayOptionsDataGameplayOptionsNode != null)
             {
-                XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
+                string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
+                if (strSelectedGameplayOption != null && strSelectedGameplayOption.IndexOf('|') != -1)
+                {
+                    strSelectedGameplayOption = strSelectedGameplayOption.SplitNoAlloc('|').FirstOrDefault();
+                }
+                XPathNavigator objXmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (strSelectedGameplayOption ?? string.Empty) + "\"]");
                 objXmlSelectedGameplayOption.TryGetInt32FieldQuickly("karma", ref _intQualityLimits);
                 objXmlSelectedGameplayOption.TryGetDecFieldQuickly("maxnuyen", ref _decNuyenBP);
                 nudMaxNuyen.Value = _decNuyenBP;
@@ -170,8 +178,9 @@ namespace Chummer
             string strPriorityArray = string.Empty;
             if (strSelectedGameplayOption.IndexOf('|') != -1)
             {
-                strPriorityArray = strSelectedGameplayOption.Split('|')[1];
-                strSelectedGameplayOption = strSelectedGameplayOption.Split('|')[0];
+                string[] astrPriorityArray = strSelectedGameplayOption.Split('|');
+                strPriorityArray = astrPriorityArray[1];
+                strSelectedGameplayOption = astrPriorityArray[0];
             }
 
             XPathNavigator xmlGameplayOption =
@@ -212,7 +221,12 @@ namespace Chummer
         {
             nudSumtoTen.Visible = false;
             lblSumToX.Visible = false;
-            XPathNavigator xmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
+            string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
+            if (strSelectedGameplayOption != null && strSelectedGameplayOption.IndexOf('|') != -1)
+            {
+                strSelectedGameplayOption = strSelectedGameplayOption.SplitNoAlloc('|').FirstOrDefault();
+            }
+            XPathNavigator xmlSelectedGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (strSelectedGameplayOption ?? string.Empty) + "\"]");
             string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
             switch (strSelectedBuildMethod)
             {
@@ -267,7 +281,12 @@ namespace Chummer
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Load the Priority information.
-            XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (cboGamePlay.SelectedValue?.ToString() ?? string.Empty) + "\"]");
+            string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
+            if (strSelectedGameplayOption != null && strSelectedGameplayOption.IndexOf('|') != -1)
+            {
+                strSelectedGameplayOption = strSelectedGameplayOption.SplitNoAlloc('|').FirstOrDefault();
+            }
+            XPathNavigator objXmlGameplayOption = _xmlGameplayOptionsDataGameplayOptionsNode.SelectSingleNode("gameplayoption[name = \"" + (strSelectedGameplayOption  ?? string.Empty) + "\"]");
             if (objXmlGameplayOption != null)
             {
                 int intTemp = _intDefaultMaxAvail;

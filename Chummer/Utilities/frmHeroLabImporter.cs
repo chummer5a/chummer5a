@@ -30,7 +30,7 @@ namespace Chummer
 {
     public partial class frmHeroLabImporter : Form
     {
-        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>();
+        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>(1);
         private readonly object _lstCharacterCacheLock = new object();
         private readonly Dictionary<string, Bitmap> _dicImages = new Dictionary<string, Bitmap>();
 
@@ -51,17 +51,17 @@ namespace Chummer
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                Cursor = Cursors.WaitCursor;
-                string strSelectedFile = openFileDialog.FileName;
-                TreeNode objNode = CacheCharacters(strSelectedFile);
-                if (objNode != null)
+                using (new CursorWait(this))
                 {
-                    treCharacterList.Nodes.Clear();
-                    treCharacterList.Nodes.Add(objNode);
-                    treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                    string strSelectedFile = openFileDialog.FileName;
+                    TreeNode objNode = CacheCharacters(strSelectedFile);
+                    if (objNode != null)
+                    {
+                        treCharacterList.Nodes.Clear();
+                        treCharacterList.Nodes.Add(objNode);
+                        treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                    }
                 }
-
-                Cursor = Cursors.Default;
             }
         }
 
@@ -73,11 +73,11 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
 
-            List<XmlDocument> lstCharacterXmlStatblocks = new List<XmlDocument>();
+            List<XmlDocument> lstCharacterXmlStatblocks = new List<XmlDocument>(3);
             try
             {
                 using (ZipArchive zipArchive = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
@@ -95,7 +95,7 @@ namespace Chummer
                             try
                             {
                                 using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                    using (XmlReader objXmlReader = XmlReader.Create(sr, new XmlReaderSettings {XmlResolver = null}))
+                                    using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
                                         xmlSourceDoc.Load(objXmlReader);
                                 lstCharacterXmlStatblocks.Add(xmlSourceDoc);
                             }
@@ -147,17 +147,17 @@ namespace Chummer
             }
             catch (IOException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
             catch (NotSupportedException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                 return null;
             }
 
@@ -467,56 +467,57 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strFile) && !string.IsNullOrEmpty(strCharacterId))
                     {
                         string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-                        Cursor objOldCursor = Cursor;
                         if (!File.Exists(strFilePath))
                         {
-                            if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
-                                Cursor = Cursors.WaitCursor;
-                                using (frmOptions frmOptions = new frmOptions())
-                                    frmOptions.ShowDialog();
-                                Cursor = objOldCursor;
+                                using (new CursorWait(this))
+                                    using (frmOptions frmOptions = new frmOptions())
+                                        frmOptions.ShowDialog(this);
                             }
                         }
-                        Cursor = Cursors.WaitCursor;
-                        cmdImport.Enabled = false;
-                        cmdSelectFile.Enabled = false;
-                        Character objCharacter = new Character();
-                        string settingsPath = Path.Combine(Application.StartupPath, "settings");
-                        string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
-                        if (settingsFiles.Length > 1)
+                        using (new CursorWait(this))
                         {
-                            using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                            cmdImport.Enabled = false;
+                            cmdSelectFile.Enabled = false;
+                            Character objCharacter = new Character();
+                            string settingsPath = Path.Combine(Application.StartupPath, "settings");
+                            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
+
+                            if (settingsFiles.Length > 1)
                             {
-                                frmPickSetting.ShowDialog(this);
+                                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                                {
+                                    frmPickSetting.ShowDialog(this);
 
-                                if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                                    return;
+                                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                                        return;
 
-                                objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                                    objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                                }
                             }
-                        }
-                        else
-                        {
-                            string strSettingsFile = settingsFiles[0];
-                            objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                            else
+                            {
+                                string strSettingsFile = settingsFiles[0];
+                                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                            }
+
+                            Program.MainForm.OpenCharacters.Add(objCharacter);
+                            //Timekeeper.Start("load_file");
+                            bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
+                            //Timekeeper.Finish("load_file");
+                            if (!blnLoaded)
+                            {
+                                Program.MainForm.OpenCharacters.Remove(objCharacter);
+                                cmdImport.Enabled = true;
+                                cmdSelectFile.Enabled = true;
+                                return;
+                            }
+
+                            Program.MainForm.OpenCharacter(objCharacter);
                         }
 
-                        Program.MainForm.OpenCharacters.Add(objCharacter);
-                        //Timekeeper.Start("load_file");
-                        bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
-                        //Timekeeper.Finish("load_file");
-                        if (!blnLoaded)
-                        {
-                            Program.MainForm.OpenCharacters.Remove(objCharacter);
-                            Cursor = objOldCursor;
-                            cmdImport.Enabled = true;
-                            cmdSelectFile.Enabled = true;
-                            return;
-                        }
-
-                        Program.MainForm.OpenCharacter(objCharacter);
                         Close();
                     }
                 }

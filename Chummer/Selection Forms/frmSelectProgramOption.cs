@@ -73,8 +73,8 @@ namespace Chummer
             }
             lstOption.Sort(CompareListItems.CompareNames);
             lstOptions.BeginUpdate();
-            lstOptions.ValueMember = "Value";
-            lstOptions.DisplayMember = "Name";
+            lstOptions.ValueMember = nameof(ListItem.Value);
+            lstOptions.DisplayMember = nameof(ListItem.Name);
             lstOptions.DataSource = lstOption;
             lstOptions.EndUpdate();
         }
@@ -160,7 +160,7 @@ namespace Chummer
         /// <summary>
         /// Tags associated with the Program.
         /// </summary>
-        public IList<string> ProgramTags => _lstTags;
+        public List<string> ProgramTags => _lstTags;
 
         /// <summary>
         /// Program Option that was selected in the dialogue.

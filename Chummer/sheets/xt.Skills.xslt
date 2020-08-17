@@ -26,19 +26,18 @@
           </xsl:choose>
         </span>
         <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
-          <xsl:variable name="SpecializationBonus" select="specbonus"/>
           <p class="indent">
             <xsl:for-each select="skillspecializations/skillspecialization">
               <xsl:if test="position() != 1">
                 <br />
               </xsl:if>
-              (<xsl:value-of select="name"/> +<xsl:value-of select="$SpecializationBonus"/>)
+              (<xsl:value-of select="name"/> +<xsl:value-of select="specbonus"/>)
             </xsl:for-each>
           </p>
         </xsl:if>
       </td>
       <xsl:choose>
-        <xsl:when test="islanguage = 'True' and rating = 0">
+        <xsl:when test="isnativelanguage = 'True'">
           <td colspan="2" style="valign: top; text-align: center;">
             <xsl:value-of select="$lang.Native"/>
           </td>

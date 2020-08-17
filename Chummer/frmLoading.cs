@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -40,6 +42,7 @@ namespace Chummer
         public frmLoading()
         {
             InitializeComponent();
+            TopMost = !Utils.IsUnitTest;
             this.TranslateWinForm();
         }
 
@@ -49,21 +52,31 @@ namespace Chummer
         /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
         public void Reset(int intMaxProgressBarValue = 100)
         {
-            pgbLoadingProgress.Value = 0;
-            pgbLoadingProgress.Maximum = intMaxProgressBarValue;
-            lblLoadingInfo.Text = LanguageManager.GetString("String_Initializing");
+            this.DoThreadSafe(() =>
+            {
+                pgbLoadingProgress.Value = 0;
+                pgbLoadingProgress.Maximum = intMaxProgressBarValue;
+                lblLoadingInfo.Text = LanguageManager.GetString("String_Initializing");
+            });
         }
 
         /// <summary>
         /// Performs a single step on the underlying ProgressBar
         /// </summary>
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
-        public void PerformStep(string strStepName)
+        public void PerformStep(string strStepName = "")
         {
-            pgbLoadingProgress.PerformStep();
-            lblLoadingInfo.Text = string.IsNullOrEmpty(strStepName)
-                ? LanguageManager.GetString("String_Loading")
-                : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
+            string strNewText = new StringBuilder(string.IsNullOrEmpty(strStepName)
+                    ? LanguageManager.GetString("String_Loading")
+                    : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName))
+                .Append(LanguageManager.GetString("String_Space"))
+                .Append('(').Append((pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo))
+                .Append('/').Append(pgbLoadingProgress.Maximum.ToString(GlobalOptions.CultureInfo)).Append(')').ToString();
+            this.DoThreadSafe(() =>
+            {
+                pgbLoadingProgress.PerformStep();
+                lblLoadingInfo.Text = strNewText;
+            });
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Chummer
     public partial class frmSelectDrug : Form
     {
         private readonly Character _objCharacter;
-        private IList<Grade> _lstGrades;
+        private List<Grade> _lstGrades;
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
@@ -526,7 +526,7 @@ namespace Chummer
                 string strAvailExpr = strAvail;
                 if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
 
@@ -590,7 +590,7 @@ namespace Chummer
                 {
                     if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                     }
                     // Check for a Variable Cost.
@@ -650,7 +650,7 @@ namespace Chummer
         }
 
         private bool _blnSkipListRefresh;
-        private IList<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return null;
@@ -669,7 +669,7 @@ namespace Chummer
             return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + strFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private IList<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return null;
@@ -736,14 +736,14 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstDrugs.Add(new ListItem(string.Empty,
-                    LanguageManager.GetString("String_RestrictedItemsHidden")
-                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        intOverLimit)));
             }
             string strOldSelected = lstDrug.SelectedValue?.ToString();
             _blnLoading = true;
             lstDrug.BeginUpdate();
-            lstDrug.ValueMember = "Value";
-            lstDrug.DisplayMember = "Name";
+            lstDrug.ValueMember = nameof(ListItem.Value);
+            lstDrug.DisplayMember = nameof(ListItem.Name);
             lstDrug.DataSource = lstDrug;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -775,7 +775,7 @@ namespace Chummer
                 return;
             if (cboGrade.Text.StartsWith('*'))
             {
-                MessageBox.Show(
+                Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_BannedGrade"),
                     LanguageManager.GetString("MessageTitle_BannedGrade"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -856,8 +856,8 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboGrade.BeginUpdate();
-                cboGrade.ValueMember = "Value";
-                cboGrade.DisplayMember = "Name";
+                cboGrade.ValueMember = nameof(ListItem.Value);
+                cboGrade.DisplayMember = nameof(ListItem.Name);
                 cboGrade.DataSource = lstGrade;
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strForceGrade))

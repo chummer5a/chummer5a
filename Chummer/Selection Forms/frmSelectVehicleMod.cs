@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmSelectVehicleMod : Form
     {
-        private Vehicle _objVehicle;
+        private readonly Vehicle _objVehicle;
         private int _intWeaponMountSlots;
         private int _intModMultiplier = 1;
         private int _intMarkup;
@@ -83,7 +83,7 @@ namespace Chummer
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
-            string[] strValues = _strLimitToCategories.Split(',');
+            string[] strValues = _strLimitToCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("modcategories/category"))
@@ -100,8 +100,8 @@ namespace Chummer
                 _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
@@ -385,14 +385,14 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstMods.Add(new ListItem(string.Empty,
-                    LanguageManager.GetString("String_RestrictedItemsHidden")
-                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        intOverLimit)));
             }
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
             lstMod.BeginUpdate();
-            lstMod.ValueMember = "Value";
-            lstMod.DisplayMember = "Name";
+            lstMod.ValueMember = nameof(ListItem.Value);
+            lstMod.DisplayMember = nameof(ListItem.Name);
             lstMod.DataSource = lstMods;
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelected))
@@ -553,7 +553,7 @@ namespace Chummer
                 string strSlots = xmlVehicleMod.SelectSingleNode("slots")?.Value ?? string.Empty;
                 if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strSlots.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strSlots.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
                 int.TryParse(strSlots, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intExtraSlots);
@@ -602,7 +602,7 @@ namespace Chummer
                     {
                         int intRating = decimal.ToInt32(nudRating.Value) - 1;
                         strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
-                        string[] strValues = strCost.Split(',');
+                        string[] strValues = strCost.Split(',', StringSplitOptions.RemoveEmptyEntries);
                         if (intRating < 0 || intRating > strValues.Length)
                         {
                             intRating = 0;
@@ -684,15 +684,14 @@ namespace Chummer
 
 
                 lblRatingLabel.Text = xmlVehicleMod.SelectSingleNode("ratinglabel") != null
-                    ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
-                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value,
-                            GlobalOptions.Language))
+                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value))
                     : LanguageManager.GetString("Label_Rating");
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else

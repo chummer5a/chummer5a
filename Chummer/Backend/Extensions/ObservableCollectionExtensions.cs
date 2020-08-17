@@ -33,7 +33,7 @@ namespace Chummer
                 return;
             if (lstCollection.Count < index + count)
                 count = lstCollection.Count - index;
-            List<T> lstSorted = new List<T>();
+            List<T> lstSorted = new List<T>(lstCollection.Count);
             for (int i = index; i < count; ++i)
             {
                 lstSorted.Add(lstCollection[i]);
@@ -47,9 +47,9 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            List<T> lstSorted = lstCollection.ToList();
-            lstSorted.Sort(comparison);
-            for (int i = 0; i < lstSorted.Count; ++i)
+            T[] lstSorted = lstCollection.ToArray();
+            Array.Sort(lstSorted, comparison);
+            for (int i = 0; i < lstSorted.Length; ++i)
                 lstCollection.Move(lstCollection.IndexOf(lstSorted[i]), i);
         }
 
@@ -57,9 +57,9 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            List<T> lstSorted = lstCollection.ToList();
-            lstSorted.Sort();
-            for (int i = 0; i < lstSorted.Count; ++i)
+            T[] lstSorted = lstCollection.ToArray();
+            Array.Sort(lstSorted);
+            for (int i = 0; i < lstSorted.Length; ++i)
                 lstCollection.Move(lstCollection.IndexOf(lstSorted[i]), i);
         }
 
@@ -67,9 +67,9 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            List<T> lstSorted = lstCollection.ToList();
-            lstSorted.Sort(comparer);
-            for (int i = 0; i < lstSorted.Count; ++i)
+            T[] lstSorted = lstCollection.ToArray();
+            Array.Sort(lstSorted, comparer);
+            for (int i = 0; i < lstSorted.Length; ++i)
                 lstCollection.Move(lstCollection.IndexOf(lstSorted[i]), i);
         }
     }

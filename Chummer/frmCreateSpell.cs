@@ -45,56 +45,62 @@ namespace Chummer
             _blnLoading = true;
             lblDV.Text = 0.ToString(GlobalOptions.CultureInfo);
 
-            List<ListItem> lstCategory = new List<ListItem>();
+            List<ListItem> lstCategory;
 
             // Populate the list of Spell Categories.
             using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
-                if (objXmlCategoryList != null)
+            {
+                lstCategory = new List<ListItem>(objXmlCategoryList?.Count ?? 0);
+                if (objXmlCategoryList?.Count > 0)
+                {
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
                         lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
+                }
+            }
+
             cboCategory.BeginUpdate();
             cboType.BeginUpdate();
             cboRange.BeginUpdate();
             cboDuration.BeginUpdate();
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = lstCategory;
             cboCategory.SelectedIndex = 0;
 
             // Populate the list of Spell Types.
-            List<ListItem> lstTypes = new List<ListItem>
+            List<ListItem> lstTypes = new List<ListItem>(2)
             {
                 new ListItem("P", LanguageManager.GetString("String_DescPhysical")),
                 new ListItem("M", LanguageManager.GetString("String_DescMana"))
             };
-            cboType.ValueMember = "Value";
-            cboType.DisplayMember = "Name";
+            cboType.ValueMember = nameof(ListItem.Value);
+            cboType.DisplayMember = nameof(ListItem.Name);
             cboType.DataSource = lstTypes;
             cboType.SelectedIndex = 0;
 
             // Populate the list of Ranges.
-            List<ListItem> lstRanges = new List<ListItem>
+            List<ListItem> lstRanges = new List<ListItem>(2)
             {
                 new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")),
                 new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"))
             };
-            cboRange.ValueMember = "Value";
-            cboRange.DisplayMember = "Name";
+            cboRange.ValueMember = nameof(ListItem.Value);
+            cboRange.DisplayMember = nameof(ListItem.Name);
             cboRange.DataSource = lstRanges;
             cboRange.SelectedIndex = 0;
 
             // Populate the list of Durations.
-            List<ListItem> lstDurations = new List<ListItem>
+            List<ListItem> lstDurations = new List<ListItem>(3)
             {
                 new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong")),
                 new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")),
                 new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong"))
             };
-            cboDuration.ValueMember = "Value";
-            cboDuration.DisplayMember = "Name";
+            cboDuration.ValueMember = nameof(ListItem.Value);
+            cboDuration.DisplayMember = nameof(ListItem.Name);
             cboDuration.DataSource = lstDurations;
             cboDuration.SelectedIndex = 0;
             _blnLoading = false;
@@ -763,7 +769,7 @@ namespace Chummer
             // Show the message if necessary.
             if (!string.IsNullOrEmpty(strMessage))
             {
-                Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

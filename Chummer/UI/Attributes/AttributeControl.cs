@@ -21,8 +21,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Chummer.Annotations;
 using Chummer.Backend.Attributes;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer.UI.Attributes
 {
@@ -50,42 +50,39 @@ namespace Chummer.UI.Attributes
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
             _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
-            lblName.DoDatabinding("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted));
-            lblValue.DoDatabinding("Text", _dataSource, nameof(CharacterAttrib.DisplayValue));
-            lblLimits.DoDatabinding("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits));
-            lblValue.DoDatabinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
+            lblName.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted));
+            lblValue.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayValue));
+            lblLimits.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits));
+            lblValue.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
             if (_objCharacter.Created)
             {
-                nudBase.Visible = false;
-                nudKarma.Visible = false;
-                cmdImproveATT.DoDatabinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
-                cmdImproveATT.Visible = true;
-                cmdImproveATT.DoDatabinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
+                flpButtonsCreate.Visible = false;
+
+                cmdImproveATT.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
+                cmdImproveATT.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
                 cmdBurnEdge.Visible = AttributeName == "EDG";
                 cmdBurnEdge.ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge");
             }
             else
             {
+                flpButtonsCareer.Visible = false;
+
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
                     _objAttribute.Base -= 1;
                 // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
                 if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
                     _objAttribute.Karma = _objAttribute.KarmaMaximum;
 
-                nudBase.DoDatabinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
-                nudBase.DoDatabinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
+                nudBase.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
+                nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
                 nudBase.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Base));
-                nudBase.DoDatabinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
-                nudBase.DoDatabinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
-                nudBase.Visible = true;
+                nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
+                nudBase.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
 
                 nudKarma.Minimum = 0;
-                nudKarma.DoDatabinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
+                nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
                 nudKarma.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
-                nudKarma.DoDatabinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
-                nudKarma.Visible = true;
-                cmdImproveATT.Visible = false;
-                cmdBurnEdge.Visible = false;
+                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
             }
         }
 
@@ -96,7 +93,53 @@ namespace Chummer.UI.Attributes
             _dataSource.ResetBindings(false);
         }
 
-        public void UnbindAttributeControl()
+        public void UpdateWidths(int intNameWidth, int intNudKarmaWidth, int intValueWidth, int intLimitsWidth)
+        {
+            tlpMain.SuspendLayout();
+
+            if (intNameWidth >= 0)
+            {
+                if (lblName.MinimumSize.Width > intNameWidth)
+                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+                if (lblName.MaximumSize.Width != intNameWidth)
+                    lblName.MaximumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+                if (lblName.MinimumSize.Width < intNameWidth)
+                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+            }
+
+            if (flpButtonsCreate.Visible && nudBase.Visible && intNudKarmaWidth >= 0)
+            {
+                nudKarma.Margin = new Padding(
+                    nudKarma.Margin.Right + Math.Max(intNudKarmaWidth - nudKarma.Width, 0),
+                    nudKarma.Margin.Top,
+                    nudKarma.Margin.Right,
+                    nudKarma.Margin.Bottom);
+            }
+
+            if (intValueWidth >= 0)
+            {
+                if (lblValue.MinimumSize.Width > intValueWidth)
+                    lblValue.MinimumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
+                if (lblValue.MaximumSize.Width != intValueWidth)
+                    lblValue.MaximumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
+                if (lblValue.MinimumSize.Width < intValueWidth)
+                    lblValue.MinimumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
+            }
+
+            if (intLimitsWidth >= 0)
+            {
+                if (lblLimits.MinimumSize.Width > intLimitsWidth)
+                    lblLimits.MinimumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
+                if (lblLimits.MaximumSize.Width != intLimitsWidth)
+                    lblLimits.MaximumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
+                if (lblLimits.MinimumSize.Width < intLimitsWidth)
+                    lblLimits.MinimumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
+            }
+
+            tlpMain.ResumeLayout();
+        }
+
+        private void UnbindAttributeControl()
         {
             _objCharacter.AttributeSection.PropertyChanged -= AttributePropertyChanged;
 
@@ -215,6 +258,9 @@ namespace Chummer.UI.Attributes
 
         public string AttributeName => _objAttribute.Abbrev;
 
+        [UsedImplicitly]
+        public int NameWidth => lblName.PreferredWidth;
+
         private void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
@@ -225,7 +271,7 @@ namespace Chummer.UI.Attributes
             }
 
             // Verify that the user wants to Burn a point of Edge.
-            if (MessageBox.Show(LanguageManager.GetString("Message_BurnEdge"), LanguageManager.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BurnEdge"), LanguageManager.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
 			_objAttribute.Degrade(1);

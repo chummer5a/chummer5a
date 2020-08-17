@@ -120,9 +120,8 @@ namespace Chummer
                 {
                     string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = xmlTechnique.SelectSingleNode("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
                 else
@@ -203,8 +202,8 @@ namespace Chummer
             string strOldSelected = lstTechniques.SelectedValue?.ToString();
             _blnLoading = true;
             lstTechniques.BeginUpdate();
-            lstTechniques.ValueMember = "Value";
-            lstTechniques.DisplayMember = "Name";
+            lstTechniques.ValueMember = nameof(ListItem.Value);
+            lstTechniques.DisplayMember = nameof(ListItem.Name);
             lstTechniques.DataSource = lstTechniqueItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

@@ -1367,6 +1367,16 @@
       <text>Error with Loading Metatype!</text>
     </string>
     <!-- End Region -->
+    <!-- Region Master Index -->
+    <string>
+      <key>Title_MasterIndex</key>
+      <text>Master Index</text>
+    </string>
+    <string>
+      <key>Label_MasterIndex_SourceClickReminder</key>
+      <text>&lt;- Click to Open Linked PDF</text>
+    </string>
+    <!-- End Region -->
     <!-- Region About -->
     <string>
       <key>About_Description_Text</key>
@@ -2679,6 +2689,10 @@
     <string>
       <key>Message_OverLanguageLimit</key>
       <text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
+    </string>
+    <string>
+      <key>Message_UnderLanguageLimit</key>
+      <text>Too few Language Knowledge Skills listed as Native. Current: {0} Minimum: {1}</text>
     </string>
     <string>
       <key>Message_OverPositiveMetagenicQualities</key>
@@ -4077,6 +4091,14 @@
       <key>String_DamageResistance</key>
       <text>Damage Resistance</text>
     </string>
+    <string>
+      <key>String_AstralReputation</key>
+      <text>Astral Reputation</text>
+    </string>
+    <string>
+      <key>String_WildReputation</key>
+      <text>Wild Reputation</text>
+    </string>
     <!-- End Region -->
     <!-- Region Common Tab -->
     <string>
@@ -4102,6 +4124,10 @@
     <string>
       <key>Label_Contacts</key>
       <text>Contacts</text>
+    </string>
+    <string>
+      <key>Label_GroupContacts</key>
+      <text>Group Contacts</text>
     </string>
     <string>
       <key>Label_Enemies</key>
@@ -4305,6 +4331,10 @@
       <text>Free Knowledge Skill Points Remaining:</text>
     </string>
     <string>
+      <key>String_PlusSkillPointsSpent</key>
+      <text>, Plus {0} Skill Point(s) Spent</text>
+    </string>
+    <string>
       <key>Label_CustomKnowledgeSkillsReminder</key>
       <text>Remember, you can always write in custom skills and specializations!</text>
     </string>
@@ -4329,6 +4359,10 @@
       <text>Add Exotic Skill</text>
     </string>
     <string>
+      <key>Button_ResetAll</key>
+      <text>Reset Add</text>
+    </string>
+    <string>
       <key>Tip_SkillsSkillGroups</key>
       <text>Skill Groups cost {0} Karma per new rating.</text>
     </string>
@@ -4338,7 +4372,7 @@
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating. A Language with a Rating of 0 is considered to be your Native Language.</text>
+      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -4379,6 +4413,14 @@
     <string>
       <key>Skill_NativeLanguageShort</key>
       <text>N</text>
+    </string>
+    <string>
+      <key>Skill_NativeLanguageLong</key>
+      <text>Native</text>
+    </string>
+    <string>
+      <key>Message_NewNativeLanguageSkill</key>
+      <text>This character has room for {0} more Native Language skill(s). Do you wish to set the {1} skill as a Native Language skill?</text>
     </string>
     <!-- End Region -->
     <!-- Region  Martial Arts Tab -->
@@ -5309,6 +5351,14 @@
       <text>Public Aware:</text>
     </string>
     <string>
+      <key>Label_AstralReputation</key>
+      <text>Astral Reputation:</text>
+    </string>
+    <string>
+      <key>Label_WildReputation</key>
+      <text>Wild Reputation:</text>
+    </string>
+    <string>
       <key>Label_Handedness</key>
       <text>Handedness:</text>
     </string>
@@ -5631,6 +5681,10 @@
       <text>Enable Plugins (experimental)</text>
     </string>
     <string>
+      <key>Checkbox_Options_HideMasterIndex</key>
+      <text>Hide the Master Index</text>
+    </string>
+    <string>
       <key>Checkbox_Options_HideCharacterRoster</key>
       <text>Hide the Character Roster</text>
     </string>
@@ -5901,6 +5955,10 @@
     <string>
       <key>Label_CMStun</key>
       <text>Stun</text>
+    </string>
+    <string>
+      <key>Label_CMRecovery</key>
+      <text>Recovery:</text>
     </string>
     <string>
       <key>Label_CMEdge</key>
@@ -10350,5 +10408,9 @@
       <text>Rivals of Sports Team</text>
     </string>
     <!-- End Region -->
+    <string>
+      <key>String_CapacityRemaining</key>
+      <text>{0} ({1} remaining)</text>
+    </string>
   </strings>
 </chummer>

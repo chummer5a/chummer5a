@@ -8965,7 +8965,7 @@ namespace Translator
 
         #region Properties
 
-        public IList<frmTranslate> OpenTranslateWindows => s_LstOpenTranslateWindows;
+        public List<frmTranslate> OpenTranslateWindows => s_LstOpenTranslateWindows;
 
         #endregion
     }

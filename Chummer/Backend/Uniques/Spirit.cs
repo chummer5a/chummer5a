@@ -62,7 +62,7 @@ namespace Chummer
         private string _strNotes = string.Empty;
         private Character _objLinkedCharacter;
 
-        private readonly List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>(1);
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods
@@ -149,6 +149,8 @@ namespace Chummer
             LoadMugshots(objNode);
         }
 
+        private static readonly string[] s_astrPrintAttributeLabels = {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"};
+
         /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
@@ -168,6 +170,7 @@ namespace Chummer
             }
 
             objWriter.WriteStartElement("spirit");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("crittername", CritterName);
@@ -183,7 +186,7 @@ namespace Chummer
 
                 Dictionary<string, int> dicAttributes = new Dictionary<string, int>();
                 objWriter.WriteStartElement("spiritattributes");
-                foreach (string strAttribute in new[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
+                foreach (string strAttribute in s_astrPrintAttributeLabels)
                 {
                     string strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
@@ -306,11 +309,10 @@ namespace Chummer
 
                 objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
                 bool blnExtrasAdded = false;
-                foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').Split(','))
+                foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     blnExtrasAdded = true;
-                    strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, strLanguageToPrint));
-                    strExtra.Append(", ");
+                    strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(", ");
                 }
                 if (blnExtrasAdded)
                     strExtra.Length -= 2;
@@ -695,10 +697,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -712,20 +714,20 @@ namespace Chummer
             }
         }
 
-        private static readonly DependencyGraph<string> SpiritDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(NoLinkedCharacter),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
+        private static readonly DependencyGraph<string, Spirit> SpiritDependencyGraph =
+            new DependencyGraph<string, Spirit>(
+                new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
+                    new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string>(nameof(CritterName),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Spirit>(nameof(CritterName),
+                    new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string>(nameof(MainMugshot),
-                    new DependencyGraphNode<string>(nameof(LinkedCharacter)),
-                    new DependencyGraphNode<string>(nameof(Mugshots),
-                        new DependencyGraphNode<string>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Spirit>(nameof(MainMugshot),
+                    new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter)),
+                    new DependencyGraphNode<string, Spirit>(nameof(Mugshots),
+                        new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                     ),
-                    new DependencyGraphNode<string>(nameof(MainMugshotIndex))
+                    new DependencyGraphNode<string, Spirit>(nameof(MainMugshotIndex))
                 )
             );
 
@@ -835,7 +837,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public IList<Image> Mugshots
+        public List<Image> Mugshots
         {
             get
             {

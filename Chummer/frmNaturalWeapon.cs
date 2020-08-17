@@ -47,7 +47,7 @@ namespace Chummer
         private void frmNaturalWeapon_Load(object sender, EventArgs e)
         {
             // Load the list of Combat Active Skills and populate the Skills list.
-            List<ListItem> lstSkills = new List<ListItem>();
+            List<ListItem> lstSkills = new List<ListItem>(5);
             foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.Select("skills/skill[category = \"Combat Active\"]"))
             {
                 string strName = objXmlSkill.SelectSingleNode("name")?.Value;
@@ -55,7 +55,7 @@ namespace Chummer
                     lstSkills.Add(new ListItem(strName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strName));
             }
 
-            List<ListItem> lstDVBase = new List<ListItem>
+            List<ListItem> lstDVBase = new List<ListItem>(2)
             {
                 new ListItem("(STR/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"),
                 new ListItem("(STR)", '(' + _objCharacter.STR.DisplayAbbrev + ')')
@@ -65,7 +65,7 @@ namespace Chummer
                 lstDVBase.Add(new ListItem(i.ToString(GlobalOptions.InvariantCultureInfo), i.ToString(GlobalOptions.CultureInfo)));
             }
 
-            List<ListItem> lstDVType = new List<ListItem>
+            List<ListItem> lstDVType = new List<ListItem>(2)
             {
                 new ListItem("P", LanguageManager.GetString("String_DamagePhysical")),
                 new ListItem("S", LanguageManager.GetString("String_DamageStun"))
@@ -73,22 +73,22 @@ namespace Chummer
 
             // Bind the Lists to the ComboBoxes.
             cboSkill.BeginUpdate();
-            cboSkill.ValueMember = "Value";
-            cboSkill.DisplayMember = "Name";
+            cboSkill.ValueMember = nameof(ListItem.Value);
+            cboSkill.DisplayMember = nameof(ListItem.Name);
             cboSkill.DataSource = lstSkills;
             cboSkill.SelectedIndex = 0;
             cboSkill.EndUpdate();
 
             cboDVBase.BeginUpdate();
-            cboDVBase.ValueMember = "Value";
-            cboDVBase.DisplayMember = "Name";
+            cboDVBase.ValueMember = nameof(ListItem.Value);
+            cboDVBase.DisplayMember = nameof(ListItem.Name);
             cboDVBase.DataSource = lstDVBase;
             cboDVBase.SelectedIndex = 0;
             cboDVBase.EndUpdate();
 
             cboDVType.BeginUpdate();
-            cboDVType.ValueMember = "Value";
-            cboDVType.DisplayMember = "Name";
+            cboDVType.ValueMember = nameof(ListItem.Value);
+            cboDVType.DisplayMember = nameof(ListItem.Name);
             cboDVType.DataSource = lstDVType;
             cboDVType.SelectedIndex = 0;
             cboDVType.EndUpdate();

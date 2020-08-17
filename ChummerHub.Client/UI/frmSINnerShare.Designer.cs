@@ -37,16 +37,19 @@ namespace ChummerHub.Client.UI
             this.ucSINnerShare1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ucSINnerShare1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ucSINnerShare1.Location = new System.Drawing.Point(0, 0);
+            this.ucSINnerShare1.MyCharacterCache = null;
+            this.ucSINnerShare1.MySINnerSearchGroup = null;
             this.ucSINnerShare1.Name = "ucSINnerShare1";
-            this.ucSINnerShare1.Size = new System.Drawing.Size(619, 278);
+            this.ucSINnerShare1.Size = new System.Drawing.Size(624, 441);
             this.ucSINnerShare1.TabIndex = 0;
             // 
             // frmSINnerShare
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(619, 278);
+            this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.ucSINnerShare1);
+            this.DoubleBuffered = true;
             this.Name = "frmSINnerShare";
             this.Text = "frmSINnerShare";
             this.ResumeLayout(false);

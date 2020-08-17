@@ -29,10 +29,12 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -134,6 +136,7 @@ namespace Chummer
             this.lblCategory.TabIndex = 29;
             this.lblCategory.Tag = "Label_Category";
             this.lblCategory.Text = "Category:";
+            this.lblCategory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmdOK
             // 
@@ -186,6 +189,7 @@ namespace Chummer
             this.lblSearchLabel.TabIndex = 0;
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
+            this.lblSearchLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmdOKAdd
             // 
@@ -205,8 +209,16 @@ namespace Chummer
             // 
             this.dgvWeapons.AllowUserToAddRows = false;
             this.dgvWeapons.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle33;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvWeapons.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvWeapons.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvWeapons.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvc_Guid,
@@ -223,6 +235,14 @@ namespace Chummer
             this.Label_Avail,
             this.Label_Source,
             this.dgvc_Cost});
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvWeapons.DefaultCellStyle = dataGridViewCellStyle12;
             this.dgvWeapons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvWeapons.Location = new System.Drawing.Point(3, 3);
             this.dgvWeapons.MultiSelect = false;
@@ -249,8 +269,8 @@ namespace Chummer
             // 
             this.dgvc_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Name.DataPropertyName = "WeaponName";
-            dataGridViewCellStyle34.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle34;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle9;
             this.dgvc_Name.HeaderText = "Name";
             this.dgvc_Name.Name = "dgvc_Name";
             this.dgvc_Name.ReadOnly = true;
@@ -358,8 +378,8 @@ namespace Chummer
             // 
             this.dgvc_Accessories.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Accessories.DataPropertyName = "Accessories";
-            dataGridViewCellStyle35.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Accessories.DefaultCellStyle = dataGridViewCellStyle35;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accessories.DefaultCellStyle = dataGridViewCellStyle10;
             this.dgvc_Accessories.HeaderText = "Accessories";
             this.dgvc_Accessories.Name = "dgvc_Accessories";
             this.dgvc_Accessories.ReadOnly = true;
@@ -394,10 +414,10 @@ namespace Chummer
             // 
             this.dgvc_Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle36.Format = "#,0.##¥";
-            dataGridViewCellStyle36.NullValue = null;
-            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle36;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle11.Format = "#,0.##¥";
+            dataGridViewCellStyle11.NullValue = null;
+            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle11;
             this.dgvc_Cost.FillWeight = 60F;
             this.dgvc_Cost.HeaderText = "Cost";
             this.dgvc_Cost.Name = "dgvc_Cost";
@@ -434,8 +454,10 @@ namespace Chummer
             // 
             // tlpWeapon
             // 
+            this.tlpWeapon.AutoSize = true;
+            this.tlpWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpWeapon.ColumnCount = 5;
-            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 301F));
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -510,6 +532,7 @@ namespace Chummer
             this.lblWeaponRC.Size = new System.Drawing.Size(28, 13);
             this.lblWeaponRC.TabIndex = 43;
             this.lblWeaponRC.Text = "[RC]";
+            this.lblWeaponRC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponRCLabel
             // 
@@ -522,6 +545,7 @@ namespace Chummer
             this.lblWeaponRCLabel.TabIndex = 42;
             this.lblWeaponRCLabel.Tag = "Label_RC";
             this.lblWeaponRCLabel.Text = "RC:";
+            this.lblWeaponRCLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponAccuracyLabel
             // 
@@ -534,6 +558,7 @@ namespace Chummer
             this.lblWeaponAccuracyLabel.TabIndex = 67;
             this.lblWeaponAccuracyLabel.Tag = "Label_Accuracy";
             this.lblWeaponAccuracyLabel.Text = "Accuracy:";
+            this.lblWeaponAccuracyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponAccuracy
             // 
@@ -545,6 +570,7 @@ namespace Chummer
             this.lblWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
             this.lblWeaponAccuracy.TabIndex = 68;
             this.lblWeaponAccuracy.Text = "[Accuracy]";
+            this.lblWeaponAccuracy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponAmmo
             // 
@@ -556,6 +582,7 @@ namespace Chummer
             this.lblWeaponAmmo.Size = new System.Drawing.Size(42, 13);
             this.lblWeaponAmmo.TabIndex = 47;
             this.lblWeaponAmmo.Text = "[Ammo]";
+            this.lblWeaponAmmo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponAmmoLabel
             // 
@@ -568,6 +595,7 @@ namespace Chummer
             this.lblWeaponAmmoLabel.TabIndex = 46;
             this.lblWeaponAmmoLabel.Tag = "Label_Ammo";
             this.lblWeaponAmmoLabel.Text = "Ammo:";
+            this.lblWeaponAmmoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblTest
             // 
@@ -579,6 +607,7 @@ namespace Chummer
             this.lblTest.Size = new System.Drawing.Size(19, 13);
             this.lblTest.TabIndex = 55;
             this.lblTest.Text = "[0]";
+            this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponMode
             // 
@@ -590,6 +619,7 @@ namespace Chummer
             this.lblWeaponMode.Size = new System.Drawing.Size(40, 13);
             this.lblWeaponMode.TabIndex = 51;
             this.lblWeaponMode.Text = "[Mode]";
+            this.lblWeaponMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponModeLabel
             // 
@@ -602,6 +632,7 @@ namespace Chummer
             this.lblWeaponModeLabel.TabIndex = 50;
             this.lblWeaponModeLabel.Tag = "Label_Mode";
             this.lblWeaponModeLabel.Text = "Mode:";
+            this.lblWeaponModeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblTestLabel
             // 
@@ -614,6 +645,7 @@ namespace Chummer
             this.lblTestLabel.TabIndex = 54;
             this.lblTestLabel.Tag = "Label_Test";
             this.lblTestLabel.Text = "Test:";
+            this.lblTestLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponDamageLabel
             // 
@@ -626,6 +658,7 @@ namespace Chummer
             this.lblWeaponDamageLabel.TabIndex = 40;
             this.lblWeaponDamageLabel.Tag = "Label_Damage";
             this.lblWeaponDamageLabel.Text = "Damage:";
+            this.lblWeaponDamageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponAPLabel
             // 
@@ -638,6 +671,7 @@ namespace Chummer
             this.lblWeaponAPLabel.TabIndex = 44;
             this.lblWeaponAPLabel.Tag = "Label_AP";
             this.lblWeaponAPLabel.Text = "AP:";
+            this.lblWeaponAPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponReachLabel
             // 
@@ -650,6 +684,7 @@ namespace Chummer
             this.lblWeaponReachLabel.TabIndex = 48;
             this.lblWeaponReachLabel.Tag = "Label_Reach";
             this.lblWeaponReachLabel.Text = "Reach:";
+            this.lblWeaponReachLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponReach
             // 
@@ -661,6 +696,7 @@ namespace Chummer
             this.lblWeaponReach.Size = new System.Drawing.Size(45, 13);
             this.lblWeaponReach.TabIndex = 49;
             this.lblWeaponReach.Text = "[Reach]";
+            this.lblWeaponReach.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponDamage
             // 
@@ -672,6 +708,7 @@ namespace Chummer
             this.lblWeaponDamage.Size = new System.Drawing.Size(53, 13);
             this.lblWeaponDamage.TabIndex = 41;
             this.lblWeaponDamage.Text = "[Damage]";
+            this.lblWeaponDamage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponAvailLabel
             // 
@@ -684,6 +721,7 @@ namespace Chummer
             this.lblWeaponAvailLabel.TabIndex = 52;
             this.lblWeaponAvailLabel.Tag = "Label_Avail";
             this.lblWeaponAvailLabel.Text = "Avail:";
+            this.lblWeaponAvailLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponCostLabel
             // 
@@ -696,6 +734,7 @@ namespace Chummer
             this.lblWeaponCostLabel.TabIndex = 56;
             this.lblWeaponCostLabel.Tag = "Label_Cost";
             this.lblWeaponCostLabel.Text = "Cost:";
+            this.lblWeaponCostLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblWeaponCost
             // 
@@ -707,6 +746,7 @@ namespace Chummer
             this.lblWeaponCost.Size = new System.Drawing.Size(34, 13);
             this.lblWeaponCost.TabIndex = 57;
             this.lblWeaponCost.Text = "[Cost]";
+            this.lblWeaponCost.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponAP
             // 
@@ -718,6 +758,7 @@ namespace Chummer
             this.lblWeaponAP.Size = new System.Drawing.Size(27, 13);
             this.lblWeaponAP.TabIndex = 45;
             this.lblWeaponAP.Text = "[AP]";
+            this.lblWeaponAP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblWeaponAvail
             // 
@@ -729,6 +770,7 @@ namespace Chummer
             this.lblWeaponAvail.Size = new System.Drawing.Size(36, 13);
             this.lblWeaponAvail.TabIndex = 53;
             this.lblWeaponAvail.Text = "[Avail]";
+            this.lblWeaponAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblMarkupLabel
             // 
@@ -741,6 +783,7 @@ namespace Chummer
             this.lblMarkupLabel.TabIndex = 59;
             this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
             this.lblMarkupLabel.Text = "Markup:";
+            this.lblMarkupLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblSourceLabel
             // 
@@ -753,6 +796,7 @@ namespace Chummer
             this.lblSourceLabel.TabIndex = 64;
             this.lblSourceLabel.Tag = "Label_Source";
             this.lblSourceLabel.Text = "Source:";
+            this.lblSourceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // chkHideOverAvailLimit
             // 
@@ -788,30 +832,34 @@ namespace Chummer
             // 
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(360, 180);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 65;
             this.lblSource.Text = "[Source]";
+            this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // flpMarkup
             // 
             this.flpMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.flpMarkup.AutoSize = true;
+            this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpWeapon.SetColumnSpan(this.flpMarkup, 3);
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
             this.flpMarkup.Location = new System.Drawing.Point(357, 148);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(127, 26);
+            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
             this.flpMarkup.TabIndex = 72;
             // 
             // nudMarkup
             // 
             this.nudMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMarkup.AutoSize = true;
             this.nudMarkup.DecimalPlaces = 2;
             this.nudMarkup.Location = new System.Drawing.Point(3, 3);
             this.nudMarkup.Maximum = new decimal(new int[] {
@@ -825,32 +873,34 @@ namespace Chummer
             0,
             -2147352576});
             this.nudMarkup.Name = "nudMarkup";
-            this.nudMarkup.Size = new System.Drawing.Size(100, 20);
+            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 60;
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
             // lblMarkupPercentLabel
             // 
-            this.lblMarkupPercentLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(109, 6);
+            this.lblMarkupPercentLabel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(65, 6);
             this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
-            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
+            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 14);
             this.lblMarkupPercentLabel.TabIndex = 61;
             this.lblMarkupPercentLabel.Text = "%";
+            this.lblMarkupPercentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // flpCheckBoxes
             // 
+            this.flpCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.flpCheckBoxes.AutoSize = true;
+            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpWeapon.SetColumnSpan(this.flpCheckBoxes, 4);
             this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
             this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
-            this.flpCheckBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpCheckBoxes.Location = new System.Drawing.Point(301, 125);
             this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpCheckBoxes.Name = "flpCheckBoxes";
-            this.flpCheckBoxes.Size = new System.Drawing.Size(291, 23);
+            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 23);
             this.flpCheckBoxes.TabIndex = 73;
             // 
             // chkFreeItem
@@ -934,10 +984,8 @@ namespace Chummer
             // 
             // tableLayoutPanel2
             // 
-            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel2.ColumnCount = 4;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -949,6 +997,7 @@ namespace Chummer
             this.tableLayoutPanel2.Controls.Add(this.txtSearch, 3, 0);
             this.tableLayoutPanel2.Controls.Add(this.lblSearchLabel, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel1, 0, 2);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 3;
@@ -982,6 +1031,8 @@ namespace Chummer
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tableLayoutPanel2);
+            this.DoubleBuffered = true;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSelectWeapon";
@@ -994,6 +1045,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabListView.ResumeLayout(false);
+            this.tabListView.PerformLayout();
             this.tlpWeapon.ResumeLayout(false);
             this.tlpWeapon.PerformLayout();
             this.flpMarkup.ResumeLayout(false);

@@ -18,7 +18,9 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Linq;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 
@@ -26,9 +28,9 @@ namespace Chummer
 {
     public partial class frmSelectItem : Form
     {
-        private IList<Gear> _lstGear = new List<Gear>();
-        private IList<Vehicle> _lstVehicles = new List<Vehicle>();
-        private IList<ListItem> _lstGeneralItems = new List<ListItem>();
+        private List<Gear> _lstGear = new List<Gear>();
+        private List<Vehicle> _lstVehicles = new List<Vehicle>();
+        private List<ListItem> _lstGeneralItems = new List<ListItem>();
         private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
@@ -44,7 +46,7 @@ namespace Chummer
 
         private void frmSelectItem_Load(object sender, EventArgs e)
         {
-            IList<ListItem> lstItems = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>();
 
             if (_strMode == "Gear")
             {
@@ -53,24 +55,20 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
                 {
-                    string strAmmoName = objGear.DisplayNameShort(GlobalOptions.Language);
+                    StringBuilder sbdAmmoName = new StringBuilder(objGear.DisplayNameShort(GlobalOptions.Language));
                     // Retrieve the plugin information if it has any.
                     if (objGear.Children.Count > 0)
                     {
-                        string strPlugins = string.Empty;
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
-                        }
-                        // Remove the trailing comma.
-                        strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
                         // Append the plugin information to the name.
-                        strAmmoName += strSpace + '[' + strPlugins + ']';
+                        sbdAmmoName.Append(strSpace).Append('[')
+                            .AppendJoin(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalOptions.Language)))
+                            .Append(']');
                     }
                     if (objGear.Rating > 0)
-                        strAmmoName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')';
-                    strAmmoName += strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
-                    lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
+                        sbdAmmoName.Append(strSpace).Append('(').Append(LanguageManager.GetString(objGear.RatingLabel))
+                            .Append(strSpace).Append(objGear.Rating.ToString(GlobalOptions.CultureInfo)).Append(')');
+                    sbdAmmoName.Append(strSpace).Append('x').Append(objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
+                    lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                 }
             }
             else if (_strMode == "Vehicles")
@@ -242,8 +240,8 @@ namespace Chummer
 
             // Populate the lists.
             cboAmmo.BeginUpdate();
-            cboAmmo.ValueMember = "Value";
-            cboAmmo.DisplayMember = "Name";
+            cboAmmo.ValueMember = nameof(ListItem.Value);
+            cboAmmo.DisplayMember = nameof(ListItem.Name);
             cboAmmo.DataSource = lstItems;
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.

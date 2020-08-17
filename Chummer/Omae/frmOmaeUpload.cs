@@ -28,7 +28,7 @@ namespace Chummer
     public sealed partial class frmOmaeUpload : Form
     {
         private readonly Character _objCharacter = new Character();
-        private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
+        private readonly List<ListItem> _lstCharacterTypes;
 
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
@@ -44,7 +44,7 @@ namespace Chummer
         private int _intCreated = 0;
 
         #region Control Events
-        public frmOmaeUpload(string strUserName, List<ListItem> lstCharacterTypes, int intCharacterType, int intCharacterID = 0, string strDescription = "")
+        public frmOmaeUpload(string strUserName, IReadOnlyCollection<ListItem> lstCharacterTypes, int intCharacterType, int intCharacterID = 0, string strDescription = "")
         {
             InitializeComponent();
             this.TranslateWinForm();
@@ -76,7 +76,7 @@ namespace Chummer
                 }
             }
 
-            _lstCharacterTypes = lstCharacterTypes;
+            _lstCharacterTypes = new List<ListItem>(lstCharacterTypes);
             _intCharacterID = intCharacterID;
             txtDescription.Text = strDescription;
             _intCharacterType = intCharacterType;
@@ -91,8 +91,8 @@ namespace Chummer
         {
             cboCharacterTypes.DataSource = null;
             cboCharacterTypes.DataSource = _lstCharacterTypes;
-            cboCharacterTypes.ValueMember = "Value";
-            cboCharacterTypes.DisplayMember = "Name";
+            cboCharacterTypes.ValueMember = nameof(ListItem.Value);
+            cboCharacterTypes.DisplayMember = nameof(ListItem.Name);
 
             string strName = string.Empty;
             foreach (ListItem objItem in _lstCharacterTypes)
@@ -129,19 +129,19 @@ namespace Chummer
                 return;
             }
 
-            Cursor = Cursors.WaitCursor;
-            // Attempt to load the character and make sure it's a valid character file.
-            _objCharacter.FileName = openFileDialog.FileName;
-            try
+            using (new CursorWait(this))
             {
-                _objCharacter.Load();
-                Cursor = Cursors.Default;
-            }
-            catch
-            {
-                Cursor = Cursors.Default;
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                // Attempt to load the character and make sure it's a valid character file.
+                _objCharacter.FileName = openFileDialog.FileName;
+                try
+                {
+                    _objCharacter.Load();
+                }
+                catch
+                {
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_OmaeUpload_CannotUploadFile"), LanguageManager.GetString("MessageTitle_OmaeUpload_CannotUploadFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
 
             // Make sure the character is named.

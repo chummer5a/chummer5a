@@ -110,7 +110,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -181,6 +181,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("metamagic");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -351,17 +353,18 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 string doc = "metamagic.xml";
-                string path = "metamagics/metamagic";
+                string path = "/chummer/metamagics/metamagic";
                 if (_eImprovementSource == Improvement.ImprovementSource.Echo)
                 {
                     doc = "echoes.xml";
-                    path = "echoes/echo";
+                    path = "/chummer/echoes/echo";
                 }
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load(doc, strLanguage)
-                        .SelectSingleNode("/chummer/" + path + "[name = \"" + Name + "\"]")
-                    : XmlManager.Load(doc, strLanguage).SelectSingleNode(
-                        "/chummer/" + path + "[id = \"" + SourceIDString +  "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(doc, strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? path + "[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "{0}[id = \"{1}\" or id = \"{2}\"]",
+                            path, SourceIDString, SourceIDString.ToUpperInvariant()));
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }
@@ -385,7 +388,7 @@ namespace Chummer
                 Tag = this,
                 ContextMenuStrip = cmsMetamagic,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             return objNode;

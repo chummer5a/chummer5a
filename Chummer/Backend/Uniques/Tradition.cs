@@ -55,7 +55,7 @@ namespace Chummer.Backend.Uniques
         private string _strSpiritHealth = string.Empty;
         private string _strSpiritIllusion = string.Empty;
         private string _strSpiritManipulation = string.Empty;
-        private readonly List<string> _lstAvailableSpirits = new List<string>();
+        private readonly List<string> _lstAvailableSpirits = new List<string>(5);
         private XmlNode _nodBonus;
         private TraditionType _eTraditionType = TraditionType.None;
 
@@ -93,7 +93,7 @@ namespace Chummer.Backend.Uniques
             _strPage = string.Empty;
             DrainExpression = string.Empty;
             SpiritForm = "Materialization";
-            AvailableSpirits.Clear();
+            _lstAvailableSpirits.Clear();
             Type = TraditionType.None;
             _objCachedSourceDetail = null;
         }
@@ -346,6 +346,8 @@ namespace Chummer.Backend.Uniques
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("tradition");
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
@@ -387,7 +389,7 @@ namespace Chummer.Backend.Uniques
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -552,9 +554,7 @@ namespace Chummer.Backend.Uniques
                 strDrain = strDrain.CheapReplace(strAttribute, () =>
                 {
                     if(strAttribute == "MAGAdept")
-                        return LanguageManager.GetString("String_AttributeMAGShort", strLanguage) +
-                               LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                               LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                        return LanguageManager.MAGAdeptString(strLanguage);
 
                     return LanguageManager.GetString("String_Attribute" + strAttribute + "Short", strLanguage);
                 });
@@ -613,8 +613,10 @@ namespace Chummer.Backend.Uniques
                     objToolTip.CheapReplace(strAttribute, () =>
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        return objAttrib.DisplayAbbrev + strSpace + '(' +
-                               objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
+                        return new StringBuilder(objAttrib.DisplayAbbrev)
+                            .Append(strSpace).Append('(')
+                            .Append(objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo))
+                            .Append(')').ToString();
                     });
                 }
 
@@ -624,10 +626,9 @@ namespace Chummer.Backend.Uniques
                         Type == TraditionType.MAG && objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance) &&
                         objLoopImprovement.Enabled)
                     {
-                        objToolTip.Append(strSpace + '+' + strSpace +
-                                          _objCharacter.GetObjectName(objLoopImprovement) +
-                                          strSpace + '(' +
-                                          objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        objToolTip.Append(strSpace).Append('+')
+                            .Append(strSpace).Append(_objCharacter.GetObjectName(objLoopImprovement))
+                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
@@ -647,7 +648,7 @@ namespace Chummer.Backend.Uniques
                 OnPropertyChanged(nameof(DrainValue));
         }
 
-        public IList<string> AvailableSpirits => _lstAvailableSpirits;
+        public IReadOnlyList<string> AvailableSpirits => _lstAvailableSpirits;
 
         /// <summary>
         /// Magician's Combat Spirit (for Custom Traditions) in English.
@@ -917,11 +918,12 @@ namespace Chummer.Backend.Uniques
                 return null;
             if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _xmlCachedMyXmlNode = SourceID == Guid.Empty
-                    ? GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[name = \"" + Name + "\"]")
-                    : GetTraditionDocument(strLanguage).SelectSingleNode("/chummer/traditions/tradition[id = \""
-                                                                         + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
-
+                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/traditions/tradition[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _xmlCachedMyXmlNode;
@@ -945,61 +947,65 @@ namespace Chummer.Backend.Uniques
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string> s_AttributeDependencyGraph =
-            new DependencyGraph<string>(
-                new DependencyGraphNode<string>(nameof(CurrentDisplayName),
-                    new DependencyGraphNode<string>(nameof(DisplayName),
-                        new DependencyGraphNode<string>(nameof(DisplayNameShort),
-                            new DependencyGraphNode<string>(nameof(Name))
+        private static readonly DependencyGraph<string, Tradition> s_AttributeDependencyGraph =
+            new DependencyGraph<string, Tradition>(
+                new DependencyGraphNode<string, Tradition>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Tradition>(nameof(DisplayName),
+                        new DependencyGraphNode<string, Tradition>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string, Tradition>(nameof(Name))
                         ),
-                        new DependencyGraphNode<string>(nameof(Extra))
+                        new DependencyGraphNode<string, Tradition>(nameof(Extra))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(DrainValueToolTip),
-                    new DependencyGraphNode<string>(nameof(DrainValue),
-                        new DependencyGraphNode<string>(nameof(DrainExpression))
+                new DependencyGraphNode<string, Tradition>(nameof(DrainValueToolTip),
+                    new DependencyGraphNode<string, Tradition>(nameof(DrainValue),
+                        new DependencyGraphNode<string, Tradition>(nameof(DrainExpression))
                     )
                 ),
-                new DependencyGraphNode<string>(nameof(DisplayDrainExpression),
-                    new DependencyGraphNode<string>(nameof(DrainExpression))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplayDrainExpression),
+                    new DependencyGraphNode<string, Tradition>(nameof(DrainExpression))
                 ),
-                new DependencyGraphNode<string>(nameof(AvailableSpirits),
-                    new DependencyGraphNode<string>(nameof(SpiritCombat)),
-                    new DependencyGraphNode<string>(nameof(SpiritDetection)),
-                    new DependencyGraphNode<string>(nameof(SpiritHealth)),
-                    new DependencyGraphNode<string>(nameof(SpiritIllusion)),
-                    new DependencyGraphNode<string>(nameof(SpiritManipulation))
+                new DependencyGraphNode<string, Tradition>(nameof(AvailableSpirits),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritCombat)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritDetection)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritHealth)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritIllusion)),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritManipulation))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritCombat),
-                    new DependencyGraphNode<string>(nameof(SpiritCombat))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritCombat),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritCombat))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritDetection),
-                    new DependencyGraphNode<string>(nameof(SpiritDetection))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritDetection),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritDetection))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritHealth),
-                    new DependencyGraphNode<string>(nameof(SpiritHealth))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritHealth),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritHealth))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritIllusion),
-                    new DependencyGraphNode<string>(nameof(SpiritIllusion))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritIllusion),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritIllusion))
                 ),
-                new DependencyGraphNode<string>(nameof(DisplaySpiritManipulation),
-                    new DependencyGraphNode<string>(nameof(SpiritManipulation))
+                new DependencyGraphNode<string, Tradition>(nameof(DisplaySpiritManipulation),
+                    new DependencyGraphNode<string, Tradition>(nameof(SpiritManipulation))
                 )
             );
 
         public static List<Tradition> GetTraditions(Character character)
         {
-            List<Tradition> result = new List<Tradition>();
-            XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml").SelectNodes("/chummer/traditions/tradition");
-            if (xmlTraditions != null)
+            List<Tradition> result;
+            using (XmlNodeList xmlTraditions = XmlManager.Load("traditions.xml").SelectNodes("/chummer/traditions/tradition[" + character.Options.BookXPath() + ']'))
             {
-                foreach (XmlNode node in xmlTraditions)
+                result = new List<Tradition>(xmlTraditions?.Count ?? 0);
+                if (xmlTraditions?.Count > 0)
                 {
-                    Tradition tradition = new Tradition(character);
-                    tradition.Create(node);
-                    result.Add(tradition);
+                    foreach (XmlNode node in xmlTraditions)
+                    {
+                        Tradition tradition = new Tradition(character);
+                        tradition.Create(node);
+                        result.Add(tradition);
+                    }
                 }
             }
+
             return result;
         }
 
@@ -1024,10 +1030,10 @@ namespace Chummer.Backend.Uniques
             foreach(string strPropertyName in lstPropertyNames)
             {
                 if(lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName);
+                    lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach(string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(strPropertyName))
+                    foreach(string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

@@ -26,12 +26,13 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
+using iText.Kernel.Pdf;
 using Microsoft.Win32;
-using iTextSharp.text.pdf;
-using MersenneTwister;
 using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
+using Xoshiro.PRNG64;
 
 namespace Chummer
 {
@@ -60,8 +61,8 @@ namespace Chummer
 
     public sealed class SourcebookInfo : IDisposable
     {
-        string _strPath = string.Empty;
-        PdfReader _objPdfReader;
+        private string _strPath = string.Empty;
+        private PdfDocument _objPdfDocument;
 
         #region Properties
         public string Code { get; set; } = string.Empty;
@@ -74,28 +75,27 @@ namespace Chummer
                 if(_strPath != value)
                 {
                     _strPath = value;
-                    _objPdfReader?.Close();
-                    _objPdfReader = null;
+                    _objPdfDocument?.Close();
+                    _objPdfDocument = null;
                 }
             }
         }
 
         public int Offset { get; set; }
 
-        internal PdfReader CachedPdfReader
+        internal PdfDocument CachedPdfDocument
         {
             get
             {
-                if(_objPdfReader == null)
+                if (_objPdfDocument == null)
                 {
                     Uri uriPath = new Uri(Path);
-                    if(File.Exists(uriPath.LocalPath))
+                    if (File.Exists(uriPath.LocalPath))
                     {
-                        // using the "partial" param it runs much faster and I couldn't find any downsides to it
-                        _objPdfReader = new PdfReader(uriPath.LocalPath, null, true);
+                        _objPdfDocument = new PdfDocument(new PdfReader(uriPath.LocalPath));
                     }
                 }
-                return _objPdfReader;
+                return _objPdfDocument;
             }
         }
 
@@ -108,7 +108,7 @@ namespace Chummer
             {
                 if(disposing)
                 {
-                    _objPdfReader?.Dispose();
+                    _objPdfDocument?.Close();
                 }
 
                 disposedValue = true;
@@ -137,10 +137,13 @@ namespace Chummer
 
         #endregion
 
+        private readonly int _intHashCode;
+
         public CustomDataDirectoryInfo(string strName, string strPath)
         {
             Name = strName;
             Path = strPath;
+            _intHashCode = new {Name, Path}.GetHashCode();
         }
 
         public int CompareTo(object obj)
@@ -179,7 +182,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {Name, Path}.GetHashCode();
+            return _intHashCode;
         }
 
         public bool Equals(CustomDataDirectoryInfo other)
@@ -231,7 +234,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
 
-        public static string ErrorMessage { get; } = string.Empty;
+        public static StringBuilder ErrorMessage { get; } = new StringBuilder();
         public static event TextEventHandler MRUChanged;
         public static event PropertyChangedEventHandler ClipboardChanged;
 
@@ -259,6 +262,7 @@ namespace Chummer
         private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
+        private static bool _blnHideMasterIndex;
         private static bool _blnHideCharacterRoster;
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
@@ -271,7 +275,9 @@ namespace Chummer
         private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
 
-        public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(DsfmtRandom.Create(DsfmtEdition.OptGen_216091));
+        public const int MaxStackLimit = 1024;
+
+        public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(new XoRoShiRo128starstar());
 
         // Omae Information.
         private static bool _omaeEnabled;
@@ -420,9 +426,9 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                if(!string.IsNullOrEmpty(ErrorMessage))
-                    ErrorMessage += Environment.NewLine + Environment.NewLine;
-                ErrorMessage += ex.ToString();
+                if(ErrorMessage.Length > 0)
+                    ErrorMessage.AppendLine().AppendLine();
+                ErrorMessage.Append(ex);
             }
             if (_objBaseChummerKey == null)
                 return;
@@ -469,6 +475,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
             LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
             LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
+            LoadBoolFromRegistry(ref _blnHideMasterIndex, "hidemasterindex");
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
@@ -626,6 +633,15 @@ namespace Chummer
         {
             get => _blnAllowEasterEggs;
             set => _blnAllowEasterEggs = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Master Index should be shown. If true, prevents the roster from being removed or hidden.
+        /// </summary>
+        public static bool HideMasterIndex
+        {
+            get => _blnHideMasterIndex;
+            set => _blnHideMasterIndex = value;
         }
 
         /// <summary>
@@ -829,6 +845,8 @@ namespace Chummer
 
         private static XmlDocument _xmlClipboard = new XmlDocument {XmlResolver = null};
 
+        public static XmlReaderSettings SafeXmlReaderSettings { get; } = new XmlReaderSettings {XmlResolver = null};
+
         /// <summary>
         /// Clipboard.
         /// </summary>
@@ -897,7 +915,7 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static ICollection<SourcebookInfo> SourcebookInfo
+        public static HashSet<SourcebookInfo> SourcebookInfo
         {
             get
             {
@@ -925,7 +943,7 @@ namespace Chummer
                                     string strTemp = string.Empty;
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|');
+                                        string[] strParts = strTemp.Split('|', StringSplitOptions.RemoveEmptyEntries);
                                         objSource.Path = strParts[0];
                                         if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                         {
@@ -1017,7 +1035,7 @@ namespace Chummer
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static IList<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
+        public static List<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
 
         public static bool OmaeEnabled
         {

@@ -26,9 +26,11 @@ using Chummer.Backend.Equipment;
 using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Chummer.Annotations;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
 namespace Chummer
 {
@@ -132,7 +134,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstGear">List of Gear to search.</param>
-        public static Drug FindDrug(string strGuid, List<Drug> lstGear)
+        public static Drug FindDrug(string strGuid, IEnumerable<Drug> lstGear)
         {
             if (lstGear == null)
                 throw new ArgumentNullException(nameof(lstGear));
@@ -791,18 +793,13 @@ namespace Chummer
                 return string.Empty;
             string strSearchText = strNeedle.ToUpperInvariant();
             // Treat everything as being uppercase so the search is case-insensitive.
-            return string.Concat(
-                blnAddAnd ? " and ((not(" : "((not(",
+            return (blnAddAnd ? " and " : string.Empty) + string.Format(
+                GlobalOptions.InvariantCultureInfo,
+                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"{2}\")) " +
+                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"{2}\"))",
                 strTranslateElement,
-                ") and contains(translate(",
                 strNameElement,
-                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
-                strSearchText,
-                "\")) or contains(translate(",
-                strTranslateElement,
-                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
-                strSearchText,
-                "\"))");
+                strSearchText);
         }
 
         /// <summary>
@@ -887,15 +884,11 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
-                astrSourceParts = strSource.Split(strSpace[0]);
+                astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-            {
                 astrSourceParts = new [] { "SR5", strSource.Substring(3) };
-            }
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-            {
-                astrSourceParts = new [] { "R5", strSource.Substring(3) };
-            }
+                astrSourceParts = new [] { "R5", strSource.Substring(2) };
             else
             {
                 int i = strSource.Length - 1;
@@ -925,17 +918,27 @@ namespace Chummer
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                // Silently swallow the error because PDF fetching is usually done in the background
+                objBookInfo.Path = string.Empty;
+                return;
+            }
 
-            Uri uriPath = new Uri(objBookInfo.Path);
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return;
             intPage += objBookInfo.Offset;
 
-            string strParams = strPDFParamaters;
-            strParams = strParams.Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo));
-            strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-            strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+            string strParams = strPDFParamaters
+                .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
+                .Replace("{localpath}", uriPath.LocalPath)
+                .Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
             {
                 FileName = strPDFAppPath,
@@ -955,7 +958,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
-            string[] strTemp = strSource.Split(' ');
+            string[] strTemp = strSource.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (strTemp.Length < 2)
                 return string.Empty;
             if (!int.TryParse(strTemp[1], out int intPage))
@@ -974,7 +977,15 @@ namespace Chummer
             if (objBookInfo == null)
                 return string.Empty;
 
-            Uri uriPath = new Uri(objBookInfo.Path);
+            Uri uriPath;
+            try
+            {
+                uriPath = new Uri(objBookInfo.Path);
+            }
+            catch (UriFormatException)
+            {
+                return string.Empty;
+            }
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return string.Empty;
@@ -990,15 +1001,15 @@ namespace Chummer
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
-            PdfReader reader = objBookInfo.CachedPdfReader;
-            List<string> lstStringFromPDF = new List<string>();
+            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
+            List<string> lstStringFromPDF = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
             int intMaxPagesToRead = 3;  // parse at most 3 pages of content
             // Loop through each page, starting at the listed page + offset.
-            for (; intPage <= reader.NumberOfPages; ++intPage)
+            for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
             {
                 // failsafe if something goes wrong, I guess no description takes more than two full pages?
                 if (intMaxPagesToRead-- == 0)
@@ -1008,7 +1019,7 @@ namespace Chummer
                 // each page should have its own text extraction strategy for it to work properly
                 // this way we don't need to check for previous page appearing in the current page
                 // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
+                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy());
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                 lstStringFromPDF.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
@@ -1131,10 +1142,10 @@ namespace Chummer
                 if (blnTitleWithColon)
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
                 // add the title
-                string strResultContent = strArray[intTitleIndex] + Environment.NewLine;
+                StringBuilder sbdResultContent = new StringBuilder(strArray[intTitleIndex]).AppendLine();
                 // if we have extra info add it keeping the line breaks
                 if (intExtraAllCapsInfo > 0)
-                    strResultContent += string.Join(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo) + Environment.NewLine;
+                    sbdResultContent.AppendJoin(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo).AppendLine();
                 int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
                 // this is the best we can do for now, it will still mangle spell blocks a bit
                 for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
@@ -1146,17 +1157,17 @@ namespace Chummer
                         if (char.IsPunctuation(chrLastChar))
                         {
                             if (chrLastChar == '-')
-                                strResultContent += strContentString.Substring(0, strContentString.Length - 1);
+                                sbdResultContent.Append(strContentString.Substring(0, strContentString.Length - 1));
                             else
-                                strResultContent += strContentString + Environment.NewLine;
+                                sbdResultContent.AppendLine(strContentString);
                         }
                         else
                         {
-                            strResultContent += strContentString + ' ';
+                            sbdResultContent.Append(strContentString).Append(' ');
                         }
                     }
                 }
-                return strResultContent;
+                return sbdResultContent.ToString();
             }
             return string.Empty;
         }

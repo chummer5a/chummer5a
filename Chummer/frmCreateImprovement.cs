@@ -47,18 +47,29 @@ namespace Chummer
 
         private void frmCreateImprovement_Load(object sender, EventArgs e)
         {
-            List<ListItem> lstTypes = new List<ListItem>();
+            List<ListItem> lstTypes = new List<ListItem>((int)Improvement.ImprovementType.NumImprovementTypes);
 
             // Populate the Improvement Type list.
             XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
             if (objXmlImprovementList != null)
-                lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
-                    select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
+            {
+                foreach (XmlNode objXmlImprovement in objXmlImprovementList)
+                {
+                    string strId = objXmlImprovement["id"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strId))
+                    {
+                        lstTypes.Add(new ListItem(strId,
+                            objXmlImprovement["translate"]?.InnerText
+                            ?? objXmlImprovement["name"]?.InnerText
+                            ?? LanguageManager.GetString("String_Unknown")));
+                    }
+                }
+            }
 
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
-            cboImprovemetType.ValueMember = "Value";
-            cboImprovemetType.DisplayMember = "Name";
+            cboImprovemetType.ValueMember = nameof(ListItem.Value);
+            cboImprovemetType.DisplayMember = nameof(ListItem.Name);
             cboImprovemetType.DataSource = lstTypes;
 
             // Load the information from the passed Improvement if one has been given.
@@ -173,10 +184,11 @@ namespace Chummer
             switch (_strSelect)
             {
                 case "SelectActionDicePool":
-                    List<ListItem> lstActions = new List<ListItem>();
+                    List<ListItem> lstActions;
                     using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
                     {
-                        if (xmlActionList != null)
+                        lstActions = new List<ListItem>(xmlActionList?.Count ?? 0);
+                        if (xmlActionList?.Count > 0)
                         {
                             foreach (XmlNode xmlAction in xmlActionList)
                             {
@@ -187,18 +199,18 @@ namespace Chummer
                         }
                     }
 
-                    using (frmSelectItem select = new frmSelectItem
+                    using (frmSelectItem frmSelectAction = new frmSelectItem
                     {
                         Description = LanguageManager.GetString("Title_SelectAction")
                     })
                     {
-                        select.SetDropdownItemsMode(lstActions);
-                        select.ShowDialog(this);
+                        frmSelectAction.SetDropdownItemsMode(lstActions);
+                        frmSelectAction.ShowDialog(this);
 
-                        if (select.DialogResult == DialogResult.OK)
+                        if (frmSelectAction.DialogResult == DialogResult.OK)
                         {
-                            txtSelect.Text = select.SelectedName;
-                            txtTranslateSelection.Text = TranslateField(_strSelect, select.SelectedName);
+                            txtSelect.Text = frmSelectAction.SelectedName;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmSelectAction.SelectedName);
                         }
                     }
                     break;
@@ -309,7 +321,7 @@ namespace Chummer
                     break;
                 case "SelectKnowSkill":
                     {
-                        List<ListItem> lstDropdownItems = new List<ListItem>();
+                        List<ListItem> lstDropdownItems = new List<ListItem>(_objCharacter.SkillsSection.KnowledgeSkills.Count);
                         HashSet<string> setProcessedSkillNames = new HashSet<string>();
                         foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                         {
@@ -388,10 +400,11 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpell":
-                    List<ListItem> lstSpells = new List<ListItem>();
+                    List<ListItem> lstSpells;
                     using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
                     {
-                        if (xmlSpellList != null)
+                        lstSpells = new List<ListItem>(xmlSpellList?.Count ?? 0);
+                        if (xmlSpellList?.Count > 0)
                         {
                             foreach (XmlNode xmlSpell in xmlSpellList)
                             {
@@ -469,14 +482,14 @@ namespace Chummer
             // Make sure a value has been selected if necessary.
             if (txtTranslateSelection.Visible && string.IsNullOrEmpty(txtSelect.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SelectItem"), LanguageManager.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectItem"), LanguageManager.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Make sure a value has been provided for the name.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_ImprovementName"), LanguageManager.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementName"), LanguageManager.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtName.Focus();
                 return;
             }
@@ -530,7 +543,7 @@ namespace Chummer
                         objStream.Position = 0;
 
                         // Read it back in as an XmlDocument.
-                        using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings {XmlResolver = null}))
+                        using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                             objBonusXml.Load(objXmlReader);
                     }
                 }
@@ -595,7 +608,7 @@ namespace Chummer
                         strToTranslate.Contains("Exotic Ranged Weapon") ||
                         strToTranslate.Contains("Pilot Exotic Vehicle"))
                     {
-                        string[] astrToTranslateParts = strToTranslate.Split('(');
+                        string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
                         astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 

@@ -97,6 +97,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("location");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", DisplayNameShort());
             objWriter.WriteElementString("fullname", DisplayName());
             objWriter.WriteElementString("name_english", Name);
@@ -173,7 +174,7 @@ namespace Chummer
                 Tag = this,
                 ContextMenuStrip = cmsLocation,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
 
             return objNode;

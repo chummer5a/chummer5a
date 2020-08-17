@@ -88,6 +88,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("week");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("year", Year.ToString(objCulture));
             objWriter.WriteElementString("month", Month.ToString(objCulture));
             objWriter.WriteElementString("week", MonthWeek.ToString(objCulture));

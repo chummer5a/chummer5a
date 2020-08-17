@@ -37,7 +37,7 @@ namespace Chummer
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private readonly List<Gear> _lstGear = new List<Gear>();
+        private readonly List<Gear> _lstGear = new List<Gear>(2);
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
@@ -156,12 +156,12 @@ namespace Chummer
                     if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
                     {
                         intExtraKarmaCost = -2;
-                        strFocusName = strFocusName.Replace(", Individualized, Complete", "");
+                        strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
                     }
                     else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
                     {
                         intExtraKarmaCost = -1;
-                        strFocusName = strFocusName.Replace(", Individualized, Partial", "");
+                        strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
                     }
 
                     int intKarmaMultiplier;
@@ -257,7 +257,7 @@ namespace Chummer
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
         /// </summary>
-        public IList<Gear> Gear => _lstGear;
+        public List<Gear> Gear => _lstGear;
 
         #endregion
 

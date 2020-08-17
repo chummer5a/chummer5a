@@ -70,11 +70,6 @@ namespace Chummer.Plugins
         private static DirectoryCatalog myDirectoryCatalog;
         private static FileSystemWatcher watcher;
 
-        ~PluginControl()
-        {
-            Dispose(false);
-        }
-
         //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
         public static bool RegisterChummerProtocol()
         {
@@ -220,6 +215,7 @@ namespace Chummer.Plugins
                 Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
 
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+                path = Path.GetFullPath(path);
                 if (!Directory.Exists(path))
                 {
                     string msg = "Directory " + path + " not found. No Plugins will be available.";
@@ -228,7 +224,7 @@ namespace Chummer.Plugins
                 catalog = new AggregateCatalog();
 
                 var plugindirectories = Directory.GetDirectories(path);
-                if (!plugindirectories.Any())
+                if (plugindirectories.Length == 0)
                 {
                     throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
                 }
@@ -301,6 +297,9 @@ namespace Chummer.Plugins
                     catch (Exception e)
                     {
                         Log.Error(e);
+#if DEBUG
+                        throw;
+#endif
                     }
                 }
                 Log.Info("Initializing Plugins finished.");
@@ -321,9 +320,9 @@ namespace Chummer.Plugins
         }
 
         [ImportMany(typeof(IPlugin))]
-        public ICollection<IPlugin> MyPlugins { get; } = new List<IPlugin>();
+        public List<IPlugin> MyPlugins { get; } = new List<IPlugin>();
 
-        public ICollection<IPlugin> MyActivePlugins
+        public List<IPlugin> MyActivePlugins
         {
             get
             {
@@ -481,25 +480,16 @@ namespace Chummer.Plugins
         }
 
         private bool _blnDisposed;
-        // The bulk of the clean-up code is implemented in Dispose(bool)
-        protected virtual void Dispose(bool blnDisposing)
+
+        public void Dispose()
         {
             if (_blnDisposed)
                 return;
 
-            if (blnDisposing)
-            {
-                foreach (IPlugin plugin in MyActivePlugins)
-                    plugin.Dispose();
-            }
+            foreach (IPlugin plugin in MyActivePlugins)
+                plugin.Dispose();
 
             _blnDisposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

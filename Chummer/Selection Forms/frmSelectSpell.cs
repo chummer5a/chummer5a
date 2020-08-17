@@ -112,8 +112,8 @@ namespace Chummer
 
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
-            cboCategory.ValueMember = "Value";
-            cboCategory.DisplayMember = "Name";
+            cboCategory.ValueMember = nameof(ListItem.Value);
+            cboCategory.DisplayMember = nameof(ListItem.Name);
             cboCategory.DataSource = _lstCategory;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory)) cboCategory.SelectedIndex = 0;
@@ -361,8 +361,8 @@ namespace Chummer
             string strOldSelected = lstSpells.SelectedValue?.ToString();
             _blnLoading = true;
             lstSpells.BeginUpdate();
-            lstSpells.ValueMember = "Value";
-            lstSpells.DisplayMember = "Name";
+            lstSpells.ValueMember = nameof(ListItem.Value);
+            lstSpells.DisplayMember = nameof(ListItem.Name);
             lstSpells.DataSource = lstSpellItems;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -427,7 +427,7 @@ namespace Chummer
                     {
                         if (intAlchPrepCount >= intSpellLimit)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
@@ -435,13 +435,13 @@ namespace Chummer
                     {
                         if (intRitualCount >= intSpellLimit)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SpellLimit"), LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
                     else if (intSpellCount >= intSpellLimit)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_SpellLimit"),
+                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SpellLimit"),
                             LanguageManager.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
@@ -508,14 +508,14 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            string[] strDescriptorsIn = xmlSpell.SelectSingleNode("descriptor")?.Value.Split(',') ?? new string[] {};
 
             StringBuilder objDescriptors = new StringBuilder();
             bool blnExtendedFound = false;
             bool blnAlchemicalFound = false;
-            if (!string.IsNullOrEmpty(xmlSpell.SelectSingleNode("descriptor")?.Value))
+            string strDescriptors = xmlSpell.SelectSingleNode("descriptor")?.Value;
+            if (!string.IsNullOrEmpty(strDescriptors))
             {
-                foreach (string strDescriptor in strDescriptorsIn)
+                foreach (string strDescriptor in strDescriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     switch (strDescriptor.Trim())
                     {
@@ -543,7 +543,7 @@ namespace Chummer
                             objDescriptors.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim()));
                             break;
                     }
-                    objDescriptors.Append(',' + strSpace);
+                    objDescriptors.Append(',').Append(strSpace);
                 }
             }
 

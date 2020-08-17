@@ -237,13 +237,13 @@ namespace Chummer
 
             string strRatingLabel = objXmlMod.SelectSingleNode("ratinglabel")?.Value;
             lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                     LanguageManager.GetString(strRatingLabel))
                 : LanguageManager.GetString("Label_Rating");
             nudRating.Maximum = Convert.ToDecimal(objXmlMod.SelectSingleNode("maxrating")?.Value, GlobalOptions.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
             {
-                while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                while (nudRating.Maximum > 1 && !objXmlMod.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum)))
                 {
                     nudRating.Maximum -= 1;
                 }
@@ -254,7 +254,7 @@ namespace Chummer
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
-                while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(objXmlMod, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                while (nudRating.Maximum > 1 && !objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
                 {
                     nudRating.Maximum -= 1;
                 }
@@ -315,7 +315,7 @@ namespace Chummer
                         strSuffix = strCostElement.Substring(strCostElement.LastIndexOf(')') + 1);
                         strCostElement = strCostElement.TrimEndOnce(strSuffix);
                     }
-                    string[] strValues = strCostElement.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCostElement.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCostElement = strValues[Math.Max(Math.Min(Convert.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                     strCostElement += strSuffix;
                 }
@@ -371,7 +371,7 @@ namespace Chummer
             {
                 if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
-                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
+                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strCapacity = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
 
@@ -408,7 +408,7 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
 
             // Populate the Mods list.
-            string[] strAllowed = AllowedCategories.Split(',');
+            string[] strAllowed = AllowedCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
             string strMount = string.Empty;
             for (int i = 0; i < strAllowed.Length; i++)
             {
@@ -474,14 +474,14 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstMods.Add(new ListItem(string.Empty,
-                    LanguageManager.GetString("String_RestrictedItemsHidden")
-                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        intOverLimit)));
             }
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
             lstMod.BeginUpdate();
-            lstMod.ValueMember = "Value";
-            lstMod.DisplayMember = "Name";
+            lstMod.ValueMember = nameof(ListItem.Value);
+            lstMod.DisplayMember = nameof(ListItem.Name);
             lstMod.DataSource = lstMods;
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))

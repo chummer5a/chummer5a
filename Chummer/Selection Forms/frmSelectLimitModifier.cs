@@ -43,8 +43,8 @@ namespace Chummer
             }
 
             cboLimit.BeginUpdate();
-            cboLimit.ValueMember = "Value";
-            cboLimit.DisplayMember = "Name";
+            cboLimit.ValueMember = nameof(ListItem.Value);
+            cboLimit.DisplayMember = nameof(ListItem.Name);
             cboLimit.DataSource = lstLimitItems;
             if (lstLimitItems.Count >= 1)
                 cboLimit.SelectedIndex = 0;

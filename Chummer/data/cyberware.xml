@@ -114,7 +114,7 @@
         <selecttext />
       </bonus>
       <source>CF</source>
-      <page>72</page>
+      <page>71</page>
     </grade>
     <grade>
       <id>e77b7a1f-1c7b-4494-b9b5-6dcb5b61010b</id>
@@ -3526,11 +3526,6 @@
           </OR>
         </parentdetails>
       </required>
-      <forbidden>
-        <parentdetails>
-          <name>Centaur Rear Leg</name>
-        </parentdetails>
-      </forbidden>
     </cyberware>
     <cyberware>
       <id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
@@ -4523,6 +4518,7 @@
         <category>Cyberlimb Enhancement</category>
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
+		<category>Nanocybernetics</category>
       </allowsubsystems>
       <forbidden>
         <oneof>
@@ -5464,7 +5460,7 @@
       <avail>12F</avail>
       <cost>Rating * 500</cost>
       <source>CF</source>
-      <page>149</page>
+      <page>150</page>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
     </cyberware>
@@ -5532,7 +5528,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>LimitCondition_AttribSkillINT</condition>
+          <condition>LimitCondition_AttribSkillLOG</condition>
         </limitmodifier>
         <skilllinkedattribute>
           <name>LOG</name>

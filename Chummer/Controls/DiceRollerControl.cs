@@ -113,7 +113,7 @@ namespace Chummer
             nudGremlins.Maximum = int.MaxValue;
             nudLimit.Maximum = int.MaxValue;
             nudThreshold.Maximum = int.MaxValue;
-            List<EdgeUses> edge = new List<EdgeUses>() 
+            EdgeUses[] edge =
             { 
                 EdgeUses.None, 
                 EdgeUses.PushTheLimit,
@@ -131,7 +131,7 @@ namespace Chummer
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
             // TODO roll the dice
-            List<int> results = new List<int>();
+            List<int> results = new List<int>(NumberOfDice);
             for (int i = 0; i < NumberOfDice; i++)
             {
                 do
