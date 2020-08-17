@@ -515,6 +515,8 @@ namespace Chummer.Backend.Equipment
         {
             if (objNode == null)
                 return;
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -554,8 +556,6 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
                 _blnEncumbrance = true;
 
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
