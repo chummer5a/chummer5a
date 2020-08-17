@@ -1212,17 +1212,13 @@ namespace Chummer
                 return '\"' + strSearch + '\"';
             }
 
-            StringBuilder objReturn = new StringBuilder("concat(\"");
-            for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"'))
+            StringBuilder sbdReturn = new StringBuilder("concat(\"", strSearch.Length + 10);
+            for (int intSubStringStart = 0; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"', intSubStringStart))
             {
-                string strSubstring = strSearch.Substring(0, intQuotePos);
-                objReturn.Append(strSubstring);
-                objReturn.Append("\", '\"', \"");
-                strSearch = strSearch.Substring(intQuotePos + 1);
+                sbdReturn.Append(strSearch.Substring(intSubStringStart, intQuotePos - intSubStringStart)).Append("\", '\"', \"");
+                intSubStringStart = intQuotePos + 1;
             }
-            objReturn.Append(strSearch);
-            objReturn.Append("\")");
-            return objReturn.ToString();
+            return sbdReturn.Append(strSearch).Append("\")").ToString();
         }
 
         /// <summary>

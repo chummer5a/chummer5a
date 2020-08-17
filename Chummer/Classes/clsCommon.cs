@@ -791,12 +791,12 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strNeedle))
                 return string.Empty;
-            string strSearchText = strNeedle.ToUpperInvariant();
+            string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
             // Treat everything as being uppercase so the search is case-insensitive.
             return (blnAddAnd ? " and " : string.Empty) + string.Format(
                 GlobalOptions.InvariantCultureInfo,
-                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"{2}\")) " +
-                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"{2}\"))",
+                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
+                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2}))",
                 strTranslateElement,
                 strNameElement,
                 strSearchText);
@@ -914,7 +914,7 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0]);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook);
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
@@ -972,7 +972,7 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(strTemp[0]);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook);
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return string.Empty;
