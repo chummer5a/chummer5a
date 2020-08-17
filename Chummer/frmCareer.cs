@@ -12807,6 +12807,7 @@ namespace Chummer
                                 Margin = objMaxCheckBox.Margin,
                                 TextAlign = objMaxCheckBox.TextAlign,
                                 Font = objMaxCheckBox.Font,
+                                FlatStyle = objMaxCheckBox.FlatStyle,
                                 UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
                             };
                             cb.Click += button_Click;
@@ -12815,6 +12816,9 @@ namespace Chummer
                         }
                     }
                 }
+
+                int intMaxDimension = 0;
+                int intMaxMargin = 0;
                 foreach (CheckBox chkCmBox in lstCheckBoxes)
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
@@ -12845,7 +12849,19 @@ namespace Chummer
                         chkCmBox.Visible = false;
                         chkCmBox.Text = " "; // Non-breaking save to help with DPI stuff
                     }
+
+                    intMaxDimension = Math.Max(intMaxDimension, Math.Max(chkCmBox.Width, chkCmBox.Height));
+                    intMaxMargin = Math.Max(intMaxMargin, Math.Max(Math.Max(chkCmBox.Margin.Left, chkCmBox.Margin.Right), Math.Max(chkCmBox.Margin.Top, chkCmBox.Margin.Bottom)));
                 }
+
+                Size objSquareSize = new Size(intMaxDimension, intMaxDimension);
+                Padding objSquarePadding = new Padding(intMaxMargin);
+                foreach (CheckBox chkCmBox in lstCheckBoxes)
+                {
+                    chkCmBox.MinimumSize = objSquareSize;
+                    chkCmBox.Margin = objSquarePadding;
+                }
+                pnlConditionMonitorPanel.MaximumSize = new Size((2 * intThreshold + 1) * (intMaxDimension + intMaxMargin) / 2, pnlConditionMonitorPanel.MaximumSize.Height); // Width slightly longer to give enough wiggle room to take care of any funny business
             }
             else
             {

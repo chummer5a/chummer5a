@@ -255,7 +255,7 @@ namespace Chummer.Backend.Uniques
                 _guiID = Guid.NewGuid();
             }
             xmlNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!xmlNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!xmlNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && !xmlNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
