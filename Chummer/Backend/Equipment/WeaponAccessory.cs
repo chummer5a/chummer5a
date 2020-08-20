@@ -68,6 +68,7 @@ namespace Chummer.Backend.Equipment
         private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
+        private int _intReach;
         private int _intAmmoSlots;
         private string _strModifyAmmoCapacity;
         private bool _blnDeployable;
@@ -226,6 +227,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("damagereplace", ref _strDamageReplace);
             objXmlAccessory.TryGetStringFieldQuickly("firemode", ref _strFireMode);
             objXmlAccessory.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
+            objXmlAccessory.TryGetInt32FieldQuickly("reach", ref _intReach);
             objXmlAccessory.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlAccessory.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             string strTemp = string.Empty;
@@ -353,6 +355,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modifyammocapacity", _strModifyAmmoCapacity);
             objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
+            objWriter.WriteElementString("reach", _intReach.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("damagereplace", _strDamageReplace);
             objWriter.WriteElementString("firemode", _strFireMode);
             objWriter.WriteElementString("firemodereplace", _strFireModeReplace);
@@ -469,6 +472,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
             objNode.TryGetStringFieldQuickly("ap", ref _strAP);
             objNode.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
+            objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
             objNode.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("addmode", ref strTemp))
@@ -654,7 +658,12 @@ namespace Chummer.Backend.Equipment
         public int Accuracy => _intAccuracy;
 
         /// <summary>
-        /// Concealability.
+        /// Accessory modifies Reach by this value.
+        /// </summary>
+        public int Reach => _intReach;
+
+        /// <summary>
+        /// Accessory replaces the AP of the parent weapon with this value.
         /// </summary>
         public string APReplacement
         {

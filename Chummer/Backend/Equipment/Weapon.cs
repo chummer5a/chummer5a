@@ -3519,6 +3519,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReach = Reach;
+                intReach += WeaponAccessories.Sum(i => i.Reach);
                 if (WeaponType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
