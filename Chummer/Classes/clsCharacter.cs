@@ -302,7 +302,7 @@ namespace Chummer
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
         {
             XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
-            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode(MetatypeGuid == Guid.Empty
+            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator()?.SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = \"" + Metatype + "\"]"
                 : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
             if (blnReturnMetatypeOnly)
@@ -18406,7 +18406,7 @@ namespace Chummer
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlDoc.Load(objXmlReader);
-                    xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
+                    xmlSourceNode = xmlDoc.CreateNavigator()?.SelectSingleNode("/character");
                 }
                 catch (Exception ex)
                 {

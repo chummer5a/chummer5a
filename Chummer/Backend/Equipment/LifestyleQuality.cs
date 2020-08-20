@@ -283,14 +283,13 @@ namespace Chummer.Backend.Equipment
         {
             ParentLifestyle = objParentLifestyle;
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID)) _guiID = Guid.NewGuid();
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 var node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
-
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
