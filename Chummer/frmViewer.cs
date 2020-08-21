@@ -560,8 +560,7 @@ namespace Chummer
                 if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
                 {
                     Uri uriPath = new Uri(strSaveFile);
-                    string strParams = GlobalOptions.PDFParameters;
-                    strParams = strParams
+                    string strParams = GlobalOptions.PDFParameters
                         .Replace("{page}", "1")
                         .Replace("{localpath}", uriPath.LocalPath)
                         .Replace("{absolutepath}", uriPath.AbsolutePath);
@@ -618,6 +617,7 @@ namespace Chummer
 
             return lstItems;
         }
+
         private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             if (Directory.Exists(path))

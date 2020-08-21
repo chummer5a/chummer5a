@@ -25,16 +25,19 @@ namespace Chummer.UI.Table
 {
     public partial class HeaderCell : UserControl, ITranslatable
     {
-        private int _intArrowSize = 8;
-        private int _intArrowPadding = 3;
+        private int _intArrowSize;
+        private int _intArrowPadding;
         private SortOrder _eSortType = SortOrder.None;
-        private const int _intLabelPadding = 3;
+        private readonly int _intLabelPadding;
 
         public HeaderCell()
         {
             InitializeComponent();
+            _intArrowSize = LogicalToDeviceUnits(8);
+            _intArrowPadding = LogicalToDeviceUnits(3);
+            _intLabelPadding = LogicalToDeviceUnits(3);
             Sortable = false;
-            Layout += (sender, evt) => ResizeControl();
+            Layout += ResizeControl;
         }
 
         public override string Text
@@ -43,11 +46,11 @@ namespace Chummer.UI.Table
             set
             {
                 _lblCellText.Text = value;
-                ResizeControl();
+                ResizeControl(this, null);
             }
         }
 
-        private void ResizeControl()
+        private void ResizeControl(object sender, LayoutEventArgs e)
         {
             SuspendLayout();
             if (Sortable)
@@ -78,7 +81,7 @@ namespace Chummer.UI.Table
                     throw new ArgumentOutOfRangeException(nameof(ArrowSize));
                 }
                 _intArrowSize = value;
-                ResizeControl();
+                ResizeControl(this, null);
             }
         }
 
@@ -92,7 +95,7 @@ namespace Chummer.UI.Table
                     throw new ArgumentOutOfRangeException(nameof(ArrowPadding));
                 }
                 _intArrowPadding = value;
-                ResizeControl();
+                ResizeControl(this, null);
             }
         }
 

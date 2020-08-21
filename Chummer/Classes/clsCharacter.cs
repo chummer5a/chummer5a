@@ -9023,7 +9023,7 @@ namespace Chummer
             {
                 if ((INT == null) || (REA == null))
                 {
-                    Debugger.Break();
+                    Utils.BreakIfDebug();
                     return 0;
                 }
 
