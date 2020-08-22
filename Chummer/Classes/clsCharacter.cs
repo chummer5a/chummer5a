@@ -10228,14 +10228,16 @@ namespace Chummer
                     int intArmorValue = objArmor.TotalArmor;
                     int intCustomStackBonus = 0;
                     string strArmorName = objArmor.Name;
-                    foreach (Armor a in lstArmorsToConsider)
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
-                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        if (objInnerArmor == objArmor)
                             continue;
-                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                      && objMod.Extra == strArmorName
-                                                      && objMod.Equipped))
-                            intCustomStackBonus += a.TotalOverrideArmor;
+                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                                  && objMod.Extra == strArmorName
+                                                                  && objMod.Equipped))
+                            intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
                     }
 
                     if (objArmor.Category == "Clothing")
@@ -11025,14 +11027,16 @@ namespace Chummer
                         continue;
                     int intLoopTotal = objArmor.TotalArmor;
                     string strArmorName = objArmor.Name;
-                    foreach (Armor a in lstArmorsToConsider)
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
-                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        if (objInnerArmor == objArmor)
                             continue;
-                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                      && objMod.Extra == strArmorName
-                                                      && objMod.Equipped))
-                            intLoopTotal += a.TotalOverrideArmor;
+                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                                  && objMod.Extra == strArmorName
+                                                                  && objMod.Equipped))
+                            intLoopTotal += objInnerArmor.TotalOverrideArmor;
                     }
 
                     if (objArmor.Category == "Clothing")
