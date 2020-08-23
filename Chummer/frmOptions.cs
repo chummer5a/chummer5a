@@ -952,8 +952,7 @@ namespace Chummer
                         if (objSourceRegistry != null)
                         {
                             foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo)
-                                if (!string.IsNullOrEmpty(objSource.Path) && File.Exists(objSource.Path))
-                                    objSourceRegistry.SetValue(objSource.Code, objSource.Path + '|' + objSource.Offset.ToString(GlobalOptions.InvariantCultureInfo));
+                                objSourceRegistry.SetValue(objSource.Code, objSource.Path + '|' + objSource.Offset.ToString(GlobalOptions.InvariantCultureInfo));
                         }
                     }
 

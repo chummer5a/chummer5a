@@ -943,16 +943,21 @@ namespace Chummer
                                     string strTemp = string.Empty;
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|', StringSplitOptions.RemoveEmptyEntries);
+                                        string[] strParts = strTemp.Split('|');
                                         objSource.Path = strParts[0];
-                                        if (string.IsNullOrEmpty(objSource.Path) || !File.Exists(objSource.Path))
+                                        if (string.IsNullOrEmpty(objSource.Path))
                                         {
                                             objSource.Path = string.Empty;
                                             objSource.Offset = 0;
                                         }
-                                        else if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        else
                                         {
-                                            objSource.Offset = intTmp;
+                                            if (!File.Exists(objSource.Path))
+                                                objSource.Path = string.Empty;
+                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                            {
+                                                objSource.Offset = intTmp;
+                                            }
                                         }
                                     }
                                 }
