@@ -496,7 +496,9 @@ namespace Chummer
             string strSelectedCode = lstGlobalSourcebookInfos.SelectedValue?.ToString();
 
             // Find the selected item in the Sourcebook List.
-            SourcebookInfo objSource = !string.IsNullOrEmpty(strSelectedCode) ? GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strSelectedCode) : null;
+            SourcebookInfo objSource = !string.IsNullOrEmpty(strSelectedCode)
+                ? GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strSelectedCode)
+                : null;
 
             if (objSource != null)
             {
@@ -950,7 +952,8 @@ namespace Chummer
                         if (objSourceRegistry != null)
                         {
                             foreach (SourcebookInfo objSource in GlobalOptions.SourcebookInfo)
-                                objSourceRegistry.SetValue(objSource.Code, objSource.Path + '|' + objSource.Offset.ToString(GlobalOptions.InvariantCultureInfo));
+                                if (!string.IsNullOrEmpty(objSource.Path) && File.Exists(objSource.Path))
+                                    objSourceRegistry.SetValue(objSource.Code, objSource.Path + '|' + objSource.Offset.ToString(GlobalOptions.InvariantCultureInfo));
                         }
                     }
 

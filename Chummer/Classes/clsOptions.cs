@@ -946,8 +946,11 @@ namespace Chummer
                                         string[] strParts = strTemp.Split('|', StringSplitOptions.RemoveEmptyEntries);
                                         objSource.Path = strParts[0];
                                         if (string.IsNullOrEmpty(objSource.Path) || !File.Exists(objSource.Path))
-                                            continue;
-                                        if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        {
+                                            objSource.Path = string.Empty;
+                                            objSource.Offset = 0;
+                                        }
+                                        else if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                         {
                                             objSource.Offset = intTmp;
                                         }
