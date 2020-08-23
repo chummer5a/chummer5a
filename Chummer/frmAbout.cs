@@ -28,6 +28,7 @@ namespace Chummer
         public frmAbout()
         {
             InitializeComponent();
+            this.TranslateWinForm();
         }
 
         #region Assembly Attribute Accessors
@@ -72,7 +73,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyProductAttribute)attributes[0]).Product.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
+                return ((AssemblyProductAttribute)attributes[0]).Product.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine).WordWrap();
             }
         }
 
@@ -85,7 +86,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
+                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine).WordWrap();
             }
         }
 
@@ -98,7 +99,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
+                return ((AssemblyCompanyAttribute)attributes[0]).Company.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine).WordWrap();
             }
         }
         #endregion
@@ -111,24 +112,24 @@ namespace Chummer
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
             Text = strReturn + strSpace + AssemblyTitle;
-            labelProductName.Text = AssemblyProduct;
+            lblProductName.Text = AssemblyProduct;
             strReturn = LanguageManager.GetString("String_Version", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "Version";
-            labelVersion.Text = strReturn + strSpace + AssemblyVersion;
+            lblVersion.Text = strReturn + strSpace + AssemblyVersion;
             strReturn = LanguageManager.GetString("About_Copyright_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCopyright;
-            labelCopyright.Text = strReturn;
+            lblCopyright.Text = strReturn;
             strReturn = LanguageManager.GetString("About_Company_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCompany;
-            labelCompanyName.Text = strReturn;
+            lblCompanyName.Text = strReturn;
             strReturn = LanguageManager.GetString("About_Description_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
-            textBoxDescription.Text = strReturn;
-            textBoxContributors.Text += new StringBuilder(Environment.NewLine)
+            txtDescription.Text = strReturn;
+            txtContributors.Text += new StringBuilder(Environment.NewLine)
                 .AppendLine().AppendJoin(Environment.NewLine, Properties.Contributors.Usernames)
                 .AppendLine().Append("/u/Iridios").ToString();
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text");
@@ -144,11 +145,6 @@ namespace Chummer
                 e.SuppressKeyPress = true;
                 (sender as TextBox)?.SelectAll();
             }
-        }
-
-        private void tableLayoutPanel_Paint(object sender, PaintEventArgs e)
-        {
-
         }
         #endregion
     }

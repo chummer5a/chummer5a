@@ -28,149 +28,149 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.textBoxDescription = new System.Windows.Forms.TextBox();
-            this.labelCompanyName = new System.Windows.Forms.Label();
-            this.labelCopyright = new System.Windows.Forms.Label();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.labelProductName = new System.Windows.Forms.Label();
-            this.tableLayoutPanel = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.textBoxContributors = new System.Windows.Forms.TextBox();
-            this.logoPictureBox = new System.Windows.Forms.PictureBox();
+            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.lblCompanyName = new System.Windows.Forms.Label();
+            this.lblCopyright = new System.Windows.Forms.Label();
+            this.lblVersion = new System.Windows.Forms.Label();
+            this.lblProductName = new System.Windows.Forms.Label();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.txtContributors = new System.Windows.Forms.TextBox();
+            this.picLogo = new System.Windows.Forms.PictureBox();
             this.txtDisclaimer = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.okButton = new System.Windows.Forms.Button();
-            this.tableLayoutPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
+            this.cmdOK = new System.Windows.Forms.Button();
+            this.tlpMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBoxDescription
+            // txtDescription
             // 
-            this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxDescription.Location = new System.Drawing.Point(271, 185);
-            this.textBoxDescription.MaxLength = 2147483647;
-            this.textBoxDescription.Multiline = true;
-            this.textBoxDescription.Name = "textBoxDescription";
-            this.textBoxDescription.ReadOnly = true;
-            this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxDescription.Size = new System.Drawing.Size(492, 142);
-            this.textBoxDescription.TabIndex = 23;
-            this.textBoxDescription.Text = "[Description]";
-            this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
+            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDescription.Location = new System.Drawing.Point(271, 103);
+            this.txtDescription.MaxLength = 2147483647;
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.ReadOnly = true;
+            this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDescription.Size = new System.Drawing.Size(492, 201);
+            this.txtDescription.TabIndex = 23;
+            this.txtDescription.Text = "[Description]";
+            this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
-            // labelCompanyName
+            // lblCompanyName
             // 
-            this.labelCompanyName.AutoSize = true;
-            this.labelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCompanyName.Location = new System.Drawing.Point(271, 84);
-            this.labelCompanyName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.labelCompanyName.MaximumSize = new System.Drawing.Size(0, 65);
-            this.labelCompanyName.Name = "labelCompanyName";
-            this.labelCompanyName.Size = new System.Drawing.Size(492, 65);
-            this.labelCompanyName.TabIndex = 22;
-            this.labelCompanyName.Text = "[Company Name]";
+            this.lblCompanyName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCompanyName.AutoSize = true;
+            this.lblCompanyName.Location = new System.Drawing.Point(271, 81);
+            this.lblCompanyName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCompanyName.Name = "lblCompanyName";
+            this.lblCompanyName.Size = new System.Drawing.Size(88, 13);
+            this.lblCompanyName.TabIndex = 22;
+            this.lblCompanyName.Text = "[Company Name]";
             // 
-            // labelCopyright
+            // lblCopyright
             // 
-            this.labelCopyright.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.labelCopyright.AutoSize = true;
-            this.labelCopyright.Location = new System.Drawing.Point(271, 59);
-            this.labelCopyright.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.labelCopyright.Name = "labelCopyright";
-            this.labelCopyright.Size = new System.Drawing.Size(57, 13);
-            this.labelCopyright.TabIndex = 21;
-            this.labelCopyright.Text = "[Copyright]";
-            this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCopyright.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCopyright.AutoSize = true;
+            this.lblCopyright.Location = new System.Drawing.Point(271, 56);
+            this.lblCopyright.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCopyright.Name = "lblCopyright";
+            this.lblCopyright.Size = new System.Drawing.Size(57, 13);
+            this.lblCopyright.TabIndex = 21;
+            this.lblCopyright.Text = "[Copyright]";
+            this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // labelVersion
+            // lblVersion
             // 
-            this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVersion.Location = new System.Drawing.Point(271, 30);
-            this.labelVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(492, 17);
-            this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = "[Version]";
-            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Location = new System.Drawing.Point(271, 31);
+            this.lblVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(48, 13);
+            this.lblVersion.TabIndex = 0;
+            this.lblVersion.Text = "[Version]";
+            this.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // labelProductName
+            // lblProductName
             // 
-            this.labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelProductName.Location = new System.Drawing.Point(271, 0);
-            this.labelProductName.MaximumSize = new System.Drawing.Size(0, 17);
-            this.labelProductName.MinimumSize = new System.Drawing.Size(0, 24);
-            this.labelProductName.Name = "labelProductName";
-            this.labelProductName.Size = new System.Drawing.Size(492, 24);
-            this.labelProductName.TabIndex = 19;
-            this.labelProductName.Text = "[Product Name]";
-            this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblProductName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblProductName.AutoSize = true;
+            this.lblProductName.Location = new System.Drawing.Point(271, 6);
+            this.lblProductName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblProductName.Name = "lblProductName";
+            this.lblProductName.Size = new System.Drawing.Size(81, 13);
+            this.lblProductName.TabIndex = 19;
+            this.lblProductName.Text = "[Product Name]";
+            this.lblProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tableLayoutPanel
+            // tlpMain
             // 
-            this.tableLayoutPanel.AutoSize = true;
-            this.tableLayoutPanel.ColumnCount = 2;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
-            this.tableLayoutPanel.Controls.Add(this.textBoxContributors, 0, 5);
-            this.tableLayoutPanel.Controls.Add(this.logoPictureBox, 0, 0);
-            this.tableLayoutPanel.Controls.Add(this.labelProductName, 1, 0);
-            this.tableLayoutPanel.Controls.Add(this.labelVersion, 1, 1);
-            this.tableLayoutPanel.Controls.Add(this.labelCopyright, 1, 2);
-            this.tableLayoutPanel.Controls.Add(this.labelCompanyName, 1, 3);
-            this.tableLayoutPanel.Controls.Add(this.textBoxDescription, 1, 4);
-            this.tableLayoutPanel.Controls.Add(this.txtDisclaimer, 1, 5);
-            this.tableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 1, 6);
-            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.RowCount = 7;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 34F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel.Size = new System.Drawing.Size(766, 543);
-            this.tableLayoutPanel.TabIndex = 0;
-            this.tableLayoutPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel_Paint);
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
+            this.tlpMain.Controls.Add(this.txtContributors, 0, 5);
+            this.tlpMain.Controls.Add(this.picLogo, 0, 0);
+            this.tlpMain.Controls.Add(this.lblProductName, 1, 0);
+            this.tlpMain.Controls.Add(this.lblVersion, 1, 1);
+            this.tlpMain.Controls.Add(this.lblCopyright, 1, 2);
+            this.tlpMain.Controls.Add(this.lblCompanyName, 1, 3);
+            this.tlpMain.Controls.Add(this.txtDescription, 1, 4);
+            this.tlpMain.Controls.Add(this.txtDisclaimer, 1, 5);
+            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 1, 6);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 7;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(766, 543);
+            this.tlpMain.TabIndex = 0;
             // 
-            // textBoxContributors
+            // txtContributors
             // 
-            this.textBoxContributors.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxContributors.Location = new System.Drawing.Point(3, 333);
-            this.textBoxContributors.MaxLength = 2147483647;
-            this.textBoxContributors.Multiline = true;
-            this.textBoxContributors.Name = "textBoxContributors";
-            this.textBoxContributors.ReadOnly = true;
-            this.textBoxContributors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxContributors.Size = new System.Drawing.Size(262, 177);
-            this.textBoxContributors.TabIndex = 25;
-            this.textBoxContributors.Tag = "About_Label_Contributors";
-            this.textBoxContributors.Text = "Thank You to All GitHub Contributors!";
+            this.txtContributors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtContributors.Location = new System.Drawing.Point(3, 310);
+            this.txtContributors.MaxLength = 2147483647;
+            this.txtContributors.Multiline = true;
+            this.txtContributors.Name = "txtContributors";
+            this.txtContributors.ReadOnly = true;
+            this.txtContributors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtContributors.Size = new System.Drawing.Size(262, 201);
+            this.txtContributors.TabIndex = 25;
+            this.txtContributors.Tag = "About_Label_Contributors";
+            this.txtContributors.Text = "Thank You to All GitHub Contributors!";
             // 
-            // logoPictureBox
+            // picLogo
             // 
-            this.logoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logoPictureBox.Image = global::Chummer.Properties.Resources.troll;
-            this.logoPictureBox.Location = new System.Drawing.Point(3, 3);
-            this.logoPictureBox.Name = "logoPictureBox";
-            this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 5);
-            this.logoPictureBox.Size = new System.Drawing.Size(262, 324);
-            this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.logoPictureBox.TabIndex = 12;
-            this.logoPictureBox.TabStop = false;
+            this.picLogo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picLogo.Image = global::Chummer.Properties.Resources.troll;
+            this.picLogo.Location = new System.Drawing.Point(3, 3);
+            this.picLogo.Name = "picLogo";
+            this.tlpMain.SetRowSpan(this.picLogo, 5);
+            this.picLogo.Size = new System.Drawing.Size(262, 301);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picLogo.TabIndex = 12;
+            this.picLogo.TabStop = false;
             // 
             // txtDisclaimer
             // 
             this.txtDisclaimer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDisclaimer.Location = new System.Drawing.Point(271, 333);
+            this.txtDisclaimer.Location = new System.Drawing.Point(271, 310);
             this.txtDisclaimer.MaxLength = 2147483647;
             this.txtDisclaimer.Multiline = true;
             this.txtDisclaimer.Name = "txtDisclaimer";
             this.txtDisclaimer.ReadOnly = true;
             this.txtDisclaimer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDisclaimer.Size = new System.Drawing.Size(492, 177);
+            this.txtDisclaimer.Size = new System.Drawing.Size(492, 201);
             this.txtDisclaimer.TabIndex = 26;
             this.txtDisclaimer.Tag = "About_Label_Disclaimer";
             this.txtDisclaimer.Text = "Disclaimer";
@@ -181,23 +181,23 @@ namespace Chummer
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.okButton);
+            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(680, 514);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(86, 29);
             this.flowLayoutPanel1.TabIndex = 28;
             // 
-            // okButton
+            // cmdOK
             // 
-            this.okButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.okButton.AutoSize = true;
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(3, 3);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(80, 23);
-            this.okButton.TabIndex = 27;
-            this.okButton.Text = "&OK";
+            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdOK.Location = new System.Drawing.Point(3, 3);
+            this.cmdOK.Name = "cmdOK";
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
+            this.cmdOK.TabIndex = 27;
+            this.cmdOK.Text = "&OK";
             // 
             // frmAbout
             // 
@@ -205,7 +205,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.tableLayoutPanel);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -218,9 +218,9 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "frmAbout";
             this.Load += new System.EventHandler(this.frmAbout_Load);
-            this.tableLayoutPanel.ResumeLayout(false);
-            this.tableLayoutPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -229,16 +229,16 @@ namespace Chummer
         }
 
         #endregion
-        private System.Windows.Forms.TextBox textBoxDescription;
-        private System.Windows.Forms.Label labelCompanyName;
-        private System.Windows.Forms.Label labelCopyright;
-        private System.Windows.Forms.Label labelVersion;
-        private System.Windows.Forms.Label labelProductName;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel;
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Label lblCompanyName;
+        private System.Windows.Forms.Label lblCopyright;
+        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Label lblProductName;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtDisclaimer;
-        private System.Windows.Forms.TextBox textBoxContributors;
-        private System.Windows.Forms.Button okButton;
-        private System.Windows.Forms.PictureBox logoPictureBox;
+        private System.Windows.Forms.TextBox txtContributors;
+        private System.Windows.Forms.Button cmdOK;
+        private System.Windows.Forms.PictureBox picLogo;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

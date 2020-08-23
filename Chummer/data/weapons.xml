@@ -5843,6 +5843,7 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+      <ammoname>Ammo: Peak-Discharge Energy Units</ammoname>
       <range>Shotguns (flechette)</range>
       <sizecategory>Assault Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>

@@ -107,10 +107,20 @@ namespace Chummer.UI.Editors
 
         private void UpdateButtons(object sender, EventArgs e)
         {
-            tsbBold.Checked = rtbContent.SelectionFont.Bold;
-            tsbItalic.Checked = rtbContent.SelectionFont.Italic;
-            tsbUnderline.Checked = rtbContent.SelectionFont.Underline;
-            tsbStrikeout.Checked = rtbContent.SelectionFont.Strikeout;
+            if (rtbContent.SelectionFont != null)
+            {
+                tsbBold.Checked = rtbContent.SelectionFont.Bold;
+                tsbItalic.Checked = rtbContent.SelectionFont.Italic;
+                tsbUnderline.Checked = rtbContent.SelectionFont.Underline;
+                tsbStrikeout.Checked = rtbContent.SelectionFont.Strikeout;
+            }
+            else // Backup for weird cases where selection has no font, use the default font of the RichTextBox
+            {
+                tsbBold.Checked = rtbContent.Font.Bold;
+                tsbItalic.Checked = rtbContent.Font.Italic;
+                tsbUnderline.Checked = rtbContent.Font.Underline;
+                tsbStrikeout.Checked = rtbContent.Font.Strikeout;
+            }
             tsbAlignLeft.Checked = IsJustifyLeft;
             tsbAlignCenter.Checked = IsJustifyCenter;
             tsbAlignRight.Checked = IsJustifyRight;

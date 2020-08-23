@@ -195,6 +195,12 @@ namespace Chummer
         {
             using (var op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
+                if (CharacterObject == null)
+                {
+                    // Stupid hack to get the MDI icon to show up properly.
+                    Icon = Icon.Clone() as Icon;
+                    return;
+                }
                 try
                 {
                     using (_ = Timekeeper.StartSyncron("load_frm_career_databinding", op_load_frm_career))
@@ -5628,7 +5634,7 @@ namespace Chummer
                     if (!blnFreeCost)
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                        XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNode("costdiscount");
+                        XPathNavigator xpnDiscountNode = xpnSelectedQuality?.SelectSingleNode("costdiscount");
                         if (xpnDiscountNode != null && xpnDiscountNode.RequirementsMet(CharacterObject))
                         {
                             int intTemp = 0;

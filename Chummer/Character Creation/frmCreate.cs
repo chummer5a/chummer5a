@@ -182,6 +182,12 @@ namespace Chummer
         {
             using (var op_load_frm_create = Timekeeper.StartSyncron("load_frm_create", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
+                if (CharacterObject == null)
+                {
+                    // Stupid hack to get the MDI icon to show up properly.
+                    Icon = Icon.Clone() as Icon;
+                    return;
+                }
                 try
                 {
                     if (!CharacterObject.IsCritter
@@ -9725,7 +9731,6 @@ namespace Chummer
                     LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
             if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
             {
@@ -10591,8 +10596,6 @@ namespace Chummer
                 lblGearRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                     LanguageManager.GetString(objHasRating.RatingLabel));
             }
-
-            string strSpace = LanguageManager.GetString("String_Space");
 
             if (treGear.SelectedNode?.Tag is Gear objGear)
             {

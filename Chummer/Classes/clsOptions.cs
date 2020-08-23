@@ -25,7 +25,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using iText.Kernel.Pdf;
@@ -390,7 +389,7 @@ namespace Chummer
             if(_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
-            LoadStringFromRegistry(ref _strDefaultCharacterOption, "defaultcharacteroption"); // Deliberate name change to force users to re-check 
+            LoadStringFromRegistry(ref _strDefaultCharacterOption, "defaultcharacteroption"); // Deliberate name change to force users to re-check
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
             // Confirm delete.
@@ -992,7 +991,12 @@ namespace Chummer
                                     {
                                         string[] strParts = strTemp.Split('|', StringSplitOptions.RemoveEmptyEntries);
                                         objSource.Path = strParts[0];
-                                        if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        if (string.IsNullOrEmpty(objSource.Path) || !File.Exists(objSource.Path))
+                                        {
+                                            objSource.Path = string.Empty;
+                                            objSource.Offset = 0;
+                                        }
+                                        else if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                         {
                                             objSource.Offset = intTmp;
                                         }

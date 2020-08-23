@@ -54,6 +54,7 @@ Application Fixes:
 - If skill points have been spent on knowledge skills, a reminder/explanation that this has happened now shows up in the Skills tab.
 - The random number generator has been switched from dSFMT to Xoroshiro128**. The general statistics of the latter are slightly more secure/random than that of the former, and it also tends to run faster and with less memory.
 - Items loaded in for characters originally saved under some very old versions of Chummer5a will now properly recognize the original data node of armors, armor mods, lifestyle qualities, vehicle mods, weapon accessories, critter powers, martial arts, traditions, metamagics, and magical arts.
+- Weapon accessories can now modify the Reach of their parent weapon. Closes #4204
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -85,6 +86,7 @@ Data Changes:
 - Not a Home now properly modifies the maximum rating of C&N instead of its value.
 - SINner (Corporate Limited) now properly allows characters to define their own entry instead of picking from suggestions.
 - Partial Cyberskull now properly allows nanocybernetics to be added to it.
+- Fixed Ares Screech not correctly using Peak-Discharge Energy Units as ammo.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

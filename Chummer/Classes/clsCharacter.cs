@@ -284,7 +284,7 @@ namespace Chummer
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
         {
             XmlDocument xmlDoc = LoadData(IsCritter ? "critters.xml" : "metatypes.xml");
-            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode(MetatypeGuid == Guid.Empty
+            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator()?.SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = \"" + Metatype + "\"]"
                 : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
             if (blnReturnMetatypeOnly)
@@ -8963,7 +8963,7 @@ namespace Chummer
             {
                 if ((INT == null) || (REA == null))
                 {
-                    Debugger.Break();
+                    Utils.BreakIfDebug();
                     return 0;
                 }
 
@@ -10168,14 +10168,16 @@ namespace Chummer
                     int intArmorValue = objArmor.TotalArmor;
                     int intCustomStackBonus = 0;
                     string strArmorName = objArmor.Name;
-                    foreach (Armor a in lstArmorsToConsider)
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
-                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        if (objInnerArmor == objArmor)
                             continue;
-                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                      && objMod.Extra == strArmorName
-                                                      && objMod.Equipped))
-                            intCustomStackBonus += a.TotalOverrideArmor;
+                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                                  && objMod.Extra == strArmorName
+                                                                  && objMod.Equipped))
+                            intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
                     }
 
                     if (objArmor.Category == "Clothing")
@@ -10965,14 +10967,16 @@ namespace Chummer
                         continue;
                     int intLoopTotal = objArmor.TotalArmor;
                     string strArmorName = objArmor.Name;
-                    foreach (Armor a in lstArmorsToConsider)
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
-                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        if (objInnerArmor == objArmor)
                             continue;
-                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                      && objMod.Extra == strArmorName
-                                                      && objMod.Equipped))
-                            intLoopTotal += a.TotalOverrideArmor;
+                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                                  && objMod.Extra == strArmorName
+                                                                  && objMod.Equipped))
+                            intLoopTotal += objInnerArmor.TotalOverrideArmor;
                     }
 
                     if (objArmor.Category == "Clothing")
@@ -18380,7 +18384,7 @@ namespace Chummer
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlDoc.Load(objXmlReader);
-                    xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
+                    xmlSourceNode = xmlDoc.CreateNavigator()?.SelectSingleNode("/character");
                 }
                 catch (Exception ex)
                 {

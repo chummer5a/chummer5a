@@ -33,9 +33,9 @@ namespace Chummer
         private const int EyeBallWidth = 20;
         private const int EyeBallHeight = 32;
         private const int DistanceBetweenEyes = 10;
-        private readonly Point _eyeballCenter = new Point(95, 15);
-        private readonly Point _mouthCenter = new Point(100, 50);
-        private readonly Pen _thickPen = new Pen(Color.Black, 3);
+        private readonly Point _eyeballCenter;
+        private readonly Point _mouthCenter;
+        private readonly Pen _thickPen;
         private readonly XPathNavigator _objXmlDocument;
         private readonly List<string> _usedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
@@ -49,6 +49,10 @@ namespace Chummer
         public Chummy(Character objCharacter)
         {
             InitializeComponent();
+
+            _eyeballCenter = new Point(LogicalToDeviceUnits(95), LogicalToDeviceUnits(15));
+            _mouthCenter = new Point(LogicalToDeviceUnits(100), LogicalToDeviceUnits(50));
+            _thickPen = new Pen(Color.Black, LogicalToDeviceUnits(3));
 
             Paint += panel1_Paint;
 
@@ -127,16 +131,16 @@ namespace Chummer
             Point localPos = PointToClient(_oldMousePos);
 
             // Find the positions of the eyes.
-            int x1 = _eyeballCenter.X - DistanceBetweenEyes;
-            int x2 = _eyeballCenter.X + DistanceBetweenEyes;
+            int x1 = _eyeballCenter.X - LogicalToDeviceUnits(DistanceBetweenEyes);
+            int x2 = _eyeballCenter.X + LogicalToDeviceUnits(DistanceBetweenEyes);
 
             // Create a Bitmap on which to draw.
             gr.SmoothingMode = SmoothingMode.AntiAlias;
             //gr.Clear(this.BackColor);
 
             // Draw the eyes.
-            DrawEye(gr, localPos, x1, _eyeballCenter.Y, EyeBallWidth, EyeBallHeight);
-            DrawEye(gr, localPos, x2, _eyeballCenter.Y, EyeBallWidth, EyeBallHeight);
+            DrawEye(gr, localPos, x1, _eyeballCenter.Y, LogicalToDeviceUnits(EyeBallWidth), LogicalToDeviceUnits(EyeBallHeight));
+            DrawEye(gr, localPos, x2, _eyeballCenter.Y, LogicalToDeviceUnits(EyeBallWidth), LogicalToDeviceUnits(EyeBallHeight));
         }
 
         private void DrawEye(Graphics gr, Point local_pos,
@@ -174,8 +178,8 @@ namespace Chummer
             }
             catch (Exception e)
             {
-                string msg = string.Format(GlobalOptions.InvariantCultureInfo, "Got an " + e.GetType() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}", x,
-                    y, width, height);
+                string msg = string.Format(GlobalOptions.InvariantCultureInfo, "Got an " + e.GetType() + " with these variables in Chummy.cs-DrawEye(): x={0},y={1},width={2},height={3}",
+                    x, y, width, height);
                 Log.Warn(e, msg);
             }
         }
