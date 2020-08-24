@@ -201,7 +201,7 @@ namespace Chummer
         private int _intContactMultiplier;
 
         // Lists.
-        private readonly List<string> _lstSources = new List<string>(30);
+        private readonly HashSet<string> _setSources = new HashSet<string>(30);
         private readonly ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
 
         private readonly ObservableCollection<MentorSpirit>
@@ -1132,7 +1132,8 @@ namespace Chummer
                     IndentChar = '\t'
                 })
                 {
-                    _lstSources.Clear();
+                    _setSources.Clear();
+                    SourceProcess(Source);
                     objWriter.WriteStartDocument();
 
                     // <character>
@@ -1723,7 +1724,7 @@ namespace Chummer
 
                     // <sources>
                     objWriter.WriteStartElement("sources");
-                    foreach (string strItem in _lstSources)
+                    foreach (string strItem in _setSources)
                     {
                         objWriter.WriteElementString("source", strItem);
                     }
@@ -4767,9 +4768,9 @@ namespace Chummer
         /// </summary>
         public void SourceProcess(string strInput)
         {
-            if(!_lstSources.Contains(strInput))
+            if(Options.BookEnabled(strInput))
             {
-                _lstSources.Add(strInput);
+                _setSources.Add(strInput);
             }
         }
 
