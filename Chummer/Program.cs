@@ -18,6 +18,7 @@
  */
  using System;
  using System.Collections;
+ using System.Collections.ObjectModel;
  using System.ComponentModel;
  using System.Diagnostics;
  using System.Globalization;
@@ -35,6 +36,7 @@ using System.Linq;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
+ using Microsoft.ApplicationInsights.Extensibility.PerfCounterCollector.QuickPulse;
  using Microsoft.ApplicationInsights.Metrics;
  using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
@@ -192,6 +194,7 @@ namespace Chummer
 
                 try
                 {
+                    TelemetryConfiguration.Active.InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5";
                     LogManager.ThrowExceptions = true;
                     if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
                     {
@@ -219,6 +222,7 @@ namespace Chummer
                         Properties.Settings.Default.Save();
                     }
 
+                    
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
 
