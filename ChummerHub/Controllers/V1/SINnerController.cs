@@ -668,13 +668,14 @@ namespace ChummerHub.Controllers.V1
                             tag.TagValueFloat = null;
                     }
 
+                    Guid? guiSinnerId = sinner.Id; // Separate definition prevents funny business with async
                     var oldsinner = await _context.SINners
                         //.Include(a => a.MyExtendedAttributes)
                         .Include(a => a.SINnerMetaData)
                         .Include(a => a.SINnerMetaData.Visibility)
                         .Include(a => a.SINnerMetaData.Visibility.UserRights)
                         .Include(b => b.MyGroup)
-                        .Where(a => a.Id == sinner.Id).FirstOrDefaultAsync();
+                        .Where(a => a.Id == guiSinnerId).FirstOrDefaultAsync();
                     if (oldsinner != null)
                     {
                         var canedit = await CheckIfUpdateSINnerFile(oldsinner.Id.Value, user);

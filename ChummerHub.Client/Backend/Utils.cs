@@ -902,11 +902,11 @@ namespace ChummerHub.Client.Backend
             if (objCache == null)
                 throw new ArgumentNullException(nameof(objCache));
             objCache.MyPluginDataDic.Add("SINnerId", sinner.Id);
-            objCache.OnMyDoubleClick -= objCache.OnDefaultDoubleClick;
+            objCache.OnMyDoubleClick = null;
             objCache.OnMyDoubleClick += (sender, e) => OnMyDoubleClick(sinner, objCache);
-            objCache.OnMyAfterSelect -= objCache.OnDefaultAfterSelect;
+            objCache.OnMyAfterSelect = null;
             objCache.OnMyAfterSelect += (sender, treeViewEventArgs) => OnMyAfterSelect(sinner, objCache, treeViewEventArgs);
-            objCache.OnMyKeyDown -= objCache.OnDefaultKeyDown;
+            objCache.OnMyKeyDown = null;
             objCache.OnMyKeyDown += (sender, args) =>
             {
                 try
@@ -939,7 +939,7 @@ namespace ChummerHub.Client.Backend
                 }
             };
 
-            objCache.OnMyContextMenuDeleteClick -= objCache.OnDefaultContextMenuDeleteClick;
+            objCache.OnMyContextMenuDeleteClick = null;
             objCache.OnMyContextMenuDeleteClick += (sender, args) =>
             {
                 try
