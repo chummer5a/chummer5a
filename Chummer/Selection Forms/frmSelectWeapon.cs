@@ -193,6 +193,8 @@ namespace Chummer
                 lblWeaponAmmoLabel.Visible = !string.IsNullOrEmpty(lblWeaponAmmo.Text);
                 lblWeaponAccuracy.Text = _objSelectedWeapon.DisplayAccuracy;
                 lblWeaponAccuracyLabel.Visible = !string.IsNullOrEmpty(lblWeaponAccuracy.Text);
+                lblWeaponConceal.Text = _objSelectedWeapon.DisplayConcealability;
+                lblWeaponConcealLabel.Visible = !string.IsNullOrEmpty(lblWeaponConceal.Text);
 
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
@@ -243,6 +245,8 @@ namespace Chummer
                 lblWeaponAmmoLabel.Visible = false;
                 lblWeaponAccuracy.Text = string.Empty;
                 lblWeaponAccuracyLabel.Visible = false;
+                lblWeaponConceal.Text = string.Empty;
+                lblWeaponConcealLabel.Visible = false;
                 lblWeaponCost.Text = string.Empty;
                 lblWeaponCostLabel.Visible = false;
                 lblWeaponAvail.Text = string.Empty;

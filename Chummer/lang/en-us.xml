@@ -10169,6 +10169,10 @@
       <key>String_Reach</key>
       <text>Reach</text>
     </string>
+    <string>
+      <key>String_Concealability</key>
+      <text>Concealability</text>
+    </string>
     <!-- End Region -->
     <!-- Region Limit Condition Translations -->
     <string>
