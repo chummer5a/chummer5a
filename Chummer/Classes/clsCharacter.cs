@@ -1934,7 +1934,11 @@ namespace Chummer
                             }
 
                             if (!Version.TryParse(strVersion, out _verSavedVersion))
-                                _verSavedVersion = new Version();
+                            {
+                                _verSavedVersion = Utils.IsUnitTest
+                                    ? new Version(int.MaxValue, int.MaxValue, int.MaxValue)
+                                    : new Version();
+                            }
                             // Check for typo in Corrupter quality and correct it
                             else if (_verSavedVersion?.CompareTo(new Version(5, 188, 34)) == -1)
                             {
@@ -7962,7 +7966,12 @@ namespace Chummer
                 if(_blnMAGEnabled != value)
                 {
                     _blnMAGEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8076,6 +8085,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -8256,7 +8267,12 @@ namespace Chummer
                 if(_blnRESEnabled != value)
                 {
                     _blnRESEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8370,6 +8386,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -8471,7 +8489,12 @@ namespace Chummer
                 if(_blnDEPEnabled != value)
                 {
                     _blnDEPEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8585,6 +8608,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
