@@ -84,18 +84,14 @@ namespace Chummer
                 string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
 
             //lets write that in separate lines to see where the exception is thrown
-            if (GlobalOptions.HideMasterIndex)
-                MasterIndex = null;
-            else
+            if (!GlobalOptions.HideMasterIndex)
             {
                 MasterIndex = new frmMasterIndex
                 {
                     MdiParent = this
                 };
             }
-            if (GlobalOptions.HideCharacterRoster)
-                CharacterRoster = null;
-            else
+            if (!GlobalOptions.HideCharacterRoster)
             {
                 CharacterRoster = new frmCharacterRoster
                 {
@@ -146,7 +142,7 @@ namespace Chummer
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
-        private void frmChummerMain_Load(object sender, EventArgs e)
+        private async void frmChummerMain_Load(object sender, EventArgs e)
         {
             using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
@@ -238,7 +234,7 @@ namespace Chummer
                             // Hacky, but necessary because innards of Parallel.ForEach would end up invoking
                             // a UI function that would wait for Parallel.ForEach to finish, causing the program
                             // to lock up. Task.Run() delegates Parallel.ForEach to a new thread, preventing this.
-                            Task.Run(() =>
+                            await Task.Run(() =>
                             {
                                 Parallel.ForEach(s_astrPreloadFileNames, x =>
                                 {
@@ -266,7 +262,7 @@ namespace Chummer
                                 // Hacky, but necessary because innards of Parallel.For would end up invoking
                                 // a UI function that would wait for Parallel.For to finish, causing the program
                                 // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                                Task.Run(() =>
+                                await Task.Run(() =>
                                 {
                                     Parallel.For(1, strArgs.Length, i =>
                                     {
@@ -309,10 +305,7 @@ namespace Chummer
                             }
                             catch (Exception ex)
                             {
-                                if (op_frmChummerMain.MyDependencyTelemetry != null)
-                                    op_frmChummerMain.MyDependencyTelemetry.Success = false;
-                                if (op_frmChummerMain.MyRequestTelemetry != null)
-                                    op_frmChummerMain.MyRequestTelemetry.Success = false;
+                                op_frmChummerMain.SetSuccess(false);
                                 ExceptionTelemetry ext = new ExceptionTelemetry(ex)
                                 {
                                     SeverityLevel = SeverityLevel.Warning
@@ -326,7 +319,8 @@ namespace Chummer
 
                         if (MasterIndex != null)
                         {
-                            MasterIndex.WindowState = FormWindowState.Maximized;
+                            if (CharacterRoster == null)
+                                MasterIndex.WindowState = FormWindowState.Maximized;
                             MasterIndex.Show();
                         }
 
@@ -340,8 +334,16 @@ namespace Chummer
                         OpenCharacterList(lstCharactersToLoad);
                         if (CharacterRoster != null)
                         {
-                            CharacterRoster.WindowState = FormWindowState.Maximized;
+                            if (MasterIndex == null)
+                                CharacterRoster.WindowState = FormWindowState.Maximized;
                             CharacterRoster.Show();
+                        }
+
+                        // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                        if (MasterIndex != null && CharacterRoster != null)
+                        {
+                            MasterIndex.WindowState = FormWindowState.Maximized;
+                            CharacterRoster.WindowState = FormWindowState.Maximized;
                         }
                     }
 
@@ -357,10 +359,7 @@ namespace Chummer
                 {
                     if (op_frmChummerMain != null)
                     {
-                        if (op_frmChummerMain.MyDependencyTelemetry != null)
-                            op_frmChummerMain.MyDependencyTelemetry.Success = false;
-                        if (op_frmChummerMain.MyRequestTelemetry != null)
-                            op_frmChummerMain.MyRequestTelemetry.Success = false;
+                        op_frmChummerMain.SetSuccess(false);
                         op_frmChummerMain.tc.TrackException(ex);
                     }
 
@@ -407,7 +406,6 @@ namespace Chummer
                     WindowState = FormWindowState.Maximized;
 
                 mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
-                tabForms.ItemSize = new Size(LogicalToDeviceUnits(0), LogicalToDeviceUnits(18));
             }
         }
 
@@ -661,9 +659,13 @@ namespace Chummer
                     }
                 }
                 string strSpace = LanguageManager.GetString("String_Space");
-                Text = Application.ProductName + strSpace + '-' + strSpace +
-                       LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion + strSpace + '-' + strSpace +
-                       string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
+                Text = new StringBuilder(Application.ProductName)
+                    .Append(strSpace).Append('-')
+                    .Append(strSpace).Append(LanguageManager.GetString("String_Version"))
+                    .Append(strSpace).Append(_strCurrentVersion)
+                    .Append(strSpace).Append('-')
+                    .Append(strSpace).AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"),
+                        Utils.CachedGitVersion).ToString();
             }
         }
 
@@ -709,11 +711,9 @@ namespace Chummer
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            using (frmOptions frmOptions = new frmOptions())
-                frmOptions.ShowDialog(this);
-            Cursor = objOldCursor;
+            using (new CursorWait(this))
+                using (frmOptions frmOptions = new frmOptions())
+                    frmOptions.ShowDialog(this);
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -786,79 +786,74 @@ namespace Chummer
             string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
             string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
-            Cursor objOldCursor = Cursor;
-            if(settingsFiles.Length > 1)
+            using (new CursorWait(this))
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                if (settingsFiles.Length > 1)
                 {
-                    frmPickSetting.ShowDialog(this);
-                    Cursor = objOldCursor;
+                    using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                    {
+                        frmPickSetting.ShowDialog(this);
 
-                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                        return;
+                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                            return;
 
-                    objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                        objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                    }
                 }
+                else
+                {
+                    string strSettingsFile = settingsFiles[0];
+                    objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                }
+
+                // Override the defaults for the setting.
+                objCharacter.IgnoreRules = true;
+                objCharacter.IsCritter = true;
+                objCharacter.Created = true;
+                objCharacter.BuildMethod = CharacterBuildMethod.Karma;
+
+                // Show the Metatype selection window.
+                using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
+                {
+                    frmSelectMetatype.ShowDialog(this);
+
+                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                        return;
+                }
+
+                // Add the Unarmed Attack Weapon to the character.
+                XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                if (objXmlWeapon != null)
+                {
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Weapon objWeapon = new Weapon(objCharacter);
+                    objWeapon.Create(objXmlWeapon, lstWeapons);
+                    objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
+                    objCharacter.Weapons.Add(objWeapon);
+                    foreach (Weapon objLoopWeapon in lstWeapons)
+                        objCharacter.Weapons.Add(objLoopWeapon);
+                }
+
+                frmCareer frmNewCharacter = new frmCareer(objCharacter)
+                {
+                    MdiParent = this
+                };
+                if (MdiChildren.Length <= 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
+                frmNewCharacter.Show();
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                if (MdiChildren.Length > 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
             }
-            else
-            {
-                string strSettingsFile = settingsFiles[0];
-                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
-            }
-
-            Cursor = Cursors.WaitCursor;
-
-            // Override the defaults for the setting.
-            objCharacter.IgnoreRules = true;
-            objCharacter.IsCritter = true;
-            objCharacter.Created = true;
-            objCharacter.BuildMethod = CharacterBuildMethod.Karma;
-
-            // Show the Metatype selection window.
-            using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
-            {
-                frmSelectMetatype.ShowDialog(this);
-                Cursor = objOldCursor;
-
-                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                    return;
-            }
-
-            objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-
-            // Add the Unarmed Attack Weapon to the character.
-            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-            if(objXmlWeapon != null)
-            {
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-                Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
-                objCharacter.Weapons.Add(objWeapon);
-                foreach(Weapon objLoopWeapon in lstWeapons)
-                    objCharacter.Weapons.Add(objLoopWeapon);
-            }
-
-            frmCareer frmNewCharacter = new frmCareer(objCharacter)
-            {
-                MdiParent = this,
-                WindowState = FormWindowState.Maximized
-            };
-            frmNewCharacter.Show();
-
-            Cursor = objOldCursor;
         }
 
         private async void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
-            Cursor = objOldCursor;
+            Character objOpenCharacter;
+            using (new CursorWait(this))
+                objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
             Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
@@ -877,10 +872,9 @@ namespace Chummer
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
-            Cursor = objOldCursor;
+            Character objOpenCharacter;
+            using (new CursorWait(this))
+                objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
             Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
@@ -1082,27 +1076,28 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
 
-        private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            // Open each file that has been dropped into the window.
-            string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            Character[] lstCharacters = new Character[s.Length];
-            object lstCharactersLock = new object();
-            // Hacky, but necessary because innards of Parallel.For would end up invoking
-            // a UI function that would wait for Parallel.For to finish, causing the program
-            // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-            Task.Run(() =>
+            Character[] lstCharacters;
+            using (new CursorWait(this))
             {
-                Parallel.For(0, s.Length, i =>
+                // Open each file that has been dropped into the window.
+                string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
+                lstCharacters = new Character[s.Length];
+                object lstCharactersLock = new object();
+                // Hacky, but necessary because innards of Parallel.For would end up invoking
+                // a UI function that would wait for Parallel.For to finish, causing the program
+                // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+                await Task.Run(() =>
                 {
-                    Character objLoopCharacter = LoadCharacter(s[i]).Result;
-                    lock (lstCharactersLock)
-                        lstCharacters[i] = objLoopCharacter;
+                    Parallel.For(0, s.Length, i =>
+                    {
+                        Character objLoopCharacter = LoadCharacter(s[i]).Result;
+                        lock (lstCharactersLock)
+                            lstCharacters[i] = objLoopCharacter;
+                    });
                 });
-            });
-            Cursor = objOldCursor;
+            }
             Program.MainForm.OpenCharacterList(lstCharacters);
         }
 
@@ -1136,7 +1131,7 @@ namespace Chummer
         /// <returns></returns>
         public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            return ShowMessageBox(this, message, caption, buttons, icon);
+            return ShowMessageBox(null, message, caption, buttons, icon);
         }
 
         public DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
@@ -1150,7 +1145,7 @@ namespace Chummer
             }
 
             if (owner == null)
-                owner = this;
+                owner = _frmLoading?.IsDisposed == false ? _frmLoading : this as Control;
 
             if (owner.InvokeRequired)
             {
@@ -1203,108 +1198,102 @@ namespace Chummer
         private void ShowNewForm(object sender, EventArgs e)
         {
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
-            Cursor objOldCursor = Cursor;
-            if(!File.Exists(strFilePath))
+            using (new CursorWait(this))
             {
-                if(ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (!File.Exists(strFilePath))
                 {
-                    Cursor = Cursors.WaitCursor;
-                    using (frmOptions frmOptions = new frmOptions())
-                        frmOptions.ShowDialog(this);
-                    Cursor = objOldCursor;
+                    if (ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
+                        DialogResult.Yes)
+                    {
+                        using (frmOptions frmOptions = new frmOptions())
+                            frmOptions.ShowDialog(this);
+                    }
                 }
-            }
-            Cursor = Cursors.WaitCursor;
-            Character objCharacter = new Character();
-            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
-            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
-            if(settingsFiles.Length > 1)
-            {
-                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                Character objCharacter = new Character();
+                string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+                string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
+
+                if (settingsFiles.Length > 1)
                 {
-                    frmPickSetting.ShowDialog(this);
+                    using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                    {
+                        frmPickSetting.ShowDialog(this);
 
-                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                        return;
+                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                            return;
 
-                    objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                        objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                    }
                 }
-            }
-            else
-            {
-                string strSettingsFile = settingsFiles[0];
-                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
-            }
-
-            // Show the BP selection window.
-            using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
-            {
-                frmBP.ShowDialog(this);
-                Cursor = objOldCursor;
-
-                if (frmBP.DialogResult == DialogResult.Cancel)
-                    return;
-            }
-
-            if(objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                objOldCursor = Cursor;
-                Cursor = Cursors.WaitCursor;
-                using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
+                else
                 {
-                    frmSelectMetatype.ShowDialog(this);
-                    Cursor = objOldCursor;
+                    string strSettingsFile = settingsFiles[0];
+                    objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                }
 
-                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                // Show the BP selection window.
+                using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
+                {
+                    frmBP.ShowDialog(this);
+
+                    if (frmBP.DialogResult == DialogResult.Cancel)
                         return;
                 }
-            }
-            // Show the Metatype selection window.
-            else if(objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                objOldCursor = Cursor;
-                Cursor = Cursors.WaitCursor;
-                using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
+
+                if (objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
                 {
-                    frmSelectMetatype.ShowDialog(this);
-                    Cursor = objOldCursor;
+                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
+                    {
+                        frmSelectMetatype.ShowDialog(this);
 
-                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                        return;
+                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                            return;
+                    }
                 }
+                // Show the Metatype selection window.
+                else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                {
+                    using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
+                    {
+                        frmSelectMetatype.ShowDialog(this);
+
+                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                            return;
+                    }
+                }
+
+                // Add the Unarmed Attack Weapon to the character.
+                XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                if (objXmlWeapon != null)
+                {
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Weapon objWeapon = new Weapon(objCharacter);
+                    objWeapon.Create(objXmlWeapon, lstWeapons);
+                    objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
+                    objCharacter.Weapons.Add(objWeapon);
+                    foreach (Weapon objLoopWeapon in lstWeapons)
+                        objCharacter.Weapons.Add(objLoopWeapon);
+                }
+
+                OpenCharacters.Add(objCharacter);
+                frmCreate frmNewCharacter = new frmCreate(objCharacter)
+                {
+                    MdiParent = this
+                };
+                if (MdiChildren.Length <= 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
+                frmNewCharacter.Show();
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                if (MdiChildren.Length > 1)
+                    frmNewCharacter.WindowState = FormWindowState.Maximized;
             }
-            objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-
-            // Add the Unarmed Attack Weapon to the character.
-            XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-            if(objXmlWeapon != null)
-            {
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-                Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
-                objCharacter.Weapons.Add(objWeapon);
-                foreach(Weapon objLoopWeapon in lstWeapons)
-                    objCharacter.Weapons.Add(objLoopWeapon);
-            }
-
-            OpenCharacters.Add(objCharacter);
-            frmCreate frmNewCharacter = new frmCreate(objCharacter)
-            {
-                MdiParent = this,
-                WindowState = FormWindowState.Maximized
-            };
-            frmNewCharacter.Show();
-
-            Cursor = objOldCursor;
         }
 
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -1315,43 +1304,42 @@ namespace Chummer
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
                 //Timekeeper.Start("load_sum");
-                Cursor objOldCursor = Cursor;
-                Cursor = Cursors.WaitCursor;
-                List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
-                foreach (string strFile in openFileDialog.FileNames)
+                using (new CursorWait(this))
                 {
-                    Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    if (objLoopCharacter != null)
-                        SwitchToOpenCharacter(objLoopCharacter, true);
-                    else
-                        lstFilesToOpen.Add(strFile);
-                }
-
-                if (lstFilesToOpen.Count > 0)
-                {
-                    using (_frmLoading = new frmLoading { CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen) })
+                    List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
+                    foreach (string strFile in openFileDialog.FileNames)
                     {
-                        _frmLoading.Reset(35 * lstFilesToOpen.Count);
-                        _frmLoading.Show();
-                        Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                        object lstCharactersLock = new object();
-                        // Hacky, but necessary because innards of Parallel.For would end up invoking
-                        // a UI function that would wait for Parallel.For to finish, causing the program
-                        // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                        Task.Run(() =>
+                        Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        if (objLoopCharacter != null)
+                            SwitchToOpenCharacter(objLoopCharacter, true);
+                        else
+                            lstFilesToOpen.Add(strFile);
+                    }
+
+                    if (lstFilesToOpen.Count > 0)
+                    {
+                        using (_frmLoading = new frmLoading { CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen) })
                         {
-                            Parallel.For(0, lstCharacters.Length, i =>
+                            _frmLoading.Reset(35 * lstFilesToOpen.Count);
+                            _frmLoading.Show();
+                            Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                            object lstCharactersLock = new object();
+                            // Hacky, but necessary because innards of Parallel.For would end up invoking
+                            // a UI function that would wait for Parallel.For to finish, causing the program
+                            // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+                            await Task.Run(() =>
                             {
-                                Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
-                                lock (lstCharactersLock)
-                                    lstCharacters[i] = objLoopCharacter;
+                                Parallel.For(0, lstCharacters.Length, i =>
+                                {
+                                    Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
+                                    lock (lstCharactersLock)
+                                        lstCharacters[i] = objLoopCharacter;
+                                });
                             });
-                        });
-                        Program.MainForm.OpenCharacterList(lstCharacters);
+                            Program.MainForm.OpenCharacterList(lstCharacters);
+                        }
                     }
                 }
-
-                Cursor = objOldCursor;
             }
 
             Application.DoEvents();
@@ -1377,45 +1365,36 @@ namespace Chummer
             if(lstCharacters == null)
                 return;
 
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            FormWindowState wsPreference = OpenCharacterForms.Any(x => x.WindowState != FormWindowState.Maximized)
-                ? FormWindowState.Normal
-                : FormWindowState.Maximized;
-            foreach (Character objCharacter in lstCharacters)
+            using (new CursorWait(this))
             {
-                if(objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
-                    continue;
-                //Timekeeper.Start("load_event_time");
-                // Show the character form.
-                if(!objCharacter.Created)
+                FormWindowState wsPreference = OpenCharacterForms.Any(x => x.WindowState != FormWindowState.Maximized)
+                    ? FormWindowState.Normal
+                    : FormWindowState.Maximized;
+                List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
+                foreach (Character objCharacter in lstCharacters)
                 {
-                    frmCreate frmCharacter = new frmCreate(objCharacter)
-                    {
-                        MdiParent = this,
-                        WindowState = wsPreference
-                    };
-                    frmCharacter.Show();
+                    if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
+                        continue;
+                    //Timekeeper.Start("load_event_time");
+                    // Show the character forms.
+                    CharacterShared frmNewCharacter = objCharacter.Created
+                        ? (CharacterShared) new frmCareer(objCharacter)
+                        : new frmCreate(objCharacter);
+                    frmNewCharacter.MdiParent = this;
+                    frmNewCharacter.Show();
+                    lstNewFormsToProcess.Add(frmNewCharacter);
+
+                    if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
+                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+
+                    UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
+
+                    //Timekeeper.Finish("load_event_time");
                 }
-                else
-                {
-                    frmCareer frmCharacter = new frmCareer(objCharacter)
-                    {
-                        MdiParent = this,
-                        WindowState = wsPreference
-                    };
-                    frmCharacter.Show();
-                }
-
-                if(blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
-                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
-
-                UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
-
-                //Timekeeper.Finish("load_event_time");
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
+                    frmNewCharacter.WindowState = wsPreference;
             }
-
-            Cursor = objOldCursor;
         }
 
         /// <summary>
@@ -1440,7 +1419,7 @@ namespace Chummer
                 };
                 if (blnShowErrors && _frmLoading?.IsDisposed != false)
                 {
-                    using (_frmLoading = new frmLoading {CharacterFile = objCharacter.FileName})
+                    using (_frmLoading = new frmLoading { CharacterFile = objCharacter.FileName })
                     {
                         _frmLoading.Reset(35);
                         _frmLoading.Show();
@@ -1777,7 +1756,9 @@ namespace Chummer
 
         private void frmChummerMain_DpiChanged(object sender, DpiChangedEventArgs e)
         {
-            tabForms.ItemSize = new Size(tabForms.ItemSize.Width * e.DeviceDpiNew / e.DeviceDpiOld, tabForms.ItemSize.Height * e.DeviceDpiNew / e.DeviceDpiOld);
+            tabForms.ItemSize = new Size(
+                tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
+                tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
         }
     }
 }

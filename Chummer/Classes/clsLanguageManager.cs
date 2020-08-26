@@ -33,7 +33,7 @@ namespace Chummer
         private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
         public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages => s_DictionaryLanguages;
         private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
-        public static string ManagerErrorMessage { get; } = string.Empty;
+        public static StringBuilder ManagerErrorMessage { get; } = new StringBuilder();
 
         #region Constructor
         static LanguageManager()
@@ -55,14 +55,16 @@ namespace Chummer
                     }
                     catch (IOException ex)
                     {
-                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex;
+                        ManagerErrorMessage.Append( "Language strings for the default language (")
+                            .Append(GlobalOptions.DefaultLanguage).AppendLine(") could not be loaded:").AppendLine().Append(ex);
                     }
                     catch (XmlException ex)
                     {
-                        ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" + Environment.NewLine + Environment.NewLine + ex;
+                        ManagerErrorMessage.Append("Language strings for the default language (")
+                            .Append(GlobalOptions.DefaultLanguage).AppendLine(") could not be loaded:").AppendLine().Append(ex);
                     }
 
-                    if (string.IsNullOrEmpty(ManagerErrorMessage))
+                    if (ManagerErrorMessage.Length == 0)
                     {
                         using (XmlNodeList xmlStringList = objEnglishDocument.SelectNodes("/chummer/strings/string"))
                         {
@@ -83,15 +85,17 @@ namespace Chummer
                             }
                             else
                             {
-                                ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" +
-                                                       Environment.NewLine + Environment.NewLine + "No strings found in file.";
+                                ManagerErrorMessage.Append("Language strings for the default language (")
+                                    .Append(GlobalOptions.DefaultLanguage).AppendLine(") could not be loaded:")
+                                    .AppendLine().Append("No strings found in file.");
                             }
                         }
                     }
                 }
                 else
-                    ManagerErrorMessage += "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:" +
-                                           Environment.NewLine + Environment.NewLine + "File " + strFilePath + " does not exist or cannot be found.";
+                    ManagerErrorMessage.Append("Language strings for the default language (")
+                        .Append(GlobalOptions.DefaultLanguage).AppendLine(") could not be loaded:")
+                        .AppendLine().Append("File ").Append(strFilePath).Append(" does not exist or cannot be found.");
             }
         }
         #endregion
@@ -132,11 +136,13 @@ namespace Chummer
                     objNewLanguage = new LanguageData(strLanguage);
                     s_DictionaryLanguages.Add(strLanguage, objNewLanguage);
                 }
-                if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
+                if (objNewLanguage.ErrorMessage.Length > 0)
                 {
                     if (!objNewLanguage.ErrorAlreadyShown)
                     {
-                        Program.MainForm.ShowMessageBox("Language with code " + strLanguage + " could not be loaded for the following reasons:" + Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        StringBuilder sbdMessage = new StringBuilder("Language with code ").Append(strLanguage)
+                            .AppendLine(" could not be loaded for the following reasons:").AppendLine().Append(objNewLanguage.ErrorMessage);
+                        Program.MainForm.ShowMessageBox(sbdMessage.ToString(), "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         objNewLanguage.ErrorAlreadyShown = true;
                     }
                     return false;
@@ -657,6 +663,13 @@ namespace Chummer
                 x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
         };
 
+        public static string MAGAdeptString(string strLanguage, bool blnLong = false)
+        {
+            return new StringBuilder(GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage))
+                .Append(GetString("String_Space", strLanguage))
+                .Append('(').Append(GetString("String_DescAdept", strLanguage)).Append(')').ToString();
+        }
+
         /// <summary>
         /// Attempt to translate any Extra text for an item.
         /// </summary>
@@ -707,7 +720,7 @@ namespace Chummer
                         strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + GetString("String_Space", strIntoLanguage) + '(' + GetString("String_DescAdept", strIntoLanguage) + ')';
+                        strReturn = MAGAdeptString(strIntoLanguage);
                         break;
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
@@ -841,7 +854,7 @@ namespace Chummer
                     return "MAG";
                 }
 
-                if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + GetString("String_Space", strFromLanguage) + '(' + GetString("String_DescAdept", strFromLanguage) + ')')
+                if (strExtra == MAGAdeptString(strFromLanguage))
                 {
                     return "MAGAdept";
                 }
@@ -930,7 +943,7 @@ namespace Chummer
         public bool IsRightToLeftScript { get; }
         public Dictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
         public XmlDocument DataDocument { get; } = new XmlDocument { XmlResolver = null };
-        public string ErrorMessage { get; } = string.Empty;
+        public StringBuilder ErrorMessage { get; } = new StringBuilder();
         public bool ErrorAlreadyShown { get; set; }
 
         public LanguageData(string strLanguage)
@@ -954,12 +967,12 @@ namespace Chummer
                     catch (IOException ex)
                     {
                         objLanguageDocument = null;
-                        strExtraMessage += ex.ToString();
+                        strExtraMessage = ex.ToString();
                     }
                     catch (XmlException ex)
                     {
                         objLanguageDocument = null;
-                        strExtraMessage += ex.ToString();
+                        strExtraMessage = ex.ToString();
                     }
 
                     if (objLanguageDocument != null)
@@ -986,23 +999,26 @@ namespace Chummer
                             }
                             else
                             {
-                                ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
+                                ErrorMessage.Append("Failed to load the strings file ").Append(strLanguage)
+                                    .Append(".xml into an XmlDocument: ").Append(strExtraMessage).AppendLine(".");
                             }
                         }
                     }
                     else
                     {
-                        ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + "." + Environment.NewLine;
+                        ErrorMessage.Append("Failed to load the strings file ").Append(strLanguage)
+                            .Append(".xml into an XmlDocument: ").Append(strExtraMessage).AppendLine(".");
                     }
                 }
                 catch (Exception ex)
                 {
-                    ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                    ErrorMessage.Append("Encountered the following the exception while loading ").Append(strLanguage)
+                        .Append(".xml into an XmlDocument: ").Append(ex).AppendLine(".");
                 }
             }
             else
             {
-                ErrorMessage += "Could not find the strings file " + strLanguage + ".xml." + Environment.NewLine;
+                ErrorMessage.Append("Could not find the strings file ").Append(strLanguage).AppendLine(".xml.");
             }
 
             // Check to see if the data translation file for the selected language exists.
@@ -1020,23 +1036,26 @@ namespace Chummer
                     catch (IOException ex)
                     {
                         DataDocument = null;
-                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                        ErrorMessage.Append("Failed to load the data file ").Append(strLanguage)
+                            .Append("_data.xml into an XmlDocument: ").Append(ex).AppendLine(".");
                     }
                     catch (XmlException ex)
                     {
                         DataDocument = null;
-                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                        ErrorMessage.Append("Failed to load the data file ").Append(strLanguage)
+                            .Append("_data.xml into an XmlDocument: ").Append(ex).AppendLine(".");
                     }
                 }
                 catch (Exception ex)
                 {
                     DataDocument = null;
-                    ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex + "." + Environment.NewLine;
+                    ErrorMessage.Append("Encountered the following the exception while loading ").Append(strLanguage)
+                        .Append("_data.xml into an XmlDocument: ").Append(ex).AppendLine(".");
                 }
             }
             else
             {
-                ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml." + Environment.NewLine;
+                ErrorMessage.Append("Could not find the data file ").Append(strLanguage).AppendLine("_data.xml.");
             }
         }
     }

@@ -20,7 +20,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -105,13 +105,14 @@ namespace Chummer
             if (_objContact.LinkedCharacter != null)
             {
                 Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
-                Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                using (new CursorWait(this))
                 {
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
-                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    {
+                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
+                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                    }
                 }
-                Cursor = Cursors.Default;
             }
             else
             {
@@ -156,18 +157,19 @@ namespace Chummer
 
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                Cursor = Cursors.WaitCursor;
-                _objContact.FileName = openFileDialog.FileName;
-                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile"));
+                using (new CursorWait(this))
+                {
+                    _objContact.FileName = openFileDialog.FileName;
+                    imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile"));
 
-                // Set the relative path.
-                Uri uriApplication = new Uri(Utils.GetStartupPath);
-                Uri uriFile = new Uri(_objContact.FileName);
-                Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objContact.RelativeFileName = "../" + uriRelative;
+                    // Set the relative path.
+                    Uri uriApplication = new Uri(Utils.GetStartupPath);
+                    Uri uriFile = new Uri(_objContact.FileName);
+                    Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+                    _objContact.RelativeFileName = "../" + uriRelative;
 
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
-                Cursor = Cursors.Default;
+                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                }
             }
         }
 
@@ -223,12 +225,15 @@ namespace Chummer
                         lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                         XmlNodeList xmlMetavariantsList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
                         if (xmlMetavariantsList != null)
+                        {
+                            string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                             foreach (XmlNode objXmlMetavariantNode in xmlMetavariantsList)
                             {
-                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText;
-                                if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
-                                    lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + strSpace + '(' + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
+                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText ?? string.Empty;
+                                if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
+                                    lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalOptions.CultureInfo, strMetavariantFormat, objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName)));
                             }
+                        }
                     }
 
             lstMetatypes.Sort(CompareListItems.CompareNames);

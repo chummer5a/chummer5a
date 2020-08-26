@@ -150,14 +150,13 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
-
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetBoolFieldQuickly("paidwithkarma", ref _blnPaidWithKarma);
@@ -353,17 +352,18 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 string doc = "metamagic.xml";
-                string path = "metamagics/metamagic";
+                string path = "/chummer/metamagics/metamagic";
                 if (_eImprovementSource == Improvement.ImprovementSource.Echo)
                 {
                     doc = "echoes.xml";
-                    path = "echoes/echo";
+                    path = "/chummer/echoes/echo";
                 }
-                _objCachedMyXmlNode = SourceID == Guid.Empty
-                    ? XmlManager.Load(doc, strLanguage)
-                        .SelectSingleNode("/chummer/" + path + "[name = \"" + Name + "\"]")
-                    : XmlManager.Load(doc, strLanguage).SelectSingleNode(
-                        "/chummer/" + path + "[id = \"" + SourceIDString +  "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(doc, strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? path + "[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "{0}[id = \"{1}\" or id = \"{2}\"]",
+                            path, SourceIDString, SourceIDString.ToUpperInvariant()));
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }

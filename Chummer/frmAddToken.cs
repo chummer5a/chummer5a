@@ -61,29 +61,32 @@ namespace Chummer
         {
             if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {
-                Cursor = Cursors.WaitCursor;
                 Character objCharacter = new Character
                 {
                     FileName = fileName
                 };
-                if (!await objCharacter.Load().ConfigureAwait(true))
+                using (new CursorWait(this))
                 {
-                    Cursor = Cursors.Default;   // TODO edward setup error page
-                    objCharacter.Dispose();
-                    return false; // we obviously cannot init
+                    if (!await objCharacter.Load().ConfigureAwait(true))
+                    {
+                        // TODO edward setup error page
+                        objCharacter.Dispose();
+                        return false; // we obviously cannot init
+                    }
+
+                    nudInit.Value = objCharacter.InitiativeDice;
+                    txtName.Text = objCharacter.Name;
+                    if (int.TryParse(objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
+                        nudInitStart.Value = intTemp;
+                    if (_character != null)
+                    {
+                        _character.Dispose();
+                        _blnCharacterAdded = false;
+                    }
+
+                    _character = objCharacter;
                 }
 
-                nudInit.Value = objCharacter.InitiativeDice;
-                txtName.Text = objCharacter.Name;
-                if (int.TryParse(objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
-                    nudInitStart.Value = intTemp;
-                if (_character != null)
-                {
-                    _character.Dispose();
-                    _blnCharacterAdded = false;
-                }
-                _character = objCharacter;
-                Cursor = Cursors.Default;
                 return true;
             }
             return false;

@@ -237,7 +237,7 @@ namespace Chummer
 
             string strRatingLabel = objXmlMod.SelectSingleNode("ratinglabel")?.Value;
             lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                ? LanguageManager.GetString("Label_RatingFormat").Replace("{0}",
+                ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                     LanguageManager.GetString(strRatingLabel))
                 : LanguageManager.GetString("Label_Rating");
             nudRating.Maximum = Convert.ToDecimal(objXmlMod.SelectSingleNode("maxrating")?.Value, GlobalOptions.InvariantCultureInfo);
@@ -474,8 +474,8 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstMods.Add(new ListItem(string.Empty,
-                    LanguageManager.GetString("String_RestrictedItemsHidden")
-                    .Replace("{0}", intOverLimit.ToString(GlobalOptions.CultureInfo))));
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                        intOverLimit)));
             }
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;

@@ -503,15 +503,15 @@ namespace Chummer
 
                 if (_mouseOver)
                 {
-                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - 2;
+                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - LogicalToDeviceUnits(2);
                     if (fixPos)
-                        _textbox.Location = new Point(16, _textbox.Location.Y);
+                        _textbox.Location = new Point(LogicalToDeviceUnits(16), _textbox.Location.Y);
                 }
                 else
                 {
                     if (fixPos)
-                        _textbox.Location = new Point(2, _textbox.Location.Y);
-                    _textbox.Width = ClientSize.Width - _textbox.Left - 2;
+                        _textbox.Location = new Point(LogicalToDeviceUnits(2), _textbox.Location.Y);
+                    _textbox.Width = ClientSize.Width - _textbox.Left - LogicalToDeviceUnits(2);
                 }
 
             }

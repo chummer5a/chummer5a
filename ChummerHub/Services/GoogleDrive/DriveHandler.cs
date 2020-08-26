@@ -40,7 +40,7 @@ namespace ChummerHub.Services.GoogleDrive
         private readonly ILogger _logger;
 
         private static string _contentType = "application/octet-stream";
-        private static string _folderId = "";
+        private static string _folderId = string.Empty;
         readonly IConfiguration Configuration;
 
 
@@ -55,9 +55,8 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                UserCredential credential;
                 string refreshToken = Configuration["Authentication:Google:RefreshToken"];
-                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                            new ClientSecrets
                            {
                                ClientId = Configuration["Authentication:Google:GoogleChummerSINersId"],
@@ -88,7 +87,7 @@ namespace ChummerHub.Services.GoogleDrive
                     RefreshToken = refreshToken
                 };
 
-                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+                var flow2 = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
                     ClientSecrets = new ClientSecrets
                     {
@@ -100,7 +99,7 @@ namespace ChummerHub.Services.GoogleDrive
                 });
 
 
-                UserCredential credential = new UserCredential(flow, "me", token);
+                UserCredential credential = new UserCredential(flow2, "me", token);
                 return credential;
             }
             catch (Exception e)
@@ -165,15 +164,9 @@ namespace ChummerHub.Services.GoogleDrive
                     _logger.LogCritical(msg);
                     throw new HubException("HubException: " + msg);
                 }
-                if (string.IsNullOrEmpty(uploadFile.GoogleDriveFileId))
-                {
-                    uploadFile.DownloadUrl = UploadFileToDrive(service, uploadedFile, _contentType, uploadFile);
-
-                }
-                else
-                {
-                    uploadFile.DownloadUrl = UpdateFileToDrive(service, uploadedFile, _contentType, uploadFile);
-                }
+                uploadFile.DownloadUrl = string.IsNullOrEmpty(uploadFile.GoogleDriveFileId)
+                    ? UploadFileToDrive(service, uploadedFile, _contentType, uploadFile)
+                    : UpdateFileToDrive(service, uploadedFile, _contentType, uploadFile);
 
                 // Define parameters of request.
                 FilesResource.ListRequest listRequest = service.Files.List();
@@ -238,13 +231,15 @@ namespace ChummerHub.Services.GoogleDrive
             FilesResource.CreateMediaUpload request;
             try
             {
-                var fileMetadata = new File();
-                fileMetadata.Properties = new Dictionary<string, string>();
+                var fileMetadata = new File
+                {
+                    Properties = new Dictionary<string, string>(),
+                    Parents = new List<string> {_folderId}
+                };
                 //foreach(var tag in fileMetaData.SINnerMetaData.Tags)
                 //{
                 //    fileMetadata.Properties.Add(tag.Display, tag.TagValue);
                 //}
-                fileMetadata.Parents = new List<string> { _folderId };
                 _logger.LogError("Uploading " + fileMetaData.FileName + " as " + fileMetadata.Name);// + " to folder: " + _folderId);
                 //fileMetadata.MimeType = _contentType;
                 fileMetadata.OriginalFilename = fileMetaData.FileName;

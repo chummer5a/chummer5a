@@ -73,9 +73,12 @@ namespace Chummer
                     if (!lstAlreadyProcessed.Contains(strInnerText))
                     {
                         lstAlreadyProcessed.Add(strInnerText);
-                        if (null != xmlMetatypesNode.SelectSingleNode("metatype[category = \"" + strInnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]"))
+                        if (null != xmlMetatypesNode.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                            "metatype[category = {0} and ({1})]",
+                            strInnerText.CleanXPath(), _objCharacter.Options.BookXPath())))
                         {
-                            lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                            lstCategories.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value
+                                                                         ?? strInnerText));
                         }
                     }
                 }
@@ -109,7 +112,7 @@ namespace Chummer
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
                 string strPowerName = objPower.Name;
-                if (lstMethods.Any(x => x.Value.ToString() == strPowerName))
+                if (lstMethods.Any(x => strPowerName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
                 {
                     _strCurrentPossessionMethod = strPowerName;
                     break;
@@ -182,40 +185,42 @@ namespace Chummer
         /// </summary>
         private void MetatypeSelected()
         {
-            Cursor = Cursors.WaitCursor;
-            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedMetatype))
+            using (new CursorWait(this))
             {
-                string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
-                string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString() ?? Guid.Empty.ToString();
+                string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strSelectedMetatype))
+                {
+                    string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
+                    string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString() ?? Guid.Empty.ToString();
 
-                XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
-                if (objXmlMetatype == null)
+                    XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
+                    if (objXmlMetatype == null)
+                    {
+                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    int intForce = 0;
+                    if (nudForce.Visible)
+                        intForce = decimal.ToInt32(nudForce.Value);
+
+                    // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+                    if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
+                        strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? "None";
+                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
+                        || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
+                        _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant, objXmlMetatype,
+                            intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode);
+
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
                 {
                     Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Cursor = Cursors.Default;
-                    return;
                 }
-                int intForce = 0;
-                if (nudForce.Visible)
-                    intForce = decimal.ToInt32(nudForce.Value);
-
-                // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
-                    strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? "None";
-                if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
-                    || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
-                    _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant, objXmlMetatype,
-                        intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode);
-
-                DialogResult = DialogResult.OK;
-                Close();
             }
-            else
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            Cursor = Cursors.Default;
         }
 
         private void RefreshSelectedMetavariant()
@@ -538,7 +543,8 @@ namespace Chummer
             {
                 List<ListItem> lstMetatypeItems = new List<ListItem>();
                 foreach (XPathNavigator xmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                    "metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + strSelectedCategory + "\"]"))
+                    string.Format(GlobalOptions.InvariantCultureInfo, "metatypes/metatype[({0}) and category = {1}]",
+                        _objCharacter.Options.BookXPath(), strSelectedCategory.CleanXPath())))
                 {
                     string strId = xmlMetatype.SelectSingleNode("id")?.Value;
                     if (!string.IsNullOrEmpty(strId))

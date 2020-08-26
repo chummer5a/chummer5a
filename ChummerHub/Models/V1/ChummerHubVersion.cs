@@ -14,7 +14,7 @@ namespace ChummerHub.Models.V1
         public ChummerHubVersion()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerHubVersion.ChummerHubVersion()'
         {
-            AssemblyVersion = typeof(Startup).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+            AssemblyVersion = typeof(Startup).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
         }
     }
 }

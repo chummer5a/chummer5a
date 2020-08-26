@@ -51,17 +51,17 @@ namespace Chummer
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                Cursor = Cursors.WaitCursor;
-                string strSelectedFile = openFileDialog.FileName;
-                TreeNode objNode = CacheCharacters(strSelectedFile);
-                if (objNode != null)
+                using (new CursorWait(this))
                 {
-                    treCharacterList.Nodes.Clear();
-                    treCharacterList.Nodes.Add(objNode);
-                    treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                    string strSelectedFile = openFileDialog.FileName;
+                    TreeNode objNode = CacheCharacters(strSelectedFile);
+                    if (objNode != null)
+                    {
+                        treCharacterList.Nodes.Clear();
+                        treCharacterList.Nodes.Add(objNode);
+                        treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                    }
                 }
-
-                Cursor = Cursors.Default;
             }
         }
 
@@ -467,56 +467,57 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strFile) && !string.IsNullOrEmpty(strCharacterId))
                     {
                         string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-                        Cursor objOldCursor = Cursor;
                         if (!File.Exists(strFilePath))
                         {
                             if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             {
-                                Cursor = Cursors.WaitCursor;
-                                using (frmOptions frmOptions = new frmOptions())
-                                    frmOptions.ShowDialog(this);
-                                Cursor = objOldCursor;
+                                using (new CursorWait(this))
+                                    using (frmOptions frmOptions = new frmOptions())
+                                        frmOptions.ShowDialog(this);
                             }
                         }
-                        Cursor = Cursors.WaitCursor;
-                        cmdImport.Enabled = false;
-                        cmdSelectFile.Enabled = false;
-                        Character objCharacter = new Character();
-                        string settingsPath = Path.Combine(Application.StartupPath, "settings");
-                        string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
-                        if (settingsFiles.Length > 1)
+                        using (new CursorWait(this))
                         {
-                            using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                            cmdImport.Enabled = false;
+                            cmdSelectFile.Enabled = false;
+                            Character objCharacter = new Character();
+                            string settingsPath = Path.Combine(Application.StartupPath, "settings");
+                            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
+
+                            if (settingsFiles.Length > 1)
                             {
-                                frmPickSetting.ShowDialog(this);
+                                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                                {
+                                    frmPickSetting.ShowDialog(this);
 
-                                if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                                    return;
+                                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                                        return;
 
-                                objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                                    objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                                }
                             }
-                        }
-                        else
-                        {
-                            string strSettingsFile = settingsFiles[0];
-                            objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                            else
+                            {
+                                string strSettingsFile = settingsFiles[0];
+                                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                            }
+
+                            Program.MainForm.OpenCharacters.Add(objCharacter);
+                            //Timekeeper.Start("load_file");
+                            bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
+                            //Timekeeper.Finish("load_file");
+                            if (!blnLoaded)
+                            {
+                                Program.MainForm.OpenCharacters.Remove(objCharacter);
+                                cmdImport.Enabled = true;
+                                cmdSelectFile.Enabled = true;
+                                return;
+                            }
+
+                            Program.MainForm.OpenCharacter(objCharacter);
                         }
 
-                        Program.MainForm.OpenCharacters.Add(objCharacter);
-                        //Timekeeper.Start("load_file");
-                        bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
-                        //Timekeeper.Finish("load_file");
-                        if (!blnLoaded)
-                        {
-                            Program.MainForm.OpenCharacters.Remove(objCharacter);
-                            Cursor = objOldCursor;
-                            cmdImport.Enabled = true;
-                            cmdSelectFile.Enabled = true;
-                            return;
-                        }
-
-                        Program.MainForm.OpenCharacter(objCharacter);
                         Close();
                     }
                 }

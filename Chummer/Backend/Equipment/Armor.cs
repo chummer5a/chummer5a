@@ -515,6 +515,8 @@ namespace Chummer.Backend.Equipment
         {
             if (objNode == null)
                 return;
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -554,8 +556,6 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
                 _blnEncumbrance = true;
 
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
@@ -1499,6 +1499,17 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public string DisplayCapacity
+        {
+            get
+            {
+                if (CalculatedCapacity.Contains('[') && !CalculatedCapacity.Contains("/["))
+                    return CalculatedCapacity;
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+                    CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo));
+            }
+        }
+
         /// <summary>
         /// Capacity display style;
         /// </summary>
@@ -1566,11 +1577,12 @@ namespace Chummer.Backend.Equipment
         public XmlNode GetNode(string strLanguage)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = SourceID == Guid.Empty
-                ? XmlManager.Load("armor.xml", strLanguage)
-                    .SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]")
-                : XmlManager.Load("armor.xml", strLanguage)
-                    .SelectSingleNode("/chummer/armors/armor[id = \"" + SourceIDString + "\" or id = \"" + SourceIDString.ToUpperInvariant() + "\"]");
+            _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage)
+                    .SelectSingleNode(SourceID == Guid.Empty
+                        ? "/chummer/armors/armor[name = " + Name.CleanXPath() + ']'
+                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                            "/chummer/armors/armor[id = \"{0}\" or id = \"{1}\"]",
+                            SourceIDString, SourceIDString.ToUpperInvariant()));
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

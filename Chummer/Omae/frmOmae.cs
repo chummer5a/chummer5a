@@ -253,9 +253,8 @@ namespace Chummer
                         File.WriteAllBytes(strFullPath, bytFile);
                         if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded"), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            Cursor = Cursors.WaitCursor;
-                            Character objOpenCharacter = Program.MainForm.LoadCharacter(strFullPath);
-                            Cursor = Cursors.Default;
+                            using (new CursorWait(this))
+                                Character objOpenCharacter = Program.MainForm.LoadCharacter(strFullPath);
                             _frmMain.OpenCharacter(objOpenCharacter);
                         }
                     }

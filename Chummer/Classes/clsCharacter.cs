@@ -201,7 +201,7 @@ namespace Chummer
         private int _intContactMultiplier;
 
         // Lists.
-        private readonly List<string> _lstSources = new List<string>(30);
+        private readonly HashSet<string> _setSources = new HashSet<string>(30);
         private readonly ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
 
         private readonly ObservableCollection<MentorSpirit>
@@ -302,7 +302,7 @@ namespace Chummer
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
         {
             XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
-            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator().SelectSingleNode(MetatypeGuid == Guid.Empty
+            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator()?.SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = \"" + Metatype + "\"]"
                 : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
             if (blnReturnMetatypeOnly)
@@ -1132,7 +1132,8 @@ namespace Chummer
                     IndentChar = '\t'
                 })
                 {
-                    _lstSources.Clear();
+                    _setSources.Clear();
+                    SourceProcess(Source);
                     objWriter.WriteStartDocument();
 
                     // <character>
@@ -1723,7 +1724,7 @@ namespace Chummer
 
                     // <sources>
                     objWriter.WriteStartElement("sources");
-                    foreach (string strItem in _lstSources)
+                    foreach (string strItem in _setSources)
                     {
                         objWriter.WriteElementString("source", strItem);
                     }
@@ -1933,7 +1934,11 @@ namespace Chummer
                             }
 
                             if (!Version.TryParse(strVersion, out _verSavedVersion))
-                                _verSavedVersion = new Version();
+                            {
+                                _verSavedVersion = Utils.IsUnitTest
+                                    ? new Version(int.MaxValue, int.MaxValue, int.MaxValue)
+                                    : new Version();
+                            }
                             // Check for typo in Corrupter quality and correct it
                             else if (_verSavedVersion?.CompareTo(new Version(5, 188, 34)) == -1)
                             {
@@ -4767,9 +4772,9 @@ namespace Chummer
         /// </summary>
         public void SourceProcess(string strInput)
         {
-            if(!_lstSources.Contains(strInput))
+            if(Options.BookEnabled(strInput))
             {
-                _lstSources.Add(strInput);
+                _setSources.Add(strInput);
             }
         }
 
@@ -7961,7 +7966,12 @@ namespace Chummer
                 if(_blnMAGEnabled != value)
                 {
                     _blnMAGEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8075,6 +8085,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -8255,7 +8267,12 @@ namespace Chummer
                 if(_blnRESEnabled != value)
                 {
                     _blnRESEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8369,6 +8386,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -8470,7 +8489,12 @@ namespace Chummer
                 if(_blnDEPEnabled != value)
                 {
                     _blnDEPEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8584,6 +8608,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -9023,7 +9049,7 @@ namespace Chummer
             {
                 if ((INT == null) || (REA == null))
                 {
-                    Debugger.Break();
+                    Utils.BreakIfDebug();
                     return 0;
                 }
 
@@ -10228,14 +10254,16 @@ namespace Chummer
                     int intArmorValue = objArmor.TotalArmor;
                     int intCustomStackBonus = 0;
                     string strArmorName = objArmor.Name;
-                    foreach (Armor a in lstArmorsToConsider)
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
-                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        if (objInnerArmor == objArmor)
                             continue;
-                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                      && objMod.Extra == strArmorName
-                                                      && objMod.Equipped))
-                            intCustomStackBonus += a.TotalOverrideArmor;
+                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                                  && objMod.Extra == strArmorName
+                                                                  && objMod.Equipped))
+                            intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
                     }
 
                     if (objArmor.Category == "Clothing")
@@ -11025,14 +11053,16 @@ namespace Chummer
                         continue;
                     int intLoopTotal = objArmor.TotalArmor;
                     string strArmorName = objArmor.Name;
-                    foreach (Armor a in lstArmorsToConsider)
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
-                        if (!objArmor.ArmorOverrideValue.StartsWith('+') && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        if (objInnerArmor == objArmor)
                             continue;
-                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                      && objMod.Extra == strArmorName
-                                                      && objMod.Equipped))
-                            intLoopTotal += a.TotalOverrideArmor;
+                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                                  && objMod.Extra == strArmorName
+                                                                  && objMod.Equipped))
+                            intLoopTotal += objInnerArmor.TotalOverrideArmor;
                     }
 
                     if (objArmor.Category == "Clothing")
@@ -11993,7 +12023,7 @@ namespace Chummer
                     .Append(strSpace).AppendLine(objMentorSpirit.DisplayAdvantage(GlobalOptions.Language))
                     .AppendLine().Append(LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"))
                     .Append(strSpace).AppendLine(objMentorSpirit.Disadvantage);
-                return sbdReturn.ToString().WordWrap();
+                return sbdReturn.ToString().WordWrap(96);
             }
         }
 
@@ -15843,7 +15873,7 @@ namespace Chummer
                                         using (StreamReader objReader = File.OpenText(strEntryFullName))
                                         {
                                             string strLine;
-                                            while ((strLine = objReader.ReadLine()) != null)
+                                            while ((strLine = await objReader.ReadLineAsync()) != null)
                                             {
                                                 // Trim away the newlines and empty spaces at the beginning and end of lines
                                                 strLine = strLine.Trim('\n', '\r').Trim();
@@ -15936,8 +15966,7 @@ namespace Chummer
                         }
 
                         Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_FailedLoad")
-                                .Replace("{0}", ex.Message),
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"), ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
@@ -15951,8 +15980,8 @@ namespace Chummer
                             Log.Error(ex);
                         }
                         Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_FailedLoad")
-                                .Replace("{0}", ex.Message),
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
@@ -15966,8 +15995,8 @@ namespace Chummer
                             Log.Error(ex);
                         }
                         Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_FailedLoad")
-                                .Replace("{0}", ex.Message),
+                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                ex.Message),
                             LanguageManager.GetString("MessageTitle_FailedLoad"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
@@ -16211,12 +16240,10 @@ namespace Chummer
                                 "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
                         if (xmlGameplayOption == null)
                         {
-                            string strMessage = LanguageManager
-                                .GetString("Message_MissingGameplayOption")
-                                .Replace("{0}", GameplayOption);
+                            string strMessage = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_MissingGameplayOption"),
+                                GameplayOption);
                             if (Program.MainForm.ShowMessageBox(strMessage,
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title",
-                                        GlobalOptions.Language),
+                                    LanguageManager.GetString("Message_MissingGameplayOption_Title"),
                                     MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
@@ -18409,7 +18436,7 @@ namespace Chummer
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             xmlDoc.Load(objXmlReader);
-                    xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
+                    xmlSourceNode = xmlDoc.CreateNavigator()?.SelectSingleNode("/character");
                 }
                 catch (Exception ex)
                 {

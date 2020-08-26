@@ -145,48 +145,47 @@ namespace Chummer
         /// </summary>
         protected void AutoSaveCharacter()
         {
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            string strAutosavePath;
-            try
+            using (new CursorWait(this))
             {
-                strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
-            }
-            catch (ArgumentException e)
-            {
-                Log.Error(e, "Path: " + Utils.GetStartupPath);
-                Cursor = objOldCursor;
-                return;
-            }
-
-            if (!Directory.Exists(strAutosavePath))
-            {
+                string strAutosavePath;
                 try
                 {
-                    Directory.CreateDirectory(strAutosavePath);
+                    strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
                 }
-                catch (UnauthorizedAccessException)
+                catch (ArgumentException e)
                 {
-                    Cursor = objOldCursor;
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
-                    AutosaveStopWatch.Restart();
+                    Log.Error(e, "Path: " + Utils.GetStartupPath);
                     return;
                 }
-            }
 
-            string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                if (!Directory.Exists(strAutosavePath))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(strAutosavePath);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        AutosaveStopWatch.Restart();
+                        return;
+                    }
+                }
 
-            if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.CharacterName;
-            var replaceChars = Path.GetInvalidFileNameChars();
-            foreach (var invalidChar in replaceChars)
-            {
-                strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+
+                if (string.IsNullOrEmpty(strShowFileName))
+                    strShowFileName = _objCharacter.CharacterName;
+                var replaceChars = Path.GetInvalidFileNameChars();
+                foreach (var invalidChar in replaceChars)
+                {
+                    strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                }
+
+                string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
+                _objCharacter.Save(strFilePath, false, false);
+                AutosaveStopWatch.Restart();
             }
-            string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-            _objCharacter.Save(strFilePath, false, false);
-            Cursor = objOldCursor;
-            AutosaveStopWatch.Restart();
         }
 
         /// <summary>
@@ -6199,8 +6198,8 @@ namespace Chummer
                 dlgOpenFileDialog.Filter = string.Format(
                     GlobalOptions.InvariantCultureInfo,
                     LanguageManager.GetString("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" + LanguageManager.GetString("DialogFilter_All"),
-                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
-                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension).ToArray()));
+                    string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension))),
+                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
 
                 if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -6386,9 +6385,12 @@ namespace Chummer
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space");
-            string strTitle = _objCharacter.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + _objOptions.Name + ')';
+            StringBuilder sbdTitle = new StringBuilder(_objCharacter.CharacterName)
+                .Append(strSpace).Append('-').Append(strSpace).Append(FormMode)
+                .Append(strSpace).Append('(').Append(_objOptions.Name).Append(')');
             if (_blnIsDirty)
-                strTitle += '*';
+                sbdTitle.Append('*');
+            string strTitle = sbdTitle.ToString();
             this.DoThreadSafe(() => Text = strTitle);
         }
 
@@ -6411,23 +6413,22 @@ namespace Chummer
                 }
             }
 
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            if (_objCharacter.Save())
+            using (new CursorWait(this))
             {
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
-                IsDirty = false;
-                Cursor = objOldCursor;
-
-                // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                if (blnDoCreated)
+                if (_objCharacter.Save())
                 {
-                    SaveCharacterAsCreated();
-                }
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                    IsDirty = false;
 
-                return true;
+                    // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
+                    if (blnDoCreated)
+                    {
+                        SaveCharacterAsCreated();
+                    }
+
+                    return true;
+                }
             }
-            Cursor = objOldCursor;
             return false;
         }
 
@@ -6527,113 +6528,113 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle))
+                using (new CursorWait(this))
                 {
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-                    objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
-                        objGear.Cost = "0";
-
-                    if (CharacterObject.Created)
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
-                        decimal decCost = objGear.TotalCost;
+                        frmPickGear.ShowDialog(this);
 
-                        // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
-                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
-                        {
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                    LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                LanguageManager.GetString("String_ExpensePurchaseVehicleGear") +
-                                LanguageManager.GetString("String_Space") +
-                                objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                            CharacterObject.Nuyen -= decCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
-                            objExpense.Undo = objUndo;
-                        }
-                    }
-
-
-                    bool blnMatchFound = false;
-                    // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition" && frmPickGear.Stack)
-                    {
-                        foreach (Gear objVehicleGear in objSelectedVehicle.Gear.Where(objVehicleGear =>
-                            objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
-                            objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                            objVehicleGear.Children.SequenceEqual(objGear.Children)))
-                        {
-                            // A match was found, so increase the quantity instead.
-                            objVehicleGear.Quantity += objGear.Quantity;
-                            blnMatchFound = true;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
                             break;
-                        }
-                    }
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    if (!blnMatchFound)
-                    {
-                        // Add the Gear to the Vehicle.
-                        objLocation?.Children.Add(objGear);
-                        objSelectedVehicle.Gear.Add(objGear);
-                        objGear.Parent = objSelectedVehicle;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                        foreach (Weapon objWeapon in lstWeapons)
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+
+                        if (objGear.InternalId.IsEmptyGuid())
+                            continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                            objGear.Cost = "0";
+
+                        if (CharacterObject.Created)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = objGear.TotalAvailTuple().Suffix;
+                            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                                decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                                decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.FreeCost)
+                            {
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
+                                        LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                    LanguageManager.GetString("String_ExpensePurchaseVehicleGear") +
+                                    LanguageManager.GetString("String_Space") +
+                                    objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
+                                objExpense.Undo = objUndo;
+                            }
+                        }
+
+
+                        bool blnMatchFound = false;
+                        // If this is Ammunition, see if the character already has it on them.
+                        if (objGear.Category == "Ammunition" && frmPickGear.Stack)
+                        {
+                            foreach (Gear objVehicleGear in objSelectedVehicle.Gear.Where(objVehicleGear =>
+                                objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
+                                objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
+                                objVehicleGear.Children.SequenceEqual(objGear.Children)))
+                            {
+                                // A match was found, so increase the quantity instead.
+                                objVehicleGear.Quantity += objGear.Quantity;
+                                blnMatchFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnMatchFound)
+                        {
+                            // Add the Gear to the Vehicle.
                             objLocation?.Children.Add(objGear);
-                            objWeapon.ParentVehicle = objSelectedVehicle;
-                            objSelectedVehicle.Weapons.Add(objWeapon);
+                            objSelectedVehicle.Gear.Add(objGear);
+                            objGear.Parent = objSelectedVehicle;
+
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                objLocation?.Children.Add(objGear);
+                                objWeapon.ParentVehicle = objSelectedVehicle;
+                                objSelectedVehicle.Weapons.Add(objWeapon);
+                            }
                         }
                     }
+
+                    IsCharacterUpdateRequested = true;
+
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
         #endregion
     }

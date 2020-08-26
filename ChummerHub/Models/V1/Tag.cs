@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
@@ -98,19 +99,19 @@ namespace ChummerHub.Models.V1
         {
             get
             {
-                string str = "";
+                StringBuilder sbdReturn = new StringBuilder();
                 Tag tempParent = this;
                 while (tempParent != null)
                 {
                     string tempstr = tempParent.TagName;
                     if (!string.IsNullOrEmpty(tempParent.TagValue))
                         tempstr += ": " + tempParent.TagValue;
-                    if (!string.IsNullOrEmpty(str))
-                        tempstr += " -> " + str;
-                    str = tempstr;
+                    if (sbdReturn.Length > 0)
+                        tempstr += " -> ";
+                    sbdReturn.Insert(0, tempstr);
                     tempParent = tempParent.ParentTag;
                 }
-                return str;
+                return sbdReturn.ToString();
             }
 
         }

@@ -174,7 +174,7 @@ namespace ChummerHub.Client.Model
             {
                 try
                 {
-                    using (new CursorWait(true, PluginHandler.MainForm))
+                    using (new CursorWait(PluginHandler.MainForm, true))
                     {
                         HttpOperationResponse<ResultSinnerGetSINById> found = null;
                         try
@@ -235,7 +235,7 @@ namespace ChummerHub.Client.Model
                                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                                     }
 
-                                    if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                                    if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
                                     {
                                         MySINnerFile.SiNnerMetaData.Visibility.UserRights =
                                             found.Body.MySINner.SiNnerMetaData.Visibility.UserRights;
@@ -645,7 +645,7 @@ namespace ChummerHub.Client.Model
         {
             try
             {
-                using (new CursorWait(true))
+                using (new CursorWait(null, true))
                 {
                     if (myState != null)
                     {

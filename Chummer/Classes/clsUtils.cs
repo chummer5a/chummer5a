@@ -23,6 +23,7 @@
 using System.Reflection;
  using System.Security.AccessControl;
  using System.Security.Principal;
+ using System.Text;
  using System.Windows.Forms;
  using NLog;
 
@@ -138,14 +139,15 @@ namespace Chummer
                 }
             }
             Log.Info("Restart Chummer");
-            Program.MainForm.Cursor = Cursors.WaitCursor;
+            Application.UseWaitCursor = true;
             // Get the parameters/arguments passed to program if any
-            string arguments = string.Empty;
+            StringBuilder sbdArguments = new StringBuilder();
             foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
             {
-                arguments += '\"' + objOpenCharacterForm.CharacterObject.FileName + "\" ";
+                sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
             }
-            arguments = arguments.Trim();
+            if (sbdArguments.Length > 0)
+                sbdArguments.Length -= 1;
             // Restart current application, with same arguments/parameters
             foreach (Form objForm in Program.MainForm.MdiChildren)
             {
@@ -154,7 +156,7 @@ namespace Chummer
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
-                Arguments = arguments
+                Arguments = sbdArguments.ToString()
             };
             Application.Exit();
             Process.Start(startInfo);

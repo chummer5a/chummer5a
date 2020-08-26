@@ -172,7 +172,8 @@ namespace Chummer
 
             MemoryStream objStream = new MemoryStream();
             using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
-                objXSLTransform.Transform(_objCharacterXML, null, objWriter);
+                if (objWriter != null)
+                    objXSLTransform.Transform(_objCharacterXML, null, objWriter);
             objStream.Position = 0;
 
             // Read in the resulting code and pass it to the browser.

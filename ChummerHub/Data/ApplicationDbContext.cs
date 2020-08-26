@@ -7,7 +7,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ChummerHub.Data
@@ -41,13 +40,11 @@ namespace ChummerHub.Data
         public override int SaveChanges()
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SaveChanges()'
         {
-            var entities = from e in ChangeTracker.Entries()
-                           where e.State == EntityState.Added
-                               || e.State == EntityState.Modified
-                           select e.Entity;
             bool error = false;
             Collection<ValidationResult> validationResults = new Collection<ValidationResult>();
-            foreach (var entity in entities)
+            foreach (var entity in ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+                .Select(e => e.Entity))
             {
                 var validationContext = new ValidationContext(entity);
                 //Validator.ValidateObject(entity, validationContext);
@@ -56,14 +53,14 @@ namespace ChummerHub.Data
                     error = true;
                 }
             }
-            if (error == true)
+            if (error)
             {
                 int counter = 0;
                 string wholeMessage = "Error while validating Entities:" + Environment.NewLine;
                 foreach (var valResult in validationResults)
                 {
                     counter++;
-                    string msg = "Members " + valResult.MemberNames.Aggregate((a, b) => a + ", " + b) + " not valid: ";
+                    string msg = "Members " + string.Join(", ", valResult.MemberNames) + " not valid: ";
                     msg += valResult.ErrorMessage;
                     wholeMessage += msg + Environment.NewLine;
                 }
@@ -95,7 +92,7 @@ namespace ChummerHub.Data
                 {
                     string constring = "Server=(localdb)\\mssqllocaldb;Database=SINners_DB;Trusted_Connection=True;MultipleActiveResultSets=true";
                     optionsBuilder.UseSqlServer(constring);
-                    
+
                     //throw new ArgumentNullException("HostingEnviroment is null!");
                 }
                 else
@@ -118,35 +115,35 @@ namespace ChummerHub.Data
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.OnModelCreating(ModelBuilder)'
         {
             base.OnModelCreating(builder);
-            builder.Entity<ChummerHub.Models.V1.Tag>()
+            builder.Entity<Models.V1.Tag>()
                 .HasIndex(b => new { b.TagName, b.TagValue });
-            builder.Entity<ChummerHub.Models.V1.Tag>()
+            builder.Entity<Models.V1.Tag>()
                 .HasIndex(b => b.SINnerId);
-            builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()
+            builder.Entity<Models.V1.SINnerUserRight>()
                 .HasIndex(b => b.SINnerId);
-            builder.Entity<ChummerHub.Models.V1.SINner>()
+            builder.Entity<Models.V1.SINner>()
                 .HasIndex(b => b.Alias);
-            builder.Entity<ChummerHub.Models.V1.SINner>()
+            builder.Entity<Models.V1.SINner>()
                 .HasIndex(b => b.Hash);
-            builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
+            builder.Entity<Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Groupname);
-            builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
+            builder.Entity<Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Hash);
-            builder.Entity<ChummerHub.Models.V1.SINnerUserRight>()
+            builder.Entity<Models.V1.SINnerUserRight>()
                 .HasIndex(b => b.EMail);
-            builder.Entity<ChummerHub.Models.V1.SINnerGroup>()
+            builder.Entity<Models.V1.SINnerGroup>()
                 .HasIndex(b => b.Language);
-            builder.Entity<ChummerHub.Models.V1.SINner>()
+            builder.Entity<Models.V1.SINner>()
                 .HasIndex(b => b.EditionNumber);
             //builder.Entity<ChummerHub.Models.V1.SINnerExtended>()
             //    .HasIndex(b => b.SINnerId);
-            builder.Entity<ChummerHub.Models.V1.Tag>()
+            builder.Entity<Models.V1.Tag>()
                 .HasIndex(b => b.TagValueFloat);
             builder.Entity<ApplicationUserFavoriteGroup>()
                 .HasIndex(b => b.FavoriteGuid);
             try
             {
-                this.Database.ExecuteSqlCommand(
+                Database.ExecuteSqlCommand(
                     @"CREATE VIEW View_SINnerUserRights AS 
         SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
                          
@@ -163,39 +160,39 @@ FROM            dbo.SINners INNER JOIN
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINners'
-        public DbSet<ChummerHub.Models.V1.SINner> SINners { get; set; }
+        public DbSet<Models.V1.SINner> SINners { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINners'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroups'
-        public DbSet<ChummerHub.Models.V1.SINnerGroup> SINnerGroups { get; set; }
+        public DbSet<Models.V1.SINnerGroup> SINnerGroups { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroups'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Tags'
-        public DbSet<ChummerHub.Models.V1.Tag> Tags { get; set; }
+        public DbSet<Models.V1.Tag> Tags { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Tags'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UserRights'
-        public DbSet<ChummerHub.Models.V1.SINnerUserRight> UserRights { get; set; }
+        public DbSet<Models.V1.SINnerUserRight> UserRights { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UserRights'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UploadClients'
-        public DbSet<ChummerHub.Models.V1.UploadClient> UploadClients { get; set; }
+        public DbSet<Models.V1.UploadClient> UploadClients { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UploadClients'
 
         //public DbSet<ChummerHub.Models.V1.SINnerExtended> SINnerExtendedMetaData { get; set; }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerComments'
-        public DbSet<ChummerHub.Models.V1.SINnerComment> SINnerComments { get; set; }
+        public DbSet<Models.V1.SINnerComment> SINnerComments { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerComments'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerVisibility'
-        public DbSet<ChummerHub.Models.V1.SINnerVisibility> SINnerVisibility { get; set; }
+        public DbSet<Models.V1.SINnerVisibility> SINnerVisibility { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerVisibility'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerMetaData'
-        public DbSet<ChummerHub.Models.V1.SINnerMetaData> SINnerMetaData { get; set; }
+        public DbSet<Models.V1.SINnerMetaData> SINnerMetaData { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerMetaData'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroupSettings'
-        public DbSet<ChummerHub.Models.V1.SINnerGroupSetting> SINnerGroupSettings { get; set; }
+        public DbSet<Models.V1.SINnerGroupSetting> SINnerGroupSettings { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroupSettings'
     }
 }

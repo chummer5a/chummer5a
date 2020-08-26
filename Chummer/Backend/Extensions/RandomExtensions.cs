@@ -23,7 +23,7 @@ namespace Chummer
     public static class RandomExtensions
     {
         /// <summary>
-        /// Special version of NextModuloBiasRemoved(maxValue) built specifically for D6. The modulo bias to check is calculated at compile time, so the code should run faster.
+        /// Special version of NextModuloBiasRemoved(minValue, maxValue) built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         public static int NextD6ModuloBiasRemoved(this Random objRandom)
@@ -38,7 +38,7 @@ namespace Chummer
             }
             while (intLoopResult >= intModuloCheck);
 
-            return intLoopResult % 6;
+            return 1 + intLoopResult % 6;
         }
 
         /// <summary>

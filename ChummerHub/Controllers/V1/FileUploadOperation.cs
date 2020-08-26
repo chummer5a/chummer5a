@@ -33,7 +33,5 @@ namespace ChummerHub.Controllers.V1
 //                operation.Consumes.Add("multipart/form-data");
 //            }
 //        }
-
-       
 //    }
 }

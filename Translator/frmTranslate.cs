@@ -23,7 +23,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -417,7 +416,20 @@ namespace Translator
             _objTranslationDoc.Load(Path.Combine(ApplicationPath, "lang", Code + ".xml"));
             _objDataDoc.Load(Path.Combine(ApplicationPath, "lang", Code + "_data.xml"));
             cboFile.Items.Add("Strings");
-            List<string> strs = (from XmlNode xmlNodeLocal in _objDataDoc.SelectNodes("/chummer/chummer") where xmlNodeLocal.Attributes?["file"] != null select xmlNodeLocal.Attributes["file"].InnerText).ToList();
+            List<string> strs = new List<string>();
+            using (XmlNodeList xmlNodeList = _objDataDoc.SelectNodes("/chummer/chummer"))
+            {
+                if (xmlNodeList?.Count > 0)
+                {
+                    foreach (XmlNode xmlNodeLocal in xmlNodeList)
+                    {
+                        string strFile = xmlNodeLocal.Attributes?["file"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strFile))
+                            strs.Add(strFile);
+                    }
+                }
+            }
+
             strs.Sort();
             foreach (string str in strs)
                 cboFile.Items.Add(str);
@@ -841,7 +853,10 @@ namespace Translator
             XmlNode xmlNode = _objDataDoc.SelectSingleNode("/chummer/chummer[@file=\"" + cboFile.Text + "\"]");
             if (xmlNode != null)
             {
-                lstSectionStrings = (from XmlNode childNode in xmlNode.ChildNodes select childNode.Name).ToList();
+                lstSectionStrings = new List<string>();
+                foreach (XmlNode childNode in xmlNode.ChildNodes)
+                    lstSectionStrings.Add(childNode.Name);
+
                 lstSectionStrings.Sort();
 
                 if (lstSectionStrings.Count > 0)
@@ -890,7 +905,8 @@ namespace Translator
             XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = ("\t"), Indent = true};
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
-                objXmlDocument.Save(xwWriter);
+                if (xwWriter != null)
+                    objXmlDocument.Save(xwWriter);
             }
         }
 

@@ -34,7 +34,7 @@ namespace ChummerHub.Models.V1
         {
             this.Id = Guid.Empty;
             this.ChummerVersion = new Version().ToString();
-            this.ClientSecret = "";
+            this.ClientSecret = string.Empty;
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'UploadClient.UserEmail'

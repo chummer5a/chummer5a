@@ -4518,6 +4518,7 @@
         <category>Cyberlimb Enhancement</category>
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
+		<category>Nanocybernetics</category>
       </allowsubsystems>
       <forbidden>
         <oneof>

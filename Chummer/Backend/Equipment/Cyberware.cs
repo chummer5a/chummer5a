@@ -128,7 +128,7 @@ namespace Chummer.Backend.Equipment
             {"Enhanced Agility", "Cyberlimb Augmentation, Agility (2050)"};
 
         private static readonly HashSet<string> s_AgilityCombinedStrings =
-            new HashSet<string>(s_AgilityEnhancementStrings.Union(s_AgilityEnhancementStrings));
+            new HashSet<string>(s_AgilityCustomizationStrings.Union(s_AgilityEnhancementStrings));
 
         private static readonly HashSet<string> s_StrengthCustomizationStrings = new HashSet<string>
             {"Customized Strength", "Cyberlimb Customization, Strength (2050)"};
@@ -137,7 +137,7 @@ namespace Chummer.Backend.Equipment
             {"Enhanced Strength", "Cyberlimb Augmentation, Strength (2050)"};
 
         private static readonly HashSet<string> s_StrengthCombinedStrings =
-            new HashSet<string>(s_StrengthEnhancementStrings.Union(s_StrengthEnhancementStrings));
+            new HashSet<string>(s_StrengthCustomizationStrings.Union(s_StrengthEnhancementStrings));
 
         #region Helper Methods
 
@@ -1462,13 +1462,13 @@ namespace Chummer.Backend.Equipment
                 int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) /
                                3;
                 objWriter.WriteElementString("name",
-                    DisplayNameShort(strLanguageToPrint) + strSpace + '(' +
-                    _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + strSpace +
-                    TotalAgility.ToString(objCulture) + ',' + strSpace +
-                    _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + strSpace +
-                    TotalStrength.ToString(objCulture) + ',' + strSpace +
-                    LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + strSpace +
-                    intLimit.ToString(objCulture) + ')');
+                    new StringBuilder(DisplayNameShort(strLanguageToPrint))
+                        .Append(strSpace).Append('(').Append(_objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint))
+                        .Append(strSpace).Append(TotalAgility.ToString(objCulture)).Append(',')
+                        .Append(strSpace).Append(_objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint))
+                        .Append(strSpace).Append(TotalStrength.ToString(objCulture)).Append(',')
+                        .Append(strSpace).Append(LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint))
+                        .Append(strSpace).Append(intLimit.ToString(objCulture)).Append(')').ToString());
             }
 
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -2832,28 +2832,29 @@ namespace Chummer.Backend.Equipment
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
                 !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
-            string strGuid = SourceIDString;
             XmlDocument objDoc;
             if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
             {
                 objDoc = XmlManager.Load("bioware.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = \"" + strGuid +
-                                                              "\" or id = \"" + strGuid.ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = objDoc.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                    "/chummer/biowares/bioware[id = \"{0}\" or id = \"{1}\"]",
+                    SourceIDString, SourceIDString.ToUpperInvariant()));
                 if (_objCachedMyXmlNode == null)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = " + Name.CleanXPath() + ']');
                     _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
             else
             {
                 objDoc = XmlManager.Load("cyberware.xml", strLanguage);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + strGuid +
-                                                              "\" or id = \"" + strGuid.ToUpperInvariant() + "\"]");
+                _objCachedMyXmlNode = objDoc.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                    "/chummer/cyberwares/cyberware[id = \"{0}\" or id = \"{1}\"]",
+                    SourceIDString, SourceIDString.ToUpperInvariant()));
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode =
-                        objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
+                        objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = " + Name.CleanXPath() + ']');
                     _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
@@ -3744,6 +3745,17 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return decCapacity;
+            }
+        }
+
+        public string DisplayCapacity
+        {
+            get
+            {
+                if (Capacity.Contains('[') && !Capacity.Contains("/["))
+                    return CalculatedCapacity;
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+                    CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo));
             }
         }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerHub.Client.Backend;
@@ -40,13 +39,9 @@ namespace ChummerHub.Client.UI
                         }
                         else if (_mySINSearchGroupResult.SinGroups != null)
                         {
-                            bJoinGroup.Enabled = _mySINSearchGroupResult.SinGroups.Any();
-                            var rootseq = (from a in MySINSearchGroupResult?.SinGroups select a).ToList();
-                            List<TreeNode> nodes = CreateTreeViewNodes(rootseq);
-                            this.DoThreadSafe(() =>
-                            {
-                                tvGroupSearchResult.Nodes.AddRange(nodes.ToArray());
-                            });
+                            bJoinGroup.Enabled = _mySINSearchGroupResult.SinGroups.Count > 0;
+                            TreeNode[] nodes = CreateTreeViewNodes(_mySINSearchGroupResult.SinGroups).ToArray();
+                            tvGroupSearchResult.DoThreadSafe(() => tvGroupSearchResult.Nodes.AddRange(nodes));
                         }
                     });
                 }
@@ -58,7 +53,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private List<TreeNode> CreateTreeViewNodes(IList<SINnerSearchGroup> sinGroups)
+        private List<TreeNode> CreateTreeViewNodes(IEnumerable<SINnerSearchGroup> sinGroups)
         {
             var res = new List<TreeNode>();
             if (sinGroups == null)
@@ -160,7 +155,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                using (new CursorWait(true, this))
+                using (new CursorWait(this, true))
                 {
                     tvGroupSearchResult.SelectedNode = null;
                     bSearch.Text = "searching";
@@ -231,7 +226,7 @@ namespace ChummerHub.Client.UI
 
             try
             {
-                using (new CursorWait(false, this))
+                using (new CursorWait(this))
                 {
                     SINnerSearchGroup item = tvGroupSearchResult.SelectedNode.Tag as SINnerSearchGroup;
                     if (MyCE.MySINnerFile.MyGroup != null)
@@ -245,72 +240,61 @@ namespace ChummerHub.Client.UI
                     //var uploadtask = MyCE.Upload();
                     //await uploadtask.ContinueWith(b =>
                     //{
-                    using (new CursorWait(false, this))
+                    using (new CursorWait(this))
                     {
                         var task = JoinGroupTask(item, MyCE);
 #pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
                         await task.ContinueWith(a =>
                         {
-                            using (new CursorWait(false, this))
+                            if (a.IsFaulted)
                             {
-                                if (a.IsFaulted)
+                                StringBuilder msg = new StringBuilder("JoinGroupTask returned faulted!");
+                                if (a.Exception != null)
                                 {
-                                    StringBuilder msg = new StringBuilder("JoinGroupTask returned faulted!");
-                                    if (a.Exception != null)
+                                    msg.Clear();
+                                    if (a.Exception is AggregateException exAggregate)
                                     {
-                                        msg.Clear();
-                                        if (a.Exception is AggregateException exAggregate)
+                                        foreach (Exception exp in exAggregate.InnerExceptions)
                                         {
-                                            foreach (Exception exp in exAggregate.InnerExceptions)
-                                            {
-                                                msg.AppendLine(exp.Message);
-                                            }
+                                            msg.AppendLine(exp.Message);
                                         }
-                                        else
-                                            msg = new StringBuilder(a.Exception.Message);
                                     }
-
-                                    Program.MainForm.ShowMessageBox(msg.ToString());
-                                    return;
+                                    else
+                                        msg = new StringBuilder(a.Exception.Message);
                                 }
 
-                                if (!string.IsNullOrEmpty(a.Result?.ErrorText))
-                                {
-                                    Log.Error(a.Result.ErrorText);
-                                }
-                                else if (a.Result == null)
-                                {
-                                    MyCE.MySINnerFile.MyGroup = null;
-                                    string msg = "Char " + MyCE.MyCharacter.CharacterName + " did not join group " +
-                                                 item.Groupname +
-                                                 ".";
-                                    Log.Info(msg);
-                                    this.DoThreadSafe(() =>
-                                    {
-                                        Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        TlpGroupSearch_VisibleChanged(null, new EventArgs());
-                                    });
-                                }
-                                else
-                                {
+                                Program.MainForm.ShowMessageBox(msg.ToString());
+                                return;
+                            }
 
-                                    MyCE.MySINnerFile.MyGroup = new SINnerGroup(item);
-                                    //if (OnGroupJoinCallback != null)
-                                    //    OnGroupJoinCallback(this, MyCE.MySINnerFile.MyGroup);
-                                    string msg = "Char " + MyCE.MyCharacter.CharacterName + " joined group " +
-                                                 item.Groupname +
-                                                 ".";
-                                    Log.Info(msg);
-                                    this.DoThreadSafe(() =>
-                                    {
-                                        Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        TlpGroupSearch_VisibleChanged(null, new EventArgs());
-                                    });
-                                    PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
-                                    {
-                                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                                    });
-                                }
+                            if (!string.IsNullOrEmpty(a.Result?.ErrorText))
+                            {
+                                Log.Error(a.Result.ErrorText);
+                            }
+                            else if (a.Result == null)
+                            {
+                                MyCE.MySINnerFile.MyGroup = null;
+                                string msg = "Char " + MyCE.MyCharacter.CharacterName + " did not join group " +
+                                             item.Groupname +
+                                             ".";
+                                Log.Info(msg);
+                                Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                this.DoThreadSafe(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
+                            }
+                            else
+                            {
+
+                                MyCE.MySINnerFile.MyGroup = new SINnerGroup(item);
+                                //if (OnGroupJoinCallback != null)
+                                //    OnGroupJoinCallback(this, MyCE.MySINnerFile.MyGroup);
+                                string msg = "Char " + MyCE.MyCharacter.CharacterName + " joined group " +
+                                             item.Groupname +
+                                             ".";
+                                Log.Info(msg);
+                                Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                this.DoThreadSafe(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
+                                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false));
                             }
                         }).ConfigureAwait(true);
 #pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
@@ -394,7 +378,7 @@ namespace ChummerHub.Client.UI
                 {
                     try
                     {
-                        using (new CursorWait(true, this))
+                        using (new CursorWait(this, true))
                         {
                             var client = StaticUtils.GetClient();
                             using (var response =
@@ -479,22 +463,19 @@ namespace ChummerHub.Client.UI
             lSINnerName.Text = MyCE.MySINnerFile.Alias;
             if (MyCE?.MySINnerFile.MyGroup != null)
             {
-                using (new CursorWait(true, this))
+                using (new CursorWait(this, true))
                 {
                     try
                     {
-                        using (new CursorWait(true, this))
+                        //MySINSearchGroupResult = null;
+                        if (string.IsNullOrEmpty(tbSearchGroupname.Text))
                         {
-                            //MySINSearchGroupResult = null;
-                            if (string.IsNullOrEmpty(tbSearchGroupname.Text))
-                            {
-                                var temp = new SINSearchGroupResult(MyCE?.MySINnerFile.MyGroup);
-                                MySINSearchGroupResult = temp;
-                            }
-                            else
-                            {
-                                MySINSearchGroupResult = await SearchForGroups(tbSearchGroupname.Text).ConfigureAwait(true);
-                            }
+                            var temp = new SINSearchGroupResult(MyCE?.MySINnerFile.MyGroup);
+                            MySINSearchGroupResult = temp;
+                        }
+                        else
+                        {
+                            MySINSearchGroupResult = await SearchForGroups(tbSearchGroupname.Text).ConfigureAwait(true);
                         }
                     }
                     catch (ArgumentNullException)
@@ -832,13 +813,7 @@ namespace ChummerHub.Client.UI
         {
             if (Visible)
             {
-                Task.Factory.StartNew(() =>
-                {
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
-                        bSearch_Click(this, new EventArgs());
-                    });
-                });
+                Task.Run(() => this.DoThreadSafe(() => bSearch_Click(this, e)));
             }
         }
 
@@ -900,7 +875,7 @@ namespace ChummerHub.Client.UI
 
                 if (tvGroupSearchResult.SelectedNode?.Tag is SINnerSearchGroup sel)
                 {
-                    @group = new SINnerGroup(sel);
+                    group = new SINnerGroup(sel);
                 }
 
                 using (frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false))
@@ -911,7 +886,7 @@ namespace ChummerHub.Client.UI
                         group = ge.MySINnerGroupCreate.MyGroup;
                         try
                         {
-                            using (new CursorWait(false, this))
+                            using (new CursorWait(this))
                             {
                                 var a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup).ConfigureAwait(true);
                                 if (a != null)

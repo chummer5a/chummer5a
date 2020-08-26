@@ -505,6 +505,8 @@ namespace Chummer
                 {
                     using (XmlWriter objWriter = XmlWriter.Create(objStream))
                     {
+                        if (objWriter == null)
+                            return;
                         // Build the XML for the Improvement.
                         XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
                         string strInternal = objFetchNode?["internal"]?.InnerText;

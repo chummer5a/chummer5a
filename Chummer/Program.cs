@@ -18,6 +18,7 @@
  */
  using System;
  using System.Collections;
+ using System.Collections.ObjectModel;
  using System.ComponentModel;
  using System.Diagnostics;
  using System.Globalization;
@@ -26,6 +27,7 @@ using System.Linq;
  using System.Reflection;
  using System.Runtime;
  using System.Runtime.InteropServices;
+ using System.Text;
  using System.Threading;
  using System.Threading.Tasks;
  using System.Windows.Forms;
@@ -34,6 +36,7 @@ using System.Linq;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
+ using Microsoft.ApplicationInsights.Extensibility.PerfCounterCollector.QuickPulse;
  using Microsoft.ApplicationInsights.Metrics;
  using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
@@ -79,11 +82,11 @@ namespace Chummer
                         string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language, false);
                         if (string.IsNullOrEmpty(strMessage))
                             strMessage = ex.ToString();
-                        strPostErrorMessage += strMessage;
+                        strPostErrorMessage = strMessage;
                     }
                     catch (Exception ex)
                     {
-                        strPostErrorMessage += ex.ToString();
+                        strPostErrorMessage = ex.ToString();
                     }
                 }
                 IsMono = Type.GetType("Mono.Runtime") != null;
@@ -168,17 +171,17 @@ namespace Chummer
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
+                if (LanguageManager.ManagerErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
+                if (GlobalOptions.ErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(GlobalOptions.ErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -191,6 +194,7 @@ namespace Chummer
 
                 try
                 {
+                    TelemetryConfiguration.Active.InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5";
                     LogManager.ThrowExceptions = true;
                     if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
                     {
@@ -218,6 +222,7 @@ namespace Chummer
                         Properties.Settings.Default.Save();
                     }
 
+                    
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
 
@@ -265,7 +270,13 @@ namespace Chummer
                         TelemetryConfiguration.Active.DisableTelemetry = true;
 
                     Log.Info(strInfo);
-                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to " + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: " + Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo) + ").");
+                    Log.Info(new StringBuilder("Logging options are set to ")
+                        .Append(GlobalOptions.UseLogging)
+                        .Append(" and Upload-Options are set to ")
+                        .Append(GlobalOptions.UseLoggingApplicationInsights)
+                        .Append(" (Installation-Id: ")
+                        .Append(Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo))
+                        .Append(").").ToString());
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -313,47 +324,55 @@ namespace Chummer
                     string[] strArgs = Environment.GetCommandLineArgs();
                     try
                     {
-                        var loopResult = Parallel.For(1, strArgs.Length, i =>
+                        // Hacky, but necessary because innards of Parallel.For would end up invoking
+                        // a UI function that would wait for Parallel.For to finish, causing the program
+                        // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+                        bool blnIsCompleted = Task.Run(() =>
                         {
-                            if (strArgs[i].Contains("/plugin"))
+                            var loopResult = Parallel.For(1, strArgs.Length, i =>
                             {
-                                if (GlobalOptions.PluginsEnabled == false)
+                                if (strArgs[i].Contains("/plugin"))
                                 {
-                                    string msg =
-                                        "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
-                                    Log.Warn(msg);
-                                    MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                }
-                                else
-                                {
-                                    string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin", StringComparison.Ordinal) + 8);
-                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                    whatplugin = whatplugin.TrimStart(':');
-                                    int endplugin = whatplugin.IndexOf(':');
-                                    string parameter = whatplugin.Substring(endplugin + 1);
-                                    whatplugin = whatplugin.Substring(0, endplugin);
-                                    var plugin =
-                                        PluginLoader.MyActivePlugins.FirstOrDefault(a =>
-                                            a.ToString() == whatplugin);
-                                    if (plugin == null)
+                                    if (GlobalOptions.PluginsEnabled == false)
                                     {
-                                        if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
-                                        {
-                                            string msg = "Plugin " + whatplugin + " is not enabled in the options!"
-                                                         + Environment.NewLine + "If you want to use command-line arguments, please enable this plugin and restart the program.";
-                                            Log.Warn(msg);
-                                            MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                        }
+                                        string msg =
+                                            "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                        Log.Warn(msg);
+                                        MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                     }
                                     else
                                     {
-                                        showMainForm &= plugin.ProcessCommandLine(parameter);
+                                        string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin", StringComparison.Ordinal) + 8);
+                                        //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                        whatplugin = whatplugin.TrimStart(':');
+                                        int endplugin = whatplugin.IndexOf(':');
+                                        string parameter = whatplugin.Substring(endplugin + 1);
+                                        whatplugin = whatplugin.Substring(0, endplugin);
+                                        var plugin =
+                                            PluginLoader.MyActivePlugins.FirstOrDefault(a =>
+                                                a.ToString() == whatplugin);
+                                        if (plugin == null)
+                                        {
+                                            if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
+                                            {
+                                                string msg = new StringBuilder("Plugin ").Append(whatplugin)
+                                                    .AppendLine(" is not enabled in the options!")
+                                                    .Append("If you want to use command-line arguments, please enable this plugin and restart the program.").ToString();
+                                                Log.Warn(msg);
+                                                MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            showMainForm &= plugin.ProcessCommandLine(parameter);
+                                        }
                                     }
                                 }
-                            }
-                        });
-                        if (!loopResult.IsCompleted)
-                            Debugger.Break();
+                            });
+                            return loopResult.IsCompleted;
+                        }).Result;
+                        if (!blnIsCompleted)
+                            Utils.BreakIfDebug();
                     }
                     catch (Exception e)
                     {

@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace ChummerHub.Models.V1
 {
-    [DebuggerDisplay("SINner {Id}")]
+    [DebuggerDisplay("SINner {" + nameof(Id) + "}")]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner'
     public class SINner : SINnerUploadAble
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner'
@@ -97,10 +97,9 @@ namespace ChummerHub.Models.V1
                     IsolationLevel = IsolationLevel.ReadUncommitted
                 }, TransactionScopeAsyncFlowOption.Enabled))
             {
-                List<SINner> result = new List<SINner>();
-                var userseq = await (from a in context.UserRights
-                                     where a.EMail == user.NormalizedEmail && a.CanEdit == canEdit
-                                     select a.SINnerId).ToListAsync();
+                var userseq = await context.UserRights
+                    .Where(a => a.EMail == user.NormalizedEmail && a.CanEdit == canEdit)
+                    .Select(a => a.SINnerId).ToListAsync();
                 var sinseq = await context.SINners
                     .Include(a => a.MyGroup)
                     .Where(a => userseq.Contains(a.Id)).ToListAsync();

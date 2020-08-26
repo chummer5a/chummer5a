@@ -194,9 +194,14 @@ namespace Chummer
         {
             using (var op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
+                if (CharacterObject == null)
+                {
+                    // Stupid hack to get the MDI icon to show up properly.
+                    Icon = Icon.Clone() as Icon;
+                    return;
+                }
                 try
                 {
-                    SuspendLayout();
                     using (_ = Timekeeper.StartSyncron("load_frm_career_databinding", op_load_frm_career))
                     {
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
@@ -226,7 +231,7 @@ namespace Chummer
                         //chtKarma.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
                         //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
 
-                        chkJoinGroup.Checked = CharacterObject.GroupMember;
+                        chkJoinGroup.Checked = CharacterObject?.GroupMember ?? false;
                         chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
                         // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -388,9 +393,9 @@ namespace Chummer
 
                         // Populate the Magician Custom Drain Options list.
                         List<ListItem> lstDrainAttributes = new List<ListItem>(6)
-                        {
-                            ListItem.Blank
-                        };
+                    {
+                        ListItem.Blank
+                    };
                         if (xmlTraditionsBaseChummerNode != null)
                         {
                             foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
@@ -418,6 +423,7 @@ namespace Chummer
                             nameof(Tradition.DrainValue));
                         dpcDrainAttributes.DoOneWayDataBinding("ToolTipText", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainValueToolTip));
+                        CharacterObject.MagicTradition.SetSourceDetail(lblTraditionSource);
 
                         lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                             nameof(Tradition.DisplayDrainExpression));
@@ -435,9 +441,9 @@ namespace Chummer
 
                         // Populate the Magician Custom Spirits lists - Combat.
                         List<ListItem> lstSpirit = new List<ListItem>(30)
-                        {
-                            ListItem.Blank
-                        };
+                    {
+                        ListItem.Blank
+                    };
                         if (xmlTraditionsBaseChummerNode != null)
                         {
                             foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
@@ -561,10 +567,10 @@ namespace Chummer
                                 objDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
                             List<ListItem> lstAttributeCategories = new List<ListItem>(2)
-                            {
-                                new ListItem("Standard",
-                                    node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
-                            };
+                        {
+                            new ListItem("Standard",
+                                node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
+                        };
 
                             node = node?.SelectSingleNode(
                                 "metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]/name/@translate");
@@ -917,8 +923,6 @@ namespace Chummer
                         }
                     }
 
-                    ResumeLayout();
-                    Cursor = Cursors.Default;
                     op_load_frm_career.SetSuccess(true);
                 }
                 catch (Exception ex)
@@ -1117,106 +1121,107 @@ namespace Chummer
             if (!e.Cancel)
             {
                 IsLoading = true;
-                Cursor = Cursors.WaitCursor;
-                Application.Idle -= UpdateCharacterInfo;
-                Application.Idle -= LiveUpdateFromCharacterFile;
-                Program.MainForm.OpenCharacterForms.Remove(this);
-                if (!_blnSkipToolStripRevert)
-                    ToolStripManager.RevertMerge("toolStrip");
-
-                // Unsubscribe from events.
-                CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
-                CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
-                CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
-                CharacterObject.Arts.CollectionChanged -= ArtCollectionChanged;
-                CharacterObject.Enhancements.CollectionChanged -= EnhancementCollectionChanged;
-                CharacterObject.Metamagics.CollectionChanged -= MetamagicCollectionChanged;
-                CharacterObject.InitiationGrades.CollectionChanged -= InitiationGradeCollectionChanged;
-                CharacterObject.Powers.ListChanged -= PowersListChanged;
-                CharacterObject.Powers.BeforeRemove -= PowersBeforeRemove;
-                CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
-                CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
-                CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
-                CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
-                CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
-                CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
-                CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
-                CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
-                CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
-                CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
-                CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
-                CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
-                CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
-                CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
-                CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
-                CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
-                CharacterObject.Improvements.CollectionChanged -= ImprovementCollectionChanged;
-                CharacterObject.ImprovementGroups.CollectionChanged -= ImprovementGroupCollectionChanged;
-                CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
-                CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
-
-                treGear.ItemDrag -= treGear_ItemDrag;
-                treGear.DragEnter -= treGear_DragEnter;
-                treGear.DragDrop -= treGear_DragDrop;
-
-                /*
-                treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
-                treLifestyles.DragEnter -= treLifestyles_DragEnter;
-                treLifestyles.DragDrop -= treLifestyles_DragDrop;
-                */
-
-                treArmor.ItemDrag -= treArmor_ItemDrag;
-                treArmor.DragEnter -= treArmor_DragEnter;
-                treArmor.DragDrop -= treArmor_DragDrop;
-
-                treWeapons.ItemDrag -= treWeapons_ItemDrag;
-                treWeapons.DragEnter -= treWeapons_DragEnter;
-                treWeapons.DragDrop -= treWeapons_DragDrop;
-
-                treVehicles.ItemDrag -= treVehicles_ItemDrag;
-                treVehicles.DragEnter -= treVehicles_DragEnter;
-                treVehicles.DragDrop -= treVehicles_DragDrop;
-
-                treImprovements.ItemDrag -= treImprovements_ItemDrag;
-                treImprovements.DragEnter -= treImprovements_DragEnter;
-                treImprovements.DragDrop -= treImprovements_DragDrop;
-
-                foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
+                using (new CursorWait(this))
                 {
-                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objContactControl.DeleteContact -= DeleteContact;
-                    objContactControl.MouseDown -= DragContactControl;
+                    Application.Idle -= UpdateCharacterInfo;
+                    Application.Idle -= LiveUpdateFromCharacterFile;
+                    Program.MainForm.OpenCharacterForms.Remove(this);
+                    if (!_blnSkipToolStripRevert)
+                        ToolStripManager.RevertMerge("toolStrip");
+
+                    // Unsubscribe from events.
+                    CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
+                    CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
+                    CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
+                    CharacterObject.Arts.CollectionChanged -= ArtCollectionChanged;
+                    CharacterObject.Enhancements.CollectionChanged -= EnhancementCollectionChanged;
+                    CharacterObject.Metamagics.CollectionChanged -= MetamagicCollectionChanged;
+                    CharacterObject.InitiationGrades.CollectionChanged -= InitiationGradeCollectionChanged;
+                    CharacterObject.Powers.ListChanged -= PowersListChanged;
+                    CharacterObject.Powers.BeforeRemove -= PowersBeforeRemove;
+                    CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
+                    CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
+                    CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
+                    CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
+                    CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
+                    CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
+                    CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
+                    CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
+                    CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
+                    CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
+                    CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
+                    CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
+                    CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
+                    CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
+                    CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
+                    CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
+                    CharacterObject.Improvements.CollectionChanged -= ImprovementCollectionChanged;
+                    CharacterObject.ImprovementGroups.CollectionChanged -= ImprovementGroupCollectionChanged;
+                    CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
+                    CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
+                    CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
+
+                    treGear.ItemDrag -= treGear_ItemDrag;
+                    treGear.DragEnter -= treGear_DragEnter;
+                    treGear.DragDrop -= treGear_DragDrop;
+
+                    /*
+                    treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
+                    treLifestyles.DragEnter -= treLifestyles_DragEnter;
+                    treLifestyles.DragDrop -= treLifestyles_DragDrop;
+                    */
+
+                    treArmor.ItemDrag -= treArmor_ItemDrag;
+                    treArmor.DragEnter -= treArmor_DragEnter;
+                    treArmor.DragDrop -= treArmor_DragDrop;
+
+                    treWeapons.ItemDrag -= treWeapons_ItemDrag;
+                    treWeapons.DragEnter -= treWeapons_DragEnter;
+                    treWeapons.DragDrop -= treWeapons_DragDrop;
+
+                    treVehicles.ItemDrag -= treVehicles_ItemDrag;
+                    treVehicles.DragEnter -= treVehicles_DragEnter;
+                    treVehicles.DragDrop -= treVehicles_DragDrop;
+
+                    treImprovements.ItemDrag -= treImprovements_ItemDrag;
+                    treImprovements.DragEnter -= treImprovements_DragEnter;
+                    treImprovements.DragDrop -= treImprovements_DragDrop;
+
+                    foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
+                    {
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objContactControl.DeleteContact -= DeleteContact;
+                        objContactControl.MouseDown -= DragContactControl;
+                    }
+
+                    foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
+                    {
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objContactControl.DeleteContact -= DeleteEnemy;
+                    }
+
+                    foreach (PetControl objContactControl in panPets.Controls.OfType<PetControl>())
+                    {
+                        objContactControl.DeleteContact -= DeletePet;
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                    }
+
+                    foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
+                    {
+                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                    }
+
+                    foreach (SpiritControl objSpiritControl in panSprites.Controls.OfType<SpiritControl>())
+                    {
+                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                    }
+
+                    // Trash the global variables and dispose of the Form.
+                    if (Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
+                        Program.MainForm.OpenCharacters.Remove(CharacterObject);
                 }
-
-                foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
-                {
-                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objContactControl.DeleteContact -= DeleteEnemy;
-                }
-
-                foreach (PetControl objContactControl in panPets.Controls.OfType<PetControl>())
-                {
-                    objContactControl.DeleteContact -= DeletePet;
-                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                }
-
-                foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
-                {
-                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                }
-
-                foreach (SpiritControl objSpiritControl in panSprites.Controls.OfType<SpiritControl>())
-                {
-                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                }
-
-                // Trash the global variables and dispose of the Form.
-                if (Program.MainForm.OpenCharacters.All(x => x != CharacterObject && !x.LinkedCharacters.Contains(CharacterObject)))
-                    Program.MainForm.OpenCharacters.Remove(CharacterObject);
-
                 Dispose(true);
             }
         }
@@ -2009,19 +2014,21 @@ namespace Chummer
                 return;
             }
 
-            Cursor = Cursors.WaitCursor;
             string strSpace = LanguageManager.GetString("String_Space");
             Character[] lstClones = new Character[intClones];
             object lstClonesLock = new object();
-            Parallel.For(0, intClones, i =>
+            using (new CursorWait(this))
             {
-                Character objLoopCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result;
-                lock (lstClonesLock)
+                Parallel.For(0, intClones, i =>
                 {
-                    lstClones[i] = objLoopCharacter;
-                }
-            });
-            Cursor = Cursors.Default;
+                    Character objLoopCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result;
+                    lock (lstClonesLock)
+                    {
+                        lstClones[i] = objLoopCharacter;
+                    }
+                });
+            }
+
             Program.MainForm.OpenCharacterList(lstClones, false);
         }
 
@@ -2037,104 +2044,76 @@ namespace Chummer
 
         private void DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
-            Cursor = Cursors.WaitCursor;
-
-            StringBuilder strOutdatedItems = new StringBuilder();
-
-            // Record the status of any flags that normally trigger character events.
-            bool blnMAGEnabled = CharacterObject.MAGEnabled;
-            bool blnRESEnabled = CharacterObject.RESEnabled;
-            bool blnDEPEnabled = CharacterObject.DEPEnabled;
-            decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
-
-            _blnReapplyImprovements = true;
-
-            // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
-            if (lstInternalIdFilter == null)
-                ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x =>
-                                                                        x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Armor ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Bioware ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Echo ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Gear ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Power ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Quality ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Spell ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus).ToList(), _blnReapplyImprovements);
-            else
-                ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x => lstInternalIdFilter.Contains(x.SourceName) &&
-                                                                        (x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Armor ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Bioware ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Echo ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Gear ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Power ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Quality ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.Spell ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus)).ToList(), _blnReapplyImprovements);
-
-            // Refresh Qualities.
-            // We cannot use foreach because qualities can add more qualities
-            for (int j = 0; j < CharacterObject.Qualities.Count; j++)
+            using (new CursorWait(this))
             {
-                Quality objQuality = CharacterObject.Qualities[j];
-                if (objQuality.OriginSource == QualitySource.Improvement || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
-                    continue;
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objQuality.InternalId))
-                    continue;
-                string strSelected = objQuality.Extra;
+                StringBuilder strOutdatedItems = new StringBuilder();
 
-                XmlNode objNode = objQuality.GetNode();
-                if (objNode != null)
+                // Record the status of any flags that normally trigger character events.
+                bool blnMAGEnabled = CharacterObject.MAGEnabled;
+                bool blnRESEnabled = CharacterObject.RESEnabled;
+                bool blnDEPEnabled = CharacterObject.DEPEnabled;
+                decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
+
+                _blnReapplyImprovements = true;
+
+                // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
+                if (lstInternalIdFilter == null)
+                    ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x =>
+                        x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
+                        x.ImproveSource == Improvement.ImprovementSource.Armor ||
+                        x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
+                        x.ImproveSource == Improvement.ImprovementSource.Bioware ||
+                        x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
+                        x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
+                        x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
+                        x.ImproveSource == Improvement.ImprovementSource.Echo ||
+                        x.ImproveSource == Improvement.ImprovementSource.Gear ||
+                        x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
+                        x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
+                        x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
+                        x.ImproveSource == Improvement.ImprovementSource.Power ||
+                        x.ImproveSource == Improvement.ImprovementSource.Quality ||
+                        x.ImproveSource == Improvement.ImprovementSource.Spell ||
+                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus).ToList(), _blnReapplyImprovements);
+                else
+                    ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x => lstInternalIdFilter.Contains(x.SourceName) &&
+                                                                                                                   (x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Armor ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Bioware ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Echo ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Gear ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Power ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Quality ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.Spell ||
+                                                                                                                    x.ImproveSource == Improvement.ImprovementSource.StackedFocus)).ToList(), _blnReapplyImprovements);
+
+                // Refresh Qualities.
+                // We cannot use foreach because qualities can add more qualities
+                for (int j = 0; j < CharacterObject.Qualities.Count; j++)
                 {
-                    objQuality.Bonus = objNode["bonus"];
-                    if (objQuality.Bonus != null)
+                    Quality objQuality = CharacterObject.Qualities[j];
+                    if (objQuality.OriginSource == QualitySource.Improvement || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                        continue;
+                    // We're only re-apply improvements a list of items, not all of them
+                    if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objQuality.InternalId))
+                        continue;
+                    string strSelected = objQuality.Extra;
+
+                    XmlNode objNode = objQuality.GetNode();
+                    if (objNode != null)
                     {
-                        ImprovementManager.ForcedValue = strSelected;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        {
-                            objQuality.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
-                            if (objTreeNode != null)
-                                objTreeNode.Text = objQuality.CurrentDisplayName;
-                        }
-                    }
-                    objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
-                    if (objQuality.FirstLevelBonus?.HasChildNodes == true)
-                    {
-                        bool blnDoFirstLevel = true;
-                        for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
-                        {
-                            Quality objCheckQuality = CharacterObject.Qualities[k];
-                            if (j != k && objCheckQuality.SourceIDString == objQuality.SourceIDString && objCheckQuality.Extra == objQuality.Extra && objCheckQuality.SourceName == objQuality.SourceName)
-                            {
-                                if (k < j || objCheckQuality.OriginSource == QualitySource.Improvement || lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objCheckQuality.InternalId))
-                                {
-                                    blnDoFirstLevel = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (blnDoFirstLevel)
+                        objQuality.Bonus = objNode["bonus"];
+                        if (objQuality.Bonus != null)
                         {
                             ImprovementManager.ForcedValue = strSelected;
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2143,423 +2122,467 @@ namespace Chummer
                                     objTreeNode.Text = objQuality.CurrentDisplayName;
                             }
                         }
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objQuality.CurrentDisplayName);
-                }
-            }
 
-            // Refresh Martial Art Advantages.
-            foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
-            {
-                XmlNode objMartialArtNode = objMartialArt.GetNode();
-                if (objMartialArtNode != null)
-                {
-                    // We're only re-apply improvements a list of items, not all of them
-                    if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objMartialArt.InternalId))
-                    {
-                        if (objMartialArtNode["bonus"] != null)
+                        objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                        if (objQuality.FirstLevelBonus?.HasChildNodes == true)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], 1, objMartialArt.CurrentDisplayName);
-                        }
-                    }
-                    foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
-                    {
-                        XmlNode objNode = objTechnique.GetNode();
-                        if (objNode != null)
-                        {
-                            if (objNode["bonus"] != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId, objNode["bonus"], 1, objTechnique.CurrentDisplayName);
-                        }
-                        else
-                        {
-                            strOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
-                        }
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
-                }
-            }
-
-            // Refresh Spells.
-            foreach (Spell objSpell in CharacterObject.Spells.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
-            {
-                XmlNode objNode = objSpell.GetNode();
-                if (objNode != null)
-                {
-                    if (objNode["bonus"] != null)
-                    {
-                        ImprovementManager.ForcedValue = objSpell.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], 1, objSpell.DisplayNameShort(GlobalOptions.Language));
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        {
-                            objSpell.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objSpellNode = treSpells.FindNode(objSpell.InternalId);
-                            if (objSpellNode != null)
-                                objSpellNode.Text = objSpell.CurrentDisplayName;
-                        }
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objSpell.CurrentDisplayName);
-                }
-            }
-
-            // Refresh Adept Powers.
-            foreach (Power objPower in CharacterObject.Powers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
-            {
-                XmlNode objNode = objPower.GetNode();
-                if (objNode != null)
-                {
-                    objPower.Bonus = objNode["bonus"];
-                    if (objPower.Bonus != null)
-                    {
-                        ImprovementManager.ForcedValue = objPower.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, Convert.ToInt32(objPower.TotalRating), objPower.DisplayNameShort(GlobalOptions.Language));
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objPower.CurrentDisplayName);
-                }
-            }
-
-            // Refresh Complex Forms.
-            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
-            {
-                XmlNode objNode = objComplexForm.GetNode();
-                if (objNode != null)
-                {
-                    if (objNode["bonus"] != null)
-                    {
-                        ImprovementManager.ForcedValue = objComplexForm.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], 1, objComplexForm.DisplayNameShort(GlobalOptions.Language));
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        {
-                            objComplexForm.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objCFNode = treComplexForms.FindNode(objComplexForm.InternalId);
-                            if (objCFNode != null)
-                                objCFNode.Text = objComplexForm.CurrentDisplayName;
-                        }
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objComplexForm.CurrentDisplayName);
-                }
-            }
-
-            // Refresh AI Programs and Advanced Programs
-            foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
-            {
-                XmlNode objNode = objProgram.GetNode();
-                if (objNode != null)
-                {
-                    if (objNode["bonus"] != null)
-                    {
-                        ImprovementManager.ForcedValue = objProgram.Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], 1, objProgram.DisplayNameShort(GlobalOptions.Language));
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        {
-                            objProgram.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
-                            if (objProgramNode != null)
-                                objProgramNode.Text = objProgram.DisplayName;
-                        }
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objProgram.DisplayName);
-                }
-            }
-
-            // Refresh Critter Powers.
-            foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
-            {
-                XmlNode objNode = objPower.GetNode();
-                if (objNode != null)
-                {
-                    objPower.Bonus = objNode["bonus"];
-                    if (objPower.Bonus != null)
-                    {
-                        string strSelected = objPower.Extra;
-                        if (!int.TryParse(strSelected, out int intRating))
-                        {
-                            intRating = 1;
-                            ImprovementManager.ForcedValue = strSelected;
-                        }
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, intRating, objPower.DisplayNameShort(GlobalOptions.Language));
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        {
-                            objPower.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objPowerNode = treCritterPowers.FindNode(objPower.InternalId);
-                            if (objPowerNode != null)
-                                objPowerNode.Text = objPower.CurrentDisplayName;
-                        }
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objPower.CurrentDisplayName);
-                }
-            }
-
-            // Refresh Metamagics and Echoes.
-            // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
-            for (int j = 0; j < CharacterObject.Metamagics.Count; j++)
-            {
-                Metamagic objMetamagic = CharacterObject.Metamagics[j];
-                if (objMetamagic.Grade < 0)
-                    continue;
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objMetamagic.InternalId))
-                    continue;
-                XmlNode objNode = objMetamagic.GetNode();
-                if (objNode != null)
-                {
-                    objMetamagic.Bonus = objNode["bonus"];
-                    if (objMetamagic.Bonus != null)
-                    {
-                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, 1, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                    }
-                }
-                else
-                {
-                    strOutdatedItems.AppendLine(objMetamagic.CurrentDisplayName);
-                }
-            }
-
-            // Refresh Cyberware and Bioware.
-            Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
-            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
-            {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objCyberware.InternalId))
-                {
-                    XmlNode objNode = objCyberware.GetNode();
-                    if (objNode != null)
-                    {
-                        objCyberware.Bonus = objNode["bonus"];
-                        objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                        objCyberware.PairBonus = objNode["pairbonus"];
-                        if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
-                            ImprovementManager.ForcedValue = objCyberware.Forced;
-                        if (objCyberware.Bonus != null)
-                        {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                objCyberware.Extra = ImprovementManager.SelectedValue;
-                        }
-                        if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                        {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                                objCyberware.Extra = ImprovementManager.SelectedValue;
-                        }
-                        if (!objCyberware.IsModularCurrentlyEquipped)
-                            objCyberware.ChangeModularEquip(false);
-                        else if (objCyberware.PairBonus != null)
-                        {
-                            Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
-                            if (objMatchingCyberware != null)
-                                dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
-                            else
-                                dicPairableCyberwares.Add(objCyberware, 1);
-                        }
-                        TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                            ? treCyberware.FindNode(objCyberware.SourceIDString)
-                            : treCyberware.FindNode(objCyberware.InternalId);
-                        if (objWareNode != null)
-                            objWareNode.Text = objCyberware.CurrentDisplayName;
-                    }
-                    else
-                    {
-                        strOutdatedItems.AppendLine(objCyberware.CurrentDisplayName);
-                    }
-                }
-                foreach (Gear objGear in objCyberware.Gear)
-                {
-                    objGear.ReaddImprovements(treCyberware, strOutdatedItems, lstInternalIdFilter);
-                }
-            }
-            // Separate Pass for PairBonuses
-            foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
-            {
-                Cyberware objCyberware = objItem.Key;
-                int intCyberwaresCount = objItem.Value;
-                List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware.DeepWhere(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped).ToList();
-                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
-                if (!string.IsNullOrEmpty(objCyberware.Location) && objCyberware.IncludePair.All(x => x == objCyberware.Name))
-                {
-                    int intMatchLocationCount = 0;
-                    int intNotMatchLocationCount = 0;
-                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
-                    {
-                        if (objPairableCyberware.Location != objCyberware.Location)
-                            intNotMatchLocationCount += 1;
-                        else
-                            intMatchLocationCount += 1;
-                    }
-                    // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
-                    intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
-                }
-                if (intCyberwaresCount > 0)
-                {
-                    foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
-                    {
-                        if ((intCyberwaresCount & 1) == 0)
-                        {
-                            if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
-                                ImprovementManager.ForcedValue = objCyberware.Forced;
-                            ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                                objCyberware.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                ? treCyberware.FindNode(objCyberware.SourceIDString)
-                                : treCyberware.FindNode(objLoopCyberware.InternalId);
-                            if (objNode != null)
-                                objNode.Text = objLoopCyberware.CurrentDisplayName;
-                        }
-                        intCyberwaresCount -= 1;
-                        if (intCyberwaresCount <= 0)
-                            break;
-                    }
-                }
-            }
-
-            // Refresh Armors.
-            foreach (Armor objArmor in CharacterObject.Armor)
-            {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objArmor.InternalId))
-                {
-                    XmlNode objNode = objArmor.GetNode();
-                    if (objNode != null)
-                    {
-                        objArmor.Bonus = objNode["bonus"];
-                        if (objArmor.Bonus != null)
-                        {
-                            if (objArmor.Equipped)
+                            bool blnDoFirstLevel = true;
+                            for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
                             {
-                                ImprovementManager.ForcedValue = objArmor.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, objArmor.Rating, objArmor.DisplayNameShort(GlobalOptions.Language));
+                                Quality objCheckQuality = CharacterObject.Qualities[k];
+                                if (j != k && objCheckQuality.SourceIDString == objQuality.SourceIDString && objCheckQuality.Extra == objQuality.Extra && objCheckQuality.SourceName == objQuality.SourceName)
+                                {
+                                    if (k < j || objCheckQuality.OriginSource == QualitySource.Improvement || lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objCheckQuality.InternalId))
+                                    {
+                                        blnDoFirstLevel = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (blnDoFirstLevel)
+                            {
+                                ImprovementManager.ForcedValue = strSelected;
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
-                                    objArmor.Extra = ImprovementManager.SelectedValue;
-
-                                    TreeNode objArmorNode = treArmor.FindNode(objArmor.InternalId);
-                                    if (objArmorNode != null)
-                                        objArmorNode.Text = objArmor.CurrentDisplayName;
+                                    objQuality.Extra = ImprovementManager.SelectedValue;
+                                    TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
+                                    if (objTreeNode != null)
+                                        objTreeNode.Text = objQuality.CurrentDisplayName;
                                 }
                             }
                         }
                     }
                     else
                     {
-                        strOutdatedItems.AppendLine(objArmor.CurrentDisplayName);
+                        strOutdatedItems.AppendLine(objQuality.CurrentDisplayName);
                     }
                 }
 
-                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                // Refresh Martial Art Advantages.
+                foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
+                {
+                    XmlNode objMartialArtNode = objMartialArt.GetNode();
+                    if (objMartialArtNode != null)
+                    {
+                        // We're only re-apply improvements a list of items, not all of them
+                        if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objMartialArt.InternalId))
+                        {
+                            if (objMartialArtNode["bonus"] != null)
+                            {
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], 1, objMartialArt.CurrentDisplayName);
+                            }
+                        }
+
+                        foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+                        {
+                            XmlNode objNode = objTechnique.GetNode();
+                            if (objNode != null)
+                            {
+                                if (objNode["bonus"] != null)
+                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId, objNode["bonus"], 1, objTechnique.CurrentDisplayName);
+                            }
+                            else
+                            {
+                                strOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        strOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
+                    }
+                }
+
+                // Refresh Spells.
+                foreach (Spell objSpell in CharacterObject.Spells.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+                {
+                    XmlNode objNode = objSpell.GetNode();
+                    if (objNode != null)
+                    {
+                        if (objNode["bonus"] != null)
+                        {
+                            ImprovementManager.ForcedValue = objSpell.Extra;
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], 1, objSpell.DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objSpell.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objSpellNode = treSpells.FindNode(objSpell.InternalId);
+                                if (objSpellNode != null)
+                                    objSpellNode.Text = objSpell.CurrentDisplayName;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        strOutdatedItems.AppendLine(objSpell.CurrentDisplayName);
+                    }
+                }
+
+                // Refresh Adept Powers.
+                foreach (Power objPower in CharacterObject.Powers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+                {
+                    XmlNode objNode = objPower.GetNode();
+                    if (objNode != null)
+                    {
+                        objPower.Bonus = objNode["bonus"];
+                        if (objPower.Bonus != null)
+                        {
+                            ImprovementManager.ForcedValue = objPower.Extra;
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, Convert.ToInt32(objPower.TotalRating),
+                                objPower.DisplayNameShort(GlobalOptions.Language));
+                        }
+                    }
+                    else
+                    {
+                        strOutdatedItems.AppendLine(objPower.CurrentDisplayName);
+                    }
+                }
+
+                // Refresh Complex Forms.
+                foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+                {
+                    XmlNode objNode = objComplexForm.GetNode();
+                    if (objNode != null)
+                    {
+                        if (objNode["bonus"] != null)
+                        {
+                            ImprovementManager.ForcedValue = objComplexForm.Extra;
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], 1, objComplexForm.DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objComplexForm.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objCFNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                if (objCFNode != null)
+                                    objCFNode.Text = objComplexForm.CurrentDisplayName;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        strOutdatedItems.AppendLine(objComplexForm.CurrentDisplayName);
+                    }
+                }
+
+                // Refresh AI Programs and Advanced Programs
+                foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+                {
+                    XmlNode objNode = objProgram.GetNode();
+                    if (objNode != null)
+                    {
+                        if (objNode["bonus"] != null)
+                        {
+                            ImprovementManager.ForcedValue = objProgram.Extra;
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], 1, objProgram.DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objProgram.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
+                                if (objProgramNode != null)
+                                    objProgramNode.Text = objProgram.DisplayName;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        strOutdatedItems.AppendLine(objProgram.DisplayName);
+                    }
+                }
+
+                // Refresh Critter Powers.
+                foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+                {
+                    XmlNode objNode = objPower.GetNode();
+                    if (objNode != null)
+                    {
+                        objPower.Bonus = objNode["bonus"];
+                        if (objPower.Bonus != null)
+                        {
+                            string strSelected = objPower.Extra;
+                            if (!int.TryParse(strSelected, out int intRating))
+                            {
+                                intRating = 1;
+                                ImprovementManager.ForcedValue = strSelected;
+                            }
+
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, intRating, objPower.DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objPower.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objPowerNode = treCritterPowers.FindNode(objPower.InternalId);
+                                if (objPowerNode != null)
+                                    objPowerNode.Text = objPower.CurrentDisplayName;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        strOutdatedItems.AppendLine(objPower.CurrentDisplayName);
+                    }
+                }
+
+                // Refresh Metamagics and Echoes.
+                // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
+                for (int j = 0; j < CharacterObject.Metamagics.Count; j++)
+                {
+                    Metamagic objMetamagic = CharacterObject.Metamagics[j];
+                    if (objMetamagic.Grade < 0)
+                        continue;
+                    // We're only re-apply improvements a list of items, not all of them
+                    if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objMetamagic.InternalId))
+                        continue;
+                    XmlNode objNode = objMetamagic.GetNode();
+                    if (objNode != null)
+                    {
+                        objMetamagic.Bonus = objNode["bonus"];
+                        if (objMetamagic.Bonus != null)
+                        {
+                            ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, 1, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                        }
+                    }
+                    else
+                    {
+                        strOutdatedItems.AppendLine(objMetamagic.CurrentDisplayName);
+                    }
+                }
+
+                // Refresh Cyberware and Bioware.
+                Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
+                foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
                 {
                     // We're only re-apply improvements a list of items, not all of them
-                    if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objMod.InternalId))
+                    if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objCyberware.InternalId))
                     {
-                        XmlNode objChild = objMod.GetNode();
-
-                        if (objChild != null)
+                        XmlNode objNode = objCyberware.GetNode();
+                        if (objNode != null)
                         {
-                            objMod.Bonus = objChild["bonus"];
-                            if (objMod.Bonus != null)
+                            objCyberware.Bonus = objNode["bonus"];
+                            objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                            objCyberware.PairBonus = objNode["pairbonus"];
+                            if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
+                                ImprovementManager.ForcedValue = objCyberware.Forced;
+                            if (objCyberware.Bonus != null)
                             {
-                                if (objMod.Equipped)
+                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating,
+                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (!objCyberware.IsModularCurrentlyEquipped)
+                                objCyberware.ChangeModularEquip(false);
+                            else if (objCyberware.PairBonus != null)
+                            {
+                                Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
+                                if (objMatchingCyberware != null)
+                                    dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                                else
+                                    dicPairableCyberwares.Add(objCyberware, 1);
+                            }
+
+                            TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                                ? treCyberware.FindNode(objCyberware.SourceIDString)
+                                : treCyberware.FindNode(objCyberware.InternalId);
+                            if (objWareNode != null)
+                                objWareNode.Text = objCyberware.CurrentDisplayName;
+                        }
+                        else
+                        {
+                            strOutdatedItems.AppendLine(objCyberware.CurrentDisplayName);
+                        }
+                    }
+
+                    foreach (Gear objGear in objCyberware.Gear)
+                    {
+                        objGear.ReaddImprovements(treCyberware, strOutdatedItems, lstInternalIdFilter);
+                    }
+                }
+
+                // Separate Pass for PairBonuses
+                foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
+                {
+                    Cyberware objCyberware = objItem.Key;
+                    int intCyberwaresCount = objItem.Value;
+                    List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware.DeepWhere(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped).ToList();
+                    // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                    if (!string.IsNullOrEmpty(objCyberware.Location) && objCyberware.IncludePair.All(x => x == objCyberware.Name))
+                    {
+                        int intMatchLocationCount = 0;
+                        int intNotMatchLocationCount = 0;
+                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                        {
+                            if (objPairableCyberware.Location != objCyberware.Location)
+                                intNotMatchLocationCount += 1;
+                            else
+                                intMatchLocationCount += 1;
+                        }
+
+                        // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                        intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
+                    }
+
+                    if (intCyberwaresCount > 0)
+                    {
+                        foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                        {
+                            if ((intCyberwaresCount & 1) == 0)
+                            {
+                                if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
+                                    ImprovementManager.ForcedValue = objCyberware.Forced;
+                                ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
+                                    objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                                    ? treCyberware.FindNode(objCyberware.SourceIDString)
+                                    : treCyberware.FindNode(objLoopCyberware.InternalId);
+                                if (objNode != null)
+                                    objNode.Text = objLoopCyberware.CurrentDisplayName;
+                            }
+
+                            intCyberwaresCount -= 1;
+                            if (intCyberwaresCount <= 0)
+                                break;
+                        }
+                    }
+                }
+
+                // Refresh Armors.
+                foreach (Armor objArmor in CharacterObject.Armor)
+                {
+                    // We're only re-apply improvements a list of items, not all of them
+                    if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objArmor.InternalId))
+                    {
+                        XmlNode objNode = objArmor.GetNode();
+                        if (objNode != null)
+                        {
+                            objArmor.Bonus = objNode["bonus"];
+                            if (objArmor.Bonus != null)
+                            {
+                                if (objArmor.Equipped)
                                 {
-                                    ImprovementManager.ForcedValue = objMod.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
+                                    ImprovementManager.ForcedValue = objArmor.Extra;
+                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, objArmor.Rating, objArmor.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
-                                        objMod.Extra = ImprovementManager.SelectedValue;
+                                        objArmor.Extra = ImprovementManager.SelectedValue;
 
-                                        TreeNode objPluginNode = treArmor.FindNode(objMod.InternalId);
-                                        if (objPluginNode != null)
-                                            objPluginNode.Text = objMod.CurrentDisplayName;
+                                        TreeNode objArmorNode = treArmor.FindNode(objArmor.InternalId);
+                                        if (objArmorNode != null)
+                                            objArmorNode.Text = objArmor.CurrentDisplayName;
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            strOutdatedItems.AppendLine(objMod.CurrentDisplayName);
+                            strOutdatedItems.AppendLine(objArmor.CurrentDisplayName);
                         }
                     }
-                    foreach (Gear objGear in objMod.Gear)
+
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        // We're only re-apply improvements a list of items, not all of them
+                        if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objMod.InternalId))
+                        {
+                            XmlNode objChild = objMod.GetNode();
+
+                            if (objChild != null)
+                            {
+                                objMod.Bonus = objChild["bonus"];
+                                if (objMod.Bonus != null)
+                                {
+                                    if (objMod.Equipped)
+                                    {
+                                        ImprovementManager.ForcedValue = objMod.Extra;
+                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.DisplayNameShort(GlobalOptions.Language));
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        {
+                                            objMod.Extra = ImprovementManager.SelectedValue;
+
+                                            TreeNode objPluginNode = treArmor.FindNode(objMod.InternalId);
+                                            if (objPluginNode != null)
+                                                objPluginNode.Text = objMod.CurrentDisplayName;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                strOutdatedItems.AppendLine(objMod.CurrentDisplayName);
+                            }
+                        }
+
+                        foreach (Gear objGear in objMod.Gear)
+                        {
+                            objGear.ReaddImprovements(treArmor, strOutdatedItems, lstInternalIdFilter);
+                        }
+                    }
+
+                    foreach (Gear objGear in objArmor.Gear)
                     {
                         objGear.ReaddImprovements(treArmor, strOutdatedItems, lstInternalIdFilter);
                     }
                 }
 
-                foreach (Gear objGear in objArmor.Gear)
+                // Refresh Gear.
+                foreach (Gear objGear in CharacterObject.Gear)
                 {
-                    objGear.ReaddImprovements(treArmor, strOutdatedItems, lstInternalIdFilter);
+                    objGear.ReaddImprovements(treGear, strOutdatedItems, lstInternalIdFilter);
                 }
-            }
 
-            // Refresh Gear.
-            foreach (Gear objGear in CharacterObject.Gear)
-            {
-                objGear.ReaddImprovements(treGear, strOutdatedItems, lstInternalIdFilter);
-            }
-
-            // Refresh Weapons Gear
-            foreach (Weapon objWeapon in CharacterObject.Weapons)
-            {
-                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                // Refresh Weapons Gear
+                foreach (Weapon objWeapon in CharacterObject.Weapons)
                 {
-                    foreach (Gear objGear in objAccessory.Gear)
+                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        objGear.ReaddImprovements(treWeapons, strOutdatedItems, lstInternalIdFilter);
+                        foreach (Gear objGear in objAccessory.Gear)
+                        {
+                            objGear.ReaddImprovements(treWeapons, strOutdatedItems, lstInternalIdFilter);
+                        }
                     }
                 }
-            }
 
-            _blnReapplyImprovements = false;
+                _blnReapplyImprovements = false;
 
-            // If the status of any Character Event flags has changed, manually trigger those events.
-            if (blnMAGEnabled != CharacterObject.MAGEnabled)
-            {
-                CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
-            }
+                // If the status of any Character Event flags has changed, manually trigger those events.
+                if (blnMAGEnabled != CharacterObject.MAGEnabled)
+                {
+                    CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
+                    OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
+                }
 
-            if (blnRESEnabled != CharacterObject.RESEnabled)
-            {
-                CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
-            }
+                if (blnRESEnabled != CharacterObject.RESEnabled)
+                {
+                    CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
+                    OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
+                }
 
-            if (blnDEPEnabled != CharacterObject.DEPEnabled)
-            {
-                CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
-            }
+                if (blnDEPEnabled != CharacterObject.DEPEnabled)
+                {
+                    CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
+                    OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
+                }
 
-            IsCharacterUpdateRequested = true;
-            // Immediately call character update because it re-applies essence loss improvements
-            UpdateCharacterInfo();
+                IsCharacterUpdateRequested = true;
+                // Immediately call character update because it re-applies essence loss improvements
+                UpdateCharacterInfo();
 
-            Cursor = Cursors.Default;
-
-            if (strOutdatedItems.Length > 0 && !Utils.IsUnitTest)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
-                                strOutdatedItems +
-                                LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (strOutdatedItems.Length > 0 && !Utils.IsUnitTest)
+                {
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
+                                                          strOutdatedItems +
+                                                          LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
             }
 
             IsDirty = true;
@@ -2587,164 +2610,151 @@ namespace Chummer
             }
 
             string strOpenFile = string.Empty;
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-
-            using (Character objMerge = new Character
+            using (new CursorWait(this))
             {
-                FileName = CharacterObject.FileName
-            })
-            {
-                using (Character objVessel = new Character
+                using (Character objMerge = new Character { FileName = CharacterObject.FileName })
                 {
-                    FileName = strFileName
-                })
-                {
-                    using (frmLoading frmLoadingForm = new frmLoading
+                    using (Character objVessel = new Character { FileName = strFileName })
                     {
-                        CharacterFile = objVessel.FileName
+                        using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = objVessel.FileName })
+                        {
+                            frmLoadingForm.Reset(77);
+                            frmLoadingForm.Show();
+                            await objVessel.Load(frmLoadingForm).ConfigureAwait(true);
+                            // Make sure the Vessel is in Career Mode.
+                            if (!objVessel.Created)
+                            {
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VesselInCareerMode"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            // Load the Spirit's save file into a new Merge character.
+                            frmLoadingForm.CharacterFile = objMerge.FileName;
+                            await objMerge.Load(frmLoadingForm).ConfigureAwait(true);
+                            objMerge.Possessed = true;
+                            objMerge.Alias = objVessel.CharacterName + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+
+                            // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
+                            bool blnHasImmunity = false;
+                            foreach (CritterPower objCritterPower in objMerge.CritterPowers)
+                            {
+                                if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                                {
+                                    blnHasImmunity = true;
+                                    break;
+                                }
+                            }
+
+                            if (!blnHasImmunity)
+                            {
+                                XmlDocument objPowerDoc = XmlManager.Load("critterpowers.xml");
+                                XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                                CritterPower objCritterPower = new CritterPower(objMerge);
+                                objCritterPower.Create(objPower, 0, "Normal Weapons");
+                                objMerge.CritterPowers.Add(objCritterPower);
+                            }
+
+                            //TOD: Implement Possession attribute bonuses.
+                            /*
+                            // Add the Vessel's Physical Attributes to the Spirit's Force.
+                            objMerge.BOD.MetatypeMaximum = objVessel.BOD.Value + objMerge.MAG.TotalValue;
+                            objMerge.BOD.Value = objVessel.BOD.Value + objMerge.MAG.TotalValue;
+                            objMerge.AGI.MetatypeMaximum = objVessel.AGI.Value + objMerge.MAG.TotalValue;
+                            objMerge.AGI.Value = objVessel.AGI.Value + objMerge.MAG.TotalValue;
+                            objMerge.REA.MetatypeMaximum = objVessel.REA.Value + objMerge.MAG.TotalValue;
+                            objMerge.REA.Value = objVessel.REA.Value + objMerge.MAG.TotalValue;
+                            objMerge.STR.MetatypeMaximum = objVessel.STR.Value + objMerge.MAG.TotalValue;
+                            objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
+                            */
+
+                            frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+                            // Copy any Lifestyles the Vessel has.
+                            foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
+                                objMerge.Lifestyles.Add(objLifestyle);
+
+                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
+                            // Copy any Armor the Vessel has.
+                            foreach (Armor objArmor in objVessel.Armor)
+                            {
+                                objMerge.Armor.Add(objArmor);
+                                CopyArmorImprovements(objVessel, objMerge, objArmor);
+                            }
+
+                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
+                            // Copy any Gear the Vessel has.
+                            foreach (Gear objGear in objVessel.Gear)
+                            {
+                                objMerge.Gear.Add(objGear);
+                                CopyGearImprovements(objVessel, objMerge, objGear);
+                            }
+
+                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+                            // Copy any Cyberware/Bioware the Vessel has.
+                            foreach (Cyberware objCyberware in objVessel.Cyberware)
+                            {
+                                objMerge.Cyberware.Add(objCyberware);
+                                CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
+                            }
+
+                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                            // Copy any Weapons the Vessel has.
+                            foreach (Weapon objWeapon in objVessel.Weapons)
+                                objMerge.Weapons.Add(objWeapon);
+
+                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Vehicles"));
+                            // Copy and Vehicles the Vessel has.
+                            foreach (Vehicle objVehicle in objVessel.Vehicles)
+                                objMerge.Vehicles.Add(objVehicle);
+
+                            frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
+                            // Copy the character info.
+                            objMerge.Sex = objVessel.Sex;
+                            objMerge.Age = objVessel.Age;
+                            objMerge.Eyes = objVessel.Eyes;
+                            objMerge.Hair = objVessel.Hair;
+                            objMerge.Height = objVessel.Height;
+                            objMerge.Weight = objVessel.Weight;
+                            objMerge.Skin = objVessel.Skin;
+                            objMerge.Name = objVessel.Name;
+                            objMerge.StreetCred = objVessel.StreetCred;
+                            objMerge.BurntStreetCred = objVessel.BurntStreetCred;
+                            objMerge.Notoriety = objVessel.Notoriety;
+                            objMerge.PublicAwareness = objVessel.PublicAwareness;
+                            foreach (Image objMugshot in objVessel.Mugshots)
+                                objMerge.Mugshots.Add(objMugshot);
+                        }
+                    }
+
+                    string strShowFileName = Path.GetFileName(objMerge.FileName);
+                    if (string.IsNullOrEmpty(strShowFileName))
+                        strShowFileName = objMerge.CharacterName;
+                    strShowFileName = strShowFileName.TrimEndOnce(".chum5") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+
+                    // Now that everything is done, save the merged character and open them.
+                    using (SaveFileDialog saveFileDialog = new SaveFileDialog
+                    {
+                        Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
+                        FileName = strShowFileName
                     })
                     {
-                        frmLoadingForm.Reset(77);
-                        frmLoadingForm.Show();
-                        await objVessel.Load(frmLoadingForm).ConfigureAwait(true);
-                        // Make sure the Vessel is in Career Mode.
-                        if (!objVessel.Created)
-                        {
-                            Cursor = Cursors.Default;
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VesselInCareerMode"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        }
-
-                        // Load the Spirit's save file into a new Merge character.
-                        frmLoadingForm.CharacterFile = objMerge.FileName;
-                        await objMerge.Load(frmLoadingForm).ConfigureAwait(true);
-                        objMerge.Possessed = true;
-                        objMerge.Alias = objVessel.CharacterName + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
-
-                        // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                        bool blnHasImmunity = false;
-                        foreach (CritterPower objCritterPower in objMerge.CritterPowers)
+                        objMerge.FileName = saveFileDialog.FileName;
+                        if (objMerge.Save())
                         {
-                            if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
-                            {
-                                blnHasImmunity = true;
-                                break;
-                            }
+                            // Get the name of the file and destroy the references to the Vessel and the merged character.
+                            strOpenFile = objMerge.FileName;
                         }
-
-                        if (!blnHasImmunity)
-                        {
-                            XmlDocument objPowerDoc = XmlManager.Load("critterpowers.xml");
-                            XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
-
-                            CritterPower objCritterPower = new CritterPower(objMerge);
-                            objCritterPower.Create(objPower, 0, "Normal Weapons");
-                            objMerge.CritterPowers.Add(objCritterPower);
-                        }
-
-                        //TOD: Implement Possession attribute bonuses.
-                        /*
-                        // Add the Vessel's Physical Attributes to the Spirit's Force.
-                        objMerge.BOD.MetatypeMaximum = objVessel.BOD.Value + objMerge.MAG.TotalValue;
-                        objMerge.BOD.Value = objVessel.BOD.Value + objMerge.MAG.TotalValue;
-                        objMerge.AGI.MetatypeMaximum = objVessel.AGI.Value + objMerge.MAG.TotalValue;
-                        objMerge.AGI.Value = objVessel.AGI.Value + objMerge.MAG.TotalValue;
-                        objMerge.REA.MetatypeMaximum = objVessel.REA.Value + objMerge.MAG.TotalValue;
-                        objMerge.REA.Value = objVessel.REA.Value + objMerge.MAG.TotalValue;
-                        objMerge.STR.MetatypeMaximum = objVessel.STR.Value + objMerge.MAG.TotalValue;
-                        objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
-                        */
-
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
-                        // Copy any Lifestyles the Vessel has.
-                        foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
-                            objMerge.Lifestyles.Add(objLifestyle);
-
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
-                        // Copy any Armor the Vessel has.
-                        foreach (Armor objArmor in objVessel.Armor)
-                        {
-                            objMerge.Armor.Add(objArmor);
-                            CopyArmorImprovements(objVessel, objMerge, objArmor);
-                        }
-
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
-                        // Copy any Gear the Vessel has.
-                        foreach (Gear objGear in objVessel.Gear)
-                        {
-                            objMerge.Gear.Add(objGear);
-                            CopyGearImprovements(objVessel, objMerge, objGear);
-                        }
-
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
-                        // Copy any Cyberware/Bioware the Vessel has.
-                        foreach (Cyberware objCyberware in objVessel.Cyberware)
-                        {
-                            objMerge.Cyberware.Add(objCyberware);
-                            CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
-                        }
-
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
-                        // Copy any Weapons the Vessel has.
-                        foreach (Weapon objWeapon in objVessel.Weapons)
-                            objMerge.Weapons.Add(objWeapon);
-
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Vehicles"));
-                        // Copy and Vehicles the Vessel has.
-                        foreach (Vehicle objVehicle in objVessel.Vehicles)
-                            objMerge.Vehicles.Add(objVehicle);
-
-                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
-                        // Copy the character info.
-                        objMerge.Sex = objVessel.Sex;
-                        objMerge.Age = objVessel.Age;
-                        objMerge.Eyes = objVessel.Eyes;
-                        objMerge.Hair = objVessel.Hair;
-                        objMerge.Height = objVessel.Height;
-                        objMerge.Weight = objVessel.Weight;
-                        objMerge.Skin = objVessel.Skin;
-                        objMerge.Name = objVessel.Name;
-                        objMerge.StreetCred = objVessel.StreetCred;
-                        objMerge.BurntStreetCred = objVessel.BurntStreetCred;
-                        objMerge.Notoriety = objVessel.Notoriety;
-                        objMerge.PublicAwareness = objVessel.PublicAwareness;
-                        foreach (Image objMugshot in objVessel.Mugshots)
-                            objMerge.Mugshots.Add(objMugshot);
                     }
-                }
-
-                string strShowFileName = Path.GetFileName(objMerge.FileName);
-                if (string.IsNullOrEmpty(strShowFileName))
-                    strShowFileName = objMerge.CharacterName;
-                strShowFileName = strShowFileName.TrimEndOnce(".chum5") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
-
-                // Now that everything is done, save the merged character and open them.
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                    FileName = strShowFileName
-                })
-                {
-                    Cursor = objOldCursor;
-
-                    if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    Cursor = Cursors.WaitCursor;
-                    objMerge.FileName = saveFileDialog.FileName;
-                    if (objMerge.Save())
-                    {
-                        // Get the name of the file and destroy the references to the Vessel and the merged character.
-                        strOpenFile = objMerge.FileName;
-                    }
-                    Cursor = objOldCursor;
                 }
             }
+
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                Cursor = Cursors.WaitCursor;
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
-                Cursor = objOldCursor;
+                Character objOpenCharacter;
+                using (new CursorWait(this))
+                    objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -2795,134 +2805,124 @@ namespace Chummer
                 return;
 
             string strOpenFile = string.Empty;
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-
-            // Load the Spirit's save file into a new Merge character.
-            using (Character objMerge = new Character
+            using (new CursorWait(this))
             {
-                FileName = CharacterObject.FileName
-            })
-            {
-                using (frmLoading frmLoadingForm = new frmLoading
+                // Load the Spirit's save file into a new Merge character.
+                using (Character objMerge = new Character { FileName = CharacterObject.FileName })
                 {
-                    CharacterFile = objMerge.FileName
-                })
-                {
-                    frmLoadingForm.Reset(36);
-                    frmLoadingForm.Show();
-                    await objMerge.Load().ConfigureAwait(true);
-                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
-                    objMerge.Possessed = true;
-                    objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
-
-                    ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                        CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                    ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.INT.MetatypeMinimum,
-                        CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
-                    ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.WIL.MetatypeMinimum,
-                        CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
-                    ImprovementManager.CreateImprovement(objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.LOG.MetatypeMinimum,
-                        CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
-                    ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.CHA.MetatypeMinimum,
-                        CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
-                    XmlDocument xmlPowerDoc = XmlManager.Load("critterpowers.xml");
-
-                    // Update the Movement if the Vessel has one.
-                    string strMovement = objSelected["movement"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strMovement))
-                        objMerge.Movement = strMovement;
-
-                    // Add any additional Critter Powers the Vessel grants.
-                    XmlNode xmlPowersNode = objSelected["powers"];
-                    if (xmlPowersNode != null)
+                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = objMerge.FileName })
                     {
-                        using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
+                        frmLoadingForm.Reset(36);
+                        frmLoadingForm.Show();
+                        await objMerge.Load().ConfigureAwait(true);
+                        frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                        objMerge.Possessed = true;
+                        objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+
+                        ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                        ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                        ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                        ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
+                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                        ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.INT.MetatypeMinimum,
+                            CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
+                        ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.WIL.MetatypeMinimum,
+                            CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
+                        ImprovementManager.CreateImprovement(objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.LOG.MetatypeMinimum,
+                            CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
+                        ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.CHA.MetatypeMinimum,
+                            CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
+                        XmlDocument xmlPowerDoc = XmlManager.Load("critterpowers.xml");
+
+                        // Update the Movement if the Vessel has one.
+                        string strMovement = objSelected["movement"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strMovement))
+                            objMerge.Movement = strMovement;
+
+                        // Add any additional Critter Powers the Vessel grants.
+                        XmlNode xmlPowersNode = objSelected["powers"];
+                        if (xmlPowersNode != null)
                         {
-                            if (xmlPowerList?.Count > 0)
+                            using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
                             {
-                                foreach (XmlNode objXmlPower in xmlPowerList)
+                                if (xmlPowerList?.Count > 0)
                                 {
-                                    XmlNode objXmlCritterPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
-                                    CritterPower objPower = new CritterPower(objMerge);
-                                    string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                                    int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                                    foreach (XmlNode objXmlPower in xmlPowerList)
+                                    {
+                                        XmlNode objXmlCritterPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+                                        CritterPower objPower = new CritterPower(objMerge);
+                                        string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
+                                        int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 
-                                    objPower.Create(objXmlCritterPower, intRating, strSelect);
+                                        objPower.Create(objXmlCritterPower, intRating, strSelect);
 
-                                    objMerge.CritterPowers.Add(objPower);
+                                        objMerge.CritterPowers.Add(objPower);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                    bool blnHasImmunity = false;
-                    foreach (CritterPower objCritterPower in objMerge.CritterPowers)
-                    {
-                        if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                        // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
+                        bool blnHasImmunity = false;
+                        foreach (CritterPower objCritterPower in objMerge.CritterPowers)
                         {
-                            blnHasImmunity = true;
-                            break;
+                            if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                            {
+                                blnHasImmunity = true;
+                                break;
+                            }
+                        }
+
+                        if (!blnHasImmunity)
+                        {
+                            XmlNode objPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                            CritterPower objCritterPower = new CritterPower(objMerge);
+                            objCritterPower.Create(objPower, 0, "Normal Weapons");
+                            objMerge.CritterPowers.Add(objCritterPower);
+                        }
+
+                        // Add any Improvements the Vessel grants.
+                        if (objSelected["bonus"] != null)
+                        {
+                            ImprovementManager.CreateImprovements(objMerge, Improvement.ImprovementSource.Metatype, strSelectedVessel, objSelected["bonus"], 1, strSelectedVessel);
                         }
                     }
 
-                    if (!blnHasImmunity)
+                    // Now that everything is done, save the merged character and open them.
+                    string strShowFileName = objMerge.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+
+                    if (string.IsNullOrEmpty(strShowFileName))
+                        strShowFileName = objMerge.CharacterName;
+                    strShowFileName = strShowFileName.TrimEndOnce(".chum5");
+
+                    strShowFileName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+                    using (SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
-                        XmlNode objPower = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
-
-                        CritterPower objCritterPower = new CritterPower(objMerge);
-                        objCritterPower.Create(objPower, 0, "Normal Weapons");
-                        objMerge.CritterPowers.Add(objCritterPower);
-                    }
-
-                    // Add any Improvements the Vessel grants.
-                    if (objSelected["bonus"] != null)
+                        Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
+                        FileName = strShowFileName
+                    })
                     {
-                        ImprovementManager.CreateImprovements(objMerge, Improvement.ImprovementSource.Metatype, strSelectedVessel, objSelected["bonus"], 1, strSelectedVessel);
+                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                            return;
+                        objMerge.FileName = saveFileDialog.FileName;
+                        if (objMerge.Save())
+                        {
+                            // Get the name of the file and destroy the references to the Vessel and the merged character.
+                            strOpenFile = objMerge.FileName;
+                        }
                     }
-                }
-
-                // Now that everything is done, save the merged character and open them.
-                string strShowFileName = objMerge.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-
-                if (string.IsNullOrEmpty(strShowFileName))
-                    strShowFileName = objMerge.CharacterName;
-                strShowFileName = strShowFileName.TrimEndOnce(".chum5");
-
-                strShowFileName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                    FileName = strShowFileName
-                })
-                {
-                    Cursor = objOldCursor;
-
-                    if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    Cursor = Cursors.WaitCursor;
-                    objMerge.FileName = saveFileDialog.FileName;
-                    if (objMerge.Save())
-                    {
-                        // Get the name of the file and destroy the references to the Vessel and the merged character.
-                        strOpenFile = objMerge.FileName;
-                    }
-                    Cursor = objOldCursor;
                 }
             }
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                Cursor = Cursors.WaitCursor;
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
-                Cursor = objOldCursor;
+                Character objOpenCharacter;
+                using (new CursorWait(this))
+                    objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -5401,7 +5401,7 @@ namespace Chummer
                     if (!blnFreeCost)
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                        XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNode("costdiscount");
+                        XPathNavigator xpnDiscountNode = xpnSelectedQuality?.SelectSingleNode("costdiscount");
                         if (xpnDiscountNode != null && xpnDiscountNode.RequirementsMet(CharacterObject))
                         {
                             int intTemp = 0;
@@ -7181,89 +7181,89 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
-                        }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        objGear.Quantity = frmPickGear.SelectedQty;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, frmPickGear.SelectedQty);
-                        objExpense.Undo = objUndo;
-                    }
-
-                    objSensor.Children.Add(objGear);
-
-                    if (lstWeapons.Count > 0)
-                    {
-                        CharacterObject.Vehicles.FindVehicleGear(objSensor.InternalId, out Vehicle objVehicle,
-                            out WeaponAccessory _, out Cyberware _);
-                        foreach (Weapon objWeapon in lstWeapons)
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
                         {
-                            objVehicle.Weapons.Add(objWeapon);
+                            objGear.Cost = "0";
+                        }
+
+                        decimal decCost = objGear.TotalCost;
+
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, frmPickGear.SelectedQty);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        objSensor.Children.Add(objGear);
+
+                        if (lstWeapons.Count > 0)
+                        {
+                            CharacterObject.Vehicles.FindVehicleGear(objSensor.InternalId, out Vehicle objVehicle,
+                                out WeaponAccessory _, out Cyberware _);
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                objVehicle.Weapons.Add(objWeapon);
+                            }
                         }
                     }
+
+                    IsCharacterUpdateRequested = true;
+
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 
         private void tsVehicleGearAddAsPlugin_Click(object sender, EventArgs e)
@@ -9354,90 +9354,90 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                string strCategories = string.Empty;
-                foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                    strCategories += objXmlCategory.InnerText + ",";
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    string strCategories = string.Empty;
+                    foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
+                        strCategories += objXmlCategory.InnerText + ",";
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        // Create any Weapons that came with this Gear.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                        }
+
+                        objCyberware.Gear.Add(objGear);
                     }
 
-                    // Create any Weapons that came with this Gear.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
+                    IsCharacterUpdateRequested = true;
 
-                    objCyberware.Gear.Add(objGear);
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 
         private void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
@@ -9460,90 +9460,90 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                string strCategories = string.Empty;
-                foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                    strCategories += objXmlCategory.InnerText + ",";
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    string strCategories = string.Empty;
+                    foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
+                        strCategories += objXmlCategory.InnerText + ",";
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        // Create any Weapons that came with this Gear.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                        }
+
+                        objCyberware.Gear.Add(objGear);
                     }
 
-                    // Create any Weapons that came with this Gear.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
+                    IsCharacterUpdateRequested = true;
 
-                    objCyberware.Gear.Add(objGear);
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 
         private void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -9579,85 +9579,85 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, frmPickGear.SelectedQty);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, frmPickGear.SelectedQty);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        objSensor.Children.Add(objGear);
+
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                        }
                     }
 
-                    objSensor.Children.Add(objGear);
+                    IsCharacterUpdateRequested = true;
 
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 
         private void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -9684,85 +9684,85 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, frmPickGear.SelectedQty);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, frmPickGear.SelectedQty);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        objSensor.Children.Add(objGear);
+
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                        }
                     }
 
-                    objSensor.Children.Add(objGear);
+                    IsCharacterUpdateRequested = true;
 
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 
         private void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
@@ -9780,90 +9780,90 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                string strCategories = string.Empty;
-                foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                    strCategories += objXmlCategory.InnerText + ",";
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    // Open the Gear XML file and locate the selected piece.
-                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    string strCategories = string.Empty;
+                    foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
+                        strCategories += objXmlCategory.InnerText + ",";
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        // Open the Gear XML file and locate the selected piece.
+                        XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        // Create any Weapons that came with this Gear.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                        }
+
+                        objAccessory.Gear.Add(objGear);
                     }
 
-                    // Create any Weapons that came with this Gear.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
+                    IsCharacterUpdateRequested = true;
 
-                    objAccessory.Gear.Add(objGear);
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 
         private void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -9891,82 +9891,83 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, frmPickGear.SelectedQty);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, frmPickGear.SelectedQty);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        objSensor.Children.Add(objGear);
+
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                        }
                     }
 
-                    objSensor.Children.Add(objGear);
+                    IsCharacterUpdateRequested = true;
 
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
             while (blnAddAgain);
         }
@@ -10038,85 +10039,85 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity) && (!objSensor.Capacity.Contains('[') || objSensor.Capacity.Contains("/[")))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, frmPickGear.SelectedQty);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, frmPickGear.SelectedQty);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        objSensor.Children.Add(objGear);
+                        CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out _, out _);
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            objWeapon.ParentVehicle = objVehicle;
+                            objVehicle.Weapons.Add(objWeapon);
+                        }
                     }
 
-                    objSensor.Children.Add(objGear);
-                    CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out _, out _);
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        objWeapon.ParentVehicle = objVehicle;
-                        objVehicle.Weapons.Add(objWeapon);
-                    }
+                    IsCharacterUpdateRequested = true;
+
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 
         private void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
@@ -10135,88 +10136,88 @@ namespace Chummer
 
             do
             {
-                Cursor = Cursors.WaitCursor;
-                string strCategories = string.Empty;
-                foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                    strCategories += objXmlCategory.InnerText + ",";
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
+                using (new CursorWait(this))
                 {
-                    if (!string.IsNullOrEmpty(strCategories))
-                        frmPickGear.ShowNegativeCapacityOnly = true;
-                    frmPickGear.ShowDialog(this);
-                    Cursor = Cursors.Default;
-
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickGear.AddAgain;
-
-                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                    // Create the new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                    Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
-
-                    if (objGear.InternalId.IsEmptyGuid())
-                        continue;
-
-                    objGear.Quantity = frmPickGear.SelectedQty;
-
-                    // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
-                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-                    // If the item was marked as free, change its cost.
-                    if (frmPickGear.FreeCost)
+                    string strCategories = string.Empty;
+                    foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
+                        strCategories += objXmlCategory.InnerText + ",";
+                    using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
                     {
-                        objGear.Cost = "0";
-                    }
+                        if (!string.IsNullOrEmpty(strCategories))
+                            frmPickGear.ShowNegativeCapacityOnly = true;
+                        frmPickGear.ShowDialog(this);
 
-                    decimal decCost = objGear.TotalCost;
+                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickGear.AddAgain;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
-                    {
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            objGear.DeleteGear();
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Create the new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                        Gear objGear = new Gear(CharacterObject);
+                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+
+                        if (objGear.InternalId.IsEmptyGuid())
                             continue;
+
+                        objGear.Quantity = frmPickGear.SelectedQty;
+
+                        // Reduce the cost for Do It Yourself components.
+                        if (frmPickGear.DoItYourself)
+                            objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+                        // If the item was marked as free, change its cost.
+                        if (frmPickGear.FreeCost)
+                        {
+                            objGear.Cost = "0";
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                            DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        decimal decCost = objGear.TotalCost;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
-                        objExpense.Undo = objUndo;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                            decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                        if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                            decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickGear.FreeCost)
+                        {
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                objGear.DeleteGear();
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                                DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        objAccessory.Gear.Add(objGear);
+
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            objWeapon.Parent = objAccessory.Parent;
+                            objAccessory.Parent.Children.Add(objWeapon);
+                        }
                     }
 
-                    objAccessory.Gear.Add(objGear);
+                    IsCharacterUpdateRequested = true;
 
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        objWeapon.Parent = objAccessory.Parent;
-                        objAccessory.Parent.Children.Add(objWeapon);
-                    }
+                    IsDirty = true;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
+            } while (blnAddAgain);
         }
 #endregion
 
@@ -12812,6 +12813,7 @@ namespace Chummer
                                 Margin = objMaxCheckBox.Margin,
                                 TextAlign = objMaxCheckBox.TextAlign,
                                 Font = objMaxCheckBox.Font,
+                                FlatStyle = objMaxCheckBox.FlatStyle,
                                 UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
                             };
                             cb.Click += button_Click;
@@ -12820,6 +12822,9 @@ namespace Chummer
                         }
                     }
                 }
+
+                int intMaxDimension = 0;
+                int intMaxMargin = 0;
                 foreach (CheckBox chkCmBox in lstCheckBoxes)
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
@@ -12850,7 +12855,19 @@ namespace Chummer
                         chkCmBox.Visible = false;
                         chkCmBox.Text = " "; // Non-breaking save to help with DPI stuff
                     }
+
+                    intMaxDimension = Math.Max(intMaxDimension, Math.Max(chkCmBox.Width, chkCmBox.Height));
+                    intMaxMargin = Math.Max(intMaxMargin, Math.Max(Math.Max(chkCmBox.Margin.Left, chkCmBox.Margin.Right), Math.Max(chkCmBox.Margin.Top, chkCmBox.Margin.Bottom)));
                 }
+
+                Size objSquareSize = new Size(intMaxDimension, intMaxDimension);
+                Padding objSquarePadding = new Padding(intMaxMargin);
+                foreach (CheckBox chkCmBox in lstCheckBoxes)
+                {
+                    chkCmBox.MinimumSize = objSquareSize;
+                    chkCmBox.Margin = objSquarePadding;
+                }
+                pnlConditionMonitorPanel.MaximumSize = new Size((2 * intThreshold + 1) * (intMaxDimension + intMaxMargin) / 2, pnlConditionMonitorPanel.MaximumSize.Height); // Width slightly longer to give enough wiggle room to take care of any funny business
             }
             else
             {
@@ -13094,24 +13111,23 @@ namespace Chummer
             _blnSkipUpdate = true;
 
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-            Cursor = Cursors.WaitCursor;
-
-            using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = CharacterObject.FileName})
+            using (new CursorWait(this))
             {
-                frmLoadingForm.Reset(36);
-                frmLoadingForm.Show();
-                await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true);
-                frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = CharacterObject.FileName })
+                {
+                    frmLoadingForm.Reset(36);
+                    frmLoadingForm.Show();
+                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true);
+                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
-                IsCharacterUpdateRequested = true;
-                _blnSkipUpdate = false;
-                // Immediately call character update because we know it's necessary
-                UpdateCharacterInfo();
+                    IsCharacterUpdateRequested = true;
+                    _blnSkipUpdate = false;
+                    // Immediately call character update because we know it's necessary
+                    UpdateCharacterInfo();
 
-                IsDirty = false;
+                    IsDirty = false;
+                }
             }
-
-            Cursor = Cursors.Default;
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
             {
@@ -13200,7 +13216,6 @@ namespace Chummer
                 return;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
             string strESSFormat = CharacterObjectOptions.EssenceFormat;
             if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus hasWirelessBonus)
             {
@@ -13220,7 +13235,8 @@ namespace Chummer
 
             if (treCyberware.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblCyberwareRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblCyberwareRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
             if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
             {
@@ -13247,8 +13263,7 @@ namespace Chummer
                 lblCyberwareAvail.Text = objCyberware.DisplayTotalAvail;
                 cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 lblCyberwareRating.Text = objCyberware.Rating.ToString(GlobalOptions.CultureInfo);
-                lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + strSpace + '(' + objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblCyberwareCapacity.Text = objCyberware.DisplayCapacity;
                 lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal))
                 {
@@ -13309,8 +13324,7 @@ namespace Chummer
                 lblCyberwareAvail.Text = objGear.DisplayTotalAvail;
 
                 lblCyberwareRating.Text = objGear.Rating.ToString(GlobalOptions.CultureInfo);
-                lblCyberwareCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
-                                            strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblCyberwareCapacity.Text = objGear.DisplayCapacity;
                 lblCyberwareCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberlimbAGILabel.Visible = false;
                 lblCyberlimbAGI.Visible = false;
@@ -13416,7 +13430,8 @@ namespace Chummer
 
             if (treWeapons.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblWeaponRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblWeaponRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
             if (treWeapons.SelectedNode?.Tag is Weapon objWeapon)
@@ -13819,8 +13834,7 @@ namespace Chummer
                 }
                 lblWeaponCapacityLabel.Visible = true;
                 lblWeaponCapacity.Visible = true;
-                lblWeaponCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
-                                         + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblWeaponCapacity.Text = objGear.DisplayCapacity;
                 lblWeaponAvail.Text = objGear.DisplayTotalAvail;
                 lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponSlotsLabel.Visible = false;
@@ -13897,7 +13911,8 @@ namespace Chummer
 
             if (treArmor.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblArmorRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblArmorRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -13921,8 +13936,7 @@ namespace Chummer
                 cmdArmorDecrease.Visible = true;
                 cmdArmorDecrease.Enabled = objArmor.ArmorDamage > 0;
                 lblArmorAvail.Text = objArmor.DisplayTotalAvail;
-                lblArmorCapacity.Text = objArmor.CalculatedCapacity + strSpace + '(' + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
-                                        + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblArmorCapacity.Text = objArmor.DisplayCapacity;
                 lblArmorRatingLabel.Visible = false;
                 lblArmorRating.Visible = false;
                 lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -14130,10 +14144,9 @@ namespace Chummer
 
             if (treGear.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblGearRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblGearRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
-
-            string strSpace = LanguageManager.GetString("String_Space");
 
             if (treGear.SelectedNode?.Tag is Gear objGear)
             {
@@ -14179,8 +14192,7 @@ namespace Chummer
                 {
                     lblGearCost.Text = objGear.Cost + '¥';
                 }
-                lblGearCapacity.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)
-                                       + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                lblGearCapacity.Text = objGear.DisplayCapacity;
                 chkGearEquipped.Visible = true;
                 chkGearEquipped.Checked = objGear.Equipped;
                 // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
@@ -14521,218 +14533,219 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.GetNode();
 
-            Cursor = Cursors.WaitCursor;
-
-            string strCategories = string.Empty;
-            if (blnAmmoOnly)
-                strCategories = "Ammunition";
-            else if (!blnNullParent)
+            using (new CursorWait(this))
             {
-                XmlNodeList xmlAddonCategoryList = objXmlGear?.SelectNodes("addoncategory");
-                if (xmlAddonCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                        strCategories += objXmlCategory.InnerText + ",";
-                    // Remove the trailing comma.
-                    strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                }
-            }
-
-            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories)
-            {
-                ShowFlechetteAmmoOnly = blnFlechetteAmmoOnly
-            })
-            {
-                if (!blnNullParent)
-                {
-                    // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
-                    if (!string.IsNullOrEmpty(objSelectedGear.Capacity) && !objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/["))
-                    {
-                        frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
-
-                        // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
-                        if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
-                        {
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return false;
-                        }
-
-                        if (!string.IsNullOrEmpty(strCategories))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                    }
-
-                    // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-                    if (CharacterObject.ActiveCommlink == null && objSelectedGear.IsCommlink)
-                    {
-                        objSelectedGear.SetActiveCommlink(CharacterObject, true);
-                    }
-                }
-
-                frmPickGear.DefaultSearchText = strForceItemValue;
-                if (lstForceItemPrefixes != null)
-                {
-                    foreach (string strPrefix in lstForceItemPrefixes)
-                        frmPickGear.ForceItemPrefixStrings.Add(strPrefix);
-                }
-
+                string strCategories = string.Empty;
                 if (blnAmmoOnly)
+                    strCategories = "Ammunition";
+                else if (!blnNullParent)
                 {
-                    frmPickGear.SelectedGear = objSelectedGear?.SourceIDString;
-                }
-
-                frmPickGear.ShowDialog(this);
-                Cursor = Cursors.Default;
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickGear.DialogResult == DialogResult.Cancel)
-                    return false;
-
-                // Open the Cyberware XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-                objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                string strForceValue = string.Empty;
-                if (blnAmmoOnly)
-                {
-                    strForceValue = objSelectedGear?.Extra;
-                    strForceItemValue = string.Empty;
-                }
-
-                if (!string.IsNullOrEmpty(strForceItemValue))
-                    strForceValue = strForceItemValue;
-                Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue);
-
-                if (objGear.InternalId.IsEmptyGuid())
-                    return frmPickGear.AddAgain;
-
-                objGear.Quantity = frmPickGear.SelectedQty;
-
-                objGear.Parent = blnNullParent ? null : objSelectedGear;
-
-                //Reduce the Cost for Black Market Pipeline
-                objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
-
-                // Reduce the cost for Do It Yourself components.
-                if (frmPickGear.DoItYourself)
-                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-
-                decimal decCost;
-                if (objGear.Cost.Contains("Gear Cost"))
-                {
-                    string strCost = objGear.Cost.Replace("Gear Cost", objSelectedGear.CalculatedCost.ToString(GlobalOptions.InvariantCultureInfo));
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
-                    decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : objGear.TotalCost;
-                }
-                else
-                {
-                    decCost = objGear.TotalCost;
-                }
-
-                Gear objStackWith = null;
-                // See if the character already has the item on them if they chose to stack.
-                if (frmPickGear.Stack)
-                {
-                    objStackWith = objStackGear ?? CharacterObject.Gear.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
-                }
-
-                if (objStackWith != null)
-                {
-                    if (objStackWith.InternalId.IsEmptyGuid())
-                        return frmPickGear.AddAgain;
-                    // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
-                    foreach (Gear objPlugin in objStackWith.Children)
-                        decCost += objPlugin.TotalCost * frmPickGear.SelectedQty;
-                }
-
-                // Apply a markup if applicable.
-                if (frmPickGear.Markup != 0)
-                {
-                    decCost *= 1 + frmPickGear.Markup / 100.0m;
-                }
-
-                // Multiply the cost if applicable.
-                char chrAvail = objGear.TotalAvailTuple().Suffix;
-                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                    decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                    decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
-
-                // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                // This is wrapped in a try statement since the character may not have a piece of Gear selected and has clicked the Buy Additional Ammo button for a Weapon.
-                if (!blnNullParent)
-                {
-                    if (objStackWith == null)
+                    XmlNodeList xmlAddonCategoryList = objXmlGear?.SelectNodes("addoncategory");
+                    if (xmlAddonCategoryList?.Count > 0)
                     {
-                        if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objGear.PluginCapacity < 0)
-                        {
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
-                                LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                            return frmPickGear.AddAgain;
-                        }
+                        foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
+                            strCategories += objXmlCategory.InnerText + ",";
+                        // Remove the trailing comma.
+                        strCategories = strCategories.Substring(0, strCategories.Length - 1);
                     }
                 }
 
-                ExpenseUndo objUndo = new ExpenseUndo();
-                // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickGear.FreeCost)
+                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories)
                 {
-                    if (decCost > CharacterObject.Nuyen)
-                    {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        // Remove any Improvements created by the Gear.
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                        return frmPickGear.AddAgain;
-                    }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen -= decCost;
-
-                    objUndo.CreateNuyen(NuyenExpenseType.AddGear, objGear.InternalId, objGear.Quantity);
-                    objExpense.Undo = objUndo;
-                }
-
-                if (objStackWith != null)
+                    ShowFlechetteAmmoOnly = blnFlechetteAmmoOnly
+                })
                 {
-                    // A match was found, so increase the quantity instead.
-                    objStackWith.Quantity += objGear.Quantity;
-
-                    if (!string.IsNullOrEmpty(objUndo.ObjectId))
-                        objUndo.ObjectId = objStackWith.InternalId;
-                }
-                // Add the Gear.
-                else
-                {
-                    // Create any Weapons that came with this Gear.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                    }
-
                     if (!blnNullParent)
                     {
-                        objSelectedGear.Children.Add(objGear);
+                        // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
+                        if (!string.IsNullOrEmpty(objSelectedGear.Capacity) && !objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/["))
+                        {
+                            frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
+
+                            // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
+                            if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                            {
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                return false;
+                            }
+
+                            if (!string.IsNullOrEmpty(strCategories))
+                                frmPickGear.ShowNegativeCapacityOnly = true;
+                        }
+
+                        // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                        if (CharacterObject.ActiveCommlink == null && objSelectedGear.IsCommlink)
+                        {
+                            objSelectedGear.SetActiveCommlink(CharacterObject, true);
+                        }
+                    }
+
+                    frmPickGear.DefaultSearchText = strForceItemValue;
+                    if (lstForceItemPrefixes != null)
+                    {
+                        foreach (string strPrefix in lstForceItemPrefixes)
+                            frmPickGear.ForceItemPrefixStrings.Add(strPrefix);
+                    }
+
+                    if (blnAmmoOnly)
+                    {
+                        frmPickGear.SelectedGear = objSelectedGear?.SourceIDString;
+                    }
+
+                    frmPickGear.ShowDialog(this);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        return false;
+
+                    // Open the Cyberware XML file and locate the selected piece.
+                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                    objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
+
+                    // Create the new piece of Gear.
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                    string strForceValue = string.Empty;
+                    if (blnAmmoOnly)
+                    {
+                        strForceValue = objSelectedGear?.Extra;
+                        strForceItemValue = string.Empty;
+                    }
+
+                    if (!string.IsNullOrEmpty(strForceItemValue))
+                        strForceValue = strForceItemValue;
+                    Gear objGear = new Gear(CharacterObject);
+                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue);
+
+                    if (objGear.InternalId.IsEmptyGuid())
+                        return frmPickGear.AddAgain;
+
+                    objGear.Quantity = frmPickGear.SelectedQty;
+
+                    objGear.Parent = blnNullParent ? null : objSelectedGear;
+
+                    //Reduce the Cost for Black Market Pipeline
+                    objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
+                    // Reduce the cost for Do It Yourself components.
+                    if (frmPickGear.DoItYourself)
+                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+
+                    decimal decCost;
+                    if (objGear.Cost.Contains("Gear Cost"))
+                    {
+                        string strCost = objGear.Cost.Replace("Gear Cost", objSelectedGear.CalculatedCost.ToString(GlobalOptions.InvariantCultureInfo));
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                        decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : objGear.TotalCost;
                     }
                     else
                     {
-                        CharacterObject.Gear.Add(objGear);
+                        decCost = objGear.TotalCost;
                     }
 
-                    objLocation?.Children.Add(objGear);
+                    Gear objStackWith = null;
+                    // See if the character already has the item on them if they chose to stack.
+                    if (frmPickGear.Stack)
+                    {
+                        objStackWith = objStackGear ?? CharacterObject.Gear.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
+                    }
+
+                    if (objStackWith != null)
+                    {
+                        if (objStackWith.InternalId.IsEmptyGuid())
+                            return frmPickGear.AddAgain;
+                        // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
+                        foreach (Gear objPlugin in objStackWith.Children)
+                            decCost += objPlugin.TotalCost * frmPickGear.SelectedQty;
+                    }
+
+                    // Apply a markup if applicable.
+                    if (frmPickGear.Markup != 0)
+                    {
+                        decCost *= 1 + frmPickGear.Markup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = objGear.TotalAvailTuple().Suffix;
+                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                    // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
+                    // This is wrapped in a try statement since the character may not have a piece of Gear selected and has clicked the Buy Additional Ammo button for a Weapon.
+                    if (!blnNullParent)
+                    {
+                        if (objStackWith == null)
+                        {
+                            if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objGear.PluginCapacity < 0)
+                            {
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
+                                    LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                return frmPickGear.AddAgain;
+                            }
+                        }
+                    }
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    // Check the item's Cost and make sure the character can afford it.
+                    if (!frmPickGear.FreeCost)
+                    {
+                        if (decCost > CharacterObject.Nuyen)
+                        {
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            // Remove any Improvements created by the Gear.
+                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                            return frmPickGear.AddAgain;
+                        }
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                            DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                        CharacterObject.Nuyen -= decCost;
+
+                        objUndo.CreateNuyen(NuyenExpenseType.AddGear, objGear.InternalId, objGear.Quantity);
+                        objExpense.Undo = objUndo;
+                    }
+
+                    if (objStackWith != null)
+                    {
+                        // A match was found, so increase the quantity instead.
+                        objStackWith.Quantity += objGear.Quantity;
+
+                        if (!string.IsNullOrEmpty(objUndo.ObjectId))
+                            objUndo.ObjectId = objStackWith.InternalId;
+                    }
+                    // Add the Gear.
+                    else
+                    {
+                        // Create any Weapons that came with this Gear.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                        }
+
+                        if (!blnNullParent)
+                        {
+                            objSelectedGear.Children.Add(objGear);
+                        }
+                        else
+                        {
+                            CharacterObject.Gear.Add(objGear);
+                        }
+
+                        objLocation?.Children.Add(objGear);
+                    }
+
+                    IsCharacterUpdateRequested = true;
+
+                    IsDirty = true;
+
+                    return frmPickGear.AddAgain;
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-
-                return frmPickGear.AddAgain;
             }
         }
 
@@ -14757,195 +14770,195 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
 
-            Cursor = Cursors.WaitCursor;
-
-            string strCategories = string.Empty;
-
-            if (!string.IsNullOrEmpty(strSelectedId))
+            using (new CursorWait(this))
             {
-                XmlNodeList xmlAddonCategoryList = (objParent as IHasXmlNode)?.GetNode()?.SelectNodes("addoncategory");
-                if (xmlAddonCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                        strCategories += objXmlCategory.InnerText + ",";
-                    // Remove the trailing comma.
-                    strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                }
-            }
+                string strCategories = string.Empty;
 
-            using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objParent, strCategories)
-            {
-                EnableStack = false,
-                ShowArmorCapacityOnly = blnShowArmorCapacityOnly,
-                CapacityDisplayStyle = objSelectedMod != null ? CapacityStyle.Standard : objSelectedArmor.CapacityDisplayStyle
-            })
-            {
-                // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    if (objSelectedGear != null && (!objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/[")))
+                    XmlNodeList xmlAddonCategoryList = (objParent as IHasXmlNode)?.GetNode()?.SelectNodes("addoncategory");
+                    if (xmlAddonCategoryList?.Count > 0)
                     {
-                        frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
-
-                        // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
-                        if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
-                        {
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                            return false;
-                        }
-                    }
-                    else if (objSelectedMod != null)
-                    {
-                        frmPickGear.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
-
-                        // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
-                        if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
-                        {
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                            return false;
-                        }
+                        foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
+                            strCategories += objXmlCategory.InnerText + ",";
+                        // Remove the trailing comma.
+                        strCategories = strCategories.Substring(0, strCategories.Length - 1);
                     }
                 }
 
-                frmPickGear.ShowDialog(this);
-                Cursor = Cursors.Default;
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickGear.DialogResult == DialogResult.Cancel)
-                    return false;
-
-                // Open the Cyberware XML file and locate the selected piece.
-                XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-                XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
-
-                // Create the new piece of Gear.
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
-
-                if (objGear.InternalId.IsEmptyGuid())
-                    return frmPickGear.AddAgain;
-
-                objGear.Quantity = frmPickGear.SelectedQty;
-
-                if (objSelectedGear != null)
-                    objGear.Parent = objSelectedGear;
-
-                // Reduce the cost for Do It Yourself components.
-                if (frmPickGear.DoItYourself)
-                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
-
-                // Apply a markup if applicable.
-                decimal decCost = objGear.TotalCost;
-                if (frmPickGear.Markup != 0)
+                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objParent, strCategories)
                 {
-                    decCost *= 1 + frmPickGear.Markup / 100.0m;
-                }
-
-                // Multiply the cost if applicable.
-                char chrAvail = objGear.TotalAvailTuple().Suffix;
-                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                    decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                    decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
-
-                Gear objMatchingGear = null;
-                // If this is Ammunition, see if the character already has it on them.
-                if (objGear.Category == "Ammunition")
+                    EnableStack = false,
+                    ShowArmorCapacityOnly = blnShowArmorCapacityOnly,
+                    CapacityDisplayStyle = objSelectedMod != null ? CapacityStyle.Standard : objSelectedArmor.CapacityDisplayStyle
+                })
                 {
-                    IEnumerable<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
-                    objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
-                }
-
-                if (objMatchingGear != null)
-                {
-                    decimal decGearQuantity = objGear.Quantity;
-                    // A match was found, so increase the quantity instead.
-                    objMatchingGear.Quantity += decGearQuantity;
-
-                    objGear.DeleteGear();
-                    if (CharacterObjectOptions.EnforceCapacity && objMatchingGear.CapacityRemaining < 0)
+                    // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
+                    if (!string.IsNullOrEmpty(strSelectedId))
                     {
-                        objMatchingGear.Quantity -= decGearQuantity;
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (objSelectedGear != null && (!objSelectedGear.Capacity.Contains('[') || objSelectedGear.Capacity.Contains("/[")))
+                        {
+                            frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
+
+                            // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
+                            if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                            {
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                return false;
+                            }
+                        }
+                        else if (objSelectedMod != null)
+                        {
+                            frmPickGear.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
+
+                            // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
+                            if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
+                            {
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                return false;
+                            }
+                        }
+                    }
+
+                    frmPickGear.ShowDialog(this);
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        return false;
+
+                    // Open the Cyberware XML file and locate the selected piece.
+                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                    XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
+
+                    // Create the new piece of Gear.
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                    Gear objGear = new Gear(CharacterObject);
+                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons);
+
+                    if (objGear.InternalId.IsEmptyGuid())
                         return frmPickGear.AddAgain;
-                    }
-                }
-                // Add the Gear.
-                else
-                {
-                    if (!string.IsNullOrEmpty(objSelectedGear?.Name))
+
+                    objGear.Quantity = frmPickGear.SelectedQty;
+
+                    if (objSelectedGear != null)
+                        objGear.Parent = objSelectedGear;
+
+                    // Reduce the cost for Do It Yourself components.
+                    if (frmPickGear.DoItYourself)
+                        objGear.Cost = "(" + objGear.Cost + ") * 0.5";
+
+                    // Apply a markup if applicable.
+                    decimal decCost = objGear.TotalCost;
+                    if (frmPickGear.Markup != 0)
                     {
-                        objSelectedGear.Children.Add(objGear);
-                        if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                        decCost *= 1 + frmPickGear.Markup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = objGear.TotalAvailTuple().Suffix;
+                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
+                        decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
+                        decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
+                    Gear objMatchingGear = null;
+                    // If this is Ammunition, see if the character already has it on them.
+                    if (objGear.Category == "Ammunition")
+                    {
+                        IEnumerable<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
+                        objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
+                    }
+
+                    if (objMatchingGear != null)
+                    {
+                        decimal decGearQuantity = objGear.Quantity;
+                        // A match was found, so increase the quantity instead.
+                        objMatchingGear.Quantity += decGearQuantity;
+
+                        objGear.DeleteGear();
+                        if (CharacterObjectOptions.EnforceCapacity && objMatchingGear.CapacityRemaining < 0)
                         {
-                            objSelectedGear.Children.Remove(objGear);
+                            objMatchingGear.Quantity -= decGearQuantity;
                             Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            objGear.DeleteGear();
                             return frmPickGear.AddAgain;
                         }
                     }
-                    else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
-                    {
-                        objSelectedMod.Gear.Add(objGear);
-                        if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
-                        {
-                            objSelectedMod.Gear.Remove(objGear);
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            objGear.DeleteGear();
-                            return frmPickGear.AddAgain;
-                        }
-                    }
+                    // Add the Gear.
                     else
                     {
-                        objSelectedArmor.Gear.Add(objGear);
-                        if (CharacterObjectOptions.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
+                        if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                         {
-                            objSelectedArmor.Gear.Remove(objGear);
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            objSelectedGear.Children.Add(objGear);
+                            if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                            {
+                                objSelectedGear.Children.Remove(objGear);
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                objGear.DeleteGear();
+                                return frmPickGear.AddAgain;
+                            }
+                        }
+                        else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
+                        {
+                            objSelectedMod.Gear.Add(objGear);
+                            if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
+                            {
+                                objSelectedMod.Gear.Remove(objGear);
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                objGear.DeleteGear();
+                                return frmPickGear.AddAgain;
+                            }
+                        }
+                        else
+                        {
+                            objSelectedArmor.Gear.Add(objGear);
+                            if (CharacterObjectOptions.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
+                            {
+                                objSelectedArmor.Gear.Remove(objGear);
+                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                objGear.DeleteGear();
+                                return frmPickGear.AddAgain;
+                            }
+                        }
+                    }
+
+                    // Check the item's Cost and make sure the character can afford it.
+                    if (!frmPickGear.FreeCost)
+                    {
+                        if (decCost > CharacterObject.Nuyen)
+                        {
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            // Remove any Improvements created by the Gear.
                             objGear.DeleteGear();
                             return frmPickGear.AddAgain;
                         }
-                    }
-                }
 
-                // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickGear.FreeCost)
-                {
-                    if (decCost > CharacterObject.Nuyen)
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
+                            DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                        CharacterObject.Nuyen -= decCost;
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(NuyenExpenseType.AddArmorGear, objMatchingGear != null ? objMatchingGear.InternalId : objGear.InternalId, objGear.Quantity);
+                        objExpense.Undo = objUndo;
+                    }
+
+                    // Create any Weapons that came with this Gear.
+                    foreach (Weapon objWeapon in lstWeapons)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        // Remove any Improvements created by the Gear.
-                        objGear.DeleteGear();
-                        return frmPickGear.AddAgain;
+                        CharacterObject.Weapons.Add(objWeapon);
                     }
 
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorGear") + LanguageManager.GetString("String_Space") + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen,
-                        DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen -= decCost;
+                    IsCharacterUpdateRequested = true;
 
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddArmorGear, objMatchingGear != null ? objMatchingGear.InternalId : objGear.InternalId, objGear.Quantity);
-                    objExpense.Undo = objUndo;
+                    IsDirty = true;
+
+                    return frmPickGear.AddAgain;
                 }
-
-                // Create any Weapons that came with this Gear.
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    CharacterObject.Weapons.Add(objWeapon);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-
-                return frmPickGear.AddAgain;
             }
         }
 
@@ -14997,16 +15010,16 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
+                StringBuilder sbdQualities = new StringBuilder().AppendJoin(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(",");
 
-                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement)
-                                        + LanguageManager.GetString("String_Space")
-                                        + '[' + objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo) + "%]");
+                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                        .Append(LanguageManager.GetString("String_Space")).Append('[')
+                        .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)).Append("%]");
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)
@@ -15014,7 +15027,7 @@ namespace Chummer
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(",");
 
-                    sbdQualities.Append(string.Join(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName)));
+                    sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                 }
 
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
@@ -15062,7 +15075,8 @@ namespace Chummer
 
             if (treVehicles.SelectedNode?.Tag is IHasRating objHasRating)
             {
-                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_RatingFormat").Replace("{0}", LanguageManager.GetString(objHasRating.RatingLabel));
+                lblVehicleRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
+                    LanguageManager.GetString(objHasRating.RatingLabel));
             }
 
             if (treVehicles.SelectedNode?.Tag is IHasSource objSelected)
@@ -17346,7 +17360,7 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (treCyberware.SelectedNode.Tag is IHasWirelessBonus obj)
+            if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkCyberwareWireless.Checked;
             }
@@ -17356,18 +17370,17 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (treWeapons.SelectedNode.Tag is IHasWirelessBonus obj)
+            if (treWeapons.SelectedNode?.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkWeaponWireless.Checked;
             }
-
         }
 
         private void chkArmorWireless_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (treArmor.SelectedNode.Tag is IHasWirelessBonus obj)
+            if (treArmor.SelectedNode?.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkArmorWireless.Checked;
             }

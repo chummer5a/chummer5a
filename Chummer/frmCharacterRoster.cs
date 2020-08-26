@@ -44,7 +44,7 @@ namespace Chummer
         //public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }
 
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
-        private bool _blnSkipUpdate;
+        private bool _blnSkipUpdate = true;
 
         public frmCharacterRoster()
         {
@@ -83,7 +83,7 @@ namespace Chummer
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver -= treCharacterList_OnDefaultDragOver;
-                OnMyMouseDown -= OnDefaultMouseDown;
+                OnMyMouseDown = null;
 
                 if(watcherCharacterRosterFolder != null)
                 {
@@ -100,6 +100,7 @@ namespace Chummer
             SetMyEventHandlers();
             LoadCharacters();
             UpdateCharacter(null);
+            _blnSkipUpdate = false;
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
@@ -113,7 +114,9 @@ namespace Chummer
                 return;
 
             SuspendLayout();
+            _blnSkipUpdate = true;
             LoadCharacters(false, false, true, false);
+            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -123,7 +126,8 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            if(e?.Text != "mru")
+            _blnSkipUpdate = true;
+            if (e?.Text != "mru")
             {
                 try
                 {
@@ -140,6 +144,7 @@ namespace Chummer
             {
                 LoadCharacters(false, true, true, false);
             }
+            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -157,12 +162,10 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = Color.Red;
-                            objCharacterNode.ToolTipText += Environment.NewLine
-                                                            + Environment.NewLine
-                                                            + LanguageManager.GetString("String_Error")
-                                                            + LanguageManager.GetString("String_Colon")
-                                                            + Environment.NewLine
-                                                            + objCache.ErrorText;
+                            objCharacterNode.ToolTipText += new StringBuilder()
+                                .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                                .AppendLine(LanguageManager.GetString("String_Colon"))
+                                .Append(objCache.ErrorText).ToString();
                         }
                         else
                             objCharacterNode.ForeColor = SystemColors.WindowText;
@@ -316,7 +319,6 @@ namespace Chummer
                     {
                         ConcurrentBag<KeyValuePair<TreeNode,string>> bagNodes = new ConcurrentBag<KeyValuePair<TreeNode, string>>();
                         Parallel.ForEach(dicWatch, i => bagNodes.Add(new KeyValuePair<TreeNode, string>(CacheCharacter(i.Key), i.Value)));
-
                         if(blnAddWatchNode)
                         {
                             foreach (string s in dicWatch.Values.Distinct())
@@ -324,7 +326,6 @@ namespace Chummer
                                 if (s == "Watch") continue;
                                 objWatchNode.Nodes.Add(new TreeNode(s){Tag = s});
                             }
-
                             foreach (KeyValuePair<TreeNode, string> kvtNode in bagNodes)
                             {
                                 if (kvtNode.Value == "Watch")
@@ -342,28 +343,26 @@ namespace Chummer
                                     }
                                 }
                             }
-
                         }
                     }
                 },
-                () =>
+                async () =>
                 {
                     foreach(IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                     {
-#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
-                        var t = Task.Factory.StartNew<ICollection<TreeNode>>(() =>
+                        List<TreeNode> lstNodes = await Task.Run(() =>
                         {
                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin);
                             var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
-                            if(task.Result != null)
+                            if (task.Result != null)
                             {
                                 return task.Result.OrderBy(a => a.Text).ToList();
                             }
                             return new List<TreeNode>();
                         });
-                        t.ContinueWith(nodelist =>
+                        await Task.Run(() =>
                         {
-                            foreach(TreeNode node in nodelist.Result)
+                            foreach(TreeNode node in lstNodes)
                             {
                                 TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
                                 Program.MainForm.DoThreadSafe(() =>
@@ -407,7 +406,6 @@ namespace Chummer
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
                         });
-#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
@@ -491,8 +489,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = Color.Red;
-                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error")
-                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
+                objNode.ToolTipText += new StringBuilder()
+                    .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                    .AppendLine(LanguageManager.GetString("String_Colon")).Append(objCache.ErrorText);
             }
             return objNode;
         }
@@ -640,26 +639,18 @@ namespace Chummer
                 if (objSelectedNode.Tag == null) return;
                 if(objSelectedNode.Tag is CharacterCache objCache)
                 {
-                    try
+                    using (new CursorWait(this))
                     {
                         objCache.OnMyDoubleClick(sender, e);
                         objSelectedNode.Text = objCache.CalculatedName();
-                        Cursor = Cursors.WaitCursor;
                     }
-                    finally
-                    {
-                        Cursor = Cursors.Default;
-                    }
-
                 }
             }
         }
         private void treCharacterList_OnDefaultKeyDown(object sender, KeyEventArgs e)
         {
-
             TreeNode t = treCharacterList.SelectedNode;
-
-            var objCache = t?.Tag as CharacterCache;
+            CharacterCache objCache = t?.Tag as CharacterCache;
             objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
         }
 
@@ -670,7 +661,7 @@ namespace Chummer
 
         private void treCharacterList_OnDefaultDragOver(object sender, DragEventArgs e)
         {
-            if(!(sender is TreeView treSenderView))
+            if(!(sender is TreeView treSenderView) || e == null)
                 return;
             Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
             TreeNode objNode = treSenderView.GetNodeAt(pt);
@@ -684,7 +675,7 @@ namespace Chummer
                 }
             }
 
-            // Clear the background colour for all other Nodes.
+            // Clear the background color for all other Nodes.
             treCharacterList.ClearNodeBackground(objNode);
         }
 
@@ -858,18 +849,17 @@ namespace Chummer
         private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if(objSelectedNode == null || objSelectedNode.Level <= 0)
+            if(objSelectedNode?.Tag == null || objSelectedNode.Level <= 0)
                 return;
             string strFile = objSelectedNode.Tag.ToString();
             if(string.IsNullOrEmpty(strFile))
                 return;
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-            Cursor = Cursors.WaitCursor;
-            if(objOpenCharacter != null)
+            if (objOpenCharacter != null)
             {
-                Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
+                using (new CursorWait(this))
+                    Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
             }
-            Cursor = Cursors.Default;
         }
 
         private void TreCharacterList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -881,7 +871,7 @@ namespace Chummer
             if (e.Node.Tag != null)
             {
                 string strTag = e.Node.Tag.ToString();
-                if (!String.IsNullOrEmpty(strTag))
+                if (!string.IsNullOrEmpty(strTag))
                     e.Node.ContextMenuStrip = CreateContextMenuStrip(
                         strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                         && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));

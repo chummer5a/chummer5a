@@ -36,7 +36,7 @@ namespace SINners.Models
                 if (!string.IsNullOrEmpty(Language))
                 {
                     //if ((this.MyMembers != null)
-                    //    && (this.MyMembers.Any()))
+                    //    && (this.MyMembers.Count > 0))
                     //{
                     //    ret += ": " + MyMembers.Count + " members";
                     //}

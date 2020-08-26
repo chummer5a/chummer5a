@@ -1,13 +1,11 @@
 using System;
 using System.IO;
 using System.Reflection;
-using ChummerHub.Controllers.V1;
 using ChummerHub.Data;
 using ChummerHub.Services;
 using ChummerHub.Services.Application_Insights;
 using ChummerHub.Services.GoogleDrive;
 using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.AspNetCore;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -25,12 +23,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace ChummerHub
 {
@@ -185,7 +180,7 @@ namespace ChummerHub
             services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
-          
+
 
             services.AddMvc(options =>
             {
@@ -209,7 +204,7 @@ namespace ChummerHub
                     //x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     //x.SerializerSettings.PreserveReferencesHandling =
                     //    PreserveReferencesHandling.Objects;
-                }); 
+                });
 
 
             services.AddAuthentication(options =>
@@ -293,7 +288,7 @@ namespace ChummerHub
                 //    throw new Not();
                 //};
             });
-          
+
 
 
             services.AddVersionedApiExplorer(options =>
@@ -386,8 +381,8 @@ namespace ChummerHub
                 //});
 
             });
-          
-            
+
+
             //services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             //services.AddSession();
 

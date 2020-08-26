@@ -38,9 +38,9 @@ namespace ChummerHub.Services.GoogleDrive
             {
                 _logger = Logger;
                 if (string.IsNullOrEmpty(key))
-                    throw new ArgumentNullException("key");
+                    throw new ArgumentNullException(nameof(key));
                 if (string.IsNullOrEmpty(refreshToken))
-                    throw new ArgumentNullException("refreshToken");
+                    throw new ArgumentNullException(nameof(refreshToken));
 
                 _store = new Dictionary<string, TokenResponse>();
 

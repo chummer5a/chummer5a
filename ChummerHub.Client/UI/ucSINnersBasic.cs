@@ -83,14 +83,14 @@ namespace ChummerHub.Client.UI
             {
                 if (myUC?.MyCE?.MySINnerFile?.Id == null || myUC.MyCE.MySINnerFile.Id == Guid.Empty)
                 {
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    this.DoThreadSafe(() =>
                     {
                         bUpload.Text = "SINless Character/Error";
                     });
                     return false;
                 }
 
-                using (new CursorWait(true, this))
+                using (new CursorWait(this, true))
                 {
                     var client = StaticUtils.GetClient();
                     var response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
@@ -131,13 +131,13 @@ namespace ChummerHub.Client.UI
                         cbTagCustom.Enabled = false;
                         TagValueCustomName.Enabled = false;
                     });
-                    PluginHandler.MainForm.DoThreadSafe(UpdateTags);
+                    this.DoThreadSafe(UpdateTags);
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                this.DoThreadSafe(() =>
                 {
                     bUpload.Text = "Unknown Status";
                 });
@@ -285,7 +285,7 @@ namespace ChummerHub.Client.UI
 
         private async void bUpload_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(true, this))
+            using (new CursorWait(this, true))
             {
                 try
                 {
@@ -315,7 +315,7 @@ namespace ChummerHub.Client.UI
             {
                 gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
                 {
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
                     {
                         PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                     });
@@ -328,9 +328,9 @@ namespace ChummerHub.Client.UI
         {
             using (frmSINnerVisibility visfrm = new frmSINnerVisibility())
             {
-                using (new CursorWait(true, this))
+                using (new CursorWait(this, true))
                 {
-                    if (!myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+                    if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
                     {
                         var client = StaticUtils.GetClient();
                         if (myUC.MyCE.MySINnerFile.Id != null)
