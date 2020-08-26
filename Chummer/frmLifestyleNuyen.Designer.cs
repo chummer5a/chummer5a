@@ -55,12 +55,12 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cmdOK.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.cmdOK, 3);
-            this.cmdOK.Location = new System.Drawing.Point(145, 67);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(162, 67);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
+            this.cmdOK.Size = new System.Drawing.Size(41, 23);
             this.cmdOK.TabIndex = 4;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -71,7 +71,7 @@ namespace Chummer
             // 
             this.lblDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDice.AutoSize = true;
-            this.lblDice.Location = new System.Drawing.Point(71, 44);
+            this.lblDice.Location = new System.Drawing.Point(75, 44);
             this.lblDice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDice.Name = "lblDice";
             this.lblDice.Size = new System.Drawing.Size(81, 13);
@@ -84,7 +84,7 @@ namespace Chummer
             // 
             this.lblResult.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(214, 44);
+            this.lblResult.Location = new System.Drawing.Point(209, 44);
             this.lblResult.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(37, 13);
@@ -95,9 +95,10 @@ namespace Chummer
             // nudDiceResult
             // 
             this.nudDiceResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudDiceResult.Location = new System.Drawing.Point(158, 41);
+            this.nudDiceResult.AutoSize = true;
+            this.nudDiceResult.Location = new System.Drawing.Point(162, 41);
             this.nudDiceResult.Name = "nudDiceResult";
-            this.nudDiceResult.Size = new System.Drawing.Size(50, 20);
+            this.nudDiceResult.Size = new System.Drawing.Size(41, 20);
             this.nudDiceResult.TabIndex = 2;
             this.nudDiceResult.ValueChanged += new System.EventHandler(this.nudDiceResult_ValueChanged);
             // 
@@ -113,7 +114,7 @@ namespace Chummer
             this.tableLayoutPanel1.Controls.Add(this.nudDiceResult, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblDice, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cmdOK, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.cmdOK, 1, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";

@@ -42,17 +42,17 @@ namespace Chummer
             this.nudMaxNuyen = new System.Windows.Forms.NumericUpDown();
             this.lblMaxNuyen = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.nudSumtoTen = new System.Windows.Forms.NumericUpDown();
-            this.lblSumToX = new System.Windows.Forms.Label();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpNumericUpDowns = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblSumToX = new System.Windows.Forms.Label();
+            this.nudSumtoTen = new System.Windows.Forms.NumericUpDown();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyen)).BeginInit();
             this.tlpMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSumtoTen)).BeginInit();
-            this.flpButtons.SuspendLayout();
             this.tlpNumericUpDowns.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSumtoTen)).BeginInit();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // nudKarma
@@ -77,12 +77,12 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(81, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
             this.cmdOK.TabIndex = 6;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -105,13 +105,13 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
             this.cmdCancel.TabIndex = 7;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -242,8 +242,8 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.cboGamePlay, 1, 0);
             this.tlpMain.Controls.Add(this.cboBuildMethod, 0, 0);
             this.tlpMain.Controls.Add(this.lblDescription, 0, 1);
-            this.tlpMain.Controls.Add(this.flpButtons, 1, 3);
             this.tlpMain.Controls.Add(this.tlpNumericUpDowns, 0, 2);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -254,46 +254,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(446, 143);
             this.tlpMain.TabIndex = 16;
-            // 
-            // nudSumtoTen
-            // 
-            this.nudSumtoTen.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudSumtoTen.AutoSize = true;
-            this.nudSumtoTen.Location = new System.Drawing.Point(336, 29);
-            this.nudSumtoTen.Name = "nudSumtoTen";
-            this.nudSumtoTen.Size = new System.Drawing.Size(41, 20);
-            this.nudSumtoTen.TabIndex = 9;
-            this.nudSumtoTen.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            // 
-            // lblSumToX
-            // 
-            this.lblSumToX.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSumToX.AutoSize = true;
-            this.lblSumToX.Location = new System.Drawing.Point(268, 32);
-            this.lblSumToX.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSumToX.Name = "lblSumToX";
-            this.lblSumToX.Size = new System.Drawing.Size(62, 13);
-            this.lblSumToX.TabIndex = 10;
-            this.lblSumToX.Tag = "Label_SelectBP_SumToX";
-            this.lblSumToX.Text = "Sum to Ten";
-            this.lblSumToX.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            // 
-            // flpButtons
-            // 
-            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpButtons.AutoSize = true;
-            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpButtons.Controls.Add(this.cmdOK);
-            this.flpButtons.Controls.Add(this.cmdCancel);
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(287, 117);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(156, 23);
-            this.flpButtons.TabIndex = 16;
             // 
             // tlpNumericUpDowns
             // 
@@ -325,6 +285,51 @@ namespace Chummer
             this.tlpNumericUpDowns.Size = new System.Drawing.Size(446, 52);
             this.tlpNumericUpDowns.TabIndex = 17;
             // 
+            // lblSumToX
+            // 
+            this.lblSumToX.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSumToX.AutoSize = true;
+            this.lblSumToX.Location = new System.Drawing.Point(268, 32);
+            this.lblSumToX.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSumToX.Name = "lblSumToX";
+            this.lblSumToX.Size = new System.Drawing.Size(62, 13);
+            this.lblSumToX.TabIndex = 10;
+            this.lblSumToX.Tag = "Label_SelectBP_SumToX";
+            this.lblSumToX.Text = "Sum to Ten";
+            this.lblSumToX.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // nudSumtoTen
+            // 
+            this.nudSumtoTen.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudSumtoTen.AutoSize = true;
+            this.nudSumtoTen.Location = new System.Drawing.Point(336, 29);
+            this.nudSumtoTen.Name = "nudSumtoTen";
+            this.nudSumtoTen.Size = new System.Drawing.Size(41, 20);
+            this.nudSumtoTen.TabIndex = 9;
+            this.nudSumtoTen.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // tlpButtons
+            // 
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(334, 114);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.TabIndex = 18;
+            // 
             // frmSelectBuildMethod
             // 
             this.AcceptButton = this.cmdOK;
@@ -350,11 +355,11 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyen)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSumtoTen)).EndInit();
-            this.flpButtons.ResumeLayout(false);
-            this.flpButtons.PerformLayout();
             this.tlpNumericUpDowns.ResumeLayout(false);
             this.tlpNumericUpDowns.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSumtoTen)).EndInit();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -377,7 +382,7 @@ namespace Chummer
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.NumericUpDown nudSumtoTen;
         private System.Windows.Forms.Label lblSumToX;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private BufferedTableLayoutPanel tlpNumericUpDowns;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

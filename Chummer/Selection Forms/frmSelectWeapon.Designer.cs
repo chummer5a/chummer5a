@@ -43,6 +43,21 @@ namespace Chummer
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.dgvWeapons = new System.Windows.Forms.DataGridView();
+            this.dgvc_Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvc_Name = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Dice = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Accuracy = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Damage = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_AP = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_RC = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Ammo = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Mode = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Reach = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Conceal = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Accessories = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Label_Avail = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.Label_Source = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.dgvc_Cost = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
             this.tlpWeapon = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -86,22 +101,7 @@ namespace Chummer
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.dgvc_Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvc_Name = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Dice = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Accuracy = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Damage = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_AP = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_RC = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Ammo = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Mode = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Reach = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Conceal = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Accessories = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.Label_Avail = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.Label_Source = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.dgvc_Cost = new Chummer.DataGridViewTextBoxColumnTranslated();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabListView.SuspendLayout();
@@ -113,7 +113,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tabBrowse.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboCategory
@@ -143,12 +143,12 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(162, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(157, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
+            this.cmdOK.Size = new System.Drawing.Size(74, 23);
             this.cmdOK.TabIndex = 31;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -157,13 +157,13 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(71, 23);
             this.cmdCancel.TabIndex = 33;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -196,12 +196,12 @@ namespace Chummer
             // 
             // cmdOKAdd
             // 
-            this.cmdOKAdd.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOKAdd.AutoSize = true;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 0);
-            this.cmdOKAdd.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdOKAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOKAdd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOKAdd.Location = new System.Drawing.Point(80, 3);
             this.cmdOKAdd.Name = "cmdOKAdd";
-            this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
+            this.cmdOKAdd.Size = new System.Drawing.Size(71, 23);
             this.cmdOKAdd.TabIndex = 32;
             this.cmdOKAdd.Tag = "String_AddMore";
             this.cmdOKAdd.Text = "&Add && More";
@@ -259,6 +259,188 @@ namespace Chummer
             this.dgvWeapons.Size = new System.Drawing.Size(752, 455);
             this.dgvWeapons.TabIndex = 36;
             this.dgvWeapons.DoubleClick += new System.EventHandler(this.dgvWeapons_DoubleClick);
+            // 
+            // dgvc_Guid
+            // 
+            this.dgvc_Guid.DataPropertyName = "WeaponGuid";
+            this.dgvc_Guid.HeaderText = "dgvc_Guid";
+            this.dgvc_Guid.Name = "dgvc_Guid";
+            this.dgvc_Guid.ReadOnly = true;
+            this.dgvc_Guid.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Guid.Visible = false;
+            // 
+            // dgvc_Name
+            // 
+            this.dgvc_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Name.DataPropertyName = "WeaponName";
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvc_Name.HeaderText = "Name";
+            this.dgvc_Name.Name = "dgvc_Name";
+            this.dgvc_Name.ReadOnly = true;
+            this.dgvc_Name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.TranslationTag = null;
+            this.dgvc_Name.Width = 60;
+            // 
+            // dgvc_Dice
+            // 
+            this.dgvc_Dice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Dice.DataPropertyName = "Dice";
+            this.dgvc_Dice.FillWeight = 30F;
+            this.dgvc_Dice.HeaderText = "Dice Pool";
+            this.dgvc_Dice.Name = "dgvc_Dice";
+            this.dgvc_Dice.ReadOnly = true;
+            this.dgvc_Dice.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Dice.TranslationTag = null;
+            this.dgvc_Dice.Width = 78;
+            // 
+            // dgvc_Accuracy
+            // 
+            this.dgvc_Accuracy.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Accuracy.DataPropertyName = "Accuracy";
+            this.dgvc_Accuracy.FillWeight = 50F;
+            this.dgvc_Accuracy.HeaderText = "Accuracy";
+            this.dgvc_Accuracy.Name = "dgvc_Accuracy";
+            this.dgvc_Accuracy.ReadOnly = true;
+            this.dgvc_Accuracy.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accuracy.TranslationTag = null;
+            this.dgvc_Accuracy.Width = 77;
+            // 
+            // dgvc_Damage
+            // 
+            this.dgvc_Damage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Damage.DataPropertyName = "Damage";
+            this.dgvc_Damage.FillWeight = 50F;
+            this.dgvc_Damage.HeaderText = "Damage";
+            this.dgvc_Damage.Name = "dgvc_Damage";
+            this.dgvc_Damage.ReadOnly = true;
+            this.dgvc_Damage.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Damage.TranslationTag = null;
+            this.dgvc_Damage.Width = 72;
+            // 
+            // dgvc_AP
+            // 
+            this.dgvc_AP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_AP.DataPropertyName = "AP";
+            this.dgvc_AP.FillWeight = 30F;
+            this.dgvc_AP.HeaderText = "AP";
+            this.dgvc_AP.Name = "dgvc_AP";
+            this.dgvc_AP.ReadOnly = true;
+            this.dgvc_AP.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_AP.TranslationTag = null;
+            this.dgvc_AP.Width = 46;
+            // 
+            // dgvc_RC
+            // 
+            this.dgvc_RC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_RC.DataPropertyName = "RC";
+            this.dgvc_RC.FillWeight = 30F;
+            this.dgvc_RC.HeaderText = "RC";
+            this.dgvc_RC.Name = "dgvc_RC";
+            this.dgvc_RC.ReadOnly = true;
+            this.dgvc_RC.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_RC.TranslationTag = null;
+            this.dgvc_RC.Width = 47;
+            // 
+            // dgvc_Ammo
+            // 
+            this.dgvc_Ammo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Ammo.DataPropertyName = "Ammo";
+            this.dgvc_Ammo.FillWeight = 60F;
+            this.dgvc_Ammo.HeaderText = "Ammo";
+            this.dgvc_Ammo.Name = "dgvc_Ammo";
+            this.dgvc_Ammo.ReadOnly = true;
+            this.dgvc_Ammo.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Ammo.TranslationTag = null;
+            this.dgvc_Ammo.Width = 61;
+            // 
+            // dgvc_Mode
+            // 
+            this.dgvc_Mode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Mode.DataPropertyName = "Mode";
+            this.dgvc_Mode.FillWeight = 60F;
+            this.dgvc_Mode.HeaderText = "Mode";
+            this.dgvc_Mode.Name = "dgvc_Mode";
+            this.dgvc_Mode.ReadOnly = true;
+            this.dgvc_Mode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Mode.TranslationTag = null;
+            this.dgvc_Mode.Width = 59;
+            // 
+            // dgvc_Reach
+            // 
+            this.dgvc_Reach.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Reach.DataPropertyName = "Reach";
+            this.dgvc_Reach.FillWeight = 40F;
+            this.dgvc_Reach.HeaderText = "Reach";
+            this.dgvc_Reach.Name = "dgvc_Reach";
+            this.dgvc_Reach.ReadOnly = true;
+            this.dgvc_Reach.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Reach.TranslationTag = null;
+            this.dgvc_Reach.Width = 64;
+            // 
+            // dgvc_Conceal
+            // 
+            this.dgvc_Conceal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Conceal.DataPropertyName = "Concealability";
+            this.dgvc_Conceal.FillWeight = 50F;
+            this.dgvc_Conceal.HeaderText = "Conceal";
+            this.dgvc_Conceal.Name = "dgvc_Conceal";
+            this.dgvc_Conceal.ReadOnly = true;
+            this.dgvc_Conceal.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Conceal.TranslationTag = null;
+            this.dgvc_Conceal.Width = 71;
+            // 
+            // dgvc_Accessories
+            // 
+            this.dgvc_Accessories.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Accessories.DataPropertyName = "Accessories";
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accessories.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dgvc_Accessories.HeaderText = "Accessories";
+            this.dgvc_Accessories.Name = "dgvc_Accessories";
+            this.dgvc_Accessories.ReadOnly = true;
+            this.dgvc_Accessories.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accessories.TranslationTag = null;
+            this.dgvc_Accessories.Width = 89;
+            // 
+            // Label_Avail
+            // 
+            this.Label_Avail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Label_Avail.DataPropertyName = "Avail";
+            this.Label_Avail.FillWeight = 30F;
+            this.Label_Avail.HeaderText = "Avail";
+            this.Label_Avail.Name = "Label_Avail";
+            this.Label_Avail.ReadOnly = true;
+            this.Label_Avail.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Label_Avail.TranslationTag = null;
+            this.Label_Avail.Width = 55;
+            // 
+            // Label_Source
+            // 
+            this.Label_Source.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Label_Source.DataPropertyName = "Source";
+            this.Label_Source.HeaderText = "Source";
+            this.Label_Source.Name = "Label_Source";
+            this.Label_Source.ReadOnly = true;
+            this.Label_Source.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Label_Source.TranslationTag = null;
+            this.Label_Source.Width = 66;
+            // 
+            // dgvc_Cost
+            // 
+            this.dgvc_Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dgvc_Cost.DataPropertyName = "Cost";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle5.Format = "#,0.##¥";
+            dataGridViewCellStyle5.NullValue = null;
+            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle5;
+            this.dgvc_Cost.FillWeight = 60F;
+            this.dgvc_Cost.HeaderText = "Cost";
+            this.dgvc_Cost.Name = "dgvc_Cost";
+            this.dgvc_Cost.ReadOnly = true;
+            this.dgvc_Cost.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Cost.TranslationTag = null;
+            this.dgvc_Cost.Width = 53;
             // 
             // tabControl
             // 
@@ -856,7 +1038,7 @@ namespace Chummer
             this.tableLayoutPanel2.Controls.Add(this.cboCategory, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.txtSearch, 3, 0);
             this.tableLayoutPanel2.Controls.Add(this.lblSearchLabel, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel1, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.tlpButtons, 0, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -867,202 +1049,26 @@ namespace Chummer
             this.tableLayoutPanel2.Size = new System.Drawing.Size(766, 543);
             this.tableLayoutPanel2.TabIndex = 39;
             // 
-            // flowLayoutPanel1
+            // tlpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.SetColumnSpan(this.flowLayoutPanel1, 4);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(526, 517);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 23);
-            this.flowLayoutPanel1.TabIndex = 39;
-            // 
-            // dgvc_Guid
-            // 
-            this.dgvc_Guid.DataPropertyName = "WeaponGuid";
-            this.dgvc_Guid.HeaderText = "dgvc_Guid";
-            this.dgvc_Guid.Name = "dgvc_Guid";
-            this.dgvc_Guid.ReadOnly = true;
-            this.dgvc_Guid.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Guid.Visible = false;
-            // 
-            // dgvc_Name
-            // 
-            this.dgvc_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Name.DataPropertyName = "WeaponName";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dgvc_Name.HeaderText = "Name";
-            this.dgvc_Name.Name = "dgvc_Name";
-            this.dgvc_Name.ReadOnly = true;
-            this.dgvc_Name.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Name.TranslationTag = null;
-            this.dgvc_Name.Width = 60;
-            // 
-            // dgvc_Dice
-            // 
-            this.dgvc_Dice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Dice.DataPropertyName = "Dice";
-            this.dgvc_Dice.FillWeight = 30F;
-            this.dgvc_Dice.HeaderText = "Dice Pool";
-            this.dgvc_Dice.Name = "dgvc_Dice";
-            this.dgvc_Dice.ReadOnly = true;
-            this.dgvc_Dice.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Dice.TranslationTag = null;
-            this.dgvc_Dice.Width = 78;
-            // 
-            // dgvc_Accuracy
-            // 
-            this.dgvc_Accuracy.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Accuracy.DataPropertyName = "Accuracy";
-            this.dgvc_Accuracy.FillWeight = 50F;
-            this.dgvc_Accuracy.HeaderText = "Accuracy";
-            this.dgvc_Accuracy.Name = "dgvc_Accuracy";
-            this.dgvc_Accuracy.ReadOnly = true;
-            this.dgvc_Accuracy.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Accuracy.TranslationTag = null;
-            this.dgvc_Accuracy.Width = 77;
-            // 
-            // dgvc_Damage
-            // 
-            this.dgvc_Damage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Damage.DataPropertyName = "Damage";
-            this.dgvc_Damage.FillWeight = 50F;
-            this.dgvc_Damage.HeaderText = "Damage";
-            this.dgvc_Damage.Name = "dgvc_Damage";
-            this.dgvc_Damage.ReadOnly = true;
-            this.dgvc_Damage.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Damage.TranslationTag = null;
-            this.dgvc_Damage.Width = 72;
-            // 
-            // dgvc_AP
-            // 
-            this.dgvc_AP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_AP.DataPropertyName = "AP";
-            this.dgvc_AP.FillWeight = 30F;
-            this.dgvc_AP.HeaderText = "AP";
-            this.dgvc_AP.Name = "dgvc_AP";
-            this.dgvc_AP.ReadOnly = true;
-            this.dgvc_AP.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_AP.TranslationTag = null;
-            this.dgvc_AP.Width = 46;
-            // 
-            // dgvc_RC
-            // 
-            this.dgvc_RC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_RC.DataPropertyName = "RC";
-            this.dgvc_RC.FillWeight = 30F;
-            this.dgvc_RC.HeaderText = "RC";
-            this.dgvc_RC.Name = "dgvc_RC";
-            this.dgvc_RC.ReadOnly = true;
-            this.dgvc_RC.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_RC.TranslationTag = null;
-            this.dgvc_RC.Width = 47;
-            // 
-            // dgvc_Ammo
-            // 
-            this.dgvc_Ammo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Ammo.DataPropertyName = "Ammo";
-            this.dgvc_Ammo.FillWeight = 60F;
-            this.dgvc_Ammo.HeaderText = "Ammo";
-            this.dgvc_Ammo.Name = "dgvc_Ammo";
-            this.dgvc_Ammo.ReadOnly = true;
-            this.dgvc_Ammo.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Ammo.TranslationTag = null;
-            this.dgvc_Ammo.Width = 61;
-            // 
-            // dgvc_Mode
-            // 
-            this.dgvc_Mode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Mode.DataPropertyName = "Mode";
-            this.dgvc_Mode.FillWeight = 60F;
-            this.dgvc_Mode.HeaderText = "Mode";
-            this.dgvc_Mode.Name = "dgvc_Mode";
-            this.dgvc_Mode.ReadOnly = true;
-            this.dgvc_Mode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Mode.TranslationTag = null;
-            this.dgvc_Mode.Width = 59;
-            // 
-            // dgvc_Reach
-            // 
-            this.dgvc_Reach.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Reach.DataPropertyName = "Reach";
-            this.dgvc_Reach.FillWeight = 40F;
-            this.dgvc_Reach.HeaderText = "Reach";
-            this.dgvc_Reach.Name = "dgvc_Reach";
-            this.dgvc_Reach.ReadOnly = true;
-            this.dgvc_Reach.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Reach.TranslationTag = null;
-            this.dgvc_Reach.Width = 64;
-            // 
-            // dgvc_Conceal
-            // 
-            this.dgvc_Conceal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Conceal.DataPropertyName = "Concealability";
-            this.dgvc_Conceal.FillWeight = 50F;
-            this.dgvc_Conceal.HeaderText = "Conceal";
-            this.dgvc_Conceal.Name = "dgvc_Conceal";
-            this.dgvc_Conceal.ReadOnly = true;
-            this.dgvc_Conceal.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Conceal.TranslationTag = null;
-            this.dgvc_Conceal.Width = 71;
-            // 
-            // dgvc_Accessories
-            // 
-            this.dgvc_Accessories.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Accessories.DataPropertyName = "Accessories";
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Accessories.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvc_Accessories.HeaderText = "Accessories";
-            this.dgvc_Accessories.Name = "dgvc_Accessories";
-            this.dgvc_Accessories.ReadOnly = true;
-            this.dgvc_Accessories.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Accessories.TranslationTag = null;
-            this.dgvc_Accessories.Width = 89;
-            // 
-            // Label_Avail
-            // 
-            this.Label_Avail.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Label_Avail.DataPropertyName = "Avail";
-            this.Label_Avail.FillWeight = 30F;
-            this.Label_Avail.HeaderText = "Avail";
-            this.Label_Avail.Name = "Label_Avail";
-            this.Label_Avail.ReadOnly = true;
-            this.Label_Avail.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Label_Avail.TranslationTag = null;
-            this.Label_Avail.Width = 55;
-            // 
-            // Label_Source
-            // 
-            this.Label_Source.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Label_Source.DataPropertyName = "Source";
-            this.Label_Source.HeaderText = "Source";
-            this.Label_Source.Name = "Label_Source";
-            this.Label_Source.ReadOnly = true;
-            this.Label_Source.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Label_Source.TranslationTag = null;
-            this.Label_Source.Width = 66;
-            // 
-            // dgvc_Cost
-            // 
-            this.dgvc_Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.dgvc_Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle5.Format = "#,0.##¥";
-            dataGridViewCellStyle5.NullValue = null;
-            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvc_Cost.FillWeight = 60F;
-            this.dgvc_Cost.HeaderText = "Cost";
-            this.dgvc_Cost.Name = "dgvc_Cost";
-            this.dgvc_Cost.ReadOnly = true;
-            this.dgvc_Cost.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Cost.TranslationTag = null;
-            this.dgvc_Cost.Width = 53;
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 3;
+            this.tableLayoutPanel2.SetColumnSpan(this.tlpButtons, 4);
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(532, 514);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(234, 29);
+            this.tlpButtons.TabIndex = 40;
             // 
             // frmSelectWeapon
             // 
@@ -1102,8 +1108,8 @@ namespace Chummer
             this.tabBrowse.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1155,7 +1161,6 @@ namespace Chummer
         private Chummer.BufferedTableLayoutPanel tlpWeapon;
         private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private System.Windows.Forms.GroupBox gpbIncludedAccessories;
@@ -1177,5 +1182,6 @@ namespace Chummer
         private DataGridViewTextBoxColumnTranslated Label_Avail;
         private DataGridViewTextBoxColumnTranslated Label_Source;
         private DataGridViewTextBoxColumnTranslated dgvc_Cost;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

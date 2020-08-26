@@ -30,6 +30,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmHeroLabImporter));
             this.treCharacterList = new System.Windows.Forms.TreeView();
             this.cmdSelectFile = new System.Windows.Forms.Button();
@@ -60,7 +61,7 @@ namespace Chummer
             this.panGameNotes = new System.Windows.Forms.TabPage();
             this.txtGameNotes = new System.Windows.Forms.TextBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -69,7 +70,7 @@ namespace Chummer
             this.panCharacterNotes.SuspendLayout();
             this.panGameNotes.SuspendLayout();
             this.tlpMain.SuspendLayout();
-            this.flpButtons.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // treCharacterList
@@ -77,7 +78,7 @@ namespace Chummer
             this.treCharacterList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treCharacterList.Location = new System.Drawing.Point(3, 3);
             this.treCharacterList.Name = "treCharacterList";
-            this.tlpMain.SetRowSpan(this.treCharacterList, 7);
+            this.tlpMain.SetRowSpan(this.treCharacterList, 8);
             this.treCharacterList.ShowNodeToolTips = true;
             this.treCharacterList.Size = new System.Drawing.Size(295, 508);
             this.treCharacterList.TabIndex = 0;
@@ -86,12 +87,12 @@ namespace Chummer
             // 
             // cmdSelectFile
             // 
-            this.cmdSelectFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdSelectFile.AutoSize = true;
             this.cmdSelectFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSelectFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSelectFile.Location = new System.Drawing.Point(3, 3);
             this.cmdSelectFile.Name = "cmdSelectFile";
-            this.cmdSelectFile.Size = new System.Drawing.Size(92, 23);
+            this.cmdSelectFile.Size = new System.Drawing.Size(95, 23);
             this.cmdSelectFile.TabIndex = 1;
             this.cmdSelectFile.Tag = "String_SelectPORFile";
             this.cmdSelectFile.Text = "Select POR File";
@@ -100,11 +101,11 @@ namespace Chummer
             // 
             // cmdImport
             // 
-            this.cmdImport.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdImport.AutoSize = true;
             this.cmdImport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdImport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdImport.Enabled = false;
-            this.cmdImport.Location = new System.Drawing.Point(101, 3);
+            this.cmdImport.Location = new System.Drawing.Point(104, 3);
             this.cmdImport.Name = "cmdImport";
             this.cmdImport.Size = new System.Drawing.Size(95, 23);
             this.cmdImport.TabIndex = 2;
@@ -115,6 +116,7 @@ namespace Chummer
             // 
             // lblEssence
             // 
+            this.lblEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblEssence.AutoSize = true;
             this.lblEssence.Location = new System.Drawing.Point(397, 131);
             this.lblEssence.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -125,7 +127,7 @@ namespace Chummer
             // 
             // lblEssenceLabel
             // 
-            this.lblEssenceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblEssenceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssenceLabel.AutoSize = true;
             this.lblEssenceLabel.Location = new System.Drawing.Point(340, 131);
             this.lblEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -273,7 +275,7 @@ namespace Chummer
             this.picMugshot.Location = new System.Drawing.Point(463, 3);
             this.picMugshot.MinimumSize = new System.Drawing.Size(21, 31);
             this.picMugshot.Name = "picMugshot";
-            this.tlpMain.SetRowSpan(this.picMugshot, 6);
+            this.tlpMain.SetRowSpan(this.picMugshot, 7);
             this.picMugshot.Size = new System.Drawing.Size(300, 300);
             this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 39;
@@ -446,13 +448,11 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.Controls.Add(this.tabCharacterText, 1, 6);
+            this.tlpMain.Controls.Add(this.tabCharacterText, 1, 7);
             this.tlpMain.Controls.Add(this.treCharacterList, 0, 0);
-            this.tlpMain.Controls.Add(this.lblHeroLabTrademark, 1, 7);
+            this.tlpMain.Controls.Add(this.lblHeroLabTrademark, 1, 8);
             this.tlpMain.Controls.Add(this.picMugshot, 3, 0);
-            this.tlpMain.Controls.Add(this.lblEssence, 2, 5);
             this.tlpMain.Controls.Add(this.lblCharacterName, 2, 0);
-            this.tlpMain.Controls.Add(this.lblEssenceLabel, 1, 5);
             this.tlpMain.Controls.Add(this.lblCharacterNameLabel, 1, 0);
             this.tlpMain.Controls.Add(this.lblCareerKarma, 2, 4);
             this.tlpMain.Controls.Add(this.lblPlayerNameLabel, 1, 2);
@@ -462,11 +462,14 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblCharacterAlias, 2, 1);
             this.tlpMain.Controls.Add(this.lblMetatypeLabel, 1, 3);
             this.tlpMain.Controls.Add(this.lblPlayerName, 2, 2);
-            this.tlpMain.Controls.Add(this.flpButtons, 0, 7);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 8);
+            this.tlpMain.Controls.Add(this.lblEssenceLabel, 1, 5);
+            this.tlpMain.Controls.Add(this.lblEssence, 2, 5);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 8;
+            this.tlpMain.RowCount = 9;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -478,17 +481,22 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 55;
             // 
-            // flpButtons
+            // tlpButtons
             // 
-            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.flpButtons.AutoSize = true;
-            this.flpButtons.Controls.Add(this.cmdSelectFile);
-            this.flpButtons.Controls.Add(this.cmdImport);
-            this.flpButtons.Location = new System.Drawing.Point(0, 514);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(199, 29);
-            this.flpButtons.TabIndex = 53;
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdSelectFile, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdImport, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(0, 514);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(202, 29);
+            this.tlpButtons.TabIndex = 55;
             // 
             // frmHeroLabImporter
             // 
@@ -518,8 +526,8 @@ namespace Chummer
             this.panGameNotes.PerformLayout();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flpButtons.ResumeLayout(false);
-            this.flpButtons.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -556,6 +564,6 @@ namespace Chummer
         private System.Windows.Forms.TabPage panGameNotes;
         private System.Windows.Forms.TextBox txtGameNotes;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }
