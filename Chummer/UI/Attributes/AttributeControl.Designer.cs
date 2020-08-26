@@ -144,7 +144,6 @@ namespace Chummer.UI.Attributes
             this.cmdImproveATT.AutoSize = true;
             this.cmdImproveATT.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdImproveATT.FlatAppearance.BorderSize = 0;
-            this.cmdImproveATT.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdImproveATT.Image = global::Chummer.Properties.Resources.add;
             this.cmdImproveATT.Location = new System.Drawing.Point(33, 0);
             this.cmdImproveATT.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -161,7 +160,6 @@ namespace Chummer.UI.Attributes
             this.cmdBurnEdge.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdBurnEdge.AutoSize = true;
             this.cmdBurnEdge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdBurnEdge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdBurnEdge.Image = global::Chummer.Properties.Resources.delete;
             this.cmdBurnEdge.Location = new System.Drawing.Point(3, 0);
             this.cmdBurnEdge.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -233,7 +231,6 @@ namespace Chummer.UI.Attributes
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "AttributeControl";

@@ -295,7 +295,6 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(752, 537);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(768, 576);
             this.Name = "frmCreateCustomDrug";
             this.Padding = new System.Windows.Forms.Padding(9);

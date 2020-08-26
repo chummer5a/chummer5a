@@ -2064,7 +2064,6 @@ namespace Chummer
             // 
             this.lblCounterspellingDiceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCounterspellingDiceLabel.AutoSize = true;
-            this.lblCounterspellingDiceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCounterspellingDiceLabel.Location = new System.Drawing.Point(62, 6);
             this.lblCounterspellingDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCounterspellingDiceLabel.Name = "lblCounterspellingDiceLabel";
@@ -2395,7 +2394,6 @@ namespace Chummer
             this.lmtControl.AutoSize = true;
             this.lmtControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.lmtControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lmtControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lmtControl.Location = new System.Drawing.Point(3, 3);
             this.lmtControl.MinimumSize = new System.Drawing.Size(480, 0);
             this.lmtControl.Name = "lmtControl";
@@ -4127,7 +4125,6 @@ namespace Chummer
             // tabSkillUc
             // 
             this.tabSkillUc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabSkillUc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabSkillUc.Location = new System.Drawing.Point(0, 0);
             this.tabSkillUc.Name = "tabSkillUc";
             this.tabSkillUc.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -5124,7 +5121,6 @@ namespace Chummer
             this.tabPowerUc.AutoSize = true;
             this.tabPowerUc.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPowerUc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
             this.tabPowerUc.MinimumSize = new System.Drawing.Size(480, 80);
             this.tabPowerUc.Name = "tabPowerUc";
@@ -12114,7 +12110,6 @@ namespace Chummer
             this.rtfDescription.AutoSize = true;
             this.rtfDescription.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfDescription.Location = new System.Drawing.Point(3, 16);
             this.rtfDescription.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfDescription.Name = "rtfDescription";
@@ -12144,7 +12139,6 @@ namespace Chummer
             this.rtfBackground.AutoSize = true;
             this.rtfBackground.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfBackground.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfBackground.Location = new System.Drawing.Point(3, 16);
             this.rtfBackground.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfBackground.Name = "rtfBackground";
@@ -12174,7 +12168,6 @@ namespace Chummer
             this.rtfConcept.AutoSize = true;
             this.rtfConcept.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfConcept.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfConcept.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfConcept.Location = new System.Drawing.Point(3, 16);
             this.rtfConcept.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfConcept.Name = "rtfConcept";
@@ -12204,7 +12197,6 @@ namespace Chummer
             this.rtfNotes.AutoSize = true;
             this.rtfNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfNotes.Location = new System.Drawing.Point(3, 16);
             this.rtfNotes.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfNotes.Name = "rtfNotes";
@@ -14259,7 +14251,6 @@ namespace Chummer
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.tsMain);
             this.Controls.Add(this.mnuCreateMenu);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuCreateMenu;
             this.Name = "frmCreate";

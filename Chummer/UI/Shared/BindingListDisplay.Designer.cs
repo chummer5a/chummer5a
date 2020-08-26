@@ -47,7 +47,6 @@ namespace Chummer.UI.Shared
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.pnlDisplay);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "BindingListDisplay";
             this.Size = new System.Drawing.Size(609, 436);
             this.Load += new System.EventHandler(this.BindingListDisplay_Load);

@@ -1666,7 +1666,6 @@ namespace Chummer
             this.tabPowerUc.AutoSize = true;
             this.tabPowerUc.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPowerUc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
             this.tabPowerUc.MinimumSize = new System.Drawing.Size(480, 80);
             this.tabPowerUc.Name = "tabPowerUc";
@@ -1941,7 +1940,6 @@ namespace Chummer
             this.cmdEdgeGained.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdEdgeGained.AutoSize = true;
             this.cmdEdgeGained.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdEdgeGained.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdEdgeGained.Image = global::Chummer.Properties.Resources.add;
             this.cmdEdgeGained.Location = new System.Drawing.Point(28, 3);
             this.cmdEdgeGained.MinimumSize = new System.Drawing.Size(24, 24);
@@ -1956,7 +1954,6 @@ namespace Chummer
             this.cmdEdgeSpent.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdEdgeSpent.AutoSize = true;
             this.cmdEdgeSpent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdEdgeSpent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdEdgeSpent.Image = global::Chummer.Properties.Resources.delete;
             this.cmdEdgeSpent.Location = new System.Drawing.Point(58, 3);
             this.cmdEdgeSpent.MinimumSize = new System.Drawing.Size(24, 24);
@@ -1970,7 +1967,6 @@ namespace Chummer
             // 
             this.lblCounterspellingDiceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCounterspellingDiceLabel.AutoSize = true;
-            this.lblCounterspellingDiceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCounterspellingDiceLabel.Location = new System.Drawing.Point(62, 6);
             this.lblCounterspellingDiceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCounterspellingDiceLabel.Name = "lblCounterspellingDiceLabel";
@@ -2231,7 +2227,6 @@ namespace Chummer
             this.cmdBurnStreetCred.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdBurnStreetCred.AutoSize = true;
             this.cmdBurnStreetCred.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdBurnStreetCred.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdBurnStreetCred.Image = global::Chummer.Properties.Resources.delete;
             this.cmdBurnStreetCred.Location = new System.Drawing.Point(28, 3);
             this.cmdBurnStreetCred.Name = "cmdBurnStreetCred";
@@ -2246,7 +2241,6 @@ namespace Chummer
             this.cmdVehicleGearReduceQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdVehicleGearReduceQty.AutoSize = true;
             this.cmdVehicleGearReduceQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdVehicleGearReduceQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdVehicleGearReduceQty.Image = global::Chummer.Properties.Resources.delete;
             this.cmdVehicleGearReduceQty.Location = new System.Drawing.Point(38, 3);
             this.cmdVehicleGearReduceQty.Name = "cmdVehicleGearReduceQty";
@@ -2261,7 +2255,6 @@ namespace Chummer
             this.cmdVehicleMoveToInventory.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdVehicleMoveToInventory.AutoSize = true;
             this.cmdVehicleMoveToInventory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdVehicleMoveToInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdVehicleMoveToInventory.Image = global::Chummer.Properties.Resources.car_go;
             this.cmdVehicleMoveToInventory.Location = new System.Drawing.Point(3, 3);
             this.cmdVehicleMoveToInventory.Name = "cmdVehicleMoveToInventory";
@@ -5972,7 +5965,6 @@ namespace Chummer
             this.cmdIncreasePowerPoints.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdIncreasePowerPoints.AutoSize = true;
             this.cmdIncreasePowerPoints.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdIncreasePowerPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdIncreasePowerPoints.Image = global::Chummer.Properties.Resources.add;
             this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(28, 3);
             this.cmdIncreasePowerPoints.Name = "cmdIncreasePowerPoints";
@@ -6024,7 +6016,6 @@ namespace Chummer
             // tabSkillsUc
             // 
             this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabSkillsUc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
             this.tabSkillsUc.Name = "tabSkillsUc";
             this.tabSkillsUc.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -6048,7 +6039,6 @@ namespace Chummer
             this.lmtControl.AutoSize = true;
             this.lmtControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.lmtControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lmtControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lmtControl.Location = new System.Drawing.Point(3, 3);
             this.lmtControl.MinimumSize = new System.Drawing.Size(480, 0);
             this.lmtControl.Name = "lmtControl";
@@ -6581,7 +6571,6 @@ namespace Chummer
             this.dpcSpellDicePool.CanBeRolled = true;
             this.dpcSpellDicePool.CanEverBeRolled = true;
             this.dpcSpellDicePool.DicePool = 0;
-            this.dpcSpellDicePool.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dpcSpellDicePool.Location = new System.Drawing.Point(72, 75);
             this.dpcSpellDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcSpellDicePool.Name = "dpcSpellDicePool";
@@ -6854,7 +6843,6 @@ namespace Chummer
             this.dpcDrainAttributes.CanBeRolled = true;
             this.dpcDrainAttributes.CanEverBeRolled = true;
             this.dpcDrainAttributes.DicePool = 0;
-            this.dpcDrainAttributes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dpcDrainAttributes.Location = new System.Drawing.Point(152, 1);
             this.dpcDrainAttributes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcDrainAttributes.Name = "dpcDrainAttributes";
@@ -7285,7 +7273,6 @@ namespace Chummer
             this.dpcComplexFormDicePool.CanBeRolled = true;
             this.dpcComplexFormDicePool.CanEverBeRolled = true;
             this.dpcComplexFormDicePool.DicePool = 0;
-            this.dpcComplexFormDicePool.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dpcComplexFormDicePool.Location = new System.Drawing.Point(65, 75);
             this.dpcComplexFormDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcComplexFormDicePool.Name = "dpcComplexFormDicePool";
@@ -7396,7 +7383,6 @@ namespace Chummer
             this.dpcFadingAttributes.CanBeRolled = true;
             this.dpcFadingAttributes.CanEverBeRolled = true;
             this.dpcFadingAttributes.DicePool = 0;
-            this.dpcFadingAttributes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dpcFadingAttributes.Location = new System.Drawing.Point(66, 0);
             this.dpcFadingAttributes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcFadingAttributes.Name = "dpcFadingAttributes";
@@ -10067,7 +10053,6 @@ namespace Chummer
             this.cmdGearIncreaseQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearIncreaseQty.AutoSize = true;
             this.cmdGearIncreaseQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearIncreaseQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdGearIncreaseQty.Image = global::Chummer.Properties.Resources.add;
             this.cmdGearIncreaseQty.Location = new System.Drawing.Point(38, 3);
             this.cmdGearIncreaseQty.Name = "cmdGearIncreaseQty";
@@ -10082,7 +10067,6 @@ namespace Chummer
             this.cmdGearReduceQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearReduceQty.AutoSize = true;
             this.cmdGearReduceQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearReduceQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdGearReduceQty.Image = global::Chummer.Properties.Resources.delete;
             this.cmdGearReduceQty.Location = new System.Drawing.Point(68, 3);
             this.cmdGearReduceQty.Name = "cmdGearReduceQty";
@@ -10097,7 +10081,6 @@ namespace Chummer
             this.cmdGearSplitQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearSplitQty.AutoSize = true;
             this.cmdGearSplitQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearSplitQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdGearSplitQty.Image = global::Chummer.Properties.Resources.arrow_divide;
             this.cmdGearSplitQty.Location = new System.Drawing.Point(98, 3);
             this.cmdGearSplitQty.Name = "cmdGearSplitQty";
@@ -10112,7 +10095,6 @@ namespace Chummer
             this.cmdGearMergeQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearMergeQty.AutoSize = true;
             this.cmdGearMergeQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearMergeQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdGearMergeQty.Image = global::Chummer.Properties.Resources.arrow_join;
             this.cmdGearMergeQty.Location = new System.Drawing.Point(128, 3);
             this.cmdGearMergeQty.Name = "cmdGearMergeQty";
@@ -10127,7 +10109,6 @@ namespace Chummer
             this.cmdGearMoveToVehicle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearMoveToVehicle.AutoSize = true;
             this.cmdGearMoveToVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearMoveToVehicle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdGearMoveToVehicle.Image = global::Chummer.Properties.Resources.car_go;
             this.cmdGearMoveToVehicle.Location = new System.Drawing.Point(158, 3);
             this.cmdGearMoveToVehicle.Name = "cmdGearMoveToVehicle";
@@ -11153,7 +11134,6 @@ namespace Chummer
             this.cmdArmorIncrease.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdArmorIncrease.AutoSize = true;
             this.cmdArmorIncrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorIncrease.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdArmorIncrease.Image = global::Chummer.Properties.Resources.add;
             this.cmdArmorIncrease.Location = new System.Drawing.Point(29, 3);
             this.cmdArmorIncrease.Name = "cmdArmorIncrease";
@@ -11168,7 +11148,6 @@ namespace Chummer
             this.cmdArmorDecrease.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdArmorDecrease.AutoSize = true;
             this.cmdArmorDecrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorDecrease.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdArmorDecrease.Image = global::Chummer.Properties.Resources.delete;
             this.cmdArmorDecrease.Location = new System.Drawing.Point(59, 3);
             this.cmdArmorDecrease.Name = "cmdArmorDecrease";
@@ -11981,7 +11960,6 @@ namespace Chummer
             this.cmdWeaponMoveToVehicle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdWeaponMoveToVehicle.AutoSize = true;
             this.cmdWeaponMoveToVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdWeaponMoveToVehicle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdWeaponMoveToVehicle.Image = global::Chummer.Properties.Resources.car_go;
             this.cmdWeaponMoveToVehicle.Location = new System.Drawing.Point(3, 3);
             this.cmdWeaponMoveToVehicle.Name = "cmdWeaponMoveToVehicle";
@@ -12286,7 +12264,6 @@ namespace Chummer
             this.dpcWeaponDicePool.CanBeRolled = true;
             this.dpcWeaponDicePool.CanEverBeRolled = true;
             this.dpcWeaponDicePool.DicePool = 0;
-            this.dpcWeaponDicePool.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dpcWeaponDicePool.Location = new System.Drawing.Point(65, 25);
             this.dpcWeaponDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcWeaponDicePool.Name = "dpcWeaponDicePool";
@@ -12642,7 +12619,6 @@ namespace Chummer
             this.cmdWeaponBuyAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdWeaponBuyAmmo.AutoSize = true;
             this.cmdWeaponBuyAmmo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdWeaponBuyAmmo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdWeaponBuyAmmo.Image = global::Chummer.Properties.Resources.basket_add;
             this.cmdWeaponBuyAmmo.Location = new System.Drawing.Point(128, 3);
             this.cmdWeaponBuyAmmo.Name = "cmdWeaponBuyAmmo";
@@ -13604,7 +13580,6 @@ namespace Chummer
             this.btnIncreaseDrugQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnIncreaseDrugQty.AutoSize = true;
             this.btnIncreaseDrugQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnIncreaseDrugQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnIncreaseDrugQty.Image = global::Chummer.Properties.Resources.add;
             this.btnIncreaseDrugQty.Location = new System.Drawing.Point(38, 3);
             this.btnIncreaseDrugQty.Name = "btnIncreaseDrugQty";
@@ -13619,7 +13594,6 @@ namespace Chummer
             this.btnDecreaseDrugQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnDecreaseDrugQty.AutoSize = true;
             this.btnDecreaseDrugQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnDecreaseDrugQty.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDecreaseDrugQty.Image = global::Chummer.Properties.Resources.delete;
             this.btnDecreaseDrugQty.Location = new System.Drawing.Point(68, 3);
             this.btnDecreaseDrugQty.Name = "btnDecreaseDrugQty";
@@ -13883,7 +13857,6 @@ namespace Chummer
             this.cmdDecreaseLifestyleMonths.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDecreaseLifestyleMonths.AutoSize = true;
             this.cmdDecreaseLifestyleMonths.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDecreaseLifestyleMonths.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdDecreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.delete;
             this.cmdDecreaseLifestyleMonths.Location = new System.Drawing.Point(40, 3);
             this.cmdDecreaseLifestyleMonths.Name = "cmdDecreaseLifestyleMonths";
@@ -13898,7 +13871,6 @@ namespace Chummer
             this.cmdIncreaseLifestyleMonths.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdIncreaseLifestyleMonths.AutoSize = true;
             this.cmdIncreaseLifestyleMonths.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdIncreaseLifestyleMonths.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdIncreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.add;
             this.cmdIncreaseLifestyleMonths.Location = new System.Drawing.Point(70, 3);
             this.cmdIncreaseLifestyleMonths.Name = "cmdIncreaseLifestyleMonths";
@@ -15006,7 +14978,6 @@ namespace Chummer
             this.dpcVehicleWeaponDicePool.CanBeRolled = true;
             this.dpcVehicleWeaponDicePool.CanEverBeRolled = true;
             this.dpcVehicleWeaponDicePool.DicePool = 0;
-            this.dpcVehicleWeaponDicePool.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dpcVehicleWeaponDicePool.Location = new System.Drawing.Point(65, 25);
             this.dpcVehicleWeaponDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcVehicleWeaponDicePool.Name = "dpcVehicleWeaponDicePool";
@@ -16907,7 +16878,6 @@ namespace Chummer
             this.rtfDescription.AutoSize = true;
             this.rtfDescription.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfDescription.Location = new System.Drawing.Point(3, 16);
             this.rtfDescription.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfDescription.Name = "rtfDescription";
@@ -16937,7 +16907,6 @@ namespace Chummer
             this.rtfBackground.AutoSize = true;
             this.rtfBackground.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfBackground.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfBackground.Location = new System.Drawing.Point(3, 16);
             this.rtfBackground.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfBackground.Name = "rtfBackground";
@@ -16967,7 +16936,6 @@ namespace Chummer
             this.rtfConcept.AutoSize = true;
             this.rtfConcept.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfConcept.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfConcept.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfConcept.Location = new System.Drawing.Point(3, 16);
             this.rtfConcept.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfConcept.Name = "rtfConcept";
@@ -16997,7 +16965,6 @@ namespace Chummer
             this.rtfNotes.AutoSize = true;
             this.rtfNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfNotes.Location = new System.Drawing.Point(3, 16);
             this.rtfNotes.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfNotes.Name = "rtfNotes";
@@ -17650,7 +17617,6 @@ namespace Chummer
             this.chtKarma.AutoSize = true;
             this.chtKarma.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.chtKarma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chtKarma.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chtKarma.Location = new System.Drawing.Point(3, 388);
             this.chtKarma.Name = "chtKarma";
             this.chtKarma.NuyenMode = false;
@@ -17680,7 +17646,6 @@ namespace Chummer
             this.chtNuyen.AutoSize = true;
             this.chtNuyen.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.chtNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chtNuyen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chtNuyen.Location = new System.Drawing.Point(3, 388);
             this.chtNuyen.Name = "chtNuyen";
             this.chtNuyen.NuyenMode = true;
@@ -17948,7 +17913,6 @@ namespace Chummer
             this.rtfGameNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfGameNotes.Cursor = System.Windows.Forms.Cursors.Default;
             this.rtfGameNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfGameNotes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtfGameNotes.Location = new System.Drawing.Point(3, 3);
             this.rtfGameNotes.MinimumSize = new System.Drawing.Size(0, 120);
             this.rtfGameNotes.Name = "rtfGameNotes";
@@ -19038,7 +19002,6 @@ namespace Chummer
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.tsMain);
             this.Controls.Add(this.mnuCreateMenu);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuCreateMenu;
             this.Name = "frmCareer";
