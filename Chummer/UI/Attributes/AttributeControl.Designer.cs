@@ -88,7 +88,7 @@ namespace Chummer.UI.Attributes
             // 
             this.lblValue.AutoSize = true;
             this.lblValue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblValue.Bold = true;
+            this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblValue.Location = new System.Drawing.Point(152, 0);
             this.lblValue.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblValue.Name = "lblValue";

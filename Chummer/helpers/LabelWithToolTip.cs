@@ -16,8 +16,6 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -68,16 +66,6 @@ namespace Chummer
         {
             ToolTipObject = objToolTip;
             _intToolTipWrap = intToolTipWrap;
-        }
-
-        public bool Bold
-        {
-            get => Font.Bold;
-            set
-            {
-                if (value != Font.Bold)
-                    Font = new Font(Font, value ? FontStyle.Bold : Font.Italic ? FontStyle.Italic : FontStyle.Regular);
-            }
         }
 
         protected override void Dispose(bool disposing)
