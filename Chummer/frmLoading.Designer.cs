@@ -29,37 +29,37 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblLoadingInfo = new System.Windows.Forms.Label();
             this.pgbLoadingProgress = new System.Windows.Forms.ProgressBar();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.lblLoadingInfo, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.pgbLoadingProgress, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 63);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 1;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.Controls.Add(this.lblLoadingInfo, 0, 0);
+            this.tlpMain.Controls.Add(this.pgbLoadingProgress, 0, 1);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 2;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(442, 59);
+            this.tlpMain.TabIndex = 0;
             // 
             // lblLoadingInfo
             // 
             this.lblLoadingInfo.AutoSize = true;
             this.lblLoadingInfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblLoadingInfo.Location = new System.Drawing.Point(3, 12);
+            this.lblLoadingInfo.Location = new System.Drawing.Point(3, 8);
             this.lblLoadingInfo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLoadingInfo.Name = "lblLoadingInfo";
-            this.lblLoadingInfo.Size = new System.Drawing.Size(440, 13);
+            this.lblLoadingInfo.Size = new System.Drawing.Size(436, 13);
             this.lblLoadingInfo.TabIndex = 0;
             this.lblLoadingInfo.Tag = "String_Initializing";
             this.lblLoadingInfo.Text = "Loading [Item]...";
@@ -67,9 +67,9 @@ namespace Chummer
             // pgbLoadingProgress
             // 
             this.pgbLoadingProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 34);
+            this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 30);
             this.pgbLoadingProgress.Name = "pgbLoadingProgress";
-            this.pgbLoadingProgress.Size = new System.Drawing.Size(440, 26);
+            this.pgbLoadingProgress.Size = new System.Drawing.Size(436, 26);
             this.pgbLoadingProgress.Step = 1;
             this.pgbLoadingProgress.TabIndex = 1;
             // 
@@ -79,9 +79,9 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(464, 81);
+            this.ClientSize = new System.Drawing.Size(460, 77);
             this.ControlBox = false;
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -92,8 +92,8 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.Tag = "String_Loading";
             this.Text = "Loading [Character]...";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -101,7 +101,7 @@ namespace Chummer
 
         #endregion
 
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblLoadingInfo;
         private System.Windows.Forms.ProgressBar pgbLoadingProgress;
     }

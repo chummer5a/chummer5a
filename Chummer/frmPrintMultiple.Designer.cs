@@ -33,16 +33,17 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.cmdSelectCharacter = new System.Windows.Forms.Button();
             this.cmdPrint = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.treCharacters = new System.Windows.Forms.TreeView();
             this.prgProgress = new System.Windows.Forms.ProgressBar();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // dlgOpenFile
@@ -55,9 +56,8 @@ namespace Chummer
             // 
             this.cmdSelectCharacter.AutoSize = true;
             this.cmdSelectCharacter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdSelectCharacter.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cmdSelectCharacter.Location = new System.Drawing.Point(0, 0);
-            this.cmdSelectCharacter.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.cmdSelectCharacter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdSelectCharacter.Location = new System.Drawing.Point(3, 3);
             this.cmdSelectCharacter.Name = "cmdSelectCharacter";
             this.cmdSelectCharacter.Size = new System.Drawing.Size(106, 23);
             this.cmdSelectCharacter.TabIndex = 1;
@@ -70,9 +70,8 @@ namespace Chummer
             // 
             this.cmdPrint.AutoSize = true;
             this.cmdPrint.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdPrint.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cmdPrint.Location = new System.Drawing.Point(0, 58);
-            this.cmdPrint.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.cmdPrint.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdPrint.Location = new System.Drawing.Point(3, 61);
             this.cmdPrint.Name = "cmdPrint";
             this.cmdPrint.Size = new System.Drawing.Size(106, 23);
             this.cmdPrint.TabIndex = 3;
@@ -85,9 +84,8 @@ namespace Chummer
             // 
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cmdDelete.Location = new System.Drawing.Point(0, 29);
-            this.cmdDelete.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdDelete.Location = new System.Drawing.Point(3, 32);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(106, 23);
             this.cmdDelete.TabIndex = 2;
@@ -111,7 +109,7 @@ namespace Chummer
             // 
             // prgProgress
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.prgProgress, 2);
+            this.tlpMain.SetColumnSpan(this.prgProgress, 2);
             this.prgProgress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.prgProgress.Location = new System.Drawing.Point(3, 237);
             this.prgProgress.Name = "prgProgress";
@@ -119,46 +117,51 @@ namespace Chummer
             this.prgProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.prgProgress.TabIndex = 4;
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.prgProgress, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.treCharacters, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.MinimumSize = new System.Drawing.Size(446, 263);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 263);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.Controls.Add(this.prgProgress, 0, 1);
+            this.tlpMain.Controls.Add(this.treCharacters, 0, 0);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 0);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.MinimumSize = new System.Drawing.Size(446, 263);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 2;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(446, 263);
+            this.tlpMain.TabIndex = 5;
             // 
-            // flowLayoutPanel1
+            // tlpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.cmdSelectCharacter);
-            this.flowLayoutPanel1.Controls.Add(this.cmdDelete);
-            this.flowLayoutPanel1.Controls.Add(this.cmdPrint);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(337, 3);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(106, 81);
-            this.flowLayoutPanel1.TabIndex = 0;
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 1;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Controls.Add(this.cmdSelectCharacter, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdPrint, 0, 2);
+            this.tlpButtons.Controls.Add(this.cmdDelete, 0, 1);
+            this.tlpButtons.Location = new System.Drawing.Point(334, 0);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 3;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpButtons.Size = new System.Drawing.Size(112, 87);
+            this.tlpButtons.TabIndex = 5;
             // 
             // frmPrintMultiple
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(464, 281);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -169,10 +172,10 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_PrintMultiple";
             this.Text = "Select Characters to Print";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -186,7 +189,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.TreeView treCharacters;
         private System.Windows.Forms.ProgressBar prgProgress;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

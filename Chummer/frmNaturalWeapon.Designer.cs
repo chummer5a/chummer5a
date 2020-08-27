@@ -45,14 +45,14 @@ namespace Chummer
             this.lblReach = new System.Windows.Forms.Label();
             this.cboDVType = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpDV = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudDVMod)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudReach)).BeginInit();
             this.tlpMain.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
+            this.flpDV.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboSkill
@@ -185,12 +185,13 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
             this.cmdCancel.TabIndex = 11;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -199,12 +200,12 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(81, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
             this.cmdOK.TabIndex = 10;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -269,8 +270,8 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.cboSkill, 1, 1);
             this.tlpMain.Controls.Add(this.lblDV, 0, 2);
             this.tlpMain.Controls.Add(this.lblAP, 0, 3);
-            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 1, 2);
-            this.tlpMain.Controls.Add(this.flowLayoutPanel2, 0, 5);
+            this.tlpMain.Controls.Add(this.flpDV, 1, 2);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 5);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -284,36 +285,40 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(446, 183);
             this.tlpMain.TabIndex = 15;
             // 
-            // flowLayoutPanel1
+            // flpDV
             // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.cboDVBase);
-            this.flowLayoutPanel1.Controls.Add(this.lblDVPlus);
-            this.flowLayoutPanel1.Controls.Add(this.nudDVMod);
-            this.flowLayoutPanel1.Controls.Add(this.cboDVType);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(68, 53);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(378, 26);
-            this.flowLayoutPanel1.TabIndex = 14;
-            this.flowLayoutPanel1.WrapContents = false;
+            this.flpDV.AutoSize = true;
+            this.flpDV.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpDV.Controls.Add(this.cboDVBase);
+            this.flpDV.Controls.Add(this.lblDVPlus);
+            this.flpDV.Controls.Add(this.nudDVMod);
+            this.flpDV.Controls.Add(this.cboDVType);
+            this.flpDV.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpDV.Location = new System.Drawing.Point(68, 53);
+            this.flpDV.Margin = new System.Windows.Forms.Padding(0);
+            this.flpDV.Name = "flpDV";
+            this.flpDV.Size = new System.Drawing.Size(378, 26);
+            this.flpDV.TabIndex = 14;
+            this.flpDV.WrapContents = false;
             // 
-            // flowLayoutPanel2
+            // tlpButtons
             // 
-            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.SetColumnSpan(this.flowLayoutPanel2, 2);
-            this.flowLayoutPanel2.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel2.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(290, 160);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(156, 23);
-            this.flowLayoutPanel2.TabIndex = 15;
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpMain.SetColumnSpan(this.tlpButtons, 2);
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(334, 154);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.TabIndex = 16;
             // 
             // frmNaturalWeapon
             // 
@@ -339,10 +344,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudReach)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
+            this.flpDV.ResumeLayout(false);
+            this.flpDV.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -366,7 +371,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblReach;
         private ElasticComboBox cboDVType;
         private BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flpDV;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

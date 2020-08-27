@@ -37,11 +37,8 @@ namespace Chummer
             this.txtContributors = new System.Windows.Forms.TextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.txtDisclaimer = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdOK = new System.Windows.Forms.Button();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
-            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtDescription
@@ -53,7 +50,7 @@ namespace Chummer
             this.txtDescription.Name = "txtDescription";
             this.txtDescription.ReadOnly = true;
             this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDescription.Size = new System.Drawing.Size(492, 201);
+            this.txtDescription.Size = new System.Drawing.Size(492, 215);
             this.txtDescription.TabIndex = 23;
             this.txtDescription.Text = "[Description]";
             this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
@@ -120,31 +117,30 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblCompanyName, 1, 3);
             this.tlpMain.Controls.Add(this.txtDescription, 1, 4);
             this.tlpMain.Controls.Add(this.txtDisclaimer, 1, 5);
-            this.tlpMain.Controls.Add(this.flowLayoutPanel1, 1, 6);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 7;
+            this.tlpMain.RowCount = 6;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 0;
             // 
             // txtContributors
             // 
             this.txtContributors.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtContributors.Location = new System.Drawing.Point(3, 310);
+            this.txtContributors.Location = new System.Drawing.Point(3, 324);
             this.txtContributors.MaxLength = 2147483647;
             this.txtContributors.Multiline = true;
             this.txtContributors.Name = "txtContributors";
             this.txtContributors.ReadOnly = true;
             this.txtContributors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtContributors.Size = new System.Drawing.Size(262, 201);
+            this.txtContributors.Size = new System.Drawing.Size(262, 216);
             this.txtContributors.TabIndex = 25;
             this.txtContributors.Tag = "About_Label_Contributors";
             this.txtContributors.Text = "Thank You to All GitHub Contributors!";
@@ -156,7 +152,7 @@ namespace Chummer
             this.picLogo.Location = new System.Drawing.Point(3, 3);
             this.picLogo.Name = "picLogo";
             this.tlpMain.SetRowSpan(this.picLogo, 5);
-            this.picLogo.Size = new System.Drawing.Size(262, 301);
+            this.picLogo.Size = new System.Drawing.Size(262, 315);
             this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picLogo.TabIndex = 12;
             this.picLogo.TabStop = false;
@@ -164,40 +160,17 @@ namespace Chummer
             // txtDisclaimer
             // 
             this.txtDisclaimer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDisclaimer.Location = new System.Drawing.Point(271, 310);
+            this.txtDisclaimer.Location = new System.Drawing.Point(271, 324);
             this.txtDisclaimer.MaxLength = 2147483647;
             this.txtDisclaimer.Multiline = true;
             this.txtDisclaimer.Name = "txtDisclaimer";
             this.txtDisclaimer.ReadOnly = true;
             this.txtDisclaimer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtDisclaimer.Size = new System.Drawing.Size(492, 201);
+            this.txtDisclaimer.Size = new System.Drawing.Size(492, 216);
             this.txtDisclaimer.TabIndex = 26;
             this.txtDisclaimer.Tag = "About_Label_Disclaimer";
             this.txtDisclaimer.Text = "Disclaimer";
             this.txtDisclaimer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(680, 514);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(86, 29);
-            this.flowLayoutPanel1.TabIndex = 28;
-            // 
-            // cmdOK
-            // 
-            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.cmdOK.AutoSize = true;
-            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdOK.Location = new System.Drawing.Point(3, 3);
-            this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(80, 23);
-            this.cmdOK.TabIndex = 27;
-            this.cmdOK.Text = "&OK";
             // 
             // frmAbout
             // 
@@ -220,8 +193,6 @@ namespace Chummer
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -236,8 +207,6 @@ namespace Chummer
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtDisclaimer;
         private System.Windows.Forms.TextBox txtContributors;
-        private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.PictureBox picLogo;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

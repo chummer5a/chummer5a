@@ -94,7 +94,7 @@ namespace Chummer
             this.chkIgnoreRules.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreRules.AutoSize = true;
             this.chkIgnoreRules.CheckAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.chkIgnoreRules.Location = new System.Drawing.Point(3, 120);
+            this.chkIgnoreRules.Location = new System.Drawing.Point(3, 160);
             this.chkIgnoreRules.Name = "chkIgnoreRules";
             this.chkIgnoreRules.Size = new System.Drawing.Size(177, 17);
             this.chkIgnoreRules.TabIndex = 5;
@@ -252,7 +252,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(446, 143);
+            this.tlpMain.Size = new System.Drawing.Size(446, 183);
             this.tlpMain.TabIndex = 16;
             // 
             // tlpNumericUpDowns
@@ -274,7 +274,7 @@ namespace Chummer
             this.tlpNumericUpDowns.Controls.Add(this.nudSumtoTen, 3, 1);
             this.tlpNumericUpDowns.Controls.Add(this.nudMaxAvail, 3, 0);
             this.tlpNumericUpDowns.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpNumericUpDowns.Location = new System.Drawing.Point(0, 62);
+            this.tlpNumericUpDowns.Location = new System.Drawing.Point(0, 102);
             this.tlpNumericUpDowns.Margin = new System.Windows.Forms.Padding(0);
             this.tlpNumericUpDowns.Name = "tlpNumericUpDowns";
             this.tlpNumericUpDowns.RowCount = 2;
@@ -322,7 +322,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(334, 114);
+            this.tlpButtons.Location = new System.Drawing.Point(334, 154);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -335,9 +335,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(464, 161);
+            this.ClientSize = new System.Drawing.Size(464, 201);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

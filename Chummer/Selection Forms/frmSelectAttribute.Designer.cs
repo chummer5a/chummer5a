@@ -35,9 +35,9 @@ namespace Chummer
             this.cmdCancel = new System.Windows.Forms.Button();
             this.chkDoNotAffectMetatypeMaximum = new System.Windows.Forms.CheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -113,7 +113,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
             this.tlpMain.Controls.Add(this.cboAttribute, 0, 1);
             this.tlpMain.Controls.Add(this.chkDoNotAffectMetatypeMaximum, 0, 2);
-            this.tlpMain.Controls.Add(this.bufferedTableLayoutPanel1, 0, 3);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -125,23 +125,23 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(326, 123);
             this.tlpMain.TabIndex = 5;
             // 
-            // bufferedTableLayoutPanel1
+            // tlpButtons
             // 
-            this.bufferedTableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel1.ColumnCount = 2;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdCancel, 0, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdOK, 1, 0);
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(214, 94);
-            this.bufferedTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 1;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(112, 29);
-            this.bufferedTableLayoutPanel1.TabIndex = 4;
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(214, 94);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.TabIndex = 4;
             // 
             // frmSelectAttribute
             // 
@@ -165,8 +165,8 @@ namespace Chummer
             this.Load += new System.EventHandler(this.frmSelectAttribute_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -180,6 +180,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.CheckBox chkDoNotAffectMetatypeMaximum;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

@@ -34,16 +34,16 @@ namespace Chummer
             this.lblDice = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
             this.nudDiceResult = new System.Windows.Forms.NumericUpDown();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblDescription
             // 
             this.lblDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDescription.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblDescription, 3);
+            this.tlpMain.SetColumnSpan(this.lblDescription, 3);
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
@@ -102,29 +102,29 @@ namespace Chummer
             this.nudDiceResult.TabIndex = 2;
             this.nudDiceResult.ValueChanged += new System.EventHandler(this.nudDiceResult_ValueChanged);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.lblResult, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.nudDiceResult, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblDice, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cmdOK, 1, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(366, 93);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 3;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.lblResult, 2, 1);
+            this.tlpMain.Controls.Add(this.nudDiceResult, 1, 1);
+            this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
+            this.tlpMain.Controls.Add(this.lblDice, 0, 1);
+            this.tlpMain.Controls.Add(this.cmdOK, 1, 2);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.Size = new System.Drawing.Size(366, 93);
+            this.tlpMain.TabIndex = 5;
             // 
             // frmLifestyleNuyen
             // 
@@ -133,7 +133,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(384, 111);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -146,8 +146,8 @@ namespace Chummer
             this.Text = "Starting Nuyen";
             this.Load += new System.EventHandler(this.frmLifestyleNuyen_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -160,6 +160,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblDice;
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.NumericUpDown nudDiceResult;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
     }
 }
