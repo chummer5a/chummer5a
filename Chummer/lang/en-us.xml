@@ -620,7 +620,7 @@
     </string>
     <string>
       <key>Label_Dodge</key>
-      <text>Dodge:</text>
+      <text>Defense Test:</text>
     </string>
     <string>
       <key>Label_Seats</key>
@@ -6000,7 +6000,7 @@
     </string>
     <string>
       <key>Label_SpellDefenseIndirectDodge</key>
-      <text>Indirect Dodge</text>
+      <text>Indirect Defense Test</text>
     </string>
     <string>
       <key>Label_SpellDefenseIndirect</key>

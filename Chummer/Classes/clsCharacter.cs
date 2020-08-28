@@ -4008,18 +4008,20 @@ namespace Chummer
 
             // </attributes>
             objWriter.WriteEndElement();
+            // <dodge />
+            objWriter.WriteElementString("dodge", Dodge.ToString(objCulture));
             // <armor />
-            objWriter.WriteElementString("armor", (TotalArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("armor", TotalArmorRating.ToString(objCulture));
             // <firearmor />
-            objWriter.WriteElementString("firearmor", (TotalFireArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("firearmor", TotalFireArmorRating.ToString(objCulture));
             // <coldarmor />
-            objWriter.WriteElementString("coldarmor", (TotalColdArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("coldarmor", TotalColdArmorRating.ToString(objCulture));
             // <electricityarmor />
-            objWriter.WriteElementString("electricityarmor", (TotalElectricityArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating.ToString(objCulture));
             // <acidarmor />
-            objWriter.WriteElementString("acidarmor", (TotalAcidArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating.ToString(objCulture));
             // <fallingarmor />
-            objWriter.WriteElementString("fallingarmor", (TotalFallingArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString(objCulture));
 
             int intDamageResistanceDice = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
             // <armordicestun />
