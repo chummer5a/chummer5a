@@ -88,6 +88,7 @@ Data Changes:
 - SINner (Corporate Limited) now properly allows characters to define their own entry instead of picking from suggestions.
 - Partial Cyberskull now properly allows nanocybernetics to be added to it.
 - Fixed Ares Screech not correctly using Peak-Discharge Energy Units as ammo.
+- Fixed pantherine shifter not having the Balance Recepter quality.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
