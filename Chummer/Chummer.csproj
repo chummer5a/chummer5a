@@ -451,9 +451,7 @@
     <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include=".gitignore" />
     <None Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </None>
