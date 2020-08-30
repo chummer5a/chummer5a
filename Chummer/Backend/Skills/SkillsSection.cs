@@ -44,6 +44,38 @@ namespace Chummer.Backend.Skills
                 _objCharacter.LOG.PropertyChanged += UpdateKnowledgePointsFromAttributes;
                 _objCharacter.INT.PropertyChanged += UpdateKnowledgePointsFromAttributes;
             }
+            KnowledgeSkills.BeforeRemove += KnowledgeSkillsOnBeforeRemove;
+            KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
+        }
+
+        private void KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            KnowledgeSkills[e.OldIndex].PropertyChanged -= OnKnowledgeSkillPropertyChanged;
+        }
+
+        private void KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.Reset:
+                    foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
+                        objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
+                    goto case ListChangedType.ItemDeleted;
+                case ListChangedType.ItemAdded:
+                    KnowledgeSkills[e.NewIndex].PropertyChanged += OnKnowledgeSkillPropertyChanged;
+                    goto case ListChangedType.ItemDeleted;
+                case ListChangedType.ItemDeleted:
+                    OnMultiplePropertyChanged(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots));
+                    break;
+            }
+        }
+
+        private void OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(KnowledgeSkill.CurrentSpCost))
+                OnPropertyChanged(nameof(KnowledgeSkillRanksSum));
+            else if(e.PropertyName == nameof(KnowledgeSkill.IsNativeLanguage))
+                OnPropertyChanged(nameof(HasAvailableNativeLanguageSlots));
         }
 
         public void UnbindSkillsSection()
@@ -899,7 +931,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public BindingList<KnowledgeSkill> KnowledgeSkills { get; } = new BindingList<KnowledgeSkill>();
+        public CachedBindingList<KnowledgeSkill> KnowledgeSkills { get; } = new CachedBindingList<KnowledgeSkill>();
 
         /// <summary>
         /// KnowsoftSkills.
@@ -1122,6 +1154,13 @@ namespace Chummer.Backend.Skills
             new DependencyGraph<string, SkillsSection>(
                 new DependencyGraphNode<string, SkillsSection>(nameof(HasKnowledgePoints),
                     new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints))
+                ),
+                new DependencyGraphNode<string, SkillsSection>(nameof(SkillGroupPoints),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(SkillGroupPointsMaximum))
+                ),
+                new DependencyGraphNode<string, SkillsSection>(nameof(SkillPoints),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(SkillPointsMaximum)),
+                    new DependencyGraphNode<string, SkillsSection>(nameof(SkillPointsSpentOnKnoskills))
                 ),
                 new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPointsRemain),
                     new DependencyGraphNode<string, SkillsSection>(nameof(KnowledgeSkillPoints)),
