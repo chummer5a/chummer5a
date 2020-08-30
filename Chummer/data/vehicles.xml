@@ -13174,8 +13174,8 @@
       <rating>0</rating>
       <slots>-1</slots>
       <bonus>
-        <accel>Rating</accel>
-        <offroadaccel>Rating</offroadaccel>
+        <accel>-1</accel>
+        <offroadaccel>-1</offroadaccel>
       </bonus>
       <downgrade />
       <optionaldrone />

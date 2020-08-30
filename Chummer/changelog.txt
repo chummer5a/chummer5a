@@ -89,6 +89,7 @@ Data Changes:
 - Partial Cyberskull now properly allows nanocybernetics to be added to it.
 - Fixed Ares Screech not correctly using Peak-Discharge Energy Units as ammo.
 - Fixed pantherine shifter not having the Balance Recepter quality.
+- Acceleration Downgrade now properly reduces the vehicle's acceleration.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
