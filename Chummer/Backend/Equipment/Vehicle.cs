@@ -479,7 +479,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (VehicleMod objMod in _lstVehicleMods)
                             {
-                                if ((objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) && objMod.Weapons.Count == 0)))
+                                if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) && objMod.Weapons.Count == 0)
                                 {
                                     objMod.Weapons.Add(objWeapon);
                                     foreach (Weapon objSubWeapon in objSubWeapons)
@@ -491,7 +491,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (VehicleMod objMod in _lstVehicleMods)
                                 {
-                                    if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory)))
+                                    if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
                                     {
                                         objMod.Weapons.Add(objWeapon);
                                         foreach (Weapon objSubWeapon in objSubWeapons)
@@ -1493,22 +1493,21 @@ namespace Chummer.Backend.Equipment
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.DealerConnection && x.Enabled))
             {
                 if (
-                        (objImprovement.UniqueName == "Drones" && (
-                            _strCategory.StartsWith("Drones", StringComparison.Ordinal))) ||
-                        (objImprovement.UniqueName == "Aircraft" && (
+                        objImprovement.UniqueName == "Drones" && _strCategory.StartsWith("Drones", StringComparison.Ordinal) ||
+                        objImprovement.UniqueName == "Aircraft" && (
                             _strCategory == "Fixed-Wing Aircraft" ||
                             _strCategory == "LTAV" ||
                             _strCategory == "Rotorcraft" ||
-                            _strCategory == "VTOL/VSTOL")) ||
-                        (objImprovement.UniqueName == "Watercraft" && (
+                            _strCategory == "VTOL/VSTOL") ||
+                        objImprovement.UniqueName == "Watercraft" && (
                             _strCategory == "Boats" ||
-                            _strCategory == "Submarines")) ||
-                        (objImprovement.UniqueName == "Groundcraft" && (
+                            _strCategory == "Submarines") ||
+                        objImprovement.UniqueName == "Groundcraft" && (
                             _strCategory == "Bikes" ||
                             _strCategory == "Cars" ||
                             _strCategory == "Trucks" ||
                             _strCategory == "Municipal/Construction" ||
-                            _strCategory == "Corpsec/Police/Military"))
+                            _strCategory == "Corpsec/Police/Military")
                         )
                 {
                     return true;
@@ -1954,10 +1953,10 @@ namespace Chummer.Backend.Equipment
 
                 if (Speed != OffroadSpeed || intTotalSpeed + intTotalBonusSpeed != intBaseOffroadSpeed + intTotalBonusOffroadSpeed)
                 {
-                    return ((intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo) + '/' + (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo));
+                    return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo) + '/' + (intBaseOffroadSpeed + intTotalBonusOffroadSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
                 }
 
-                return ((intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo));
+                return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -2106,10 +2105,10 @@ namespace Chummer.Backend.Equipment
 
                 if (Accel != OffroadAccel || intTotalAccel + intTotalBonusAccel != intBaseOffroadAccel + intTotalBonusOffroadAccel)
                 {
-                    return ((intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo) + '/' + (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo));
+                    return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo) + '/' + (intBaseOffroadAccel + intTotalBonusOffroadAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
                 }
 
-                return ((intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo));
+                return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -2311,12 +2310,15 @@ namespace Chummer.Backend.Equipment
                 // Reduce handling of the drone if there is too much armor
                 int intPenalty = Math.Max((intTotalArmor - TotalBody * 3) / 3, 0);
 
-                if (Handling != OffroadHandling || intBaseHandling + intTotalBonusHandling != intBaseOffroadHandling + intTotalBonusOffroadHandling)
+                if (Handling != OffroadHandling
+                    || intBaseHandling + intTotalBonusHandling != intBaseOffroadHandling + intTotalBonusOffroadHandling)
                 {
-                    return ((intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo) + '/' + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo));
+                    return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo)
+                           + '/'
+                           + (intBaseOffroadHandling + intTotalBonusOffroadHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
                 }
 
-                return ((intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo));
+                return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -2349,12 +2351,13 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 // Rigger5 Drone Armor starts at 0. All other vehicles start with their base armor.
-                if (IsDrone && GlobalOptions.Dronemods && intModArmor <= 0)
+                if (IsDrone && GlobalOptions.Dronemods)
                 {
-                    intModArmor += _intArmor;
+                    if (intModArmor <= 0)
+                        intModArmor += _intArmor;
                 }
                 // Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
-                if (!IsDrone || !GlobalOptions.Dronemods)
+                else
                 {
                     intModArmor = Math.Min(MaxArmor, intModArmor + _intArmor);
                 }
@@ -3367,7 +3370,7 @@ namespace Chummer.Backend.Equipment
                         int intTotalChildrenValue = 0;
                         foreach (IHasMatrixAttributes objChild in lstChildrenWithMatrixAttributes)
                         {
-                            if ((objChild is Gear objGear && objGear.Equipped) || (objChild is Weapon objWeapon && objWeapon.Equipped))
+                            if (objChild is Gear objGear && objGear.Equipped || objChild is Weapon objWeapon && objWeapon.Equipped)
                             {
                                 intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
                             }

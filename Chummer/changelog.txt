@@ -56,6 +56,7 @@ Application Fixes:
 - Items loaded in for characters originally saved under some very old versions of Chummer5a will now properly recognize the original data node of armors, armor mods, lifestyle qualities, vehicle mods, weapon accessories, critter powers, martial arts, traditions, metamagics, and magical arts.
 - Weapon accessories can now modify the Reach of their parent weapon. Closes #4204
 - The weapon selection form now displays weapons' base concealability.
+- Vehicle and/or drone mods with a minimum rating greater than 1 now properly take their minimum into consideration for availability and cost filters in the vehicle/drone mod selection screen.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -90,6 +91,8 @@ Data Changes:
 - Fixed Ares Screech not correctly using Peak-Discharge Energy Units as ammo.
 - Fixed pantherine shifter not having the Balance Recepter quality.
 - Acceleration Downgrade now properly reduces the vehicle's acceleration.
+- Armor Upgrade (Drone) now properly has its availability scale with its rating.
+- All drone upgrades now display "Upgraded Rating" instead of "Rating" to make clear to what the item's Rating corresponds.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
@@ -126,6 +129,7 @@ Changed/New Strings:
 - String_PlusSkillPointsSpent
 - String_CapacityRemaining
 - String_Concealability
+- String_UpgradedRating
 
 Build 212
 Application Changes:

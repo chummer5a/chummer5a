@@ -369,11 +369,45 @@ namespace Chummer
                     }
                 }
 
+                int intMinRating = 1;
+                string strMinRating = objXmlMod.SelectSingleNode("minrating")?.Value;
+                if (strMinRating?.Length > 0)
+                {
+                    strMinRating = ReplaceStrings(strMinRating);
+                    object objTempProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
+                    if (blnTempIsSuccess)
+                        intMinRating = Convert.ToInt32(objTempProcess, GlobalOptions.InvariantCultureInfo);
+                }
+
+                string strRating = objXmlMod.SelectSingleNode("rating")?.Value;
+                if (!string.IsNullOrEmpty(strRating))
+                {
+                    // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
+                    if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
+                    {
+                        intMinRating = Math.Min(intMinRating, 20);
+                    }
+                    //Used for the Armor modifications.
+                    else if (strRating.Equals("body", StringComparison.OrdinalIgnoreCase))
+                    {
+                        intMinRating = Math.Min(intMinRating, _objVehicle.Body);
+                    }
+                    //Used for Metahuman Adjustments.
+                    else if (strRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
+                    {
+                        intMinRating = Math.Min(intMinRating, _objVehicle.TotalSeats);
+                    }
+                    else if (int.TryParse(strRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intMaxRating))
+                    {
+                        intMinRating = Math.Min(intMinRating, intMaxRating);
+                    }
+                }
+
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
-                if ((!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter)) &&
-                    (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
+                if ((!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter, intMinRating)) &&
+                    (!chkShowOnlyAffordItems.Checked || chkFreeItem.Checked || objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, intMinRating)))
                 {
                     lstMods.Add(new ListItem(objXmlMod.SelectSingleNode("id")?.Value, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }

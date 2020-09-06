@@ -475,6 +475,10 @@
       <text>Total Rating</text>
     </string>
     <string>
+      <key>String_UpgradedRating</key>
+      <text>Upgraded Rating</text>
+    </string>
+    <string>
       <key>String_System</key>
       <text>System</text>
     </string>

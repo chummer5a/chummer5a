@@ -13020,6 +13020,7 @@
       <category>Handling</category>
       <cost>Body * Rating * 200</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <handling>Rating</handling>
@@ -13042,6 +13043,7 @@
       <category>Speed</category>
       <cost>Body * Rating * 400</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <offroadspeed>Rating</offroadspeed>
@@ -13064,6 +13066,7 @@
       <category>Acceleration</category>
       <cost>Body * Rating * 200</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <accel>Rating</accel>
@@ -13082,10 +13085,11 @@
       <name>Armor (Drone)</name>
       <page>123</page>
       <source>R5</source>
-      <avail>Range(6[],12[R],MaxRating[F])</avail>
+      <avail>FixedValues(1,2,3,4,5,6,7R,8R,9R,10R,11R,12R,RatingF)</avail>
       <category>Armor</category>
       <cost>Rating * Body * 200</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <armor>Rating</armor>
@@ -13107,6 +13111,7 @@
       <category>Sensor</category>
       <cost>Rating * 1000</cost>
       <rating>8</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <sensor>Rating</sensor>
