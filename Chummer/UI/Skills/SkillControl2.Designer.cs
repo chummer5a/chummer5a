@@ -352,6 +352,7 @@ namespace Chummer.UI.Skills
             // cboSpec
             // 
             this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpec.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cboSpec.FormattingEnabled = true;
             this.cboSpec.Location = new System.Drawing.Point(3, 1);
             this.cboSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);

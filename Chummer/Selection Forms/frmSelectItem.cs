@@ -88,12 +88,13 @@ namespace Chummer
             else if (_strMode == "Dropdown")
             {
                 cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
+                cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
                 lstItems = _lstGeneralItems;
             }
             else if (_strMode == "Restricted")
             {
                 cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
-
+                cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
                     using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml").SelectNodes("/chummer/licenses/license"))
