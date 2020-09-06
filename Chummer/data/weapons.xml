@@ -17175,7 +17175,7 @@
       <cost>35</cost>
       <source>HT</source>
       <page>180</page>
-      <ammoslots>1</ammoslots>
+      <ammobonus>50 * Rating</ammobonus>
       <conceal>Rating</conceal>
       <forbidden>
         <weapondetails>
@@ -17206,7 +17206,7 @@
       <cost>35</cost>
       <source>HT</source>
       <page>180</page>
-      <ammoslots>1</ammoslots>
+      <ammobonus>50</ammobonus>
       <conceal>2</conceal>
       <rating>1</rating>
       <required>

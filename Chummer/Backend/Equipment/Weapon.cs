@@ -2582,7 +2582,7 @@ namespace Chummer.Backend.Equipment
                             lstAmmos = objAccessory.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
                         }
 
-                        intAmmoBonus += objAccessory.AmmoBonus;
+                        intAmmoBonus += objAccessory.TotalAmmoBonus;
                     }
                 }
             }

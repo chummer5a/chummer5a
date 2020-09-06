@@ -86,7 +86,7 @@ namespace Chummer.Backend.Equipment
         private int _intFullBurst;
         private int _intSuppressive;
         private string _strAmmoReplace = string.Empty;
-        private int _intAmmoBonus;
+        private string _strAmmoBonus = string.Empty;
         private int _intSortOrder;
         private bool _blnWirelessOn;
         private XmlNode _nodWirelessBonus;
@@ -246,7 +246,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
-            objXmlAccessory.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objXmlAccessory.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
             objXmlAccessory.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
 
@@ -371,7 +371,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rangemodifier", _intRangeModifier.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("ammobonus", _strAmmoBonus);
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalOptions.InvariantCultureInfo));
             if (_nodWirelessBonus != null)
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
@@ -489,7 +489,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
             objNode.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
-            objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objNode.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             if (blnCopy && !Equipped)
@@ -1175,10 +1175,39 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Adjust the Weapon's Ammo amount by the specified percent.
         /// </summary>
-        public int AmmoBonus
+        public string AmmoBonus
         {
-            get => _intAmmoBonus;
-            set => _intAmmoBonus = value;
+            get => _strAmmoBonus;
+            set => _strAmmoBonus = value;
+        }
+
+        public int TotalAmmoBonus
+        {
+            get
+            {
+                int intReturn = 0;
+
+                string strAmmoBonus = AmmoBonus;
+                if (strAmmoBonus.Contains("Rating"))
+                {
+                    // If the cost is determined by the Rating, evaluate the expression.
+                    strAmmoBonus = strAmmoBonus.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                    try
+                    {
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strAmmoBonus, out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                            intReturn = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                    }
+                    catch (OverflowException) { }
+                    catch (InvalidCastException) { }
+                }
+                else if (!string.IsNullOrEmpty(strAmmoBonus))
+                {
+                    if (!int.TryParse(strAmmoBonus, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intReturn))
+                        intReturn = 0;
+                }
+                return intReturn;
+            }
         }
 
         /// <summary>

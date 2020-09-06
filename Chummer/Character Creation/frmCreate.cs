@@ -10029,13 +10029,16 @@ namespace Chummer
                     lblWeaponRC.Visible = true;
                     lblWeaponRC.Text = Convert.ToInt32(objSelectedAccessory.RC, GlobalOptions.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 }
-                if (objSelectedAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
+                if (objSelectedAccessory.TotalAmmoBonus != 0
+                    || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
+                        && objSelectedAccessory.ModifyAmmoCapacity != "0"))
                 {
                     lblWeaponAmmoLabel.Visible = true;
                     lblWeaponAmmo.Visible = true;
                     StringBuilder sbdAmmoBonus = new StringBuilder();
-                    if (objSelectedAccessory.AmmoBonus != 0)
-                        sbdAmmoBonus.Append(objSelectedAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                    int intAmmoBonus = objSelectedAccessory.TotalAmmoBonus;
+                    if (intAmmoBonus != 0)
+                        sbdAmmoBonus.Append(intAmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
                     lblWeaponAmmo.Text = sbdAmmoBonus.ToString();
@@ -11706,13 +11709,16 @@ namespace Chummer
                     lblVehicleWeaponDicePool.Text = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                     lblVehicleWeaponDicePool.SetToolTip(string.Empty);
                 }
-                if (objAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
+                if (objAccessory.TotalAmmoBonus != 0
+                    || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
+                        && objAccessory.ModifyAmmoCapacity != "0"))
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
                     lblVehicleWeaponAmmo.Visible = true;
                     StringBuilder sbdAmmoBonus = new StringBuilder();
-                    if (objAccessory.AmmoBonus != 0)
-                        sbdAmmoBonus.Append(objAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                    int intAmmoBonus = objAccessory.TotalAmmoBonus;
+                    if (intAmmoBonus != 0)
+                        sbdAmmoBonus.Append(intAmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
                     lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();

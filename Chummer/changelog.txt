@@ -93,6 +93,7 @@ Data Changes:
 - Acceleration Downgrade now properly reduces the vehicle's acceleration.
 - Armor Upgrade (Drone) now properly has its availability scale with its rating.
 - All drone upgrades now display "Upgraded Rating" instead of "Rating" to make clear to what the item's Rating corresponds.
+- Extended Clip now properly increases ammo capacity instead of adding an extra ammo slot. Existing weapons with Extended Clips attached will need to be re-added for this change to be processed.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
