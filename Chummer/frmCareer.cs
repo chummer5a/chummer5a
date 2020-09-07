@@ -14875,9 +14875,10 @@ namespace Chummer
                         objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                     }
 
+                    decimal decGearQuantity = 0;
                     if (objMatchingGear != null)
                     {
-                        decimal decGearQuantity = objGear.Quantity;
+                        decGearQuantity = objGear.Quantity;
                         // A match was found, so increase the quantity instead.
                         objMatchingGear.Quantity += decGearQuantity;
 
@@ -14890,40 +14891,37 @@ namespace Chummer
                         }
                     }
                     // Add the Gear.
+                    else if (!string.IsNullOrEmpty(objSelectedGear?.Name))
+                    {
+                        objSelectedGear.Children.Add(objGear);
+                        if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                        {
+                            objSelectedGear.Children.Remove(objGear);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            objGear.DeleteGear();
+                            return frmPickGear.AddAgain;
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
+                    {
+                        objSelectedMod.Gear.Add(objGear);
+                        if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
+                        {
+                            objSelectedMod.Gear.Remove(objGear);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            objGear.DeleteGear();
+                            return frmPickGear.AddAgain;
+                        }
+                    }
                     else
                     {
-                        if (!string.IsNullOrEmpty(objSelectedGear?.Name))
+                        objSelectedArmor.Gear.Add(objGear);
+                        if (CharacterObjectOptions.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
                         {
-                            objSelectedGear.Children.Add(objGear);
-                            if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
-                            {
-                                objSelectedGear.Children.Remove(objGear);
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                objGear.DeleteGear();
-                                return frmPickGear.AddAgain;
-                            }
-                        }
-                        else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
-                        {
-                            objSelectedMod.Gear.Add(objGear);
-                            if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
-                            {
-                                objSelectedMod.Gear.Remove(objGear);
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                objGear.DeleteGear();
-                                return frmPickGear.AddAgain;
-                            }
-                        }
-                        else
-                        {
-                            objSelectedArmor.Gear.Add(objGear);
-                            if (CharacterObjectOptions.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
-                            {
-                                objSelectedArmor.Gear.Remove(objGear);
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                objGear.DeleteGear();
-                                return frmPickGear.AddAgain;
-                            }
+                            objSelectedArmor.Gear.Remove(objGear);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            objGear.DeleteGear();
+                            return frmPickGear.AddAgain;
                         }
                     }
 
@@ -14933,6 +14931,23 @@ namespace Chummer
                         if (decCost > CharacterObject.Nuyen)
                         {
                             Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            // Remove the added gear
+                            if (objMatchingGear != null)
+                            {
+                                objMatchingGear.Quantity -= decGearQuantity;
+                            }
+                            else if (!string.IsNullOrEmpty(objSelectedGear?.Name))
+                            {
+                                objSelectedGear.Children.Remove(objGear);
+                            }
+                            else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
+                            {
+                                objSelectedMod.Gear.Remove(objGear);
+                            }
+                            else
+                            {
+                                objSelectedArmor.Gear.Remove(objGear);
+                            }
                             // Remove any Improvements created by the Gear.
                             objGear.DeleteGear();
                             return frmPickGear.AddAgain;
