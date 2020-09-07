@@ -65,7 +65,10 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
-        public bool BaseUnlocked => CharacterObject.BuildMethodHasSkillPoints && (SkillGroupObject == null || SkillGroupObject.Base <= 0 || (!CharacterObject.Options.StrictSkillGroupsInCreateMode && CharacterObject.Options.UsePointsOnBrokenGroups));
+        public bool BaseUnlocked => CharacterObject.BuildMethodHasSkillPoints
+                                    && (SkillGroupObject?.Base <= 0
+                                        || (!(CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                                            && CharacterObject.Options.UsePointsOnBrokenGroups));
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interpretation of the rules
@@ -93,7 +96,8 @@ namespace Chummer.Backend.Skills
             {
                 if (SkillGroupObject?.Base > 0)
                 {
-                    if (CharacterObject.Options.StrictSkillGroupsInCreateMode || !CharacterObject.Options.UsePointsOnBrokenGroups)
+                    if ((CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        || !CharacterObject.Options.UsePointsOnBrokenGroups)
                         BasePoints = 0;
                     return Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
                 }
@@ -104,7 +108,9 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                if (SkillGroupObject != null && SkillGroupObject.Base != 0 && (CharacterObject.Options.StrictSkillGroupsInCreateMode || !CharacterObject.Options.UsePointsOnBrokenGroups))
+                if (SkillGroupObject?.Base != 0
+                    && ((CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        || !CharacterObject.Options.UsePointsOnBrokenGroups))
                     return;
 
                 //Calculate how far above maximum we are.
@@ -845,7 +851,10 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedForcedNotBuyWithKarma < 0)
                 {
-                    _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0 || (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0))
+                    _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0
+                                                      || (CharacterObject.Options.StrictSkillGroupsInCreateMode
+                                                          && !CharacterObject.Created
+                                                          && ((SkillGroupObject?.Karma ?? 0) > 0))
                         ? 1
                         : 0;
                 }

@@ -12943,9 +12943,11 @@ namespace Chummer
                 if(_intCachedTrustFund != int.MinValue)
                     return _intCachedTrustFund;
 
-                return _intCachedTrustFund = Improvements
-                    .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).DefaultIfEmpty()
-                    .Max(x => x?.Value ?? 0);
+                List<Improvement> lstTrustFundImprovements = Improvements
+                    .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).ToList();
+                return _intCachedTrustFund = lstTrustFundImprovements.Count > 0
+                    ? lstTrustFundImprovements.Max(x => x.Value)
+                    : 0;
             }
         }
 
