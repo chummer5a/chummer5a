@@ -3450,8 +3450,7 @@ namespace Chummer.Backend.Equipment
         {
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle",
-                    GlobalOptions.Language)))
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
                     return false;
             }
 
@@ -3461,7 +3460,8 @@ namespace Chummer.Backend.Equipment
 
         public void Sell(decimal percentage)
         {
-            if (!Remove()) return;
+            if (!Remove())
+                return;
 
             // Create the Expense Log Entry for the sale.
             decimal decAmount = TotalCost * percentage;

@@ -34,7 +34,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell
     {
         private readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -1560,6 +1560,31 @@ namespace Chummer.Backend.Equipment
         public bool AllowPasteObject(object input)
         {
             throw new NotImplementedException();
+        }
+
+        public bool Remove(bool blnConfirmDelete = true)
+        {
+            if (blnConfirmDelete)
+            {
+                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleMod")))
+                    return false;
+            }
+
+            DeleteVehicleMod();
+            return Parent.Mods.Remove(this);
+        }
+
+        public void Sell(decimal percentage)
+        {
+            if (!Remove())
+                return;
+
+            // Create the Expense Log Entry for the sale.
+            decimal decAmount = TotalCost * percentage;
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+            _objCharacter.Nuyen += decAmount;
         }
     }
 }

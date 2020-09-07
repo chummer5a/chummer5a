@@ -2000,7 +2000,11 @@
     </string>
     <string>
       <key>Message_DeleteVehicle</key>
-      <text>Are you sure you want to delete this Vehicle/Plugin?</text>
+      <text>Are you sure you want to delete this Vehicle?</text>
+    </string>
+    <string>
+      <key>Message_DeleteVehicleMod</key>
+      <text>Are you sure you want to delete this Vehicle Modification?</text>
     </string>
     <string>
       <key>Message_DeleteVehicleLocation</key>
