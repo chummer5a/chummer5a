@@ -146,7 +146,7 @@ namespace Chummer.Backend.Skills
                     else if (_objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
                         _intCachedBaseUnbroken =
                             SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
-                            && KarmaUnbroken
+                            && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
                                 ? 1 : 0;
                     else
                     {
@@ -177,11 +177,14 @@ namespace Chummer.Backend.Skills
                 {
                     if (IsDisabled || SkillList.Count == 0)
                         _intCachedKarmaUnbroken = 0;
+                    else if (_objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
+                        _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
+                                                  && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
+                            ? 1
+                            : 0;
                     else
                     {
-                        int intHigh = _objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created
-                            ? 0
-                            : SkillList.Max(x => x.BasePoints + x.FreeBase);
+                        int intHigh = SkillList.Max(x => x.BasePoints + x.FreeBase);
 
                         _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase + x.KarmaPoints + x.FreeKarma >= intHigh)
                             ? 1
@@ -477,10 +480,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, SkillGroup>(nameof(BaseUnbroken),
                     new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
-                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x =>
-                        x._objCharacter.Options.UsePointsOnBrokenGroups
-                        || (x._objCharacter.Options.StrictSkillGroupsInCreateMode
-                            && !x._objCharacter.Created))
+                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Options.UsePointsOnBrokenGroups)
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(ToolTip),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))

@@ -1186,7 +1186,7 @@ namespace Chummer
                                 XPathNavigator xmlSource = objChild.SelectSingleNode("source");
                                 if (xmlSource != null)
                                 {
-                                    blnContinue = lstBooks.Any(strBook => strBook == xmlSource.Value);
+                                    blnContinue = lstBooks.Contains(xmlSource.Value);
                                 }
 
                                 if (blnContinue)

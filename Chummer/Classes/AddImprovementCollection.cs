@@ -537,7 +537,7 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             //Check if valid attrib
             string strBonusNodeText = bonusNode.InnerText;
-            if (strBonusNodeText == "BOX" || AttributeSection.AttributeStrings.Any(x => x == strBonusNodeText))
+            if (strBonusNodeText == "BOX" || AttributeSection.AttributeStrings.Contains(strBonusNodeText))
             {
                 CreateImprovement(strBonusNodeText, _objImprovementSource, SourceName, Improvement.ImprovementType.Seeker, _strUnique, 0, 0);
             }

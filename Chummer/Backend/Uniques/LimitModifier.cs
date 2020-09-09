@@ -314,7 +314,7 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (_objCharacter.LimitModifiers.Any(limitMod => limitMod == this))
+            if (_objCharacter.LimitModifiers.Contains(this))
             {
                 if (blnConfirmDelete)
                 {

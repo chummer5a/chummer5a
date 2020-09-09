@@ -2933,7 +2933,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
-            return CalculatedMode(strLanguage).SplitNoAlloc('/').Any(strMode => strMode == strFindMode);
+            return CalculatedMode(strLanguage).SplitNoAlloc('/').Contains(strFindMode);
         }
 
         /// <summary>
@@ -6173,7 +6173,7 @@ namespace Chummer.Backend.Equipment
             }
 
             DeleteWeapon();
-            if (_objCharacter.Weapons.Any(weapon => weapon == this))
+            if (_objCharacter.Weapons.Contains(this))
             {
                 return _objCharacter.Weapons.Remove(this);
             }

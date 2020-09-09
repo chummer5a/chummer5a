@@ -66,9 +66,10 @@ namespace Chummer.Backend.Skills
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
         public bool BaseUnlocked => CharacterObject.BuildMethodHasSkillPoints
-                                    && (SkillGroupObject?.Base <= 0
-                                        || (!(CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
-                                            && CharacterObject.Options.UsePointsOnBrokenGroups));
+                                    && (!(SkillGroupObject?.Base > 0)
+                                        || (CharacterObject.Options.UsePointsOnBrokenGroups
+                                            && (!CharacterObject.Options.StrictSkillGroupsInCreateMode
+                                                || CharacterObject.Created)));
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interpretation of the rules
@@ -248,10 +249,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
+                if (SkillGroupObject != null && CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
                 {
+                    HashSet<string> setSkillNames = SkillGroupObject.SkillList.Select(x => x.Name).ToHashSet();
                     if (CharacterObject.Cyberware.Where(x => x.SourceID == s_GuiReflexRecorderId)
-                        .Any(objReflexRecorderObject => SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true))
+                        .Any(x => setSkillNames.Contains(x.Extra)))
                     {
                         return 0;
                     }
