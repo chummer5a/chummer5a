@@ -566,7 +566,7 @@ namespace ChummerHub.Controllers
                         .ThenInclude(b => b.MyGroups)
                         .ThenInclude(c => c.MyGroups)
                         .ThenInclude(d => d.MyGroups)
-                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value));
+                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value)).ToList();
                     ssg.MySINSearchGroups = await RecursiveBuildGroupMembers(groupworklist, user);
                     var memberworklist = _context.SINners
                         .Include(a => a.MyGroup)
@@ -633,7 +633,7 @@ namespace ChummerHub.Controllers
         private async Task<List<SINnerSearchGroup>> RecursiveBuildGroupMembers(IEnumerable<SINnerGroup> groupworklist, ApplicationUser user)
         {
             List<SINnerSearchGroup> addlist = new List<SINnerSearchGroup>();
-            foreach (var singroup in groupworklist)
+            foreach (var singroup in groupworklist.ToList())
             {
                 if (singroup == null)
                     continue;

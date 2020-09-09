@@ -199,12 +199,19 @@ namespace ChummerHub
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");
                 })
-                .AddJsonOptions(x =>
+                .AddNewtonsoftJson(x =>
                 {
-                    //x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    //x.SerializerSettings.PreserveReferencesHandling =
-                    //    PreserveReferencesHandling.Objects;
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
                 });
+                //.AddJsonOptions(x =>
+                //{
+                //    x.JsonSerializerOptions.WriteIndented = true;
+                //    //ling = ReferenceLoopHandling.Ignore;
+                //    //
+                //    //x.SerializerSettings.PreserveReferencesHandling =
+                //    //    PreserveReferencesHandling.Objects;
+                //});
 
 
             services.AddAuthentication(options =>

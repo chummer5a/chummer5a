@@ -64,11 +64,11 @@ namespace Chummer.Plugins
 
         public bool SetCharacterRosterNode(TreeNode objNode)
         {
-            if (objNode == null)
+            if (objNode == null || objNode.Tag == null)
                 return false;
             if (objNode.ContextMenuStrip == null)
             {
-                string strTag = objNode.Tag.ToString();
+                string strTag = objNode.Tag?.ToString();
                 objNode.ContextMenuStrip = MainForm.CharacterRoster.CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                                                                                                          && MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
             }
