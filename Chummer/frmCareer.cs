@@ -15364,10 +15364,13 @@ namespace Chummer
                 // gpbVehiclesWeapon
                 lblVehicleWeaponDamageLabel.Visible = true;
                 lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
+                lblVehicleWeaponDamage.Visible = true;
                 lblVehicleWeaponAPLabel.Visible = true;
                 lblVehicleWeaponAP.Text = objWeapon.DisplayTotalAP;
+                lblVehicleWeaponAP.Visible = true;
                 lblVehicleWeaponAccuracyLabel.Visible = true;
                 lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
+                lblVehicleWeaponAccuracy.Visible = true;
                 lblVehicleWeaponDicePoolLabel.Visible = true;
                 dpcVehicleWeaponDicePool.Visible = true;
                 dpcVehicleWeaponDicePool.DicePool = objWeapon.DicePool;

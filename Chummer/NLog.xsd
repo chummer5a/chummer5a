@@ -1101,6 +1101,7 @@
       <xs:element name="precision" minOccurs="0" maxOccurs="1" type="xs:byte" />
       <xs:element name="scale" minOccurs="0" maxOccurs="1" type="xs:byte" />
       <xs:element name="parameterType" minOccurs="0" maxOccurs="1" type="xs:string" />
+      <xs:element name="allowDbNull" minOccurs="0" maxOccurs="1" type="xs:boolean" />
       <xs:element name="format" minOccurs="0" maxOccurs="1" type="xs:string" />
       <xs:element name="culture" minOccurs="0" maxOccurs="1" type="xs:string" />
     </xs:choice>
@@ -1137,6 +1138,11 @@
     <xs:attribute name="parameterType" type="xs:string">
       <xs:annotation>
         <xs:documentation>Type of the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="allowDbNull" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Whether empty value should translate into DbNull. Requires database column to allow NULL values.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="format" type="xs:string">
