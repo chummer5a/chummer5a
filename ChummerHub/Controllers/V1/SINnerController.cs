@@ -1186,11 +1186,11 @@ namespace ChummerHub.Controllers.V1
                 return null;
             string normEmail = user?.NormalizedEmail;
             string userName = user?.UserName;
-            if (_context.UserRights.Any(a => a.SINnerId == id
-                                             && ((!string.IsNullOrEmpty(a.EMail)
-                                                  && a.EMail.ToUpperInvariant() == normEmail)
-                                                 || a.EMail == null)
-                                             && a.CanEdit))
+            var ur = _context.UserRights.Where(a => a.SINnerId == id).ToList();
+            if (ur.Any(a =>( (!string.IsNullOrEmpty(a.EMail)
+                              && a.EMail.ToUpperInvariant() == normEmail)
+                             || a.EMail == null)
+                            && a.CanEdit))
             {
                 return dbsinner;
             }
