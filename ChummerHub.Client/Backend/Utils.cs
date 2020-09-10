@@ -334,7 +334,7 @@ namespace ChummerHub.Client.Backend
                     : "https://chummer-beta.azurewebsites.net";
                 if (Debugger.IsAttached)
                 {
-                    Settings.Default.SINnerUrl = "https://chummer.azurewebsites.net";
+                    Settings.Default.SINnerUrl = "https://chummer-beta.azurewebsites.net";
                     //try
                     //{
                     //    string local = "http://localhost:5000/";
@@ -1366,6 +1366,11 @@ namespace ChummerHub.Client.Backend
                             {
                                 var client = StaticUtils.GetClient();
                                 var filestream = await client.GetDownloadFileAsync(sinner.Id.Value);
+                                if (filestream == null)
+                                {
+                                    throw new ArgumentNullException(nameof(sinner), "Could not download Sinner " +
+                                        sinner.Id.Value + " via client.GetDownloadFileAsync()!");
+                                }
                                 var array = ReadFully(filestream);
                                 File.WriteAllBytes(zippedFile, array);
                             }

@@ -31,7 +31,7 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
-    [ControllerName("SIN")]
+    [ControllerName("SINner")]
     [Authorize]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController'
     public class SINnerController : ControllerBase
