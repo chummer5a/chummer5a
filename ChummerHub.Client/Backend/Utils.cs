@@ -940,7 +940,7 @@ namespace ChummerHub.Client.Backend
             };
 
             objCache.OnMyContextMenuDeleteClick = null;
-            objCache.OnMyContextMenuDeleteClick += (sender, args) =>
+            objCache.OnMyContextMenuDeleteClick += async (sender, args) =>
             {
                 try
                 {
@@ -949,12 +949,18 @@ namespace ChummerHub.Client.Backend
                     using (new CursorWait(PluginHandler.MainForm, true))
                     {
                         var client = StaticUtils.GetClient();
-                        client.Delete(sinner.Id.Value);
-                        objCache.ErrorText = "deleted!";
-                        PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                        var res = await client.DeleteWithHttpMessagesAsync(sinner.Id.Value, null, CancellationToken.None).ConfigureAwait(true); ;
+                        if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
+                            return;
+                        if (result.CallSuccess == true)
                         {
-                            PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                        });
+                            objCache.ErrorText = "deleted!";
+                            PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                            {
+                                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                            });
+                        }
+                       
                     }
                 }
                 catch (HttpOperationException ex)

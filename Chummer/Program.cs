@@ -31,7 +31,7 @@ using System.Linq;
  using System.Threading;
  using System.Threading.Tasks;
  using System.Windows.Forms;
-﻿using Chummer.Backend;
+ using Chummer.Backend;
  using Chummer.Plugins;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
@@ -50,6 +50,8 @@ namespace Chummer
     {
         private static Logger Log;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
+        internal static readonly Process MyProcess = Process.GetCurrentProcess();
+
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _pluginLoader;
         public static PluginControl PluginLoader => _pluginLoader = _pluginLoader ?? new PluginControl();
@@ -495,5 +497,7 @@ namespace Chummer
             get;
             private set;
         }
+
+        
     }
 }
