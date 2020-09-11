@@ -97,6 +97,7 @@ Data Changes:
 - Armor Upgrade (Drone) now properly has its availability scale with its rating.
 - All drone upgrades now display "Upgraded Rating" instead of "Rating" to make clear to what the item's Rating corresponds.
 - Extended Clip now properly increases ammo capacity instead of adding an extra ammo slot. Existing weapons with Extended Clips attached will need to be re-added for this change to be processed.
+- The Nemesis Arms Maul Stun Staff now properly recognizes the Staves specialisation for the Clubs skill.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

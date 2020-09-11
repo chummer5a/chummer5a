@@ -1620,6 +1620,7 @@
       <cost>1000</cost>
       <source>RG</source>
       <page>20</page>
+	  <spec>Staves</spec>
     </weapon>
     <weapon>
       <id>e6d9f23b-f4a4-4ba8-86ea-b3811f87fc82</id>
