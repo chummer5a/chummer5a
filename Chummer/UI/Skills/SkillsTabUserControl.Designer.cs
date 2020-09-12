@@ -48,27 +48,27 @@ namespace Chummer.UI.Skills
             this.tlpActiveSkills = new System.Windows.Forms.TableLayoutPanel();
             this.lblActiveSkills = new System.Windows.Forms.Label();
             this.lblBuyWithKarma = new System.Windows.Forms.Label();
-            this.btnExotic = new System.Windows.Forms.Button();
-            this.cboDisplayFilter = new Chummer.ElasticComboBox();
-            this.cboSort = new Chummer.ElasticComboBox();
             this.flpActiveSkillsLabels = new System.Windows.Forms.FlowLayoutPanel();
             this.lblActiveSp = new System.Windows.Forms.Label();
             this.lblActiveKarma = new System.Windows.Forms.Label();
             this.btnResetCustomDisplayAttribute = new System.Windows.Forms.Button();
+            this.tlpActiveSkillsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cboSort = new Chummer.ElasticComboBox();
+            this.cboDisplayFilter = new Chummer.ElasticComboBox();
+            this.btnExotic = new System.Windows.Forms.Button();
             this.tlpBottomPanel = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblKnowledgeSkills = new System.Windows.Forms.Label();
-            this.btnKnowledge = new System.Windows.Forms.Button();
-            this.cboSortKnowledge = new Chummer.ElasticComboBox();
-            this.cboDisplayFilterKnowledge = new Chummer.ElasticComboBox();
-            this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
-            this.lblKnowledgeSkillPoints = new System.Windows.Forms.Label();
             this.lblKnoBwk = new System.Windows.Forms.Label();
             this.flpKnowledgeSkillsLabels = new System.Windows.Forms.FlowLayoutPanel();
             this.lblKnoSp = new System.Windows.Forms.Label();
             this.lblKnoKarma = new System.Windows.Forms.Label();
             this.lblCustomKnowledgeSkillsReminder = new System.Windows.Forms.Label();
-            this.tlpActiveSkillsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpKnowledgeSkillsHeader = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cboDisplayFilterKnowledge = new Chummer.ElasticComboBox();
+            this.cboSortKnowledge = new Chummer.ElasticComboBox();
+            this.btnKnowledge = new System.Windows.Forms.Button();
+            this.lblKnowledgeSkillPoints = new System.Windows.Forms.Label();
+            this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
             this.splitSkills.Panel1.SuspendLayout();
             this.splitSkills.Panel2.SuspendLayout();
@@ -78,9 +78,9 @@ namespace Chummer.UI.Skills
             this.flpSkillGroupLabels.SuspendLayout();
             this.tlpActiveSkills.SuspendLayout();
             this.flpActiveSkillsLabels.SuspendLayout();
+            this.tlpActiveSkillsButtons.SuspendLayout();
             this.tlpBottomPanel.SuspendLayout();
             this.flpKnowledgeSkillsLabels.SuspendLayout();
-            this.tlpActiveSkillsButtons.SuspendLayout();
             this.tlpKnowledgeSkillsHeader.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -239,47 +239,6 @@ namespace Chummer.UI.Skills
             this.lblBuyWithKarma.Text = "Buy With Karma";
             this.lblBuyWithKarma.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
-            // btnExotic
-            // 
-            this.btnExotic.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnExotic.AutoSize = true;
-            this.btnExotic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnExotic.Location = new System.Drawing.Point(428, 3);
-            this.btnExotic.Name = "btnExotic";
-            this.btnExotic.Size = new System.Drawing.Size(90, 23);
-            this.btnExotic.TabIndex = 2;
-            this.btnExotic.Tag = "Button_AddExoticSkill";
-            this.btnExotic.Text = "Add Exotic Skill";
-            this.btnExotic.UseVisualStyleBackColor = true;
-            this.btnExotic.Click += new System.EventHandler(this.btnExotic_Click);
-            // 
-            // cboDisplayFilter
-            // 
-            this.cboDisplayFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboDisplayFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDisplayFilter.FormattingEnabled = true;
-            this.cboDisplayFilter.IntegralHeight = false;
-            this.cboDisplayFilter.Location = new System.Drawing.Point(173, 4);
-            this.cboDisplayFilter.Name = "cboDisplayFilter";
-            this.cboDisplayFilter.Size = new System.Drawing.Size(249, 21);
-            this.cboDisplayFilter.TabIndex = 1;
-            this.cboDisplayFilter.TooltipText = "";
-            this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
-            this.cboDisplayFilter.TextUpdate += new System.EventHandler(this.cboDisplayFilter_TextUpdate);
-            // 
-            // cboSort
-            // 
-            this.cboSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSort.FormattingEnabled = true;
-            this.cboSort.IntegralHeight = false;
-            this.cboSort.Location = new System.Drawing.Point(3, 4);
-            this.cboSort.Name = "cboSort";
-            this.cboSort.Size = new System.Drawing.Size(164, 21);
-            this.cboSort.TabIndex = 4;
-            this.cboSort.TooltipText = "";
-            this.cboSort.SelectedIndexChanged += new System.EventHandler(this.cboSort_SelectedIndexChanged);
-            // 
             // flpActiveSkillsLabels
             // 
             this.flpActiveSkillsLabels.AutoSize = true;
@@ -337,6 +296,68 @@ namespace Chummer.UI.Skills
             this.btnResetCustomDisplayAttribute.Visible = false;
             this.btnResetCustomDisplayAttribute.Click += new System.EventHandler(this.btnResetCustomDisplayAttribute_Click);
             // 
+            // tlpActiveSkillsButtons
+            // 
+            this.tlpActiveSkillsButtons.AutoSize = true;
+            this.tlpActiveSkillsButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpActiveSkillsButtons.ColumnCount = 3;
+            this.tlpActiveSkills.SetColumnSpan(this.tlpActiveSkillsButtons, 2);
+            this.tlpActiveSkillsButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tlpActiveSkillsButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tlpActiveSkillsButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpActiveSkillsButtons.Controls.Add(this.cboSort, 0, 0);
+            this.tlpActiveSkillsButtons.Controls.Add(this.cboDisplayFilter, 1, 0);
+            this.tlpActiveSkillsButtons.Controls.Add(this.btnExotic, 2, 0);
+            this.tlpActiveSkillsButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpActiveSkillsButtons.Location = new System.Drawing.Point(70, 0);
+            this.tlpActiveSkillsButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpActiveSkillsButtons.Name = "tlpActiveSkillsButtons";
+            this.tlpActiveSkillsButtons.RowCount = 1;
+            this.tlpActiveSkillsButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpActiveSkillsButtons.Size = new System.Drawing.Size(521, 29);
+            this.tlpActiveSkillsButtons.TabIndex = 53;
+            // 
+            // cboSort
+            // 
+            this.cboSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSort.FormattingEnabled = true;
+            this.cboSort.IntegralHeight = false;
+            this.cboSort.Location = new System.Drawing.Point(3, 4);
+            this.cboSort.Name = "cboSort";
+            this.cboSort.Size = new System.Drawing.Size(164, 21);
+            this.cboSort.TabIndex = 4;
+            this.cboSort.TooltipText = "";
+            this.cboSort.SelectedIndexChanged += new System.EventHandler(this.cboSort_SelectedIndexChanged);
+            // 
+            // cboDisplayFilter
+            // 
+            this.cboDisplayFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboDisplayFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDisplayFilter.FormattingEnabled = true;
+            this.cboDisplayFilter.IntegralHeight = false;
+            this.cboDisplayFilter.Location = new System.Drawing.Point(173, 4);
+            this.cboDisplayFilter.Name = "cboDisplayFilter";
+            this.cboDisplayFilter.Size = new System.Drawing.Size(249, 21);
+            this.cboDisplayFilter.TabIndex = 1;
+            this.cboDisplayFilter.TooltipText = "";
+            this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
+            this.cboDisplayFilter.TextUpdate += new System.EventHandler(this.cboDisplayFilter_TextUpdate);
+            // 
+            // btnExotic
+            // 
+            this.btnExotic.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnExotic.AutoSize = true;
+            this.btnExotic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnExotic.Location = new System.Drawing.Point(428, 3);
+            this.btnExotic.Name = "btnExotic";
+            this.btnExotic.Size = new System.Drawing.Size(90, 23);
+            this.btnExotic.TabIndex = 2;
+            this.btnExotic.Tag = "Button_AddExoticSkill";
+            this.btnExotic.Text = "Add Exotic Skill";
+            this.btnExotic.UseVisualStyleBackColor = true;
+            this.btnExotic.Click += new System.EventHandler(this.btnExotic_Click);
+            // 
             // tlpBottomPanel
             // 
             this.tlpBottomPanel.AutoSize = true;
@@ -374,72 +395,6 @@ namespace Chummer.UI.Skills
             this.lblKnowledgeSkills.Tag = "Label_KnowledgeSkills";
             this.lblKnowledgeSkills.Text = "Knowledge Skills";
             this.lblKnowledgeSkills.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            // 
-            // btnKnowledge
-            // 
-            this.btnKnowledge.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnKnowledge.AutoSize = true;
-            this.btnKnowledge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnKnowledge.Location = new System.Drawing.Point(3, 3);
-            this.btnKnowledge.Name = "btnKnowledge";
-            this.btnKnowledge.Size = new System.Drawing.Size(58, 23);
-            this.btnKnowledge.TabIndex = 0;
-            this.btnKnowledge.Tag = "Button_AddSkill";
-            this.btnKnowledge.Text = "&Add Skill";
-            this.btnKnowledge.UseVisualStyleBackColor = true;
-            this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
-            // 
-            // cboSortKnowledge
-            // 
-            this.cboSortKnowledge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSortKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSortKnowledge.FormattingEnabled = true;
-            this.cboSortKnowledge.IntegralHeight = false;
-            this.cboSortKnowledge.Location = new System.Drawing.Point(67, 4);
-            this.cboSortKnowledge.Name = "cboSortKnowledge";
-            this.cboSortKnowledge.Size = new System.Drawing.Size(192, 21);
-            this.cboSortKnowledge.TabIndex = 55;
-            this.cboSortKnowledge.TooltipText = "";
-            this.cboSortKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboSortKnowledge_SelectedIndexChanged);
-            // 
-            // cboDisplayFilterKnowledge
-            // 
-            this.cboDisplayFilterKnowledge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboDisplayFilterKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDisplayFilterKnowledge.FormattingEnabled = true;
-            this.cboDisplayFilterKnowledge.IntegralHeight = false;
-            this.cboDisplayFilterKnowledge.Location = new System.Drawing.Point(265, 4);
-            this.cboDisplayFilterKnowledge.Name = "cboDisplayFilterKnowledge";
-            this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(291, 21);
-            this.cboDisplayFilterKnowledge.TabIndex = 54;
-            this.cboDisplayFilterKnowledge.TooltipText = "";
-            this.cboDisplayFilterKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilterKnowledge_SelectedIndexChanged);
-            this.cboDisplayFilterKnowledge.TextUpdate += new System.EventHandler(this.cboDisplayFilterKnowledge_TextUpdate);
-            // 
-            // lblKnowledgeSkillPointsTitle
-            // 
-            this.lblKnowledgeSkillPointsTitle.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKnowledgeSkillPointsTitle.AutoSize = true;
-            this.lblKnowledgeSkillPointsTitle.Location = new System.Drawing.Point(562, 8);
-            this.lblKnowledgeSkillPointsTitle.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKnowledgeSkillPointsTitle.Name = "lblKnowledgeSkillPointsTitle";
-            this.lblKnowledgeSkillPointsTitle.Size = new System.Drawing.Size(194, 13);
-            this.lblKnowledgeSkillPointsTitle.TabIndex = 37;
-            this.lblKnowledgeSkillPointsTitle.Tag = "Label_FreeKnowledgeSkills";
-            this.lblKnowledgeSkillPointsTitle.Text = "Free Knowledge Skill Points Remaining:";
-            this.lblKnowledgeSkillPointsTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblKnowledgeSkillPoints
-            // 
-            this.lblKnowledgeSkillPoints.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKnowledgeSkillPoints.AutoSize = true;
-            this.lblKnowledgeSkillPoints.Location = new System.Drawing.Point(762, 8);
-            this.lblKnowledgeSkillPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKnowledgeSkillPoints.Name = "lblKnowledgeSkillPoints";
-            this.lblKnowledgeSkillPoints.Size = new System.Drawing.Size(34, 13);
-            this.lblKnowledgeSkillPoints.TabIndex = 38;
-            this.lblKnowledgeSkillPoints.Text = "0 of 0";
-            this.lblKnowledgeSkillPoints.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblKnoBwk
             // 
@@ -504,27 +459,6 @@ namespace Chummer.UI.Skills
             this.lblCustomKnowledgeSkillsReminder.Text = "Remember, you can always write in custom skills and specializations!";
             this.lblCustomKnowledgeSkillsReminder.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // tlpActiveSkillsButtons
-            // 
-            this.tlpActiveSkillsButtons.AutoSize = true;
-            this.tlpActiveSkillsButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpActiveSkillsButtons.ColumnCount = 3;
-            this.tlpActiveSkills.SetColumnSpan(this.tlpActiveSkillsButtons, 2);
-            this.tlpActiveSkillsButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tlpActiveSkillsButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tlpActiveSkillsButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpActiveSkillsButtons.Controls.Add(this.cboSort, 0, 0);
-            this.tlpActiveSkillsButtons.Controls.Add(this.cboDisplayFilter, 1, 0);
-            this.tlpActiveSkillsButtons.Controls.Add(this.btnExotic, 2, 0);
-            this.tlpActiveSkillsButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpActiveSkillsButtons.Location = new System.Drawing.Point(70, 0);
-            this.tlpActiveSkillsButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpActiveSkillsButtons.Name = "tlpActiveSkillsButtons";
-            this.tlpActiveSkillsButtons.RowCount = 1;
-            this.tlpActiveSkillsButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpActiveSkillsButtons.Size = new System.Drawing.Size(521, 29);
-            this.tlpActiveSkillsButtons.TabIndex = 53;
-            // 
             // tlpKnowledgeSkillsHeader
             // 
             this.tlpKnowledgeSkillsHeader.AutoSize = true;
@@ -550,6 +484,72 @@ namespace Chummer.UI.Skills
             this.tlpKnowledgeSkillsHeader.Size = new System.Drawing.Size(800, 29);
             this.tlpKnowledgeSkillsHeader.TabIndex = 60;
             // 
+            // cboDisplayFilterKnowledge
+            // 
+            this.cboDisplayFilterKnowledge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboDisplayFilterKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDisplayFilterKnowledge.FormattingEnabled = true;
+            this.cboDisplayFilterKnowledge.IntegralHeight = false;
+            this.cboDisplayFilterKnowledge.Location = new System.Drawing.Point(265, 4);
+            this.cboDisplayFilterKnowledge.Name = "cboDisplayFilterKnowledge";
+            this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(291, 21);
+            this.cboDisplayFilterKnowledge.TabIndex = 54;
+            this.cboDisplayFilterKnowledge.TooltipText = "";
+            this.cboDisplayFilterKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilterKnowledge_SelectedIndexChanged);
+            this.cboDisplayFilterKnowledge.TextUpdate += new System.EventHandler(this.cboDisplayFilterKnowledge_TextUpdate);
+            // 
+            // cboSortKnowledge
+            // 
+            this.cboSortKnowledge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSortKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSortKnowledge.FormattingEnabled = true;
+            this.cboSortKnowledge.IntegralHeight = false;
+            this.cboSortKnowledge.Location = new System.Drawing.Point(67, 4);
+            this.cboSortKnowledge.Name = "cboSortKnowledge";
+            this.cboSortKnowledge.Size = new System.Drawing.Size(192, 21);
+            this.cboSortKnowledge.TabIndex = 55;
+            this.cboSortKnowledge.TooltipText = "";
+            this.cboSortKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboSortKnowledge_SelectedIndexChanged);
+            // 
+            // btnKnowledge
+            // 
+            this.btnKnowledge.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnKnowledge.AutoSize = true;
+            this.btnKnowledge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnKnowledge.Location = new System.Drawing.Point(3, 3);
+            this.btnKnowledge.Name = "btnKnowledge";
+            this.btnKnowledge.Size = new System.Drawing.Size(58, 23);
+            this.btnKnowledge.TabIndex = 0;
+            this.btnKnowledge.Tag = "Button_AddSkill";
+            this.btnKnowledge.Text = "&Add Skill";
+            this.btnKnowledge.UseVisualStyleBackColor = true;
+            this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
+            // 
+            // lblKnowledgeSkillPoints
+            // 
+            this.lblKnowledgeSkillPoints.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKnowledgeSkillPoints.AutoSize = true;
+            this.lblKnowledgeSkillPoints.Location = new System.Drawing.Point(762, 8);
+            this.lblKnowledgeSkillPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKnowledgeSkillPoints.Name = "lblKnowledgeSkillPoints";
+            this.lblKnowledgeSkillPoints.Size = new System.Drawing.Size(34, 13);
+            this.lblKnowledgeSkillPoints.TabIndex = 38;
+            this.lblKnowledgeSkillPoints.Text = "0 of 0";
+            this.lblKnowledgeSkillPoints.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKnowledgeSkillPointsTitle
+            // 
+            this.lblKnowledgeSkillPointsTitle.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKnowledgeSkillPointsTitle.AutoSize = true;
+            this.lblKnowledgeSkillPointsTitle.Location = new System.Drawing.Point(562, 8);
+            this.lblKnowledgeSkillPointsTitle.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKnowledgeSkillPointsTitle.Name = "lblKnowledgeSkillPointsTitle";
+            this.lblKnowledgeSkillPointsTitle.Size = new System.Drawing.Size(194, 13);
+            this.lblKnowledgeSkillPointsTitle.TabIndex = 37;
+            this.lblKnowledgeSkillPointsTitle.Tag = "Label_FreeKnowledgeSkills";
+            this.lblKnowledgeSkillPointsTitle.Text = "Free Knowledge Skill Points Remaining:";
+            this.lblKnowledgeSkillPointsTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // SkillsTabUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -573,12 +573,12 @@ namespace Chummer.UI.Skills
             this.tlpActiveSkills.PerformLayout();
             this.flpActiveSkillsLabels.ResumeLayout(false);
             this.flpActiveSkillsLabels.PerformLayout();
+            this.tlpActiveSkillsButtons.ResumeLayout(false);
+            this.tlpActiveSkillsButtons.PerformLayout();
             this.tlpBottomPanel.ResumeLayout(false);
             this.tlpBottomPanel.PerformLayout();
             this.flpKnowledgeSkillsLabels.ResumeLayout(false);
             this.flpKnowledgeSkillsLabels.PerformLayout();
-            this.tlpActiveSkillsButtons.ResumeLayout(false);
-            this.tlpActiveSkillsButtons.PerformLayout();
             this.tlpKnowledgeSkillsHeader.ResumeLayout(false);
             this.tlpKnowledgeSkillsHeader.PerformLayout();
             this.ResumeLayout(false);
