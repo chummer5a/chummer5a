@@ -60,6 +60,7 @@ Application Fixes:
 - The option to allow for skill points to be used to break skill groups no longer disables spending skill points on all skill groups under certain circumstances.
 - Trying to buy gear plugin in career mode for an armor, armor mod, or gear attached in some way to an armor or armor mod without enough money now no longer leaves a "ghost" gear after the message saying that the character cannot afford the gear has been shown.
 - Vehicle mods can now properly be sold in career mode.
+- Changing metatypes in Create mode no longer sometimes keeps old initiative and movement speed values.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

@@ -702,12 +702,12 @@ namespace Chummer
             }
             Source = charNode["source"]?.InnerText ?? "SR5";
             Page = charNode["page"]?.InnerText ?? "0";
+            _intMetatypeBP = 0;
             charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
+            _intInitiativeDice = 1;
             charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
 
-            string strMovement = objXmlMetatype["movement"]?.InnerText;
-            if (!string.IsNullOrEmpty(strMovement))
-                Movement = strMovement;
+            Movement = objXmlMetatype["movement"]?.InnerText ?? string.Empty;
 
             // Determine if the Metatype has any bonuses.
             XmlNode xmlBonusNode = charNode.SelectSingleNode("bonus");
