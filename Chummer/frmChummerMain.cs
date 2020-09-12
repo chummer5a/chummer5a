@@ -331,7 +331,8 @@ namespace Chummer
                             frmTestData.Show();
                         }
 
-                        OpenCharacterList(lstCharactersToLoad);
+                        if (lstCharactersToLoad.Count > 0)
+                            OpenCharacterList(lstCharactersToLoad);
                         if (CharacterRoster != null)
                         {
                             if (MasterIndex == null)
@@ -1083,6 +1084,8 @@ namespace Chummer
             {
                 // Open each file that has been dropped into the window.
                 string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
+                if (s.Length == 0)
+                    return;
                 lstCharacters = new Character[s.Length];
                 object lstCharactersLock = new object();
                 // Hacky, but necessary because innards of Parallel.For would end up invoking
@@ -1198,19 +1201,23 @@ namespace Chummer
         private void ShowNewForm(object sender, EventArgs e)
         {
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
+            Character objCharacter;
             using (new CursorWait(this))
             {
                 if (!File.Exists(strFilePath))
                 {
-                    if (ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
-                        DialogResult.Yes)
+                    if (DialogResult.Yes == ShowMessageBox(
+                        LanguageManager.GetString("Message_CharacterOptions_OpenOptions"),
+                        LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"),
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question))
                     {
                         using (frmOptions frmOptions = new frmOptions())
                             frmOptions.ShowDialog(this);
                     }
                 }
 
-                Character objCharacter = new Character();
+                objCharacter = new Character();
                 string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
                 string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
@@ -1277,6 +1284,10 @@ namespace Chummer
                 }
 
                 OpenCharacters.Add(objCharacter);
+            }
+
+            using (new CursorWait(this))
+            {
                 frmCreate frmNewCharacter = new frmCreate(objCharacter)
                 {
                     MdiParent = this
