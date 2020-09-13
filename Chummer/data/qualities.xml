@@ -3942,7 +3942,6 @@
       <name>In Debt</name>
       <karma>-1</karma>
       <category>Negative</category>
-      <contributetobp>False</contributetobp>
       <limit>15</limit>
       <bonus>
         <nuyenamt>5000</nuyenamt>

@@ -187,7 +187,7 @@ Data Changes:
 - Removed redundant selecttext bonuses from the synthlinks.
 - Added 'synthstruments' from Chrome Flesh as new gear objects copied from Run Faster. 
 - Added capacity to False Face cyberware.
-- Flagged Stolen Gear and In Debt as not contributing to limit, as the karma these qualities provide spent on nuyen. Added customdata file to preserve existing behaviour. 
+- Stolen Gear no longer increases the character's karma, as the quality's description explicitly states that the nuyen it provides is given in the stead of the normal bonus karma. Added a customdata file that restores old behavior, as well as another file to extend this behavior to In Debt; In Debt is written very similarly to Stolen Gear, but because it is not as explicit as Stolen Gear and because HeroLab has In Debt give both karma and nuyen, its behavior was not changed.
 - Fixed an issue in character sheets not correctly showing values for 'already addicted' addiction resistance pools. Closes #4082
 - Added 'Reaper' variant of Slab drug from Chrome Flesh. Closes #4081
 - Added the Toxic tradition.
