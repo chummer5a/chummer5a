@@ -934,7 +934,6 @@ namespace Chummer
                     objRegistry.SetValue("createbackuponcareer", chkCreateBackupOnCareer.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("pluginsenabled", chkEnablePlugins.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("alloweastereggs", chkAllowEasterEggs.Checked.ToString(GlobalOptions.InvariantCultureInfo));
-                    objRegistry.SetValue("hidecharts", chkHideCharts.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("usecustomdatetime", chkCustomDateTimeFormats.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("customdateformat", txtDateFormat.Text);
                     objRegistry.SetValue("customtimeformat", txtTimeFormat.Text);

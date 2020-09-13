@@ -48,7 +48,6 @@ namespace Chummer
             this.cmdPDFTest = new System.Windows.Forms.Button();
             this.tlpGlobalOptions = new System.Windows.Forms.TableLayoutPanel();
             this.lblPDFAppPath = new System.Windows.Forms.Label();
-            this.chkHideCharts = new System.Windows.Forms.CheckBox();
             this.lblPDFParametersLabel = new System.Windows.Forms.Label();
             this.grpTimeFormat = new System.Windows.Forms.GroupBox();
             this.bufferedTableLayoutPanel3 = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -705,7 +704,6 @@ namespace Chummer
             this.tlpGlobalOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpGlobalOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpGlobalOptions.Controls.Add(this.lblPDFAppPath, 0, 21);
-            this.tlpGlobalOptions.Controls.Add(this.chkHideCharts, 0, 12);
             this.tlpGlobalOptions.Controls.Add(this.lblPDFParametersLabel, 0, 20);
             this.tlpGlobalOptions.Controls.Add(this.grpTimeFormat, 4, 2);
             this.tlpGlobalOptions.Controls.Add(this.chkSearchInCategoryOnly, 3, 10);
@@ -795,21 +793,6 @@ namespace Chummer
             this.lblPDFAppPath.TabIndex = 9;
             this.lblPDFAppPath.Tag = "Label_Options_PDFApplicationPath";
             this.lblPDFAppPath.Text = "Location of PDF application:";
-            // 
-            // chkHideCharts
-            // 
-            this.chkHideCharts.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkHideCharts.AutoSize = true;
-            this.tlpGlobalOptions.SetColumnSpan(this.chkHideCharts, 3);
-            this.chkHideCharts.Location = new System.Drawing.Point(3, 364);
-            this.chkHideCharts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkHideCharts.Name = "chkHideCharts";
-            this.chkHideCharts.Size = new System.Drawing.Size(215, 17);
-            this.chkHideCharts.TabIndex = 58;
-            this.chkHideCharts.Tag = "Checkbox_Options_HideCharts";
-            this.chkHideCharts.Text = "Hide charts that cause issues with Wine";
-            this.chkHideCharts.UseVisualStyleBackColor = true;
-            this.chkHideCharts.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblPDFParametersLabel
             // 
@@ -5051,7 +5034,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdPDFTest;
         private System.Windows.Forms.TableLayoutPanel tlpGlobalOptions;
         private System.Windows.Forms.Label lblPDFAppPath;
-        private System.Windows.Forms.CheckBox chkHideCharts;
         private System.Windows.Forms.Label lblPDFParametersLabel;
         private System.Windows.Forms.CheckBox chkHideCharacterRoster;
         private System.Windows.Forms.GroupBox grpTimeFormat;

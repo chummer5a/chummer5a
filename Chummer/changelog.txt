@@ -61,6 +61,7 @@ Application Fixes:
 - Trying to buy gear plugin in career mode for an armor, armor mod, or gear attached in some way to an armor or armor mod without enough money now no longer leaves a "ghost" gear after the message saying that the character cannot afford the gear has been shown.
 - Vehicle mods can now properly be sold in career mode.
 - Changing metatypes in Create mode no longer sometimes keeps old initiative and movement speed values.
+- Instead of a global option to hide charts in the Karma and Nuyen tab in Career mode, charts are hidden by default and are only shown when checking a checkbox in the Karma and Nuyen tab.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -137,6 +138,7 @@ Changed/New Strings:
 - String_Concealability
 - String_UpgradedRating
 - Message_DeleteVehicleMod
+- Checkbox_ShowChart
 
 Build 212
 Application Changes:

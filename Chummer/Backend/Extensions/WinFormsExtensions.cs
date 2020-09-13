@@ -105,7 +105,6 @@ namespace Chummer
                 IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
-        
         }
 
         /// <summary>

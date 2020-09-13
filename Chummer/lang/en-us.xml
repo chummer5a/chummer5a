@@ -5460,6 +5460,10 @@
       <key>Checkbox_ShowFreeEntries</key>
       <text>Show Free Entries</text>
     </string>
+    <string>
+      <key>Checkbox_ShowChart</key>
+      <text>Show Chart</text>
+    </string>
     <!-- End Region-->
     <!-- Region Calendar Tab -->
     <string>
@@ -5703,10 +5707,6 @@
     <string>
       <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
       <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_HideCharts</key>
-      <text>Hide charts that cause issues with Wine</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>

@@ -267,7 +267,6 @@ namespace Chummer
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
         private static bool _blnAllowEasterEggs;
-        private static bool _blnHideCharts;
         private static bool _blnCustomDateTimeFormats;
         private static string _strCustomDateFormat;
         private static string _strCustomTimeFormat;
@@ -567,9 +566,6 @@ namespace Chummer
 
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
-
-            // Hide or show Expenses charts.
-            LoadBoolFromRegistry(ref _blnHideCharts, "hidecharts");
 
             LoadBoolFromRegistry(ref _blnCustomDateTimeFormats, "customdatetimeformats");
             LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
@@ -1060,15 +1056,6 @@ namespace Chummer
         {
             get => _blnPreferNightlyUpdates;
             set => _blnPreferNightlyUpdates = value;
-        }
-
-        /// <summary>
-        /// Should charts that can cause crash behaviour in Wine be shown
-        /// </summary>
-        public static bool HideCharts
-        {
-            get => _blnHideCharts;
-            set => _blnHideCharts = value;
         }
 
         public static string CharacterRosterPath
