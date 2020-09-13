@@ -35,6 +35,10 @@
       <text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
     </string>
     <string>
+      <key>Message_File_Cannot_Be_Read_Accessed</key>
+      <text>Chummer5 cannot access the file {0}. Please make sure that the file exists and that Chummer5 has permission to read from the location.</text>
+    </string>
+    <string>
       <key>Message_Files_Cannot_Be_Removed</key>
       <text>Chummer5 could not remove the below files during update as they were inaccessible:</text>
     </string>
