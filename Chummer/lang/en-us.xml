@@ -35,6 +35,10 @@
       <text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
     </string>
     <string>
+      <key>Message_File_Cannot_Be_Read_Accessed</key>
+      <text>Chummer5 cannot access the file {0}. Please make sure that the file exists and that Chummer5 has permission to read from the location.</text>
+    </string>
+    <string>
       <key>Message_Files_Cannot_Be_Removed</key>
       <text>Chummer5 could not remove the below files during update as they were inaccessible:</text>
     </string>
@@ -5460,6 +5464,10 @@
       <key>Checkbox_ShowFreeEntries</key>
       <text>Show Free Entries</text>
     </string>
+    <string>
+      <key>Checkbox_ShowChart</key>
+      <text>Show Chart</text>
+    </string>
     <!-- End Region-->
     <!-- Region Calendar Tab -->
     <string>
@@ -5703,10 +5711,6 @@
     <string>
       <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
       <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_HideCharts</key>
-      <text>Hide charts that cause issues with Wine</text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>

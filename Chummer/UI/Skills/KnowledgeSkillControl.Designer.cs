@@ -70,13 +70,14 @@ namespace Chummer.UI.Skills
             // 
             // lblModifiedRating
             // 
+            this.lblModifiedRating.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblModifiedRating.AutoSize = true;
-            this.lblModifiedRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModifiedRating.Location = new System.Drawing.Point(240, 0);
+            this.lblModifiedRating.Location = new System.Drawing.Point(240, 5);
+            this.lblModifiedRating.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblModifiedRating.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblModifiedRating.Name = "lblModifiedRating";
-            this.lblModifiedRating.Size = new System.Drawing.Size(50, 24);
+            this.lblModifiedRating.Size = new System.Drawing.Size(50, 13);
             this.lblModifiedRating.TabIndex = 16;
             this.lblModifiedRating.Text = "00 (00)";
             this.lblModifiedRating.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -97,7 +98,7 @@ namespace Chummer.UI.Skills
             // 
             // chkKarma
             // 
-            this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarma.AutoSize = true;
             this.chkKarma.Location = new System.Drawing.Point(298, 5);
             this.chkKarma.Name = "chkKarma";
@@ -107,13 +108,13 @@ namespace Chummer.UI.Skills
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(186, 0);
             this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(48, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(48, 24);
             this.cmdDelete.TabIndex = 19;
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
@@ -154,6 +155,7 @@ namespace Chummer.UI.Skills
             this.lblRating.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblRating.AutoSize = true;
             this.lblRating.Location = new System.Drawing.Point(29, 5);
+            this.lblRating.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblRating.MinimumSize = new System.Drawing.Size(20, 0);
             this.lblRating.Name = "lblRating";
             this.lblRating.Size = new System.Drawing.Size(20, 13);
@@ -163,11 +165,12 @@ namespace Chummer.UI.Skills
             // 
             // lblSpec
             // 
+            this.lblSpec.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpec.AutoSize = true;
-            this.lblSpec.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblSpec.Location = new System.Drawing.Point(3, 0);
+            this.lblSpec.Location = new System.Drawing.Point(3, 5);
+            this.lblSpec.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblSpec.Name = "lblSpec";
-            this.lblSpec.Size = new System.Drawing.Size(41, 24);
+            this.lblSpec.Size = new System.Drawing.Size(41, 13);
             this.lblSpec.TabIndex = 24;
             this.lblSpec.Text = "[SPEC]";
             this.lblSpec.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -379,11 +382,12 @@ namespace Chummer.UI.Skills
             // 
             // lblName
             // 
+            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblName.AutoSize = true;
-            this.lblName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblName.Location = new System.Drawing.Point(3, 0);
+            this.lblName.Location = new System.Drawing.Point(3, 5);
+            this.lblName.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(41, 24);
+            this.lblName.Size = new System.Drawing.Size(41, 13);
             this.lblName.TabIndex = 21;
             this.lblName.Text = "[Name]";
             this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -439,7 +443,6 @@ namespace Chummer.UI.Skills
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
-            this.MinimumSize = new System.Drawing.Size(2, 24);
             this.Name = "KnowledgeSkillControl";
             this.Size = new System.Drawing.Size(846, 24);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);

@@ -6185,7 +6185,6 @@ namespace Chummer
         /// </summary>
         protected bool AddMugshot()
         {
-            bool blnSuccess = false;
             using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
             {
                 if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
@@ -6201,34 +6200,43 @@ namespace Chummer
                     string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension))),
                     string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
 
-                if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
+                bool blnMakeLoop = true;
+                while (blnMakeLoop)
                 {
-                    blnSuccess = true;
-                    // Convert the image to a string using Base64.
-                    _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
-
-                    Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
-                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                    blnMakeLoop = false;
+                    if (dlgOpenFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return false;
+                    if (!File.Exists(dlgOpenFileDialog.FileName))
                     {
-                        _objCharacter.Mugshots.Add(bmpMugshot);
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_File_Cannot_Be_Read_Accessed"), dlgOpenFileDialog.FileName));
+                        blnMakeLoop = true;
                     }
-                    else
-                    {
-                        try
-                        {
-                            Bitmap bmpConvertedMugshot = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                            _objCharacter.Mugshots.Add(bmpConvertedMugshot);
-                        }
-                        finally
-                        {
-                            bmpMugshot.Dispose();
-                        }
-                    }
-                    if (_objCharacter.MainMugshotIndex == -1)
-                        _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
                 }
+
+                // Convert the image to a string using Base64.
+                _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
+
+                Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
+                if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                {
+                    _objCharacter.Mugshots.Add(bmpMugshot);
+                }
+                else
+                {
+                    try
+                    {
+                        Bitmap bmpConvertedMugshot = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                        _objCharacter.Mugshots.Add(bmpConvertedMugshot);
+                    }
+                    finally
+                    {
+                        bmpMugshot.Dispose();
+                    }
+                }
+                if (_objCharacter.MainMugshotIndex == -1)
+                    _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
             }
-            return blnSuccess;
+            return true;
         }
 
         /// <summary>

@@ -136,11 +136,12 @@ namespace Chummer
             // 
             // lblName
             // 
+            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblName.AutoSize = true;
-            this.lblName.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblName.Location = new System.Drawing.Point(3, 0);
+            this.lblName.Location = new System.Drawing.Point(3, 8);
+            this.lblName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(38, 30);
+            this.lblName.Size = new System.Drawing.Size(38, 13);
             this.lblName.TabIndex = 22;
             this.lblName.Tag = "Label_CharacterName";
             this.lblName.Text = "Name:";
@@ -148,11 +149,12 @@ namespace Chummer
             // 
             // lblMetatypeLabel
             // 
+            this.lblMetatypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetatypeLabel.AutoSize = true;
-            this.lblMetatypeLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblMetatypeLabel.Location = new System.Drawing.Point(324, 0);
+            this.lblMetatypeLabel.Location = new System.Drawing.Point(324, 8);
+            this.lblMetatypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatypeLabel.Name = "lblMetatypeLabel";
-            this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 30);
+            this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
             this.lblMetatypeLabel.TabIndex = 23;
             this.lblMetatypeLabel.Tag = "Label_Metatype";
             this.lblMetatypeLabel.Text = "Metatype:";

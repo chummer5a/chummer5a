@@ -225,12 +225,6 @@ namespace Chummer
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
-                        chtKarma.Visible = !GlobalOptions.HideCharts;
-                        chtNuyen.Visible = !GlobalOptions.HideCharts;
-                        //TODO: I'm lazy and can't be bothered fabbing up an instance wrapper for this.
-                        //chtKarma.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
-                        //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
-
                         chkJoinGroup.Checked = CharacterObject?.GroupMember ?? false;
                         chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
@@ -13795,7 +13789,7 @@ namespace Chummer
                     StringBuilder sbdAmmoBonus = new StringBuilder();
                     int intAmmoBonus = objSelectedAccessory.TotalAmmoBonus;
                     if (intAmmoBonus != 0)
-                        sbdAmmoBonus.Append(intAmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                        sbdAmmoBonus.Append((intAmmoBonus / 100.0m).ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
                     lblWeaponAmmo.Text = sbdAmmoBonus.ToString();
@@ -15660,7 +15654,7 @@ namespace Chummer
                     StringBuilder sbdAmmoBonus = new StringBuilder();
                     int intAmmoBonus = objAccessory.TotalAmmoBonus;
                     if (intAmmoBonus != 0)
-                        sbdAmmoBonus.Append(intAmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                        sbdAmmoBonus.Append((intAmmoBonus / 100.0m).ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
                     lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();
@@ -17475,6 +17469,18 @@ namespace Chummer
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
+        }
+
+        // Data binding doesn't work for some reason, so handle visibility toggles through events
+
+        private void chkShowKarmaChart_CheckedChanged(object sender, EventArgs e)
+        {
+            chtKarma.Visible = chkShowKarmaChart.Checked;
+        }
+
+        private void chkShowNuyenChart_CheckedChanged(object sender, EventArgs e)
+        {
+            chtNuyen.Visible = chkShowNuyenChart.Checked;
         }
     }
 }

@@ -70,11 +70,12 @@ namespace Chummer
             // 
             // lblServices
             // 
+            this.lblServices.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblServices.AutoSize = true;
-            this.lblServices.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblServices.Location = new System.Drawing.Point(407, 0);
+            this.lblServices.Location = new System.Drawing.Point(407, 8);
+            this.lblServices.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblServices.Name = "lblServices";
-            this.lblServices.Size = new System.Drawing.Size(82, 30);
+            this.lblServices.Size = new System.Drawing.Size(82, 13);
             this.lblServices.TabIndex = 3;
             this.lblServices.Tag = "Label_Spirit_ServicesOwed";
             this.lblServices.Text = "Services Owed:";
@@ -98,11 +99,12 @@ namespace Chummer
             // 
             // lblForce
             // 
+            this.lblForce.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblForce.AutoSize = true;
-            this.lblForce.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblForce.Location = new System.Drawing.Point(329, 0);
+            this.lblForce.Location = new System.Drawing.Point(329, 8);
+            this.lblForce.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblForce.Name = "lblForce";
-            this.lblForce.Size = new System.Drawing.Size(37, 30);
+            this.lblForce.Size = new System.Drawing.Size(37, 13);
             this.lblForce.TabIndex = 1;
             this.lblForce.Tag = "Label_Spirit_Force";
             this.lblForce.Text = "Force:";

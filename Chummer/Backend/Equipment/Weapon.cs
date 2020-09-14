@@ -2566,12 +2566,8 @@ namespace Chummer.Backend.Equipment
             string strReturn = string.Empty;
             int intAmmoBonus = 0;
 
-            int intExtendedMax = 0;
             if (WeaponAccessories.Count != 0)
             {
-                if (WeaponAccessories.Any(x => x.Name.Contains("Extended Clip")))
-                    intExtendedMax = WeaponAccessories.Where(x => x.Name.Contains("Extended Clip")).Max(x => x.Rating);
-
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (objAccessory.Equipped)
@@ -2587,6 +2583,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            int intAmmoBonusFlat = 0;
             decimal decAmmoBonusPercent = 1.0m;
             if (ParentMount != null)
             {
@@ -2596,7 +2593,7 @@ namespace Chummer.Backend.Equipment
                     {
                         lstAmmos = objMod.AmmoReplace.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
                     }
-                    intAmmoBonus += objMod.AmmoBonus;
+                    intAmmoBonusFlat += objMod.AmmoBonus;
                     if (objMod.AmmoBonusPercent != 0)
                     {
                         decAmmoBonusPercent *= objMod.AmmoBonusPercent / 100.0m;
@@ -2643,15 +2640,9 @@ namespace Chummer.Backend.Equipment
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
                     if (blnIsSuccess)
                     {
-                        int intAmmo = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                        int intAmmo = Convert.ToInt32(Math.Ceiling((double)objProcess)) + intAmmoBonusFlat;
 
                         intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
-
-                        if (intExtendedMax > 0 && strAmmo.Contains("(c)"))
-                        {
-                            //Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times original result
-                            intAmmo = intAmmo * (2 + intExtendedMax) / 2;
-                        }
 
                         if (decAmmoBonusPercent != 1.0m)
                         {

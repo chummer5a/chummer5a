@@ -66,7 +66,8 @@ namespace Chummer.Backend.Skills
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
         public bool BaseUnlocked => CharacterObject.BuildMethodHasSkillPoints
-                                    && (!(SkillGroupObject?.Base > 0)
+                                    && (SkillGroupObject == null
+                                        || SkillGroupObject.Base <= 0
                                         || (CharacterObject.Options.UsePointsOnBrokenGroups
                                             && (!CharacterObject.Options.StrictSkillGroupsInCreateMode
                                                 || CharacterObject.Created)));
@@ -102,14 +103,12 @@ namespace Chummer.Backend.Skills
                         BasePoints = 0;
                     return Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
                 }
-                else
-                {
-                    return Math.Min(BasePoints + FreeBase, RatingMaximum);
-                }
+
+                return Math.Min(BasePoints + FreeBase, RatingMaximum);
             }
             set
             {
-                if (SkillGroupObject?.Base != 0
+                if (SkillGroupObject?.Base > 0
                     && ((CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
                         || !CharacterObject.Options.UsePointsOnBrokenGroups))
                     return;
@@ -140,7 +139,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created && ((SkillGroupObject?.Karma ?? 0) > 0))
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created && SkillGroupObject?.Karma > 0)
                 {
                     _intKarma = 0;
                     Specializations.RemoveAll(x => !x.Free);
@@ -831,8 +830,12 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedForcedBuyWithKarma < 0)
                 {
-                    _intCachedForcedBuyWithKarma = !string.IsNullOrWhiteSpace(Specialization) &&
-                        ((KarmaPoints > 0 && BasePoints + FreeBase == 0 && !CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills) || SkillGroupObject?.Karma > 0 || SkillGroupObject?.Base > 0)
+                    _intCachedForcedBuyWithKarma = !string.IsNullOrWhiteSpace(Specialization)
+                                                   && ((KarmaPoints > 0
+                                                        && BasePoints + FreeBase == 0
+                                                        && !CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills)
+                                                       || SkillGroupObject?.Karma > 0
+                                                       || SkillGroupObject?.Base > 0)
                         ? 1
                         : 0;
                 }
@@ -856,7 +859,7 @@ namespace Chummer.Backend.Skills
                     _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0
                                                       || (CharacterObject.Options.StrictSkillGroupsInCreateMode
                                                           && !CharacterObject.Created
-                                                          && ((SkillGroupObject?.Karma ?? 0) > 0))
+                                                          && SkillGroupObject?.Karma > 0)
                         ? 1
                         : 0;
                 }

@@ -10038,7 +10038,7 @@ namespace Chummer
                     StringBuilder sbdAmmoBonus = new StringBuilder();
                     int intAmmoBonus = objSelectedAccessory.TotalAmmoBonus;
                     if (intAmmoBonus != 0)
-                        sbdAmmoBonus.Append(intAmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                        sbdAmmoBonus.Append((intAmmoBonus / 100.0m).ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
                     lblWeaponAmmo.Text = sbdAmmoBonus.ToString();
@@ -11718,7 +11718,7 @@ namespace Chummer
                     StringBuilder sbdAmmoBonus = new StringBuilder();
                     int intAmmoBonus = objAccessory.TotalAmmoBonus;
                     if (intAmmoBonus != 0)
-                        sbdAmmoBonus.Append(intAmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                        sbdAmmoBonus.Append((intAmmoBonus / 100.0m).ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
                     lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();

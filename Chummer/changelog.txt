@@ -60,6 +60,9 @@ Application Fixes:
 - The option to allow for skill points to be used to break skill groups no longer disables spending skill points on all skill groups under certain circumstances.
 - Trying to buy gear plugin in career mode for an armor, armor mod, or gear attached in some way to an armor or armor mod without enough money now no longer leaves a "ghost" gear after the message saying that the character cannot afford the gear has been shown.
 - Vehicle mods can now properly be sold in career mode.
+- Changing metatypes in Create mode no longer sometimes keeps old initiative and movement speed values.
+- Instead of a global option to hide charts in the Karma and Nuyen tab in Career mode, charts are hidden by default and are only shown when checking a checkbox in the Karma and Nuyen tab.
+- Chummer now displays an error message if it cannot load a picture/portrait/mugshot instead of crashing.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -97,6 +100,7 @@ Data Changes:
 - Armor Upgrade (Drone) now properly has its availability scale with its rating.
 - All drone upgrades now display "Upgraded Rating" instead of "Rating" to make clear to what the item's Rating corresponds.
 - Extended Clip now properly increases ammo capacity instead of adding an extra ammo slot. Existing weapons with Extended Clips attached will need to be re-added for this change to be processed.
+- The Nemesis Arms Maul Stun Staff now properly recognizes the Staves specialisation for the Clubs skill.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
@@ -135,6 +139,8 @@ Changed/New Strings:
 - String_Concealability
 - String_UpgradedRating
 - Message_DeleteVehicleMod
+- Checkbox_ShowChart
+- Message_File_Cannot_Be_Read_Accessed
 
 Build 212
 Application Changes:
@@ -185,7 +191,7 @@ Data Changes:
 - Removed redundant selecttext bonuses from the synthlinks.
 - Added 'synthstruments' from Chrome Flesh as new gear objects copied from Run Faster. 
 - Added capacity to False Face cyberware.
-- Flagged Stolen Gear and In Debt as not contributing to limit, as the karma these qualities provide spent on nuyen. Added customdata file to preserve existing behaviour. 
+- Stolen Gear no longer increases the character's karma, as the quality's description explicitly states that the nuyen it provides is given in the stead of the normal bonus karma. Added a customdata file that restores old behavior, as well as another file to extend this behavior to In Debt; In Debt is written very similarly to Stolen Gear, but because it is not as explicit as Stolen Gear and because HeroLab has In Debt give both karma and nuyen, its behavior was not changed.
 - Fixed an issue in character sheets not correctly showing values for 'already addicted' addiction resistance pools. Closes #4082
 - Added 'Reaper' variant of Slab drug from Chrome Flesh. Closes #4081
 - Added the Toxic tradition.
