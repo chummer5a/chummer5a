@@ -101,6 +101,7 @@ Data Changes:
 - All drone upgrades now display "Upgraded Rating" instead of "Rating" to make clear to what the item's Rating corresponds.
 - Extended Clip now properly increases ammo capacity instead of adding an extra ammo slot. Existing weapons with Extended Clips attached will need to be re-added for this change to be processed.
 - The Nemesis Arms Maul Stun Staff now properly recognizes the Staves specialisation for the Clubs skill.
+- The Ares Citymaster, having no statted availability or nuyen costs, has had its entry removed from Chummer's base data files.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

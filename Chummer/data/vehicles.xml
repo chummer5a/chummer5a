@@ -9409,49 +9409,6 @@
       <seats>5</seats>
     </vehicle>
     <!-- End Region -->
-    <!--Region Shadows in Focus: Metropole-->
-    <vehicle>
-      <id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
-      <name>Ares Citymaster</name>
-      <page>40</page>
-      <source>SPS</source>
-      <accel>2</accel>
-      <armor>22</armor>
-      <avail>0</avail>
-      <body>18</body>
-      <category>Cars</category>
-      <cost>0</cost>
-      <handling>4/3</handling>
-      <pilot>5</pilot>
-      <sensor>5</sensor>
-      <speed>4/3</speed>
-      <gears>
-        <gear>
-          <name>Sensor Array</name>
-          <rating>5</rating>
-          <maxrating>5</maxrating>
-        </gear>
-      </gears>
-      <mods>
-        <name>Rigger Interface</name>
-        <name select="Chemical Seal">Special Equipment</name>
-      </mods>
-      <seats>12</seats>
-      <weaponmounts>
-        <weaponmount>
-          <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Heavy [SR5]</size>
-          <visibility>External</visibility>
-        </weaponmount>
-      </weaponmounts>
-      <weapons>
-        <weapon>
-          <name>Stoner-Ares M202</name>
-        </weapon>
-      </weapons>
-    </vehicle>
-    <!-- End Region -->
     <!--Region The Seattle Gambit -->
     <vehicle>
       <id>bf1c4807-6f21-425c-aa1e-521ebf34ffe8</id>
