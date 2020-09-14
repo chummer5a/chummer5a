@@ -55,12 +55,12 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                string refreshToken = Configuration["Authentication:Google:RefreshToken"];
+                string refreshToken = Configuration["Authentication.Google.RefreshToken"];
                 UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                            new ClientSecrets
                            {
-                               ClientId = Configuration["Authentication:Google:GoogleChummerSINersId"],
-                               ClientSecret = Configuration["Authentication:Google:GoogleChummerSINersSecret"]
+                               ClientId = Configuration["Authentication.Google.GoogleChummerSINersId"],
+                               ClientSecret = Configuration["Authentication.Google.GoogleChummerSINersSecret"]
                            }, Scopes, "user", CancellationToken.None, new GoogleIDataStore("me", refreshToken, _logger));
 
                 return credential;
@@ -76,10 +76,10 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                string refreshToken = Configuration["Authentication:Google:RefreshToken"];
+                string refreshToken = Configuration["Authentication.Google.RefreshToken"];
 
                 if (string.IsNullOrEmpty(refreshToken))
-                    throw new ArgumentException("Configuration[\"Authentication:Google:RefreshToken\"] == null! ");
+                    throw new ArgumentException("Configuration[\"Authentication.Google.RefreshToken\"] == null! ");
 
                 var token = new TokenResponse
                 {
@@ -91,8 +91,8 @@ namespace ChummerHub.Services.GoogleDrive
                 {
                     ClientSecrets = new ClientSecrets
                     {
-                        ClientId = Configuration["Authentication:Google:GoogleChummerSINersId"],
-                        ClientSecret = Configuration["Authentication:Google:GoogleChummerSINersSecret"]
+                        ClientId = Configuration["Authentication.Google.GoogleChummerSINersId"],
+                        ClientSecret = Configuration["Authentication.Google.GoogleChummerSINersSecret"]
                     },
                     Scopes = Scopes,
                     DataStore = new GoogleIDataStore("me", refreshToken, _logger)
@@ -120,10 +120,10 @@ namespace ChummerHub.Services.GoogleDrive
         {
             Configuration = configuration;
             _logger = Logger;
-            string refreshToken = Configuration["Authentication:Google:RefreshToken"];
+            string refreshToken = Configuration["Authentication.Google.RefreshToken"];
 
             if (string.IsNullOrEmpty(_folderId))
-                _folderId = Configuration["Authentication:Google:ChummerFolderId"];
+                _folderId = Configuration["Authentication.Google.ChummerFolderId"];
         }
 
         internal string StoreXmlInCloud(SINnerUploadAble uploadFile, IFormFile uploadedFile)
