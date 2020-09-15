@@ -102,6 +102,7 @@ Data Changes:
 - Extended Clip now properly increases ammo capacity instead of adding an extra ammo slot. Existing weapons with Extended Clips attached will need to be re-added for this change to be processed.
 - The Nemesis Arms Maul Stun Staff now properly recognizes the Staves specialisation for the Clubs skill.
 - The Ares Citymaster, having no statted availability or nuyen costs, has had its entry removed from Chummer's base data files.
+- The Mystic Aptitude adept power's page reference is now correct.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
