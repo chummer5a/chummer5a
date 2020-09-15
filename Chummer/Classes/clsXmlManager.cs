@@ -252,7 +252,7 @@ namespace Chummer
                 strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))
                 {
-                    blnHasLiveCustomData = DoProcessCustomDataFiles(objXmlFile, objDoc, strPath, strFileName, SearchOption.AllDirectories);
+                    blnHasLiveCustomData = DoProcessCustomDataFiles(objXmlFile, objDoc, strPath, strFileName);
                 }
             }
 
@@ -472,7 +472,7 @@ namespace Chummer
             }
         }
 
-        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.TopDirectoryOnly)
+        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories)
         {
             bool blnReturn = false;
             XmlElement objDocElement = xmlDataDoc.DocumentElement;
