@@ -512,7 +512,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach(Armor objNewItem in e.NewItems)
                     {
-                        if(objNewItem.Equipped)
+                        if(objNewItem.Equipped && objNewItem.Encumbrance)
                         {
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -523,7 +523,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     foreach(Armor objOldItem in e.OldItems)
                     {
-                        if(objOldItem.Equipped)
+                        if(objOldItem.Equipped && objOldItem.Encumbrance)
                         {
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -534,7 +534,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     foreach(Armor objOldItem in e.OldItems)
                     {
-                        if(objOldItem.Equipped)
+                        if(objOldItem.Equipped && objOldItem.Encumbrance)
                         {
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -545,7 +545,7 @@ namespace Chummer
                     {
                         foreach(Armor objNewItem in e.NewItems)
                         {
-                            if(objNewItem.Equipped)
+                            if(objNewItem.Equipped && objNewItem.Encumbrance)
                             {
                                 blnDoEncumbranceRefresh = true;
                                 break;
@@ -11039,12 +11039,13 @@ namespace Chummer
         {
             get
             {
-                List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped && objArmor.Encumbrance).ToList();
-                if (lstArmorsToConsider.Count == 0)
+                List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
+                if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
                     return 0;
                 Armor objHighestArmor = null;
                 int intHighest = 0;
                 int intTotalClothing = 0;
+                int intTotalClothingEncumbrance = 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 // This is used for Custom-Fit armour's stacking.
                 foreach (Armor objArmor in lstArmorsToConsider)
@@ -11068,7 +11069,11 @@ namespace Chummer
                     }
 
                     if (objArmor.Category == "Clothing")
+                    {
                         intTotalClothing += intLoopTotal;
+                        if (objArmor.Encumbrance)
+                            intTotalClothingEncumbrance += intLoopTotal;
+                    }
                     else if (intLoopTotal > intHighest)
                     {
                         intHighest = intLoopTotal;
@@ -11081,15 +11086,16 @@ namespace Chummer
                 if (intTotalClothing > intHighest)
                 {
                     objHighestArmor = null;
-                    intTotalA = intTotalClothing;
+                    intTotalA = intTotalClothingEncumbrance; // Only count clothes that have encumbrance
                 }
 
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
-                    if (!objArmor.ArmorValue.StartsWith('+')
-                        && !objArmor.ArmorValue.StartsWith('-')
-                        && !objArmor.ArmorOverrideValue.StartsWith('+')
-                        && !objArmor.ArmorOverrideValue.StartsWith('-')
+                    if (!objArmor.Encumbrance
+                        || (!objArmor.ArmorValue.StartsWith('+')
+                            && !objArmor.ArmorValue.StartsWith('-')
+                            && !objArmor.ArmorOverrideValue.StartsWith('+')
+                            && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         || objArmor.Category == "Clothing"
                         || objArmor == objHighestArmor)
                         continue;
