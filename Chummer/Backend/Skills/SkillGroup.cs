@@ -799,7 +799,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsDisabled)
                     return -1;
-                int intRating = SkillList.Count > 0
+                int intRating = SkillList.Any(x => x.Enabled)
                     ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating)
                     : 0;
                 int intReturn;
