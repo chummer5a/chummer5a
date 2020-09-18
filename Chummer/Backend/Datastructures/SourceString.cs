@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
@@ -26,7 +26,7 @@ namespace Chummer
 {
     public class SourceString : IComparable, IEquatable<SourceString>
     {
-        private static readonly Dictionary<string, Tuple<string, string>> _dicCachedStrings = new Dictionary<string, Tuple<string, string>>();
+        private static readonly ConcurrentDictionary<string, Tuple<string, string>> _dicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
         private readonly int _intPage;
         private readonly int _intHashCode;
 
@@ -46,7 +46,7 @@ namespace Chummer
             Code = CommonFunctions.LanguageBookShort(strCode, Language);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
-                _dicCachedStrings.Add(Language, new Tuple<string, string>(
+                _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                         LanguageManager.GetString("String_Space", Language),
                         LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
@@ -64,7 +64,7 @@ namespace Chummer
             Code = CommonFunctions.LanguageBookShort(strSource, Language);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
-                _dicCachedStrings.Add(Language, new Tuple<string, string>(
+                _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
@@ -82,7 +82,7 @@ namespace Chummer
             Code = CommonFunctions.LanguageBookShort(strSource, Language);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
-                _dicCachedStrings.Add(Language, new Tuple<string, string>(
+                _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
