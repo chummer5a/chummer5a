@@ -63,6 +63,7 @@ Application Fixes:
 - Changing metatypes in Create mode no longer sometimes keeps old initiative and movement speed values.
 - Instead of a global option to hide charts in the Karma and Nuyen tab in Career mode, charts are hidden by default and are only shown when checking a checkbox in the Karma and Nuyen tab.
 - Chummer now displays an error message if it cannot load a picture/portrait/mugshot instead of crashing.
+- Changing 'ware grades during character creation now properly updates the list of available 'ware based on availability modifiers.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
