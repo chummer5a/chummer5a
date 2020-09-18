@@ -13375,7 +13375,7 @@ namespace Chummer
             {
                 if (treCyberware.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(tabCyberwareCM.SelectedTab, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                    ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
                 else
                 {
@@ -13860,7 +13860,7 @@ namespace Chummer
             if (treWeapons.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
             {
                 tabWeaponMatrixCM.Visible = true;
-                ProcessEquipmentConditionMonitorBoxDisplays(tabWeaponMatrixCM.SelectedTab, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
             }
             else
                 tabWeaponMatrixCM.Visible = false;
@@ -14253,7 +14253,7 @@ namespace Chummer
 
                 treGear.SelectedNode.Text = objGear.CurrentDisplayName;
 
-                ProcessEquipmentConditionMonitorBoxDisplays(tabGearMatrixCM.SelectedTab, objGear.MatrixCM, objGear.MatrixCMFilled);
+                ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM, objGear.MatrixCMFilled);
             }
             else
             {
@@ -15787,12 +15787,12 @@ namespace Chummer
             {
                 if (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor objCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(tabVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
+                    ProcessEquipmentConditionMonitorBoxDisplays(panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
                 }
 
                 if (treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(tabVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                    ProcessEquipmentConditionMonitorBoxDisplays(panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
             }
 
