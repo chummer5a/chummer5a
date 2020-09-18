@@ -68,17 +68,17 @@ namespace Chummer.UI.Attributes
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(291, 24);
+            this.tlpMain.Size = new System.Drawing.Size(276, 24);
             this.tlpMain.TabIndex = 79;
             // 
             // lblLimits
             // 
+            this.lblLimits.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblLimits.AutoSize = true;
-            this.lblLimits.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLimits.Location = new System.Drawing.Point(208, 0);
-            this.lblLimits.MinimumSize = new System.Drawing.Size(80, 0);
+            this.lblLimits.Location = new System.Drawing.Point(208, 5);
+            this.lblLimits.MinimumSize = new System.Drawing.Size(65, 0);
             this.lblLimits.Name = "lblLimits";
-            this.lblLimits.Size = new System.Drawing.Size(80, 24);
+            this.lblLimits.Size = new System.Drawing.Size(65, 13);
             this.lblLimits.TabIndex = 72;
             this.lblLimits.Text = "00 / 00 (00)";
             this.lblLimits.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -86,13 +86,13 @@ namespace Chummer.UI.Attributes
             // 
             // lblValue
             // 
+            this.lblValue.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblValue.AutoSize = true;
-            this.lblValue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblValue.Location = new System.Drawing.Point(152, 0);
+            this.lblValue.Location = new System.Drawing.Point(152, 5);
             this.lblValue.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(50, 24);
+            this.lblValue.Size = new System.Drawing.Size(50, 13);
             this.lblValue.TabIndex = 74;
             this.lblValue.Text = "00 (00)";
             this.lblValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -100,11 +100,11 @@ namespace Chummer.UI.Attributes
             // 
             // lblName
             // 
+            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblName.AutoSize = true;
-            this.lblName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblName.Location = new System.Drawing.Point(3, 0);
+            this.lblName.Location = new System.Drawing.Point(3, 5);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(61, 24);
+            this.lblName.Size = new System.Drawing.Size(61, 13);
             this.lblName.TabIndex = 71;
             this.lblName.Text = "Attrib (ATT)";
             this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -234,7 +234,7 @@ namespace Chummer.UI.Attributes
             this.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "AttributeControl";
-            this.Size = new System.Drawing.Size(291, 24);
+            this.Size = new System.Drawing.Size(276, 24);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.tlpMain.ResumeLayout(false);

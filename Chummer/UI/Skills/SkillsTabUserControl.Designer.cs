@@ -143,8 +143,8 @@ namespace Chummer.UI.Skills
             // 
             // lblSkillGroups
             // 
+            this.lblSkillGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSkillGroups.AutoSize = true;
-            this.lblSkillGroups.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblSkillGroups.Location = new System.Drawing.Point(3, 0);
             this.lblSkillGroups.MinimumSize = new System.Drawing.Size(0, 22);
             this.lblSkillGroups.Name = "lblSkillGroups";
@@ -156,24 +156,24 @@ namespace Chummer.UI.Skills
             // 
             // flpSkillGroupLabels
             // 
+            this.flpSkillGroupLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.flpSkillGroupLabels.AutoSize = true;
             this.flpSkillGroupLabels.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpSkillGroupLabels.Controls.Add(this.lblGroupKarma);
             this.flpSkillGroupLabels.Controls.Add(this.lblGroupsSp);
-            this.flpSkillGroupLabels.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flpSkillGroupLabels.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpSkillGroupLabels.Location = new System.Drawing.Point(69, 9);
+            this.flpSkillGroupLabels.Location = new System.Drawing.Point(106, 9);
             this.flpSkillGroupLabels.Margin = new System.Windows.Forms.Padding(0);
             this.flpSkillGroupLabels.Name = "flpSkillGroupLabels";
-            this.flpSkillGroupLabels.Size = new System.Drawing.Size(122, 13);
+            this.flpSkillGroupLabels.Size = new System.Drawing.Size(85, 13);
             this.flpSkillGroupLabels.TabIndex = 1;
             this.flpSkillGroupLabels.WrapContents = false;
             // 
             // lblGroupKarma
             // 
+            this.lblGroupKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGroupKarma.AutoSize = true;
-            this.lblGroupKarma.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblGroupKarma.Location = new System.Drawing.Point(82, 0);
+            this.lblGroupKarma.Location = new System.Drawing.Point(45, 0);
             this.lblGroupKarma.Name = "lblGroupKarma";
             this.lblGroupKarma.Size = new System.Drawing.Size(37, 13);
             this.lblGroupKarma.TabIndex = 52;
@@ -183,9 +183,9 @@ namespace Chummer.UI.Skills
             // 
             // lblGroupsSp
             // 
+            this.lblGroupsSp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGroupsSp.AutoSize = true;
-            this.lblGroupsSp.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblGroupsSp.Location = new System.Drawing.Point(40, 0);
+            this.lblGroupsSp.Location = new System.Drawing.Point(3, 0);
             this.lblGroupsSp.Name = "lblGroupsSp";
             this.lblGroupsSp.Size = new System.Drawing.Size(36, 13);
             this.lblGroupsSp.TabIndex = 51;
@@ -216,8 +216,8 @@ namespace Chummer.UI.Skills
             // 
             // lblActiveSkills
             // 
+            this.lblActiveSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblActiveSkills.AutoSize = true;
-            this.lblActiveSkills.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblActiveSkills.Location = new System.Drawing.Point(3, 29);
             this.lblActiveSkills.MinimumSize = new System.Drawing.Size(0, 22);
             this.lblActiveSkills.Name = "lblActiveSkills";
@@ -229,8 +229,8 @@ namespace Chummer.UI.Skills
             // 
             // lblBuyWithKarma
             // 
+            this.lblBuyWithKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuyWithKarma.AutoSize = true;
-            this.lblBuyWithKarma.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblBuyWithKarma.Location = new System.Drawing.Point(505, 38);
             this.lblBuyWithKarma.Name = "lblBuyWithKarma";
             this.lblBuyWithKarma.Size = new System.Drawing.Size(83, 13);
@@ -241,23 +241,23 @@ namespace Chummer.UI.Skills
             // 
             // flpActiveSkillsLabels
             // 
+            this.flpActiveSkillsLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.flpActiveSkillsLabels.AutoSize = true;
             this.flpActiveSkillsLabels.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpActiveSkillsLabels.Controls.Add(this.lblActiveSp);
             this.flpActiveSkillsLabels.Controls.Add(this.lblActiveKarma);
             this.flpActiveSkillsLabels.Controls.Add(this.btnResetCustomDisplayAttribute);
-            this.flpActiveSkillsLabels.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flpActiveSkillsLabels.Location = new System.Drawing.Point(70, 29);
             this.flpActiveSkillsLabels.Margin = new System.Windows.Forms.Padding(0);
             this.flpActiveSkillsLabels.Name = "flpActiveSkillsLabels";
-            this.flpActiveSkillsLabels.Size = new System.Drawing.Size(432, 22);
+            this.flpActiveSkillsLabels.Size = new System.Drawing.Size(148, 22);
             this.flpActiveSkillsLabels.TabIndex = 52;
             this.flpActiveSkillsLabels.WrapContents = false;
             // 
             // lblActiveSp
             // 
+            this.lblActiveSp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblActiveSp.AutoSize = true;
-            this.lblActiveSp.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblActiveSp.Location = new System.Drawing.Point(3, 9);
             this.lblActiveSp.Name = "lblActiveSp";
             this.lblActiveSp.Size = new System.Drawing.Size(36, 13);
@@ -268,8 +268,8 @@ namespace Chummer.UI.Skills
             // 
             // lblActiveKarma
             // 
+            this.lblActiveKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblActiveKarma.AutoSize = true;
-            this.lblActiveKarma.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblActiveKarma.Location = new System.Drawing.Point(45, 9);
             this.lblActiveKarma.Name = "lblActiveKarma";
             this.lblActiveKarma.Size = new System.Drawing.Size(37, 13);
@@ -385,8 +385,8 @@ namespace Chummer.UI.Skills
             // 
             // lblKnowledgeSkills
             // 
+            this.lblKnowledgeSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblKnowledgeSkills.AutoSize = true;
-            this.lblKnowledgeSkills.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblKnowledgeSkills.Location = new System.Drawing.Point(3, 29);
             this.lblKnowledgeSkills.MinimumSize = new System.Drawing.Size(0, 22);
             this.lblKnowledgeSkills.Name = "lblKnowledgeSkills";
@@ -398,8 +398,8 @@ namespace Chummer.UI.Skills
             // 
             // lblKnoBwk
             // 
+            this.lblKnoBwk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lblKnoBwk.AutoSize = true;
-            this.lblKnoBwk.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblKnoBwk.Location = new System.Drawing.Point(714, 38);
             this.lblKnoBwk.Name = "lblKnoBwk";
             this.lblKnoBwk.Size = new System.Drawing.Size(83, 13);
@@ -410,21 +410,21 @@ namespace Chummer.UI.Skills
             // 
             // flpKnowledgeSkillsLabels
             // 
+            this.flpKnowledgeSkillsLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.flpKnowledgeSkillsLabels.AutoSize = true;
             this.flpKnowledgeSkillsLabels.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpKnowledgeSkillsLabels.Controls.Add(this.lblKnoSp);
             this.flpKnowledgeSkillsLabels.Controls.Add(this.lblKnoKarma);
-            this.flpKnowledgeSkillsLabels.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flpKnowledgeSkillsLabels.Location = new System.Drawing.Point(93, 38);
             this.flpKnowledgeSkillsLabels.Margin = new System.Windows.Forms.Padding(0);
             this.flpKnowledgeSkillsLabels.Name = "flpKnowledgeSkillsLabels";
-            this.flpKnowledgeSkillsLabels.Size = new System.Drawing.Size(618, 13);
+            this.flpKnowledgeSkillsLabels.Size = new System.Drawing.Size(85, 13);
             this.flpKnowledgeSkillsLabels.TabIndex = 59;
             // 
             // lblKnoSp
             // 
+            this.lblKnoSp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblKnoSp.AutoSize = true;
-            this.lblKnoSp.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblKnoSp.Location = new System.Drawing.Point(3, 0);
             this.lblKnoSp.Name = "lblKnoSp";
             this.lblKnoSp.Size = new System.Drawing.Size(36, 13);
@@ -435,8 +435,8 @@ namespace Chummer.UI.Skills
             // 
             // lblKnoKarma
             // 
+            this.lblKnoKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblKnoKarma.AutoSize = true;
-            this.lblKnoKarma.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblKnoKarma.Location = new System.Drawing.Point(45, 0);
             this.lblKnoKarma.Name = "lblKnoKarma";
             this.lblKnoKarma.Size = new System.Drawing.Size(37, 13);
@@ -447,13 +447,14 @@ namespace Chummer.UI.Skills
             // 
             // lblCustomKnowledgeSkillsReminder
             // 
+            this.lblCustomKnowledgeSkillsReminder.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lblCustomKnowledgeSkillsReminder.AutoSize = true;
             this.tlpBottomPanel.SetColumnSpan(this.lblCustomKnowledgeSkillsReminder, 3);
-            this.lblCustomKnowledgeSkillsReminder.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblCustomKnowledgeSkillsReminder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCustomKnowledgeSkillsReminder.Location = new System.Drawing.Point(3, 174);
+            this.lblCustomKnowledgeSkillsReminder.Location = new System.Drawing.Point(201, 168);
+            this.lblCustomKnowledgeSkillsReminder.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCustomKnowledgeSkillsReminder.Name = "lblCustomKnowledgeSkillsReminder";
-            this.lblCustomKnowledgeSkillsReminder.Size = new System.Drawing.Size(794, 13);
+            this.lblCustomKnowledgeSkillsReminder.Size = new System.Drawing.Size(398, 13);
             this.lblCustomKnowledgeSkillsReminder.TabIndex = 55;
             this.lblCustomKnowledgeSkillsReminder.Tag = "Label_CustomKnowledgeSkillsReminder";
             this.lblCustomKnowledgeSkillsReminder.Text = "Remember, you can always write in custom skills and specializations!";
