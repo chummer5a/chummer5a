@@ -41,27 +41,27 @@ namespace Chummer.UI.Attributes
             this.flpButtonsCreate = new System.Windows.Forms.FlowLayoutPanel();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudBase = new Chummer.NumericUpDownEx();
+            this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.flpButtonsCareer.SuspendLayout();
             this.flpButtonsCreate.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBase)).BeginInit();
+            this.flpRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 4;
+            this.tlpMain.ColumnCount = 3;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.Controls.Add(this.lblLimits, 3, 0);
-            this.tlpMain.Controls.Add(this.lblValue, 2, 0);
             this.tlpMain.Controls.Add(this.lblName, 0, 0);
             this.tlpMain.Controls.Add(this.pnlButtons, 1, 0);
+            this.tlpMain.Controls.Add(this.flpRight, 2, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Margin = new System.Windows.Forms.Padding(0);
@@ -75,7 +75,7 @@ namespace Chummer.UI.Attributes
             // 
             this.lblLimits.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblLimits.AutoSize = true;
-            this.lblLimits.Location = new System.Drawing.Point(208, 5);
+            this.lblLimits.Location = new System.Drawing.Point(59, 0);
             this.lblLimits.MinimumSize = new System.Drawing.Size(65, 0);
             this.lblLimits.Name = "lblLimits";
             this.lblLimits.Size = new System.Drawing.Size(65, 13);
@@ -89,7 +89,7 @@ namespace Chummer.UI.Attributes
             this.lblValue.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblValue.AutoSize = true;
             this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblValue.Location = new System.Drawing.Point(152, 5);
+            this.lblValue.Location = new System.Drawing.Point(3, 0);
             this.lblValue.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblValue.Name = "lblValue";
             this.lblValue.Size = new System.Drawing.Size(50, 13);
@@ -224,6 +224,20 @@ namespace Chummer.UI.Attributes
             this.nudBase.BeforeValueIncrement += new System.ComponentModel.CancelEventHandler(this.nudBase_BeforeValueIncrement);
             this.nudBase.ValueChanged += new System.EventHandler(this.nudBase_ValueChanged);
             // 
+            // flpRight
+            // 
+            this.flpRight.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.flpRight.AutoSize = true;
+            this.flpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpRight.Controls.Add(this.lblValue);
+            this.flpRight.Controls.Add(this.lblLimits);
+            this.flpRight.Location = new System.Drawing.Point(149, 5);
+            this.flpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.flpRight.Name = "flpRight";
+            this.flpRight.Size = new System.Drawing.Size(127, 13);
+            this.flpRight.TabIndex = 76;
+            this.flpRight.WrapContents = false;
+            // 
             // AttributeControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -247,6 +261,8 @@ namespace Chummer.UI.Attributes
             this.flpButtonsCreate.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBase)).EndInit();
+            this.flpRight.ResumeLayout(false);
+            this.flpRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -265,5 +281,6 @@ namespace Chummer.UI.Attributes
         private System.Windows.Forms.Panel pnlButtons;
         private System.Windows.Forms.FlowLayoutPanel flpButtonsCreate;
         private System.Windows.Forms.FlowLayoutPanel flpButtonsCareer;
+        private System.Windows.Forms.FlowLayoutPanel flpRight;
     }
 }

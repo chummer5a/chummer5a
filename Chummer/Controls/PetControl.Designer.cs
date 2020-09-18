@@ -42,10 +42,12 @@ namespace Chummer
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
             this.cboMetatype = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmsContact.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
             this.tlpMain.SuspendLayout();
+            this.flpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtContactName
@@ -63,7 +65,7 @@ namespace Chummer
             // 
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Location = new System.Drawing.Point(705, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(47, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(48, 23);
             this.cmdDelete.TabIndex = 18;
@@ -113,9 +115,10 @@ namespace Chummer
             this.imgLink.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgLink.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(661, 3);
+            this.imgLink.Location = new System.Drawing.Point(3, 0);
+            this.imgLink.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.imgLink.Name = "imgLink";
-            this.imgLink.Size = new System.Drawing.Size(16, 24);
+            this.imgLink.Size = new System.Drawing.Size(16, 29);
             this.imgLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imgLink.TabIndex = 17;
             this.imgLink.TabStop = false;
@@ -126,9 +129,10 @@ namespace Chummer
             this.imgNotes.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(683, 3);
+            this.imgNotes.Location = new System.Drawing.Point(25, 0);
+            this.imgNotes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.imgNotes.Name = "imgNotes";
-            this.imgNotes.Size = new System.Drawing.Size(16, 24);
+            this.imgNotes.Size = new System.Drawing.Size(16, 29);
             this.imgNotes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imgNotes.TabIndex = 21;
             this.imgNotes.TabStop = false;
@@ -175,21 +179,19 @@ namespace Chummer
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 7;
+            this.tlpMain.ColumnCount = 5;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Controls.Add(this.lblName, 0, 0);
-            this.tlpMain.Controls.Add(this.cmdDelete, 6, 0);
-            this.tlpMain.Controls.Add(this.imgLink, 4, 0);
-            this.tlpMain.Controls.Add(this.imgNotes, 5, 0);
             this.tlpMain.Controls.Add(this.cboMetatype, 3, 0);
             this.tlpMain.Controls.Add(this.txtContactName, 1, 0);
             this.tlpMain.Controls.Add(this.lblMetatypeLabel, 2, 0);
+            this.tlpMain.Controls.Add(this.flpButtons, 4, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Name = "tlpMain";
@@ -197,6 +199,20 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(756, 30);
             this.tlpMain.TabIndex = 25;
+            // 
+            // flpButtons
+            // 
+            this.flpButtons.AutoSize = true;
+            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpButtons.Controls.Add(this.imgLink);
+            this.flpButtons.Controls.Add(this.imgNotes);
+            this.flpButtons.Controls.Add(this.cmdDelete);
+            this.flpButtons.Location = new System.Drawing.Point(658, 0);
+            this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.flpButtons.Name = "flpButtons";
+            this.flpButtons.Size = new System.Drawing.Size(98, 29);
+            this.flpButtons.TabIndex = 25;
+            this.flpButtons.WrapContents = false;
             // 
             // PetControl
             // 
@@ -215,6 +231,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
+            this.flpButtons.ResumeLayout(false);
+            this.flpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -234,5 +252,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblMetatypeLabel;
         private ElasticComboBox cboMetatype;
         private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.FlowLayoutPanel flpButtons;
     }
 }

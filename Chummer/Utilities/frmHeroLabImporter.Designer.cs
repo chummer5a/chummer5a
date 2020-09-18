@@ -483,6 +483,7 @@ namespace Chummer
             // 
             // tlpButtons
             // 
+            this.tlpButtons.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 2;

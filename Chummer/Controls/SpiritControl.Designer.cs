@@ -46,22 +46,24 @@ namespace Chummer
             this.txtCritterName = new System.Windows.Forms.TextBox();
             this.chkFettered = new System.Windows.Forms.CheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudServices)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             this.cmsSpirit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
             this.tlpMain.SuspendLayout();
+            this.flpRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdDelete
             // 
+            this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDelete.Location = new System.Drawing.Point(876, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(550, 3);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(48, 24);
+            this.cmdDelete.Size = new System.Drawing.Size(48, 23);
             this.cmdDelete.TabIndex = 6;
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
@@ -72,7 +74,7 @@ namespace Chummer
             // 
             this.lblServices.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblServices.AutoSize = true;
-            this.lblServices.Location = new System.Drawing.Point(407, 8);
+            this.lblServices.Location = new System.Drawing.Point(81, 8);
             this.lblServices.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblServices.Name = "lblServices";
             this.lblServices.Size = new System.Drawing.Size(82, 13);
@@ -85,7 +87,7 @@ namespace Chummer
             // 
             this.nudServices.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudServices.AutoSize = true;
-            this.nudServices.Location = new System.Drawing.Point(495, 5);
+            this.nudServices.Location = new System.Drawing.Point(169, 4);
             this.nudServices.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudServices.Maximum = new decimal(new int[] {
             -1,
@@ -101,7 +103,7 @@ namespace Chummer
             // 
             this.lblForce.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblForce.AutoSize = true;
-            this.lblForce.Location = new System.Drawing.Point(329, 8);
+            this.lblForce.Location = new System.Drawing.Point(3, 8);
             this.lblForce.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblForce.Name = "lblForce";
             this.lblForce.Size = new System.Drawing.Size(37, 13);
@@ -115,7 +117,7 @@ namespace Chummer
             this.nudForce.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudForce.AutoSize = true;
             this.nudForce.Enabled = false;
-            this.nudForce.Location = new System.Drawing.Point(372, 5);
+            this.nudForce.Location = new System.Drawing.Point(46, 4);
             this.nudForce.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudForce.Maximum = new decimal(new int[] {
             6,
@@ -139,7 +141,7 @@ namespace Chummer
             this.chkBound.Checked = true;
             this.chkBound.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBound.Enabled = false;
-            this.chkBound.Location = new System.Drawing.Point(698, 6);
+            this.chkBound.Location = new System.Drawing.Point(372, 6);
             this.chkBound.Name = "chkBound";
             this.chkBound.Size = new System.Drawing.Size(57, 17);
             this.chkBound.TabIndex = 5;
@@ -155,7 +157,7 @@ namespace Chummer
             this.cboSpiritName.FormattingEnabled = true;
             this.cboSpiritName.Location = new System.Drawing.Point(3, 4);
             this.cboSpiritName.Name = "cboSpiritName";
-            this.cboSpiritName.Size = new System.Drawing.Size(148, 21);
+            this.cboSpiritName.Size = new System.Drawing.Size(120, 21);
             this.cboSpiritName.TabIndex = 7;
             this.cboSpiritName.TooltipText = "";
             this.cboSpiritName.SelectedIndexChanged += new System.EventHandler(this.cboSpiritName_SelectedIndexChanged);
@@ -165,9 +167,10 @@ namespace Chummer
             this.imgLink.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgLink.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(832, 3);
+            this.imgLink.Location = new System.Drawing.Point(506, 0);
+            this.imgLink.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.imgLink.Name = "imgLink";
-            this.imgLink.Size = new System.Drawing.Size(16, 24);
+            this.imgLink.Size = new System.Drawing.Size(16, 29);
             this.imgLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imgLink.TabIndex = 8;
             this.imgLink.TabStop = false;
@@ -224,9 +227,10 @@ namespace Chummer
             this.imgNotes.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(854, 3);
+            this.imgNotes.Location = new System.Drawing.Point(528, 0);
+            this.imgNotes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.imgNotes.Name = "imgNotes";
-            this.imgNotes.Size = new System.Drawing.Size(16, 24);
+            this.imgNotes.Size = new System.Drawing.Size(16, 29);
             this.imgNotes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.imgNotes.TabIndex = 11;
             this.imgNotes.TabStop = false;
@@ -235,9 +239,9 @@ namespace Chummer
             // txtCritterName
             // 
             this.txtCritterName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCritterName.Location = new System.Drawing.Point(157, 5);
+            this.txtCritterName.Location = new System.Drawing.Point(129, 5);
             this.txtCritterName.Name = "txtCritterName";
-            this.txtCritterName.Size = new System.Drawing.Size(166, 20);
+            this.txtCritterName.Size = new System.Drawing.Size(120, 20);
             this.txtCritterName.TabIndex = 12;
             this.txtCritterName.TextChanged += new System.EventHandler(this.txtCritterName_TextChanged);
             // 
@@ -245,7 +249,7 @@ namespace Chummer
             // 
             this.chkFettered.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFettered.AutoSize = true;
-            this.chkFettered.Location = new System.Drawing.Point(761, 6);
+            this.chkFettered.Location = new System.Drawing.Point(435, 6);
             this.chkFettered.Name = "chkFettered";
             this.chkFettered.Size = new System.Drawing.Size(65, 17);
             this.chkFettered.TabIndex = 13;
@@ -258,37 +262,41 @@ namespace Chummer
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 12;
+            this.tlpMain.ColumnCount = 3;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Controls.Add(this.cmdDelete, 10, 0);
-            this.tlpMain.Controls.Add(this.imgNotes, 9, 0);
             this.tlpMain.Controls.Add(this.cboSpiritName, 0, 0);
             this.tlpMain.Controls.Add(this.txtCritterName, 1, 0);
-            this.tlpMain.Controls.Add(this.chkFettered, 7, 0);
-            this.tlpMain.Controls.Add(this.imgLink, 8, 0);
-            this.tlpMain.Controls.Add(this.lblForce, 2, 0);
-            this.tlpMain.Controls.Add(this.chkBound, 6, 0);
-            this.tlpMain.Controls.Add(this.nudForce, 3, 0);
-            this.tlpMain.Controls.Add(this.nudServices, 5, 0);
-            this.tlpMain.Controls.Add(this.lblServices, 4, 0);
+            this.tlpMain.Controls.Add(this.flpRight, 2, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(927, 30);
+            this.tlpMain.Size = new System.Drawing.Size(853, 30);
             this.tlpMain.TabIndex = 14;
+            // 
+            // flpRight
+            // 
+            this.flpRight.AutoSize = true;
+            this.flpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpRight.Controls.Add(this.lblForce);
+            this.flpRight.Controls.Add(this.nudForce);
+            this.flpRight.Controls.Add(this.lblServices);
+            this.flpRight.Controls.Add(this.nudServices);
+            this.flpRight.Controls.Add(this.chkBound);
+            this.flpRight.Controls.Add(this.chkFettered);
+            this.flpRight.Controls.Add(this.imgLink);
+            this.flpRight.Controls.Add(this.imgNotes);
+            this.flpRight.Controls.Add(this.cmdDelete);
+            this.flpRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpRight.Location = new System.Drawing.Point(252, 0);
+            this.flpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.flpRight.Name = "flpRight";
+            this.flpRight.Size = new System.Drawing.Size(601, 30);
+            this.flpRight.TabIndex = 14;
+            this.flpRight.WrapContents = false;
             // 
             // SpiritControl
             // 
@@ -300,7 +308,7 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(0, 30);
             this.Name = "SpiritControl";
-            this.Size = new System.Drawing.Size(927, 30);
+            this.Size = new System.Drawing.Size(853, 30);
             this.Load += new System.EventHandler(this.SpiritControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudServices)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).EndInit();
@@ -309,6 +317,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
+            this.flpRight.ResumeLayout(false);
+            this.flpRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -333,5 +343,6 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtCritterName;
         private System.Windows.Forms.CheckBox chkFettered;
         private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.FlowLayoutPanel flpRight;
     }
 }
