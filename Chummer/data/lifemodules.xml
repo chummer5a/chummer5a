@@ -7030,8 +7030,8 @@
         </knowledgeskilllevel>
         <nuyenamt>16000</nuyenamt>
         <selectquality>
-          <quality>Biocompatability (Cyberware)</quality>
-          <quality>Biocompatability (Bioware)</quality>
+          <quality>Biocompatibility (Cyberware)</quality>
+          <quality>Biocompatibility (Bioware)</quality>
         </selectquality>
       </bonus>
       <!--todo: Special: 16,000 nuyen in augmentations-->

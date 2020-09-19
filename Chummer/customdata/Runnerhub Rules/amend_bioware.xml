@@ -33,7 +33,7 @@
 			<name>Adapsin</name>
 			<forbidden>
 				<oneof>					
-					<quality amendoperation="addnode">Biocompatability (Cyberware)</quality>
+					<quality amendoperation="addnode">Biocompatibility (Cyberware)</quality>
 				</oneof>
 			</forbidden>
 		</bioware>

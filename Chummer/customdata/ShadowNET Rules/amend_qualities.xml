@@ -971,17 +971,17 @@
       <hide />
     </quality>
 	<quality>
-	  <name>Biocompatability (Cyberware)</name>
+	  <name>Biocompatibility (Cyberware)</name>
 	  <forbidden>
         <oneof>
-		  <quality>Biocompatability (Cyberware) (Metagenic)</quality>
-		  <quality>Biocompatability (Bioware) (Metagenic)</quality>
+		  <quality>Biocompatibility (Cyberware) (Metagenic)</quality>
+		  <quality>Biocompatibility (Bioware) (Metagenic)</quality>
         </oneof>
       </forbidden>
 	</quality>
 	<quality amendoperation="addnode">
       <id>818f64b7-7b6c-46f8-a357-51f0d0bcd7e4</id>
-      <name>Biocompatability (Cyberware) (Metagenic)</name>
+      <name>Biocompatibility (Cyberware) (Metagenic)</name>
       <karma>5</karma>
       <category>Positive</category>
 	  <metagenic>True</metagenic>
@@ -990,26 +990,26 @@
       </bonus>
       <forbidden>
         <oneof>
-		  <quality>Biocompatability (Cyberware)</quality>
-          <quality>Biocompatability (Bioware)</quality>
-		  <quality>Biocompatability (Bioware) (Metagenic)</quality>
+		  <quality>Biocompatibility (Cyberware)</quality>
+          <quality>Biocompatibility (Bioware)</quality>
+		  <quality>Biocompatibility (Bioware) (Metagenic)</quality>
         </oneof>
       </forbidden>
       <source>CF</source>
       <page>54</page>
     </quality>
 	<quality>
-	  <name>Biocompatability (Bioware)</name>
+	  <name>Biocompatibility (Bioware)</name>
 	  <forbidden>
         <oneof>
-		  <quality>Biocompatability (Cyberware) (Metagenic)</quality>
-		  <quality>Biocompatability (Bioware) (Metagenic)</quality>
+		  <quality>Biocompatibility (Cyberware) (Metagenic)</quality>
+		  <quality>Biocompatibility (Bioware) (Metagenic)</quality>
         </oneof>
       </forbidden>
 	</quality>
 	<quality amendoperation="addnode">
       <id>ce78fdcb-df8d-4f5b-b430-2a129e8f082f</id>
-      <name>Biocompatability (Bioware) (Metagenic)</name>
+      <name>Biocompatibility (Bioware) (Metagenic)</name>
       <karma>5</karma>
       <category>Positive</category>
 	  <metagenic>True</metagenic>
@@ -1018,9 +1018,9 @@
       </bonus>
       <forbidden>
         <oneof>
-          <quality>Biocompatability (Cyberware)</quality>
-		  <quality>Biocompatability (Cyberware) (Metagenic)</quality>
-          <quality>Biocompatability (Bioware)</quality>
+          <quality>Biocompatibility (Cyberware)</quality>
+		  <quality>Biocompatibility (Cyberware) (Metagenic)</quality>
+          <quality>Biocompatibility (Bioware)</quality>
         </oneof>
       </forbidden>
       <source>CF</source>
