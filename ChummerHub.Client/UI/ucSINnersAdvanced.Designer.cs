@@ -141,9 +141,9 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSINnerUrl.FormattingEnabled = true;
             this.cbSINnerUrl.Items.AddRange(new object[] {
-            "https://sinners.azurewebsites.net/",
+            "https://chummer.azurewebsites.net/",
             "https://localhost:5001/",
-            "https://sinners-beta.azurewebsites.net/"});
+            "https://chummer-beta.azurewebsites.net/"});
             this.cbSINnerUrl.Location = new System.Drawing.Point(32, 3);
             this.cbSINnerUrl.Name = "cbSINnerUrl";
             this.cbSINnerUrl.Size = new System.Drawing.Size(294, 21);

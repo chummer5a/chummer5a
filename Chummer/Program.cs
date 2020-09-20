@@ -18,6 +18,7 @@
  */
  using System;
  using System.Collections;
+ using System.Collections.ObjectModel;
  using System.ComponentModel;
  using System.Diagnostics;
  using System.Globalization;
@@ -30,11 +31,12 @@ using System.Linq;
  using System.Threading;
  using System.Threading.Tasks;
  using System.Windows.Forms;
-﻿using Chummer.Backend;
+ using Chummer.Backend;
  using Chummer.Plugins;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
+ using Microsoft.ApplicationInsights.Extensibility.PerfCounterCollector.QuickPulse;
  using Microsoft.ApplicationInsights.Metrics;
  using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
@@ -48,6 +50,8 @@ namespace Chummer
     {
         private static Logger Log;
         private const string strChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
+        internal static readonly Process MyProcess = Process.GetCurrentProcess();
+
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _pluginLoader;
         public static PluginControl PluginLoader => _pluginLoader = _pluginLoader ?? new PluginControl();
@@ -192,6 +196,7 @@ namespace Chummer
 
                 try
                 {
+                    TelemetryConfiguration.Active.InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5";
                     LogManager.ThrowExceptions = true;
                     if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyMetric)
                     {
@@ -219,6 +224,7 @@ namespace Chummer
                         Properties.Settings.Default.Save();
                     }
 
+                    
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
 
@@ -491,5 +497,7 @@ namespace Chummer
             get;
             private set;
         }
+
+        
     }
 }

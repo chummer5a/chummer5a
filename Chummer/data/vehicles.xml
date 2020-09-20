@@ -9409,49 +9409,6 @@
       <seats>5</seats>
     </vehicle>
     <!-- End Region -->
-    <!--Region Shadows in Focus: Metropole-->
-    <vehicle>
-      <id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
-      <name>Ares Citymaster</name>
-      <page>40</page>
-      <source>SPS</source>
-      <accel>2</accel>
-      <armor>22</armor>
-      <avail>0</avail>
-      <body>18</body>
-      <category>Cars</category>
-      <cost>0</cost>
-      <handling>4/3</handling>
-      <pilot>5</pilot>
-      <sensor>5</sensor>
-      <speed>4/3</speed>
-      <gears>
-        <gear>
-          <name>Sensor Array</name>
-          <rating>5</rating>
-          <maxrating>5</maxrating>
-        </gear>
-      </gears>
-      <mods>
-        <name>Rigger Interface</name>
-        <name select="Chemical Seal">Special Equipment</name>
-      </mods>
-      <seats>12</seats>
-      <weaponmounts>
-        <weaponmount>
-          <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Heavy [SR5]</size>
-          <visibility>External</visibility>
-        </weaponmount>
-      </weaponmounts>
-      <weapons>
-        <weapon>
-          <name>Stoner-Ares M202</name>
-        </weapon>
-      </weapons>
-    </vehicle>
-    <!-- End Region -->
     <!--Region The Seattle Gambit -->
     <vehicle>
       <id>bf1c4807-6f21-425c-aa1e-521ebf34ffe8</id>
@@ -13020,6 +12977,7 @@
       <category>Handling</category>
       <cost>Body * Rating * 200</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <handling>Rating</handling>
@@ -13042,6 +13000,7 @@
       <category>Speed</category>
       <cost>Body * Rating * 400</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <offroadspeed>Rating</offroadspeed>
@@ -13064,6 +13023,7 @@
       <category>Acceleration</category>
       <cost>Body * Rating * 200</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <accel>Rating</accel>
@@ -13082,10 +13042,11 @@
       <name>Armor (Drone)</name>
       <page>123</page>
       <source>R5</source>
-      <avail>Range(6[],12[R],MaxRating[F])</avail>
+      <avail>FixedValues(1,2,3,4,5,6,7R,8R,9R,10R,11R,12R,RatingF)</avail>
       <category>Armor</category>
       <cost>Rating * Body * 200</cost>
       <rating>99</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <armor>Rating</armor>
@@ -13107,6 +13068,7 @@
       <category>Sensor</category>
       <cost>Rating * 1000</cost>
       <rating>8</rating>
+      <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>Rating</slots>
       <bonus>
         <sensor>Rating</sensor>
@@ -13174,8 +13136,8 @@
       <rating>0</rating>
       <slots>-1</slots>
       <bonus>
-        <accel>Rating</accel>
-        <offroadaccel>Rating</offroadaccel>
+        <accel>-1</accel>
+        <offroadaccel>-1</offroadaccel>
       </bonus>
       <downgrade />
       <optionaldrone />

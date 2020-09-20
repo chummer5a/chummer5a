@@ -199,12 +199,19 @@ namespace ChummerHub
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");
                 })
-                .AddJsonOptions(x =>
+                .AddNewtonsoftJson(x =>
                 {
-                    //x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    //x.SerializerSettings.PreserveReferencesHandling =
-                    //    PreserveReferencesHandling.Objects;
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
                 });
+                //.AddJsonOptions(x =>
+                //{
+                //    x.JsonSerializerOptions.WriteIndented = true;
+                //    //ling = ReferenceLoopHandling.Ignore;
+                //    //
+                //    //x.SerializerSettings.PreserveReferencesHandling =
+                //    //    PreserveReferencesHandling.Objects;
+                //});
 
 
             services.AddAuthentication(options =>
@@ -213,15 +220,15 @@ namespace ChummerHub
             })
                 //.AddFacebook(facebookOptions =>
                 //{
-                //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                //    facebookOptions.AppId = Configuration["Authentication.Facebook.AppId"];
+                //    facebookOptions.AppSecret = Configuration["Authentication.Facebook.AppSecret"];
                 //    facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
                 //    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
                 //})
                 //.AddGoogle(options =>
                 //{
-                //    options.ClientId = Configuration["Authentication:Google:ClientId"];
-                //    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                //    options.ClientId = Configuration["Authentication.Google.ClientId"];
+                //    options.ClientSecret = Configuration["Authentication.Google.ClientSecret"];
                 //    options.CallbackPath = new PathString("/ExternalLogin");
                 //})
                 .AddCookie("Cookies", options =>

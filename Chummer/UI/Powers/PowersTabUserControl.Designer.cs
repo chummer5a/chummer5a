@@ -38,11 +38,11 @@ namespace Chummer.UI.Powers
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
             this._tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.flpLabels = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
-            this.flpButtons.SuspendLayout();
             this.flpLabels.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdAddPower
@@ -61,13 +61,13 @@ namespace Chummer.UI.Powers
             // 
             // cboDisplayFilter
             // 
-            this.cboDisplayFilter.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cboDisplayFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboDisplayFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDisplayFilter.FormattingEnabled = true;
             this.cboDisplayFilter.IntegralHeight = false;
             this.cboDisplayFilter.Location = new System.Drawing.Point(78, 4);
             this.cboDisplayFilter.Name = "cboDisplayFilter";
-            this.cboDisplayFilter.Size = new System.Drawing.Size(201, 21);
+            this.cboDisplayFilter.Size = new System.Drawing.Size(239, 21);
             this.cboDisplayFilter.TabIndex = 5;
             this.cboDisplayFilter.TooltipText = "";
             this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
@@ -75,8 +75,10 @@ namespace Chummer.UI.Powers
             // 
             // lblPowerPoints
             // 
+            this.lblPowerPoints.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPowerPoints.AutoSize = true;
-            this.lblPowerPoints.Location = new System.Drawing.Point(81, 0);
+            this.lblPowerPoints.Location = new System.Drawing.Point(81, 6);
+            this.lblPowerPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPowerPoints.Name = "lblPowerPoints";
             this.lblPowerPoints.Size = new System.Drawing.Size(76, 13);
             this.lblPowerPoints.TabIndex = 9;
@@ -84,8 +86,10 @@ namespace Chummer.UI.Powers
             // 
             // lblPowerPointsLabel
             // 
+            this.lblPowerPointsLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblPowerPointsLabel.AutoSize = true;
-            this.lblPowerPointsLabel.Location = new System.Drawing.Point(3, 0);
+            this.lblPowerPointsLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblPowerPointsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPowerPointsLabel.Name = "lblPowerPointsLabel";
             this.lblPowerPointsLabel.Size = new System.Drawing.Size(72, 13);
             this.lblPowerPointsLabel.TabIndex = 8;
@@ -105,10 +109,11 @@ namespace Chummer.UI.Powers
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 1;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Controls.Add(this.flpButtons, 0, 0);
             this.tlpMain.Controls.Add(this.flpLabels, 0, 1);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Name = "tlpMain";
@@ -118,21 +123,6 @@ namespace Chummer.UI.Powers
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Size = new System.Drawing.Size(480, 80);
             this.tlpMain.TabIndex = 11;
-            // 
-            // flpButtons
-            // 
-            this.flpButtons.AutoSize = true;
-            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpButtons.Controls.Add(this.cboDisplayFilter);
-            this.flpButtons.Controls.Add(this.cmdAddPower);
-            this.flpButtons.Dock = System.Windows.Forms.DockStyle.Right;
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(198, 0);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(282, 29);
-            this.flpButtons.TabIndex = 0;
-            this.flpButtons.WrapContents = false;
             // 
             // flpLabels
             // 
@@ -144,9 +134,27 @@ namespace Chummer.UI.Powers
             this.flpLabels.Location = new System.Drawing.Point(0, 29);
             this.flpLabels.Margin = new System.Windows.Forms.Padding(0);
             this.flpLabels.Name = "flpLabels";
-            this.flpLabels.Size = new System.Drawing.Size(160, 13);
+            this.flpLabels.Size = new System.Drawing.Size(160, 25);
             this.flpLabels.TabIndex = 1;
             this.flpLabels.WrapContents = false;
+            // 
+            // tlpButtons
+            // 
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Controls.Add(this.cboDisplayFilter, 1, 0);
+            this.tlpButtons.Controls.Add(this.cmdAddPower, 0, 0);
+            this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpButtons.Location = new System.Drawing.Point(160, 0);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(320, 29);
+            this.tlpButtons.TabIndex = 2;
             // 
             // PowersTabUserControl
             // 
@@ -155,17 +163,16 @@ namespace Chummer.UI.Powers
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(480, 80);
             this.Name = "PowersTabUserControl";
             this.Size = new System.Drawing.Size(480, 80);
             this.Load += new System.EventHandler(this.PowersTabUserControl_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flpButtons.ResumeLayout(false);
-            this.flpButtons.PerformLayout();
             this.flpLabels.ResumeLayout(false);
             this.flpLabels.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -179,7 +186,7 @@ namespace Chummer.UI.Powers
         private System.Windows.Forms.Label lblPowerPointsLabel;
         private System.Windows.Forms.ToolTip _tipTooltip;
         private BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.FlowLayoutPanel flpLabels;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

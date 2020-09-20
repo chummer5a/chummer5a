@@ -219,13 +219,13 @@ namespace Chummer.UI.Skills
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(574, 0);
             this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(48, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(48, 24);
             this.cmdDelete.TabIndex = 19;
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
@@ -235,13 +235,13 @@ namespace Chummer.UI.Skills
             // 
             // lblName
             // 
+            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblName.AutoSize = true;
             this.lblName.ContextMenuStrip = this.cmsSkillLabel;
-            this.lblName.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblName.Location = new System.Drawing.Point(3, 0);
-            this.lblName.MinimumSize = new System.Drawing.Size(0, 24);
+            this.lblName.Location = new System.Drawing.Point(3, 4);
+            this.lblName.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(41, 24);
+            this.lblName.Size = new System.Drawing.Size(41, 13);
             this.lblName.TabIndex = 0;
             this.lblName.Text = "[Name]";
             this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -250,13 +250,14 @@ namespace Chummer.UI.Skills
             // 
             // lblModifiedRating
             // 
+            this.lblModifiedRating.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblModifiedRating.AutoSize = true;
-            this.lblModifiedRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModifiedRating.Location = new System.Drawing.Point(172, 0);
+            this.lblModifiedRating.Location = new System.Drawing.Point(172, 5);
+            this.lblModifiedRating.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblModifiedRating.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblModifiedRating.Name = "lblModifiedRating";
-            this.lblModifiedRating.Size = new System.Drawing.Size(50, 24);
+            this.lblModifiedRating.Size = new System.Drawing.Size(50, 13);
             this.lblModifiedRating.TabIndex = 16;
             this.lblModifiedRating.Text = "00 (00)";
             this.lblModifiedRating.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -295,11 +296,12 @@ namespace Chummer.UI.Skills
             // 
             // lblCareerSpec
             // 
+            this.lblCareerSpec.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCareerSpec.AutoSize = true;
-            this.lblCareerSpec.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblCareerSpec.Location = new System.Drawing.Point(3, 0);
+            this.lblCareerSpec.Location = new System.Drawing.Point(3, 5);
+            this.lblCareerSpec.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblCareerSpec.Name = "lblCareerSpec";
-            this.lblCareerSpec.Size = new System.Drawing.Size(83, 24);
+            this.lblCareerSpec.Size = new System.Drawing.Size(83, 13);
             this.lblCareerSpec.TabIndex = 22;
             this.lblCareerSpec.Text = "[Specializations]";
             this.lblCareerSpec.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -352,6 +354,7 @@ namespace Chummer.UI.Skills
             // cboSpec
             // 
             this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpec.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cboSpec.FormattingEnabled = true;
             this.cboSpec.Location = new System.Drawing.Point(3, 1);
             this.cboSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -416,9 +419,7 @@ namespace Chummer.UI.Skills
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(0);
-            this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "SkillControl2";
             this.Size = new System.Drawing.Size(625, 24);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);

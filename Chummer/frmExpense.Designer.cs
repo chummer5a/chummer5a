@@ -41,15 +41,15 @@ namespace Chummer
             this.nudPercent = new System.Windows.Forms.NumericUpDown();
             this.lblPercent = new System.Windows.Forms.Label();
             this.chkKarmaNuyenExchange = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpAmount = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.chkForceCareerVisible = new System.Windows.Forms.CheckBox();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.flpAmount.SuspendLayout();
-            this.flpButtons.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblKarma
@@ -113,13 +113,13 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
             this.cmdCancel.TabIndex = 10;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -128,12 +128,12 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(81, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
             this.cmdOK.TabIndex = 9;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -222,36 +222,36 @@ namespace Chummer
             this.chkKarmaNuyenExchange.UseVisualStyleBackColor = true;
             this.chkKarmaNuyenExchange.CheckedChanged += new System.EventHandler(this.chkKarmaNuyenExchange_CheckedChanged);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.chkKarmaNuyenExchange, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblKarma, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblDateLabel, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkRefund, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.datDate, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblDescription, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.txtDescription, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flpAmount, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpButtons, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.chkForceCareerVisible, 1, 5);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(446, 183);
-            this.tableLayoutPanel1.TabIndex = 12;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.chkKarmaNuyenExchange, 1, 4);
+            this.tlpMain.Controls.Add(this.lblKarma, 0, 0);
+            this.tlpMain.Controls.Add(this.lblDateLabel, 0, 1);
+            this.tlpMain.Controls.Add(this.chkRefund, 1, 3);
+            this.tlpMain.Controls.Add(this.datDate, 1, 1);
+            this.tlpMain.Controls.Add(this.lblDescription, 0, 2);
+            this.tlpMain.Controls.Add(this.txtDescription, 1, 2);
+            this.tlpMain.Controls.Add(this.flpAmount, 1, 0);
+            this.tlpMain.Controls.Add(this.chkForceCareerVisible, 1, 5);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 6);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 7;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(446, 183);
+            this.tlpMain.TabIndex = 12;
             // 
             // flpAmount
             // 
@@ -260,26 +260,11 @@ namespace Chummer
             this.flpAmount.Controls.Add(this.nudAmount);
             this.flpAmount.Controls.Add(this.nudPercent);
             this.flpAmount.Controls.Add(this.lblPercent);
-            this.flpAmount.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpAmount.Location = new System.Drawing.Point(85, 0);
             this.flpAmount.Margin = new System.Windows.Forms.Padding(0);
             this.flpAmount.Name = "flpAmount";
-            this.flpAmount.Size = new System.Drawing.Size(361, 26);
+            this.flpAmount.Size = new System.Drawing.Size(154, 26);
             this.flpAmount.TabIndex = 13;
-            // 
-            // flpButtons
-            // 
-            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpButtons.AutoSize = true;
-            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.SetColumnSpan(this.flpButtons, 2);
-            this.flpButtons.Controls.Add(this.cmdOK);
-            this.flpButtons.Controls.Add(this.cmdCancel);
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(287, 157);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(156, 23);
-            this.flpButtons.TabIndex = 12;
             // 
             // chkForceCareerVisible
             // 
@@ -293,6 +278,25 @@ namespace Chummer
             this.chkForceCareerVisible.Text = "Show in Career Karma/Nuyen";
             this.chkForceCareerVisible.UseVisualStyleBackColor = true;
             // 
+            // tlpButtons
+            // 
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpMain.SetColumnSpan(this.tlpButtons, 2);
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(334, 154);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.TabIndex = 14;
+            // 
             // frmExpense
             // 
             this.AcceptButton = this.cmdOK;
@@ -301,9 +305,8 @@ namespace Chummer
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(464, 201);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -316,12 +319,12 @@ namespace Chummer
             this.Load += new System.EventHandler(this.frmExpanse_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.flpAmount.ResumeLayout(false);
             this.flpAmount.PerformLayout();
-            this.flpButtons.ResumeLayout(false);
-            this.flpButtons.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,9 +344,9 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudPercent;
         private System.Windows.Forms.Label lblPercent;
         private System.Windows.Forms.CheckBox chkKarmaNuyenExchange;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpAmount;
         private System.Windows.Forms.CheckBox chkForceCareerVisible;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

@@ -106,13 +106,25 @@ namespace ChummerHub.Models.V1
                     }
                     else
                     {
-                        groupmembers = await context.SINners
+                        try
+                        {
+                            groupmembers = await context.SINners
                             //.Include(a => a.MyGroup)
                             .Include(a => a.SINnerMetaData)
                             //.Include(a => a.MyExtendedAttributes)
                             .Include(a => a.SINnerMetaData.Visibility)
                             .Include(a => a.SINnerMetaData.Visibility.UserRights)
                             .Where(a => a.MyGroup.Id == Id && Id != null).ToListAsync();
+                        }
+                        catch(InvalidOperationException e)
+                        {
+                            groupmembers = context.SINners
+                            .Include(a => a.SINnerMetaData)
+                            .Include(a => a.SINnerMetaData.Visibility)
+                            .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                            .Where(a => a.MyGroup.Id == Id && Id != null).ToList();
+                        }
+                        
                     }
 
                     foreach (var member in groupmembers)

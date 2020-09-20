@@ -4870,8 +4870,6 @@ namespace Chummer
                 panContacts?.Controls.Clear();
                 panEnemies?.Controls.Clear();
                 panPets?.Controls.Clear();
-                int intContacts = -1;
-                int intEnemies = -1;
                 foreach (Contact objContact in CharacterObject.Contacts)
                 {
                     switch (objContact.EntityType)
@@ -4880,14 +4878,11 @@ namespace Chummer
                             {
                                 if (panContacts == null)
                                     break;
-                                intContacts += 1;
                                 ContactControl objContactControl = new ContactControl(objContact);
                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objContactControl.DeleteContact += DeleteContact;
                                 objContactControl.MouseDown += DragContactControl;
-
-                                objContactControl.Top = intContacts * objContactControl.Height;
 
                                 panContacts.Controls.Add(objContactControl);
                             }
@@ -4896,7 +4891,6 @@ namespace Chummer
                             {
                                 if (panEnemies == null)
                                     break;
-                                intEnemies += 1;
                                 ContactControl objContactControl = new ContactControl(objContact);
                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                 if (_objCharacter.Created)
@@ -4905,8 +4899,6 @@ namespace Chummer
                                     objContactControl.ContactDetailChanged += EnemyChanged;
                                 objContactControl.DeleteContact += DeleteEnemy;
                                 objContactControl.MouseDown += DragContactControl;
-
-                                objContactControl.Top = intEnemies * objContactControl.Height;
 
                                 panEnemies.Controls.Add(objContactControl);
                             }
@@ -4936,8 +4928,6 @@ namespace Chummer
                 {
                     case NotifyCollectionChangedAction.Add:
                         {
-                            int intContacts = panContacts?.Controls.Count ?? 0;
-                            int intEnemies = panEnemies?.Controls.Count ?? 0;
                             foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 switch (objLoopContact.EntityType)
@@ -4946,14 +4936,13 @@ namespace Chummer
                                         {
                                             if (panContacts == null)
                                                 break;
-                                            intContacts += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteContact;
                                             objContactControl.MouseDown += DragContactControl;
 
-                                            objContactControl.Top = intContacts * objContactControl.Height;
+                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panContacts.Controls.Add(objContactControl);
                                         }
@@ -4962,7 +4951,6 @@ namespace Chummer
                                         {
                                             if (panEnemies == null)
                                                 break;
-                                            intEnemies += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             if (_objCharacter.Created)
@@ -4971,8 +4959,6 @@ namespace Chummer
                                                 objContactControl.ContactDetailChanged += EnemyChanged;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
-
-                                            objContactControl.Top = intEnemies * objContactControl.Height;
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
@@ -5116,8 +5102,6 @@ namespace Chummer
                                         break;
                                 }
                             }
-                            int intContacts = panContacts?.Controls.Count ?? 0;
-                            int intEnemies = panEnemies?.Controls.Count ?? 0;
                             foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 switch (objLoopContact.EntityType)
@@ -5126,14 +5110,13 @@ namespace Chummer
                                         {
                                             if (panContacts == null)
                                                 break;
-                                            intContacts += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteContact;
                                             objContactControl.MouseDown += DragContactControl;
 
-                                            objContactControl.Top = intContacts * objContactControl.Height;
+                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panContacts.Controls.Add(objContactControl);
                                         }
@@ -5142,7 +5125,6 @@ namespace Chummer
                                         {
                                             if (panEnemies == null)
                                                 break;
-                                            intEnemies += 1;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                             if (_objCharacter.Created)
@@ -5151,8 +5133,6 @@ namespace Chummer
                                                 objContactControl.ContactDetailChanged += EnemyChanged;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
-
-                                            objContactControl.Top = intEnemies * objContactControl.Height;
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
@@ -6185,7 +6165,6 @@ namespace Chummer
         /// </summary>
         protected bool AddMugshot()
         {
-            bool blnSuccess = false;
             using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
             {
                 if (!string.IsNullOrWhiteSpace(GlobalOptions.RecentImageFolder) && Directory.Exists(GlobalOptions.RecentImageFolder))
@@ -6201,34 +6180,43 @@ namespace Chummer
                     string.Join("|", lstCodecs.Select(codec => string.Format(GlobalOptions.CultureInfo, "{0}" + LanguageManager.GetString("String_Space") + "({1})|{1}", codec.CodecName, codec.FilenameExtension))),
                     string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
 
-                if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
+                bool blnMakeLoop = true;
+                while (blnMakeLoop)
                 {
-                    blnSuccess = true;
-                    // Convert the image to a string using Base64.
-                    GlobalOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
-
-                    Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
-                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                    blnMakeLoop = false;
+                    if (dlgOpenFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return false;
+                    if (!File.Exists(dlgOpenFileDialog.FileName))
                     {
-                        _objCharacter.Mugshots.Add(bmpMugshot);
+                        Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_File_Cannot_Be_Read_Accessed"), dlgOpenFileDialog.FileName));
+                        blnMakeLoop = true;
                     }
-                    else
-                    {
-                        try
-                        {
-                            Bitmap bmpConvertedMugshot = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                            _objCharacter.Mugshots.Add(bmpConvertedMugshot);
-                        }
-                        finally
-                        {
-                            bmpMugshot.Dispose();
-                        }
-                    }
-                    if (_objCharacter.MainMugshotIndex == -1)
-                        _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
                 }
+
+                // Convert the image to a string using Base64.
+                GlobalOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
+
+                Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
+                if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                {
+                    _objCharacter.Mugshots.Add(bmpMugshot);
+                }
+                else
+                {
+                    try
+                    {
+                        Bitmap bmpConvertedMugshot = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                        _objCharacter.Mugshots.Add(bmpConvertedMugshot);
+                    }
+                    finally
+                    {
+                        bmpMugshot.Dispose();
+                    }
+                }
+                if (_objCharacter.MainMugshotIndex == -1)
+                    _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
             }
-            return blnSuccess;
+            return true;
         }
 
         /// <summary>

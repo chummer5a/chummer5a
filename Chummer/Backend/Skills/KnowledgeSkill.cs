@@ -330,7 +330,6 @@ namespace Chummer.Backend.Skills
                 if (_blnIsNativeLanguage != value)
                 {
                     _blnIsNativeLanguage = value;
-                    OnPropertyChanged();
                     if (value)
                     {
                         Base = 0;
@@ -338,7 +337,7 @@ namespace Chummer.Backend.Skills
                         BuyWithKarma = false;
                         Specializations.Clear();
                     }
-                    CharacterObject?.SkillsSection?.OnPropertyChanged(nameof(SkillsSection.HasAvailableNativeLanguageSlots));
+                    OnPropertyChanged();
                 }
             }
         }

@@ -331,7 +331,8 @@ namespace Chummer
                             frmTestData.Show();
                         }
 
-                        OpenCharacterList(lstCharactersToLoad);
+                        if (lstCharactersToLoad.Count > 0)
+                            OpenCharacterList(lstCharactersToLoad);
                         if (CharacterRoster != null)
                         {
                             if (MasterIndex == null)
@@ -1069,6 +1070,8 @@ namespace Chummer
             {
                 // Open each file that has been dropped into the window.
                 string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
+                if (s.Length == 0)
+                    return;
                 lstCharacters = new Character[s.Length];
                 object lstCharactersLock = new object();
                 // Hacky, but necessary because innards of Parallel.For would end up invoking
@@ -1183,17 +1186,19 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
         {
+            Character objCharacter = new Character();
             using (new CursorWait(this))
             {
-                Character objCharacter = new Character();
-
-	            // Show the BP selection window.
+                // Show the BP selection window.
 	            using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
 	            {
 	                frmBP.ShowDialog(this);
                     if (frmBP.DialogResult == DialogResult.Cancel)
-	                    return;
-	            }
+                    {
+                        objCharacter.Dispose();
+                        return;
+                    }
+                }
                 // Show the Metatype selection window.
 	            if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
 	            {
@@ -1202,7 +1207,10 @@ namespace Chummer
                         frmSelectMetatype.ShowDialog(this);
 
                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                        {
+                            objCharacter.Dispose();
                             return;
+                        }
                     }
                 }
                 else
@@ -1212,7 +1220,10 @@ namespace Chummer
                         frmSelectMetatype.ShowDialog(this);
 
                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                        {
+                            objCharacter.Dispose();
                             return;
+                        }
                     }
                 }
 
@@ -1230,6 +1241,10 @@ namespace Chummer
                 }
 
                 OpenCharacters.Add(objCharacter);
+            }
+
+            using (new CursorWait(this))
+            {
                 frmCreate frmNewCharacter = new frmCreate(objCharacter)
                 {
                     MdiParent = this

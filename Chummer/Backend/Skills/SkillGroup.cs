@@ -141,13 +141,22 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedBaseUnbroken < 0)
                 {
-                    if (IsDisabled || SkillList.Count == 0)
+                    if (IsDisabled || SkillList.Count == 0 || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                         _intCachedBaseUnbroken = 0;
+                    else if (_objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
+                        _intCachedBaseUnbroken =
+                            SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
+                            && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
+                                ? 1 : 0;
                     else
                     {
-                        _intCachedBaseUnbroken = _objCharacter.EffectiveBuildMethodUsesPriorityTables
-                                                 && (_objCharacter.Options.StrictSkillGroupsInCreateMode || !_objCharacter.Options.UsePointsOnBrokenGroups) &&
-                            !SkillList.Any(x => x.BasePoints + x.FreeBase > 0) ? 1 : 0;
+                        _intCachedBaseUnbroken = _objCharacter.Options.UsePointsOnBrokenGroups
+                            ? KarmaUnbroken
+                                ? 1
+                                : 0
+                            : SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
+                                ? 1
+                                : 0;
                     }
                 }
                 return _intCachedBaseUnbroken > 0;
@@ -158,7 +167,7 @@ namespace Chummer.Backend.Skills
 
         /// <summary>
         /// Is it possible to increment this skill group from karma
-        /// Inverted to simplifly databinding
+        /// Inverted to simplify databinding
         /// </summary>
         public bool KarmaUnbroken
         {
@@ -168,11 +177,18 @@ namespace Chummer.Backend.Skills
                 {
                     if (IsDisabled || SkillList.Count == 0)
                         _intCachedKarmaUnbroken = 0;
+                    else if (_objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
+                        _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
+                                                  && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
+                            ? 1
+                            : 0;
                     else
                     {
-                        int high = SkillList.DefaultIfEmpty().Max(x => x.BasePoints + x.FreeBase);
+                        int intHigh = SkillList.Max(x => x.BasePoints + x.FreeBase);
 
-                        _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase + x.KarmaPoints + x.FreeKarma >= high) ? 1 : 0;
+                        _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase + x.KarmaPoints + x.FreeKarma >= intHigh)
+                            ? 1
+                            : 0;
                     }
                 }
                 return _intCachedKarmaUnbroken > 0;
@@ -222,8 +238,10 @@ namespace Chummer.Backend.Skills
                                 else if (_objCharacter.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
                                                                               (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
                                     _intCachedCareerIncrease = 0;
+                                else if (_lstAffectedSkills.Count == 0)
+                                    _intCachedCareerIncrease = RatingMaximum > 0 ? 1 : 0;
                                 else
-                                    _intCachedCareerIncrease = _lstAffectedSkills.DefaultIfEmpty().Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
+                                    _intCachedCareerIncrease = _lstAffectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
                             }
                         }
 
@@ -461,7 +479,8 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(BaseUnbroken),
                     new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
-                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
+                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Options.UsePointsOnBrokenGroups)
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(ToolTip),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
@@ -583,7 +602,12 @@ namespace Chummer.Backend.Skills
 
         public string UpgradeToolTip
         {
-            get { return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"), SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min() + 1, UpgradeKarmaCost); }
+            get
+            {
+                List<Skill> lstSkills = SkillList.Where(x => x.Enabled).ToList();
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
+                    (lstSkills.Count > 0 ? lstSkills.Min(x => x.TotalBaseRating) : 0) + 1, UpgradeKarmaCost);
+            }
         }
 
         private Guid _guidId = Guid.NewGuid();
@@ -801,7 +825,9 @@ namespace Chummer.Backend.Skills
             {
                 if (IsDisabled)
                     return -1;
-                int intRating = SkillList.Where(x => x.Enabled).Select(x => x.TotalBaseRating).DefaultIfEmpty().Min();
+                int intRating = SkillList.Any(x => x.Enabled)
+                    ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating)
+                    : 0;
                 int intReturn;
                 int intOptionsCost;
                 if (intRating == 0)

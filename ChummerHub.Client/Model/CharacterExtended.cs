@@ -159,7 +159,7 @@ namespace ChummerHub.Client.Model
                 MySINnerFile.SiNnerMetaData.Tags.Remove(f);
             }
             MySINnerFile.SiNnerMetaData.Tags.Add(tag);
-            foreach(var childtag in MySINnerFile.SiNnerMetaData.Tags)
+            foreach(var childtag in MySINnerFile.SiNnerMetaData.Tags.Where(a => a != null).ToList())
             {
                 childtag.SetSinnerIdRecursive(MySINnerFile.Id);
             }

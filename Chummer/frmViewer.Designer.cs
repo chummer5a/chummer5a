@@ -45,11 +45,11 @@ namespace Chummer
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.webViewer = new System.Windows.Forms.WebBrowser();
             this.cboLanguage = new Chummer.ElasticComboBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).BeginInit();
             this.SuspendLayout();
             // 
@@ -157,7 +157,7 @@ namespace Chummer
             // 
             // webViewer
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.webViewer, 6);
+            this.tlpMain.SetColumnSpan(this.webViewer, 6);
             this.webViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webViewer.Location = new System.Drawing.Point(3, 32);
             this.webViewer.MinimumSize = new System.Drawing.Size(20, 20);
@@ -179,32 +179,32 @@ namespace Chummer
             this.cboLanguage.TooltipText = "";
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 6;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.webViewer, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.cmdPrint, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboXSLT, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboLanguage, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cmdSaveAsPdf, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblCharacterSheet, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.imgSheetLanguageFlag, 3, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(766, 543);
-            this.tableLayoutPanel1.TabIndex = 105;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 6;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.Controls.Add(this.webViewer, 0, 1);
+            this.tlpMain.Controls.Add(this.cmdPrint, 0, 0);
+            this.tlpMain.Controls.Add(this.cboXSLT, 5, 0);
+            this.tlpMain.Controls.Add(this.cboLanguage, 4, 0);
+            this.tlpMain.Controls.Add(this.cmdSaveAsPdf, 1, 0);
+            this.tlpMain.Controls.Add(this.lblCharacterSheet, 2, 0);
+            this.tlpMain.Controls.Add(this.imgSheetLanguageFlag, 3, 0);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 2;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(766, 543);
+            this.tlpMain.TabIndex = 105;
             // 
             // imgSheetLanguageFlag
             // 
@@ -222,9 +222,8 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(800, 120);
             this.Name = "frmViewer";
             this.Padding = new System.Windows.Forms.Padding(9);
@@ -236,8 +235,8 @@ namespace Chummer
             this.Load += new System.EventHandler(this.frmViewer_Load);
             this.cmsSaveButton.ResumeLayout(false);
             this.cmsPrintButton.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -257,7 +256,7 @@ namespace Chummer
         private SplitButton cmdSaveAsPdf;
         private System.Windows.Forms.WebBrowser webViewer;
         private ElasticComboBox cboLanguage;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel1;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
     }
 

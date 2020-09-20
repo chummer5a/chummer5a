@@ -32,11 +32,11 @@
       </bonus>
     </quality>
     <quality>
-      <name>Biocompatability (Cyberware)</name>
+      <name>Biocompatibility (Cyberware)</name>
       <chargenonly />
     </quality>
     <quality>
-      <name>Biocompatability (Bioware)</name>
+      <name>Biocompatibility (Bioware)</name>
       <chargenonly />
     </quality>
     <quality xpathfilter="name = 'Fractal Punch' or name = 'Hold the Door' or name = 'Lone Wolf' or name = 'Team Player' or name = 'Trust Data, Not Lore' or name = 'Trust Lore, Not Data' or name = 'Unique Avatar'">

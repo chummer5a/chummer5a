@@ -226,12 +226,6 @@ namespace Chummer
                         txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
                         txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
 
-                        chtKarma.Visible = !GlobalOptions.HideCharts;
-                        chtNuyen.Visible = !GlobalOptions.HideCharts;
-                        //TODO: I'm lazy and can't be bothered fabbing up an instance wrapper for this.
-                        //chtKarma.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
-                        //chtNuyen.DoDatabinding("Visible", GlobalOptions, nameof(GlobalOptions.HideCharts));
-
                         chkJoinGroup.Checked = CharacterObject?.GroupMember ?? false;
                         chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
@@ -13614,7 +13608,7 @@ namespace Chummer
             {
                 if (treCyberware.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(tabCyberwareCM.SelectedTab, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                    ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
                 else
                 {
@@ -14019,13 +14013,16 @@ namespace Chummer
                     lblWeaponRC.Visible = true;
                     lblWeaponRC.Text = Convert.ToInt32(objSelectedAccessory.RC, GlobalOptions.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo);
                 }
-                if (objSelectedAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
+                if (objSelectedAccessory.TotalAmmoBonus != 0
+                    || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
+                        && objSelectedAccessory.ModifyAmmoCapacity != "0"))
                 {
                     lblWeaponAmmoLabel.Visible = true;
                     lblWeaponAmmo.Visible = true;
                     StringBuilder sbdAmmoBonus = new StringBuilder();
-                    if (objSelectedAccessory.AmmoBonus != 0)
-                        sbdAmmoBonus.Append(objSelectedAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                    int intAmmoBonus = objSelectedAccessory.TotalAmmoBonus;
+                    if (intAmmoBonus != 0)
+                        sbdAmmoBonus.Append((intAmmoBonus / 100.0m).ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity) && objSelectedAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
                     lblWeaponAmmo.Text = sbdAmmoBonus.ToString();
@@ -14096,7 +14093,7 @@ namespace Chummer
             if (treWeapons.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
             {
                 tabWeaponMatrixCM.Visible = true;
-                ProcessEquipmentConditionMonitorBoxDisplays(tabWeaponMatrixCM.SelectedTab, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
             }
             else
                 tabWeaponMatrixCM.Visible = false;
@@ -14489,7 +14486,7 @@ namespace Chummer
 
                 treGear.SelectedNode.Text = objGear.CurrentDisplayName;
 
-                ProcessEquipmentConditionMonitorBoxDisplays(tabGearMatrixCM.SelectedTab, objGear.MatrixCM, objGear.MatrixCMFilled);
+                ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM, objGear.MatrixCMFilled);
             }
             else
             {
@@ -15105,9 +15102,10 @@ namespace Chummer
                         objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                     }
 
+                    decimal decGearQuantity = 0;
                     if (objMatchingGear != null)
                     {
-                        decimal decGearQuantity = objGear.Quantity;
+                        decGearQuantity = objGear.Quantity;
                         // A match was found, so increase the quantity instead.
                         objMatchingGear.Quantity += decGearQuantity;
 
@@ -15120,40 +15118,37 @@ namespace Chummer
                         }
                     }
                     // Add the Gear.
+                    else if (!string.IsNullOrEmpty(objSelectedGear?.Name))
+                    {
+                        objSelectedGear.Children.Add(objGear);
+                        if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                        {
+                            objSelectedGear.Children.Remove(objGear);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            objGear.DeleteGear();
+                            return frmPickGear.AddAgain;
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
+                    {
+                        objSelectedMod.Gear.Add(objGear);
+                        if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
+                        {
+                            objSelectedMod.Gear.Remove(objGear);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            objGear.DeleteGear();
+                            return frmPickGear.AddAgain;
+                        }
+                    }
                     else
                     {
-                        if (!string.IsNullOrEmpty(objSelectedGear?.Name))
+                        objSelectedArmor.Gear.Add(objGear);
+                        if (CharacterObjectOptions.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
                         {
-                            objSelectedGear.Children.Add(objGear);
-                            if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
-                            {
-                                objSelectedGear.Children.Remove(objGear);
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                objGear.DeleteGear();
-                                return frmPickGear.AddAgain;
-                            }
-                        }
-                        else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
-                        {
-                            objSelectedMod.Gear.Add(objGear);
-                            if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
-                            {
-                                objSelectedMod.Gear.Remove(objGear);
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                objGear.DeleteGear();
-                                return frmPickGear.AddAgain;
-                            }
-                        }
-                        else
-                        {
-                            objSelectedArmor.Gear.Add(objGear);
-                            if (CharacterObjectOptions.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
-                            {
-                                objSelectedArmor.Gear.Remove(objGear);
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                objGear.DeleteGear();
-                                return frmPickGear.AddAgain;
-                            }
+                            objSelectedArmor.Gear.Remove(objGear);
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            objGear.DeleteGear();
+                            return frmPickGear.AddAgain;
                         }
                     }
 
@@ -15163,6 +15158,23 @@ namespace Chummer
                         if (decCost > CharacterObject.Nuyen)
                         {
                             Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            // Remove the added gear
+                            if (objMatchingGear != null)
+                            {
+                                objMatchingGear.Quantity -= decGearQuantity;
+                            }
+                            else if (!string.IsNullOrEmpty(objSelectedGear?.Name))
+                            {
+                                objSelectedGear.Children.Remove(objGear);
+                            }
+                            else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
+                            {
+                                objSelectedMod.Gear.Remove(objGear);
+                            }
+                            else
+                            {
+                                objSelectedArmor.Gear.Remove(objGear);
+                            }
                             // Remove any Improvements created by the Gear.
                             objGear.DeleteGear();
                             return frmPickGear.AddAgain;
@@ -15579,10 +15591,13 @@ namespace Chummer
                 // gpbVehiclesWeapon
                 lblVehicleWeaponDamageLabel.Visible = true;
                 lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
+                lblVehicleWeaponDamage.Visible = true;
                 lblVehicleWeaponAPLabel.Visible = true;
                 lblVehicleWeaponAP.Text = objWeapon.DisplayTotalAP;
+                lblVehicleWeaponAP.Visible = true;
                 lblVehicleWeaponAccuracyLabel.Visible = true;
                 lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
+                lblVehicleWeaponAccuracy.Visible = true;
                 lblVehicleWeaponDicePoolLabel.Visible = true;
                 dpcVehicleWeaponDicePool.Visible = true;
                 dpcVehicleWeaponDicePool.DicePool = objWeapon.DicePool;
@@ -15863,13 +15878,16 @@ namespace Chummer
                     dpcVehicleWeaponDicePool.CanBeRolled = false;
                     dpcVehicleWeaponDicePool.SetLabelToolTip(string.Empty);
                 }
-                if (objAccessory.AmmoBonus != 0 && !string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
+                if (objAccessory.TotalAmmoBonus != 0
+                    || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
+                        && objAccessory.ModifyAmmoCapacity != "0"))
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
                     lblVehicleWeaponAmmo.Visible = true;
                     StringBuilder sbdAmmoBonus = new StringBuilder();
-                    if (objAccessory.AmmoBonus != 0)
-                        sbdAmmoBonus.Append(objAccessory.AmmoBonus.ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
+                    int intAmmoBonus = objAccessory.TotalAmmoBonus;
+                    if (intAmmoBonus != 0)
+                        sbdAmmoBonus.Append((intAmmoBonus / 100.0m).ToString("+#,0%;-#,0%;0%", GlobalOptions.CultureInfo));
                     if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity) && objAccessory.ModifyAmmoCapacity != "0")
                         sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
                     lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();
@@ -16002,12 +16020,12 @@ namespace Chummer
             {
                 if (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor objCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(tabVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
+                    ProcessEquipmentConditionMonitorBoxDisplays(panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
                 }
 
                 if (treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(tabVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                    ProcessEquipmentConditionMonitorBoxDisplays(panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
             }
 
@@ -17684,6 +17702,18 @@ namespace Chummer
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
+        }
+
+        // Data binding doesn't work for some reason, so handle visibility toggles through events
+
+        private void chkShowKarmaChart_CheckedChanged(object sender, EventArgs e)
+        {
+            chtKarma.Visible = chkShowKarmaChart.Checked;
+        }
+
+        private void chkShowNuyenChart_CheckedChanged(object sender, EventArgs e)
+        {
+            chtNuyen.Visible = chkShowNuyenChart.Checked;
         }
     }
 }

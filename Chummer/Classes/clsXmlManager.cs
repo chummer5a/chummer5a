@@ -395,7 +395,7 @@ namespace Chummer
                 strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))
                 {
-                    blnHasLiveCustomData = DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName, SearchOption.AllDirectories);
+                    blnHasLiveCustomData = DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName);
                 }
             }
 
@@ -614,7 +614,7 @@ namespace Chummer
             }
         }
 
-        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.TopDirectoryOnly)
+        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories)
         {
             bool blnReturn = false;
             XmlElement objDocElement = xmlDataDoc.DocumentElement;
@@ -1385,7 +1385,7 @@ namespace Chummer
                                 XPathNavigator xmlSource = objChild.SelectSingleNode("source");
                                 if (xmlSource != null)
                                 {
-                                    blnContinue = lstBooks.Any(strBook => strBook == xmlSource.Value);
+                                    blnContinue = lstBooks.Contains(xmlSource.Value);
                                 }
 
                                 if (blnContinue)

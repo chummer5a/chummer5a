@@ -1620,6 +1620,7 @@
       <cost>1000</cost>
       <source>RG</source>
       <page>20</page>
+	  <spec>Staves</spec>
     </weapon>
     <weapon>
       <id>e6d9f23b-f4a4-4ba8-86ea-b3811f87fc82</id>
@@ -8369,7 +8370,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <range>Shotgun (flechette)</range>
+      <range>Shotguns (flechette)</range>
       <useskill>Exotic Ranged Weapon</useskill>
     </weapon>
     <weapon>
@@ -17175,7 +17176,7 @@
       <cost>35</cost>
       <source>HT</source>
       <page>180</page>
-      <ammoslots>1</ammoslots>
+      <ammobonus>50 * Rating</ammobonus>
       <conceal>Rating</conceal>
       <forbidden>
         <weapondetails>
@@ -17206,7 +17207,7 @@
       <cost>35</cost>
       <source>HT</source>
       <page>180</page>
-      <ammoslots>1</ammoslots>
+      <ammobonus>50</ammobonus>
       <conceal>2</conceal>
       <rating>1</rating>
       <required>

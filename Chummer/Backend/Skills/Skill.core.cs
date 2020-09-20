@@ -65,7 +65,12 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
-        public bool BaseUnlocked => CharacterObject.EffectiveBuildMethodUsesPriorityTables && (SkillGroupObject == null || SkillGroupObject.Base <= 0 || (!CharacterObject.Options.StrictSkillGroupsInCreateMode && CharacterObject.Options.UsePointsOnBrokenGroups));
+        public bool BaseUnlocked => CharacterObject.EffectiveBuildMethodUsesPriorityTables
+                                    && (SkillGroupObject == null
+                                        || SkillGroupObject.Base <= 0
+                                        || (CharacterObject.Options.UsePointsOnBrokenGroups
+                                            && (!CharacterObject.Options.StrictSkillGroupsInCreateMode
+                                                || CharacterObject.Created)));
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interpretation of the rules
@@ -93,18 +98,19 @@ namespace Chummer.Backend.Skills
             {
                 if (SkillGroupObject?.Base > 0)
                 {
-                    if (CharacterObject.Options.StrictSkillGroupsInCreateMode || !CharacterObject.Options.UsePointsOnBrokenGroups)
+                    if ((CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        || !CharacterObject.Options.UsePointsOnBrokenGroups)
                         BasePoints = 0;
                     return Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
                 }
-                else
-                {
-                    return Math.Min(BasePoints + FreeBase, RatingMaximum);
-                }
+
+                return Math.Min(BasePoints + FreeBase, RatingMaximum);
             }
             set
             {
-                if (SkillGroupObject != null && SkillGroupObject.Base != 0 && (CharacterObject.Options.StrictSkillGroupsInCreateMode || !CharacterObject.Options.UsePointsOnBrokenGroups))
+                if (SkillGroupObject?.Base > 0
+                    && ((CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        || !CharacterObject.Options.UsePointsOnBrokenGroups))
                     return;
 
                 //Calculate how far above maximum we are.
@@ -133,7 +139,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created && ((SkillGroupObject?.Karma ?? 0) > 0))
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created && SkillGroupObject?.Karma > 0)
                 {
                     _intKarma = 0;
                     Specializations.RemoveAll(x => !x.Free);
@@ -242,10 +248,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
+                if (SkillGroupObject != null && CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
                 {
+                    HashSet<string> setSkillNames = SkillGroupObject.SkillList.Select(x => x.Name).ToHashSet();
                     if (CharacterObject.Cyberware.Where(x => x.SourceID == s_GuiReflexRecorderId)
-                        .Any(objReflexRecorderObject => SkillGroupObject?.SkillList.Any(x => x.Name == objReflexRecorderObject.Extra) == true))
+                        .Any(x => setSkillNames.Contains(x.Extra)))
                     {
                         return 0;
                     }
@@ -823,8 +830,12 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedForcedBuyWithKarma < 0)
                 {
-                    _intCachedForcedBuyWithKarma = !string.IsNullOrWhiteSpace(Specialization) &&
-                        ((KarmaPoints > 0 && BasePoints + FreeBase == 0 && !CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills) || SkillGroupObject?.Karma > 0 || SkillGroupObject?.Base > 0)
+                    _intCachedForcedBuyWithKarma = !string.IsNullOrWhiteSpace(Specialization)
+                                                   && ((KarmaPoints > 0
+                                                        && BasePoints + FreeBase == 0
+                                                        && !CharacterObject.Options.AllowPointBuySpecializationsOnKarmaSkills)
+                                                       || SkillGroupObject?.Karma > 0
+                                                       || SkillGroupObject?.Base > 0)
                         ? 1
                         : 0;
                 }
@@ -845,7 +856,10 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedForcedNotBuyWithKarma < 0)
                 {
-                    _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0 || (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0))
+                    _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0
+                                                      || (CharacterObject.Options.StrictSkillGroupsInCreateMode
+                                                          && !CharacterObject.Created
+                                                          && SkillGroupObject?.Karma > 0)
                         ? 1
                         : 0;
                 }

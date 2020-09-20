@@ -162,7 +162,6 @@ namespace Chummer
         private static bool _blnCreateBackupOnCareer;
         private static bool _blnPluginsEnabled;
         private static bool _blnAllowEasterEggs;
-        private static bool _blnHideCharts;
         private static bool _blnCustomDateTimeFormats;
         private static string _strCustomDateFormat;
         private static string _strCustomTimeFormat;
@@ -478,9 +477,6 @@ namespace Chummer
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
-            // Hide or show Expenses charts.
-            LoadBoolFromRegistry(ref _blnHideCharts, "hidecharts");
-
             LoadBoolFromRegistry(ref _blnCustomDateTimeFormats, "customdatetimeformats");
             LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
             LoadStringFromRegistry(ref _strCustomTimeFormat, "customtimeformat");
@@ -577,7 +573,6 @@ namespace Chummer
                 objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("hidecharts", HideCharts.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("defaultcharacteroption", DefaultCharacterOption);
                 objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("customdateformat", CustomDateFormat);
@@ -989,16 +984,21 @@ namespace Chummer
                                     string strTemp = string.Empty;
                                     if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                     {
-                                        string[] strParts = strTemp.Split('|', StringSplitOptions.RemoveEmptyEntries);
+                                        string[] strParts = strTemp.Split('|');
                                         objSource.Path = strParts[0];
-                                        if (string.IsNullOrEmpty(objSource.Path) || !File.Exists(objSource.Path))
+                                        if (string.IsNullOrEmpty(objSource.Path))
                                         {
                                             objSource.Path = string.Empty;
                                             objSource.Offset = 0;
                                         }
-                                        else if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        else
                                         {
-                                            objSource.Offset = intTmp;
+                                            if (!File.Exists(objSource.Path))
+                                                objSource.Path = string.Empty;
+                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                            {
+                                                objSource.Offset = intTmp;
+                                            }
                                         }
                                     }
                                 }
@@ -1038,15 +1038,6 @@ namespace Chummer
         {
             get => _blnPreferNightlyUpdates;
             set => _blnPreferNightlyUpdates = value;
-        }
-
-        /// <summary>
-        /// Should charts that can cause crash behaviour in Wine be shown
-        /// </summary>
-        public static bool HideCharts
-        {
-            get => _blnHideCharts;
-            set => _blnHideCharts = value;
         }
 
         public static string CharacterRosterPath

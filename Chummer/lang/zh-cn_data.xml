@@ -14804,12 +14804,12 @@
   <!--Region Chrome Flesh Positive Qualities -->
     <quality>
       <id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
-      <name>Biocompatability (Cyberware)</name>
+      <name>Biocompatibility (Cyberware)</name>
      <translate>生物相容性（赛博改造）</translate>
     </quality>
     <quality>
       <id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
-      <name>Biocompatability (Bioware)</name>
+      <name>Biocompatibility (Bioware)</name>
       <translate>生物相容性（生体改造）</translate>
     </quality>
     <quality>

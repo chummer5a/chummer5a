@@ -20,10 +20,6 @@
 <chummer>
   <qualities>
     <quality>
-      <name>In Debt</name>
-      <contributetobp amendoperation="remove"/>
-    </quality>
-    <quality>
       <name>Stolen Gear</name>
       <contributetobp amendoperation="remove"/>
     </quality>

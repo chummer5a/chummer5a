@@ -408,7 +408,6 @@ namespace Chummer
             chkSearchInCategoryOnly.Checked = GlobalOptions.SearchInCategoryOnly;
             chkAllowSkillDiceRolling.Checked = GlobalOptions.AllowSkillDiceRolling;
             chkAllowEasterEggs.Checked = GlobalOptions.AllowEasterEggs;
-            chkHideCharts.Checked = GlobalOptions.HideCharts;
             chkEnablePlugins.Checked = GlobalOptions.PluginsEnabled;
             chkCustomDateTimeFormats.Checked = GlobalOptions.CustomDateTimeFormats;
             if (!chkCustomDateTimeFormats.Checked)
@@ -471,7 +470,6 @@ namespace Chummer
                                                        x.Name == cboDefaultCharacterOption.SelectedValue.ToString())?.Name
                                                   ?? GlobalOptions.DefaultCharacterOptionDefaultValue;
             GlobalOptions.AllowEasterEggs = chkAllowEasterEggs.Checked;
-            GlobalOptions.HideCharts = chkHideCharts.Checked;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Checked;
             GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;
             GlobalOptions.CustomDateTimeFormats = chkCustomDateTimeFormats.Checked;

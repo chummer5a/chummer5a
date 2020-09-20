@@ -183,7 +183,7 @@ namespace Chummer
         private readonly List<string> _lstPrioritySkills = new List<string>(3);
 
         // Lists.
-        private readonly List<string> _lstSources = new List<string>(30);
+        private readonly HashSet<string> _setSources = new HashSet<string>(30);
         private readonly ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
 
         private readonly ObservableCollection<MentorSpirit>
@@ -581,7 +581,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach(Armor objNewItem in e.NewItems)
                     {
-                        if(objNewItem.Equipped)
+                        if(objNewItem.Equipped && objNewItem.Encumbrance)
                         {
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -592,7 +592,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     foreach(Armor objOldItem in e.OldItems)
                     {
-                        if(objOldItem.Equipped)
+                        if(objOldItem.Equipped && objOldItem.Encumbrance)
                         {
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -603,7 +603,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     foreach(Armor objOldItem in e.OldItems)
                     {
-                        if(objOldItem.Equipped)
+                        if(objOldItem.Equipped && objOldItem.Encumbrance)
                         {
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -614,7 +614,7 @@ namespace Chummer
                     {
                         foreach(Armor objNewItem in e.NewItems)
                         {
-                            if(objNewItem.Equipped)
+                            if(objNewItem.Equipped && objNewItem.Encumbrance)
                             {
                                 blnDoEncumbranceRefresh = true;
                                 break;
@@ -774,12 +774,12 @@ namespace Chummer
             }
             Source = charNode["source"]?.InnerText ?? "SR5";
             Page = charNode["page"]?.InnerText ?? "0";
+            _intMetatypeBP = 0;
             charNode.TryGetInt32FieldQuickly("karma", ref _intMetatypeBP);
+            _intInitiativeDice = 1;
             charNode.TryGetInt32FieldQuickly("initiativedice", ref _intInitiativeDice);
 
-            string strMovement = objXmlMetatype["movement"]?.InnerText;
-            if (!string.IsNullOrEmpty(strMovement))
-                Movement = strMovement;
+            Movement = objXmlMetatype["movement"]?.InnerText ?? string.Empty;
 
             // Determine if the Metatype has any bonuses.
             XmlNode xmlBonusNode = charNode.SelectSingleNode("bonus");
@@ -1204,7 +1204,8 @@ namespace Chummer
                     IndentChar = '\t'
                 })
                 {
-                    _lstSources.Clear();
+                    _setSources.Clear();
+                    SourceProcess(Source);
                     objWriter.WriteStartDocument();
 
                     // <character>
@@ -2006,7 +2007,11 @@ namespace Chummer
                             }
 
                             if (!Version.TryParse(strVersion, out _verSavedVersion))
-                                _verSavedVersion = new Version();
+                            {
+                                _verSavedVersion = Utils.IsUnitTest
+                                    ? new Version(int.MaxValue, int.MaxValue, int.MaxValue)
+                                    : new Version();
+                            }
                             // Check for typo in Corrupter quality and correct it
                             else if (_verSavedVersion?.CompareTo(new Version(5, 188, 34)) == -1)
                             {
@@ -4002,18 +4007,20 @@ namespace Chummer
 
             // </attributes>
             objWriter.WriteEndElement();
+            // <dodge />
+            objWriter.WriteElementString("dodge", Dodge.ToString(objCulture));
             // <armor />
-            objWriter.WriteElementString("armor", (TotalArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("armor", TotalArmorRating.ToString(objCulture));
             // <firearmor />
-            objWriter.WriteElementString("firearmor", (TotalFireArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("firearmor", TotalFireArmorRating.ToString(objCulture));
             // <coldarmor />
-            objWriter.WriteElementString("coldarmor", (TotalColdArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("coldarmor", TotalColdArmorRating.ToString(objCulture));
             // <electricityarmor />
-            objWriter.WriteElementString("electricityarmor", (TotalElectricityArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating.ToString(objCulture));
             // <acidarmor />
-            objWriter.WriteElementString("acidarmor", (TotalAcidArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating.ToString(objCulture));
             // <fallingarmor />
-            objWriter.WriteElementString("fallingarmor", (TotalFallingArmorRating).ToString(objCulture));
+            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString(objCulture));
 
             int intDamageResistanceDice = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
             // <armordicestun />
@@ -4761,9 +4768,9 @@ namespace Chummer
         /// </summary>
         public void SourceProcess(string strInput)
         {
-            if(!_lstSources.Contains(strInput))
+            if(Options.BookEnabled(strInput))
             {
-                _lstSources.Add(strInput);
+                _setSources.Add(strInput);
             }
         }
 
@@ -7901,7 +7908,12 @@ namespace Chummer
                 if(_blnMAGEnabled != value)
                 {
                     _blnMAGEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8015,6 +8027,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -8195,7 +8209,12 @@ namespace Chummer
                 if(_blnRESEnabled != value)
                 {
                     _blnRESEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8309,6 +8328,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -8410,7 +8431,12 @@ namespace Chummer
                 if(_blnDEPEnabled != value)
                 {
                     _blnDEPEnabled = value;
-                    if(value)
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged();
+                        return;
+                    }
+                    if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
                         if(Created)
@@ -8524,6 +8550,8 @@ namespace Chummer
                                                 else
                                                     break;
                                             }
+                                            else
+                                                break;
                                         }
                                     }
                                 }
@@ -10951,12 +10979,13 @@ namespace Chummer
         {
             get
             {
-                List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped && objArmor.Encumbrance).ToList();
-                if (lstArmorsToConsider.Count == 0)
+                List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
+                if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
                     return 0;
                 Armor objHighestArmor = null;
                 int intHighest = 0;
                 int intTotalClothing = 0;
+                int intTotalClothingEncumbrance = 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 // This is used for Custom-Fit armour's stacking.
                 foreach (Armor objArmor in lstArmorsToConsider)
@@ -10980,7 +11009,11 @@ namespace Chummer
                     }
 
                     if (objArmor.Category == "Clothing")
+                    {
                         intTotalClothing += intLoopTotal;
+                        if (objArmor.Encumbrance)
+                            intTotalClothingEncumbrance += intLoopTotal;
+                    }
                     else if (intLoopTotal > intHighest)
                     {
                         intHighest = intLoopTotal;
@@ -10993,15 +11026,16 @@ namespace Chummer
                 if (intTotalClothing > intHighest)
                 {
                     objHighestArmor = null;
-                    intTotalA = intTotalClothing;
+                    intTotalA = intTotalClothingEncumbrance; // Only count clothes that have encumbrance
                 }
 
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
-                    if (!objArmor.ArmorValue.StartsWith('+')
-                        && !objArmor.ArmorValue.StartsWith('-')
-                        && !objArmor.ArmorOverrideValue.StartsWith('+')
-                        && !objArmor.ArmorOverrideValue.StartsWith('-')
+                    if (!objArmor.Encumbrance
+                        || (!objArmor.ArmorValue.StartsWith('+')
+                            && !objArmor.ArmorValue.StartsWith('-')
+                            && !objArmor.ArmorOverrideValue.StartsWith('+')
+                            && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         || objArmor.Category == "Clothing"
                         || objArmor == objHighestArmor)
                         continue;
@@ -12802,9 +12836,11 @@ namespace Chummer
                 if(_intCachedTrustFund != int.MinValue)
                     return _intCachedTrustFund;
 
-                return _intCachedTrustFund = Improvements
-                    .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).DefaultIfEmpty()
-                    .Max(x => x?.Value ?? 0);
+                List<Improvement> lstTrustFundImprovements = Improvements
+                    .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).ToList();
+                return _intCachedTrustFund = lstTrustFundImprovements.Count > 0
+                    ? lstTrustFundImprovements.Max(x => x.Value)
+                    : 0;
             }
         }
 

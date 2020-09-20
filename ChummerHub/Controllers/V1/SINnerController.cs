@@ -31,7 +31,7 @@ namespace ChummerHub.Controllers.V1
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
-    [ControllerName("SIN")]
+    [ControllerName("SINner")]
     [Authorize]
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController'
     public class SINnerController : ControllerBase
@@ -668,13 +668,14 @@ namespace ChummerHub.Controllers.V1
                             tag.TagValueFloat = null;
                     }
 
+                    Guid? guiSinnerId = sinner.Id; // Separate definition prevents funny business with async
                     var oldsinner = await _context.SINners
                         //.Include(a => a.MyExtendedAttributes)
                         .Include(a => a.SINnerMetaData)
                         .Include(a => a.SINnerMetaData.Visibility)
                         .Include(a => a.SINnerMetaData.Visibility.UserRights)
                         .Include(b => b.MyGroup)
-                        .Where(a => a.Id == sinner.Id).FirstOrDefaultAsync();
+                        .Where(a => a.Id == guiSinnerId).FirstOrDefaultAsync();
                     if (oldsinner != null)
                     {
                         var canedit = await CheckIfUpdateSINnerFile(oldsinner.Id.Value, user);
@@ -1185,11 +1186,11 @@ namespace ChummerHub.Controllers.V1
                 return null;
             string normEmail = user?.NormalizedEmail;
             string userName = user?.UserName;
-            if (_context.UserRights.Any(a => a.SINnerId == id
-                                             && ((!string.IsNullOrEmpty(a.EMail)
-                                                  && a.EMail.ToUpperInvariant() == normEmail)
-                                                 || a.EMail == null)
-                                             && a.CanEdit))
+            var ur = _context.UserRights.Where(a => a.SINnerId == id).ToList();
+            if (ur.Any(a =>( (!string.IsNullOrEmpty(a.EMail)
+                              && a.EMail.ToUpperInvariant() == normEmail)
+                             || a.EMail == null)
+                            && a.CanEdit))
             {
                 return dbsinner;
             }

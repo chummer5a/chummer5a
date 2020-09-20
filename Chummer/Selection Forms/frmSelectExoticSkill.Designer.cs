@@ -35,18 +35,19 @@ namespace Chummer
             this.lblDescription = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.cboSkillSpecialisations = new Chummer.ElasticComboBox();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
-            this.flpButtons.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Right;
-            this.cmdOK.Location = new System.Drawing.Point(208, 3);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
             this.cmdOK.TabIndex = 2;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -56,11 +57,12 @@ namespace Chummer
             // cmdCancel
             // 
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.cmdCancel.Location = new System.Drawing.Point(127, 3);
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
             this.cmdCancel.TabIndex = 3;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -76,7 +78,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
             this.tlpMain.Controls.Add(this.cboCategory, 0, 1);
             this.tlpMain.Controls.Add(this.cboSkillSpecialisations, 0, 2);
-            this.tlpMain.Controls.Add(this.flpButtons, 0, 3);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -85,6 +87,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(286, 113);
             this.tlpMain.TabIndex = 5;
             // 
@@ -122,19 +125,23 @@ namespace Chummer
             this.cboSkillSpecialisations.TabIndex = 4;
             this.cboSkillSpecialisations.TooltipText = "";
             // 
-            // flpButtons
+            // tlpButtons
             // 
-            this.flpButtons.AutoSize = true;
-            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpButtons.Controls.Add(this.cmdOK);
-            this.flpButtons.Controls.Add(this.cmdCancel);
-            this.flpButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(0, 84);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(286, 29);
-            this.flpButtons.TabIndex = 5;
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(174, 84);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.TabIndex = 6;
             // 
             // frmSelectExoticSkill
             // 
@@ -158,8 +165,8 @@ namespace Chummer
             this.Load += new System.EventHandler(this.frmSelectExoticSkill_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flpButtons.ResumeLayout(false);
-            this.flpButtons.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -173,6 +180,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdCancel;
         private ElasticComboBox cboSkillSpecialisations;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

@@ -98,7 +98,6 @@ namespace Chummer
             // 
             this.lblUpdaterStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUpdaterStatusLabel.AutoSize = true;
-            this.lblUpdaterStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblUpdaterStatusLabel.Location = new System.Drawing.Point(3, 487);
             this.lblUpdaterStatusLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblUpdaterStatusLabel.Name = "lblUpdaterStatusLabel";
@@ -187,7 +186,6 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "frmUpdate";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Text = "Chummer Updater";

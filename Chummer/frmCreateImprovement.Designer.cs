@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblImprovementType = new System.Windows.Forms.Label();
             this.cboImprovemetType = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -48,18 +49,18 @@ namespace Chummer
             this.chkApplyToRating = new System.Windows.Forms.CheckBox();
             this.chkFree = new System.Windows.Forms.CheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
             this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
             this.chkIgnoreLimits = new System.Windows.Forms.CheckBox();
             this.txtHelp = new System.Windows.Forms.TextBox();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAug)).BeginInit();
             this.tlpMain.SuspendLayout();
-            this.flpButtons.SuspendLayout();
             this.flpSelectValue.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblImprovementType
@@ -89,13 +90,13 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(0, 0);
-            this.cmdCancel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 27);
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
             this.cmdCancel.TabIndex = 18;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -104,12 +105,12 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(81, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 27);
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
             this.cmdOK.TabIndex = 17;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -326,11 +327,11 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblMin, 0, 4);
             this.tlpMain.Controls.Add(this.lblSelect, 0, 2);
             this.tlpMain.Controls.Add(this.lblVal, 0, 3);
-            this.tlpMain.Controls.Add(this.flpButtons, 0, 8);
             this.tlpMain.Controls.Add(this.txtSelect, 1, 7);
             this.tlpMain.Controls.Add(this.txtTranslateSelection, 1, 2);
             this.tlpMain.Controls.Add(this.flpSelectValue, 3, 2);
             this.tlpMain.Controls.Add(this.txtHelp, 4, 0);
+            this.tlpMain.Controls.Add(this.tlpButtons, 3, 8);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -349,20 +350,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(686, 263);
             this.tlpMain.TabIndex = 20;
-            // 
-            // flpButtons
-            // 
-            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpButtons.AutoSize = true;
-            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.SetColumnSpan(this.flpButtons, 5);
-            this.flpButtons.Controls.Add(this.cmdOK);
-            this.flpButtons.Controls.Add(this.cmdCancel);
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(527, 233);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(156, 27);
-            this.flpButtons.TabIndex = 20;
             // 
             // txtTranslateSelection
             // 
@@ -410,10 +397,29 @@ namespace Chummer
             this.txtHelp.ReadOnly = true;
             this.tlpMain.SetRowSpan(this.txtHelp, 8);
             this.txtHelp.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtHelp.Size = new System.Drawing.Size(196, 226);
+            this.txtHelp.Size = new System.Drawing.Size(196, 230);
             this.txtHelp.TabIndex = 23;
             this.txtHelp.Tag = "String_Empty";
             this.txtHelp.Text = "[Help]";
+            // 
+            // tlpButtons
+            // 
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpMain.SetColumnSpan(this.tlpButtons, 2);
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(574, 234);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.TabIndex = 24;
             // 
             // frmCreateImprovement
             // 
@@ -426,7 +432,6 @@ namespace Chummer
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -443,10 +448,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudAug)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flpButtons.ResumeLayout(false);
-            this.flpButtons.PerformLayout();
             this.flpSelectValue.ResumeLayout(false);
             this.flpSelectValue.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -474,10 +479,10 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkApplyToRating;
         private System.Windows.Forms.CheckBox chkFree;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.TextBox txtTranslateSelection;
         private System.Windows.Forms.FlowLayoutPanel flpSelectValue;
         private System.Windows.Forms.CheckBox chkIgnoreLimits;
         private System.Windows.Forms.TextBox txtHelp;
+        private BufferedTableLayoutPanel tlpButtons;
     }
 }

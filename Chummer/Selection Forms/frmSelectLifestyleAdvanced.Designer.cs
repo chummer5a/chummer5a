@@ -31,10 +31,10 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -77,21 +77,21 @@ namespace Chummer
             this.lblBonusLP = new System.Windows.Forms.Label();
             this.nudBonusLP = new System.Windows.Forms.NumericUpDown();
             this.chkBonusLPRandomize = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblComforts = new System.Windows.Forms.Label();
             this.lblArea = new System.Windows.Forms.Label();
             this.lblSecurity = new System.Windows.Forms.Label();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpQualityButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudArea)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBonusLP)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
+            this.tlpMain.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
+            this.tlpQualityButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // Label_SelectAdvancedLifestyle_Upgrade_Comforts
@@ -109,11 +109,12 @@ namespace Chummer
             // 
             // cmdOKAdd
             // 
-            this.cmdOKAdd.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOKAdd.AutoSize = true;
-            this.cmdOKAdd.Location = new System.Drawing.Point(84, 3);
+            this.cmdOKAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOKAdd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOKAdd.Location = new System.Drawing.Point(81, 3);
             this.cmdOKAdd.Name = "cmdOKAdd";
-            this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
+            this.cmdOKAdd.Size = new System.Drawing.Size(72, 23);
             this.cmdOKAdd.TabIndex = 27;
             this.cmdOKAdd.Tag = "String_AddMore";
             this.cmdOKAdd.Text = "&Add && More";
@@ -122,12 +123,13 @@ namespace Chummer
             // 
             // cmdCancel
             // 
-            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(72, 23);
             this.cmdCancel.TabIndex = 28;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -136,11 +138,12 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdOK.AutoSize = true;
-            this.cmdOK.Location = new System.Drawing.Point(165, 3);
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(159, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(75, 23);
+            this.cmdOK.Size = new System.Drawing.Size(72, 23);
             this.cmdOK.TabIndex = 26;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -212,10 +215,10 @@ namespace Chummer
             // txtLifestyleName
             // 
             this.txtLifestyleName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.txtLifestyleName, 3);
+            this.tlpMain.SetColumnSpan(this.txtLifestyleName, 3);
             this.txtLifestyleName.Location = new System.Drawing.Point(389, 4);
             this.txtLifestyleName.Name = "txtLifestyleName";
-            this.txtLifestyleName.Size = new System.Drawing.Size(214, 20);
+            this.txtLifestyleName.Size = new System.Drawing.Size(374, 20);
             this.txtLifestyleName.TabIndex = 1;
             // 
             // nudPercentage
@@ -305,12 +308,12 @@ namespace Chummer
             // cboBaseLifestyle
             // 
             this.cboBaseLifestyle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.cboBaseLifestyle, 3);
+            this.tlpMain.SetColumnSpan(this.cboBaseLifestyle, 3);
             this.cboBaseLifestyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBaseLifestyle.FormattingEnabled = true;
             this.cboBaseLifestyle.Location = new System.Drawing.Point(389, 32);
             this.cboBaseLifestyle.Name = "cboBaseLifestyle";
-            this.cboBaseLifestyle.Size = new System.Drawing.Size(214, 21);
+            this.cboBaseLifestyle.Size = new System.Drawing.Size(374, 21);
             this.cboBaseLifestyle.TabIndex = 32;
             this.cboBaseLifestyle.TooltipText = "";
             this.cboBaseLifestyle.SelectedIndexChanged += new System.EventHandler(this.cboBaseLifestyle_SelectedIndexChanged);
@@ -414,11 +417,12 @@ namespace Chummer
             // 
             // cmdAddQuality
             // 
-            this.cmdAddQuality.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdAddQuality.AutoSize = true;
+            this.cmdAddQuality.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddQuality.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddQuality.Location = new System.Drawing.Point(3, 3);
             this.cmdAddQuality.Name = "cmdAddQuality";
-            this.cmdAddQuality.Size = new System.Drawing.Size(90, 23);
+            this.cmdAddQuality.Size = new System.Drawing.Size(83, 23);
             this.cmdAddQuality.TabIndex = 51;
             this.cmdAddQuality.Tag = "Button_AddQuality";
             this.cmdAddQuality.Text = "Add Quality";
@@ -427,12 +431,13 @@ namespace Chummer
             // 
             // cmdDeleteQuality
             // 
-            this.cmdDeleteQuality.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDeleteQuality.AutoSize = true;
+            this.cmdDeleteQuality.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDeleteQuality.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteQuality.Enabled = false;
-            this.cmdDeleteQuality.Location = new System.Drawing.Point(99, 3);
+            this.cmdDeleteQuality.Location = new System.Drawing.Point(92, 3);
             this.cmdDeleteQuality.Name = "cmdDeleteQuality";
-            this.cmdDeleteQuality.Size = new System.Drawing.Size(90, 23);
+            this.cmdDeleteQuality.Size = new System.Drawing.Size(83, 23);
             this.cmdDeleteQuality.TabIndex = 52;
             this.cmdDeleteQuality.Tag = "Button_DeleteQuality";
             this.cmdDeleteQuality.Text = "Delete Quality";
@@ -445,32 +450,32 @@ namespace Chummer
             this.treLifestyleQualities.HideSelection = false;
             this.treLifestyleQualities.Location = new System.Drawing.Point(3, 32);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode5.Name = "nodPositiveLifestyleQualities";
-            treeNode5.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
-            treeNode5.Text = "Positive Qualities";
-            treeNode6.Name = "nodNegativeLifestyleQualities";
-            treeNode6.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
-            treeNode6.Text = "Negative Qualities";
-            treeNode7.Name = "nodLifestyleEntertainments";
-            treeNode7.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode7.Text = "Entertainments";
-            treeNode8.Name = "nodFreeMatrixGrids";
-            treeNode8.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
-            treeNode8.Text = "Free Matrix Grids";
+            treeNode1.Name = "nodPositiveLifestyleQualities";
+            treeNode1.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
+            treeNode1.Text = "Positive Qualities";
+            treeNode2.Name = "nodNegativeLifestyleQualities";
+            treeNode2.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
+            treeNode2.Text = "Negative Qualities";
+            treeNode3.Name = "nodLifestyleEntertainments";
+            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode3.Text = "Entertainments";
+            treeNode4.Name = "nodFreeMatrixGrids";
+            treeNode4.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
+            treeNode4.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8});
-            this.tableLayoutPanel1.SetRowSpan(this.treLifestyleQualities, 15);
-            this.treLifestyleQualities.Size = new System.Drawing.Size(295, 388);
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
+            this.tlpMain.SetRowSpan(this.treLifestyleQualities, 15);
+            this.treLifestyleQualities.Size = new System.Drawing.Size(295, 508);
             this.treLifestyleQualities.TabIndex = 53;
             this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);
             // 
             // chkTrustFund
             // 
             this.chkTrustFund.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkTrustFund, 2);
+            this.tlpMain.SetColumnSpan(this.chkTrustFund, 2);
             this.chkTrustFund.Dock = System.Windows.Forms.DockStyle.Left;
             this.chkTrustFund.Location = new System.Drawing.Point(455, 239);
             this.chkTrustFund.Name = "chkTrustFund";
@@ -563,7 +568,7 @@ namespace Chummer
             // chkPrimaryTenant
             // 
             this.chkPrimaryTenant.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkPrimaryTenant, 2);
+            this.tlpMain.SetColumnSpan(this.chkPrimaryTenant, 2);
             this.chkPrimaryTenant.Dock = System.Windows.Forms.DockStyle.Left;
             this.chkPrimaryTenant.Location = new System.Drawing.Point(455, 213);
             this.chkPrimaryTenant.Name = "chkPrimaryTenant";
@@ -615,7 +620,7 @@ namespace Chummer
             // chkQualityContributesLP
             // 
             this.chkQualityContributesLP.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkQualityContributesLP, 2);
+            this.tlpMain.SetColumnSpan(this.chkQualityContributesLP, 2);
             this.chkQualityContributesLP.Dock = System.Windows.Forms.DockStyle.Left;
             this.chkQualityContributesLP.Location = new System.Drawing.Point(455, 315);
             this.chkQualityContributesLP.Name = "chkQualityContributesLP";
@@ -662,7 +667,7 @@ namespace Chummer
             this.chkBonusLPRandomize.AutoSize = true;
             this.chkBonusLPRandomize.Checked = true;
             this.chkBonusLPRandomize.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkBonusLPRandomize, 2);
+            this.tlpMain.SetColumnSpan(this.chkBonusLPRandomize, 2);
             this.chkBonusLPRandomize.Dock = System.Windows.Forms.DockStyle.Left;
             this.chkBonusLPRandomize.Location = new System.Drawing.Point(455, 59);
             this.chkBonusLPRandomize.Name = "chkBonusLPRandomize";
@@ -674,80 +679,80 @@ namespace Chummer
             this.chkBonusLPRandomize.Visible = false;
             this.chkBonusLPRandomize.CheckedChanged += new System.EventHandler(this.chkTravelerBonusLPRandomize_CheckedChanged);
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.treLifestyleQualities, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualitySource, 2, 14);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityCost, 2, 13);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualitySourceLabel, 1, 14);
-            this.tableLayoutPanel1.Controls.Add(this.nudBonusLP, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityCostLabel, 1, 13);
-            this.tableLayoutPanel1.Controls.Add(this.chkPrimaryTenant, 3, 8);
-            this.tableLayoutPanel1.Controls.Add(this.chkBonusLPRandomize, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityLp, 2, 12);
-            this.tableLayoutPanel1.Controls.Add(this.lblLifestyleNameLabel, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblQualityLPLabel, 1, 12);
-            this.tableLayoutPanel1.Controls.Add(this.txtLifestyleName, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblBonusLP, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Lifestyle, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkTrustFund, 3, 9);
-            this.tableLayoutPanel1.Controls.Add(this.cboBaseLifestyle, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblComfortsLabel, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblSource, 2, 11);
-            this.tableLayoutPanel1.Controls.Add(this.lblAreaLabel, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblSourceLabel, 1, 11);
-            this.tableLayoutPanel1.Controls.Add(this.lblSecurityLabel, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblCost, 2, 10);
-            this.tableLayoutPanel1.Controls.Add(this.lblComfortTotal, 4, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblCostLabel, 1, 10);
-            this.tableLayoutPanel1.Controls.Add(this.lblAreaTotal, 4, 5);
-            this.tableLayoutPanel1.Controls.Add(this.nudPercentage, 2, 9);
-            this.tableLayoutPanel1.Controls.Add(this.nudRoommates, 2, 8);
-            this.tableLayoutPanel1.Controls.Add(this.lblPercentage, 1, 9);
-            this.tableLayoutPanel1.Controls.Add(this.lblSecurityTotal, 4, 6);
-            this.tableLayoutPanel1.Controls.Add(this.lblRoommates, 1, 8);
-            this.tableLayoutPanel1.Controls.Add(this.nudComforts, 3, 4);
-            this.tableLayoutPanel1.Controls.Add(this.nudArea, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.nudSecurity, 3, 6);
-            this.tableLayoutPanel1.Controls.Add(this.Label_SelectAdvancedLifestyle_Upgrade_Comforts, 3, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lblTotalLPLabel, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.lblTotalLP, 2, 7);
-            this.tableLayoutPanel1.Controls.Add(this.chkQualityContributesLP, 3, 12);
-            this.tableLayoutPanel1.Controls.Add(this.lblComforts, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.lblArea, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.lblSecurity, 2, 6);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 15);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 16;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
-            this.tableLayoutPanel1.TabIndex = 84;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 5;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.treLifestyleQualities, 0, 1);
+            this.tlpMain.Controls.Add(this.lblQualitySource, 2, 14);
+            this.tlpMain.Controls.Add(this.lblQualityCost, 2, 13);
+            this.tlpMain.Controls.Add(this.lblQualitySourceLabel, 1, 14);
+            this.tlpMain.Controls.Add(this.nudBonusLP, 2, 2);
+            this.tlpMain.Controls.Add(this.lblQualityCostLabel, 1, 13);
+            this.tlpMain.Controls.Add(this.chkPrimaryTenant, 3, 8);
+            this.tlpMain.Controls.Add(this.chkBonusLPRandomize, 3, 2);
+            this.tlpMain.Controls.Add(this.lblQualityLp, 2, 12);
+            this.tlpMain.Controls.Add(this.lblLifestyleNameLabel, 1, 0);
+            this.tlpMain.Controls.Add(this.lblQualityLPLabel, 1, 12);
+            this.tlpMain.Controls.Add(this.txtLifestyleName, 2, 0);
+            this.tlpMain.Controls.Add(this.lblBonusLP, 1, 2);
+            this.tlpMain.Controls.Add(this.Label_SelectAdvancedLifestyle_Lifestyle, 1, 1);
+            this.tlpMain.Controls.Add(this.chkTrustFund, 3, 9);
+            this.tlpMain.Controls.Add(this.cboBaseLifestyle, 2, 1);
+            this.tlpMain.Controls.Add(this.lblComfortsLabel, 1, 4);
+            this.tlpMain.Controls.Add(this.lblSource, 2, 11);
+            this.tlpMain.Controls.Add(this.lblAreaLabel, 1, 5);
+            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 11);
+            this.tlpMain.Controls.Add(this.lblSecurityLabel, 1, 6);
+            this.tlpMain.Controls.Add(this.lblCost, 2, 10);
+            this.tlpMain.Controls.Add(this.lblComfortTotal, 4, 4);
+            this.tlpMain.Controls.Add(this.lblCostLabel, 1, 10);
+            this.tlpMain.Controls.Add(this.lblAreaTotal, 4, 5);
+            this.tlpMain.Controls.Add(this.nudPercentage, 2, 9);
+            this.tlpMain.Controls.Add(this.nudRoommates, 2, 8);
+            this.tlpMain.Controls.Add(this.lblPercentage, 1, 9);
+            this.tlpMain.Controls.Add(this.lblSecurityTotal, 4, 6);
+            this.tlpMain.Controls.Add(this.lblRoommates, 1, 8);
+            this.tlpMain.Controls.Add(this.nudComforts, 3, 4);
+            this.tlpMain.Controls.Add(this.nudArea, 3, 5);
+            this.tlpMain.Controls.Add(this.nudSecurity, 3, 6);
+            this.tlpMain.Controls.Add(this.Label_SelectAdvancedLifestyle_Upgrade_Comforts, 3, 3);
+            this.tlpMain.Controls.Add(this.lblTotalLPLabel, 1, 7);
+            this.tlpMain.Controls.Add(this.lblTotalLP, 2, 7);
+            this.tlpMain.Controls.Add(this.chkQualityContributesLP, 3, 12);
+            this.tlpMain.Controls.Add(this.lblComforts, 2, 4);
+            this.tlpMain.Controls.Add(this.lblArea, 2, 5);
+            this.tlpMain.Controls.Add(this.lblSecurity, 2, 6);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 15);
+            this.tlpMain.Controls.Add(this.tlpQualityButtons, 0, 0);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 16;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Size = new System.Drawing.Size(766, 543);
+            this.tlpMain.TabIndex = 84;
             // 
             // lblComforts
             // 
@@ -788,46 +793,53 @@ namespace Chummer
             this.lblSecurity.Text = "[{0}/{1}]";
             this.lblSecurity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // flowLayoutPanel1
+            // tlpButtons
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 4);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOK);
-            this.flowLayoutPanel1.Controls.Add(this.cmdOKAdd);
-            this.flowLayoutPanel1.Controls.Add(this.cmdCancel);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(363, 394);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(243, 29);
-            this.flowLayoutPanel1.TabIndex = 87;
+            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 3;
+            this.tlpMain.SetColumnSpan(this.tlpButtons, 4);
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(532, 514);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(234, 29);
+            this.tlpButtons.TabIndex = 89;
             // 
-            // flowLayoutPanel2
+            // tlpQualityButtons
             // 
-            this.flowLayoutPanel2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel2.Controls.Add(this.cmdAddQuality);
-            this.flowLayoutPanel2.Controls.Add(this.cmdDeleteQuality);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(192, 29);
-            this.flowLayoutPanel2.TabIndex = 88;
+            this.tlpQualityButtons.AutoSize = true;
+            this.tlpQualityButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpQualityButtons.ColumnCount = 2;
+            this.tlpQualityButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpQualityButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpQualityButtons.Controls.Add(this.cmdDeleteQuality, 1, 0);
+            this.tlpQualityButtons.Controls.Add(this.cmdAddQuality, 0, 0);
+            this.tlpQualityButtons.Location = new System.Drawing.Point(0, 0);
+            this.tlpQualityButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpQualityButtons.Name = "tlpQualityButtons";
+            this.tlpQualityButtons.RowCount = 1;
+            this.tlpQualityButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpQualityButtons.Size = new System.Drawing.Size(178, 29);
+            this.tlpQualityButtons.TabIndex = 90;
             // 
             // frmSelectLifestyleAdvanced
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(624, 441);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -845,12 +857,12 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudArea)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBonusLP)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
+            this.tlpQualityButtons.ResumeLayout(false);
+            this.tlpQualityButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -902,8 +914,8 @@ namespace Chummer
         private Label lblComforts;
         private Label lblArea;
         private Label lblSecurity;
-        private FlowLayoutPanel flowLayoutPanel1;
-        private BufferedTableLayoutPanel tableLayoutPanel1;
-        private FlowLayoutPanel flowLayoutPanel2;
+        private BufferedTableLayoutPanel tlpMain;
+        private BufferedTableLayoutPanel tlpButtons;
+        private BufferedTableLayoutPanel tlpQualityButtons;
     }
 }

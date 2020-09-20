@@ -489,7 +489,6 @@ namespace Chummer
             this.ControlBox = false;
             this.Controls.Add(this.tlpCharacterRoster);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "frmCharacterRoster";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "String_CharacterRoster";

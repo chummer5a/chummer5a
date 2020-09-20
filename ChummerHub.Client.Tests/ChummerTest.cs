@@ -46,7 +46,7 @@ namespace ChummerHub.Client.Tests
         [TestMethod]
         public async Task LoadCharacter()
         {
-            Settings.Default.SINnerUrl = "https://sinners.azurewebsites.net/";
+            Settings.Default.SINnerUrl = "https://chummer.azurewebsites.net/";
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             path = Path.Combine(path, "data");

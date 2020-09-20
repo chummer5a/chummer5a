@@ -3577,7 +3577,7 @@ namespace Chummer.Backend.Equipment
         {
             decimal decOriginal = 0;
             decimal decNewCost = 0;
-            if (CharacterObject.Gear.Any(gear => gear == this))
+            if (CharacterObject.Gear.Contains(this))
             {
                 decOriginal = TotalCost;
                 CharacterObject.Gear.Remove(this);

@@ -239,7 +239,9 @@ namespace Chummer.UI.Powers
                 if (_objCharacter.IsMysticAdept)
                 {
                     // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    intMAG = _objCharacter.Options.MysAdeptSecondMAGAttribute ? _objCharacter.MAGAdept.TotalValue : _objCharacter.MysticAdeptPowerPoints;
+                    intMAG = _objCharacter.Options.MysAdeptSecondMAGAttribute
+                        ? _objCharacter.MAGAdept.TotalValue
+                        : _objCharacter.MysticAdeptPowerPoints;
                 }
                 else
                 {
@@ -448,7 +450,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
             _table.TranslateWinForm();
-
+            tlpMain.SetColumnSpan(_table, 2);
             tlpMain.Controls.Add(_table, 0, 2);
         }
 

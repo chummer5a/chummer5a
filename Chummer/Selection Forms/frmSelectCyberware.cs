@@ -193,8 +193,8 @@ namespace Chummer
                 _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value, GlobalOptions.InvariantCultureInfo);
 
                 PopulateCategories();
-                RefreshList(_strSelectedCategory);
                 _blnLoading = false;
+                RefreshList(_strSelectedCategory);
                 lstCyberware_SelectedIndexChanged(sender, EventArgs.Empty);
             }
             else

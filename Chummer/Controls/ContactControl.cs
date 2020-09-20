@@ -351,7 +351,7 @@ namespace Chummer
             set
             {
                 tlpStatHeader.Visible = tlpStatBlock.Visible = value;
-                cmdExpand.Image = value ? Properties.Resources.Collapse : cmdExpand.Image = Properties.Resources.Expand;
+                cmdExpand.Image = value ? Properties.Resources.Collapse : Properties.Resources.Expand;
             }
         }
         #endregion
