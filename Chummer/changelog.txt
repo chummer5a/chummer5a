@@ -105,6 +105,7 @@ Data Changes:
 - The Ares Citymaster, having no statted availability or nuyen costs, has had its entry removed from Chummer's base data files.
 - The Mystic Aptitude adept power's page reference is now correct.
 - A typo in the name of the Biocompatibility quality has been fixed (it was previously called Biocompatability).
+- The range of the Ares Armatus now loads properly.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
