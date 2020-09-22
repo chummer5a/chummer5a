@@ -106,6 +106,7 @@ Data Changes:
 - The Mystic Aptitude adept power's page reference is now correct.
 - A typo in the name of the Biocompatibility quality has been fixed (it was previously called Biocompatability).
 - The range of the Ares Armatus now loads properly.
+- The Dangerous Area and Obscure/Difficult to Find basic lifestyle qualities' page references are now correct.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
