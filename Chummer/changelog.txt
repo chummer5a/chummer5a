@@ -107,6 +107,7 @@ Data Changes:
 - A typo in the name of the Biocompatibility quality has been fixed (it was previously called Biocompatability).
 - The range of the Ares Armatus now loads properly.
 - The Dangerous Area and Obscure/Difficult to Find basic lifestyle qualities' page references are now correct.
+- Ondansetron is now properly called Ondansetron instead of Ondanstron.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
