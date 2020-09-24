@@ -769,7 +769,7 @@ namespace ChummerHub.Controllers.V1
                         if (string.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
 
-                        var alltags = (await _context.Tags.Where(a => a.SINnerId == dbsinner.Id).ToListAsync()).ToArray();
+                        var alltags = await _context.Tags.Where(a => a.SINnerId == dbsinner.Id).ToListAsync();
                         _context.Tags.RemoveRange(alltags);
                         _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
                         _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
