@@ -160,7 +160,7 @@ namespace Chummer
                     Text = MainTitle;
 
 
-
+                    this.UpdateLightDarkMode();
                     this.TranslateWinForm();
 
                     //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;

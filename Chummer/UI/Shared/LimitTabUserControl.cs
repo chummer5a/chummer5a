@@ -34,7 +34,7 @@ namespace Chummer.UI.Shared
         public LimitTabUserControl()
         {
             InitializeComponent();
-
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             foreach (ToolStripMenuItem tssItem in cmsLimitModifier.Items.OfType<ToolStripMenuItem>())

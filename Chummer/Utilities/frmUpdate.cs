@@ -54,6 +54,7 @@ namespace Chummer
         {
             Log.Info("frmUpdate");
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             CurrentVersion = string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}",
                 _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);

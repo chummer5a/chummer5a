@@ -43,6 +43,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _dropDownList = GenerateDropdownFilter();
@@ -413,7 +414,7 @@ namespace Chummer.UI.Powers
             };
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button { Text = LanguageManager.GetString("String_Delete"), Tag = "String_Delete", BackColor = SystemColors.Control })
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button { Text = LanguageManager.GetString("String_Delete"), Tag = "String_Delete", BackColor = ColorManager.Control })
             {
                 ClickHandler = p =>
                 {
@@ -449,6 +450,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(noteColumn);
             _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
+            _table.UpdateLightDarkMode();
             _table.TranslateWinForm();
             tlpMain.SetColumnSpan(_table, 2);
             tlpMain.Controls.Add(_table, 0, 2);

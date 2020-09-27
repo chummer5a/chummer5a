@@ -92,6 +92,7 @@ namespace Chummer
                     break;
             }
 
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(objWareSource);

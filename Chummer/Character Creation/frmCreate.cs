@@ -88,6 +88,7 @@ namespace Chummer
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
 
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsAdvancedLifestyle,
@@ -6776,7 +6777,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background colour for all other Nodes.
             treWeapons.ClearNodeBackground(objNode);
@@ -6850,7 +6851,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background colour for all other Nodes.
             treArmor.ClearNodeBackground(objNode);
@@ -6968,7 +6969,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background colour for all other Nodes.
             treLifestyles.ClearNodeBackground(objNode);
@@ -7247,10 +7248,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = SystemColors.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDark;
             }
             else
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treGear.ClearNodeBackground(objNode);
@@ -7654,10 +7655,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = SystemColors.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDark;
             }
             else
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treVehicles.ClearNodeBackground(objNode);
@@ -9229,12 +9230,12 @@ namespace Chummer
                 if (_blnFreestyle)
                 {
                     tslKarma.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalOptions.CultureInfo);
-                    tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin ? Color.OrangeRed : SystemColors.ControlText;
+                    tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin ? ColorManager.ErrorColor : ColorManager.ControlText;
                 }
                 else
                 {
                     tslKarma.Text = CharacterObject.BuildKarma.ToString(GlobalOptions.CultureInfo);
-                    tslKarma.ForeColor = SystemColors.ControlText;
+                    tslKarma.ForeColor = ColorManager.ControlText;
                 }
             }
 
@@ -14132,7 +14133,7 @@ namespace Chummer
 
             foreach (ContactControl objControl in panContacts.Controls)
             {
-                objControl.BackColor = SystemColors.Control;
+                objControl.BackColor = ColorManager.Control;
             }
         }
 
@@ -14144,12 +14145,12 @@ namespace Chummer
             if (destination == null)
                 return;
 
-            destination.BackColor = SystemColors.ControlDark;
+            destination.BackColor = ColorManager.ControlDark;
             foreach (ContactControl objControl in panContacts.Controls)
             {
                 if (objControl != destination as ContactControl)
                 {
-                    objControl.BackColor = SystemColors.Control;
+                    objControl.BackColor = ColorManager.Control;
                 }
             }
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.

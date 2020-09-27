@@ -43,6 +43,7 @@ namespace Chummer
         {
             _objSpirit = objSpirit;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {

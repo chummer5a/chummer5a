@@ -33,6 +33,7 @@ namespace Chummer
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             // Build the list of Limits.

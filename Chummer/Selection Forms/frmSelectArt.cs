@@ -47,6 +47,7 @@ namespace Chummer
         public frmSelectArt(Character objCharacter, Mode objWindowMode)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 

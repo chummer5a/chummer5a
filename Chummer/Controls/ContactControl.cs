@@ -49,6 +49,7 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             MoveControls();
 

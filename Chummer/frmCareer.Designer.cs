@@ -4808,7 +4808,7 @@ namespace Chummer
             // mnuFileSave
             // 
             this.mnuFileSave.Image = global::Chummer.Properties.Resources.disk;
-            this.mnuFileSave.ImageTransparentColor = System.Drawing.Color.Black;
+            this.mnuFileSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuFileSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileSave.MergeIndex = 3;
             this.mnuFileSave.Name = "mnuFileSave";
@@ -5031,7 +5031,7 @@ namespace Chummer
             // 
             this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
-            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Black;
+            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPrint.MergeAction = System.Windows.Forms.MergeAction.Replace;
             this.tsbPrint.MergeIndex = 4;
             this.tsbPrint.Name = "tsbPrint";
@@ -5471,7 +5471,7 @@ namespace Chummer
             // 
             // splitMain
             // 
-            this.splitMain.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitMain.BackColor = System.Drawing.Color.LightBlue;
             this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitMain.Location = new System.Drawing.Point(0, 0);
             this.splitMain.Name = "splitMain";
@@ -17076,7 +17076,7 @@ namespace Chummer
             // 
             // splitKarmaNuyen
             // 
-            this.splitKarmaNuyen.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitKarmaNuyen.BackColor = System.Drawing.Color.LightBlue;
             this.splitKarmaNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitKarmaNuyen.Location = new System.Drawing.Point(3, 3);
             this.splitKarmaNuyen.Name = "splitKarmaNuyen";

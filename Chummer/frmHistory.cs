@@ -28,6 +28,7 @@ namespace Chummer
         public frmHistory()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

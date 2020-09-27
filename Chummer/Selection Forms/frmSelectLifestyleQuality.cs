@@ -53,6 +53,7 @@ namespace Chummer
         public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;

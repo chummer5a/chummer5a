@@ -32,6 +32,7 @@ namespace Chummer
         public frmSelectOptionalPower(params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)

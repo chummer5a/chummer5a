@@ -86,6 +86,7 @@ namespace Chummer.Plugins
             cmsRoster.Items.Add(tsShowMySINners);
             tsShowMySINners.TranslateToolStripItemsRecursively();
             objNode.ContextMenuStrip = cmsRoster;
+            objNode.ContextMenuStrip.UpdateLightDarkMode();
             objNode.ContextMenuStrip.TranslateWinForm();
             if (objNode.Tag is CharacterCache member)
             {
@@ -143,6 +144,7 @@ namespace Chummer.Plugins
                 newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
                 objNode.ContextMenuStrip.Items.Add(newDelete);
                 newDelete.TranslateToolStripItemsRecursively();
+                objNode.ContextMenuStrip.UpdateLightDarkMode();
                 objNode.ContextMenuStrip.TranslateWinForm();
             }
 
@@ -203,6 +205,7 @@ namespace Chummer.Plugins
                     }
                     objNode.ContextMenuStrip.Items.Add(newFavorite);
                     newFavorite.TranslateToolStripItemsRecursively();
+                    objNode.ContextMenuStrip.UpdateLightDarkMode();
                     objNode.ContextMenuStrip.TranslateWinForm();
                 });
             }

@@ -489,13 +489,13 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Color.SaddleBrown;
+                    return IsQuality
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (IsQuality)
-                {
-                    return SystemColors.GrayText;
-                }
-                return SystemColors.WindowText;
+                return IsQuality
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
         #endregion

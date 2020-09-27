@@ -86,7 +86,7 @@ namespace Chummer.UI.Skills
             // 
             // splitSkills
             // 
-            this.splitSkills.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitSkills.BackColor = System.Drawing.Color.LightBlue;
             this.splitSkills.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitSkills.Location = new System.Drawing.Point(0, 0);
             this.splitSkills.Margin = new System.Windows.Forms.Padding(0);

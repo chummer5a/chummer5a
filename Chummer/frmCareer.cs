@@ -77,6 +77,7 @@ namespace Chummer
             lmtControl.MakeDirty += MakeDirty;
 
             Program.MainForm.OpenCharacterForms.Add(this);
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             ContextMenuStrip[] lstCMSToTranslate = {
@@ -3048,7 +3049,7 @@ namespace Chummer
 
             foreach (ContactControl objControl in panContacts.Controls)
             {
-                objControl.BackColor = SystemColors.Control;
+                objControl.BackColor = ColorManager.Control;
             }
         }
 
@@ -3060,12 +3061,12 @@ namespace Chummer
             if (destination == null)
                 return;
 
-            destination.BackColor = SystemColors.ControlDark;
+            destination.BackColor = ColorManager.ControlDark;
             foreach (ContactControl objControl in panContacts.Controls)
             {
                 if (objControl != destination as ContactControl)
                 {
-                    objControl.BackColor = SystemColors.Control;
+                    objControl.BackColor = ColorManager.Control;
                 }
             }
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
@@ -10321,7 +10322,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treWeapons.ClearNodeBackground(objNode);
@@ -10392,7 +10393,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treArmor.ClearNodeBackground(objNode);
@@ -10522,7 +10523,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treLifestyles.ClearNodeBackground(objNode);
@@ -10716,10 +10717,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = SystemColors.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDark;
             }
             else
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treGear.ClearNodeBackground(objNode);
@@ -11368,10 +11369,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = SystemColors.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDark;
             }
             else
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treVehicles.ClearNodeBackground(objNode);
@@ -12428,7 +12429,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDark;
 
             // Clear the background color for all other Nodes.
             treImprovements.ClearNodeBackground(objNode);
@@ -12822,7 +12823,7 @@ namespace Chummer
                 foreach (CheckBox chkCmBox in lstCheckBoxes)
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
-                    chkCmBox.BackColor = SystemColors.Control;
+                    chkCmBox.BackColor = ColorManager.Control;
                     if (check && intCurrentBoxTag <= value)
                     {
                         chkCmBox.Checked = true;
@@ -12841,7 +12842,7 @@ namespace Chummer
                     else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
                     {
                         chkCmBox.Visible = true;
-                        chkCmBox.BackColor = SystemColors.ControlDark;
+                        chkCmBox.BackColor = ColorManager.ControlDark;
                         chkCmBox.Text = intCurrentBoxTag == intConditionMax + intOverflow ? LanguageManager.GetString("String_CMDown") : string.Empty;
                     }
                     else
