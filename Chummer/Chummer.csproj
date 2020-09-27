@@ -86,12 +86,13 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
-  <PropertyGroup />
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup />
-  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.6.7\lib\net40\BouncyCastle.Crypto.dll</HintPath>
@@ -1010,6 +1011,7 @@
     <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
       <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
+    <None Include="Properties\app.manifest" />
     <None Include="Selection Forms\frmSelectMartialArtManeuver.cs">
       <SubType>Form</SubType>
     </None>
@@ -1798,7 +1800,6 @@
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Properties\app.manifest" />
     <None Include="Properties\DataSources\System.Xml.Linq.XElement.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
