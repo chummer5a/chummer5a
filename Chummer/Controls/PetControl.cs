@@ -43,6 +43,7 @@ namespace Chummer
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
         }

@@ -955,6 +955,7 @@ namespace Chummer
                 cmsRoster.Items.Add(tsCloseOpenCharacter);
                 tsCloseOpenCharacter.TranslateToolStripItemsRecursively();
             }
+            cmsRoster.UpdateLightDarkMode();
 
             return cmsRoster;
         }

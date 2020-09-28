@@ -47,6 +47,7 @@ namespace Chummer
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
         }

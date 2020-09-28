@@ -57,6 +57,7 @@ namespace Chummer
 
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
         }

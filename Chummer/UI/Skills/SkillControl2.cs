@@ -51,6 +51,7 @@ namespace Chummer.UI.Skills
 
             foreach (ToolStripItem tssItem in cmsSkillLabel.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
 

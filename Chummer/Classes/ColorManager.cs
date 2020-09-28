@@ -44,10 +44,10 @@ namespace Chummer
         public static Color Highlight => SystemColors.Highlight;
         public static Color HighlightText => SystemColors.HighlightText;
         public static Color ControlText => IsLightMode ? SystemColors.ControlText : SystemColors.ControlLightLight;
-        public static Color ControlDarkDark => IsLightMode ? SystemColors.ControlDarkDark : SystemColors.ControlLight;
-        public static Color ControlDark => IsLightMode ? SystemColors.ControlDark : SystemColors.Control;
-        public static Color Control => IsLightMode ? SystemColors.Control : SystemColors.ControlDark;
-        public static Color ControlLight => IsLightMode ? SystemColors.ControlLight : SystemColors.ControlDarkDark;
+        public static Color ControlDarkDark => IsLightMode ? SystemColors.ControlDarkDark : SystemColors.Control;
+        public static Color ControlDark => IsLightMode ? SystemColors.ControlDark : SystemColors.ControlLight;
+        public static Color Control => IsLightMode ? SystemColors.Control : SystemColors.ControlDarkDark;
+        public static Color ControlLight => IsLightMode ? SystemColors.ControlLight : SystemColors.ControlDark;
         public static Color ControlLightLight => IsLightMode ? SystemColors.ControlLightLight : SystemColors.ControlText;
         public static Color ButtonFace => IsLightMode ? SystemColors.ButtonFace : SystemColors.ButtonShadow;
         public static Color ButtonShadow => IsLightMode ? SystemColors.ButtonShadow : SystemColors.ButtonFace;
@@ -61,167 +61,136 @@ namespace Chummer
         public static Color GrayHasNotesColor => Color.Tan;
         public static Color ErrorColor => Color.Red;
 
-        public static void UpdateLightDarkMode(this Control objControl, bool blnFirstUpdate = true)
+        public static void UpdateLightDarkMode(this Control objControl)
         {
-            // Light mode is the default theme, so don't do any updates if this is the startup call and the system already is in light mode
-            if (blnFirstUpdate && IsLightMode)
-                return;
-
-            objControl.SuspendLayout();
-            InvertControlColorsRecusively(objControl);
-            objControl.ResumeLayout();
+            ApplyColorsRecusively(objControl);
         }
+
+        public static void UpdateLightDarkMode(this ToolStripItem tssItem)
+        {
+            ApplyColorsRecusively(tssItem);
+        }
+
 
         #region Color Inversion Methods
 
-        private static Color InvertColor(Color objInputColor, out bool blnWasInverted)
+        private static void ApplyColorsRecusively(Control objControl)
         {
-            blnWasInverted = true;
-            // Trivial Inversions
-            if (objInputColor == ControlText)
-                return ControlLightLight;
-            if (objInputColor == ControlDarkDark)
-                return ControlLight;
-            if (objInputColor == ControlDark)
-                return Control;
-            if (objInputColor == Control)
-                return ControlDark;
-            if (objInputColor == ControlLight)
-                return ControlDarkDark;
-            if (objInputColor == ControlLightLight)
-                return ControlText;
-            if (objInputColor == Window)
-                return WindowText;
-            if (objInputColor == WindowText)
-                return Window;
-            if (objInputColor == Info)
-                return InfoText;
-            if (objInputColor == InfoText)
-                return Info;
-            if (objInputColor == ButtonFace)
-                return ButtonShadow;
-            if (objInputColor == ButtonShadow)
-                return ButtonFace;
-            // Non-trivial Inversions
-            if (objInputColor == SplitterColorLight)
-                return SplitterColorDark;
-            if (objInputColor == SplitterColorDark)
-                return SplitterColorLight;
-            if (objInputColor == HasNotesColorLight)
-                return HasNotesColorDark;
-            if (objInputColor == HasNotesColorDark)
-                return HasNotesColorLight;
-            blnWasInverted = false;
-            return objInputColor;
-        }
-
-        private static void InvertControlColorsRecusively(Control objControl)
-        {
-            // Foreground Color
-            Color objTemp = InvertColor(objControl.ForeColor, out bool blnWasInverted);
-            if (blnWasInverted)
-                objControl.ForeColor = objTemp;
-
-            // Background Color
-            objTemp = InvertColor(objControl.BackColor, out blnWasInverted);
-            if (blnWasInverted)
-                objControl.BackColor = objTemp;
-
-            if (objControl.HasChildren)
+            switch (objControl)
             {
-                if (objControl is Form frmControl)
-                {
+                case DataGridView objDataGridView:
+                    objDataGridView.DefaultCellStyle.ForeColor = ControlText;
+                    objDataGridView.DefaultCellStyle.BackColor = Control;
+                    objDataGridView.ColumnHeadersDefaultCellStyle.ForeColor = ControlText;
+                    objDataGridView.ColumnHeadersDefaultCellStyle.BackColor = Control;
+                    objDataGridView.AlternatingRowsDefaultCellStyle.ForeColor = ControlText;
+                    objDataGridView.AlternatingRowsDefaultCellStyle.BackColor = ControlLight;
+                    objDataGridView.RowTemplate.DefaultCellStyle.ForeColor = ControlText;
+                    objDataGridView.RowTemplate.DefaultCellStyle.BackColor = Control;
+                    foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
+                    {
+                        objColumn.DefaultCellStyle.ForeColor = ControlText;
+                        objColumn.DefaultCellStyle.BackColor = Control;
+                    }
+                    break;
+                case SplitContainer objSplitControl:
+                    objSplitControl.ForeColor = SplitterColor;
+                    objSplitControl.BackColor = SplitterColor;
+                    ApplyColorsRecusively(objSplitControl.Panel1);
+                    ApplyColorsRecusively(objSplitControl.Panel2);
+                    break;
+                case TreeView treControl:
+                    treControl.ForeColor = WindowText;
+                    treControl.BackColor = Window;
+                    treControl.LineColor = WindowText;
+                    foreach (TreeNode objNode in treControl.Nodes)
+                        ApplyColorsRecusively(objNode);
+                    break;
+                case TextBox txtControl:
+                    txtControl.ForeColor = WindowText;
+                    txtControl.BackColor = Window;
+                    break;
+                case Button cmdControl:
+                    if (cmdControl.FlatStyle == FlatStyle.Flat)
+                        goto default;
+                    // Buttons look weird if colored based on anything other than the default color scheme in dark mode
+                    cmdControl.ForeColor = SystemColors.ControlText;
+                    cmdControl.BackColor = Color.Transparent;// SystemColors.ButtonFace;
+                    break;
+                case TableLayoutPanel tlpControl:
+                    if (tlpControl.BorderStyle != BorderStyle.None)
+                        tlpControl.BorderStyle = IsLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
+                    goto default;
+                case Form frmControl:
                     if (frmControl.MainMenuStrip != null)
                         foreach (ToolStripMenuItem tssItem in frmControl.MainMenuStrip.Items)
-                            InvertControlColorsRecusively(tssItem);
-                }
-
-                foreach (Control objChild in objControl.Controls)
-                {
-                    if (objChild is ToolStrip tssStrip)
-                    {
-                        foreach (ToolStripItem tssItem in tssStrip.Items)
-                            InvertControlColorsRecusively(tssItem);
-                    }
-                    else if (objChild is TabControl objTabControl)
-                    {
-                        foreach (TabPage tabPage in objTabControl.TabPages)
-                            InvertControlColorsRecusively(tabPage);
-                    }
-                    else if (objChild is SplitContainer objSplitControl)
-                    {
-                        InvertControlColorsRecusively(objSplitControl.Panel1);
-                        InvertControlColorsRecusively(objSplitControl.Panel2);
-                    }
-                    else if (objChild is TreeView treTree)
-                    {
-                        foreach (TreeNode objNode in treTree.Nodes)
-                            InvertControlColorsRecusively(objNode);
-                    }
-                    else if (objChild is DataGridView objDataGridView)
-                    {
-                        // Foreground Color
-                        objTemp = InvertColor(objDataGridView.DefaultCellStyle.ForeColor, out blnWasInverted);
-                        if (blnWasInverted)
-                            objDataGridView.DefaultCellStyle.ForeColor = objTemp;
-
-                        // Background Color
-                        objTemp = InvertColor(objDataGridView.DefaultCellStyle.BackColor, out blnWasInverted);
-                        if (blnWasInverted)
-                            objDataGridView.DefaultCellStyle.BackColor = objTemp;
-
-                        foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
-                        {
-                            // Foreground Color
-                            objTemp = InvertColor(objColumn.DefaultCellStyle.ForeColor, out blnWasInverted);
-                            if (blnWasInverted)
-                                objColumn.DefaultCellStyle.ForeColor = objTemp;
-
-                            // Background Color
-                            objTemp = InvertColor(objColumn.DefaultCellStyle.BackColor, out blnWasInverted);
-                            if (blnWasInverted)
-                                objColumn.DefaultCellStyle.BackColor = objTemp;
-                        }
-                    }
+                            ApplyColorsRecusively(tssItem);
+                    goto default;
+                case TabControl objTabControl:
+                    foreach (TabPage tabPage in objTabControl.TabPages)
+                        ApplyColorsRecusively(tabPage);
+                    goto default;
+                case ToolStrip tssStrip:
+                    foreach (ToolStripItem tssItem in tssStrip.Items)
+                        ApplyColorsRecusively(tssItem);
+                    goto default;
+                default:
+                    if (objControl.ForeColor == Control)
+                        objControl.ForeColor = ControlDarkDark;
+                    else if (objControl.ForeColor == ControlLight)
+                        objControl.ForeColor = ControlDark;
                     else
-                    {
-                        InvertControlColorsRecusively(objChild);
-                    }
-                }
+                        objControl.ForeColor = ControlText;
+                    if (objControl.BackColor == ControlText)
+                        objControl.BackColor = ControlLightLight;
+                    else if (objControl.BackColor == ControlDark)
+                        objControl.BackColor = ControlLight;
+                    else
+                        objControl.BackColor = Control;
+                    break;
             }
+
+            foreach (Control objChild in objControl.Controls)
+                ApplyColorsRecusively(objChild);
         }
 
-        private static void InvertControlColorsRecusively(ToolStripItem tssItem)
+        private static void ApplyColorsRecusively(ToolStripItem tssItem)
         {
-            // Foreground Color
-            Color objTemp = InvertColor(tssItem.ForeColor, out bool blnWasInverted);
-            if (blnWasInverted)
-                tssItem.ForeColor = objTemp;
-
-            // Background Color
-            objTemp = InvertColor(tssItem.BackColor, out blnWasInverted);
-            if (blnWasInverted)
-                tssItem.BackColor = objTemp;
+            if (tssItem.ForeColor == Control)
+                tssItem.ForeColor = ControlDarkDark;
+            else if (tssItem.ForeColor == ControlLight)
+                tssItem.ForeColor = ControlDark;
+            else
+                tssItem.ForeColor = ControlText;
+            if (tssItem.BackColor == ControlText)
+                tssItem.BackColor = ControlLightLight;
+            else if (tssItem.BackColor == ControlDark)
+                tssItem.BackColor = ControlLight;
+            else
+                tssItem.BackColor = Control;
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    InvertControlColorsRecusively(tssDropDownChild);
+                    ApplyColorsRecusively(tssDropDownChild);
         }
 
-        private static void InvertControlColorsRecusively(TreeNode nodNode)
+        private static void ApplyColorsRecusively(TreeNode nodNode)
         {
-            // Foreground Color
-            Color objTemp = InvertColor(nodNode.ForeColor, out bool blnWasInverted);
-            if (blnWasInverted)
-                nodNode.ForeColor = objTemp;
-
-            // Background Color
-            objTemp = InvertColor(nodNode.BackColor, out blnWasInverted);
-            if (blnWasInverted)
-                nodNode.BackColor = objTemp;
+            if (IsLightMode)
+            {
+                if (nodNode.ForeColor == HasNotesColorDark)
+                    nodNode.ForeColor = HasNotesColor;
+                else if (nodNode.ForeColor == Window)
+                    nodNode.ForeColor = WindowText;
+            }
+            else if (nodNode.ForeColor == HasNotesColorLight)
+                nodNode.ForeColor = HasNotesColor;
+            else if (nodNode.ForeColor == Window)
+                nodNode.ForeColor = WindowText;
+            nodNode.BackColor = Window;
 
             foreach (TreeNode nodNodeChild in nodNode.Nodes)
-                InvertControlColorsRecusively(nodNodeChild);
+                ApplyColorsRecusively(nodNodeChild);
         }
         #endregion
     }
