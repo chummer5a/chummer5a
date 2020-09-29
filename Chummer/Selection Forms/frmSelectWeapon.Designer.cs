@@ -1073,6 +1073,7 @@ namespace Chummer
             this.MinimizeBox = false;
             this.Name = "frmSelectWeapon";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeapon";

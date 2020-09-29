@@ -138,6 +138,7 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.Name = "frmTest";
+            this.ShowIcon = false;
             this.Text = "XML Test";
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

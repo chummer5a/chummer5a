@@ -237,7 +237,7 @@ namespace Chummer
             this.dgvArmor.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
             this.dgvArmor.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvArmor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvArmor.Size = new System.Drawing.Size(592, 335);
+            this.dgvArmor.Size = new System.Drawing.Size(752, 455);
             this.dgvArmor.TabIndex = 37;
             this.dgvArmor.DoubleClick += new System.EventHandler(this.dgvArmor_DoubleClick);
             // 
@@ -708,11 +708,11 @@ namespace Chummer
             // 
             // lblRatingNALabel
             // 
+            this.lblRatingNALabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblRatingNALabel.AutoSize = true;
-            this.lblRatingNALabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 0);
+            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 6);
             this.lblRatingNALabel.Name = "lblRatingNALabel";
-            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 26);
+            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);
             this.lblRatingNALabel.TabIndex = 13;
             this.lblRatingNALabel.Tag = "String_NotApplicable";
             this.lblRatingNALabel.Text = "N/A";
@@ -762,7 +762,7 @@ namespace Chummer
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
             this.tabBrowse.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBrowse.Size = new System.Drawing.Size(598, 341);
+            this.tabBrowse.Size = new System.Drawing.Size(758, 461);
             this.tabBrowse.TabIndex = 0;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
@@ -907,6 +907,7 @@ namespace Chummer
             this.MinimizeBox = false;
             this.Name = "frmSelectArmor";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectArmor";

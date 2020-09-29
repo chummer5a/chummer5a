@@ -298,6 +298,7 @@ namespace Chummer
             this.MinimumSize = new System.Drawing.Size(768, 576);
             this.Name = "frmCreateCustomDrug";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.ShowIcon = false;
             this.Tag = "Button_CreateCustomDrug";
             this.Text = "Create Custom Drug";
             this.tlpMain.ResumeLayout(false);
