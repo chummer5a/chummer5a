@@ -124,8 +124,8 @@ namespace Chummer
                                 if (xmlOperationChildNode.SelectChildren(XPathNodeType.Element).Count > 0)
                                     boolSubNodeResult = ProcessFilterOperationNode(xmlTargetNode,
                                                             xmlOperationChildNode,
-                                                            blnOperationChildNodeAttributeOr) !=
-                                                        blnInvert;
+                                                            blnOperationChildNodeAttributeOr)
+                                                        != blnInvert;
                             }
                             else
                             {
@@ -133,8 +133,9 @@ namespace Chummer
                                 bool blnTargetNodeEmpty = string.IsNullOrWhiteSpace(strTargetNodeText);
                                 if (blnTargetNodeEmpty || blnOperationChildNodeEmpty)
                                 {
-                                    if (blnTargetNodeEmpty == blnOperationChildNodeEmpty &&
-                                        (strOperationType == "==" || strOperationType == "equals"))
+                                    if (blnTargetNodeEmpty == blnOperationChildNodeEmpty
+                                        && (strOperationType == "=="
+                                            || strOperationType == "equals"))
                                     {
                                         boolSubNodeResult = !blnInvert;
                                     }
@@ -163,36 +164,35 @@ namespace Chummer
                                         case "contains":
                                             {
                                                 boolSubNodeResult =
-                                                    strTargetNodeText.Contains(strOperationChildNodeText) !=
-                                                    blnInvert;
+                                                    strTargetNodeText.Contains(strOperationChildNodeText, StringComparison.OrdinalIgnoreCase)
+                                                    != blnInvert;
                                                 break;
                                             }
                                         case "greaterthan":
                                         case ">":
                                             {
                                                 boolSubNodeResult =
-                                                    (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                     int.TryParse(strOperationChildNodeText,
-                                                         out int intChildNodeValue) &&
-                                                     intTargetNodeValue > intChildNodeValue) != blnInvert;
+                                                    (int.TryParse(strTargetNodeText, out int intTargetNodeValue)
+                                                     && int.TryParse(strOperationChildNodeText, out int intChildNodeValue)
+                                                     && intTargetNodeValue > intChildNodeValue)
+                                                    != blnInvert;
                                                 break;
                                             }
                                         case "greaterthanequals":
                                         case ">=":
                                             {
                                                 boolSubNodeResult =
-                                                    (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                     int.TryParse(strOperationChildNodeText,
-                                                         out int intChildNodeValue) &&
-                                                     intTargetNodeValue >= intChildNodeValue) != blnInvert;
+                                                    (int.TryParse(strTargetNodeText, out int intTargetNodeValue)
+                                                     && int.TryParse(strOperationChildNodeText, out int intChildNodeValue)
+                                                     && intTargetNodeValue >= intChildNodeValue)
+                                                    != blnInvert;
                                                 break;
                                             }
                                         case "==":
                                         default:
                                             boolSubNodeResult =
-                                                (strTargetNodeText.Trim() ==
-                                                 strOperationChildNodeText.Trim()) !=
-                                                blnInvert;
+                                                (strTargetNodeText.Trim() == strOperationChildNodeText.Trim())
+                                                != blnInvert;
                                             break;
                                     }
                             }
