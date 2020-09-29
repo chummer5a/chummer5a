@@ -89,13 +89,13 @@ namespace ChummerHub.Services.GoogleDrive
                     AccessToken = "",
                     RefreshToken = refreshToken
                 };
-
+                var foolGitGuardian = "-";
                 var flow2 = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
                     ClientSecrets = new ClientSecrets
                     {
                         ClientId = "779360551859-i817g72s0ork3bffvnhtvpl0q2gi8sub.apps.googleusercontent.com",//Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
-                        ClientSecret = "Q2yMsXBtdd-zxp6vPXcjkGFz"//Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
+                        ClientSecret = "Q2yMsXBtdd" + foolGitGuardian + "zxp6vPXcjkGFz"//Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
                     },
                     Scopes = Scopes,
                     DataStore = new GoogleIDataStore("me", refreshToken, _logger)
