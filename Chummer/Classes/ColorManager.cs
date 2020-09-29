@@ -1,5 +1,26 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
+using Chummer.UI.Editors;
 using Microsoft.Win32;
 using SystemColors = System.Drawing.SystemColors;
 
@@ -7,8 +28,10 @@ namespace Chummer
 {
     public static class ColorManager
     {
-        private static bool _blnIsLightMode = true;
         private static readonly RegistryKey _objPersonalizeKey;
+        // While events that trigger on changes to a registry value are possible, they're a PITA in C#.
+        // Checking for dark mode on a timer interval is less elegant, but also easier to set up, track, and debug.
+        private static readonly Timer _tmrDarkModeCheckerTimer;
 
         static ColorManager()
         {
@@ -19,7 +42,7 @@ namespace Chummer
             {
                 _objPersonalizeKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
             }
-            catch (System.ObjectDisposedException)
+            catch (ObjectDisposedException)
             {
             }
             catch (System.Security.SecurityException)
@@ -30,11 +53,40 @@ namespace Chummer
             {
                 object objLightModeResult = _objPersonalizeKey.GetValue("AppsUseLightTheme");
                 if (int.TryParse(objLightModeResult.ToString(), out int intTemp))
-                    _blnIsLightMode = intTemp != 0;
+                    IsLightMode = intTemp != 0;
+                _tmrDarkModeCheckerTimer = new Timer {Interval = 5000}; // Poll registry every 5 seconds
+                _tmrDarkModeCheckerTimer.Tick += CheckAndRefreshLightDarkMode;
+                _tmrDarkModeCheckerTimer.Enabled = true;
             }
         }
 
-        public static bool IsLightMode => _blnIsLightMode;
+        private static void CheckAndRefreshLightDarkMode(object sender, EventArgs e)
+        {
+            if (_objPersonalizeKey != null && _tmrDarkModeCheckerTimer != null)
+            {
+                object objLightModeResult = _objPersonalizeKey.GetValue("AppsUseLightTheme");
+                if (int.TryParse(objLightModeResult.ToString(), out int intTemp))
+                    IsLightMode = intTemp != 0;
+            }
+        }
+
+        private static bool _blnIsLightMode = true;
+        public static bool IsLightMode
+        {
+            get => _blnIsLightMode;
+            set
+            {
+                if (_blnIsLightMode != value)
+                {
+                    _blnIsLightMode = value;
+                    Program.MainForm.DoThreadSafe(() =>
+                    {
+                        using (new CursorWait(Program.MainForm))
+                            Program.MainForm.UpdateLightDarkMode();
+                    });
+                }
+            }
+        }
 
         public static Color WindowText => IsLightMode ? SystemColors.WindowText : SystemColors.Window;
         public static Color Window => IsLightMode ? SystemColors.Window : SystemColors.WindowText;
@@ -79,6 +131,7 @@ namespace Chummer
             switch (objControl)
             {
                 case DataGridView objDataGridView:
+                    objDataGridView.GridColor = WindowText;
                     objDataGridView.DefaultCellStyle.ForeColor = ControlText;
                     objDataGridView.DefaultCellStyle.BackColor = Control;
                     objDataGridView.ColumnHeadersDefaultCellStyle.ForeColor = ControlText;
@@ -110,12 +163,24 @@ namespace Chummer
                     txtControl.ForeColor = WindowText;
                     txtControl.BackColor = Window;
                     break;
+                case ListView lstControl:
+                    lstControl.ForeColor = WindowText;
+                    lstControl.BackColor = Window;
+                    break;
+                case GroupBox gpbControl:
+                    gpbControl.ForeColor = ControlText;
+                    gpbControl.BackColor = Control;
+                    break;
+                case RichTextBox _:
+                case RtfEditor _:
+                    // Rtf Editor is special because we don't want any color changes for the controls inside of it, otherwise it will mess up the saved Rtf text
+                    return;
                 case Button cmdControl:
                     if (cmdControl.FlatStyle == FlatStyle.Flat)
                         goto default;
                     // Buttons look weird if colored based on anything other than the default color scheme in dark mode
                     cmdControl.ForeColor = SystemColors.ControlText;
-                    cmdControl.BackColor = Color.Transparent;// SystemColors.ButtonFace;
+                    cmdControl.BackColor = Color.Transparent;
                     break;
                 case TableLayoutPanel tlpControl:
                     if (tlpControl.BorderStyle != BorderStyle.None)
@@ -133,6 +198,15 @@ namespace Chummer
                 case ToolStrip tssStrip:
                     foreach (ToolStripItem tssItem in tssStrip.Items)
                         ApplyColorsRecusively(tssItem);
+                    goto default;
+                case CheckBox chkControl:
+                    if (chkControl.Appearance == Appearance.Button)
+                    {
+                        // This checkbox is a condition monitor box, so special treatment is required
+                        chkControl.ForeColor = SystemColors.ControlText;
+                        // Do not set backgrounds because they will be set based on overflow anyway
+                        break;
+                    }
                     goto default;
                 default:
                     if (objControl.ForeColor == Control)

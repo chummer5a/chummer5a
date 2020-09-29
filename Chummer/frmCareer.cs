@@ -12825,7 +12825,7 @@ namespace Chummer
                 foreach (CheckBox chkCmBox in lstCheckBoxes)
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
-                    chkCmBox.BackColor = ColorManager.Control;
+                    chkCmBox.BackColor = SystemColors.Control; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
                     if (check && intCurrentBoxTag <= value)
                     {
                         chkCmBox.Checked = true;
@@ -12844,7 +12844,7 @@ namespace Chummer
                     else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
                     {
                         chkCmBox.Visible = true;
-                        chkCmBox.BackColor = ColorManager.ControlDark;
+                        chkCmBox.BackColor = SystemColors.ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
                         chkCmBox.Text = intCurrentBoxTag == intConditionMax + intOverflow ? LanguageManager.GetString("String_CMDown") : string.Empty;
                     }
                     else
