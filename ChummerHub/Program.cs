@@ -6,20 +6,16 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using Azure.Identity;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using Microsoft.Extensions.Configuration;
 
 namespace ChummerHub
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program'
     public class Program
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program'
     {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
         public static IWebHost MyHost;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.MyHost'
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Main(string[])'
         public static void Main(string[] args)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Main(string[])'
         {
 
 
@@ -39,6 +35,7 @@ namespace ChummerHub
 #endif
 
             MyHost = CreateWebHostBuilder(args);
+          
             MyHost.Run();
         }
 
@@ -83,10 +80,21 @@ namespace ChummerHub
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
         public static IWebHost CreateWebHostBuilder(string[] args) =>
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.CreateWebHostBuilder(string[])'
             WebHost.CreateDefaultBuilder(args)
+            //.ConfigureAppConfiguration((hostingContext, config) =>
+            //{
+            //    var settings = config.Build();
+            //    config.AddAzureAppConfiguration(options =>
+            //    {
+                    
+            //        //options.Connect(settings["ConnectionStrings.AppConfig"])
+            //        //        .ConfigureKeyVault(kv =>
+            //        //        {
+            //        //            kv.SetCredential(new DefaultAzureCredential());
+            //        //        });
+            //    });
+            //})
                 //.UseKestrel(options =>
                 //{
                 //    options.Limits.MinResponseDataRate = null;
@@ -112,6 +120,7 @@ namespace ChummerHub
                     // only Warning or above will be sent to Application Insights.
                     logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
                 })
+          
                 .CaptureStartupErrors(true)
                 .Build();
     }

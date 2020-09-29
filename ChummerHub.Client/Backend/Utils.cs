@@ -332,6 +332,7 @@ namespace ChummerHub.Client.Backend
                 Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0
                     ? "https://chummer.azurewebsites.net"
                     : "https://chummer-beta.azurewebsites.net";
+                Settings.Default.Save();
                 if (Debugger.IsAttached)
                 {
                     Settings.Default.SINnerUrl = "https://chummer-beta.azurewebsites.net";
@@ -907,7 +908,7 @@ namespace ChummerHub.Client.Backend
             objCache.OnMyAfterSelect = null;
             objCache.OnMyAfterSelect += (sender, treeViewEventArgs) => OnMyAfterSelect(sinner, objCache, treeViewEventArgs);
             objCache.OnMyKeyDown = null;
-            objCache.OnMyKeyDown += (sender, args) =>
+            objCache.OnMyKeyDown += async (sender, args) =>
             {
                 try
                 {
@@ -917,7 +918,9 @@ namespace ChummerHub.Client.Backend
                         {
                             var client = StaticUtils.GetClient();
                             if (sinner.Id != null)
-                                client.Delete(sinner.Id.Value);
+                            {
+                                await client.DeleteAsync(sinner.Id.Value).ConfigureAwait(false);
+                            }
                             objCache.ErrorText = "deleted!";
                             PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
                             {

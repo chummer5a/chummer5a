@@ -139,15 +139,16 @@ namespace ChummerHub.Client.UI
                 return;
             }
             var sinnerurl = client.BaseUri.ToString();
-            while (Settings.Default.SINnerUrls.Contains("http://chummer.azurewebsites.net/"))
-            {
-                Settings.Default.SINnerUrls.Remove("http://chummer.azurewebsites.net/");
-                Settings.Default.Save();
-            }
+            Settings.Default.SINnerUrls.Clear();
+            Settings.Default.Save();
             Settings.Default.SINnerUrls.Add("https://chummer.azurewebsites.net/");
+            Settings.Default.SINnerUrls.Add("https://chummer-beta.azurewebsites.net/");
             Settings.Default.Save();
             cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;
             cbSINnerUrl.SelectedItem = sinnerurl;
+            if (cbSINnerUrl.SelectedItem == null)
+                cbSINnerUrl.SelectedItem = Settings.Default.SINnerUrls[0];
+
             cbVisibilityIsPublic.Checked = Settings.Default.VisibilityIsPublic;
             cbIgnoreWarnings.Checked = Settings.Default.IgnoreWarningsOnOpening;
             cbOpenChummerFromSharedLinks.Checked = Settings.Default.OpenChummerFromSharedLinks;
@@ -334,6 +335,8 @@ namespace ChummerHub.Client.UI
             }
             else
             {
+                Settings.Default.SINnerUrl = cbSINnerUrl.SelectedItem?.ToString();
+                Settings.Default.Save();
                 ShowWebBrowser();
             }
         }

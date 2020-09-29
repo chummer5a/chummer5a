@@ -769,7 +769,7 @@ namespace ChummerHub.Controllers.V1
                         if (string.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
 
-                        var alltags = (await _context.Tags.Where(a => a.SINnerId == dbsinner.Id).ToListAsync()).ToArray();
+                        var alltags = _context.Tags.Where(a => a != null && a.SINnerId == dbsinner.Id).ToArray();
                         _context.Tags.RemoveRange(alltags);
                         _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
                         _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
@@ -860,8 +860,8 @@ namespace ChummerHub.Controllers.V1
                                 user, _context,
                                 _logger, oldgroup.PasswordHash, roles, tc);
                         }
-
-                        if (oldsinner == null)
+                        await _context.SaveChangesAsync();
+                        if (oldsinner == null && user.FavoriteGroups != null)
                         {
                             if (user.FavoriteGroups.All(a => a.FavoriteGuid != sinner.Id))
                             {
