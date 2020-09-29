@@ -34,15 +34,17 @@ namespace Chummer.UI.Shared
         public LimitTabUserControl()
         {
             InitializeComponent();
-
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             foreach (ToolStripMenuItem tssItem in cmsLimitModifier.Items.OfType<ToolStripMenuItem>())
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
             foreach (ToolStripMenuItem tssItem in cmsLimitModifierNotesOnly.Items.OfType<ToolStripMenuItem>())
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
         }

@@ -4097,7 +4097,7 @@ namespace Chummer
             // 
             // tabOtherInfo
             // 
-            this.tabOtherInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabOtherInfo.BackColor = System.Drawing.SystemColors.Control;
             this.tabOtherInfo.Controls.Add(this.tlpInfo);
             this.tabOtherInfo.Location = new System.Drawing.Point(4, 22);
             this.tabOtherInfo.Name = "tabOtherInfo";
@@ -4808,7 +4808,7 @@ namespace Chummer
             // mnuFileSave
             // 
             this.mnuFileSave.Image = global::Chummer.Properties.Resources.disk;
-            this.mnuFileSave.ImageTransparentColor = System.Drawing.Color.Black;
+            this.mnuFileSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuFileSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileSave.MergeIndex = 3;
             this.mnuFileSave.Name = "mnuFileSave";
@@ -5031,7 +5031,7 @@ namespace Chummer
             // 
             this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
-            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Black;
+            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPrint.MergeAction = System.Windows.Forms.MergeAction.Replace;
             this.tsbPrint.MergeIndex = 4;
             this.tsbPrint.Name = "tsbPrint";
@@ -5471,7 +5471,7 @@ namespace Chummer
             // 
             // splitMain
             // 
-            this.splitMain.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitMain.BackColor = System.Drawing.Color.LightBlue;
             this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitMain.Location = new System.Drawing.Point(0, 0);
             this.splitMain.Name = "splitMain";
@@ -5521,7 +5521,7 @@ namespace Chummer
             // 
             // tabCommon
             // 
-            this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCommon.BackColor = System.Drawing.SystemColors.Control;
             this.tabCommon.Controls.Add(this.tlpCommon);
             this.tabCommon.Location = new System.Drawing.Point(4, 22);
             this.tabCommon.Name = "tabCommon";
@@ -6042,7 +6042,7 @@ namespace Chummer
             // 
             // tabLimits
             // 
-            this.tabLimits.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabLimits.BackColor = System.Drawing.SystemColors.Control;
             this.tabLimits.Controls.Add(this.lmtControl);
             this.tabLimits.Location = new System.Drawing.Point(4, 22);
             this.tabLimits.Name = "tabLimits";
@@ -6066,7 +6066,7 @@ namespace Chummer
             // 
             // tabMartialArts
             // 
-            this.tabMartialArts.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabMartialArts.BackColor = System.Drawing.SystemColors.Control;
             this.tabMartialArts.Controls.Add(this.tlpMartialArts);
             this.tabMartialArts.Location = new System.Drawing.Point(4, 22);
             this.tabMartialArts.Name = "tabMartialArts";
@@ -6199,7 +6199,7 @@ namespace Chummer
             // 
             // tabMagician
             // 
-            this.tabMagician.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabMagician.BackColor = System.Drawing.SystemColors.Control;
             this.tabMagician.Controls.Add(this.tlpMagician);
             this.tabMagician.Location = new System.Drawing.Point(4, 22);
             this.tabMagician.Name = "tabMagician";
@@ -7056,7 +7056,7 @@ namespace Chummer
             // 
             // tabAdept
             // 
-            this.tabAdept.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabAdept.BackColor = System.Drawing.SystemColors.Control;
             this.tabAdept.Controls.Add(this.tabPowerUc);
             this.tabAdept.Location = new System.Drawing.Point(4, 22);
             this.tabAdept.Name = "tabAdept";
@@ -7067,7 +7067,7 @@ namespace Chummer
             // 
             // tabTechnomancer
             // 
-            this.tabTechnomancer.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabTechnomancer.BackColor = System.Drawing.SystemColors.Control;
             this.tabTechnomancer.Controls.Add(this.tlpTechnomancer);
             this.tabTechnomancer.Location = new System.Drawing.Point(4, 22);
             this.tabTechnomancer.Name = "tabTechnomancer";
@@ -7595,7 +7595,7 @@ namespace Chummer
             // 
             // tabAdvancedPrograms
             // 
-            this.tabAdvancedPrograms.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabAdvancedPrograms.BackColor = System.Drawing.SystemColors.Control;
             this.tabAdvancedPrograms.Controls.Add(this.tlpAdvancedPrograms);
             this.tabAdvancedPrograms.Location = new System.Drawing.Point(4, 22);
             this.tabAdvancedPrograms.Name = "tabAdvancedPrograms";
@@ -8105,7 +8105,7 @@ namespace Chummer
             // 
             // tabInitiation
             // 
-            this.tabInitiation.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabInitiation.BackColor = System.Drawing.SystemColors.Control;
             this.tabInitiation.Controls.Add(this.tlpInitiation);
             this.tabInitiation.Location = new System.Drawing.Point(4, 22);
             this.tabInitiation.Name = "tabInitiation";
@@ -8407,7 +8407,7 @@ namespace Chummer
             // 
             // tabCyberware
             // 
-            this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCyberware.BackColor = System.Drawing.SystemColors.Control;
             this.tabCyberware.Controls.Add(this.tlpCyberware);
             this.tabCyberware.Location = new System.Drawing.Point(4, 22);
             this.tabCyberware.Name = "tabCyberware";
@@ -9645,7 +9645,7 @@ namespace Chummer
             // 
             // tabStreetGear
             // 
-            this.tabStreetGear.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabStreetGear.BackColor = System.Drawing.SystemColors.Control;
             this.tabStreetGear.Controls.Add(this.tabStreetGearTabs);
             this.tabStreetGear.Location = new System.Drawing.Point(4, 22);
             this.tabStreetGear.Name = "tabStreetGear";
@@ -13935,7 +13935,7 @@ namespace Chummer
             // 
             // tabVehicles
             // 
-            this.tabVehicles.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabVehicles.BackColor = System.Drawing.SystemColors.Control;
             this.tabVehicles.Controls.Add(this.tlpVehicles);
             this.tabVehicles.Location = new System.Drawing.Point(4, 22);
             this.tabVehicles.Name = "tabVehicles";
@@ -16355,7 +16355,7 @@ namespace Chummer
             // 
             // tabCharacterInfo
             // 
-            this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.Control;
             this.tabCharacterInfo.Controls.Add(this.tlpCharacterInfo);
             this.tabCharacterInfo.Location = new System.Drawing.Point(4, 22);
             this.tabCharacterInfo.Name = "tabCharacterInfo";
@@ -17064,7 +17064,7 @@ namespace Chummer
             // 
             // tabKarma
             // 
-            this.tabKarma.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabKarma.BackColor = System.Drawing.SystemColors.Control;
             this.tabKarma.Controls.Add(this.splitKarmaNuyen);
             this.tabKarma.Location = new System.Drawing.Point(4, 22);
             this.tabKarma.Name = "tabKarma";
@@ -17076,20 +17076,20 @@ namespace Chummer
             // 
             // splitKarmaNuyen
             // 
-            this.splitKarmaNuyen.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitKarmaNuyen.BackColor = System.Drawing.Color.LightBlue;
             this.splitKarmaNuyen.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitKarmaNuyen.Location = new System.Drawing.Point(3, 3);
             this.splitKarmaNuyen.Name = "splitKarmaNuyen";
             // 
             // splitKarmaNuyen.Panel1
             // 
-            this.splitKarmaNuyen.Panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.splitKarmaNuyen.Panel1.BackColor = System.Drawing.SystemColors.Control;
             this.splitKarmaNuyen.Panel1.Controls.Add(this.tlpKarma);
             this.splitKarmaNuyen.Panel1.Resize += new System.EventHandler(this.splitKarmaNuyen_Panel1_Resize);
             // 
             // splitKarmaNuyen.Panel2
             // 
-            this.splitKarmaNuyen.Panel2.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.splitKarmaNuyen.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.splitKarmaNuyen.Panel2.Controls.Add(this.tlpNuyen);
             this.splitKarmaNuyen.Panel2.Resize += new System.EventHandler(this.splitKarmaNuyen_Panel2_Resize);
             this.splitKarmaNuyen.Size = new System.Drawing.Size(971, 625);
@@ -17400,7 +17400,7 @@ namespace Chummer
             // 
             // tabCalendar
             // 
-            this.tabCalendar.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCalendar.BackColor = System.Drawing.SystemColors.Control;
             this.tabCalendar.Controls.Add(this.tlpCalendar);
             this.tabCalendar.Location = new System.Drawing.Point(4, 22);
             this.tabCalendar.Name = "tabCalendar";
@@ -17535,7 +17535,7 @@ namespace Chummer
             // 
             // tabNotes
             // 
-            this.tabNotes.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabNotes.BackColor = System.Drawing.SystemColors.Control;
             this.tabNotes.Controls.Add(this.rtfGameNotes);
             this.tabNotes.Location = new System.Drawing.Point(4, 22);
             this.tabNotes.Name = "tabNotes";
@@ -17563,7 +17563,7 @@ namespace Chummer
             // 
             // tabImprovements
             // 
-            this.tabImprovements.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabImprovements.BackColor = System.Drawing.SystemColors.Control;
             this.tabImprovements.Controls.Add(this.tlpImprovements);
             this.tabImprovements.Location = new System.Drawing.Point(4, 22);
             this.tabImprovements.Name = "tabImprovements";
@@ -17821,7 +17821,7 @@ namespace Chummer
             // 
             // tabContacts
             // 
-            this.tabContacts.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabContacts.BackColor = System.Drawing.SystemColors.Control;
             this.tabContacts.Controls.Add(this.tlpContacts);
             this.tabContacts.Location = new System.Drawing.Point(4, 22);
             this.tabContacts.Name = "tabContacts";
@@ -17988,7 +17988,7 @@ namespace Chummer
             // 
             // tabEnemies
             // 
-            this.tabEnemies.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabEnemies.BackColor = System.Drawing.SystemColors.Control;
             this.tabEnemies.Controls.Add(this.tlpEnemies);
             this.tabEnemies.Location = new System.Drawing.Point(4, 22);
             this.tabEnemies.Name = "tabEnemies";

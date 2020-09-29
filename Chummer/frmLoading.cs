@@ -43,6 +43,7 @@ namespace Chummer
         {
             InitializeComponent();
             TopMost = !Utils.IsUnitTest;
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

@@ -29,6 +29,7 @@ namespace Chummer
         public frmSelectText()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

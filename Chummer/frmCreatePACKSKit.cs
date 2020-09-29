@@ -36,6 +36,7 @@ namespace Chummer
         public frmCreatePACKSKit(Character objCharacter)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
         }

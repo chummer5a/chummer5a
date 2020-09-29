@@ -49,6 +49,7 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             MoveControls();
 
@@ -56,6 +57,7 @@ namespace Chummer
 
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
         }

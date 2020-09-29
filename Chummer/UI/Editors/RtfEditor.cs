@@ -29,6 +29,7 @@ namespace Chummer.UI.Editors
         public RtfEditor()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             if (!Utils.IsDesignerMode)
                 tsControls.Visible = false;

@@ -1735,18 +1735,11 @@ namespace Chummer.Backend.Equipment
             return objNode;
         }
 
-        public Color PreferredColor
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    return Color.SaddleBrown;
-                }
+        public Color PreferredColor =>
+            !string.IsNullOrEmpty(Notes)
+                ? ColorManager.HasNotesColor
+                : ColorManager.WindowText;
 
-                return SystemColors.WindowText;
-            }
-        }
         #endregion
         #endregion
 

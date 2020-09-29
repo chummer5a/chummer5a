@@ -55,6 +55,7 @@ namespace Chummer
             // Remove this line if cmdUploadPastebin_Click has some functionality if DEBUG is not enabled or if tabPage3 gets some other control that can be used if DEBUG is not enabled
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
+            this.UpdateLightDarkMode();
             this.TranslateWinForm(_strSelectedLanguage);
 
             _lstCustomDataDirectoryInfos = new List<CustomDataDirectoryInfo>();

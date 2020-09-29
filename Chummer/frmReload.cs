@@ -32,6 +32,7 @@ namespace Chummer
         public frmReload()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

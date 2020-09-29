@@ -34,7 +34,7 @@ namespace Chummer.UI.Skills
                 return;
             _skill = skill;
             InitializeComponent();
-
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             lblModifiedRating.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.DisplayPool));

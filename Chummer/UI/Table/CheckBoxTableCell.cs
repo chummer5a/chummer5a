@@ -30,6 +30,7 @@ namespace Chummer.UI.Table
             contentField = _checkBox;
             _checkBox.Text = text;
             _checkBox.Tag = tag;
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             Size = _checkBox.Size;
         }

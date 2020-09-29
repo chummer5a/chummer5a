@@ -52,6 +52,7 @@ namespace Chummer
         public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMode = objMode;

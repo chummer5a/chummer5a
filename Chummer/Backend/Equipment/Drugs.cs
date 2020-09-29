@@ -712,18 +712,10 @@ namespace Chummer.Backend.Equipment
                 return _dicCachedAttributes;
             }
         }
-        public Color PreferredColor
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    return Color.SaddleBrown;
-                }
-
-                return SystemColors.WindowText;
-            }
-        }
+        public Color PreferredColor =>
+            !string.IsNullOrEmpty(Notes)
+                ? ColorManager.HasNotesColor
+                : ColorManager.WindowText;
 
 
         /// <summary>

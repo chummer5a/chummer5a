@@ -123,7 +123,7 @@ namespace Chummer
             // 
             // chkBoxChummer
             // 
-            this.chkBoxChummer.BackColor = System.Drawing.SystemColors.Info;
+            this.chkBoxChummer.BackColor = System.Drawing.SystemColors.Window;
             this.tlpLeft.SetColumnSpan(this.chkBoxChummer, 3);
             this.chkBoxChummer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chkBoxChummer.FormattingEnabled = true;

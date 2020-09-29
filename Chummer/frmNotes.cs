@@ -37,6 +37,7 @@ namespace Chummer
 		{
             InitializeComponent();
             rtfNotes.ContentKeyDown += rtfNotes_KeyDown;
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _blnLoading = true;
 			Width = s_IntWidth;

@@ -41,6 +41,7 @@ namespace Chummer
         {
             InitializeComponent();
             _eSource = eSource;
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             if (_eSource == Improvement.ImprovementSource.Cyberware)

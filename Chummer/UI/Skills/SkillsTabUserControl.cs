@@ -48,7 +48,7 @@ namespace Chummer.UI.Skills
                 flpSkillGroupLabels.Margin.Top,
                 flpSkillGroupLabels.Margin.Right + SystemInformation.VerticalScrollBarWidth,
                 flpSkillGroupLabels.Margin.Bottom);
-
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _lstDropDownActiveSkills = GenerateDropdownFilter();

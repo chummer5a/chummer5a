@@ -46,14 +46,16 @@ namespace Chummer.UI.Skills
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
-            SuspendLayout();
-
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             foreach (ToolStripItem tssItem in cmsSkillLabel.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
+
+            SuspendLayout();
 
             //Display
             _fntNormalName = lblName.Font;

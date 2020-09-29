@@ -70,7 +70,7 @@ namespace Chummer.Plugins
             {
                 string strTag = objNode.Tag?.ToString();
                 objNode.ContextMenuStrip = MainForm.CharacterRoster.CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                                                                                         && MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                                                                                           && MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
             }
 
             ContextMenuStrip cmsRoster = new ContextMenuStrip();
@@ -83,10 +83,12 @@ namespace Chummer.Plugins
                 Image = Resources.group
             };
             tsShowMySINners.Click += ShowMySINnersOnClick;
-            cmsRoster.Items.Add(tsShowMySINners);
+            tsShowMySINners.UpdateLightDarkMode();
             tsShowMySINners.TranslateToolStripItemsRecursively();
+            cmsRoster.Items.Add(tsShowMySINners);
+            cmsRoster.UpdateLightDarkMode();
+            cmsRoster.TranslateWinForm();
             objNode.ContextMenuStrip = cmsRoster;
-            objNode.ContextMenuStrip.TranslateWinForm();
             if (objNode.Tag is CharacterCache member)
             {
                 ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
@@ -98,8 +100,9 @@ namespace Chummer.Plugins
                     Image = Resources.link_add
                 };
                 newShare.Click += NewShareOnClick;
-                objNode.ContextMenuStrip.Items.Add(newShare);
+                newShare.UpdateLightDarkMode();
                 newShare.TranslateToolStripItemsRecursively();
+                objNode.ContextMenuStrip.Items.Add(newShare);
 
                 //is it a favorite sinner?
                 if (member.MyPluginDataDic.TryGetValue("IsSINnerFavorite", out object objFavorite))
@@ -129,8 +132,9 @@ namespace Chummer.Plugins
                         };
                         newFavorite.Click += AddPinnedOnClick;
                     }
-                    objNode.ContextMenuStrip.Items.Add(newFavorite);
+                    newFavorite.UpdateLightDarkMode();
                     newFavorite.TranslateToolStripItemsRecursively();
+                    objNode.ContextMenuStrip.Items.Add(newFavorite);
                 }
                 ToolStripMenuItem newDelete = new ToolStripMenuItem("DeleteFromSINners")
                 {
@@ -141,9 +145,9 @@ namespace Chummer.Plugins
                     Image = Resources.delete
                 };
                 newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
-                objNode.ContextMenuStrip.Items.Add(newDelete);
+                newDelete.UpdateLightDarkMode();
                 newDelete.TranslateToolStripItemsRecursively();
-                objNode.ContextMenuStrip.TranslateWinForm();
+                objNode.ContextMenuStrip.Items.Add(newDelete);
             }
 
 
@@ -171,6 +175,8 @@ namespace Chummer.Plugins
                         Image = Resources.link_add
                     };
                     newShare.Click += NewShareOnClick;
+                    newShare.UpdateLightDarkMode();
+                    newShare.TranslateToolStripItemsRecursively();
                     objNode.ContextMenuStrip.Items.Add(newShare);
 
                     //is it a favorite sinner?
@@ -186,8 +192,6 @@ namespace Chummer.Plugins
                             Image = Resources.user_delete
                         };
                         newFavorite.Click += RemovePinnedOnClick;
-                        objNode.ContextMenuStrip.Items.Add(newFavorite);
-                        newShare.TranslateToolStripItemsRecursively();
                     }
                     else
                     {
@@ -201,9 +205,9 @@ namespace Chummer.Plugins
                         };
                         newFavorite.Click += AddPinnedOnClick;
                     }
-                    objNode.ContextMenuStrip.Items.Add(newFavorite);
+                    newFavorite.UpdateLightDarkMode();
                     newFavorite.TranslateToolStripItemsRecursively();
-                    objNode.ContextMenuStrip.TranslateWinForm();
+                    objNode.ContextMenuStrip.Items.Add(newFavorite);
                 });
             }
 
@@ -220,8 +224,9 @@ namespace Chummer.Plugins
                         objNode.ContextMenuStrip.Items.Remove(item);
                         ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
                         newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
-                        objNode.ContextMenuStrip.Items.Add(newDelete);
+                        newDelete.UpdateLightDarkMode();
                         newDelete.TranslateToolStripItemsRecursively();
+                        objNode.ContextMenuStrip.Items.Add(newDelete);
                         break;
                 }
             }
@@ -541,6 +546,7 @@ namespace Chummer.Plugins
                     Tag = "Menu_Tools_SINnerSearch"
                 };
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
+                mnuSINnerSearchs.UpdateLightDarkMode();
                 mnuSINnerSearchs.TranslateToolStripItemsRecursively();
                 yield return mnuSINnerSearchs;
             }
@@ -555,6 +561,7 @@ namespace Chummer.Plugins
                 Tag = "Menu_Tools_SINnersArchetypes"
             };
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
+            mnuSINnersArchetypes.UpdateLightDarkMode();
             mnuSINnersArchetypes.TranslateToolStripItemsRecursively();
             yield return mnuSINnersArchetypes;
 
@@ -570,6 +577,7 @@ namespace Chummer.Plugins
                     Tag = "Menu_Tools_SINners"
                 };
                 mnuSINners.Click += mnuSINners_Click;
+                mnuSINners.UpdateLightDarkMode();
                 mnuSINners.TranslateToolStripItemsRecursively();
                 yield return mnuSINners;
             }

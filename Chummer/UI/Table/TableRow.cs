@@ -46,11 +46,11 @@ namespace Chummer.UI.Table
         {
             if (blnSelected)
             {
-                BackColor = SystemColors.Highlight;
+                BackColor = ColorManager.Highlight;
             }
             else
             {
-                BackColor = (intIndex & 1 ) == 0 ? SystemColors.ControlLightLight : SystemColors.Control;
+                BackColor = (intIndex & 1 ) == 0 ? ColorManager.ControlLightLight : ColorManager.Control;
             }
         }
 

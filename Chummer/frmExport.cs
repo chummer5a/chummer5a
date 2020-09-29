@@ -39,6 +39,7 @@ namespace Chummer
         {
             _objCharacterXML = objCharacterXML;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             MoveControls();
         }
