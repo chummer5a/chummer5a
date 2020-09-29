@@ -364,7 +364,7 @@ namespace Chummer
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if(Powers[e.OldIndex].AdeptWayDiscountEnabled)
-                OnPropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled));
+                OnMultiplePropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled), nameof(AllowAdeptWayPowerDiscount));
         }
 
         private void PowersOnListChanged(object sender, ListChangedEventArgs e)
@@ -408,6 +408,7 @@ namespace Chummer
                         }
                         else if (setChangedProperties.Add(nameof(Power.DiscountedAdeptWay)))
                         {
+                            setChangedProperties.Add(nameof(PowerPointsUsed));
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                             setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
                             foreach (Power objPower in Powers)
