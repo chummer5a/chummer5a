@@ -2662,11 +2662,11 @@ namespace Chummer.Backend.Equipment
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
                 // Translate the Ammo string.
-                strReturn = strReturn.CheapReplace(" or ", () => strSpace + LanguageManager.GetString("String_Or", strLanguage) + strSpace)
-                    .CheapReplace(" belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage))
-                    .CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage))
-                    .CheapReplace(" external source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage))
-                    .CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage))
+                strReturn = strReturn.CheapReplace(" or ", () => strSpace + LanguageManager.GetString("String_Or", strLanguage) + strSpace, StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage), StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage), StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" External Source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage), StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage), StringComparison.OrdinalIgnoreCase)
                     .CheapReplace("(b)", () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage) + ')')
                     .CheapReplace("(belt)", () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')')
                     .CheapReplace("(box)", () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')')

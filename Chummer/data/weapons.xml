@@ -3937,7 +3937,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>External source</ammo>
+      <ammo>External Source</ammo>
       <avail>24F</avail>
       <cost>35000</cost>
       <source>RG</source>
@@ -3967,7 +3967,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>2x10(c)</ammo>
+      <ammo>2x10(c) or External Source</ammo>
       <avail>18F</avail>
       <cost>16000</cost>
       <source>RG</source>
@@ -3992,7 +3992,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>10(c)</ammo>
+      <ammo>10(c) or External Source</ammo>
       <avail>14F</avail>
       <cost>7500</cost>
       <source>RG</source>
@@ -8352,7 +8352,7 @@
     <weapon>
       <id>176ab92a-0c00-48fe-a994-668903407fbf</id>
       <name>Ares Armatus</name>
-      <category>Exotic Ranged Weapons</category>
+      <category>Laser Weapons</category>
       <type>Ranged</type>
       <conceal>+4</conceal>
       <accuracy>6</accuracy>
@@ -8361,7 +8361,7 @@
       <ap>-5</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>10(c)</ammo>
+      <ammo>10(c) or External Source</ammo>
       <avail>20F</avail>
       <cost>19000</cost>
       <source>HT</source>
@@ -8372,6 +8372,7 @@
       </accessorymounts>
       <range>Shotguns (flechette)</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Laser Weapons</useskillspec>
     </weapon>
     <weapon>
       <id>7aa56de0-e709-4a0e-aadb-fbcdd2fcfeb0</id>
@@ -8579,7 +8580,7 @@
       <ap>-10</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>5(c)</ammo>
+      <ammo>5(c) or External Source</ammo>
       <avail>16F</avail>
       <cost>22000</cost>
       <source>HT</source>
@@ -8626,7 +8627,7 @@
       <ap>-6</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>Internal source</ammo>
+      <ammo>Energy</ammo>
       <avail>20R</avail>
       <cost>1000000</cost>
       <source>LCD</source>
@@ -8647,7 +8648,7 @@
       <ap>0</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>Internal source</ammo>
+      <ammo>Energy</ammo>
       <avail>20R</avail>
       <cost>1000000</cost>
       <source>LCD</source>
@@ -8668,7 +8669,7 @@
       <ap>-8</ap>
       <mode>SA/BF/FA</mode>
       <rc>0</rc>
-      <ammo>10(c)</ammo>
+      <ammo>10(c) or External Source</ammo>
       <avail>16F</avail>
       <cost>1000000</cost>
       <source>LCD</source>
@@ -16816,9 +16817,8 @@
       <required>
         <weapondetails>
           <OR>
-            <ammo operation="contains">External source</ammo>
-            <ammo operation="contains">Internal source</ammo>
-            <ammo operation="contains">energy</ammo>
+            <ammo operation="contains">External Source</ammo>
+            <ammo operation="contains">Energy</ammo>
           </OR>
         </weapondetails>
       </required>
@@ -16837,9 +16837,8 @@
       <required>
         <weapondetails>
           <OR>
-            <ammo operation="contains">External source</ammo>
-            <ammo operation="contains">Internal source</ammo>
-            <ammo operation="contains">energy</ammo>
+            <ammo operation="contains">External Source</ammo>
+            <ammo operation="contains">Energy</ammo>
           </OR>
         </weapondetails>
       </required>
@@ -16858,9 +16857,8 @@
       <required>
         <weapondetails>
           <OR>
-            <ammo operation="contains">External source</ammo>
-            <ammo operation="contains">Internal source</ammo>
-            <ammo operation="contains">energy</ammo>
+            <ammo operation="contains">External Source</ammo>
+            <ammo operation="contains">Energy</ammo>
           </OR>
         </weapondetails>
       </required>

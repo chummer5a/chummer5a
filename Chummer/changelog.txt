@@ -111,6 +111,8 @@ Data Changes:
 - The range of the Ares Armatus now loads properly.
 - The Dangerous Area and Obscure/Difficult to Find basic lifestyle qualities' page references are now correct.
 - Ondansetron is now properly called Ondansetron instead of Ondanstron.
+- The Ares Armatus is now properly recognized as a Laser Weapon.
+- Peak-discharge power packs are now properly available for the Ares Redline, the Ares Lancer MP Laser, the Underbarrel Laser, and the Repeating Laser.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
