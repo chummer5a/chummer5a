@@ -167,6 +167,10 @@ namespace Chummer
                     lstControl.ForeColor = WindowText;
                     lstControl.BackColor = Window;
                     break;
+                case ListBox lsbControl:
+                    lsbControl.ForeColor = WindowText;
+                    lsbControl.BackColor = Window;
+                    break;
                 case GroupBox gpbControl:
                     gpbControl.ForeColor = ControlText;
                     gpbControl.BackColor = Control;
