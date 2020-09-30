@@ -33,6 +33,7 @@ namespace Chummer
             _objCharacterOptions = objCharacterOptions;
 
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).

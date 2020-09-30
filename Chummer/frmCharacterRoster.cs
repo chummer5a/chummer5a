@@ -49,6 +49,7 @@ namespace Chummer
         public frmCharacterRoster()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
@@ -161,14 +162,14 @@ namespace Chummer
                             () => '<' + Application.ProductName + '>');
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
-                            objCharacterNode.ForeColor = Color.Red;
+                            objCharacterNode.ForeColor = ColorManager.ErrorColor;
                             objCharacterNode.ToolTipText += new StringBuilder()
                                 .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
                                 .AppendLine(LanguageManager.GetString("String_Colon"))
                                 .Append(objCache.ErrorText).ToString();
                         }
                         else
-                            objCharacterNode.ForeColor = SystemColors.WindowText;
+                            objCharacterNode.ForeColor = ColorManager.WindowText;
                     }
                 }
             }
@@ -488,7 +489,7 @@ namespace Chummer
             };
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
-                objNode.ForeColor = Color.Red;
+                objNode.ForeColor = ColorManager.ErrorColor;
                 objNode.ToolTipText += new StringBuilder()
                     .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
                     .AppendLine(LanguageManager.GetString("String_Colon")).Append(objCache.ErrorText);
@@ -582,11 +583,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
                     rtbCharacterBio.Text = objCache.ErrorText;
-                    rtbCharacterBio.ForeColor = Color.Red;
+                    rtbCharacterBio.ForeColor = ColorManager.ErrorColor;
                     rtbCharacterBio.BringToFront();
                 }
                 else
-                    rtbCharacterBio.ForeColor = SystemColors.WindowText;
+                    rtbCharacterBio.ForeColor = ColorManager.WindowText;
             }
             else
             {
@@ -671,7 +672,7 @@ namespace Chummer
                     objNode = objNode.Parent;
                 if(objNode.Tag?.ToString() != "Watch")
                 {
-                    objNode.BackColor = SystemColors.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDark;
                 }
             }
 
@@ -954,6 +955,7 @@ namespace Chummer
                 cmsRoster.Items.Add(tsCloseOpenCharacter);
                 tsCloseOpenCharacter.TranslateToolStripItemsRecursively();
             }
+            cmsRoster.UpdateLightDarkMode();
 
             return cmsRoster;
         }

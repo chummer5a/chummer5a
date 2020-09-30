@@ -51,6 +51,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strSourceName = strSource;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }

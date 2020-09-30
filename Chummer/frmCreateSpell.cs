@@ -36,6 +36,7 @@ namespace Chummer
         {
             _objSpell = new Spell(objCharacter);
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("spells.xml");
         }

@@ -616,7 +616,7 @@ namespace Chummer.Backend.Skills
 
         public bool Leveled => Rating > 0;
 
-        public Color PreferredControlColor => Leveled && Enabled ? SystemColors.ButtonHighlight : SystemColors.Control;
+        public Color PreferredControlColor => Leveled && Enabled ? ColorManager.ControlLightLight : ColorManager.Control;
 
         private int _intCachedCanHaveSpecs = -1;
 
@@ -1230,7 +1230,10 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public Color PreferredColor => !string.IsNullOrEmpty(Notes) ? Color.SaddleBrown : SystemColors.WindowText;
+        public Color PreferredColor =>
+            !string.IsNullOrEmpty(Notes)
+                ? ColorManager.HasNotesColor
+                : ColorManager.WindowText;
 
         public SkillGroup SkillGroupObject { get; }
 

@@ -33,6 +33,7 @@ namespace Chummer.UI.Table
         public HeaderCell()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             _intArrowSize = LogicalToDeviceUnits(8);
             _intArrowPadding = LogicalToDeviceUnits(3);
             _intLabelPadding = LogicalToDeviceUnits(3);
@@ -131,7 +132,7 @@ namespace Chummer.UI.Table
         protected override void OnPaint(PaintEventArgs e)
         {
             // add gradient to background
-            using (LinearGradientBrush objBrush = new LinearGradientBrush(ClientRectangle, SystemColors.ControlLight, SystemColors.ControlDark, LinearGradientMode.Vertical))
+            using (LinearGradientBrush objBrush = new LinearGradientBrush(ClientRectangle, ColorManager.ControlLight, ColorManager.ControlDark, LinearGradientMode.Vertical))
                 e.Graphics.FillRectangle(objBrush, ClientRectangle);
 
             if (Sortable && SortType != SortOrder.None)

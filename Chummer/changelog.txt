@@ -1,5 +1,6 @@
 Future Build 213
 Application Fixes:
+- Added a limited dark mode. Chummer will look at the system's settings for whether or not to use dark mode for applications and (re)color itself accordingly
 - Fixed an incorrect tag on submersion groups in career mode. 
 - Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
 - Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
@@ -64,6 +65,8 @@ Application Fixes:
 - Instead of a global option to hide charts in the Karma and Nuyen tab in Career mode, charts are hidden by default and are only shown when checking a checkbox in the Karma and Nuyen tab.
 - Chummer now displays an error message if it cannot load a picture/portrait/mugshot instead of crashing.
 - Changing 'ware grades during character creation now properly updates the list of available 'ware based on availability modifiers.
+- Items can now be sold at 0% of their original cost instead of being limited to at least 0.01%. While normally, items that are to be deleted without reimbursement should be deleted instead of going through the selling process, this change should let people who do go through the selling process instead for some reason still be able to "sell" the item at 0%, equivalent to deleting it.
+- Toggling an adept power's adept way discount should now always result in Chummer properly recognizing the change in spent PP.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -107,6 +110,9 @@ Data Changes:
 - A typo in the name of the Biocompatibility quality has been fixed (it was previously called Biocompatability).
 - The range of the Ares Armatus now loads properly.
 - The Dangerous Area and Obscure/Difficult to Find basic lifestyle qualities' page references are now correct.
+- Ondansetron is now properly called Ondansetron instead of Ondanstron.
+- The Ares Armatus is now properly recognized as a Laser Weapon.
+- Peak-discharge power packs are now properly available for the Ares Redline, the Ares Lancer MP Laser, the Underbarrel Laser, and the Repeating Laser.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

@@ -33,6 +33,7 @@ namespace Chummer
         public frmSelectSetting()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

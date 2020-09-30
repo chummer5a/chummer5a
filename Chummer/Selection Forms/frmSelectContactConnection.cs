@@ -37,6 +37,7 @@ namespace Chummer
         public frmSelectContactConnection()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
@@ -131,8 +132,8 @@ namespace Chummer
 
                 if (dlgColour.Color.Name == "White" || dlgColour.Color.Name == "Black")
                 {
-                    cmdChangeColour.BackColor = SystemColors.Control;
-                    _objColour = SystemColors.Control;
+                    cmdChangeColour.BackColor = ColorManager.Control;
+                    _objColour = ColorManager.Control;
                 }
                 else
                 {

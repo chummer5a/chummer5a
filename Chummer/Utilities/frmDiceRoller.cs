@@ -33,6 +33,7 @@ namespace Chummer
         public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _frmMain = frmMainForm;
             nudDice.Value = intDice;

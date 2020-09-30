@@ -92,6 +92,7 @@ namespace Chummer
                 objRegistry?.SetValue(AppDomain.CurrentDomain.FriendlyName, 1, RegistryValueKind.DWord);
 
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate = {
                 cmsPrintButton,
@@ -103,6 +104,7 @@ namespace Chummer
                 {
                     foreach (ToolStripMenuItem tssItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
+                        tssItem.UpdateLightDarkMode();
                         tssItem.TranslateToolStripItemsRecursively();
                     }
                 }

@@ -33,7 +33,7 @@ namespace Chummer.UI.Skills
                 return;
             _skillGroup = skillGroup;
             InitializeComponent();
-
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             //This is apparently a factor 30 faster than placed in load. NFI why

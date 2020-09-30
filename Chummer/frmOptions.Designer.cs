@@ -4869,6 +4869,7 @@ namespace Chummer
             this.MinimumSize = new System.Drawing.Size(48, 50);
             this.Name = "frmOptions";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Options";

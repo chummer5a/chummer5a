@@ -28,6 +28,7 @@ namespace Chummer
         public frmAbout()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

@@ -160,7 +160,7 @@ namespace Chummer
             this.mnuMRU9,
             this.mnuFileMRUSeparator,
             this.exitToolStripMenuItem});
-            this.fileMenu.ImageTransparentColor = System.Drawing.SystemColors.ActiveBorder;
+            this.fileMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.fileMenu.Name = "fileMenu";
             this.fileMenu.Size = new System.Drawing.Size(37, 20);
             this.fileMenu.Tag = "Menu_Main_File";
@@ -169,7 +169,7 @@ namespace Chummer
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add1;
-            this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
+            this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -180,7 +180,7 @@ namespace Chummer
             // mnuNewCritter
             // 
             this.mnuNewCritter.Image = global::Chummer.Properties.Resources.bug_add;
-            this.mnuNewCritter.ImageTransparentColor = System.Drawing.Color.Black;
+            this.mnuNewCritter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuNewCritter.Name = "mnuNewCritter";
             this.mnuNewCritter.Size = new System.Drawing.Size(195, 22);
             this.mnuNewCritter.Tag = "Menu_Main_NewCritter";
@@ -190,7 +190,7 @@ namespace Chummer
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Image = global::Chummer.Properties.Resources.folder_page;
-            this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
+            this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -212,7 +212,7 @@ namespace Chummer
             // printToolStripMenuItem
             // 
             this.printToolStripMenuItem.Image = global::Chummer.Properties.Resources.printer;
-            this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
+            this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.printToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -222,7 +222,7 @@ namespace Chummer
             // mnuFilePrintMultiple
             // 
             this.mnuFilePrintMultiple.Image = global::Chummer.Properties.Resources.printer_add;
-            this.mnuFilePrintMultiple.ImageTransparentColor = System.Drawing.Color.Black;
+            this.mnuFilePrintMultiple.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuFilePrintMultiple.Name = "mnuFilePrintMultiple";
             this.mnuFilePrintMultiple.Size = new System.Drawing.Size(195, 22);
             this.mnuFilePrintMultiple.Tag = "Menu_Main_PrintMultiple";
@@ -661,7 +661,7 @@ namespace Chummer
             // 
             this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.newToolStripButton.Image = global::Chummer.Properties.Resources.user_add;
-            this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.newToolStripButton.Tag = "Menu_Main_NewCharacter";
@@ -672,7 +672,7 @@ namespace Chummer
             // 
             this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.openToolStripButton.Image = global::Chummer.Properties.Resources.folder_page;
-            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripButton.Name = "openToolStripButton";
             this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.openToolStripButton.Tag = "Menu_Main_Open";
@@ -693,7 +693,7 @@ namespace Chummer
             // 
             this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
-            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Black;
+            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPrint.Name = "tsbPrint";
             this.tsbPrint.Size = new System.Drawing.Size(23, 22);
             this.tsbPrint.Text = "Print";
@@ -703,7 +703,7 @@ namespace Chummer
             // 
             this.printPreviewToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.printPreviewToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripButton.Image")));
-            this.printPreviewToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.printPreviewToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.printPreviewToolStripButton.Name = "printPreviewToolStripButton";
             this.printPreviewToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.printPreviewToolStripButton.Text = "Print Preview";
@@ -713,7 +713,7 @@ namespace Chummer
             // 
             this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.helpToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripButton.Image")));
-            this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.helpToolStripButton.Name = "helpToolStripButton";
             this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.helpToolStripButton.Text = "Help";
@@ -764,7 +764,7 @@ namespace Chummer
             // tsSave
             // 
             this.tsSave.Image = global::Chummer.Properties.Resources.disk;
-            this.tsSave.ImageTransparentColor = System.Drawing.Color.Black;
+            this.tsSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsSave.MergeIndex = 3;
             this.tsSave.Name = "tsSave";

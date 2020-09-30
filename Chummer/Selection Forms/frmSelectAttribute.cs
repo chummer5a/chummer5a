@@ -32,6 +32,7 @@ namespace Chummer
         public frmSelectAttribute(params string[] lstAttributeAbbrevs)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             // Build the list of Attributes.

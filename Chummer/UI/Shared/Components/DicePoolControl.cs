@@ -31,6 +31,7 @@ namespace Chummer.UI.Shared.Components
         public DicePoolControl()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

@@ -102,7 +102,7 @@ namespace Chummer
             // 
             this.lblDV.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDV.AutoSize = true;
-            this.lblDV.Location = new System.Drawing.Point(40, 59);
+            this.lblDV.Location = new System.Drawing.Point(40, 60);
             this.lblDV.Name = "lblDV";
             this.lblDV.Size = new System.Drawing.Size(25, 13);
             this.lblDV.TabIndex = 4;
@@ -112,7 +112,7 @@ namespace Chummer
             // 
             // cboDVBase
             // 
-            this.cboDVBase.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cboDVBase.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cboDVBase.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDVBase.FormattingEnabled = true;
             this.cboDVBase.Location = new System.Drawing.Point(3, 3);
@@ -142,12 +142,12 @@ namespace Chummer
             // 
             // lblDVPlus
             // 
+            this.lblDVPlus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDVPlus.AutoSize = true;
-            this.lblDVPlus.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblDVPlus.Location = new System.Drawing.Point(102, 3);
+            this.lblDVPlus.Location = new System.Drawing.Point(102, 5);
             this.lblDVPlus.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.lblDVPlus.Name = "lblDVPlus";
-            this.lblDVPlus.Size = new System.Drawing.Size(13, 17);
+            this.lblDVPlus.Size = new System.Drawing.Size(13, 13);
             this.lblDVPlus.TabIndex = 6;
             this.lblDVPlus.Text = "+";
             this.lblDVPlus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -156,7 +156,7 @@ namespace Chummer
             // 
             this.nudAP.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudAP.AutoSize = true;
-            this.nudAP.Location = new System.Drawing.Point(71, 82);
+            this.nudAP.Location = new System.Drawing.Point(71, 83);
             this.nudAP.Maximum = new decimal(new int[] {
             10,
             0,
@@ -175,7 +175,7 @@ namespace Chummer
             // 
             this.lblAP.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAP.AutoSize = true;
-            this.lblAP.Location = new System.Drawing.Point(41, 85);
+            this.lblAP.Location = new System.Drawing.Point(41, 86);
             this.lblAP.Name = "lblAP";
             this.lblAP.Size = new System.Drawing.Size(24, 13);
             this.lblAP.TabIndex = 8;
@@ -216,7 +216,7 @@ namespace Chummer
             // 
             this.nudReach.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudReach.AutoSize = true;
-            this.nudReach.Location = new System.Drawing.Point(71, 108);
+            this.nudReach.Location = new System.Drawing.Point(71, 109);
             this.nudReach.Maximum = new decimal(new int[] {
             10,
             0,
@@ -235,7 +235,7 @@ namespace Chummer
             // 
             this.lblReach.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblReach.AutoSize = true;
-            this.lblReach.Location = new System.Drawing.Point(23, 111);
+            this.lblReach.Location = new System.Drawing.Point(23, 112);
             this.lblReach.Name = "lblReach";
             this.lblReach.Size = new System.Drawing.Size(42, 13);
             this.lblReach.TabIndex = 12;
@@ -245,7 +245,7 @@ namespace Chummer
             // 
             // cboDVType
             // 
-            this.cboDVType.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cboDVType.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cboDVType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDVType.FormattingEnabled = true;
             this.cboDVType.Location = new System.Drawing.Point(162, 3);
@@ -287,17 +287,17 @@ namespace Chummer
             // 
             // flpDV
             // 
+            this.flpDV.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.flpDV.AutoSize = true;
             this.flpDV.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpDV.Controls.Add(this.cboDVBase);
             this.flpDV.Controls.Add(this.lblDVPlus);
             this.flpDV.Controls.Add(this.nudDVMod);
             this.flpDV.Controls.Add(this.cboDVType);
-            this.flpDV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpDV.Location = new System.Drawing.Point(68, 53);
             this.flpDV.Margin = new System.Windows.Forms.Padding(0);
             this.flpDV.Name = "flpDV";
-            this.flpDV.Size = new System.Drawing.Size(378, 26);
+            this.flpDV.Size = new System.Drawing.Size(226, 27);
             this.flpDV.TabIndex = 14;
             this.flpDV.WrapContents = false;
             // 

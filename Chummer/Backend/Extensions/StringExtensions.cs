@@ -373,6 +373,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for a version of Contains(string) for strings based on a specified StringComparison
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="eComparison">Comparison to use.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, StringComparison eComparison)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, eComparison) != -1;
+        }
+
+        /// <summary>
         /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
         /// </summary>
         /// <param name="strInput">Input textblock.</param>

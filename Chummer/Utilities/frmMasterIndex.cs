@@ -68,6 +68,7 @@ namespace Chummer
         public frmMasterIndex()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
