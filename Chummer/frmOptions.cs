@@ -1236,6 +1236,7 @@ namespace Chummer
             }
 
             cboMugshotCompression.EndUpdate();
+            nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
         }
 
         private void PopulatePDFParameters()
