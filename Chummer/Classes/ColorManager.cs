@@ -18,9 +18,9 @@
  */
 using System;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 using Chummer.UI.Editors;
+using Chummer.UI.Table;
 using Microsoft.Win32;
 using SystemColors = System.Drawing.SystemColors;
 
@@ -28,10 +28,10 @@ namespace Chummer
 {
     public static class ColorManager
     {
-        private static readonly RegistryKey _objPersonalizeKey;
+        private static readonly RegistryKey s_ObjPersonalizeKey;
         // While events that trigger on changes to a registry value are possible, they're a PITA in C#.
         // Checking for dark mode on a timer interval is less elegant, but also easier to set up, track, and debug.
-        private static readonly Timer _tmrDarkModeCheckerTimer;
+        private static readonly Timer s_TmrDarkModeCheckerTimer;
 
         static ColorManager()
         {
@@ -40,7 +40,7 @@ namespace Chummer
 
             try
             {
-                _objPersonalizeKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
+                s_ObjPersonalizeKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
             }
             catch (ObjectDisposedException)
             {
@@ -49,22 +49,22 @@ namespace Chummer
             {
             }
 
-            if (_objPersonalizeKey != null)
+            if (s_ObjPersonalizeKey != null)
             {
-                object objLightModeResult = _objPersonalizeKey.GetValue("AppsUseLightTheme");
+                object objLightModeResult = s_ObjPersonalizeKey.GetValue("AppsUseLightTheme");
                 if (objLightModeResult != null && int.TryParse(objLightModeResult.ToString(), out int intTemp))
                     IsLightMode = intTemp != 0;
-                _tmrDarkModeCheckerTimer = new Timer {Interval = 5000}; // Poll registry every 5 seconds
-                _tmrDarkModeCheckerTimer.Tick += CheckAndRefreshLightDarkMode;
-                _tmrDarkModeCheckerTimer.Enabled = true;
+                s_TmrDarkModeCheckerTimer = new Timer {Interval = 5000}; // Poll registry every 5 seconds
+                s_TmrDarkModeCheckerTimer.Tick += CheckAndRefreshLightDarkMode;
+                s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
 
         private static void CheckAndRefreshLightDarkMode(object sender, EventArgs e)
         {
-            if (_objPersonalizeKey != null && _tmrDarkModeCheckerTimer != null)
+            if (s_ObjPersonalizeKey != null && s_TmrDarkModeCheckerTimer != null)
             {
-                object objLightModeResult = _objPersonalizeKey.GetValue("AppsUseLightTheme");
+                object objLightModeResult = s_ObjPersonalizeKey.GetValue("AppsUseLightTheme");
                 if (objLightModeResult != null && int.TryParse(objLightModeResult.ToString(), out int intTemp))
                     IsLightMode = intTemp != 0;
             }
@@ -115,18 +115,18 @@ namespace Chummer
 
         public static void UpdateLightDarkMode(this Control objControl)
         {
-            ApplyColorsRecusively(objControl);
+            ApplyColorsRecursively(objControl);
         }
 
         public static void UpdateLightDarkMode(this ToolStripItem tssItem)
         {
-            ApplyColorsRecusively(tssItem);
+            ApplyColorsRecursively(tssItem);
         }
 
 
         #region Color Inversion Methods
 
-        private static void ApplyColorsRecusively(Control objControl)
+        private static void ApplyColorsRecursively(Control objControl)
         {
             switch (objControl)
             {
@@ -149,15 +149,15 @@ namespace Chummer
                 case SplitContainer objSplitControl:
                     objSplitControl.ForeColor = SplitterColor;
                     objSplitControl.BackColor = SplitterColor;
-                    ApplyColorsRecusively(objSplitControl.Panel1);
-                    ApplyColorsRecusively(objSplitControl.Panel2);
+                    ApplyColorsRecursively(objSplitControl.Panel1);
+                    ApplyColorsRecursively(objSplitControl.Panel2);
                     break;
                 case TreeView treControl:
                     treControl.ForeColor = WindowText;
                     treControl.BackColor = Window;
                     treControl.LineColor = WindowText;
                     foreach (TreeNode objNode in treControl.Nodes)
-                        ApplyColorsRecusively(objNode);
+                        ApplyColorsRecursively(objNode);
                     break;
                 case TextBox txtControl:
                     txtControl.ForeColor = WindowText;
@@ -171,9 +171,21 @@ namespace Chummer
                     lsbControl.ForeColor = WindowText;
                     lsbControl.BackColor = Window;
                     break;
+                case ComboBox cboControl:
+                    cboControl.ForeColor = WindowText;
+                    cboControl.BackColor = Window;
+                    break;
                 case GroupBox gpbControl:
                     gpbControl.ForeColor = ControlText;
                     gpbControl.BackColor = Control;
+                    break;
+                case PictureBox imgControl:
+                    imgControl.ForeColor = ControlText;
+                    imgControl.BackColor = Color.Transparent;
+                    break;
+                case TableCell tbcControl:
+                    tbcControl.ForeColor = WindowText;
+                    tbcControl.BackColor = Window;
                     break;
                 case RichTextBox _:
                 case RtfEditor _:
@@ -186,6 +198,11 @@ namespace Chummer
                     cmdControl.ForeColor = SystemColors.ControlText;
                     cmdControl.BackColor = Color.Transparent;
                     break;
+                case HeaderCell hdrControl:
+                    // Header cells should use inverted colors
+                    hdrControl.ForeColor = ControlLightLight;
+                    hdrControl.BackColor = ControlText;
+                    return;
                 case TableLayoutPanel tlpControl:
                     if (tlpControl.BorderStyle != BorderStyle.None)
                         tlpControl.BorderStyle = IsLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
@@ -193,15 +210,15 @@ namespace Chummer
                 case Form frmControl:
                     if (frmControl.MainMenuStrip != null)
                         foreach (ToolStripMenuItem tssItem in frmControl.MainMenuStrip.Items)
-                            ApplyColorsRecusively(tssItem);
+                            ApplyColorsRecursively(tssItem);
                     goto default;
                 case TabControl objTabControl:
                     foreach (TabPage tabPage in objTabControl.TabPages)
-                        ApplyColorsRecusively(tabPage);
+                        ApplyColorsRecursively(tabPage);
                     goto default;
                 case ToolStrip tssStrip:
                     foreach (ToolStripItem tssItem in tssStrip.Items)
-                        ApplyColorsRecusively(tssItem);
+                        ApplyColorsRecursively(tssItem);
                     goto default;
                 case CheckBox chkControl:
                     if (chkControl.Appearance == Appearance.Button)
@@ -229,10 +246,10 @@ namespace Chummer
             }
 
             foreach (Control objChild in objControl.Controls)
-                ApplyColorsRecusively(objChild);
+                ApplyColorsRecursively(objChild);
         }
 
-        private static void ApplyColorsRecusively(ToolStripItem tssItem)
+        private static void ApplyColorsRecursively(ToolStripItem tssItem)
         {
             if (tssItem.ForeColor == Control)
                 tssItem.ForeColor = ControlDarkDark;
@@ -249,10 +266,10 @@ namespace Chummer
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    ApplyColorsRecusively(tssDropDownChild);
+                    ApplyColorsRecursively(tssDropDownChild);
         }
 
-        private static void ApplyColorsRecusively(TreeNode nodNode)
+        private static void ApplyColorsRecursively(TreeNode nodNode)
         {
             if (IsLightMode)
             {
@@ -268,7 +285,7 @@ namespace Chummer
             nodNode.BackColor = Window;
 
             foreach (TreeNode nodNodeChild in nodNode.Nodes)
-                ApplyColorsRecusively(nodNodeChild);
+                ApplyColorsRecursively(nodNodeChild);
         }
         #endregion
     }

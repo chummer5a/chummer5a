@@ -387,7 +387,6 @@ namespace Chummer.UI.Skills
             this.btnAttribute.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAttribute.Location = new System.Drawing.Point(0, 0);
             this.btnAttribute.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.btnAttribute.MaximumSize = new System.Drawing.Size(40, 0);
             this.btnAttribute.MinimumSize = new System.Drawing.Size(40, 0);
             this.btnAttribute.Name = "btnAttribute";
             this.btnAttribute.Size = new System.Drawing.Size(40, 24);

@@ -18,7 +18,6 @@
  */
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -131,10 +130,6 @@ namespace Chummer.UI.Table
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            // add gradient to background
-            using (LinearGradientBrush objBrush = new LinearGradientBrush(ClientRectangle, ColorManager.ControlLight, ColorManager.ControlDark, LinearGradientMode.Vertical))
-                e.Graphics.FillRectangle(objBrush, ClientRectangle);
-
             if (Sortable && SortType != SortOrder.None)
             {
                 // draw arrow
@@ -151,7 +146,16 @@ namespace Chummer.UI.Table
                     intTipY = intBottomY;
                     intBottomY = intTemp;
                 }
-                e.Graphics.FillPolygon(Brushes.Black, new [] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
+                e.Graphics.FillPolygon(
+                    ColorManager.IsLightMode
+                        ? SystemBrushes.ControlLightLight
+                        : SystemBrushes.ControlText,
+                    new []
+                    {
+                        new Point(intLeft, intBottomY),
+                        new Point(intTipX, intTipY),
+                        new Point(intRight, intBottomY)
+                    });
             }
             base.OnPaint(e);
         }

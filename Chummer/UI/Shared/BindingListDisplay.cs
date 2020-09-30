@@ -60,7 +60,7 @@ namespace Chummer.UI.Shared
                 foreach (TType objLoopTType in Contents)
                 {
                     ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false);
-                    intMaxControlHeight = Math.Max(objNewControl.Control.Height, intMaxControlHeight);
+                    intMaxControlHeight = Math.Max(objNewControl.Control.PreferredSize.Height, intMaxControlHeight);
                     _lstContentList.Add(objNewControl);
                 }
 
@@ -600,9 +600,9 @@ namespace Chummer.UI.Shared
                 _control = _parent._funcCreateControl(Item);
                 _control.SuspendLayout();
                 _control.Visible = false;
-                if (_parent.ListItemControlHeight < _control.Height)
+                if (_parent.ListItemControlHeight < _control.PreferredSize.Height)
                 {
-                    _parent.ListItemControlHeight = _control.Height;
+                    _parent.ListItemControlHeight = _control.PreferredSize.Height;
                 }
                 if (_control.AutoSize)
                 {
@@ -700,6 +700,16 @@ namespace Chummer.UI.Shared
                     _index.Add(source[i], i);
                 }
             }
+        }
+
+        private void BindingListDisplay_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            int intMaxControlHeight = 0;
+            foreach (ControlWithMetaData objControl in _lstContentList)
+            {
+                intMaxControlHeight = Math.Max(objControl.Control.PreferredSize.Height, intMaxControlHeight);
+            }
+            ListItemControlHeight = intMaxControlHeight;
         }
     }
 }

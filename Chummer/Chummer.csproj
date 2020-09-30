@@ -1375,6 +1375,9 @@
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Table\HeaderCell.resx">
+      <DependentUpon>HeaderCell.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Table\TableRow.resx">
       <DependentUpon>TableRow.cs</DependentUpon>
     </EmbeddedResource>
