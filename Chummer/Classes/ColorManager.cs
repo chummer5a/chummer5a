@@ -35,7 +35,7 @@ namespace Chummer
 
         static ColorManager()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsUnitTest)
                 return;
 
             try
