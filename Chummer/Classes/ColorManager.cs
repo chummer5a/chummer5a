@@ -35,7 +35,7 @@ namespace Chummer
 
         static ColorManager()
         {
-            if (Utils.IsDesignerMode || Utils.IsUnitTest)
+            if (Utils.IsDesignerMode)
                 return;
 
             try
@@ -52,7 +52,7 @@ namespace Chummer
             if (_objPersonalizeKey != null)
             {
                 object objLightModeResult = _objPersonalizeKey.GetValue("AppsUseLightTheme");
-                if (int.TryParse(objLightModeResult.ToString(), out int intTemp))
+                if (objLightModeResult != null && int.TryParse(objLightModeResult.ToString(), out int intTemp))
                     IsLightMode = intTemp != 0;
                 _tmrDarkModeCheckerTimer = new Timer {Interval = 5000}; // Poll registry every 5 seconds
                 _tmrDarkModeCheckerTimer.Tick += CheckAndRefreshLightDarkMode;
