@@ -65,7 +65,7 @@ namespace Chummer
             if (_objPersonalizeKey != null && _tmrDarkModeCheckerTimer != null)
             {
                 object objLightModeResult = _objPersonalizeKey.GetValue("AppsUseLightTheme");
-                if (int.TryParse(objLightModeResult.ToString(), out int intTemp))
+                if (objLightModeResult != null && int.TryParse(objLightModeResult.ToString(), out int intTemp))
                     IsLightMode = intTemp != 0;
             }
         }
