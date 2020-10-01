@@ -27,12 +27,16 @@ namespace Chummer.UI.Skills
 {
     public sealed partial class KnowledgeSkillControl : UserControl
     {
+        private bool _blnUpdatingName = true;
         private readonly KnowledgeSkill _skill;
+        private readonly Timer _tmrNameChangeTimer;
         public KnowledgeSkillControl(KnowledgeSkill skill)
         {
             if (skill == null)
                 return;
             _skill = skill;
+            _tmrNameChangeTimer = new Timer { Interval = 1000 };
+            _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
             InitializeComponent();
             KnowledgeSkillControl_DpiChangedAfterParent(null, EventArgs.Empty);
             this.UpdateLightDarkMode();
@@ -63,9 +67,10 @@ namespace Chummer.UI.Skills
             cboName.ValueMember = nameof(ListItem.Value);
             cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills;
             cboName.SelectedIndex = -1;
-            cboName.DoDatabinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
+            cboName.Text = _skill.WriteableName;
             cboName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
             cboName.EndUpdate();
+            _blnUpdatingName = false;
 
             if (_skill.CharacterObject.Created)
             {
@@ -165,6 +170,12 @@ namespace Chummer.UI.Skills
                         cboSpec.EndUpdate();
                     }
                     if (blnAll)
+                        goto case nameof(KnowledgeSkill.WriteableName);
+                    break;
+                case nameof(KnowledgeSkill.WriteableName):
+                    if (!_blnUpdatingName)
+                        cboName.Text = _skill.WriteableName;
+                    if (blnAll)
                         goto case nameof(Skill.IsNativeLanguage);
                     break;
                 case nameof(Skill.IsNativeLanguage):
@@ -176,6 +187,7 @@ namespace Chummer.UI.Skills
 
         private void UnbindKnowledgeSkillControl()
         {
+            _tmrNameChangeTimer?.Dispose();
             _skill.PropertyChanged -= Skill_PropertyChanged;
             _skill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
             foreach (Control objControl in Controls)
@@ -316,6 +328,24 @@ namespace Chummer.UI.Skills
                 lblRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
                 lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
             }
+        }
+
+        // Hacky solution to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
+        private void cboName_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrNameChangeTimer.Enabled)
+                _tmrNameChangeTimer.Stop();
+            if (_blnUpdatingName)
+                return;
+            _tmrNameChangeTimer.Start();
+        }
+
+        private void NameChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrNameChangeTimer.Stop();
+            _blnUpdatingName = true;
+            _skill.WriteableName = cboName.Text;
+            _blnUpdatingName = false;
         }
     }
 }

@@ -123,7 +123,7 @@ namespace Chummer.UI.Skills
             // cboName
             // 
             this.cboName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cboName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cboName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cboName.DropDownWidth = 200;
             this.cboName.FormattingEnabled = true;
@@ -135,6 +135,7 @@ namespace Chummer.UI.Skills
             this.cboName.TabIndex = 20;
             this.cboName.TabStop = false;
             this.cboName.TooltipText = "";
+            this.cboName.TextChanged += new System.EventHandler(this.cboName_TextChanged);
             // 
             // cboType
             // 
