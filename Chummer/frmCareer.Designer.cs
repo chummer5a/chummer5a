@@ -1147,11 +1147,11 @@ namespace Chummer
             this.gpbNotes = new System.Windows.Forms.GroupBox();
             this.rtfNotes = new Chummer.UI.Editors.RtfEditor();
             this.cboPrimaryArm = new Chummer.ElasticComboBox();
-            this.lblSex = new System.Windows.Forms.Label();
+            this.lblGender = new System.Windows.Forms.Label();
             this.lblPublicAwareTotal = new Chummer.LabelWithToolTip();
             this.lblNotorietyTotal = new Chummer.LabelWithToolTip();
             this.nudPublicAware = new System.Windows.Forms.NumericUpDown();
-            this.txtSex = new System.Windows.Forms.TextBox();
+            this.txtGender = new System.Windows.Forms.TextBox();
             this.lblAge = new System.Windows.Forms.Label();
             this.txtAge = new System.Windows.Forms.TextBox();
             this.lblEyes = new System.Windows.Forms.Label();
@@ -16382,11 +16382,11 @@ namespace Chummer
             this.tlpCharacterInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tlpCharacterInfo.Controls.Add(this.tlpLongTexts, 0, 2);
             this.tlpCharacterInfo.Controls.Add(this.cboPrimaryArm, 10, 2);
-            this.tlpCharacterInfo.Controls.Add(this.lblSex, 0, 0);
+            this.tlpCharacterInfo.Controls.Add(this.lblGender, 0, 0);
             this.tlpCharacterInfo.Controls.Add(this.lblPublicAwareTotal, 11, 5);
             this.tlpCharacterInfo.Controls.Add(this.lblNotorietyTotal, 11, 4);
             this.tlpCharacterInfo.Controls.Add(this.nudPublicAware, 10, 5);
-            this.tlpCharacterInfo.Controls.Add(this.txtSex, 1, 0);
+            this.tlpCharacterInfo.Controls.Add(this.txtGender, 1, 0);
             this.tlpCharacterInfo.Controls.Add(this.lblAge, 2, 0);
             this.tlpCharacterInfo.Controls.Add(this.txtAge, 3, 0);
             this.tlpCharacterInfo.Controls.Add(this.lblEyes, 4, 0);
@@ -16596,17 +16596,17 @@ namespace Chummer
             this.cboPrimaryArm.TooltipText = "";
             this.cboPrimaryArm.SelectedIndexChanged += new System.EventHandler(this.cboPrimaryArm_SelectedIndexChanged);
             // 
-            // lblSex
+            // lblGender
             // 
-            this.lblSex.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSex.AutoSize = true;
-            this.lblSex.Location = new System.Drawing.Point(16, 6);
-            this.lblSex.Name = "lblSex";
-            this.lblSex.Size = new System.Drawing.Size(28, 13);
-            this.lblSex.TabIndex = 0;
-            this.lblSex.Tag = "Label_Sex";
-            this.lblSex.Text = "Sex:";
-            this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblGender.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblGender.AutoSize = true;
+            this.lblGender.Location = new System.Drawing.Point(16, 6);
+            this.lblGender.Name = "lblGender";
+            this.lblGender.Size = new System.Drawing.Size(28, 13);
+            this.lblGender.TabIndex = 0;
+            this.lblGender.Tag = "Label_Gender";
+            this.lblGender.Text = "Gender:";
+            this.lblGender.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblPublicAwareTotal
             // 
@@ -16645,13 +16645,13 @@ namespace Chummer
             this.nudPublicAware.Size = new System.Drawing.Size(68, 20);
             this.nudPublicAware.TabIndex = 76;
             // 
-            // txtSex
+            // txtGender
             // 
-            this.txtSex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSex.Location = new System.Drawing.Point(50, 3);
-            this.txtSex.Name = "txtSex";
-            this.txtSex.Size = new System.Drawing.Size(143, 20);
-            this.txtSex.TabIndex = 1;
+            this.txtGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGender.Location = new System.Drawing.Point(50, 3);
+            this.txtGender.Name = "txtGender";
+            this.txtGender.Size = new System.Drawing.Size(143, 20);
+            this.txtGender.TabIndex = 1;
             // 
             // lblAge
             // 
@@ -19916,7 +19916,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtHair;
         private System.Windows.Forms.TextBox txtEyes;
         private System.Windows.Forms.TextBox txtAge;
-        private System.Windows.Forms.TextBox txtSex;
+        private System.Windows.Forms.TextBox txtGender;
         private System.Windows.Forms.NumericUpDown nudPublicAware;
         private System.Windows.Forms.Label lblPublicAware;
         private System.Windows.Forms.NumericUpDown nudNotoriety;
@@ -19933,7 +19933,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblHair;
         private System.Windows.Forms.Label lblEyes;
         private System.Windows.Forms.Label lblAge;
-        private System.Windows.Forms.Label lblSex;
+        private System.Windows.Forms.Label lblGender;
         private System.Windows.Forms.PictureBox picMugshot;
         private System.Windows.Forms.TabPage tabKarma;
         private System.Windows.Forms.SplitContainer splitKarmaNuyen;

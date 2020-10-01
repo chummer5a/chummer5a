@@ -68,7 +68,7 @@
       </tr>
 
       <xsl:if test="$ProduceNotes">
-      <xsl:if test="metatype != '' or sex != '' or age != '' or preferredpayment != '' or hobbiesvice != '' or personallife != '' or contacttype != ''">
+      <xsl:if test="metatype != '' or gender != '' or age != '' or preferredpayment != '' or hobbiesvice != '' or personallife != '' or contacttype != ''">
       <tr>
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
@@ -86,13 +86,13 @@
                 </td>
               </tr>
             </xsl:if>
-            <xsl:if test="sex != ''">
+            <xsl:if test="gender != ''">
             <tr>
               <td style="text-align: right; padding-right: 1em; width: 25%;">
-                <xsl:value-of select="$lang.Sex"/>: 
+                <xsl:value-of select="$lang.Gender"/>: 
               </td>
               <td style="text-align: left;">
-                <xsl:value-of select="sex"/>
+                <xsl:value-of select="gender"/>
               </td>
             </tr>
             </xsl:if>

@@ -3382,6 +3382,10 @@
             <text>性別:</text>
         </string>
         <string>
+            <key>Label_Gender</key>
+            <text>性別:</text>
+        </string>
+        <string>
             <key>Label_Age</key>
             <text>年齢:</text>
         </string>

@@ -80,7 +80,7 @@
             <xsl:if test="metavariant != ''">
               (<xsl:value-of select="metavariant"/>)
             </xsl:if>
-            <xsl:if test="sex != ''"><xsl:text> </xsl:text><xsl:value-of select="sex"/></xsl:if>
+            <xsl:if test="gender != ''"><xsl:text> </xsl:text><xsl:value-of select="gender"/></xsl:if>
             <xsl:if test="age != ''"><xsl:text> </xsl:text><xsl:value-of select="$lang.Age"/>&#160;<xsl:value-of select="age"/></xsl:if>
           <xsl:if test="height != '' or weight != ''">
             <br/>

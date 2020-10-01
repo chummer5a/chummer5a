@@ -41255,11 +41255,11 @@
             <contact translate="Vory Shestiorka">Vory Shestiorka</contact>
             <contact translate="Gangueiro da Magi Pirralhos">Wiz Kid Ganger</contact>
         </contacts>
-        <sexes>
-            <sex translate="Feminino">Female</sex>
-            <sex translate="Masculino">Male</sex>
-            <sex translate="Desconhecido">Unknown</sex>
-        </sexes>
+        <genders>
+            <gender translate="Feminino">Female</gender>
+            <gender translate="Masculino">Male</gender>
+            <gender translate="Desconhecido">Unknown</gender>
+        </genders>
         <ages>
             <age translate="Jovem">Young</age>
             <age translate="Meia-Idade">Middle-Aged</age>

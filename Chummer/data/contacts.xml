@@ -97,11 +97,11 @@
     <contact>Vory Shestiorka</contact>
     <contact>Wiz Kid Ganger</contact>
   </contacts>
-  <sexes>
-    <sex>Female</sex>
-    <sex>Male</sex>
-    <sex>Unknown</sex>
-  </sexes>
+  <genders>
+    <gender>Female</gender>
+    <gender>Male</gender>
+    <gender>Unknown</gender>
+  </genders>
   <ages>
     <age>Young</age>
     <age>Middle-Aged</age>

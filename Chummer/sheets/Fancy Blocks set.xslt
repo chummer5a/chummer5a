@@ -392,7 +392,7 @@
         </td>
       </tr>
       <tr>
-        <td>Sex</td><td><strong><xsl:value-of select="sex" /></strong></td>
+        <td><xsl:value-of select="$lang.Gender"/></td><td><strong><xsl:value-of select="gender" /></strong></td>
         <xsl:choose>
           <xsl:when test="qualities/quality[name='Mystic Adept']"><td><xsl:value-of select="$lang.Special" /></td><td><strong>Mystic Adept</strong></td></xsl:when>
           <xsl:when test="qualities/quality[name='Adept']"><td><xsl:value-of select="$lang.Special" /></td><td><strong>Adept</strong></td></xsl:when>

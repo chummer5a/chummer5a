@@ -68,6 +68,7 @@ Application Fixes:
 - Items can now be sold at 0% of their original cost instead of being limited to at least 0.01%. While normally, items that are to be deleted without reimbursement should be deleted instead of going through the selling process, this change should let people who do go through the selling process instead for some reason still be able to "sell" the item at 0%, equivalent to deleting it.
 - Toggling an adept power's adept way discount should now always result in Chummer properly recognizing the change in spent PP.
 - Weapons added directly to vehicle modifications can now properly be removed.
+- Updated all mentions of "Sex" for a character's/contact's properties to "Gender".
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -154,6 +155,7 @@ Changed/New Strings:
 - Message_DeleteVehicleMod
 - Checkbox_ShowChart
 - Message_File_Cannot_Be_Read_Accessed
+- Label_Gender
 
 Build 212
 Application Changes:

@@ -213,7 +213,7 @@ namespace Chummer
                         txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
 
                         txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
-                        txtSex.DoDatabinding("Text", CharacterObject, nameof(Character.Sex));
+                        txtGender.DoDatabinding("Text", CharacterObject, nameof(Character.Gender));
                         txtAge.DoDatabinding("Text", CharacterObject, nameof(Character.Age));
                         txtEyes.DoDatabinding("Text", CharacterObject, nameof(Character.Eyes));
                         txtHeight.DoDatabinding("Text", CharacterObject, nameof(Character.Height));
@@ -2706,7 +2706,7 @@ namespace Chummer
 
                             frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
                             // Copy the character info.
-                            objMerge.Sex = objVessel.Sex;
+                            objMerge.Gender = objVessel.Gender;
                             objMerge.Age = objVessel.Age;
                             objMerge.Eyes = objVessel.Eyes;
                             objMerge.Hair = objVessel.Hair;

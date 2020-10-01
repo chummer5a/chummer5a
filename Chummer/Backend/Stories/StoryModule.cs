@@ -303,9 +303,9 @@ namespace Chummer
                 {
                     return _objCharacter.Weight;
                 }
-                case "$Sex":
+                case "$Gender":
                 {
-                    return _objCharacter.Sex;
+                    return _objCharacter.Gender;
                 }
                 case "$Alias":
                 {

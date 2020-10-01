@@ -50902,14 +50902,14 @@
             <contact translate="Parabotaniste">Parabotanist</contact>
             <contact translate="Parabiologiste">Parabiologist</contact>
         </contacts>
-        <sexes>
-            <sex translate="Femme">Female</sex>
-            <sex translate="Homme">Male</sex>
-            <sex translate="Inconnu">Unknown</sex>
-            <sex translate="Non-binaire">Other</sex>
-            <sex translate="Agenre">Agender</sex>
-            <sex translate="Genre fluide">Genderfluid</sex>
-        </sexes>
+        <genders>
+            <gender translate="Femme">Female</gender>
+            <gender translate="Homme">Male</gender>
+            <gender translate="Inconnu">Unknown</gender>
+            <gender translate="Non-binaire">Other</gender>
+            <gender translate="Agenre">Agender</gender>
+            <gender translate="Genre fluide">Genderfluid</gender>
+        </genders>
         <ages>
             <age translate="Jeune">Young</age>
             <age translate="Âge moyen">Middle-Aged</age>

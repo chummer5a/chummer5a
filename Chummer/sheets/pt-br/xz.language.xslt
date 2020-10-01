@@ -112,6 +112,7 @@
   <xsl:variable name="lang.Force"      select="'Poder'"/>
   <xsl:variable name="lang.FV"      select="'VE'"/>
   <xsl:variable name="lang.Gear"      select="'Equipamento'"/>
+  <xsl:variable name="lang.Gender"      select="'Gênero'"/>
   <xsl:variable name="lang.Grade"      select="'Classe'"/>
   <xsl:variable name="lang.Hair"      select="'Cabelos'"/>
   <xsl:variable name="lang.Handling"    select="'Manejo'"/>

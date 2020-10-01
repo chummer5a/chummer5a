@@ -55,7 +55,7 @@ namespace Chummer
             this.chkBlackmail = new System.Windows.Forms.CheckBox();
             this.chkFamily = new System.Windows.Forms.CheckBox();
             this.cboMetatype = new Chummer.ElasticComboBox();
-            this.cboSex = new Chummer.ElasticComboBox();
+            this.cboGender = new Chummer.ElasticComboBox();
             this.lblHobbiesVice = new System.Windows.Forms.Label();
             this.cboType = new Chummer.ElasticComboBox();
             this.lblPreferredPayment = new System.Windows.Forms.Label();
@@ -63,7 +63,7 @@ namespace Chummer
             this.lblPersonalLife = new System.Windows.Forms.Label();
             this.lblType = new System.Windows.Forms.Label();
             this.lblMetatype = new System.Windows.Forms.Label();
-            this.lblSex = new System.Windows.Forms.Label();
+            this.lblGender = new System.Windows.Forms.Label();
             this.lblAge = new System.Windows.Forms.Label();
             this.cboPreferredPayment = new Chummer.ElasticComboBox();
             this.cboHobbiesVice = new Chummer.ElasticComboBox();
@@ -402,7 +402,7 @@ namespace Chummer
             this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpStatBlock.Controls.Add(this.cboMetatype, 1, 1);
-            this.tlpStatBlock.Controls.Add(this.cboSex, 1, 2);
+            this.tlpStatBlock.Controls.Add(this.cboGender, 1, 2);
             this.tlpStatBlock.Controls.Add(this.lblHobbiesVice, 2, 4);
             this.tlpStatBlock.Controls.Add(this.cboType, 1, 4);
             this.tlpStatBlock.Controls.Add(this.lblPreferredPayment, 2, 3);
@@ -410,7 +410,7 @@ namespace Chummer
             this.tlpStatBlock.Controls.Add(this.lblPersonalLife, 2, 2);
             this.tlpStatBlock.Controls.Add(this.lblType, 0, 4);
             this.tlpStatBlock.Controls.Add(this.lblMetatype, 0, 1);
-            this.tlpStatBlock.Controls.Add(this.lblSex, 0, 2);
+            this.tlpStatBlock.Controls.Add(this.lblGender, 0, 2);
             this.tlpStatBlock.Controls.Add(this.lblAge, 0, 3);
             this.tlpStatBlock.Controls.Add(this.cboPreferredPayment, 3, 3);
             this.tlpStatBlock.Controls.Add(this.cboHobbiesVice, 3, 4);
@@ -481,16 +481,16 @@ namespace Chummer
             this.cboMetatype.TooltipText = "";
             this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
-            // cboSex
+            // cboGender
             // 
-            this.cboSex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSex.FormattingEnabled = true;
-            this.cboSex.Location = new System.Drawing.Point(63, 30);
-            this.cboSex.Name = "cboSex";
-            this.cboSex.Size = new System.Drawing.Size(149, 21);
-            this.cboSex.TabIndex = 21;
-            this.cboSex.TooltipText = "";
-            this.cboSex.TextChanged += new System.EventHandler(this.cboSex_TextChanged);
+            this.cboGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboGender.FormattingEnabled = true;
+            this.cboGender.Location = new System.Drawing.Point(63, 30);
+            this.cboGender.Name = "cboGender";
+            this.cboGender.Size = new System.Drawing.Size(149, 21);
+            this.cboGender.TabIndex = 21;
+            this.cboGender.TooltipText = "";
+            this.cboGender.TextChanged += new System.EventHandler(this.cboGender_TextChanged);
             // 
             // lblHobbiesVice
             // 
@@ -579,18 +579,18 @@ namespace Chummer
             this.lblMetatype.Text = "Metatype:";
             this.lblMetatype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblSex
+            // lblGender
             // 
-            this.lblSex.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSex.AutoSize = true;
-            this.lblSex.Location = new System.Drawing.Point(29, 34);
-            this.lblSex.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSex.Name = "lblSex";
-            this.lblSex.Size = new System.Drawing.Size(28, 13);
-            this.lblSex.TabIndex = 28;
-            this.lblSex.Tag = "Label_Sex";
-            this.lblSex.Text = "Sex:";
-            this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblGender.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblGender.AutoSize = true;
+            this.lblGender.Location = new System.Drawing.Point(29, 34);
+            this.lblGender.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblGender.Name = "lblGender";
+            this.lblGender.Size = new System.Drawing.Size(28, 13);
+            this.lblGender.TabIndex = 28;
+            this.lblGender.Tag = "Label_Gender";
+            this.lblGender.Text = "Gender:";
+            this.lblGender.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblAge
             // 
@@ -733,7 +733,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpComboBoxes;
         private BufferedTableLayoutPanel tlpStatBlock;
         private ElasticComboBox cboMetatype;
-        private ElasticComboBox cboSex;
+        private ElasticComboBox cboGender;
         private System.Windows.Forms.Label lblHobbiesVice;
         private ElasticComboBox cboType;
         private System.Windows.Forms.Label lblPreferredPayment;
@@ -741,7 +741,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblPersonalLife;
         private System.Windows.Forms.Label lblType;
         private System.Windows.Forms.Label lblMetatype;
-        private System.Windows.Forms.Label lblSex;
+        private System.Windows.Forms.Label lblGender;
         private System.Windows.Forms.Label lblAge;
         private ElasticComboBox cboPreferredPayment;
         private ElasticComboBox cboHobbiesVice;
