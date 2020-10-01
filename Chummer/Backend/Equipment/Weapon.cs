@@ -84,6 +84,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstUnderbarrel = new TaggedObservableCollection<Weapon>();
         private Vehicle _objMountedVehicle;
         private WeaponMount _objWeaponMount;
+        private VehicleMod _objVehicleMod;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
         private string _strUseSkillSpec = string.Empty;
@@ -1862,6 +1863,7 @@ namespace Chummer.Backend.Equipment
                 if (value == null)
                 {
                     _objWeaponMount = null;
+                    _objVehicleMod = null;
                 }
 
                 foreach (Weapon objChild in Children)
@@ -1881,9 +1883,31 @@ namespace Chummer.Backend.Equipment
                 {
                     _objWeaponMount = value;
                     ParentVehicle = value?.Parent;
+                    if (value != null)
+                        ParentVehicleMod = null;
                 }
                 foreach (Weapon objChild in Children)
                     objChild.ParentMount = value;
+            }
+        }
+
+        /// <summary>
+        /// VehicleMod to which the weapon is mounted (if none, returns null)
+        /// </summary>
+        public VehicleMod ParentVehicleMod
+        {
+            get => _objVehicleMod;
+            set
+            {
+                if (_objVehicleMod != value)
+                {
+                    _objVehicleMod = value;
+                    ParentVehicle = value?.Parent;
+                    if (value != null)
+                        ParentMount = null;
+                }
+                foreach (Weapon objChild in Children)
+                    objChild.ParentVehicleMod = value;
             }
         }
 
@@ -6169,10 +6193,17 @@ namespace Chummer.Backend.Equipment
             }
             if (Parent != null)
                 return Parent.Children.Remove(this);
-            return ParentMount?.Weapons.Remove(this) ?? ParentVehicle.Weapons.Remove(this);
+            if (ParentVehicle != null)
+            {
+                if (ParentMount != null)
+                    return ParentMount.Weapons.Remove(this);
+                if (ParentVehicleMod != null)
+                    return ParentVehicleMod.Weapons.Remove(this);
+            }
             //else if (objWeapon.parent != null)
             //    objWeaponMount.Weapons.Remove(objWeapon);
             // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+            return false;
         }
 
         /// <summary>

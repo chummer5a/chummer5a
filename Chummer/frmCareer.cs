@@ -6754,6 +6754,7 @@ namespace Chummer
                 Weapon objWeapon = new Weapon(CharacterObject)
                 {
                     ParentVehicle = objVehicle,
+                    ParentVehicleMod = objMod != null ? objMod : null,
                     ParentMount = objMod == null ? objWeaponMount : null
                 };
                 objWeapon.Create(objXmlWeapon, lstWeapons);
@@ -10930,6 +10931,7 @@ namespace Chummer
             }
             else
             {
+                objWeapon.ParentVehicleMod = objMod;
                 objMod.Weapons.Add(objWeapon);
             }
 

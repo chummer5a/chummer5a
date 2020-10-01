@@ -3119,7 +3119,7 @@ namespace Chummer
             }
             else if (objSelectedNodeTag is ICanRemove selectedObject)
             {
-                if (selectedObject.Remove( CharacterObjectOptions.ConfirmDelete))
+                if (selectedObject.Remove(CharacterObjectOptions.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -4516,6 +4516,7 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(CharacterObject)
                         {
                             ParentVehicle = objVehicle,
+                            ParentVehicleMod = objMod != null ? objMod : null,
                             ParentMount = objMod == null ? objWeaponMount : null
                         };
                         objWeapon.Create(objXmlWeapon, lstWeapons);
