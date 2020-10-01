@@ -34,6 +34,7 @@ namespace Chummer.UI.Skills
                 return;
             _skill = skill;
             InitializeComponent();
+            KnowledgeSkillControl_DpiChangedAfterParent(null, EventArgs.Empty);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -307,5 +308,14 @@ namespace Chummer.UI.Skills
             ActiveButton = null;
         }
         #endregion
+
+        private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            using (Graphics g = CreateGraphics())
+            {
+                lblRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
+            }
+        }
     }
 }

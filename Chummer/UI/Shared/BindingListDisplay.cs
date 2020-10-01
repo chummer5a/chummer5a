@@ -209,9 +209,11 @@ namespace Chummer.UI.Shared
         private void RedrawControls(IEnumerable<ControlWithMetaData> lstToClear)
         {
             _blnAllRendered = false;
-            int intNumVisible = 0;
+            int intNumVisible = _lstContentList.Count(x => x.Visible);
             foreach (ControlWithMetaData item in lstToClear)
             {
+                if (item.Visible)
+                    --intNumVisible;
                 item.RefreshVisible();
                 if (item.Visible)
                     ++intNumVisible;

@@ -70,14 +70,13 @@ namespace Chummer.UI.Skills
             // 
             // lblModifiedRating
             // 
-            this.lblModifiedRating.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblModifiedRating.AutoSize = true;
+            this.lblModifiedRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModifiedRating.Location = new System.Drawing.Point(240, 5);
-            this.lblModifiedRating.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
+            this.lblModifiedRating.Location = new System.Drawing.Point(240, 0);
             this.lblModifiedRating.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblModifiedRating.Name = "lblModifiedRating";
-            this.lblModifiedRating.Size = new System.Drawing.Size(50, 13);
+            this.lblModifiedRating.Size = new System.Drawing.Size(50, 24);
             this.lblModifiedRating.TabIndex = 16;
             this.lblModifiedRating.Text = "00 (00)";
             this.lblModifiedRating.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -154,21 +153,19 @@ namespace Chummer.UI.Skills
             // 
             this.lblRating.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblRating.AutoSize = true;
-            this.lblRating.Location = new System.Drawing.Point(29, 5);
-            this.lblRating.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
-            this.lblRating.MinimumSize = new System.Drawing.Size(20, 0);
+            this.lblRating.Location = new System.Drawing.Point(3, 5);
+            this.lblRating.MinimumSize = new System.Drawing.Size(25, 0);
             this.lblRating.Name = "lblRating";
-            this.lblRating.Size = new System.Drawing.Size(20, 13);
+            this.lblRating.Size = new System.Drawing.Size(25, 13);
             this.lblRating.TabIndex = 22;
             this.lblRating.Text = "00";
-            this.lblRating.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblRating.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblSpec
             // 
             this.lblSpec.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpec.AutoSize = true;
             this.lblSpec.Location = new System.Drawing.Point(3, 5);
-            this.lblSpec.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblSpec.Name = "lblSpec";
             this.lblSpec.Size = new System.Drawing.Size(41, 13);
             this.lblSpec.TabIndex = 24;
@@ -181,7 +178,7 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.AutoSize = true;
             this.btnCareerIncrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
-            this.btnCareerIncrease.Location = new System.Drawing.Point(55, 0);
+            this.btnCareerIncrease.Location = new System.Drawing.Point(34, 0);
             this.btnCareerIncrease.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.btnCareerIncrease.Name = "btnCareerIncrease";
             this.btnCareerIncrease.Padding = new System.Windows.Forms.Padding(1);
@@ -213,7 +210,7 @@ namespace Chummer.UI.Skills
             this.nudSkill.AutoSize = true;
             this.nudSkill.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudSkill.Location = new System.Drawing.Point(3, 2);
-            this.nudSkill.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.nudSkill.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
             0,
@@ -229,7 +226,7 @@ namespace Chummer.UI.Skills
             this.nudKarma.AutoSize = true;
             this.nudKarma.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(44, 2);
-            this.nudKarma.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.nudKarma.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
             0,
@@ -248,7 +245,6 @@ namespace Chummer.UI.Skills
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Controls.Add(this.lblModifiedRating, 1, 0);
             this.tlpMain.Controls.Add(this.tlpRight, 3, 0);
             this.tlpMain.Controls.Add(this.pnlSpecs, 2, 0);
@@ -385,7 +381,6 @@ namespace Chummer.UI.Skills
             this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblName.AutoSize = true;
             this.lblName.Location = new System.Drawing.Point(3, 5);
-            this.lblName.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(41, 13);
             this.lblName.TabIndex = 21;
@@ -398,7 +393,7 @@ namespace Chummer.UI.Skills
             this.pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.pnlButtons.Controls.Add(this.flpButtonsCareer);
             this.pnlButtons.Controls.Add(this.flpButtonsCreate);
-            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlButtons.Location = new System.Drawing.Point(155, 0);
             this.pnlButtons.Margin = new System.Windows.Forms.Padding(0);
             this.pnlButtons.Name = "pnlButtons";
@@ -411,12 +406,12 @@ namespace Chummer.UI.Skills
             this.flpButtonsCareer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpButtonsCareer.Controls.Add(this.btnCareerIncrease);
             this.flpButtonsCareer.Controls.Add(this.lblRating);
-            this.flpButtonsCareer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flpButtonsCareer.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtonsCareer.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtonsCareer.Location = new System.Drawing.Point(0, 0);
+            this.flpButtonsCareer.Location = new System.Drawing.Point(21, 0);
             this.flpButtonsCareer.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtonsCareer.Name = "flpButtonsCareer";
-            this.flpButtonsCareer.Size = new System.Drawing.Size(82, 24);
+            this.flpButtonsCareer.Size = new System.Drawing.Size(61, 24);
             this.flpButtonsCareer.TabIndex = 0;
             this.flpButtonsCareer.WrapContents = false;
             // 
@@ -446,6 +441,7 @@ namespace Chummer.UI.Skills
             this.Name = "KnowledgeSkillControl";
             this.Size = new System.Drawing.Size(846, 24);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.DpiChangedAfterParent += new System.EventHandler(this.KnowledgeSkillControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();

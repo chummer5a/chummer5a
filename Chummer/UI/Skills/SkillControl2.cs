@@ -46,6 +46,7 @@ namespace Chummer.UI.Skills
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
+            SkillControl2_DpiChangedAfterParent(null, EventArgs.Empty);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -309,7 +310,7 @@ namespace Chummer.UI.Skills
         public bool CustomAttributeSet => _objAttributeActive != _objSkill.AttributeObject;
 
         [UsedImplicitly]
-        public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + btnAttribute.Margin.Left + btnAttribute.Width;
+        public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
 
         [UsedImplicitly]
         public int NudSkillWidth => nudSkill.Visible ? nudSkill.Width : 0;
@@ -412,5 +413,15 @@ namespace Chummer.UI.Skills
             ActiveButton = null;
         }
         #endregion
+
+        private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            using (Graphics g = CreateGraphics())
+            {
+                pnlAttributes.MinimumSize = new Size((int)(40 * g.DpiX / 96.0f), 0);
+                lblCareerRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
+            }
+        }
     }
 }

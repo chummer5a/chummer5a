@@ -74,16 +74,17 @@ namespace Chummer.UI.Skills
             // 
             // cmsSkillLabel
             // 
+            this.cmsSkillLabel.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.cmsSkillLabel.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsSkillLabelNotes});
             this.cmsSkillLabel.Name = "cmsWeapon";
-            this.cmsSkillLabel.Size = new System.Drawing.Size(106, 26);
+            this.cmsSkillLabel.Size = new System.Drawing.Size(110, 30);
             // 
             // tsSkillLabelNotes
             // 
             this.tsSkillLabelNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsSkillLabelNotes.Name = "tsSkillLabelNotes";
-            this.tsSkillLabelNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsSkillLabelNotes.Size = new System.Drawing.Size(109, 26);
             this.tsSkillLabelNotes.Tag = "Menu_Notes";
             this.tsSkillLabelNotes.Text = "&Notes";
             this.tsSkillLabelNotes.Click += new System.EventHandler(this.tsSkillLabelNotes_Click);
@@ -99,8 +100,6 @@ namespace Chummer.UI.Skills
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Controls.Add(this.pnlButtons, 2, 0);
             this.tlpMain.Controls.Add(this.cmdDelete, 5, 0);
             this.tlpMain.Controls.Add(this.lblName, 0, 0);
@@ -112,7 +111,7 @@ namespace Chummer.UI.Skills
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(625, 24);
+            this.tlpMain.Size = new System.Drawing.Size(1012, 24);
             this.tlpMain.TabIndex = 28;
             // 
             // pnlButtons
@@ -121,6 +120,7 @@ namespace Chummer.UI.Skills
             this.pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.pnlButtons.Controls.Add(this.flpButtonsCareer);
             this.pnlButtons.Controls.Add(this.flpButtonsCreate);
+            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlButtons.Location = new System.Drawing.Point(87, 0);
             this.pnlButtons.Margin = new System.Windows.Forms.Padding(0);
             this.pnlButtons.Name = "pnlButtons";
@@ -133,12 +133,12 @@ namespace Chummer.UI.Skills
             this.flpButtonsCareer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpButtonsCareer.Controls.Add(this.btnCareerIncrease);
             this.flpButtonsCareer.Controls.Add(this.lblCareerRating);
-            this.flpButtonsCareer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flpButtonsCareer.Dock = System.Windows.Forms.DockStyle.Right;
             this.flpButtonsCareer.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtonsCareer.Location = new System.Drawing.Point(0, 0);
+            this.flpButtonsCareer.Location = new System.Drawing.Point(21, 0);
             this.flpButtonsCareer.Margin = new System.Windows.Forms.Padding(0);
             this.flpButtonsCareer.Name = "flpButtonsCareer";
-            this.flpButtonsCareer.Size = new System.Drawing.Size(82, 24);
+            this.flpButtonsCareer.Size = new System.Drawing.Size(61, 24);
             this.flpButtonsCareer.TabIndex = 1;
             this.flpButtonsCareer.WrapContents = false;
             // 
@@ -148,7 +148,7 @@ namespace Chummer.UI.Skills
             this.btnCareerIncrease.AutoSize = true;
             this.btnCareerIncrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
-            this.btnCareerIncrease.Location = new System.Drawing.Point(55, 0);
+            this.btnCareerIncrease.Location = new System.Drawing.Point(34, 0);
             this.btnCareerIncrease.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.btnCareerIncrease.Name = "btnCareerIncrease";
             this.btnCareerIncrease.Padding = new System.Windows.Forms.Padding(1);
@@ -162,13 +162,13 @@ namespace Chummer.UI.Skills
             // 
             this.lblCareerRating.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCareerRating.AutoSize = true;
-            this.lblCareerRating.Location = new System.Drawing.Point(29, 5);
-            this.lblCareerRating.MinimumSize = new System.Drawing.Size(20, 0);
+            this.lblCareerRating.Location = new System.Drawing.Point(3, 5);
+            this.lblCareerRating.MinimumSize = new System.Drawing.Size(25, 0);
             this.lblCareerRating.Name = "lblCareerRating";
-            this.lblCareerRating.Size = new System.Drawing.Size(20, 13);
+            this.lblCareerRating.Size = new System.Drawing.Size(25, 13);
             this.lblCareerRating.TabIndex = 20;
             this.lblCareerRating.Text = "00";
-            this.lblCareerRating.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCareerRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // flpButtonsCreate
             // 
@@ -191,7 +191,7 @@ namespace Chummer.UI.Skills
             this.nudKarma.AutoSize = true;
             this.nudKarma.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(44, 2);
-            this.nudKarma.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.nudKarma.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
             0,
@@ -207,7 +207,7 @@ namespace Chummer.UI.Skills
             this.nudSkill.AutoSize = true;
             this.nudSkill.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudSkill.Location = new System.Drawing.Point(3, 2);
-            this.nudSkill.Margin = new System.Windows.Forms.Padding(3, 2, 3, 0);
+            this.nudSkill.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
             0,
@@ -222,7 +222,7 @@ namespace Chummer.UI.Skills
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDelete.Location = new System.Drawing.Point(574, 0);
+            this.cmdDelete.Location = new System.Drawing.Point(961, 0);
             this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(48, 24);
@@ -238,8 +238,7 @@ namespace Chummer.UI.Skills
             this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblName.AutoSize = true;
             this.lblName.ContextMenuStrip = this.cmsSkillLabel;
-            this.lblName.Location = new System.Drawing.Point(3, 4);
-            this.lblName.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
+            this.lblName.Location = new System.Drawing.Point(3, 5);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(41, 13);
             this.lblName.TabIndex = 0;
@@ -250,14 +249,13 @@ namespace Chummer.UI.Skills
             // 
             // lblModifiedRating
             // 
-            this.lblModifiedRating.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblModifiedRating.AutoSize = true;
+            this.lblModifiedRating.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModifiedRating.Location = new System.Drawing.Point(172, 5);
-            this.lblModifiedRating.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
+            this.lblModifiedRating.Location = new System.Drawing.Point(172, 0);
             this.lblModifiedRating.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblModifiedRating.Name = "lblModifiedRating";
-            this.lblModifiedRating.Size = new System.Drawing.Size(50, 13);
+            this.lblModifiedRating.Size = new System.Drawing.Size(50, 24);
             this.lblModifiedRating.TabIndex = 16;
             this.lblModifiedRating.Text = "00 (00)";
             this.lblModifiedRating.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -273,7 +271,7 @@ namespace Chummer.UI.Skills
             this.pnlSpecs.Location = new System.Drawing.Point(225, 0);
             this.pnlSpecs.Margin = new System.Windows.Forms.Padding(0);
             this.pnlSpecs.Name = "pnlSpecs";
-            this.pnlSpecs.Size = new System.Drawing.Size(346, 24);
+            this.pnlSpecs.Size = new System.Drawing.Size(733, 24);
             this.pnlSpecs.TabIndex = 31;
             // 
             // tlpSpecsCareer
@@ -291,7 +289,7 @@ namespace Chummer.UI.Skills
             this.tlpSpecsCareer.Name = "tlpSpecsCareer";
             this.tlpSpecsCareer.RowCount = 1;
             this.tlpSpecsCareer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSpecsCareer.Size = new System.Drawing.Size(346, 24);
+            this.tlpSpecsCareer.Size = new System.Drawing.Size(733, 24);
             this.tlpSpecsCareer.TabIndex = 32;
             // 
             // lblCareerSpec
@@ -299,7 +297,6 @@ namespace Chummer.UI.Skills
             this.lblCareerSpec.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCareerSpec.AutoSize = true;
             this.lblCareerSpec.Location = new System.Drawing.Point(3, 5);
-            this.lblCareerSpec.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
             this.lblCareerSpec.Name = "lblCareerSpec";
             this.lblCareerSpec.Size = new System.Drawing.Size(83, 13);
             this.lblCareerSpec.TabIndex = 22;
@@ -312,7 +309,7 @@ namespace Chummer.UI.Skills
             this.btnAddSpec.AutoSize = true;
             this.btnAddSpec.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAddSpec.Image = global::Chummer.Properties.Resources.add;
-            this.btnAddSpec.Location = new System.Drawing.Point(319, 0);
+            this.btnAddSpec.Location = new System.Drawing.Point(706, 0);
             this.btnAddSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.btnAddSpec.Name = "btnAddSpec";
             this.btnAddSpec.Padding = new System.Windows.Forms.Padding(1);
@@ -337,14 +334,14 @@ namespace Chummer.UI.Skills
             this.tlpSpecsCreate.Name = "tlpSpecsCreate";
             this.tlpSpecsCreate.RowCount = 1;
             this.tlpSpecsCreate.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSpecsCreate.Size = new System.Drawing.Size(346, 24);
+            this.tlpSpecsCreate.Size = new System.Drawing.Size(733, 24);
             this.tlpSpecsCreate.TabIndex = 30;
             // 
             // chkKarma
             // 
             this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarma.AutoSize = true;
-            this.chkKarma.Location = new System.Drawing.Point(328, 5);
+            this.chkKarma.Location = new System.Drawing.Point(715, 5);
             this.chkKarma.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.chkKarma.Name = "chkKarma";
             this.chkKarma.Size = new System.Drawing.Size(15, 14);
@@ -359,7 +356,7 @@ namespace Chummer.UI.Skills
             this.cboSpec.Location = new System.Drawing.Point(3, 1);
             this.cboSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cboSpec.Name = "cboSpec";
-            this.cboSpec.Size = new System.Drawing.Size(319, 21);
+            this.cboSpec.Size = new System.Drawing.Size(706, 21);
             this.cboSpec.Sorted = true;
             this.cboSpec.TabIndex = 17;
             this.cboSpec.TabStop = false;
@@ -374,6 +371,7 @@ namespace Chummer.UI.Skills
             this.pnlAttributes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlAttributes.Location = new System.Drawing.Point(47, 0);
             this.pnlAttributes.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlAttributes.MinimumSize = new System.Drawing.Size(40, 0);
             this.pnlAttributes.Name = "pnlAttributes";
             this.pnlAttributes.Size = new System.Drawing.Size(40, 24);
             this.pnlAttributes.TabIndex = 33;
@@ -387,7 +385,6 @@ namespace Chummer.UI.Skills
             this.btnAttribute.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAttribute.Location = new System.Drawing.Point(0, 0);
             this.btnAttribute.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.btnAttribute.MinimumSize = new System.Drawing.Size(40, 0);
             this.btnAttribute.Name = "btnAttribute";
             this.btnAttribute.Size = new System.Drawing.Size(40, 24);
             this.btnAttribute.TabIndex = 24;
@@ -402,8 +399,6 @@ namespace Chummer.UI.Skills
             this.cboSelectAttribute.FormattingEnabled = true;
             this.cboSelectAttribute.Location = new System.Drawing.Point(0, 0);
             this.cboSelectAttribute.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.cboSelectAttribute.MaximumSize = new System.Drawing.Size(40, 0);
-            this.cboSelectAttribute.MinimumSize = new System.Drawing.Size(40, 0);
             this.cboSelectAttribute.Name = "cboSelectAttribute";
             this.cboSelectAttribute.Size = new System.Drawing.Size(40, 21);
             this.cboSelectAttribute.TabIndex = 25;
@@ -420,8 +415,9 @@ namespace Chummer.UI.Skills
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillControl2";
-            this.Size = new System.Drawing.Size(625, 24);
+            this.Size = new System.Drawing.Size(1012, 24);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.DpiChangedAfterParent += new System.EventHandler(this.SkillControl2_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.cmsSkillLabel.ResumeLayout(false);
             this.tlpMain.ResumeLayout(false);
