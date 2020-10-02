@@ -32,7 +32,6 @@
       <name>Ambidextrous</name>
       <karma>4</karma>
       <category>Positive</category>
-      <limit>3</limit>
       <bonus>
         <ambidextrous />
       </bonus>

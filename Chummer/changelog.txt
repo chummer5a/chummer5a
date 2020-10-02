@@ -115,6 +115,7 @@ Data Changes:
 - Ondansetron is now properly called Ondansetron instead of Ondanstron.
 - The Ares Armatus is now properly recognized as a Laser Weapon.
 - Peak-discharge power packs are now properly available for the Ares Redline, the Ares Lancer MP Laser, the Underbarrel Laser, and the Repeating Laser.
+- Ambidextrous no longer has levels.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
