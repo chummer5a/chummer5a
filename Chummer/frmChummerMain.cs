@@ -1379,9 +1379,10 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                FormWindowState wsPreference = OpenCharacterForms.All(x => x.WindowState != FormWindowState.Maximized)
-                    ? FormWindowState.Normal
-                    : FormWindowState.Maximized;
+                FormWindowState wsPreference = MdiChildren.Length == 0
+                                               || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
+                    ? FormWindowState.Maximized
+                    : FormWindowState.Normal;
                 List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
                 foreach (Character objCharacter in lstCharacters)
                 {
