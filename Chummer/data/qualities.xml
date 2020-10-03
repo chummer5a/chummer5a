@@ -7185,26 +7185,22 @@
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>BOD</attribute>
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
         </selectattributes>
       </bonus>
@@ -10348,14 +10344,12 @@
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>BOD</attribute>
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
@@ -10363,7 +10357,6 @@
             <attribute>CHA</attribute>
             <attribute>LOG</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
@@ -10371,7 +10364,6 @@
             <attribute>CHA</attribute>
             <attribute>LOG</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
         </selectattributes>
         <unlockskills>Magician</unlockskills>

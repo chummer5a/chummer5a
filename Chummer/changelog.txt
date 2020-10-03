@@ -116,6 +116,7 @@ Data Changes:
 - The Ares Armatus is now properly recognized as a Laser Weapon.
 - Peak-discharge power packs are now properly available for the Ares Redline, the Ares Lancer MP Laser, the Underbarrel Laser, and the Repeating Laser.
 - The maximum number of times that Ambidextrous can be taken is now based on the number of arms the character has instead of fixed at 3. Characters who have multiple arms will still need to track for which arms they have taken Ambidextrous, as Chummer currently does not track Ambidextrous in an arm-specific fashion.
+- Removed unnecessary affectbase attribute from Wendigo and Bandersnatch qualities. Closes #4232
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
