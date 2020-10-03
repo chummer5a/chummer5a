@@ -72,7 +72,7 @@ namespace Chummer.UI.Skills
 
             btnAttribute.DoOneWayDataBinding("Text", objSkill, nameof(Skill.DisplayAttribute));
 
-            lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.TotalValue, _objAttributeActive.Abbrev);
+            lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
             lblModifiedRating.ToolTipText = objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
 
             if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
@@ -178,7 +178,7 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.TotalValue, _objAttributeActive.Abbrev);
+                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
                     lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
@@ -221,7 +221,7 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.TotalValue, _objAttributeActive.Abbrev);
+                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
                     lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
                     break;
             }

@@ -9763,10 +9763,9 @@ namespace Chummer
                         return 0;
 
                     // A.I.s can restore Core damage via Software + Depth [Data Processing] (1 day) Extended Test
-                    int intDEPTotal = DEP.TotalValue;
                     int intAIReturn =
-                        (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute(intDEPTotal, "DEP") ??
-                         intDEPTotal - 1) +
+                        (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute("DEP") ??
+                         DEP.TotalValue - 1) +
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                     if(Improvements.Any(x =>
                        x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))

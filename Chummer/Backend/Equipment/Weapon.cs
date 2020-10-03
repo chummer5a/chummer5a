@@ -4306,7 +4306,7 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.GunneryCommandDevice:
                     case FiringMode.RemoteOperated:
                         {
-                            intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
+                            intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
 
                             if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
                             {
@@ -4570,7 +4570,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
                             sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{1}[{2}]{0}({3})",
-                                strSpace, objSkill.CurrentDisplayName, _objCharacter.LOG.DisplayAbbrev, objSkill.PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG"));
+                                strSpace, objSkill.CurrentDisplayName, _objCharacter.LOG.DisplayAbbrev, objSkill.PoolOtherAttribute("LOG"));
                             if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
                             {
                                 SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);

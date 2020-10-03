@@ -808,7 +808,7 @@ namespace Chummer
                 Skill objSkill = Skill;
                 if (objSkill != null)
                 {
-                    intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
+                    intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                     // Add any Specialization bonus if applicable.
                     intReturn += Skill.GetSpecializationBonus(Category);
                 }
@@ -834,7 +834,7 @@ namespace Chummer
                 Skill objSkill = Skill;
                 if (objSkill != null)
                 {
-                    int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute(_objCharacter.MAG.TotalValue, "MAG") : objSkill.Pool;
+                    int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                     strReturn = objSkill.FormattedDicePool(intPool, Category);
                 }
 
