@@ -32,6 +32,7 @@
       <name>Ambidextrous</name>
       <karma>4</karma>
       <category>Positive</category>
+      <limit>{arm} - 1</limit>
       <bonus>
         <ambidextrous />
       </bonus>
