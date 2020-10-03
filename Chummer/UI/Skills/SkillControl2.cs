@@ -310,7 +310,7 @@ namespace Chummer.UI.Skills
         public bool CustomAttributeSet => _objAttributeActive != _objSkill.AttributeObject;
 
         [UsedImplicitly]
-        public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
+        public int NameWidth => lblName.PreferredWidth + LogicalToDeviceUnits(3) + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
 
         [UsedImplicitly]
         public int NudSkillWidth => nudSkill.Visible ? nudSkill.Width : 0;
@@ -356,7 +356,7 @@ namespace Chummer.UI.Skills
         [UsedImplicitly]
         public void MoveControls(int intNewNameWidth)
         {
-            lblName.MinimumSize = new Size(intNewNameWidth - lblName.Margin.Right - btnAttribute.Margin.Left - btnAttribute.Width, lblName.MinimumSize.Height);
+            lblName.MinimumSize = new Size(intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left - pnlAttributes.Width, lblName.MinimumSize.Height);
         }
 
         private void UnbindSkillControl()
