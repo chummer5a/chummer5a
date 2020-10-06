@@ -6780,7 +6780,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background colour for all other Nodes.
             treWeapons.ClearNodeBackground(objNode);
@@ -6854,7 +6854,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background colour for all other Nodes.
             treArmor.ClearNodeBackground(objNode);
@@ -6972,7 +6972,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background colour for all other Nodes.
             treLifestyles.ClearNodeBackground(objNode);
@@ -7251,10 +7251,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = ColorManager.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDarker;
             }
             else
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treGear.ClearNodeBackground(objNode);
@@ -7658,10 +7658,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = ColorManager.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDarker;
             }
             else
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treVehicles.ClearNodeBackground(objNode);
@@ -14148,7 +14148,7 @@ namespace Chummer
             if (destination == null)
                 return;
 
-            destination.BackColor = ColorManager.ControlDark;
+            destination.BackColor = ColorManager.ControlDarker;
             foreach (ContactControl objControl in panContacts.Controls)
             {
                 if (objControl != destination as ContactControl)
@@ -14337,9 +14337,10 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                ? PictureBoxSizeMode.CenterImage
-                : PictureBoxSizeMode.Zoom;
+            if (!picMugshot.IsDisposed)
+                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                    ? PictureBoxSizeMode.CenterImage
+                    : PictureBoxSizeMode.Zoom;
         }
 
         private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)

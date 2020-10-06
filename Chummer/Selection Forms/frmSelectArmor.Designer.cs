@@ -63,8 +63,8 @@ namespace Chummer
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.lblCapacity = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.lblArmorValueLabel = new System.Windows.Forms.Label();
             this.lblAvail = new System.Windows.Forms.Label();
             this.lblArmorValue = new System.Windows.Forms.Label();
@@ -72,8 +72,8 @@ namespace Chummer
             this.nudMarkup = new System.Windows.Forms.NumericUpDown();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new System.Windows.Forms.CheckBox();
-            this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblRatingLabel = new System.Windows.Forms.Label();
@@ -949,7 +949,7 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabBrowse;
         private System.Windows.Forms.TabPage tabListDetail;
-        private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+        private Chummer.ColorableCheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Label lblArmorValue;
         private System.Windows.Forms.Label lblArmorValueLabel;
@@ -960,7 +960,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.Label lblCapacity;
         private System.Windows.Forms.Label lblCapacityLabel;
-        private System.Windows.Forms.CheckBox chkFreeItem;
+        private Chummer.ColorableCheckBox chkFreeItem;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblCost;

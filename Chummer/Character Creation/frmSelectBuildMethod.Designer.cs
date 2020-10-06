@@ -31,7 +31,7 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.nudKarma = new System.Windows.Forms.NumericUpDown();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkIgnoreRules = new System.Windows.Forms.CheckBox();
+            this.chkIgnoreRules = new Chummer.ColorableCheckBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
             this.lblMaxAvail = new System.Windows.Forms.Label();
@@ -368,7 +368,7 @@ namespace Chummer
 
         private System.Windows.Forms.NumericUpDown nudKarma;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.CheckBox chkIgnoreRules;
+        private Chummer.ColorableCheckBox chkIgnoreRules;
         private System.Windows.Forms.Button cmdCancel;
         private ElasticComboBox cboBuildMethod;
         private System.Windows.Forms.Label lblMaxAvail;

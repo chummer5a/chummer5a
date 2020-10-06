@@ -146,16 +146,14 @@ namespace Chummer.UI.Table
                     intTipY = intBottomY;
                     intBottomY = intTemp;
                 }
-                e.Graphics.FillPolygon(
-                    ColorManager.IsLightMode
-                        ? SystemBrushes.ControlLightLight
-                        : SystemBrushes.ControlText,
-                    new []
-                    {
-                        new Point(intLeft, intBottomY),
-                        new Point(intTipX, intTipY),
-                        new Point(intRight, intBottomY)
-                    });
+                using (Brush objBrush = new SolidBrush(ColorManager.ControlLightest))
+                    e.Graphics.FillPolygon(objBrush,
+                        new []
+                        {
+                            new Point(intLeft, intBottomY),
+                            new Point(intTipX, intTipY),
+                            new Point(intRight, intBottomY)
+                        });
             }
             base.OnPaint(e);
         }

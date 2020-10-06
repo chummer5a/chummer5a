@@ -283,7 +283,6 @@ namespace Chummer.UI.Skills
             this.btnResetCustomDisplayAttribute.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnResetCustomDisplayAttribute.AutoSize = true;
             this.btnResetCustomDisplayAttribute.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnResetCustomDisplayAttribute.FlatAppearance.BorderSize = 0;
             this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(85, 0);
             this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
             this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";

@@ -43,7 +43,7 @@ namespace Chummer
             this.cmdMyAccount = new System.Windows.Forms.Button();
             this.cmdUploadLanguage = new System.Windows.Forms.Button();
             this.panLogin = new System.Windows.Forms.Panel();
-            this.chkAutoLogin = new System.Windows.Forms.CheckBox();
+            this.chkAutoLogin = new Chummer.ColorableCheckBox();
             this.panLoggedIn = new System.Windows.Forms.Panel();
             this.lblLoggedIn = new System.Windows.Forms.Label();
             this.cboCharacterTypes = new System.Windows.Forms.ComboBox();
@@ -598,7 +598,7 @@ namespace Chummer
         private System.Windows.Forms.ComboBox cboSortOrder;
         private System.Windows.Forms.Label lblSearchFor;
         private System.Windows.Forms.Label lblSortedBy;
-        private System.Windows.Forms.CheckBox chkAutoLogin;
+        private Chummer.ColorableCheckBox chkAutoLogin;
         private System.Windows.Forms.Label lblFilter;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Panel panFilter;

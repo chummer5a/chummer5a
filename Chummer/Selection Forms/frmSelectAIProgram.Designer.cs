@@ -40,7 +40,7 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.chkLimitList = new System.Windows.Forms.CheckBox();
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.lstAIPrograms = new System.Windows.Forms.ListBox();
@@ -326,7 +326,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
-        private System.Windows.Forms.CheckBox chkLimitList;
+        private Chummer.ColorableCheckBox chkLimitList;
         private System.Windows.Forms.Label lblCategory;
         private ElasticComboBox cboCategory;
         private System.Windows.Forms.ListBox lstAIPrograms;

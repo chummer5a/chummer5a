@@ -54,7 +54,7 @@ namespace Chummer.UI.Skills
             this.lblCareerSpec = new System.Windows.Forms.Label();
             this.btnAddSpec = new Chummer.ButtonWithToolTip();
             this.tlpSpecsCreate = new System.Windows.Forms.TableLayoutPanel();
-            this.chkKarma = new System.Windows.Forms.CheckBox();
+            this.chkKarma = new Chummer.ColorableCheckBox();
             this.cboSpec = new Chummer.ElasticComboBox();
             this.pnlAttributes = new System.Windows.Forms.Panel();
             this.btnAttribute = new System.Windows.Forms.Button();
@@ -450,7 +450,7 @@ namespace Chummer.UI.Skills
         private NumericUpDownEx nudSkill;
         private LabelWithToolTip lblModifiedRating;
         private ElasticComboBox cboSpec;
-        private System.Windows.Forms.CheckBox chkKarma;
+        private Chummer.ColorableCheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblCareerRating;
         private ButtonWithToolTip btnCareerIncrease;

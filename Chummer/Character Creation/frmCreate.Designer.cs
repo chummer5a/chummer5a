@@ -74,11 +74,11 @@ namespace Chummer
             this.lblAttributesBase = new System.Windows.Forms.Label();
             this.lblAttributesMetatype = new System.Windows.Forms.Label();
             this.lblAttributes = new System.Windows.Forms.Label();
-            this.chkArmorEquipped = new System.Windows.Forms.CheckBox();
-            this.chkWeaponAccessoryInstalled = new System.Windows.Forms.CheckBox();
+            this.chkArmorEquipped = new Chummer.ColorableCheckBox();
+            this.chkWeaponAccessoryInstalled = new Chummer.ColorableCheckBox();
             this.lblNotoriety = new System.Windows.Forms.Label();
             this.lblStreetCred = new System.Windows.Forms.Label();
-            this.chkCharacterCreated = new System.Windows.Forms.CheckBox();
+            this.chkCharacterCreated = new Chummer.ColorableCheckBox();
             this.lblBuildFoci = new System.Windows.Forms.Label();
             this.lblBuildMartialArts = new System.Windows.Forms.Label();
             this.lblBuildNuyen = new System.Windows.Forms.Label();
@@ -443,7 +443,7 @@ namespace Chummer
             this.tabCritter = new System.Windows.Forms.TabPage();
             this.tlpCritter = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treCritterPowers = new System.Windows.Forms.TreeView();
-            this.chkCritterPowerCount = new System.Windows.Forms.CheckBox();
+            this.chkCritterPowerCount = new Chummer.ColorableCheckBox();
             this.lblCritterPowerPointCostLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerPointCost = new System.Windows.Forms.Label();
             this.lblCritterPowerSourceLabel = new System.Windows.Forms.Label();
@@ -473,16 +473,16 @@ namespace Chummer
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
             this.flpInitiationCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkInitiationOrdeal = new System.Windows.Forms.CheckBox();
-            this.chkInitiationSchooling = new System.Windows.Forms.CheckBox();
+            this.chkInitiationOrdeal = new Chummer.ColorableCheckBox();
+            this.chkInitiationSchooling = new Chummer.ColorableCheckBox();
             this.gpbInitiationGroup = new System.Windows.Forms.GroupBox();
             this.tlpInitiationGroup = new System.Windows.Forms.TableLayoutPanel();
             this.txtGroupNotes = new System.Windows.Forms.TextBox();
             this.lblGroupName = new System.Windows.Forms.Label();
-            this.chkInitiationGroup = new System.Windows.Forms.CheckBox();
+            this.chkInitiationGroup = new Chummer.ColorableCheckBox();
             this.lblGroupNotes = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
-            this.chkJoinGroup = new System.Windows.Forms.CheckBox();
+            this.chkJoinGroup = new Chummer.ColorableCheckBox();
             this.tlpInitiationButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddMetamagic = new SplitButton();
             this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -533,8 +533,8 @@ namespace Chummer
             this.lblCyberwareGradeLabel = new System.Windows.Forms.Label();
             this.lblCyberwareCategory = new System.Windows.Forms.Label();
             this.flpCyberwareCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkCyberwareStolen = new System.Windows.Forms.CheckBox();
-            this.chkPrototypeTranshuman = new System.Windows.Forms.CheckBox();
+            this.chkCyberwareStolen = new Chummer.ColorableCheckBox();
+            this.chkPrototypeTranshuman = new Chummer.ColorableCheckBox();
             this.gpbCyberwareMatrix = new System.Windows.Forms.GroupBox();
             this.tlpCyberwareMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
@@ -548,8 +548,8 @@ namespace Chummer
             this.cboCyberwareDataProcessing = new System.Windows.Forms.ComboBox();
             this.cboCyberwareFirewall = new System.Windows.Forms.ComboBox();
             this.flpCyberwareMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkCyberwareHomeNode = new System.Windows.Forms.CheckBox();
-            this.chkCyberwareActiveCommlink = new System.Windows.Forms.CheckBox();
+            this.chkCyberwareHomeNode = new Chummer.ColorableCheckBox();
+            this.chkCyberwareActiveCommlink = new Chummer.ColorableCheckBox();
             this.tlpCyberwareButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddCyberware = new SplitButton();
             this.cmdDeleteCyberware = new System.Windows.Forms.Button();
@@ -579,8 +579,8 @@ namespace Chummer
             this.lblGearSourceLabel = new System.Windows.Forms.Label();
             this.lblGearSource = new System.Windows.Forms.Label();
             this.flpGearCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkGearEquipped = new System.Windows.Forms.CheckBox();
-            this.chkGearStolen = new System.Windows.Forms.CheckBox();
+            this.chkGearEquipped = new Chummer.ColorableCheckBox();
+            this.chkGearStolen = new Chummer.ColorableCheckBox();
             this.gpbGearMatrix = new System.Windows.Forms.GroupBox();
             this.tlpGearMatrix = new System.Windows.Forms.TableLayoutPanel();
             this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -594,15 +594,15 @@ namespace Chummer
             this.cboGearAttack = new Chummer.ElasticComboBox();
             this.cboGearSleaze = new Chummer.ElasticComboBox();
             this.flpGearMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
-            this.chkGearActiveCommlink = new System.Windows.Forms.CheckBox();
+            this.chkGearHomeNode = new Chummer.ColorableCheckBox();
+            this.chkGearActiveCommlink = new Chummer.ColorableCheckBox();
             this.gpbGearBondedFoci = new System.Windows.Forms.GroupBox();
             this.tlpGearBondedFoci = new System.Windows.Forms.TableLayoutPanel();
             this.treFoci = new System.Windows.Forms.TreeView();
             this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
             this.tlpGearButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddGear = new SplitButton();
-            this.chkCommlinks = new System.Windows.Forms.CheckBox();
+            this.chkCommlinks = new Chummer.ColorableCheckBox();
             this.cmdDeleteGear = new System.Windows.Forms.Button();
             this.cmdAddLocation = new System.Windows.Forms.Button();
             this.tabArmor = new System.Windows.Forms.TabPage();
@@ -624,8 +624,8 @@ namespace Chummer
             this.lblArmorCapacity = new System.Windows.Forms.Label();
             this.lblArmorSourceLabel = new System.Windows.Forms.Label();
             this.flpArmorCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkIncludedInArmor = new System.Windows.Forms.CheckBox();
-            this.chkArmorStolen = new System.Windows.Forms.CheckBox();
+            this.chkIncludedInArmor = new Chummer.ColorableCheckBox();
+            this.chkArmorStolen = new Chummer.ColorableCheckBox();
             this.gpbArmorMatrix = new System.Windows.Forms.GroupBox();
             this.tlpArmorMatrix = new System.Windows.Forms.TableLayoutPanel();
             this.lblArmorAttack = new System.Windows.Forms.Label();
@@ -674,8 +674,8 @@ namespace Chummer
             this.lblWeaponRatingLabel = new System.Windows.Forms.Label();
             this.lblWeaponCost = new System.Windows.Forms.Label();
             this.flpWeaponsCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkIncludedInWeapon = new System.Windows.Forms.CheckBox();
-            this.chkWeaponStolen = new System.Windows.Forms.CheckBox();
+            this.chkIncludedInWeapon = new Chummer.ColorableCheckBox();
+            this.chkWeaponStolen = new Chummer.ColorableCheckBox();
             this.gpbWeaponsWeapon = new System.Windows.Forms.GroupBox();
             this.flpWeaponsWeapon = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpWeaponsWeapon = new System.Windows.Forms.TableLayoutPanel();
@@ -733,7 +733,7 @@ namespace Chummer
             this.flpDrugs = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbDrugsCommon = new System.Windows.Forms.GroupBox();
             this.tlpDrugsCommon = new System.Windows.Forms.TableLayoutPanel();
-            this.chkDrugStolen = new System.Windows.Forms.CheckBox();
+            this.chkDrugStolen = new Chummer.ColorableCheckBox();
             this.lblDrugNameLabel = new System.Windows.Forms.Label();
             this.lblDrugEffectLabel = new System.Windows.Forms.Label();
             this.lblDrugName = new System.Windows.Forms.Label();
@@ -807,9 +807,9 @@ namespace Chummer
             this.nudVehicleRating = new System.Windows.Forms.NumericUpDown();
             this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
             this.flpVehiclesCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkVehicleWeaponAccessoryInstalled = new System.Windows.Forms.CheckBox();
-            this.chkVehicleIncludedInWeapon = new System.Windows.Forms.CheckBox();
-            this.chkVehicleStolen = new System.Windows.Forms.CheckBox();
+            this.chkVehicleWeaponAccessoryInstalled = new Chummer.ColorableCheckBox();
+            this.chkVehicleIncludedInWeapon = new Chummer.ColorableCheckBox();
+            this.chkVehicleStolen = new Chummer.ColorableCheckBox();
             this.gpbVehiclesVehicle = new System.Windows.Forms.GroupBox();
             this.tlpVehiclesVehicle = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
@@ -888,8 +888,8 @@ namespace Chummer
             this.cboVehicleFirewall = new Chummer.ElasticComboBox();
             this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
             this.flpVehiclesMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkVehicleHomeNode = new System.Windows.Forms.CheckBox();
-            this.chkVehicleActiveCommlink = new System.Windows.Forms.CheckBox();
+            this.chkVehicleHomeNode = new Chummer.ColorableCheckBox();
+            this.chkVehicleActiveCommlink = new Chummer.ColorableCheckBox();
             this.treVehicles = new System.Windows.Forms.TreeView();
             this.tabCharacterInfo = new System.Windows.Forms.TabPage();
             this.tlpCharacterInfo = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -903,7 +903,7 @@ namespace Chummer
             this.gpbNotes = new System.Windows.Forms.GroupBox();
             this.rtfNotes = new Chummer.UI.Editors.RtfEditor();
             this.picMugshot = new System.Windows.Forms.PictureBox();
-            this.chkIsMainMugshot = new System.Windows.Forms.CheckBox();
+            this.chkIsMainMugshot = new Chummer.ColorableCheckBox();
             this.cboPrimaryArm = new Chummer.ElasticComboBox();
             this.lblNumMugshots = new System.Windows.Forms.Label();
             this.lblGender = new System.Windows.Forms.Label();
@@ -12214,7 +12214,6 @@ namespace Chummer
             // 
             // rtfDescription
             // 
-            this.rtfDescription.AllowFormatting = true;
             this.rtfDescription.AutoSize = true;
             this.rtfDescription.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfDescription.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -12243,7 +12242,6 @@ namespace Chummer
             // 
             // rtfBackground
             // 
-            this.rtfBackground.AllowFormatting = true;
             this.rtfBackground.AutoSize = true;
             this.rtfBackground.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfBackground.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -12272,7 +12270,6 @@ namespace Chummer
             // 
             // rtfConcept
             // 
-            this.rtfConcept.AllowFormatting = true;
             this.rtfConcept.AutoSize = true;
             this.rtfConcept.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfConcept.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -12301,7 +12298,6 @@ namespace Chummer
             // 
             // rtfNotes
             // 
-            this.rtfNotes.AllowFormatting = true;
             this.rtfNotes.AutoSize = true;
             this.rtfNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.rtfNotes.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -14854,7 +14850,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeaponAccessory;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeapon;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeaponAccessoryAlt;
-        private System.Windows.Forms.CheckBox chkArmorEquipped;
+        private ColorableCheckBox chkArmorEquipped;
         private System.Windows.Forms.TabPage tabMartialArts;
         private System.Windows.Forms.TreeView treMartialArts;
         private System.Windows.Forms.Button cmdDeleteMartialArt;
@@ -14927,15 +14923,15 @@ namespace Chummer
         private System.Windows.Forms.Label lblLifestyleStartingNuyenLabel;
         private System.Windows.Forms.Label lblLifestyleStartingNuyen;
         private System.Windows.Forms.ToolStripProgressBar pgbProgress;
-        private System.Windows.Forms.CheckBox chkCharacterCreated;
+        private ColorableCheckBox chkCharacterCreated;
         private System.Windows.Forms.Label lblBaseLifestyle;
         private System.Windows.Forms.Label lblLifestyleComfortsLabel;
         private System.Windows.Forms.Label lblLifestyleQualities;
         private System.Windows.Forms.Label lblLifestyleQualitiesLabel;
         private System.Windows.Forms.TextBox txtPlayerName;
         private System.Windows.Forms.Label lblPlayerName;
-        private System.Windows.Forms.CheckBox chkWeaponAccessoryInstalled;
-        private System.Windows.Forms.CheckBox chkIncludedInWeapon;
+        private ColorableCheckBox chkWeaponAccessoryInstalled;
+        private ColorableCheckBox chkIncludedInWeapon;
         private System.Windows.Forms.Label lblWeaponRangeExtreme;
         private System.Windows.Forms.Label lblWeaponRangeLong;
         private System.Windows.Forms.Label lblWeaponRangeMedium;
@@ -14986,7 +14982,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblQualitySourceLabel;
         private System.Windows.Forms.Label lblQualityBP;
         private System.Windows.Forms.Label lblQualityBPLabel;
-        private System.Windows.Forms.CheckBox chkInitiationOrdeal;
+        private ColorableCheckBox chkInitiationOrdeal;
         private System.Windows.Forms.Label lblMovement;
         private System.Windows.Forms.Label lblMovementLabel;
         private System.Windows.Forms.Label lblCritterPowerPoints;
@@ -15004,7 +15000,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblJudgeIntentionsLabel;
         private LabelWithToolTip lblComposure;
         private System.Windows.Forms.Label lblComposureLabel;
-        private System.Windows.Forms.CheckBox chkGearEquipped;
+        private ColorableCheckBox chkGearEquipped;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialMutantCritter;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialToxicCritter;
         private System.Windows.Forms.Label lblArmorCapacity;
@@ -15065,7 +15061,7 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsLifestyle;
         private System.Windows.Forms.ToolStripMenuItem tsAdvancedLifestyle;
         private System.Windows.Forms.ToolStripMenuItem tsAdvancedLifestyleNotes;
-        private System.Windows.Forms.CheckBox chkGearHomeNode;
+        private ColorableCheckBox chkGearHomeNode;
         private System.Windows.Forms.ToolStripMenuItem tsLifestyleName;
         private System.Windows.Forms.ToolStripMenuItem mnuFileClose;
         private System.Windows.Forms.ToolStripSeparator tssFileMenu2;
@@ -15118,8 +15114,8 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabPets;
         private SplitButton cmdAddPet;
         private System.Windows.Forms.FlowLayoutPanel panPets;
-        private System.Windows.Forms.CheckBox chkCritterPowerCount;
-        private System.Windows.Forms.CheckBox chkIncludedInArmor;
+        private ColorableCheckBox chkCritterPowerCount;
+        private ColorableCheckBox chkIncludedInArmor;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialAddBiowareSuite;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialCreateBiowareSuite;
         private System.Windows.Forms.Button cmdAddWeaponLocation;
@@ -15127,8 +15123,8 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsWeaponRenameLocation;
         private System.Windows.Forms.ToolStripMenuItem tsGearName;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleGearNotes;
-        private System.Windows.Forms.CheckBox chkCommlinks;
-        private System.Windows.Forms.CheckBox chkGearActiveCommlink;
+        private ColorableCheckBox chkCommlinks;
+        private ColorableCheckBox chkGearActiveCommlink;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialBPAvailLimit;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialConvertToFreeSprite;
         private System.Windows.Forms.Label lblBiowareESS;
@@ -15242,7 +15238,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabEnemies;
         private System.Windows.Forms.FlowLayoutPanel panEnemies;
         private SplitButton cmdAddEnemy;
-        private System.Windows.Forms.CheckBox chkInitiationSchooling;
+        private ColorableCheckBox chkInitiationSchooling;
         private System.Windows.Forms.ContextMenuStrip cmsInitiationNotes;
         private System.Windows.Forms.ToolStripMenuItem tsInitiationNotes;
         private System.Windows.Forms.ContextMenuStrip cmsMetamagic;
@@ -15333,7 +15329,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsAIProgramNotes;
         private System.Windows.Forms.Label lblHandedness;
         private ElasticComboBox cboPrimaryArm;
-        private System.Windows.Forms.CheckBox chkIsMainMugshot;
+        private ColorableCheckBox chkIsMainMugshot;
         private System.Windows.Forms.Label lblNumMugshots;
         private System.Windows.Forms.NumericUpDown nudMugshotIndex;
         private System.Windows.Forms.Label lblTraditionSource;
@@ -15346,7 +15342,7 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel pnlAttributes;
         private System.Windows.Forms.Label lblPBuildSpecial;
         private System.Windows.Forms.Label lblPBuildSpecialLabel;
-        private System.Windows.Forms.CheckBox chkPrototypeTranshuman;
+        private ColorableCheckBox chkPrototypeTranshuman;
         private System.Windows.Forms.Label lblQualityLevelLabel;
         private System.Windows.Forms.NumericUpDown nudQualityLevel;
         private System.Windows.Forms.Label lblWeaponRangeAlternate;
@@ -15434,8 +15430,8 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpPets;
         private System.Windows.Forms.FlowLayoutPanel flpPetsButtons;
         private System.Windows.Forms.FlowLayoutPanel flpInitiationCheckBoxes;
-        private System.Windows.Forms.CheckBox chkCyberwareHomeNode;
-        private System.Windows.Forms.CheckBox chkCyberwareActiveCommlink;
+        private ColorableCheckBox chkCyberwareHomeNode;
+        private ColorableCheckBox chkCyberwareActiveCommlink;
         private System.Windows.Forms.FlowLayoutPanel flpCyberware;
         private System.Windows.Forms.GroupBox gpbEssenceConsumption;
         private System.Windows.Forms.TableLayoutPanel tlpCyberwareEssenceConsumption;
@@ -15486,10 +15482,10 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpInitiationGroup;
         private System.Windows.Forms.TextBox txtGroupNotes;
         private System.Windows.Forms.Label lblGroupName;
-        private System.Windows.Forms.CheckBox chkInitiationGroup;
+        private ColorableCheckBox chkInitiationGroup;
         private System.Windows.Forms.Label lblGroupNotes;
         private System.Windows.Forms.TextBox txtGroupName;
-        private System.Windows.Forms.CheckBox chkJoinGroup;
+        private ColorableCheckBox chkJoinGroup;
         private System.Windows.Forms.GroupBox gpbInitiationType;
         private System.Windows.Forms.FlowLayoutPanel flpMagician;
         private System.Windows.Forms.GroupBox gpbMagicianSpell;
@@ -15511,11 +15507,11 @@ namespace Chummer
         private System.Windows.Forms.GroupBox gpbTechnomancerParagon;
         private System.Windows.Forms.TableLayoutPanel tlpTechnomancerParagon;
         private System.Windows.Forms.Label lblComplexFormDicePool;
-        private System.Windows.Forms.CheckBox chkCyberwareStolen;
-        private System.Windows.Forms.CheckBox chkGearStolen;
-        private System.Windows.Forms.CheckBox chkArmorStolen;
-        private System.Windows.Forms.CheckBox chkWeaponStolen;
-        private System.Windows.Forms.CheckBox chkDrugStolen;
+        private ColorableCheckBox chkCyberwareStolen;
+        private ColorableCheckBox chkGearStolen;
+        private ColorableCheckBox chkArmorStolen;
+        private ColorableCheckBox chkWeaponStolen;
+        private ColorableCheckBox chkDrugStolen;
         private System.Windows.Forms.ToolStripMenuItem mnuFileSaveAsCreated;
         private System.Windows.Forms.Label lblMetagenicQualities;
         private System.Windows.Forms.Label lblMetagenicQualitiesLabel;
@@ -15592,9 +15588,9 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudVehicleRating;
         private System.Windows.Forms.Button cmdVehicleCyberwareChangeMount;
         private System.Windows.Forms.FlowLayoutPanel flpVehiclesCommonCheckBoxes;
-        private System.Windows.Forms.CheckBox chkVehicleWeaponAccessoryInstalled;
-        private System.Windows.Forms.CheckBox chkVehicleIncludedInWeapon;
-        private System.Windows.Forms.CheckBox chkVehicleStolen;
+        private ColorableCheckBox chkVehicleWeaponAccessoryInstalled;
+        private ColorableCheckBox chkVehicleIncludedInWeapon;
+        private ColorableCheckBox chkVehicleStolen;
         private System.Windows.Forms.GroupBox gpbVehiclesVehicle;
         private System.Windows.Forms.TableLayoutPanel tlpVehiclesVehicle;
         private System.Windows.Forms.Label lblVehicleHandlingLabel;
@@ -15673,8 +15669,8 @@ namespace Chummer
         private ElasticComboBox cboVehicleFirewall;
         private System.Windows.Forms.Label lblVehicleFirewallLabel;
         private System.Windows.Forms.FlowLayoutPanel flpVehiclesMatrixCheckBoxes;
-        private System.Windows.Forms.CheckBox chkVehicleHomeNode;
-        private System.Windows.Forms.CheckBox chkVehicleActiveCommlink;
+        private ColorableCheckBox chkVehicleHomeNode;
+        private ColorableCheckBox chkVehicleActiveCommlink;
         private System.Windows.Forms.TreeView treVehicles;
         private BufferedTableLayoutPanel tlpMagicianMentorSpiritHeader;
         private BufferedTableLayoutPanel tlpTechnomancerParagonHeader;

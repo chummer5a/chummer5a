@@ -34,7 +34,7 @@ namespace Chummer
             this.cboSpec = new Chummer.ElasticComboBox();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.chkKarma = new System.Windows.Forms.CheckBox();
+            this.chkKarma = new Chummer.ColorableCheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
@@ -202,7 +202,7 @@ namespace Chummer
         private Chummer.ElasticComboBox cboSpec;
         private System.Windows.Forms.Label lblAmmoLabel;
         private System.Windows.Forms.Label lblDescription;
-        private System.Windows.Forms.CheckBox chkKarma;
+        private Chummer.ColorableCheckBox chkKarma;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
     }

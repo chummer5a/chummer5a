@@ -392,6 +392,12 @@
       <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="helpers\CenterableMessageBox.cs" />
+    <Compile Include="helpers\ColorableCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\ColorableCheckBox.Designer.cs">
+      <DependentUpon>ColorableCheckBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\CursorWait.cs" />
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">

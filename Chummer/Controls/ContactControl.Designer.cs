@@ -42,8 +42,8 @@ namespace Chummer
             this.cmdExpand = new System.Windows.Forms.Button();
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.imgLink = new System.Windows.Forms.PictureBox();
-            this.chkGroup = new System.Windows.Forms.CheckBox();
-            this.chkFree = new System.Windows.Forms.CheckBox();
+            this.chkGroup = new Chummer.ColorableCheckBox();
+            this.chkFree = new Chummer.ColorableCheckBox();
             this.lblQuickStats = new System.Windows.Forms.Label();
             this.lblConnection = new System.Windows.Forms.Label();
             this.lblLoyalty = new System.Windows.Forms.Label();
@@ -52,8 +52,8 @@ namespace Chummer
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpStatBlock = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpCheckBoxes2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkBlackmail = new System.Windows.Forms.CheckBox();
-            this.chkFamily = new System.Windows.Forms.CheckBox();
+            this.chkBlackmail = new Chummer.ColorableCheckBox();
+            this.chkFamily = new Chummer.ColorableCheckBox();
             this.cboMetatype = new Chummer.ElasticComboBox();
             this.cboGender = new Chummer.ElasticComboBox();
             this.lblHobbiesVice = new System.Windows.Forms.Label();
@@ -139,7 +139,6 @@ namespace Chummer
             this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.FlatAppearance.BorderSize = 0;
             this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
             this.cmdDelete.Location = new System.Drawing.Point(45, 3);
             this.cmdDelete.Name = "cmdDelete";
@@ -220,7 +219,6 @@ namespace Chummer
             this.cmdExpand.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdExpand.AutoSize = true;
             this.cmdExpand.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdExpand.FlatAppearance.BorderSize = 0;
             this.cmdExpand.Image = global::Chummer.Properties.Resources.Expand;
             this.cmdExpand.Location = new System.Drawing.Point(3, 3);
             this.cmdExpand.Name = "cmdExpand";
@@ -723,8 +721,8 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtContactName;
         private System.Windows.Forms.TextBox txtContactLocation;
         private System.Windows.Forms.Button cmdExpand;
-        private System.Windows.Forms.CheckBox chkGroup;
-        private System.Windows.Forms.CheckBox chkFree;
+        private Chummer.ColorableCheckBox chkGroup;
+        private Chummer.ColorableCheckBox chkFree;
         private System.Windows.Forms.Label lblQuickStats;
         private System.Windows.Forms.Label lblConnection;
         private System.Windows.Forms.Label lblLoyalty;
@@ -747,8 +745,8 @@ namespace Chummer
         private ElasticComboBox cboHobbiesVice;
         private ElasticComboBox cboPersonalLife;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes2;
-        private System.Windows.Forms.CheckBox chkBlackmail;
-        private System.Windows.Forms.CheckBox chkFamily;
+        private Chummer.ColorableCheckBox chkBlackmail;
+        private Chummer.ColorableCheckBox chkFamily;
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes1;
     }

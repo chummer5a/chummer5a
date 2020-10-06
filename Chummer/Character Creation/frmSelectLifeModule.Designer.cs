@@ -41,7 +41,7 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblStageLabel = new System.Windows.Forms.Label();
             this.lblStage = new System.Windows.Forms.Label();
-            this.chkLimitList = new System.Windows.Forms.CheckBox();
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.cboStage = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpStage = new System.Windows.Forms.FlowLayoutPanel();
@@ -333,7 +333,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblStageLabel;
         private System.Windows.Forms.Label lblStage;
-        private System.Windows.Forms.CheckBox chkLimitList;
+        private Chummer.ColorableCheckBox chkLimitList;
         private ElasticComboBox cboStage;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpStage;

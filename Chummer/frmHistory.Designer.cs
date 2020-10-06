@@ -28,19 +28,20 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.rtbHistory = new System.Windows.Forms.RichTextBox();
+            this.txtHistory = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // rtbHistory
+            // txtHistory
             // 
-            this.rtbHistory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbHistory.Location = new System.Drawing.Point(9, 9);
-            this.rtbHistory.Name = "rtbHistory";
-            this.rtbHistory.ReadOnly = true;
-            this.rtbHistory.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbHistory.Size = new System.Drawing.Size(766, 543);
-            this.rtbHistory.TabIndex = 0;
-            this.rtbHistory.Text = "";
+            this.txtHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtHistory.Location = new System.Drawing.Point(9, 9);
+            this.txtHistory.MaxLength = 2147483647;
+            this.txtHistory.Multiline = true;
+            this.txtHistory.Name = "txtHistory";
+            this.txtHistory.ReadOnly = true;
+            this.txtHistory.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtHistory.Size = new System.Drawing.Size(766, 543);
+            this.txtHistory.TabIndex = 0;
             // 
             // frmHistory
             // 
@@ -48,7 +49,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.rtbHistory);
+            this.Controls.Add(this.txtHistory);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -61,11 +62,12 @@ namespace Chummer
             this.Text = "Chummer Revision History";
             this.Load += new System.EventHandler(this.frmHistory_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox rtbHistory;
+        private System.Windows.Forms.TextBox txtHistory;
     }
 }

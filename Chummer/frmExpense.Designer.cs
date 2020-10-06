@@ -35,15 +35,15 @@ namespace Chummer
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkRefund = new System.Windows.Forms.CheckBox();
+            this.chkRefund = new Chummer.ColorableCheckBox();
             this.datDate = new System.Windows.Forms.DateTimePicker();
             this.lblDateLabel = new System.Windows.Forms.Label();
             this.nudPercent = new System.Windows.Forms.NumericUpDown();
             this.lblPercent = new System.Windows.Forms.Label();
-            this.chkKarmaNuyenExchange = new System.Windows.Forms.CheckBox();
+            this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpAmount = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkForceCareerVisible = new System.Windows.Forms.CheckBox();
+            this.chkForceCareerVisible = new Chummer.ColorableCheckBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
@@ -338,15 +338,15 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.CheckBox chkRefund;
+        private Chummer.ColorableCheckBox chkRefund;
         private System.Windows.Forms.DateTimePicker datDate;
         private System.Windows.Forms.Label lblDateLabel;
         private System.Windows.Forms.NumericUpDown nudPercent;
         private System.Windows.Forms.Label lblPercent;
-        private System.Windows.Forms.CheckBox chkKarmaNuyenExchange;
+        private Chummer.ColorableCheckBox chkKarmaNuyenExchange;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpAmount;
-        private System.Windows.Forms.CheckBox chkForceCareerVisible;
+        private Chummer.ColorableCheckBox chkForceCareerVisible;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

@@ -32,7 +32,7 @@ namespace Chummer.UI.Skills
             this.components = new System.ComponentModel.Container();
             this.lblModifiedRating = new Chummer.LabelWithToolTip();
             this.cboSpec = new Chummer.ElasticComboBox();
-            this.chkKarma = new System.Windows.Forms.CheckBox();
+            this.chkKarma = new Chummer.ColorableCheckBox(this.components);
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cboName = new Chummer.ElasticComboBox();
             this.cboType = new Chummer.ElasticComboBox();
@@ -47,7 +47,7 @@ namespace Chummer.UI.Skills
             this.pnlSpecs = new System.Windows.Forms.Panel();
             this.tlpSpecsCareer = new System.Windows.Forms.TableLayoutPanel();
             this.tlpSpecsCreate = new System.Windows.Forms.TableLayoutPanel();
-            this.chkNativeLanguage = new System.Windows.Forms.CheckBox();
+            this.chkNativeLanguage = new Chummer.ColorableCheckBox(this.components);
             this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpName = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblName = new System.Windows.Forms.Label();
@@ -87,10 +87,10 @@ namespace Chummer.UI.Skills
             this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSpec.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cboSpec.FormattingEnabled = true;
-            this.cboSpec.Location = new System.Drawing.Point(66, 1);
+            this.cboSpec.Location = new System.Drawing.Point(63, 1);
             this.cboSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cboSpec.Name = "cboSpec";
-            this.cboSpec.Size = new System.Drawing.Size(226, 21);
+            this.cboSpec.Size = new System.Drawing.Size(229, 21);
             this.cboSpec.TabIndex = 17;
             this.cboSpec.TabStop = false;
             this.cboSpec.TooltipText = "";
@@ -332,10 +332,12 @@ namespace Chummer.UI.Skills
             // 
             this.chkNativeLanguage.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkNativeLanguage.AutoSize = true;
+            this.chkNativeLanguage.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
+            this.chkNativeLanguage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkNativeLanguage.Location = new System.Drawing.Point(3, 3);
             this.chkNativeLanguage.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.chkNativeLanguage.Name = "chkNativeLanguage";
-            this.chkNativeLanguage.Size = new System.Drawing.Size(57, 17);
+            this.chkNativeLanguage.Size = new System.Drawing.Size(54, 17);
             this.chkNativeLanguage.TabIndex = 19;
             this.chkNativeLanguage.Tag = "Skill_NativeLanguageLong";
             this.chkNativeLanguage.Text = "Native";
@@ -476,7 +478,7 @@ namespace Chummer.UI.Skills
         private NumericUpDownEx nudSkill;
         private LabelWithToolTip lblModifiedRating;
         private ElasticComboBox cboSpec;
-        private System.Windows.Forms.CheckBox chkKarma;
+        private Chummer.ColorableCheckBox chkKarma;
         private System.Windows.Forms.Button cmdDelete;
         private ElasticComboBox cboName;
         private ElasticComboBox cboType;
@@ -494,7 +496,7 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.FlowLayoutPanel flpButtonsCareer;
         private BufferedTableLayoutPanel tlpName;
         private System.Windows.Forms.Label lblName;
-        private System.Windows.Forms.CheckBox chkNativeLanguage;
         private BufferedTableLayoutPanel tlpLeft;
+        private ColorableCheckBox chkNativeLanguage;
     }
 }

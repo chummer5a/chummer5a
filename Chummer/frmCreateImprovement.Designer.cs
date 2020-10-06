@@ -46,12 +46,12 @@ namespace Chummer
             this.lblSelect = new System.Windows.Forms.Label();
             this.txtSelect = new System.Windows.Forms.TextBox();
             this.cmdChangeSelection = new System.Windows.Forms.Button();
-            this.chkApplyToRating = new System.Windows.Forms.CheckBox();
-            this.chkFree = new System.Windows.Forms.CheckBox();
+            this.chkApplyToRating = new Chummer.ColorableCheckBox();
+            this.chkFree = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
             this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkIgnoreLimits = new System.Windows.Forms.CheckBox();
+            this.chkIgnoreLimits = new Chummer.ColorableCheckBox();
             this.txtHelp = new System.Windows.Forms.TextBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).BeginInit();
@@ -476,12 +476,12 @@ namespace Chummer
         private System.Windows.Forms.Label lblSelect;
         private System.Windows.Forms.TextBox txtSelect;
         private System.Windows.Forms.Button cmdChangeSelection;
-        private System.Windows.Forms.CheckBox chkApplyToRating;
-        private System.Windows.Forms.CheckBox chkFree;
+        private Chummer.ColorableCheckBox chkApplyToRating;
+        private Chummer.ColorableCheckBox chkFree;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtTranslateSelection;
         private System.Windows.Forms.FlowLayoutPanel flpSelectValue;
-        private System.Windows.Forms.CheckBox chkIgnoreLimits;
+        private Chummer.ColorableCheckBox chkIgnoreLimits;
         private System.Windows.Forms.TextBox txtHelp;
         private BufferedTableLayoutPanel tlpButtons;
     }

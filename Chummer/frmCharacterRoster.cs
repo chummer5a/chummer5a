@@ -511,26 +511,11 @@ namespace Chummer
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");
                 string strNone = LanguageManager.GetString("String_None");
-                if (objCache.Description.IsRtf())
-                    rtbCharacterBio.Rtf = objCache.Description;
-                else
-                    rtbCharacterBio.Text = objCache.Description;
-                if (objCache.Background.IsRtf())
-                    rtbCharacterBackground.Rtf = objCache.Background;
-                else
-                    rtbCharacterBackground.Text = objCache.Background;
-                if (objCache.CharacterNotes.IsRtf())
-                    rtbCharacterNotes.Rtf = objCache.CharacterNotes;
-                else
-                    rtbCharacterNotes.Text = objCache.CharacterNotes;
-                if (objCache.GameNotes.IsRtf())
-                    rtbGameNotes.Rtf = objCache.GameNotes;
-                else
-                    rtbGameNotes.Text = objCache.GameNotes;
-                if (objCache.Concept.IsRtf())
-                    rtbCharacterConcept.Rtf = objCache.Concept;
-                else
-                    rtbCharacterConcept.Text = objCache.Concept;
+                txtCharacterBio.Text = objCache.Description.RtfToPlainText();
+                txtCharacterBackground.Text = objCache.Background.RtfToPlainText();
+                txtCharacterNotes.Text = objCache.CharacterNotes.RtfToPlainText();
+                txtGameNotes.Text = objCache.GameNotes.RtfToPlainText();
+                txtCharacterConcept.Text = objCache.Concept.RtfToPlainText();
                 lblCareerKarma.Text = objCache.Karma;
                 if(string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalOptions.CultureInfo))
                     lblCareerKarma.Text = strNone;
@@ -582,21 +567,21 @@ namespace Chummer
                 tabCharacterText.Visible = true;
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
-                    rtbCharacterBio.Text = objCache.ErrorText;
-                    rtbCharacterBio.ForeColor = ColorManager.ErrorColor;
-                    rtbCharacterBio.BringToFront();
+                    txtCharacterBio.Text = objCache.ErrorText;
+                    txtCharacterBio.ForeColor = ColorManager.ErrorColor;
+                    txtCharacterBio.BringToFront();
                 }
                 else
-                    rtbCharacterBio.ForeColor = ColorManager.WindowText;
+                    txtCharacterBio.ForeColor = ColorManager.WindowText;
             }
             else
             {
                 tabCharacterText.Visible = false;
-                rtbCharacterBio.Clear();
-                rtbCharacterBackground.Clear();
-                rtbCharacterNotes.Clear();
-                rtbGameNotes.Clear();
-                rtbCharacterConcept.Clear();
+                txtCharacterBio.Clear();
+                txtCharacterBackground.Clear();
+                txtCharacterNotes.Clear();
+                txtGameNotes.Clear();
+                txtCharacterConcept.Clear();
                 lblCareerKarma.Text = string.Empty;
                 lblMetatype.Text = string.Empty;
                 lblPlayerName.Text = string.Empty;
@@ -672,7 +657,7 @@ namespace Chummer
                     objNode = objNode.Parent;
                 if(objNode.Tag?.ToString() != "Watch")
                 {
-                    objNode.BackColor = ColorManager.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDarker;
                 }
             }
 

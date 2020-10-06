@@ -42,17 +42,17 @@ namespace Chummer
             this.nudGremlins = new System.Windows.Forms.NumericUpDown();
             this.lblGremlins = new System.Windows.Forms.Label();
             this.nudThreshold = new System.Windows.Forms.NumericUpDown();
-            this.chkRuleOf6 = new System.Windows.Forms.CheckBox();
+            this.chkRuleOf6 = new Chummer.ColorableCheckBox();
             this.lblThreshold = new System.Windows.Forms.Label();
-            this.chkCinematicGameplay = new System.Windows.Forms.CheckBox();
-            this.chkRushJob = new System.Windows.Forms.CheckBox();
+            this.chkCinematicGameplay = new Chummer.ColorableCheckBox();
+            this.chkRushJob = new Chummer.ColorableCheckBox();
             this.tlpTopBar = new System.Windows.Forms.TableLayoutPanel();
             this.flpRollParameters = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRollControls = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResults = new System.Windows.Forms.Label();
-            this.chkVariableGlitch = new System.Windows.Forms.CheckBox();
-            this.chkBubbleDie = new System.Windows.Forms.CheckBox();
+            this.chkVariableGlitch = new Chummer.ColorableCheckBox();
+            this.chkBubbleDie = new Chummer.ColorableCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
@@ -427,15 +427,15 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudGremlins;
         private System.Windows.Forms.Label lblGremlins;
         private System.Windows.Forms.NumericUpDown nudThreshold;
-        private System.Windows.Forms.CheckBox chkRuleOf6;
+        private Chummer.ColorableCheckBox chkRuleOf6;
         private System.Windows.Forms.Label lblThreshold;
-        private System.Windows.Forms.CheckBox chkBubbleDie;
-        private System.Windows.Forms.CheckBox chkCinematicGameplay;
-        private System.Windows.Forms.CheckBox chkRushJob;
+        private Chummer.ColorableCheckBox chkBubbleDie;
+        private Chummer.ColorableCheckBox chkCinematicGameplay;
+        private Chummer.ColorableCheckBox chkRushJob;
         private System.Windows.Forms.TableLayoutPanel tlpTopBar;
         private System.Windows.Forms.FlowLayoutPanel flpRollParameters;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpRollControls;
-        private System.Windows.Forms.CheckBox chkVariableGlitch;
+        private Chummer.ColorableCheckBox chkVariableGlitch;
     }
 }

@@ -68,7 +68,6 @@ namespace Chummer.UI.Skills
             cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills;
             cboName.SelectedIndex = -1;
             cboName.Text = _skill.WriteableName;
-            cboName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
             cboName.EndUpdate();
             _blnUpdatingName = false;
 

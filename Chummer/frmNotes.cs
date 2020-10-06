@@ -22,13 +22,15 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    // We use RTFEditor for its shortcuts, but because notes are often displayed as TreeNode tooltips,
-    // and because TreeNode tooltips only support plaintext and not any kind of formatting, frmNotes
-    // and Notes items in general use plaintext instead of RTF or HTML formatted text.
+    // We use TextBox because notes are often displayed as TreeNode tooltips, and because TreeNode tooltips
+    // only support plaintext and not any kind of formatting, frmNotes and Notes items in general have to use
+    // plaintext instead of RTF or HTML formatted text.
     public partial class frmNotes : Form
 	{
-		private static int s_IntWidth = 640;
-		private static int s_IntHeight = 360;
+        // Set to DPI-based 640 in constructor, needs to be there because of DPI dependency
+        private static int s_IntWidth = int.MinValue;
+        // Set to DPI-based 360 in constructor, needs to be there because of DPI dependency
+        private static int s_IntHeight = int.MinValue;
 	    private readonly bool _blnLoading;
         private string _strNotes;
 
@@ -36,25 +38,28 @@ namespace Chummer
         public frmNotes()
 		{
             InitializeComponent();
-            rtfNotes.ContentKeyDown += rtfNotes_KeyDown;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            if (s_IntWidth <= 0)
+                s_IntWidth = LogicalToDeviceUnits(640);
+            if (s_IntHeight <= 0)
+                s_IntHeight = LogicalToDeviceUnits(360);
             _blnLoading = true;
-			Width = s_IntWidth;
+            Width = s_IntWidth;
 			Height = s_IntHeight;
             _blnLoading = false;
         }
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-            Notes = rtfNotes.Text;
+            _strNotes = txtNotes.Text;
             DialogResult = DialogResult.OK;
 		}
 
-        private void rtfNotes_KeyDown(object sender, KeyEventArgs e)
+        private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
-                DialogResult = DialogResult.OK;
+                Close();
         }
 
         private void frmNotes_Resize(object sender, EventArgs e)
@@ -68,7 +73,7 @@ namespace Chummer
 
         private void frmNotes_Shown(object sender, EventArgs e)
         {
-            rtfNotes.FocusContent();
+            txtNotes.Focus();
         }
         #endregion
 
@@ -85,7 +90,7 @@ namespace Chummer
                 if (_strNotes != value)
                 {
                     _strNotes = value;
-                    rtfNotes.Text = value;
+                    txtNotes.Text = value;
                 }
             }
         }

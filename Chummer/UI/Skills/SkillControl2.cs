@@ -114,8 +114,8 @@ namespace Chummer.UI.Skills
                 flpButtonsCreate.Dock = DockStyle.Fill;
 
                 // Trick to make it seem like the button is a label (+ onclick method not doing anything in Create mode)
-                btnAttribute.FlatAppearance.MouseDownBackColor = btnAttribute.BackColor;
-                btnAttribute.FlatAppearance.MouseOverBackColor = btnAttribute.BackColor;
+                btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
+                btnAttribute.FlatAppearance.MouseOverBackColor = Color.Transparent;
 
                 nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));

@@ -116,7 +116,6 @@ namespace Chummer.UI.Attributes
             this.cmdImproveATT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdImproveATT.AutoSize = true;
             this.cmdImproveATT.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdImproveATT.FlatAppearance.BorderSize = 0;
             this.cmdImproveATT.Image = global::Chummer.Properties.Resources.add;
             this.cmdImproveATT.Location = new System.Drawing.Point(33, 0);
             this.cmdImproveATT.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
