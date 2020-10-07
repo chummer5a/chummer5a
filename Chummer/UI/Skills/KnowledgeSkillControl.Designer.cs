@@ -90,7 +90,7 @@ namespace Chummer.UI.Skills
             this.cboSpec.Location = new System.Drawing.Point(63, 1);
             this.cboSpec.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cboSpec.Name = "cboSpec";
-            this.cboSpec.Size = new System.Drawing.Size(229, 21);
+            this.cboSpec.Size = new System.Drawing.Size(232, 21);
             this.cboSpec.TabIndex = 17;
             this.cboSpec.TabStop = false;
             this.cboSpec.TooltipText = "";
@@ -99,9 +99,10 @@ namespace Chummer.UI.Skills
             // 
             this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarma.AutoSize = true;
-            this.chkKarma.Location = new System.Drawing.Point(298, 5);
+            this.chkKarma.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkKarma.Location = new System.Drawing.Point(301, 6);
             this.chkKarma.Name = "chkKarma";
-            this.chkKarma.Size = new System.Drawing.Size(15, 14);
+            this.chkKarma.Size = new System.Drawing.Size(12, 11);
             this.chkKarma.TabIndex = 18;
             this.chkKarma.UseVisualStyleBackColor = true;
             // 
