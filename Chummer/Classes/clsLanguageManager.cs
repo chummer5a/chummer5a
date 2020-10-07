@@ -110,6 +110,7 @@ namespace Chummer
         {
             if (!Utils.IsDesignerMode)
             {
+                objObject.SuspendLayout();
                 if (string.IsNullOrEmpty(strIntoLanguage))
                     strIntoLanguage = GlobalOptions.Language;
                 if (LoadLanguage(strIntoLanguage))
@@ -124,6 +125,7 @@ namespace Chummer
                 }
                 else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
                     UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
+                objObject.ResumeLayout();
             }
         }
 
