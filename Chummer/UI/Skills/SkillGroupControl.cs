@@ -151,10 +151,7 @@ namespace Chummer.UI.Skills
 
         private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            using (Graphics g = CreateGraphics())
-            {
-                lblGroupRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
-            }
+            lblGroupRating.MinimumSize = new Size(LogicalToDeviceUnits(25), 0);
         }
     }
 }

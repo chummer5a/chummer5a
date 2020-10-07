@@ -35,6 +35,7 @@ namespace Chummer
             // 
             this.txtNotes.AcceptsReturn = true;
             this.txtNotes.AcceptsTab = true;
+            this.txtNotes.AllowDrop = true;
             this.txtNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtNotes.Location = new System.Drawing.Point(0, 0);
             this.txtNotes.MaxLength = 2147483647;

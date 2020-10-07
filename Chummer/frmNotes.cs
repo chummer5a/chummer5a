@@ -87,10 +87,11 @@ namespace Chummer
             get => _strNotes;
             set
             {
-                if (_strNotes != value)
+                string strNewValue = value.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
+                if (_strNotes != strNewValue)
                 {
-                    _strNotes = value;
-                    txtNotes.Text = value;
+                    _strNotes = strNewValue;
+                    txtNotes.Text = strNewValue;
                 }
             }
         }

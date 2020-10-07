@@ -416,12 +416,9 @@ namespace Chummer.UI.Skills
 
         private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            using (Graphics g = CreateGraphics())
-            {
-                pnlAttributes.MinimumSize = new Size((int)(40 * g.DpiX / 96.0f), 0);
-                lblCareerRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
-                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
-            }
+            pnlAttributes.MinimumSize = new Size(LogicalToDeviceUnits(40), 0);
+            lblCareerRating.MinimumSize = new Size(LogicalToDeviceUnits(25), 0);
+            lblModifiedRating.MinimumSize = new Size(LogicalToDeviceUnits(50), 0);
         }
     }
 }
