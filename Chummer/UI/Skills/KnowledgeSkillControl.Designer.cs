@@ -99,7 +99,6 @@ namespace Chummer.UI.Skills
             // 
             this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarma.AutoSize = true;
-            this.chkKarma.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkKarma.Location = new System.Drawing.Point(301, 6);
             this.chkKarma.Name = "chkKarma";
             this.chkKarma.Size = new System.Drawing.Size(12, 11);
@@ -333,8 +332,6 @@ namespace Chummer.UI.Skills
             // 
             this.chkNativeLanguage.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkNativeLanguage.AutoSize = true;
-            this.chkNativeLanguage.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
-            this.chkNativeLanguage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkNativeLanguage.Location = new System.Drawing.Point(3, 3);
             this.chkNativeLanguage.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.chkNativeLanguage.Name = "chkNativeLanguage";

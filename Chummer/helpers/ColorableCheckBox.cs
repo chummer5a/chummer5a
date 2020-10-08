@@ -35,7 +35,6 @@ namespace Chummer
             container?.Add(this);
 
             InitializeComponent();
-            FlatStyle = FlatStyle.Flat; // Flat checkboxes' borders obey ForeColor
             FlatAppearance.MouseDownBackColor = ColorManager.ControlDarkest;
             FlatAppearance.MouseOverBackColor = ColorManager.ControlDarker;
             BackColorChanged += OnBackColorChanged;
@@ -59,18 +58,51 @@ namespace Chummer
             {
                 if (_blnRealEnabled == value)
                     return;
-                AutoCheck = _blnRealEnabled = value;
+                _blnRealEnabled = value;
+                if (DefaultColorScheme)
+                {
+                    base.Enabled = value;
+                }
+                else
+                {
+                    AutoCheck = value;
+                    ForeColor = value ? ColorManager.ControlText : ColorManager.GrayText;
+                }
                 if (value)
                 {
-                    ForeColor = ColorManager.ControlText;
                     FlatAppearance.MouseDownBackColor = ColorManager.ControlDarkest;
                     FlatAppearance.MouseOverBackColor = ColorManager.ControlDarker;
                 }
                 else
                 {
-                    ForeColor = ColorManager.GrayText;
                     FlatAppearance.MouseDownBackColor = BackColor;
                     FlatAppearance.MouseOverBackColor = BackColor;
+                }
+            }
+        }
+
+        private bool _blnDefaultColorScheme = ColorManager.IsLightMode;
+        public bool DefaultColorScheme
+        {
+            get => _blnDefaultColorScheme;
+            set
+            {
+                if (_blnDefaultColorScheme == value)
+                    return;
+                _blnDefaultColorScheme = value;
+                if (value)
+                {
+                    FlatStyle = FlatStyle.Standard;
+                    ForeColor = ColorManager.ControlText;
+                    AutoCheck = true;
+                    base.Enabled = _blnRealEnabled;
+                }
+                else
+                {
+                    FlatStyle = FlatStyle.Flat; // Flat checkboxes' borders obey ForeColor
+                    base.Enabled = true;
+                    AutoCheck = _blnRealEnabled;
+                    ForeColor = _blnRealEnabled ? ColorManager.ControlText : ColorManager.GrayText;
                 }
             }
         }

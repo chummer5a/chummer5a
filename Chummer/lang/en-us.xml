@@ -1038,6 +1038,18 @@
       <key>String_Weapon</key>
       <text>Weapon</text>
     </string>
+    <string>
+      <key>String_Automatic</key>
+      <text>Automatic</text>
+    </string>
+    <string>
+      <key>String_Light</key>
+      <text>Light</text>
+    </string>
+    <string>
+      <key>String_Dark</key>
+      <text>Dark</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
@@ -7366,6 +7378,10 @@
     <string>
       <key>Label_Options_NuyenPerBP</key>
       <text>Nuyen per Karma</text>
+    </string>
+    <string>
+      <key>Label_Options_ColorMode</key>
+      <text>Color Mode:</text>
     </string>
     <string>
       <key>Checkbox_Options_MayBuyQualities</key>

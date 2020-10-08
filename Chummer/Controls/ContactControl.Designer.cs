@@ -260,7 +260,6 @@ namespace Chummer
             // 
             this.chkGroup.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkGroup.AutoSize = true;
-            this.chkGroup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkGroup.Location = new System.Drawing.Point(97, 3);
             this.chkGroup.Name = "chkGroup";
             this.chkGroup.Size = new System.Drawing.Size(52, 17);
@@ -274,7 +273,6 @@ namespace Chummer
             // 
             this.chkFree.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFree.AutoSize = true;
-            this.chkFree.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkFree.Location = new System.Drawing.Point(47, 3);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(44, 17);
@@ -616,7 +614,6 @@ namespace Chummer
             // 
             this.chkBlackmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBlackmail.AutoSize = true;
-            this.chkBlackmail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkBlackmail.Location = new System.Drawing.Point(3, 3);
             this.chkBlackmail.Name = "chkBlackmail";
             this.chkBlackmail.Size = new System.Drawing.Size(68, 17);
@@ -630,7 +627,6 @@ namespace Chummer
             // 
             this.chkFamily.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFamily.AutoSize = true;
-            this.chkFamily.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkFamily.Location = new System.Drawing.Point(77, 3);
             this.chkFamily.Name = "chkFamily";
             this.chkFamily.Size = new System.Drawing.Size(52, 17);

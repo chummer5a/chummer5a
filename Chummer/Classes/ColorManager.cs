@@ -62,25 +62,47 @@ namespace Chummer
             {
             }
 
-            if (s_ObjPersonalizeKey != null)
+            s_TmrDarkModeCheckerTimer = new Timer { Interval = 5000 }; // Poll registry every 5 seconds
+            s_TmrDarkModeCheckerTimer.Tick += TmrDarkModeCheckerTimerOnTick;
+            switch (GlobalOptions.ColorMode)
             {
-                object objLightModeResult = s_ObjPersonalizeKey.GetValue("AppsUseLightTheme");
-                if (objLightModeResult != null && int.TryParse(objLightModeResult.ToString(), out int intTemp))
-                    IsLightMode = intTemp != 0;
-                s_TmrDarkModeCheckerTimer = new Timer {Interval = 5000}; // Poll registry every 5 seconds
-                s_TmrDarkModeCheckerTimer.Tick += CheckAndRefreshLightDarkMode;
+                case ColorMode.Automatic:
+                    AutoApplyLightDarkMode();
+                    break;
+                case ColorMode.Light:
+                    IsLightMode = true;
+                    break;
+                case ColorMode.Dark:
+                    IsLightMode = false;
+                    break;
+            }
+        }
+
+        private static void TmrDarkModeCheckerTimerOnTick(object sender, EventArgs e)
+        {
+            AutoApplyLightDarkMode();
+        }
+
+        public static void AutoApplyLightDarkMode()
+        {
+            if (GlobalOptions.ColorMode == ColorMode.Automatic)
+            {
+                IsLightMode = !DoesRegistrySayDarkMode();
                 s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
 
-        private static void CheckAndRefreshLightDarkMode(object sender, EventArgs e)
+        public static bool DoesRegistrySayDarkMode()
         {
-            if (s_ObjPersonalizeKey != null && s_TmrDarkModeCheckerTimer != null)
-            {
-                object objLightModeResult = s_ObjPersonalizeKey.GetValue("AppsUseLightTheme");
-                if (objLightModeResult != null && int.TryParse(objLightModeResult.ToString(), out int intTemp))
-                    IsLightMode = intTemp != 0;
-            }
+            object objLightModeResult = s_ObjPersonalizeKey?.GetValue("AppsUseLightTheme");
+            if (objLightModeResult != null && int.TryParse(objLightModeResult.ToString(), out int intTemp))
+                return intTemp == 0;
+            return false;
+        }
+
+        public static void DisableAutoTimer()
+        {
+            s_TmrDarkModeCheckerTimer.Enabled = false;
         }
 
         private static bool _blnIsLightMode = true;
@@ -158,8 +180,8 @@ namespace Chummer
         private static Color ControlLightestLight => SystemColors.ControlLightLight;
         private static Color ControlLightestDark => GetLInvertedColor(ControlLightestLight);
         public static Color ButtonFace => IsLightMode ? ButtonFaceLight : ButtonFaceDark;
-        private static Color ButtonFaceLight => SystemColors.ButtonShadow;
-        private static Color ButtonFaceDark => GetLInvertedColor(ButtonShadowLight);
+        private static Color ButtonFaceLight => SystemColors.ButtonFace;
+        private static Color ButtonFaceDark => GetLInvertedColor(ButtonFaceLight);
         public static Color ButtonShadow => IsLightMode ? ButtonShadowLight : ButtonShadowDark;
         private static Color ButtonShadowLight => SystemColors.ButtonShadow;
         private static Color ButtonShadowDark => GetLInvertedColor(ButtonShadowLight);
@@ -177,14 +199,23 @@ namespace Chummer
 
         public static void UpdateLightDarkMode(this Control objControl)
         {
-            ApplyColorsRecursively(objControl);
+            ApplyColorsRecursively(objControl, IsLightMode);
+        }
+
+        public static void UpdateLightDarkMode(this Control objControl, bool blnLightMode)
+        {
+            ApplyColorsRecursively(objControl, blnLightMode);
         }
 
         public static void UpdateLightDarkMode(this ToolStripItem tssItem)
         {
-            ApplyColorsRecursively(tssItem);
+            ApplyColorsRecursively(tssItem, IsLightMode);
         }
 
+        public static void UpdateLightDarkMode(this ToolStripItem tssItem, bool blnLightMode)
+        {
+            ApplyColorsRecursively(tssItem, blnLightMode);
+        }
 
         #region Color Inversion Methods
 
@@ -200,7 +231,7 @@ namespace Chummer
             return FromHSLA(fltHue, fltSaturationHSL, 1.0f - fltLightness, objColor.A);
         }
 
-        private static void ApplyColorsRecursively(Control objControl)
+        private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
         {
             void ApplyButtonStyle()
             {
@@ -210,48 +241,52 @@ namespace Chummer
             switch (objControl)
             {
                 case DataGridView objDataGridView:
-                    objDataGridView.GridColor = ControlText;
-                    objDataGridView.DefaultCellStyle.ForeColor = ControlText;
-                    objDataGridView.DefaultCellStyle.BackColor = Control;
-                    objDataGridView.ColumnHeadersDefaultCellStyle.ForeColor = ControlText;
-                    objDataGridView.ColumnHeadersDefaultCellStyle.BackColor = Control;
-                    objDataGridView.AlternatingRowsDefaultCellStyle.ForeColor = ControlText;
-                    objDataGridView.AlternatingRowsDefaultCellStyle.BackColor = ControlLighter;
-                    objDataGridView.RowTemplate.DefaultCellStyle.ForeColor = ControlText;
-                    objDataGridView.RowTemplate.DefaultCellStyle.BackColor = Control;
+                    objDataGridView.GridColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    objDataGridView.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    objDataGridView.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                    objDataGridView.ColumnHeadersDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    objDataGridView.ColumnHeadersDefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                    objDataGridView.AlternatingRowsDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    objDataGridView.AlternatingRowsDefaultCellStyle.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
+                    objDataGridView.RowTemplate.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    objDataGridView.RowTemplate.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
                     foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
                     {
-                        objColumn.DefaultCellStyle.ForeColor = ControlText;
-                        objColumn.DefaultCellStyle.BackColor = Control;
+                        objColumn.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        objColumn.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
                     }
                     break;
                 case SplitContainer objSplitControl:
-                    objSplitControl.ForeColor = SplitterColor;
-                    objSplitControl.BackColor = SplitterColor;
-                    ApplyColorsRecursively(objSplitControl.Panel1);
-                    ApplyColorsRecursively(objSplitControl.Panel2);
+                    objSplitControl.ForeColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
+                    objSplitControl.BackColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
+                    ApplyColorsRecursively(objSplitControl.Panel1, blnLightMode);
+                    ApplyColorsRecursively(objSplitControl.Panel2, blnLightMode);
                     break;
                 case TreeView treControl:
-                    treControl.ForeColor = WindowText;
-                    treControl.BackColor = Window;
-                    treControl.LineColor = WindowText;
+                    treControl.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                    treControl.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    treControl.LineColor = blnLightMode ? WindowTextLight : WindowTextDark;
                     foreach (TreeNode objNode in treControl.Nodes)
-                        ApplyColorsRecursively(objNode);
+                        ApplyColorsRecursively(objNode, blnLightMode);
                     break;
                 case TextBox txtControl:
-                    txtControl.ForeColor = txtControl.ForeColor == ErrorColor ? ErrorColor : WindowText;
-                    txtControl.BackColor = txtControl.ReadOnly ? Control : Window;
+                    txtControl.ForeColor = txtControl.ForeColor == ErrorColor
+                        ? ErrorColor
+                        : blnLightMode ? WindowTextLight : WindowTextDark;
+                    txtControl.BackColor = txtControl.ReadOnly
+                        ? blnLightMode ? ControlLight : ControlDark
+                        : blnLightMode ? WindowLight : WindowDark;
                     break;
                 case ListView _:
                 case ListBox _:
                 case ComboBox _:
                 case TableCell _:
-                    objControl.ForeColor = WindowText;
-                    objControl.BackColor = Window;
+                    objControl.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                    objControl.BackColor = blnLightMode ? WindowLight : WindowDark;
                     break;
                 case GroupBox _:
-                    objControl.ForeColor = ControlText;
-                    objControl.BackColor = Control;
+                    objControl.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    objControl.BackColor = blnLightMode ? ControlLight : ControlDark;
                     break;
                 case ContactControl _:
                 case PetControl _:
@@ -260,8 +295,12 @@ namespace Chummer
                     // These controls have colors that are always data-bound
                     break;
                 case RichTextBox rtbControl:
-                    rtbControl.ForeColor = rtbControl.ForeColor == ErrorColor ? ErrorColor : WindowText;
-                    rtbControl.BackColor = rtbControl.ReadOnly ? Control : Window;
+                    rtbControl.ForeColor = rtbControl.ForeColor == ErrorColor
+                        ? ErrorColor
+                        : blnLightMode ? WindowTextLight : WindowTextDark;
+                    rtbControl.BackColor = rtbControl.ReadOnly
+                        ? blnLightMode ? ControlLight : ControlDark
+                        : blnLightMode ? WindowLight : WindowDark;
                     break;
                 case RtfEditor _:
                     // Rtf Editor is special because we don't want any color changes for the controls inside of it, otherwise it will mess up the saved Rtf text
@@ -271,18 +310,10 @@ namespace Chummer
                     {
                         if (chkControl is ColorableCheckBox chkControlColored)
                         {
-                            if (chkControlColored.Enabled)
-                            {
-                                chkControlColored.ForeColor = ControlText;
-                                chkControlColored.FlatAppearance.MouseDownBackColor = ControlDarkest;
-                                chkControlColored.FlatAppearance.MouseOverBackColor = ControlDarker;
-                            }
-                            else
-                            {
-                                chkControlColored.ForeColor = GrayText;
-                                chkControlColored.FlatAppearance.MouseDownBackColor = chkControlColored.BackColor;
-                                chkControlColored.FlatAppearance.MouseOverBackColor = chkControlColored.BackColor;
-                            }
+                            chkControlColored.DefaultColorScheme = blnLightMode;
+                            chkControlColored.ForeColor = blnLightMode || chkControlColored.Enabled
+                                ? blnLightMode ? ControlTextLight : ControlTextDark
+                                : GrayText;
                             break;
                         }
                         goto default;
@@ -296,35 +327,35 @@ namespace Chummer
                     break;
                 case HeaderCell _:
                     // Header cells should use inverted colors
-                    objControl.ForeColor = ControlLightest;
-                    objControl.BackColor = ControlText;
+                    objControl.ForeColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
+                    objControl.BackColor = blnLightMode ? ControlTextLight : ControlTextDark;
                     return;
                 case TableLayoutPanel tlpControl:
                     if (tlpControl.BorderStyle != BorderStyle.None)
-                        tlpControl.BorderStyle = IsLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
+                        tlpControl.BorderStyle = blnLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
                     goto default;
                 case Form frmControl:
                     if (frmControl.MainMenuStrip != null)
                         foreach (ToolStripMenuItem tssItem in frmControl.MainMenuStrip.Items)
-                            ApplyColorsRecursively(tssItem);
+                            ApplyColorsRecursively(tssItem, blnLightMode);
                     goto default;
                 case TabControl objTabControl:
                     foreach (TabPage tabPage in objTabControl.TabPages)
-                        ApplyColorsRecursively(tabPage);
+                        ApplyColorsRecursively(tabPage, blnLightMode);
                     goto default;
                 case ToolStrip tssStrip:
                     foreach (ToolStripItem tssItem in tssStrip.Items)
-                        ApplyColorsRecursively(tssItem);
+                        ApplyColorsRecursively(tssItem, blnLightMode);
                     goto default;
                 default:
-                    if (objControl.ForeColor == (IsLightMode ? ControlDark : ControlLight))
-                        objControl.ForeColor = Control;
-                    else if (objControl.ForeColor == (IsLightMode ? ControlDarkerDark : ControlDarkerLight))
-                        objControl.ForeColor = ControlDarker;
-                    else if (objControl.ForeColor == (IsLightMode ? ControlDarkestDark : ControlDarkestLight))
-                        objControl.ForeColor = ControlDarkest;
+                    if (objControl.ForeColor == (blnLightMode ? ControlDark : ControlLight))
+                        objControl.ForeColor = blnLightMode ? ControlLight : ControlDark;
+                    else if (objControl.ForeColor == (blnLightMode ? ControlDarkerDark : ControlDarkerLight))
+                        objControl.ForeColor = blnLightMode ? ControlDarkerLight : ControlDarkerDark;
+                    else if (objControl.ForeColor == (blnLightMode ? ControlDarkestDark : ControlDarkestLight))
+                        objControl.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
                     else
-                        objControl.ForeColor = ControlText;
+                        objControl.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                     // These controls never have backgrounds set explicitly, so shouldn't have their backgrounds overwritten
                     if (!(objControl is Label
                           || objControl is CheckBox
@@ -334,55 +365,57 @@ namespace Chummer
                               && !(objControl is SplitterPanel
                                    || objControl is TabPage))))
                     {
-                        if (objControl.BackColor == (IsLightMode ? ControlLighterDark : ControlLighterLight))
-                            objControl.BackColor = ControlLighter;
-                        else if (objControl.BackColor == (IsLightMode ? ControlLightestDark : ControlLightestLight))
-                            objControl.BackColor = ControlLightest;
+                        if (objControl.BackColor == (blnLightMode ? ControlLighterDark : ControlLighterLight))
+                            objControl.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
+                        else if (objControl.BackColor == (blnLightMode ? ControlLightestDark : ControlLightestLight))
+                            objControl.BackColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
                         else
-                            objControl.BackColor = Control;
+                            objControl.BackColor = blnLightMode ? ControlLight : ControlDark;
                     }
 
                     break;
             }
 
             foreach (Control objChild in objControl.Controls)
-                ApplyColorsRecursively(objChild);
+                ApplyColorsRecursively(objChild, blnLightMode);
         }
 
-        private static void ApplyColorsRecursively(ToolStripItem tssItem)
+        private static void ApplyColorsRecursively(ToolStripItem tssItem, bool blnLightMode)
         {
-            if (tssItem.ForeColor == (IsLightMode ? ControlDark : ControlLight))
-                tssItem.ForeColor = Control;
-            else if (tssItem.ForeColor == (IsLightMode ? ControlDarkerDark : ControlDarkerLight))
-                tssItem.ForeColor = ControlDarker;
-            else if (tssItem.ForeColor == (IsLightMode ? ControlDarkestDark : ControlDarkestLight))
-                tssItem.ForeColor = ControlDarkest;
+            if (tssItem.ForeColor == (blnLightMode ? ControlDark : ControlLight))
+                tssItem.ForeColor = blnLightMode ? ControlLight : ControlDark;
+            else if (tssItem.ForeColor == (blnLightMode ? ControlDarkerDark : ControlDarkerLight))
+                tssItem.ForeColor = blnLightMode ? ControlDarkerLight : ControlDarkerDark;
+            else if (tssItem.ForeColor == (blnLightMode ? ControlDarkestDark : ControlDarkestLight))
+                tssItem.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
             else
-                tssItem.ForeColor = ControlText;
-            if (tssItem.BackColor == (IsLightMode ? ControlLighterDark : ControlLighterLight))
-                tssItem.BackColor = ControlLighter;
-            else if (tssItem.BackColor == (IsLightMode ? ControlLightestDark : ControlLightestLight))
-                tssItem.BackColor = ControlLightest;
+                tssItem.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+            if (tssItem.BackColor == (blnLightMode ? ControlLighterDark : ControlLighterLight))
+                tssItem.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
+            else if (tssItem.BackColor == (blnLightMode ? ControlLightestDark : ControlLightestLight))
+                tssItem.BackColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
             else
-                tssItem.BackColor = Control;
+                tssItem.BackColor = blnLightMode ? ControlLight : ControlDark;
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
             {
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    ApplyColorsRecursively(tssDropDownChild);
+                    ApplyColorsRecursively(tssDropDownChild, blnLightMode);
             }
         }
 
-        private static void ApplyColorsRecursively(TreeNode nodNode)
+        private static void ApplyColorsRecursively(TreeNode nodNode, bool blnLightMode)
         {
-            if (nodNode.ForeColor == (IsLightMode ? HasNotesColorDark : HasNotesColorLight))
-                nodNode.ForeColor = HasNotesColor;
-            else if (nodNode.ForeColor == (IsLightMode ? WindowTextDark : WindowTextLight))
-                nodNode.ForeColor = WindowText;
-            nodNode.BackColor = Window;
+            if (nodNode.ForeColor == (blnLightMode ? HasNotesColorDark : HasNotesColorLight))
+                nodNode.ForeColor = blnLightMode ? HasNotesColorLight : HasNotesColorDark;
+            else if (nodNode.ForeColor == (blnLightMode ? GrayHasNotesColorDark : GrayHasNotesColorLight))
+                nodNode.ForeColor = blnLightMode ? GrayHasNotesColorLight : GrayHasNotesColorDark;
+            else if (nodNode.ForeColor == (blnLightMode ? WindowTextDark : WindowTextLight))
+                nodNode.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+            nodNode.BackColor = blnLightMode ? WindowLight : WindowDark;
 
             foreach (TreeNode nodNodeChild in nodNode.Nodes)
-                ApplyColorsRecursively(nodNodeChild);
+                ApplyColorsRecursively(nodNodeChild, blnLightMode);
         }
         #endregion
 

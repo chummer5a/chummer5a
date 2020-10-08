@@ -1,6 +1,6 @@
 Future Build 213
 Application Fixes:
-- Added a limited dark mode. Chummer will look at the system's settings for whether or not to use dark mode for applications and (re)color itself accordingly
+- Added a limited dark mode. The mode can be set and previewed in the Options menu. For existing users, Chummer will default to Light mode; for new users, Chummer will default to automatically checking the setting in Windows for whether apps should run in Light or Dark mode.
 - Fixed an incorrect tag on submersion groups in career mode. 
 - Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
 - Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
@@ -159,6 +159,10 @@ Changed/New Strings:
 - Checkbox_ShowChart
 - Message_File_Cannot_Be_Read_Accessed
 - Label_Gender
+- Label_Options_ColorMode
+- String_Automatic
+- String_Light
+- String_Dark
 
 Build 212
 Application Changes:

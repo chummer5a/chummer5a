@@ -341,7 +341,6 @@ namespace Chummer.UI.Skills
             // 
             this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarma.AutoSize = true;
-            this.chkKarma.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkKarma.Location = new System.Drawing.Point(715, 6);
             this.chkKarma.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.chkKarma.Name = "chkKarma";
