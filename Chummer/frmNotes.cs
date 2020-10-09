@@ -81,6 +81,8 @@ namespace Chummer
         private void frmNotes_Shown(object sender, EventArgs e)
         {
             txtNotes.Focus();
+            txtNotes.SelectionLength = 0;
+            txtNotes.SelectionStart = txtNotes.TextLength;
         }
         #endregion
 
