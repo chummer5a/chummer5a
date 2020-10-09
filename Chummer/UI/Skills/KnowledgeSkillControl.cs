@@ -266,7 +266,7 @@ namespace Chummer.UI.Skills
         }
 
         [UsedImplicitly]
-        public int NameWidth => tlpName.Width - lblName.Margin.Left - lblName.Margin.Right;
+        public int NameWidth => tlpName.Width - (lblName.Visible ? lblName.Margin.Left + lblName.Margin.Right : cboName.Margin.Left + cboName.Margin.Right);
 
         [UsedImplicitly]
         public int NudSkillWidth => !_skill.CharacterObject.Created && _skill.AllowUpgrade && _skill.CharacterObject.SkillsSection.HasKnowledgePoints
