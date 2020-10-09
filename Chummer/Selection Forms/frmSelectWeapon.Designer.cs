@@ -76,12 +76,12 @@ namespace Chummer
             this.lblWeaponDamage = new System.Windows.Forms.Label();
             this.lblWeaponAP = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.lblSource = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new System.Windows.Forms.CheckBox();
-            this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
             this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
             this.lblIncludedAccessories = new System.Windows.Forms.Label();
@@ -211,11 +211,11 @@ namespace Chummer
             // 
             this.dgvWeapons.AllowUserToAddRows = false;
             this.dgvWeapons.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
@@ -1073,6 +1073,7 @@ namespace Chummer
             this.MinimizeBox = false;
             this.Name = "frmSelectWeapon";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeapon";
@@ -1115,13 +1116,13 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabBrowse;
         private System.Windows.Forms.TabPage tabListView;
-        private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+        private Chummer.ColorableCheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.Label lblWeaponAccuracy;
         private System.Windows.Forms.Label lblWeaponAccuracyLabel;
         private System.Windows.Forms.Label lblTest;
         private System.Windows.Forms.NumericUpDown nudMarkup;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
-        private System.Windows.Forms.CheckBox chkFreeItem;
+        private Chummer.ColorableCheckBox chkFreeItem;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblIncludedAccessories;
@@ -1145,9 +1146,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponDamageLabel;
         private System.Windows.Forms.ListBox lstWeapon;
         private System.Windows.Forms.Timer tmrSearch;
-        private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
+        private Chummer.ColorableCheckBox chkHideOverAvailLimit;
         private Chummer.BufferedTableLayoutPanel tlpWeapon;
-        private System.Windows.Forms.CheckBox chkShowOnlyAffordItems;
+        private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;

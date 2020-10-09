@@ -38,13 +38,13 @@ namespace Chummer
             this.nudGremlins = new System.Windows.Forms.NumericUpDown();
             this.lblGremlins = new System.Windows.Forms.Label();
             this.tableLayoutPanel3 = new Chummer.BufferedTableLayoutPanel();
-            this.chkBubbleDie = new System.Windows.Forms.CheckBox();
+            this.chkBubbleDie = new Chummer.ColorableCheckBox();
             this.nudThreshold = new System.Windows.Forms.NumericUpDown();
             this.lblThreshold = new System.Windows.Forms.Label();
             this.tableLayoutPanel4 = new Chummer.BufferedTableLayoutPanel();
-            this.chkRuleOf6 = new System.Windows.Forms.CheckBox();
+            this.chkRuleOf6 = new Chummer.ColorableCheckBox();
             this.cmdRollDice = new System.Windows.Forms.Button();
-            this.chkRushJob = new System.Windows.Forms.CheckBox();
+            this.chkRushJob = new Chummer.ColorableCheckBox();
             this.lblD6 = new System.Windows.Forms.Label();
             this.nudDice = new System.Windows.Forms.NumericUpDown();
             this.lblRoll = new System.Windows.Forms.Label();
@@ -360,14 +360,14 @@ namespace Chummer
         private System.Windows.Forms.Label lblThreshold;
         private System.Windows.Forms.NumericUpDown nudThreshold;
         private Chummer.BufferedTableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.CheckBox chkRuleOf6;
+        private Chummer.ColorableCheckBox chkRuleOf6;
         private System.Windows.Forms.Button cmdRollDice;
-        private System.Windows.Forms.CheckBox chkRushJob;
+        private Chummer.ColorableCheckBox chkRushJob;
         private System.Windows.Forms.Label lblD6;
         private System.Windows.Forms.NumericUpDown nudDice;
         private System.Windows.Forms.Label lblRoll;
         private System.Windows.Forms.NumericUpDown nudLimit;
         private System.Windows.Forms.ComboBox cboEdgeUse;
-        private System.Windows.Forms.CheckBox chkBubbleDie;
+        private Chummer.ColorableCheckBox chkBubbleDie;
     }
 }

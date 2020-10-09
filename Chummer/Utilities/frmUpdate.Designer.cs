@@ -188,6 +188,7 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.Name = "frmUpdate";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.ShowIcon = false;
             this.Text = "Chummer Updater";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmUpdate_FormClosing);
             this.Load += new System.EventHandler(this.frmUpdate_Load);

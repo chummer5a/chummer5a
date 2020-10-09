@@ -41,7 +41,6 @@ namespace Chummer.UI.Shared.Components
             this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdRoll.AutoSize = true;
             this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRoll.FlatAppearance.BorderSize = 0;
             this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
             this.cmdRoll.Location = new System.Drawing.Point(40, 0);
             this.cmdRoll.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);

@@ -36,6 +36,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _eStartingBuildMethod = _objCharacter.Options.BuildMethod;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             // Populate the Gameplay Options list.

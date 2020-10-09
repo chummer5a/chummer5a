@@ -508,7 +508,7 @@ namespace Chummer
                 int intReturn = 0;
                 if (Skill != null)
                 {
-                    intReturn = Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES");
+                    intReturn = Skill.PoolOtherAttribute("RES");
                     // Add any Specialization bonus if applicable.
                     intReturn += Skill.GetSpecializationBonus(CurrentDisplayName);
                 }
@@ -531,7 +531,7 @@ namespace Chummer
                 string strReturn = string.Empty;
                 if (Skill != null)
                 {
-                    strReturn = Skill.FormattedDicePool(Skill.PoolOtherAttribute(_objCharacter.RES.TotalValue, "RES"), CurrentDisplayName);
+                    strReturn = Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES"), CurrentDisplayName);
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -595,14 +595,13 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Color.SaddleBrown;
+                    return Grade != 0
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (Grade != 0)
-                {
-                    return SystemColors.GrayText;
-                }
-
-                return SystemColors.WindowText;
+                return Grade != 0
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
         #endregion

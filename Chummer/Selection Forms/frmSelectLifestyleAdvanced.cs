@@ -37,6 +37,7 @@ namespace Chummer
         public frmSelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;

@@ -52,6 +52,7 @@ namespace Chummer
         public frmSelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));

@@ -39,11 +39,11 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblBP = new Chummer.LabelWithToolTip();
             this.lblBPLabel = new System.Windows.Forms.Label();
-            this.chkFree = new System.Windows.Forms.CheckBox();
-            this.chkMetagenic = new System.Windows.Forms.CheckBox();
+            this.chkFree = new Chummer.ColorableCheckBox();
+            this.chkMetagenic = new Chummer.ColorableCheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.chkNotMetagenic = new System.Windows.Forms.CheckBox();
+            this.chkNotMetagenic = new Chummer.ColorableCheckBox();
             this.nudMinimumBP = new System.Windows.Forms.NumericUpDown();
             this.nudValueBP = new System.Windows.Forms.NumericUpDown();
             this.nudMaximumBP = new System.Windows.Forms.NumericUpDown();
@@ -55,7 +55,7 @@ namespace Chummer
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbKarmaFilter = new System.Windows.Forms.GroupBox();
             this.tlpKarmaFilter = new System.Windows.Forms.TableLayoutPanel();
-            this.chkLimitList = new System.Windows.Forms.CheckBox();
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudMinimumBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudValueBP)).BeginInit();
@@ -528,11 +528,11 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private Chummer.LabelWithToolTip lblBP;
         private System.Windows.Forms.Label lblBPLabel;
-        private System.Windows.Forms.CheckBox chkFree;
-        private System.Windows.Forms.CheckBox chkMetagenic;
+        private Chummer.ColorableCheckBox chkFree;
+        private Chummer.ColorableCheckBox chkMetagenic;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
-        private System.Windows.Forms.CheckBox chkNotMetagenic;
+        private Chummer.ColorableCheckBox chkNotMetagenic;
         private System.Windows.Forms.NumericUpDown nudMinimumBP;
         private System.Windows.Forms.NumericUpDown nudValueBP;
         private System.Windows.Forms.NumericUpDown nudMaximumBP;
@@ -541,7 +541,7 @@ namespace Chummer
         private System.Windows.Forms.Label label3;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.CheckBox chkLimitList;
+        private Chummer.ColorableCheckBox chkLimitList;
         private System.Windows.Forms.GroupBox gpbKarmaFilter;
         private System.Windows.Forms.TableLayoutPanel tlpKarmaFilter;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;

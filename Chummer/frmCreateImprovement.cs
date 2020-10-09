@@ -39,6 +39,7 @@ namespace Chummer
         public frmCreateImprovement(Character objCharacter, string strCustomGroup = "")
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _strCustomGroup = strCustomGroup;

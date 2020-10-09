@@ -34,6 +34,7 @@ namespace Chummer
         public frmSelectSpellCategory(Character objCharacter)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("spells.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }

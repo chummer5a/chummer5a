@@ -45,6 +45,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             XmlDocument xmlMetatypeDoc = _objCharacter.LoadData(strXmlFile);

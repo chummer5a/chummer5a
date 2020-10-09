@@ -40,6 +40,7 @@ namespace Chummer
         public frmSelectComplexForm(Character objCharacter)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.

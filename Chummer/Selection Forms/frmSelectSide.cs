@@ -30,6 +30,7 @@ namespace Chummer
         public frmSelectSide()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             // Create a list for the sides.

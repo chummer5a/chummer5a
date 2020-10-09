@@ -27,6 +27,7 @@ namespace Chummer
         public frmInitRoller()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

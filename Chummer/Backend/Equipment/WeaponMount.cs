@@ -992,14 +992,13 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Color.SaddleBrown;
+                    return IncludedInVehicle
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (IncludedInVehicle)
-                {
-                    return SystemColors.GrayText;
-                }
-
-                return SystemColors.WindowText;
+                return IncludedInVehicle
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
         #endregion

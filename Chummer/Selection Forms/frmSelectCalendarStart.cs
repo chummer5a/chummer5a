@@ -30,6 +30,7 @@ namespace Chummer
         public frmSelectCalendarStart()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
@@ -38,6 +39,7 @@ namespace Chummer
             if (objWeek == null)
                 throw new ArgumentNullException(nameof(objWeek));
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             nudYear.Value = objWeek.Year;

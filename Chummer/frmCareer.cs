@@ -78,6 +78,7 @@ namespace Chummer
             lmtControl.MakeDirty += MakeDirty;
 
             Program.MainForm.OpenCharacterForms.Add(this);
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             ContextMenuStrip[] lstCMSToTranslate = {
@@ -135,6 +136,7 @@ namespace Chummer
             // Update the text in the Menus so they can be merged with frmMain properly.
             foreach (ToolStripMenuItem tssItem in mnuCreateMenu.Items.OfType<ToolStripMenuItem>())
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
             foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
@@ -143,6 +145,7 @@ namespace Chummer
                 {
                     foreach (ToolStripMenuItem tssItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
+                        tssItem.UpdateLightDarkMode();
                         tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
@@ -211,7 +214,7 @@ namespace Chummer
                         txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
 
                         txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
-                        txtSex.DoDatabinding("Text", CharacterObject, nameof(Character.Sex));
+                        txtGender.DoDatabinding("Text", CharacterObject, nameof(Character.Gender));
                         txtAge.DoDatabinding("Text", CharacterObject, nameof(Character.Age));
                         txtEyes.DoDatabinding("Text", CharacterObject, nameof(Character.Eyes));
                         txtHeight.DoDatabinding("Text", CharacterObject, nameof(Character.Height));
@@ -2942,7 +2945,7 @@ namespace Chummer
 
                             frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
                             // Copy the character info.
-                            objMerge.Sex = objVessel.Sex;
+                            objMerge.Gender = objVessel.Gender;
                             objMerge.Age = objVessel.Age;
                             objMerge.Eyes = objVessel.Eyes;
                             objMerge.Hair = objVessel.Hair;
@@ -3287,7 +3290,7 @@ namespace Chummer
 
             foreach (ContactControl objControl in panContacts.Controls)
             {
-                objControl.BackColor = SystemColors.Control;
+                objControl.BackColor = ColorManager.Control;
             }
         }
 
@@ -3299,12 +3302,12 @@ namespace Chummer
             if (destination == null)
                 return;
 
-            destination.BackColor = SystemColors.ControlDark;
+            destination.BackColor = ColorManager.ControlDarker;
             foreach (ContactControl objControl in panContacts.Controls)
             {
                 if (objControl != destination as ContactControl)
                 {
-                    objControl.BackColor = SystemColors.Control;
+                    objControl.BackColor = ColorManager.Control;
                 }
             }
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
@@ -6984,6 +6987,7 @@ namespace Chummer
                 Weapon objWeapon = new Weapon(CharacterObject)
                 {
                     ParentVehicle = objVehicle,
+                    ParentVehicleMod = objMod != null ? objMod : null,
                     ParentMount = objMod == null ? objWeaponMount : null
                 };
                 objWeapon.Create(objXmlWeapon, lstWeapons);
@@ -10554,7 +10558,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treWeapons.ClearNodeBackground(objNode);
@@ -10625,7 +10629,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treArmor.ClearNodeBackground(objNode);
@@ -10755,7 +10759,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treLifestyles.ClearNodeBackground(objNode);
@@ -10949,10 +10953,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = SystemColors.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDarker;
             }
             else
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treGear.ClearNodeBackground(objNode);
@@ -11160,6 +11164,7 @@ namespace Chummer
             }
             else
             {
+                objWeapon.ParentVehicleMod = objMod;
                 objMod.Weapons.Add(objWeapon);
             }
 
@@ -11601,10 +11606,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = SystemColors.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDarker;
             }
             else
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treVehicles.ClearNodeBackground(objNode);
@@ -12661,7 +12666,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = SystemColors.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treImprovements.ClearNodeBackground(objNode);
@@ -13055,7 +13060,7 @@ namespace Chummer
                 foreach (CheckBox chkCmBox in lstCheckBoxes)
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
-                    chkCmBox.BackColor = SystemColors.Control;
+                    chkCmBox.BackColor = SystemColors.Control; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
                     if (check && intCurrentBoxTag <= value)
                     {
                         chkCmBox.Checked = true;
@@ -13074,7 +13079,7 @@ namespace Chummer
                     else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
                     {
                         chkCmBox.Visible = true;
-                        chkCmBox.BackColor = SystemColors.ControlDark;
+                        chkCmBox.BackColor = SystemColors.ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
                         chkCmBox.Text = intCurrentBoxTag == intConditionMax + intOverflow ? LanguageManager.GetString("String_CMDown") : string.Empty;
                     }
                     else
@@ -17225,9 +17230,10 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                ? PictureBoxSizeMode.CenterImage
-                : PictureBoxSizeMode.Zoom;
+            if (!picMugshot.IsDisposed)
+                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                    ? PictureBoxSizeMode.CenterImage
+                    : PictureBoxSizeMode.Zoom;
         }
 
         private void cmdCyberwareChangeMount_Click(object sender, EventArgs e)

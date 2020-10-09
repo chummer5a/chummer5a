@@ -46,7 +46,7 @@ namespace Chummer
             this.nudRoommates = new System.Windows.Forms.NumericUpDown();
             this.lblRoommates = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkPrimaryTenant = new System.Windows.Forms.CheckBox();
+            this.chkPrimaryTenant = new Chummer.ColorableCheckBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
@@ -387,7 +387,7 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudRoommates;
         private System.Windows.Forms.Label lblRoommates;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.CheckBox chkPrimaryTenant;
+        private Chummer.ColorableCheckBox chkPrimaryTenant;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

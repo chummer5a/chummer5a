@@ -47,7 +47,7 @@
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkFreeItem = new System.Windows.Forms.CheckBox();
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.nudPersona = new System.Windows.Forms.NumericUpDown();
             this.nudSignal = new System.Windows.Forms.NumericUpDown();
             this.lblSignalLabel = new System.Windows.Forms.Label();
@@ -440,7 +440,7 @@
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.CheckBox chkFreeItem;
+        private Chummer.ColorableCheckBox chkFreeItem;
         private System.Windows.Forms.NumericUpDown nudPersona;
         private System.Windows.Forms.NumericUpDown nudSignal;
         private System.Windows.Forms.Label lblSignalLabel;

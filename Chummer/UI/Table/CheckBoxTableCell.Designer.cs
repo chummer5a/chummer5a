@@ -28,7 +28,7 @@ namespace Chummer.UI.Table
         /// </summary>
         private void InitializeComponent()
         {
-            this._checkBox = new System.Windows.Forms.CheckBox();
+            this._checkBox = new Chummer.ColorableCheckBox();
             this.SuspendLayout();
             // 
             // _checkBox
@@ -56,6 +56,6 @@ namespace Chummer.UI.Table
 
         #endregion
 
-        private System.Windows.Forms.CheckBox _checkBox;
+        private Chummer.ColorableCheckBox _checkBox;
     }
 }

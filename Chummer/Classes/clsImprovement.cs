@@ -2261,13 +2261,13 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    if (Enabled)
-                        return Color.SaddleBrown;
-                    return Color.SandyBrown;
+                    return !Enabled
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (Enabled)
-                    return SystemColors.WindowText;
-                return SystemColors.GrayText;
+                return !Enabled
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
         #endregion

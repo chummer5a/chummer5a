@@ -40,6 +40,7 @@ namespace Chummer
         public frmSelectPower(Character objCharacter)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the Powers information.

@@ -39,9 +39,11 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
         }

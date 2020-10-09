@@ -34,7 +34,7 @@ namespace Chummer
             this.lstMetamagic = new System.Windows.Forms.ListBox();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkLimitList = new System.Windows.Forms.CheckBox();
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
@@ -227,7 +227,7 @@ namespace Chummer
         private System.Windows.Forms.ListBox lstMetamagic;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
-        private System.Windows.Forms.CheckBox chkLimitList;
+        private Chummer.ColorableCheckBox chkLimitList;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.TextBox txtSearch;

@@ -58,7 +58,7 @@ namespace Chummer
         private int _intConnection = 1;
         private int _intLoyalty = 1;
         private string _strMetatype = string.Empty;
-        private string _strSex = string.Empty;
+        private string _strGender = string.Empty;
         private string _strAge = string.Empty;
         private string _strType = string.Empty;
         private string _strPreferredPayment = string.Empty;
@@ -135,8 +135,8 @@ namespace Chummer
                 new DependencyGraphNode<string, Contact>(nameof(Name),
                     new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string, Contact>(nameof(DisplaySex),
-                    new DependencyGraphNode<string, Contact>(nameof(Sex),
+                new DependencyGraphNode<string, Contact>(nameof(DisplayGender),
+                    new DependencyGraphNode<string, Contact>(nameof(Gender),
                         new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                     )
                 ),
@@ -269,7 +269,7 @@ namespace Chummer
             objWriter.WriteElementString("connection", _intConnection.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("loyalty", _intLoyalty.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("metatype", _strMetatype);
-            objWriter.WriteElementString("sex", _strSex);
+            objWriter.WriteElementString("gender", _strGender);
             objWriter.WriteElementString("age", _strAge);
             objWriter.WriteElementString("contacttype", _strType);
             objWriter.WriteElementString("preferredpayment", _strPreferredPayment);
@@ -317,7 +317,8 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("connection", ref _intConnection);
             objNode.TryGetInt32FieldQuickly("loyalty", ref _intLoyalty);
             objNode.TryGetStringFieldQuickly("metatype", ref _strMetatype);
-            objNode.TryGetStringFieldQuickly("sex", ref _strSex);
+            if (!objNode.TryGetStringFieldQuickly("gender", ref _strGender))
+                objNode.TryGetStringFieldQuickly("sex", ref _strGender);
             objNode.TryGetStringFieldQuickly("age", ref _strAge);
             objNode.TryGetStringFieldQuickly("contacttype", ref _strType);
             objNode.TryGetStringFieldQuickly("preferredpayment", ref _strPreferredPayment);
@@ -375,7 +376,7 @@ namespace Chummer
                 objWriter.WriteElementString("connection", LanguageManager.GetString("String_Group", strLanguageToPrint) + "(" + Connection.ToString(objCulture) + ')');
             objWriter.WriteElementString("loyalty", Loyalty.ToString(objCulture));
             objWriter.WriteElementString("metatype", DisplayMetatypeMethod(strLanguageToPrint));
-            objWriter.WriteElementString("sex", DisplaySexMethod(strLanguageToPrint));
+            objWriter.WriteElementString("gender", DisplayGenderMethod(strLanguageToPrint));
             objWriter.WriteElementString("age", DisplayAgeMethod(strLanguageToPrint));
             objWriter.WriteElementString("contacttype", DisplayTypeMethod(strLanguageToPrint));
             objWriter.WriteElementString("preferredpayment", DisplayPreferredPaymentMethod(strLanguageToPrint));
@@ -592,36 +593,36 @@ namespace Chummer
             }
         }
 
-        public string DisplaySexMethod(string strLanguage)
+        public string DisplayGenderMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
-                return Sex;
+                return Gender;
 
-            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/sexes/sex[text() = \"" + Sex + "\"]/@translate")?.InnerText ?? Sex;
+            return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/genders/gender[text() = \"" + Gender + "\"]/@translate")?.InnerText ?? Gender;
         }
 
-        public string DisplaySex
+        public string DisplayGender
         {
-            get => DisplaySexMethod(GlobalOptions.Language);
-            set => Sex = _objCharacter.ReverseTranslateExtra(value);
+            get => DisplayGenderMethod(GlobalOptions.Language);
+            set => Gender = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
         /// Gender of this Contact.
         /// </summary>
-        public string Sex
+        public string Gender
         {
             get
             {
                 if (LinkedCharacter != null)
-                    return LinkedCharacter.Sex;
-                return _strSex;
+                    return LinkedCharacter.Gender;
+                return _strGender;
             }
             set
             {
-                if (_strSex != value)
+                if (_strGender != value)
                 {
-                    _strSex = value;
+                    _strGender = value;
                     OnPropertyChanged();
                 }
             }
@@ -1060,8 +1061,8 @@ namespace Chummer
                         _strName = Name;
                     if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
                         _strAge = Age;
-                    if (string.IsNullOrEmpty(_strSex) && !string.IsNullOrEmpty(Sex))
-                        _strSex = Sex;
+                    if (string.IsNullOrEmpty(_strGender) && !string.IsNullOrEmpty(Gender))
+                        _strGender = Gender;
                     if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
                         _strMetatype = Metatype;
 
@@ -1077,8 +1078,8 @@ namespace Chummer
                 OnPropertyChanged(nameof(Name));
             else if (e.PropertyName == nameof(Character.Age))
                 OnPropertyChanged(nameof(Age));
-            else if (e.PropertyName == nameof(Character.Sex))
-                OnPropertyChanged(nameof(Sex));
+            else if (e.PropertyName == nameof(Character.Gender))
+                OnPropertyChanged(nameof(Gender));
             else if (e.PropertyName == nameof(Character.Metatype) || e.PropertyName == nameof(Character.Metavariant))
                 OnPropertyChanged(nameof(Metatype));
             else if (e.PropertyName == nameof(Character.Mugshots))

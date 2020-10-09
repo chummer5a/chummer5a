@@ -37,6 +37,7 @@ namespace Chummer
         public frmHeroLabImporter()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

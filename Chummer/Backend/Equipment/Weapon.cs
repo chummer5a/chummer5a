@@ -84,6 +84,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstUnderbarrel = new TaggedObservableCollection<Weapon>();
         private Vehicle _objMountedVehicle;
         private WeaponMount _objWeaponMount;
+        private VehicleMod _objVehicleMod;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
         private string _strUseSkillSpec = string.Empty;
@@ -1858,6 +1859,7 @@ namespace Chummer.Backend.Equipment
                 if (value == null)
                 {
                     _objWeaponMount = null;
+                    _objVehicleMod = null;
                 }
 
                 foreach (Weapon objChild in Children)
@@ -1877,9 +1879,31 @@ namespace Chummer.Backend.Equipment
                 {
                     _objWeaponMount = value;
                     ParentVehicle = value?.Parent;
+                    if (value != null)
+                        ParentVehicleMod = null;
                 }
                 foreach (Weapon objChild in Children)
                     objChild.ParentMount = value;
+            }
+        }
+
+        /// <summary>
+        /// VehicleMod to which the weapon is mounted (if none, returns null)
+        /// </summary>
+        public VehicleMod ParentVehicleMod
+        {
+            get => _objVehicleMod;
+            set
+            {
+                if (_objVehicleMod != value)
+                {
+                    _objVehicleMod = value;
+                    ParentVehicle = value?.Parent;
+                    if (value != null)
+                        ParentMount = null;
+                }
+                foreach (Weapon objChild in Children)
+                    objChild.ParentVehicleMod = value;
             }
         }
 
@@ -2658,11 +2682,11 @@ namespace Chummer.Backend.Equipment
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
                 // Translate the Ammo string.
-                strReturn = strReturn.CheapReplace(" or ", () => strSpace + LanguageManager.GetString("String_Or", strLanguage) + strSpace)
-                    .CheapReplace(" belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage))
-                    .CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage))
-                    .CheapReplace(" external source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage))
-                    .CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage))
+                strReturn = strReturn.CheapReplace(" or ", () => strSpace + LanguageManager.GetString("String_Or", strLanguage) + strSpace, StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage), StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage), StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" External Source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage), StringComparison.OrdinalIgnoreCase)
+                    .CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage), StringComparison.OrdinalIgnoreCase)
                     .CheapReplace("(b)", () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage) + ')')
                     .CheapReplace("(belt)", () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')')
                     .CheapReplace("(box)", () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')')
@@ -4040,7 +4064,7 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.GunneryCommandDevice:
                     case FiringMode.RemoteOperated:
                         {
-                            intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG");
+                            intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
 
                             if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
                             {
@@ -4304,7 +4328,7 @@ namespace Chummer.Backend.Equipment
                         {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
                             sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{1}[{2}]{0}({3})",
-                                strSpace, objSkill.CurrentDisplayName, _objCharacter.LOG.DisplayAbbrev, objSkill.PoolOtherAttribute(_objCharacter.LOG.TotalValue, "LOG"));
+                                strSpace, objSkill.CurrentDisplayName, _objCharacter.LOG.DisplayAbbrev, objSkill.PoolOtherAttribute("LOG"));
                             if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
                             {
                                 SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
@@ -5443,14 +5467,13 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Color.SaddleBrown;
+                    return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID))
-                {
-                    return SystemColors.GrayText;
-                }
-
-                return SystemColors.WindowText;
+                return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
 
@@ -5924,10 +5947,17 @@ namespace Chummer.Backend.Equipment
             }
             if (Parent != null)
                 return Parent.Children.Remove(this);
-            return ParentMount?.Weapons.Remove(this) ?? ParentVehicle.Weapons.Remove(this);
+            if (ParentVehicle != null)
+            {
+                if (ParentMount != null)
+                    return ParentMount.Weapons.Remove(this);
+                if (ParentVehicleMod != null)
+                    return ParentVehicleMod.Weapons.Remove(this);
+            }
             //else if (objWeapon.parent != null)
             //    objWeaponMount.Weapons.Remove(objWeapon);
             // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+            return false;
         }
 
         /// <summary>

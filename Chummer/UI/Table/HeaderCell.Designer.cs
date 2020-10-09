@@ -44,9 +44,10 @@ namespace Chummer.UI.Table
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Transparent;
+            this.BackColor = System.Drawing.SystemColors.ControlText;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this._lblCellText);
+            this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.Name = "HeaderCell";
             this.Size = new System.Drawing.Size(148, 15);
             this.ResumeLayout(false);

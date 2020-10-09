@@ -52,6 +52,7 @@ namespace Chummer.UI.Shared
             this.Load += new System.EventHandler(this.BindingListDisplay_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.BindingListDisplay_Scroll);
             this.SizeChanged += new System.EventHandler(this.BindingListDisplay_SizeChanged);
+            this.DpiChangedAfterParent += new System.EventHandler(this.BindingListDisplay_DpiChangedAfterParent);
             this.ResumeLayout(false);
 
         }

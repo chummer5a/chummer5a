@@ -33,7 +33,8 @@ namespace Chummer.UI.Skills
                 return;
             _skillGroup = skillGroup;
             InitializeComponent();
-
+            SkillGroupControl_DpiChangedAfterParent(null, EventArgs.Empty);
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             //This is apparently a factor 30 faster than placed in load. NFI why
@@ -147,5 +148,10 @@ namespace Chummer.UI.Skills
             ActiveButton = null;
         }
         #endregion
+
+        private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            lblGroupRating.MinimumSize = new Size(LogicalToDeviceUnits(25), 0);
+        }
     }
 }

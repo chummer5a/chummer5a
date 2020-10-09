@@ -1039,6 +1039,18 @@
       <text>Weapon</text>
     </string>
     <string>
+      <key>String_Automatic</key>
+      <text>Automatic</text>
+    </string>
+    <string>
+      <key>String_Light</key>
+      <text>Light</text>
+    </string>
+    <string>
+      <key>String_Dark</key>
+      <text>Dark</text>
+    </string>
+    <string>
       <key>String_ContactPoints</key>
       <text>Contact Points</text>
     </string>
@@ -5331,6 +5343,10 @@
       <text>Sex:</text>
     </string>
     <string>
+      <key>Label_Gender</key>
+      <text>Gender:</text>
+    </string>
+    <string>
       <key>Label_Age</key>
       <text>Age:</text>
     </string>
@@ -7406,6 +7422,10 @@
     <string>
       <key>Label_Options_NuyenPerBP</key>
       <text>Nuyen per Karma</text>
+    </string>
+    <string>
+      <key>Label_Options_ColorMode</key>
+      <text>Color Mode:</text>
     </string>
     <string>
       <key>Checkbox_Options_MayBuyQualities</key>

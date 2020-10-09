@@ -40,6 +40,7 @@ namespace Chummer
             _objXmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml").CreateNavigator().SelectSingleNode("/chummer");
 
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             MoveControls();
         }

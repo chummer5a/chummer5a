@@ -859,18 +859,10 @@ namespace Chummer
             return strReturn;
         }
 
-        public Color PreferredColor
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    return Color.SaddleBrown;
-                }
-
-                return SystemColors.WindowText;
-            }
-        }
+        public Color PreferredColor =>
+            !string.IsNullOrEmpty(Notes)
+                ? ColorManager.HasNotesColor
+                : ColorManager.WindowText;
 
         #endregion
 

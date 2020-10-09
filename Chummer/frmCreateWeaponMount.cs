@@ -146,6 +146,7 @@ namespace Chummer
 
             _blnLoading = false;
             UpdateInfo();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

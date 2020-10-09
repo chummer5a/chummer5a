@@ -58,6 +58,13 @@ namespace Chummer
         Trace
     }
 
+    public enum ColorMode
+    {
+        Automatic = 0,
+        Light,
+        Dark
+    }
+
     public sealed class SourcebookInfo : IDisposable
     {
         private string _strPath = string.Empty;
@@ -167,6 +174,7 @@ namespace Chummer
         private static string _strCustomTimeFormat;
         private static string _strDefaultCharacterOption = DefaultCharacterOptionDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
+        private static ColorMode _eColorMode;
         private static bool _blnConfirmDelete = true;
         private static bool _blnConfirmKarmaExpense = true;
         private static bool _blnHideItemsOverAvailLimit = true;
@@ -320,8 +328,10 @@ namespace Chummer
             if(Utils.IsDesignerMode)
                 return;
 
+            bool blnFirstEverLaunch = false;
             try
             {
+                blnFirstEverLaunch = Registry.CurrentUser.OpenSubKey("Software\\Chummer5") == null;
                 _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             }
             catch (Exception ex)
@@ -370,6 +380,23 @@ namespace Chummer
                     _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
                 }
             }
+
+            string strColorMode = string.Empty;
+            if (LoadStringFromRegistry(ref strColorMode, "colormode"))
+            {
+                switch (strColorMode)
+                {
+                    case nameof(ColorMode.Light):
+                        _eColorMode = ColorMode.Light;
+                        break;
+                    case nameof(ColorMode.Dark):
+                        _eColorMode = ColorMode.Dark;
+                        break;
+                }
+            }
+            // In order to not throw off veteran users, forced Light mode is the default for them instead of Automatic
+            else if (!blnFirstEverLaunch)
+                _eColorMode = ColorMode.Light;
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -550,6 +577,7 @@ namespace Chummer
                 objRegistry.SetValue("liveupdatecleancharacterfiles", LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
+                objRegistry.SetValue("colormode", ColorMode.ToString());
                 objRegistry.SetValue("language", Language);
                 objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
@@ -779,6 +807,35 @@ namespace Chummer
                 TelemetryConfiguration.Active.DisableTelemetry = _enumUseLoggingApplicationInsights > UseAILogging.OnlyLocal;
             }
         }
+
+        /// <summary>
+        /// Whether the program should be forced to use Light/Dark mode or to obey default color schemes automatically
+        /// </summary>
+        public static ColorMode ColorMode
+        {
+            get => _eColorMode;
+            set
+            {
+                if (_eColorMode == value)
+                    return;
+                _eColorMode = value;
+                switch (value)
+                {
+                    case ColorMode.Automatic:
+                        ColorManager.AutoApplyLightDarkMode();
+                        break;
+                    case ColorMode.Light:
+                        ColorManager.DisableAutoTimer();
+                        ColorManager.IsLightMode = true;
+                        break;
+                    case ColorMode.Dark:
+                        ColorManager.DisableAutoTimer();
+                        ColorManager.IsLightMode = false;
+                        break;
+                }
+            }
+        }
+
         /// <summary>
         /// Whether or not dates should include the time.
         /// </summary>

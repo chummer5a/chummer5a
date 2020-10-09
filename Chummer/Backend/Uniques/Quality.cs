@@ -966,22 +966,25 @@ namespace Chummer
             {
                 if (!Implemented)
                 {
-                    return Color.Red;
+                    return ColorManager.ErrorColor;
                 }
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Color.SaddleBrown;
+                    return OriginSource == QualitySource.BuiltIn
+                           || OriginSource == QualitySource.Improvement
+                           || OriginSource == QualitySource.LifeModule
+                           || OriginSource == QualitySource.Metatype
+                           || OriginSource == QualitySource.Heritage
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (OriginSource == QualitySource.BuiltIn ||
-                    OriginSource == QualitySource.Improvement ||
-                    OriginSource == QualitySource.LifeModule ||
-                    OriginSource == QualitySource.Metatype ||
-                    OriginSource == QualitySource.Heritage)
-                {
-                    return SystemColors.GrayText;
-                }
-
-                return SystemColors.WindowText;
+                return OriginSource == QualitySource.BuiltIn
+                       || OriginSource == QualitySource.Improvement
+                       || OriginSource == QualitySource.LifeModule
+                       || OriginSource == QualitySource.Metatype
+                       || OriginSource == QualitySource.Heritage
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
         #endregion

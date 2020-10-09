@@ -457,7 +457,7 @@ namespace Chummer
             foreach (TreeNode objChild in objNodes)
             {
                 if (objChild != objHighlighted)
-                    objChild.BackColor = SystemColors.Window;
+                    objChild.BackColor = ColorManager.Window;
                 objChild.Nodes.ClearNodeBackground(objHighlighted);
             }
         }

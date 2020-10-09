@@ -63,8 +63,8 @@ namespace Chummer
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.lblCapacity = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
-            this.chkShowOnlyAffordItems = new System.Windows.Forms.CheckBox();
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.lblArmorValueLabel = new System.Windows.Forms.Label();
             this.lblAvail = new System.Windows.Forms.Label();
             this.lblArmorValue = new System.Windows.Forms.Label();
@@ -72,8 +72,8 @@ namespace Chummer
             this.nudMarkup = new System.Windows.Forms.NumericUpDown();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new System.Windows.Forms.CheckBox();
-            this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblRatingLabel = new System.Windows.Forms.Label();
@@ -207,13 +207,13 @@ namespace Chummer
             // 
             this.dgvArmor.AllowUserToAddRows = false;
             this.dgvArmor.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.dgvArmor.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvArmor.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvArmor.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
@@ -237,7 +237,7 @@ namespace Chummer
             this.dgvArmor.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
             this.dgvArmor.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvArmor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvArmor.Size = new System.Drawing.Size(592, 335);
+            this.dgvArmor.Size = new System.Drawing.Size(752, 455);
             this.dgvArmor.TabIndex = 37;
             this.dgvArmor.DoubleClick += new System.EventHandler(this.dgvArmor_DoubleClick);
             // 
@@ -708,11 +708,11 @@ namespace Chummer
             // 
             // lblRatingNALabel
             // 
+            this.lblRatingNALabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblRatingNALabel.AutoSize = true;
-            this.lblRatingNALabel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 0);
+            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 6);
             this.lblRatingNALabel.Name = "lblRatingNALabel";
-            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 26);
+            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);
             this.lblRatingNALabel.TabIndex = 13;
             this.lblRatingNALabel.Tag = "String_NotApplicable";
             this.lblRatingNALabel.Text = "N/A";
@@ -762,7 +762,7 @@ namespace Chummer
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
             this.tabBrowse.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBrowse.Size = new System.Drawing.Size(598, 341);
+            this.tabBrowse.Size = new System.Drawing.Size(758, 461);
             this.tabBrowse.TabIndex = 0;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
@@ -907,6 +907,7 @@ namespace Chummer
             this.MinimizeBox = false;
             this.Name = "frmSelectArmor";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectArmor";
@@ -948,7 +949,7 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabBrowse;
         private System.Windows.Forms.TabPage tabListDetail;
-        private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+        private Chummer.ColorableCheckBox chkBlackMarketDiscount;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Label lblArmorValue;
         private System.Windows.Forms.Label lblArmorValueLabel;
@@ -959,7 +960,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.Label lblCapacity;
         private System.Windows.Forms.Label lblCapacityLabel;
-        private System.Windows.Forms.CheckBox chkFreeItem;
+        private Chummer.ColorableCheckBox chkFreeItem;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblCost;

@@ -128,9 +128,9 @@
               </tr>
               <tr>
                 <td width="16.66%" class="upper">
-                  <xsl:value-of select="$lang.Sex"/>:
+                  <xsl:value-of select="$lang.Gender"/>:
                 </td>
-                <td width="16.67%"><xsl:value-of select="sex"/></td>
+                <td width="16.67%"><xsl:value-of select="gender"/></td>
                 <td width="16.67%" class="upper">
                   <xsl:value-of select="$lang.Height"/>:
                 </td>

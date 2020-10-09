@@ -32,6 +32,7 @@ namespace Chummer.UI.Table
             button.Click += ((sender, evt) => ClickHandler?.Invoke(Value as T));
             SuspendLayout();
             Controls.Add(button);
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             button.PerformLayout();
             ResumeLayout(false);

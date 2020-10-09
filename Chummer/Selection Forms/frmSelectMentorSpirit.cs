@@ -41,7 +41,7 @@ namespace Chummer
             _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).CreateNavigator().SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
-
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

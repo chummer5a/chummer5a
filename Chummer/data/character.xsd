@@ -266,6 +266,7 @@
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="mugshot" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="sex" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="gender" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="age" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="eyes" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="height" type="xs:string" minOccurs="1" maxOccurs="1" />

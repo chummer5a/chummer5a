@@ -46,14 +46,17 @@ namespace Chummer.UI.Skills
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
-            SuspendLayout();
-
+            SkillControl2_DpiChangedAfterParent(null, EventArgs.Empty);
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             foreach (ToolStripItem tssItem in cmsSkillLabel.Items)
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
+
+            SuspendLayout();
 
             //Display
             _fntNormalName = lblName.Font;
@@ -69,7 +72,7 @@ namespace Chummer.UI.Skills
 
             btnAttribute.DoOneWayDataBinding("Text", objSkill, nameof(Skill.DisplayAttribute));
 
-            lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.TotalValue, _objAttributeActive.Abbrev);
+            lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
             lblModifiedRating.ToolTipText = objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
 
             if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
@@ -111,8 +114,8 @@ namespace Chummer.UI.Skills
                 flpButtonsCreate.Dock = DockStyle.Fill;
 
                 // Trick to make it seem like the button is a label (+ onclick method not doing anything in Create mode)
-                btnAttribute.FlatAppearance.MouseDownBackColor = btnAttribute.BackColor;
-                btnAttribute.FlatAppearance.MouseOverBackColor = btnAttribute.BackColor;
+                btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
+                btnAttribute.FlatAppearance.MouseOverBackColor = Color.Transparent;
 
                 nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
@@ -175,7 +178,7 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.TotalValue, _objAttributeActive.Abbrev);
+                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
                     lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
@@ -218,7 +221,7 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.TotalValue, _objAttributeActive.Abbrev);
+                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
                     lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
                     break;
             }
@@ -307,7 +310,7 @@ namespace Chummer.UI.Skills
         public bool CustomAttributeSet => _objAttributeActive != _objSkill.AttributeObject;
 
         [UsedImplicitly]
-        public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + btnAttribute.Margin.Left + btnAttribute.Width;
+        public int NameWidth => lblName.PreferredWidth + LogicalToDeviceUnits(3) + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
 
         [UsedImplicitly]
         public int NudSkillWidth => nudSkill.Visible ? nudSkill.Width : 0;
@@ -353,7 +356,7 @@ namespace Chummer.UI.Skills
         [UsedImplicitly]
         public void MoveControls(int intNewNameWidth)
         {
-            lblName.MinimumSize = new Size(intNewNameWidth - lblName.Margin.Right - btnAttribute.Margin.Left - btnAttribute.Width, lblName.MinimumSize.Height);
+            lblName.MinimumSize = new Size(intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left - pnlAttributes.Width, lblName.MinimumSize.Height);
         }
 
         private void UnbindSkillControl()
@@ -410,5 +413,12 @@ namespace Chummer.UI.Skills
             ActiveButton = null;
         }
         #endregion
+
+        private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            pnlAttributes.MinimumSize = new Size(LogicalToDeviceUnits(40), 0);
+            lblCareerRating.MinimumSize = new Size(LogicalToDeviceUnits(25), 0);
+            lblModifiedRating.MinimumSize = new Size(LogicalToDeviceUnits(50), 0);
+        }
     }
 }

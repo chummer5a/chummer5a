@@ -90,7 +90,7 @@ namespace Chummer
         private string _strName = string.Empty;
         private readonly List<Image> _lstMugshots = new List<Image>(1);
         private int _intMainMugshotIndex = -1;
-        private string _strSex = string.Empty;
+        private string _strGender = string.Empty;
         private string _strAge = string.Empty;
         private string _strEyes = string.Empty;
         private string _strHeight = string.Empty;
@@ -433,7 +433,7 @@ namespace Chummer
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if(Powers[e.OldIndex].AdeptWayDiscountEnabled)
-                OnPropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled));
+                OnMultiplePropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled), nameof(AllowAdeptWayPowerDiscount));
         }
 
         private void PowersOnListChanged(object sender, ListChangedEventArgs e)
@@ -477,6 +477,7 @@ namespace Chummer
                         }
                         else if (setChangedProperties.Add(nameof(Power.DiscountedAdeptWay)))
                         {
+                            setChangedProperties.Add(nameof(PowerPointsUsed));
                             setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                             setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
                             foreach (Power objPower in Powers)
@@ -1283,7 +1284,7 @@ namespace Chummer
                     SaveMugshots(objWriter);
 
                     // <sex />
-                    objWriter.WriteElementString("sex", _strSex);
+                    objWriter.WriteElementString("gender", _strGender);
                     // <age />
                     objWriter.WriteElementString("age", _strAge);
                     // <eyes />
@@ -2225,7 +2226,8 @@ namespace Chummer
                         // General character information.
                         xmlCharacterNavigator.TryGetStringFieldQuickly("name", ref _strName);
                         LoadMugshots(xmlCharacterNavigator);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("sex", ref _strSex);
+                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gender", ref _strGender))
+                            xmlCharacterNavigator.TryGetStringFieldQuickly("sex", ref _strGender);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("age", ref _strAge);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("eyes", ref _strEyes);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("height", ref _strHeight);
@@ -3888,7 +3890,7 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("sex", TranslateExtra(ReverseTranslateExtra(Sex), strLanguageToPrint));
+            objWriter.WriteElementString("gender", TranslateExtra(ReverseTranslateExtra(Gender), strLanguageToPrint));
             // <age />
             objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age), strLanguageToPrint));
             // <eyes />
@@ -6803,16 +6805,16 @@ namespace Chummer
         public List<string> PriorityBonusSkillList => _lstPrioritySkills;
 
         /// <summary>
-        /// Character's sex.
+        /// Character's gender.
         /// </summary>
-        public string Sex
+        public string Gender
         {
-            get => _strSex;
+            get => _strGender;
             set
             {
-                if(_strSex != value)
+                if(_strGender != value)
                 {
-                    _strSex = value;
+                    _strGender = value;
                     OnPropertyChanged();
                 }
             }
@@ -6826,7 +6828,7 @@ namespace Chummer
             {
                 if(!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
                     return _strCachedCharacterGrammaticGender;
-                switch(ReverseTranslateExtra(Sex).ToUpperInvariant())
+                switch(ReverseTranslateExtra(Gender).ToUpperInvariant())
                 {
                     case "M":
                     case "MALE":
@@ -9701,10 +9703,9 @@ namespace Chummer
                         return 0;
 
                     // A.I.s can restore Core damage via Software + Depth [Data Processing] (1 day) Extended Test
-                    int intDEPTotal = DEP.TotalValue;
                     int intAIReturn =
-                        (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute(intDEPTotal, "DEP") ??
-                         intDEPTotal - 1) +
+                        (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute("DEP") ??
+                         DEP.TotalValue - 1) +
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                     if(Improvements.Any(x =>
                        x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
@@ -15454,7 +15455,7 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(MentorSpirits))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(CharacterGrammaticGender),
-                        new DependencyGraphNode<string, Character>(nameof(Sex))
+                        new DependencyGraphNode<string, Character>(nameof(Gender))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(FirstMentorSpiritDisplayName),
                         new DependencyGraphNode<string, Character>(nameof(MentorSpirits))
@@ -16143,7 +16144,7 @@ namespace Chummer
                             XmlAttributeCollection xmlPersonalNodeAttributes = xmlPersonalNode.Attributes;
                             if (xmlPersonalNodeAttributes != null)
                             {
-                                _strSex = xmlPersonalNodeAttributes["gender"]?.InnerText;
+                                _strGender = xmlPersonalNodeAttributes["gender"]?.InnerText;
                                 _strAge = xmlPersonalNodeAttributes["age"]?.InnerText;
                                 _strHair = xmlPersonalNodeAttributes["hair"]?.InnerText;
                                 _strEyes = xmlPersonalNodeAttributes["eyes"]?.InnerText;
@@ -16750,8 +16751,8 @@ namespace Chummer
                                     case "Metatype":
                                         objContact.Metatype = astrLineColonSplit[1].Trim();
                                         break;
-                                    case "Sex":
-                                        objContact.Sex = astrLineColonSplit[1].Trim();
+                                    case "Gender":
+                                        objContact.Gender = astrLineColonSplit[1].Trim();
                                         break;
                                     case "Age":
                                         objContact.Age = astrLineColonSplit[1].Trim();

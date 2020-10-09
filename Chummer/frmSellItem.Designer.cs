@@ -67,11 +67,6 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudPercent.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
             this.nudPercent.Name = "nudPercent";
             this.nudPercent.Size = new System.Drawing.Size(62, 20);
             this.nudPercent.TabIndex = 1;

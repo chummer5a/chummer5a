@@ -45,6 +45,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private string _strSelectedLanguage = GlobalOptions.Language;
         private CultureInfo _objSelectedCultureInfo = GlobalOptions.CultureInfo;
+        private ColorMode _eSelectedColorMode = GlobalOptions.ColorMode;
 
         #region Form Events
         public frmOptions(string strActiveTab = "")
@@ -55,6 +56,7 @@ namespace Chummer
             // Remove this line if cmdUploadPastebin_Click has some functionality if DEBUG is not enabled or if tabPage3 gets some other control that can be used if DEBUG is not enabled
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
+            this.UpdateLightDarkMode();
             this.TranslateWinForm(_strSelectedLanguage);
 
             _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfos);
@@ -156,8 +158,8 @@ namespace Chummer
 	                string strItemValue = objItem.Value?.ToString();
 	                setBooks.Add(strItemValue);
 	            }
-	
-	            string strSelectedLanguage = _strSelectedLanguage;
+
+                string strSelectedLanguage = _strSelectedLanguage;
 	            XmlManager.Verify(strSelectedLanguage, setBooks);
 
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
@@ -281,6 +283,7 @@ namespace Chummer
             PopulatePDFParameters();
             PopulateCustomDataDirectoryTreeView();
             PopulateApplicationInsightsOptions();
+            PopulateColorModes();
         }
 
         private void RefreshGlobalSourcebookInfosListView()
@@ -446,6 +449,7 @@ namespace Chummer
                 }
             }
             GlobalOptions.Language = _strSelectedLanguage;
+            GlobalOptions.ColorMode = _eSelectedColorMode;
             GlobalOptions.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.SingleDiceRoller = chkSingleDiceRoller.Checked;
             GlobalOptions.DefaultCharacterSheet = cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue;
@@ -560,6 +564,7 @@ namespace Chummer
             }
 
             cboMugshotCompression.EndUpdate();
+            nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
         }
 
         private void PopulatePDFParameters()
@@ -625,6 +630,29 @@ namespace Chummer
             if (cboUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
                 cboUseLoggingApplicationInsights.SelectedIndex = 0;
             cboUseLoggingApplicationInsights.EndUpdate();
+        }
+
+        private void PopulateColorModes()
+        {
+            string strOldSelected = cboColorMode.SelectedValue?.ToString() ?? GlobalOptions.ColorMode.ToString();
+
+            List<ListItem> lstColorModes = new List<ListItem>(3);
+            foreach (ColorMode eLoopColorMode in Enum.GetValues(typeof(ColorMode)))
+            {
+                lstColorModes.Add(new ListItem(eLoopColorMode, LanguageManager.GetString("String_" + eLoopColorMode, _strSelectedLanguage)));
+            }
+
+            cboColorMode.BeginUpdate();
+            cboColorMode.DataSource = null;
+            cboColorMode.ValueMember = nameof(ListItem.Value);
+            cboColorMode.DisplayMember = nameof(ListItem.Name);
+            cboColorMode.DataSource = lstColorModes;
+
+            if (!string.IsNullOrEmpty(strOldSelected))
+                cboColorMode.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);
+            if (cboColorMode.SelectedIndex == -1 && lstColorModes.Count > 0)
+                cboColorMode.SelectedIndex = 0;
+            cboColorMode.EndUpdate();
         }
 
         private void SetToolTips()
@@ -1232,6 +1260,33 @@ namespace Chummer
             if (_blnLoading)
                 return;
             nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
+            OptionsChanged(sender, e);
+        }
+
+        private void cboColorMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+            using (new CursorWait(this))
+            {
+                if (Enum.TryParse(cboColorMode.SelectedValue.ToString(), true, out ColorMode eNewColorMode) && _eSelectedColorMode != eNewColorMode)
+                {
+                    _eSelectedColorMode = eNewColorMode;
+                    switch (eNewColorMode)
+                    {
+                        case ColorMode.Automatic:
+                            this.UpdateLightDarkMode(!ColorManager.DoesRegistrySayDarkMode());
+                            break;
+                        case ColorMode.Light:
+                            this.UpdateLightDarkMode(true);
+                            break;
+                        case ColorMode.Dark:
+                            this.UpdateLightDarkMode(false);
+                            break;
+                    }
+                }
+            }
+
             OptionsChanged(sender, e);
         }
     }

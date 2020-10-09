@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
- using System.Collections.Generic;
+ using System.Collections.Concurrent;
  using System.IO;
  using System.Text;
  using System.Windows.Forms;
@@ -31,7 +31,7 @@ namespace Chummer
     public partial class frmExport : Form
     {
         private readonly XmlDocument _objCharacterXML;
-        private readonly Dictionary<string,string> _dictCache = new Dictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _dicCache = new ConcurrentDictionary<string, string>();
         private bool _blnSelected;
 
         #region Control Events
@@ -39,6 +39,7 @@ namespace Chummer
         {
             _objCharacterXML = objCharacterXML;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             MoveControls();
         }
@@ -89,12 +90,11 @@ namespace Chummer
             if (string.IsNullOrEmpty(strXSLT))
                 return;
 
-            if (_dictCache.TryGetValue(strXSLT, out string strBoxText))
+            if (_dicCache.TryGetValue(strXSLT, out string strBoxText))
             {
-                rtbText.Text = strBoxText;
+                txtText.Text = strBoxText;
             }
-
-            if (strXSLT == "Export JSON")
+            else if (strXSLT == "Export JSON")
             {
                 GenerateJson();
             }
@@ -104,16 +104,16 @@ namespace Chummer
             }
         }
 
-        private void rtbText_Leave(object sender, EventArgs e)
+        private void txtText_Leave(object sender, EventArgs e)
         {
             _blnSelected = false;
         }
 
-        private void rtbText_MouseUp(object sender, MouseEventArgs e)
+        private void txtText_MouseUp(object sender, MouseEventArgs e)
         {
-            if (_blnSelected || rtbText.SelectionLength != 0) return;
+            if (_blnSelected || txtText.SelectionLength != 0) return;
             _blnSelected = true;
-            rtbText.SelectAll();
+            txtText.SelectAll();
         }
 
         #endregion
@@ -154,7 +154,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
-            File.WriteAllText(strSaveFile, rtbText.Text); // Change this to a proper path.
+            File.WriteAllText(strSaveFile, txtText.Text); // Change this to a proper path.
 
             DialogResult = DialogResult.OK;
         }
@@ -178,24 +178,22 @@ namespace Chummer
 
             // Read in the resulting code and pass it to the browser.
             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                rtbText.Text = objReader.ReadToEnd();
+                SetText(objReader.ReadToEnd());
+        }
 
-            if (!_dictCache.ContainsKey(cboXSLT.Text))
-            {
-                _dictCache.Add(cboXSLT.Text, rtbText.Text);
-            }
+        private void SetText(string strText)
+        {
+            string strExportMode = cboXSLT.Text;
+            if (!_dicCache.ContainsKey(strExportMode))
+                _dicCache.TryAdd(strExportMode, strText);
+            txtText.DoThreadSafe(() => txtText.Text = strText);
         }
         #endregion
         #region JSON
         private void GenerateJson()
         {
             string json = JsonConvert.SerializeXmlNode(_objCharacterXML, Formatting.Indented);
-            rtbText.Text = json;
-
-            if (!_dictCache.ContainsKey(cboXSLT.Text))
-            {
-                _dictCache.Add(cboXSLT.Text, rtbText.Text);
-            }
+            SetText(json);
         }
 
         private void ExportJson()
@@ -209,7 +207,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
                 return;
 
-            File.WriteAllText(SaveFileDialog1.FileName, rtbText.Text, Encoding.UTF8);
+            File.WriteAllText(SaveFileDialog1.FileName, txtText.Text, Encoding.UTF8);
 
             DialogResult = DialogResult.OK;
         }

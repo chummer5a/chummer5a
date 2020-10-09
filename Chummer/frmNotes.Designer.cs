@@ -28,23 +28,23 @@ namespace Chummer
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.rtfNotes = new Chummer.UI.Editors.RtfEditor();
+            this.txtNotes = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // rtfNotes
+            // txtNotes
             // 
-            this.rtfNotes.AllowFormatting = false;
-            this.rtfNotes.AutoSize = true;
-            this.rtfNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.rtfNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtfNotes.Location = new System.Drawing.Point(0, 0);
-            this.rtfNotes.MinimumSize = new System.Drawing.Size(0, 120);
-            this.rtfNotes.Name = "rtfNotes";
-            this.rtfNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
-    "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfNotes.Size = new System.Drawing.Size(624, 321);
-            this.rtfNotes.TabIndex = 0;
+            this.txtNotes.AcceptsReturn = true;
+            this.txtNotes.AcceptsTab = true;
+            this.txtNotes.AllowDrop = true;
+            this.txtNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNotes.Location = new System.Drawing.Point(0, 0);
+            this.txtNotes.MaxLength = 2147483647;
+            this.txtNotes.Multiline = true;
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtNotes.Size = new System.Drawing.Size(624, 321);
+            this.txtNotes.TabIndex = 0;
+            this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             // 
             // frmNotes
             // 
@@ -52,7 +52,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(624, 321);
-            this.Controls.Add(this.rtfNotes);
+            this.Controls.Add(this.txtNotes);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "frmNotes";
@@ -63,7 +63,7 @@ namespace Chummer
             this.Text = "Notes";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmNotes_FormClosing);
             this.Shown += new System.EventHandler(this.frmNotes_Shown);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rtfNotes_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             this.Resize += new System.EventHandler(this.frmNotes_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -72,6 +72,6 @@ namespace Chummer
 
         #endregion
 
-        private UI.Editors.RtfEditor rtfNotes;
+        private System.Windows.Forms.TextBox txtNotes;
     }
 }

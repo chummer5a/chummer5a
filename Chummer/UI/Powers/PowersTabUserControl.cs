@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
+using Chummer.Properties;
 using Chummer.UI.Table;
 
 // ReSharper disable StringCompareToIsCultureSpecific
@@ -43,6 +45,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _dropDownList = GenerateDropdownFilter();
@@ -344,16 +347,19 @@ namespace Chummer.UI.Powers
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
 
-            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell())
+            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell
+            {
+                Cursor = Cursors.Hand
+            })
             {
                 Text = "Source",
                 Extractor = (power => power.SourceDetail),
                 Tag = "Label_Source",
-                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
+                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip),
             };
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
-            TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>()
+            TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>
             {
                 ValueGetter = p => p.DiscountedAdeptWay,
                 ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
@@ -384,10 +390,10 @@ namespace Chummer.UI.Powers
             geasColumn.AddDependency(nameof(Power.DiscountedGeas));
             */
 
-            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox()
+            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox
             {
-                Image = Properties.Resources.note_edit,
-                Size = GetImageSize(Properties.Resources.note_edit),
+                Image = Resources.note_edit,
+                Size = GetImageSize(Resources.note_edit),
             })
             {
                 ClickHandler = p => {
@@ -413,7 +419,12 @@ namespace Chummer.UI.Powers
             };
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button { Text = LanguageManager.GetString("String_Delete"), Tag = "String_Delete", BackColor = SystemColors.Control })
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button
+            {
+                Text = LanguageManager.GetString("String_Delete"),
+                Tag = "String_Delete",
+                Dock = DockStyle.Fill
+            })
             {
                 ClickHandler = p =>
                 {
@@ -449,6 +460,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(noteColumn);
             _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
+            _table.UpdateLightDarkMode();
             _table.TranslateWinForm();
             tlpMain.SetColumnSpan(_table, 2);
             tlpMain.Controls.Add(_table, 0, 2);

@@ -3998,6 +3998,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Sexe :</text>
     </string>
     <string>
+      <key>Label_Gender</key>
+      <text>Gent :</text>
+    </string>
+    <string>
       <key>Label_Age</key>
       <text>Âge :</text>
     </string>

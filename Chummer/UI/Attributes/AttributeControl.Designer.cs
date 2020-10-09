@@ -31,8 +31,6 @@ namespace Chummer.UI.Attributes
         {
             this.components = new System.ComponentModel.Container();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblLimits = new Chummer.LabelWithToolTip();
-            this.lblValue = new Chummer.LabelWithToolTip();
             this.lblName = new Chummer.LabelWithToolTip();
             this.pnlButtons = new System.Windows.Forms.Panel();
             this.flpButtonsCareer = new System.Windows.Forms.FlowLayoutPanel();
@@ -42,6 +40,8 @@ namespace Chummer.UI.Attributes
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudBase = new Chummer.NumericUpDownEx();
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblValue = new Chummer.LabelWithToolTip();
+            this.lblLimits = new Chummer.LabelWithToolTip();
             this.tlpMain.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.flpButtonsCareer.SuspendLayout();
@@ -70,33 +70,6 @@ namespace Chummer.UI.Attributes
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Size = new System.Drawing.Size(276, 24);
             this.tlpMain.TabIndex = 79;
-            // 
-            // lblLimits
-            // 
-            this.lblLimits.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblLimits.AutoSize = true;
-            this.lblLimits.Location = new System.Drawing.Point(59, 0);
-            this.lblLimits.MinimumSize = new System.Drawing.Size(65, 0);
-            this.lblLimits.Name = "lblLimits";
-            this.lblLimits.Size = new System.Drawing.Size(65, 13);
-            this.lblLimits.TabIndex = 72;
-            this.lblLimits.Text = "00 / 00 (00)";
-            this.lblLimits.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblLimits.ToolTipText = null;
-            // 
-            // lblValue
-            // 
-            this.lblValue.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblValue.AutoSize = true;
-            this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblValue.Location = new System.Drawing.Point(3, 0);
-            this.lblValue.MinimumSize = new System.Drawing.Size(50, 0);
-            this.lblValue.Name = "lblValue";
-            this.lblValue.Size = new System.Drawing.Size(50, 13);
-            this.lblValue.TabIndex = 74;
-            this.lblValue.Text = "00 (00)";
-            this.lblValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblValue.ToolTipText = null;
             // 
             // lblName
             // 
@@ -143,7 +116,6 @@ namespace Chummer.UI.Attributes
             this.cmdImproveATT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdImproveATT.AutoSize = true;
             this.cmdImproveATT.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdImproveATT.FlatAppearance.BorderSize = 0;
             this.cmdImproveATT.Image = global::Chummer.Properties.Resources.add;
             this.cmdImproveATT.Location = new System.Drawing.Point(33, 0);
             this.cmdImproveATT.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -237,6 +209,33 @@ namespace Chummer.UI.Attributes
             this.flpRight.Size = new System.Drawing.Size(127, 13);
             this.flpRight.TabIndex = 76;
             this.flpRight.WrapContents = false;
+            // 
+            // lblValue
+            // 
+            this.lblValue.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblValue.AutoSize = true;
+            this.lblValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblValue.Location = new System.Drawing.Point(3, 0);
+            this.lblValue.MinimumSize = new System.Drawing.Size(50, 0);
+            this.lblValue.Name = "lblValue";
+            this.lblValue.Size = new System.Drawing.Size(50, 13);
+            this.lblValue.TabIndex = 74;
+            this.lblValue.Text = "00 (00)";
+            this.lblValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblValue.ToolTipText = null;
+            // 
+            // lblLimits
+            // 
+            this.lblLimits.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lblLimits.AutoSize = true;
+            this.lblLimits.Location = new System.Drawing.Point(59, 0);
+            this.lblLimits.MinimumSize = new System.Drawing.Size(65, 0);
+            this.lblLimits.Name = "lblLimits";
+            this.lblLimits.Size = new System.Drawing.Size(65, 13);
+            this.lblLimits.TabIndex = 72;
+            this.lblLimits.Text = "00 / 00 (00)";
+            this.lblLimits.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblLimits.ToolTipText = null;
             // 
             // AttributeControl
             // 

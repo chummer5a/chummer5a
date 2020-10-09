@@ -79,7 +79,8 @@ namespace Chummer
         {
             Utils.IsUnitTest = isUnitTest;
             InitializeComponent();
-
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
             _strCurrentVersion =
                 string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
 
@@ -158,10 +159,6 @@ namespace Chummer
                     }
 
                     Text = MainTitle;
-
-
-
-                    this.TranslateWinForm();
 
                     //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
 
@@ -353,6 +350,7 @@ namespace Chummer
                     // Set the Tag for each ToolStrip item so it can be translated.
                     foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
                     {
+                        tssItem.UpdateLightDarkMode();
                         tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
@@ -1030,6 +1028,7 @@ namespace Chummer
             // Translate the items in the menu by finding their Tags in the translation file.
             foreach(ToolStripItem tssItem in menuStrip.Items.OfType<ToolStripItem>())
             {
+                tssItem.UpdateLightDarkMode();
                 tssItem.TranslateToolStripItemsRecursively();
             }
         }
@@ -1041,6 +1040,7 @@ namespace Chummer
             {
                 foreach(ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
+                    tssItem.UpdateLightDarkMode();
                     tssItem.TranslateToolStripItemsRecursively();
                 }
             }
@@ -1053,6 +1053,7 @@ namespace Chummer
             {
                 foreach(ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
+                    tssItem.UpdateLightDarkMode();
                     tssItem.TranslateToolStripItemsRecursively();
                 }
             }
@@ -1335,9 +1336,10 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                FormWindowState wsPreference = OpenCharacterForms.Any(x => x.WindowState != FormWindowState.Maximized)
-                    ? FormWindowState.Normal
-                    : FormWindowState.Maximized;
+                FormWindowState wsPreference = MdiChildren.Length == 0
+                                               || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
+                    ? FormWindowState.Maximized
+                    : FormWindowState.Normal;
                 List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
                 foreach (Character objCharacter in lstCharacters)
                 {

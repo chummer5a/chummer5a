@@ -51,6 +51,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _strSourceName = strSource;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = _objCharacter.LoadData("skills.xml");
         }

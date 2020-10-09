@@ -55,6 +55,7 @@ namespace Chummer
         public frmSelectPACKSKit(Character objCharacter)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the PACKS information.

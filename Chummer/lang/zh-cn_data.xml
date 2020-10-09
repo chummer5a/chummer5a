@@ -1978,11 +1978,11 @@
       <contact translate="律贼（Vory Shestiorka）">Vory Shestiorka</contact>
       <contact translate="魔法之子（Wiz Kid）帮派成员">Wiz Kid Ganger</contact>
     </contacts>
-    <sexes>
-      <sex translate="女性">Female</sex>
-      <sex translate="男性">Male</sex>
-      <sex translate="未知">Unknown</sex>
-    </sexes>
+    <genders>
+      <gender translate="女性">Female</gender>
+      <gender translate="男性">Male</gender>
+      <gender translate="未知">Unknown</gender>
+    </genders>
     <ages>
       <age translate="年轻">Young</age>
       <age translate="中年">Middle-Aged</age>

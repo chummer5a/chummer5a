@@ -112,6 +112,7 @@
   <xsl:variable name="lang.Force"      select="'强度'"/>
   <xsl:variable name="lang.FV"      select="'FV'"/>
   <xsl:variable name="lang.Gear"      select="'装备'"/>
+  <xsl:variable name="lang.Gender"      select="'性别'"/>
   <xsl:variable name="lang.Grade"      select="'品级'"/>
   <xsl:variable name="lang.Hair"      select="'发色'"/>
   <xsl:variable name="lang.Handling"    select="'操纵性'"/>

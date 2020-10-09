@@ -27,6 +27,7 @@ namespace Chummer
         public frmSellItem()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

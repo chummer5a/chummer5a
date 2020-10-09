@@ -27,6 +27,7 @@ namespace Chummer
         public frmDiceHits()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 

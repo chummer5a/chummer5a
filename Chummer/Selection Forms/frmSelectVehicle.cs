@@ -52,6 +52,7 @@ namespace Chummer
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;

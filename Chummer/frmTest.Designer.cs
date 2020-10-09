@@ -34,7 +34,7 @@ namespace Chummer
             this.cmdTest = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.pgbProgress = new System.Windows.Forms.ProgressBar();
-            this.chkAddExceptionInfoToErrors = new System.Windows.Forms.CheckBox();
+            this.chkAddExceptionInfoToErrors = new Chummer.ColorableCheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -138,6 +138,7 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.Name = "frmTest";
+            this.ShowIcon = false;
             this.Text = "XML Test";
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
@@ -152,7 +153,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdTest;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.ProgressBar pgbProgress;
-        private System.Windows.Forms.CheckBox chkAddExceptionInfoToErrors;
+        private Chummer.ColorableCheckBox chkAddExceptionInfoToErrors;
         private BufferedTableLayoutPanel tlpMain;
     }
 }

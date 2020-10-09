@@ -42,8 +42,8 @@ namespace Chummer
             this.cmdExpand = new System.Windows.Forms.Button();
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.imgLink = new System.Windows.Forms.PictureBox();
-            this.chkGroup = new System.Windows.Forms.CheckBox();
-            this.chkFree = new System.Windows.Forms.CheckBox();
+            this.chkGroup = new Chummer.ColorableCheckBox(this.components);
+            this.chkFree = new Chummer.ColorableCheckBox(this.components);
             this.lblQuickStats = new System.Windows.Forms.Label();
             this.lblConnection = new System.Windows.Forms.Label();
             this.lblLoyalty = new System.Windows.Forms.Label();
@@ -51,11 +51,8 @@ namespace Chummer
             this.flpCheckBoxes1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpStatBlock = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flpCheckBoxes2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkBlackmail = new System.Windows.Forms.CheckBox();
-            this.chkFamily = new System.Windows.Forms.CheckBox();
             this.cboMetatype = new Chummer.ElasticComboBox();
-            this.cboSex = new Chummer.ElasticComboBox();
+            this.cboGender = new Chummer.ElasticComboBox();
             this.lblHobbiesVice = new System.Windows.Forms.Label();
             this.cboType = new Chummer.ElasticComboBox();
             this.lblPreferredPayment = new System.Windows.Forms.Label();
@@ -63,11 +60,14 @@ namespace Chummer
             this.lblPersonalLife = new System.Windows.Forms.Label();
             this.lblType = new System.Windows.Forms.Label();
             this.lblMetatype = new System.Windows.Forms.Label();
-            this.lblSex = new System.Windows.Forms.Label();
+            this.lblGender = new System.Windows.Forms.Label();
             this.lblAge = new System.Windows.Forms.Label();
             this.cboPreferredPayment = new Chummer.ElasticComboBox();
             this.cboHobbiesVice = new Chummer.ElasticComboBox();
             this.cboPersonalLife = new Chummer.ElasticComboBox();
+            this.flpCheckBoxes2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkBlackmail = new Chummer.ColorableCheckBox(this.components);
+            this.chkFamily = new Chummer.ColorableCheckBox(this.components);
             this.tlpComboBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
@@ -100,7 +100,7 @@ namespace Chummer
             0,
             0});
             this.nudConnection.Name = "nudConnection";
-            this.nudConnection.Size = new System.Drawing.Size(95, 20);
+            this.nudConnection.Size = new System.Drawing.Size(98, 20);
             this.nudConnection.TabIndex = 3;
             this.nudConnection.Value = new decimal(new int[] {
             1,
@@ -113,7 +113,7 @@ namespace Chummer
             // 
             this.nudLoyalty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudLoyalty.AutoSize = true;
-            this.nudLoyalty.Location = new System.Drawing.Point(223, 3);
+            this.nudLoyalty.Location = new System.Drawing.Point(226, 3);
             this.nudLoyalty.Maximum = new decimal(new int[] {
             6,
             0,
@@ -125,7 +125,7 @@ namespace Chummer
             0,
             0});
             this.nudLoyalty.Name = "nudLoyalty";
-            this.nudLoyalty.Size = new System.Drawing.Size(95, 20);
+            this.nudLoyalty.Size = new System.Drawing.Size(98, 20);
             this.nudLoyalty.TabIndex = 4;
             this.nudLoyalty.Value = new decimal(new int[] {
             1,
@@ -139,7 +139,6 @@ namespace Chummer
             this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.FlatAppearance.BorderSize = 0;
             this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
             this.cmdDelete.Location = new System.Drawing.Point(45, 3);
             this.cmdDelete.Name = "cmdDelete";
@@ -220,7 +219,6 @@ namespace Chummer
             this.cmdExpand.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdExpand.AutoSize = true;
             this.cmdExpand.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdExpand.FlatAppearance.BorderSize = 0;
             this.cmdExpand.Image = global::Chummer.Properties.Resources.Expand;
             this.cmdExpand.Location = new System.Drawing.Point(3, 3);
             this.cmdExpand.Name = "cmdExpand";
@@ -262,9 +260,9 @@ namespace Chummer
             // 
             this.chkGroup.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkGroup.AutoSize = true;
-            this.chkGroup.Location = new System.Drawing.Point(100, 3);
+            this.chkGroup.Location = new System.Drawing.Point(97, 3);
             this.chkGroup.Name = "chkGroup";
-            this.chkGroup.Size = new System.Drawing.Size(55, 17);
+            this.chkGroup.Size = new System.Drawing.Size(52, 17);
             this.chkGroup.TabIndex = 12;
             this.chkGroup.Tag = "Checkbox_Contact_Group";
             this.chkGroup.Text = "Group";
@@ -277,7 +275,7 @@ namespace Chummer
             this.chkFree.AutoSize = true;
             this.chkFree.Location = new System.Drawing.Point(47, 3);
             this.chkFree.Name = "chkFree";
-            this.chkFree.Size = new System.Drawing.Size(47, 17);
+            this.chkFree.Size = new System.Drawing.Size(44, 17);
             this.chkFree.TabIndex = 13;
             this.chkFree.Tag = "Checkbox_Contact_Free";
             this.chkFree.Text = "Free";
@@ -314,7 +312,7 @@ namespace Chummer
             // 
             this.lblLoyalty.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblLoyalty.AutoSize = true;
-            this.lblLoyalty.Location = new System.Drawing.Point(174, 5);
+            this.lblLoyalty.Location = new System.Drawing.Point(177, 5);
             this.lblLoyalty.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.lblLoyalty.Name = "lblLoyalty";
             this.lblLoyalty.Size = new System.Drawing.Size(43, 13);
@@ -360,10 +358,10 @@ namespace Chummer
             this.flpCheckBoxes1.Controls.Add(this.imgNotes);
             this.flpCheckBoxes1.Controls.Add(this.chkFree);
             this.flpCheckBoxes1.Controls.Add(this.chkGroup);
-            this.flpCheckBoxes1.Location = new System.Drawing.Point(321, 1);
+            this.flpCheckBoxes1.Location = new System.Drawing.Point(327, 1);
             this.flpCheckBoxes1.Margin = new System.Windows.Forms.Padding(0);
             this.flpCheckBoxes1.Name = "flpCheckBoxes1";
-            this.flpCheckBoxes1.Size = new System.Drawing.Size(158, 23);
+            this.flpCheckBoxes1.Size = new System.Drawing.Size(152, 23);
             this.flpCheckBoxes1.TabIndex = 20;
             this.flpCheckBoxes1.WrapContents = false;
             // 
@@ -402,7 +400,7 @@ namespace Chummer
             this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpStatBlock.Controls.Add(this.cboMetatype, 1, 1);
-            this.tlpStatBlock.Controls.Add(this.cboSex, 1, 2);
+            this.tlpStatBlock.Controls.Add(this.cboGender, 1, 2);
             this.tlpStatBlock.Controls.Add(this.lblHobbiesVice, 2, 4);
             this.tlpStatBlock.Controls.Add(this.cboType, 1, 4);
             this.tlpStatBlock.Controls.Add(this.lblPreferredPayment, 2, 3);
@@ -410,7 +408,7 @@ namespace Chummer
             this.tlpStatBlock.Controls.Add(this.lblPersonalLife, 2, 2);
             this.tlpStatBlock.Controls.Add(this.lblType, 0, 4);
             this.tlpStatBlock.Controls.Add(this.lblMetatype, 0, 1);
-            this.tlpStatBlock.Controls.Add(this.lblSex, 0, 2);
+            this.tlpStatBlock.Controls.Add(this.lblGender, 0, 2);
             this.tlpStatBlock.Controls.Add(this.lblAge, 0, 3);
             this.tlpStatBlock.Controls.Add(this.cboPreferredPayment, 3, 3);
             this.tlpStatBlock.Controls.Add(this.cboHobbiesVice, 3, 4);
@@ -429,47 +427,6 @@ namespace Chummer
             this.tlpStatBlock.TabIndex = 34;
             this.tlpStatBlock.Visible = false;
             // 
-            // flpCheckBoxes2
-            // 
-            this.flpCheckBoxes2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flpCheckBoxes2.AutoSize = true;
-            this.flpCheckBoxes2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpStatBlock.SetColumnSpan(this.flpCheckBoxes2, 2);
-            this.flpCheckBoxes2.Controls.Add(this.chkBlackmail);
-            this.flpCheckBoxes2.Controls.Add(this.chkFamily);
-            this.flpCheckBoxes2.Location = new System.Drawing.Point(215, 2);
-            this.flpCheckBoxes2.Margin = new System.Windows.Forms.Padding(0);
-            this.flpCheckBoxes2.Name = "flpCheckBoxes2";
-            this.flpCheckBoxes2.Size = new System.Drawing.Size(138, 23);
-            this.flpCheckBoxes2.TabIndex = 35;
-            this.flpCheckBoxes2.WrapContents = false;
-            // 
-            // chkBlackmail
-            // 
-            this.chkBlackmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkBlackmail.AutoSize = true;
-            this.chkBlackmail.Location = new System.Drawing.Point(3, 3);
-            this.chkBlackmail.Name = "chkBlackmail";
-            this.chkBlackmail.Size = new System.Drawing.Size(71, 17);
-            this.chkBlackmail.TabIndex = 16;
-            this.chkBlackmail.Tag = "Checkbox_Contact_Blackmail";
-            this.chkBlackmail.Text = "Blackmail";
-            this.chkBlackmail.UseVisualStyleBackColor = true;
-            this.chkBlackmail.CheckedChanged += new System.EventHandler(this.chkBlackmail_CheckedChanged);
-            // 
-            // chkFamily
-            // 
-            this.chkFamily.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkFamily.AutoSize = true;
-            this.chkFamily.Location = new System.Drawing.Point(80, 3);
-            this.chkFamily.Name = "chkFamily";
-            this.chkFamily.Size = new System.Drawing.Size(55, 17);
-            this.chkFamily.TabIndex = 17;
-            this.chkFamily.Tag = "Checkbox_Contact_Family";
-            this.chkFamily.Text = "Family";
-            this.chkFamily.UseVisualStyleBackColor = true;
-            this.chkFamily.CheckedChanged += new System.EventHandler(this.chkFamily_CheckedChanged);
-            // 
             // cboMetatype
             // 
             this.cboMetatype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -481,16 +438,16 @@ namespace Chummer
             this.cboMetatype.TooltipText = "";
             this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
-            // cboSex
+            // cboGender
             // 
-            this.cboSex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboSex.FormattingEnabled = true;
-            this.cboSex.Location = new System.Drawing.Point(63, 30);
-            this.cboSex.Name = "cboSex";
-            this.cboSex.Size = new System.Drawing.Size(149, 21);
-            this.cboSex.TabIndex = 21;
-            this.cboSex.TooltipText = "";
-            this.cboSex.TextChanged += new System.EventHandler(this.cboSex_TextChanged);
+            this.cboGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboGender.FormattingEnabled = true;
+            this.cboGender.Location = new System.Drawing.Point(63, 30);
+            this.cboGender.Name = "cboGender";
+            this.cboGender.Size = new System.Drawing.Size(149, 21);
+            this.cboGender.TabIndex = 21;
+            this.cboGender.TooltipText = "";
+            this.cboGender.TextChanged += new System.EventHandler(this.cboGender_TextChanged);
             // 
             // lblHobbiesVice
             // 
@@ -579,18 +536,18 @@ namespace Chummer
             this.lblMetatype.Text = "Metatype:";
             this.lblMetatype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblSex
+            // lblGender
             // 
-            this.lblSex.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSex.AutoSize = true;
-            this.lblSex.Location = new System.Drawing.Point(29, 34);
-            this.lblSex.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSex.Name = "lblSex";
-            this.lblSex.Size = new System.Drawing.Size(28, 13);
-            this.lblSex.TabIndex = 28;
-            this.lblSex.Tag = "Label_Sex";
-            this.lblSex.Text = "Sex:";
-            this.lblSex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblGender.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblGender.AutoSize = true;
+            this.lblGender.Location = new System.Drawing.Point(12, 34);
+            this.lblGender.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblGender.Name = "lblGender";
+            this.lblGender.Size = new System.Drawing.Size(45, 13);
+            this.lblGender.TabIndex = 28;
+            this.lblGender.Tag = "Label_Gender";
+            this.lblGender.Text = "Gender:";
+            this.lblGender.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblAge
             // 
@@ -637,6 +594,47 @@ namespace Chummer
             this.cboPersonalLife.TabIndex = 26;
             this.cboPersonalLife.TooltipText = "";
             this.cboPersonalLife.TextChanged += new System.EventHandler(this.cboPersonalLife_TextChanged);
+            // 
+            // flpCheckBoxes2
+            // 
+            this.flpCheckBoxes2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpCheckBoxes2.AutoSize = true;
+            this.flpCheckBoxes2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpStatBlock.SetColumnSpan(this.flpCheckBoxes2, 2);
+            this.flpCheckBoxes2.Controls.Add(this.chkBlackmail);
+            this.flpCheckBoxes2.Controls.Add(this.chkFamily);
+            this.flpCheckBoxes2.Location = new System.Drawing.Point(215, 2);
+            this.flpCheckBoxes2.Margin = new System.Windows.Forms.Padding(0);
+            this.flpCheckBoxes2.Name = "flpCheckBoxes2";
+            this.flpCheckBoxes2.Size = new System.Drawing.Size(132, 23);
+            this.flpCheckBoxes2.TabIndex = 35;
+            this.flpCheckBoxes2.WrapContents = false;
+            // 
+            // chkBlackmail
+            // 
+            this.chkBlackmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkBlackmail.AutoSize = true;
+            this.chkBlackmail.Location = new System.Drawing.Point(3, 3);
+            this.chkBlackmail.Name = "chkBlackmail";
+            this.chkBlackmail.Size = new System.Drawing.Size(68, 17);
+            this.chkBlackmail.TabIndex = 16;
+            this.chkBlackmail.Tag = "Checkbox_Contact_Blackmail";
+            this.chkBlackmail.Text = "Blackmail";
+            this.chkBlackmail.UseVisualStyleBackColor = true;
+            this.chkBlackmail.CheckedChanged += new System.EventHandler(this.chkBlackmail_CheckedChanged);
+            // 
+            // chkFamily
+            // 
+            this.chkFamily.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkFamily.AutoSize = true;
+            this.chkFamily.Location = new System.Drawing.Point(77, 3);
+            this.chkFamily.Name = "chkFamily";
+            this.chkFamily.Size = new System.Drawing.Size(52, 17);
+            this.chkFamily.TabIndex = 17;
+            this.chkFamily.Tag = "Checkbox_Contact_Family";
+            this.chkFamily.Text = "Family";
+            this.chkFamily.UseVisualStyleBackColor = true;
+            this.chkFamily.CheckedChanged += new System.EventHandler(this.chkFamily_CheckedChanged);
             // 
             // tlpComboBoxes
             // 
@@ -723,8 +721,8 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtContactName;
         private System.Windows.Forms.TextBox txtContactLocation;
         private System.Windows.Forms.Button cmdExpand;
-        private System.Windows.Forms.CheckBox chkGroup;
-        private System.Windows.Forms.CheckBox chkFree;
+        private Chummer.ColorableCheckBox chkGroup;
+        private Chummer.ColorableCheckBox chkFree;
         private System.Windows.Forms.Label lblQuickStats;
         private System.Windows.Forms.Label lblConnection;
         private System.Windows.Forms.Label lblLoyalty;
@@ -733,7 +731,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpComboBoxes;
         private BufferedTableLayoutPanel tlpStatBlock;
         private ElasticComboBox cboMetatype;
-        private ElasticComboBox cboSex;
+        private ElasticComboBox cboGender;
         private System.Windows.Forms.Label lblHobbiesVice;
         private ElasticComboBox cboType;
         private System.Windows.Forms.Label lblPreferredPayment;
@@ -741,14 +739,14 @@ namespace Chummer
         private System.Windows.Forms.Label lblPersonalLife;
         private System.Windows.Forms.Label lblType;
         private System.Windows.Forms.Label lblMetatype;
-        private System.Windows.Forms.Label lblSex;
+        private System.Windows.Forms.Label lblGender;
         private System.Windows.Forms.Label lblAge;
         private ElasticComboBox cboPreferredPayment;
         private ElasticComboBox cboHobbiesVice;
         private ElasticComboBox cboPersonalLife;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes2;
-        private System.Windows.Forms.CheckBox chkBlackmail;
-        private System.Windows.Forms.CheckBox chkFamily;
+        private Chummer.ColorableCheckBox chkBlackmail;
+        private Chummer.ColorableCheckBox chkFamily;
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes1;
     }

@@ -34,6 +34,7 @@ namespace Chummer
         public frmSelectSkillCategory(Character objCharacter)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }

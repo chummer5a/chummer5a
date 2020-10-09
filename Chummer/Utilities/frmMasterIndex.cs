@@ -68,6 +68,7 @@ namespace Chummer
         public frmMasterIndex()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
@@ -309,15 +310,15 @@ namespace Chummer
                         _dicCachedNotes.TryAdd(objEntry, strNotes);
                     }
 
-                    rtbNotes.Text = strNotes;
-                    rtbNotes.Visible = true;
+                    txtNotes.Text = strNotes;
+                    txtNotes.Visible = true;
                 }
                 else
                 {
                     lblSourceLabel.Visible = false;
                     lblSource.Visible = false;
                     lblSourceClickReminder.Visible = false;
-                    rtbNotes.Visible = false;
+                    txtNotes.Visible = false;
                 }
             }
         }

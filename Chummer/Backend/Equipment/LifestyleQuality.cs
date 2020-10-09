@@ -792,9 +792,15 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!string.IsNullOrEmpty(Notes)) return Color.SaddleBrown;
-                if (OriginSource == QualitySource.BuiltIn) return SystemColors.GrayText;
-                return SystemColors.WindowText;
+                if (!string.IsNullOrEmpty(Notes))
+                {
+                    return OriginSource == QualitySource.BuiltIn
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
+                }
+                return OriginSource == QualitySource.BuiltIn
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
 

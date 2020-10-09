@@ -53,6 +53,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(_objCharacter.CharacterOptionsKey))
                 _objCharacter.CharacterOptionsKey = GlobalOptions.DefaultCharacterOption;
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);

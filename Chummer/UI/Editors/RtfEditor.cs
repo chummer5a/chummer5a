@@ -24,11 +24,10 @@ namespace Chummer.UI.Editors
 {
     public partial class RtfEditor : UserControl
     {
-        private bool _blnAllowFormatting = true;
-
         public RtfEditor()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             if (!Utils.IsDesignerMode)
                 tsControls.Visible = false;
@@ -139,9 +138,7 @@ namespace Chummer.UI.Editors
             get => rtbContent.Rtf;
             set
             {
-                if (!AllowFormatting)
-                    rtbContent.Text = value.RtfToPlainText();
-                else if (value.IsRtf())
+                if (value.IsRtf())
                     rtbContent.Rtf = value;
                 else
                     rtbContent.Text = value;
@@ -152,21 +149,6 @@ namespace Chummer.UI.Editors
         {
             get => rtbContent.Text;
             set => rtbContent.Text = value.RtfToPlainText();
-        }
-
-        public bool AllowFormatting
-        {
-            get => _blnAllowFormatting;
-            set
-            {
-                if (_blnAllowFormatting != value)
-                {
-                    _blnAllowFormatting = value;
-                    rtbContent.DetectUrls = value;
-                    if (!Utils.IsDesignerMode)
-                        tsControls.Visible = value && rtbContent.Focused;
-                }
-            }
         }
 
         private bool IsJustifyLeft => rtbContent.SelectionAlignment == HorizontalAlignment.Left;
@@ -273,8 +255,7 @@ namespace Chummer.UI.Editors
 
         private void rtbContent_Enter(object sender, EventArgs e)
         {
-            if (AllowFormatting)
-                tsControls.Visible = true;
+            tsControls.Visible = true;
         }
 
         private void rtbContent_Leave(object sender, EventArgs e)

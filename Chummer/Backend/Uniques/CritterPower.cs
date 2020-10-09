@@ -626,14 +626,13 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Color.SaddleBrown;
+                    return Grade != 0
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (Grade != 0)
-                {
-                    return SystemColors.GrayText;
-                }
-
-                return SystemColors.WindowText;
+                return Grade != 0
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
         #endregion

@@ -86,7 +86,7 @@ namespace Chummer.UI.Skills
             // 
             // splitSkills
             // 
-            this.splitSkills.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.splitSkills.BackColor = System.Drawing.Color.LightBlue;
             this.splitSkills.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitSkills.Location = new System.Drawing.Point(0, 0);
             this.splitSkills.Margin = new System.Windows.Forms.Padding(0);
@@ -218,7 +218,7 @@ namespace Chummer.UI.Skills
             // 
             this.lblActiveSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblActiveSkills.AutoSize = true;
-            this.lblActiveSkills.Location = new System.Drawing.Point(3, 29);
+            this.lblActiveSkills.Location = new System.Drawing.Point(3, 30);
             this.lblActiveSkills.MinimumSize = new System.Drawing.Size(0, 22);
             this.lblActiveSkills.Name = "lblActiveSkills";
             this.lblActiveSkills.Size = new System.Drawing.Size(64, 22);
@@ -231,7 +231,7 @@ namespace Chummer.UI.Skills
             // 
             this.lblBuyWithKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblBuyWithKarma.AutoSize = true;
-            this.lblBuyWithKarma.Location = new System.Drawing.Point(505, 38);
+            this.lblBuyWithKarma.Location = new System.Drawing.Point(505, 39);
             this.lblBuyWithKarma.Name = "lblBuyWithKarma";
             this.lblBuyWithKarma.Size = new System.Drawing.Size(83, 13);
             this.lblBuyWithKarma.TabIndex = 50;
@@ -250,7 +250,7 @@ namespace Chummer.UI.Skills
             this.flpActiveSkillsLabels.Location = new System.Drawing.Point(70, 29);
             this.flpActiveSkillsLabels.Margin = new System.Windows.Forms.Padding(0);
             this.flpActiveSkillsLabels.Name = "flpActiveSkillsLabels";
-            this.flpActiveSkillsLabels.Size = new System.Drawing.Size(148, 22);
+            this.flpActiveSkillsLabels.Size = new System.Drawing.Size(144, 23);
             this.flpActiveSkillsLabels.TabIndex = 52;
             this.flpActiveSkillsLabels.WrapContents = false;
             // 
@@ -258,7 +258,7 @@ namespace Chummer.UI.Skills
             // 
             this.lblActiveSp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblActiveSp.AutoSize = true;
-            this.lblActiveSp.Location = new System.Drawing.Point(3, 9);
+            this.lblActiveSp.Location = new System.Drawing.Point(3, 10);
             this.lblActiveSp.Name = "lblActiveSp";
             this.lblActiveSp.Size = new System.Drawing.Size(36, 13);
             this.lblActiveSp.TabIndex = 46;
@@ -270,7 +270,7 @@ namespace Chummer.UI.Skills
             // 
             this.lblActiveKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblActiveKarma.AutoSize = true;
-            this.lblActiveKarma.Location = new System.Drawing.Point(45, 9);
+            this.lblActiveKarma.Location = new System.Drawing.Point(45, 10);
             this.lblActiveKarma.Name = "lblActiveKarma";
             this.lblActiveKarma.Size = new System.Drawing.Size(37, 13);
             this.lblActiveKarma.TabIndex = 47;
@@ -283,12 +283,10 @@ namespace Chummer.UI.Skills
             this.btnResetCustomDisplayAttribute.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnResetCustomDisplayAttribute.AutoSize = true;
             this.btnResetCustomDisplayAttribute.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnResetCustomDisplayAttribute.FlatAppearance.BorderSize = 0;
-            this.btnResetCustomDisplayAttribute.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(85, 0);
             this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
             this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";
-            this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(63, 22);
+            this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(59, 23);
             this.btnResetCustomDisplayAttribute.TabIndex = 53;
             this.btnResetCustomDisplayAttribute.Tag = "Button_ResetAll";
             this.btnResetCustomDisplayAttribute.Text = "Reset All";

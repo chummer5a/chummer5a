@@ -62,6 +62,7 @@ namespace Chummer
 
             _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").CreateNavigator().SelectSingleNode("/chummer");
 
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);

@@ -18,7 +18,6 @@
  */
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -33,6 +32,7 @@ namespace Chummer.UI.Table
         public HeaderCell()
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             _intArrowSize = LogicalToDeviceUnits(8);
             _intArrowPadding = LogicalToDeviceUnits(3);
             _intLabelPadding = LogicalToDeviceUnits(3);
@@ -130,10 +130,6 @@ namespace Chummer.UI.Table
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            // add gradient to background
-            using (LinearGradientBrush objBrush = new LinearGradientBrush(ClientRectangle, SystemColors.ControlLight, SystemColors.ControlDark, LinearGradientMode.Vertical))
-                e.Graphics.FillRectangle(objBrush, ClientRectangle);
-
             if (Sortable && SortType != SortOrder.None)
             {
                 // draw arrow
@@ -150,7 +146,14 @@ namespace Chummer.UI.Table
                     intTipY = intBottomY;
                     intBottomY = intTemp;
                 }
-                e.Graphics.FillPolygon(Brushes.Black, new [] { new Point(intLeft, intBottomY), new Point(intTipX, intTipY), new Point(intRight, intBottomY) });
+                using (Brush objBrush = new SolidBrush(ColorManager.ControlLightest))
+                    e.Graphics.FillPolygon(objBrush,
+                        new []
+                        {
+                            new Point(intLeft, intBottomY),
+                            new Point(intTipX, intTipY),
+                            new Point(intRight, intBottomY)
+                        });
             }
             base.OnPaint(e);
         }

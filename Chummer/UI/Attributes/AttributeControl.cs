@@ -45,6 +45,7 @@ namespace Chummer.UI.Attributes
             _objCharacter = attribute.CharacterObject;
 
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);

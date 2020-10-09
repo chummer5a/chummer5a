@@ -6238,7 +6238,7 @@
       <category>Electronics Accessories</category>
       <rating>0</rating>
       <source>CA</source>
-      <page>138</page>
+      <page>139</page>
       <avail>2</avail>
       <armorcapacity>[0]</armorcapacity>
       <cost>200</cost>
@@ -12460,7 +12460,7 @@
     </gear>
     <gear>
       <id>1135e850-8371-4827-b2fe-94f5659583d4</id>
-      <name>Ondanstron</name>
+      <name>Ondansetron</name>
       <category>Drugs</category>
       <rating>0</rating>
       <source>BB</source>

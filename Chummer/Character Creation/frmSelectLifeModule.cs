@@ -41,6 +41,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _intStage = intStage;
