@@ -744,7 +744,7 @@ namespace Chummer
         /// <summary>
         /// Whether the program should be forced to use Light/Dark mode or to obey default color schemes automatically
         /// </summary>
-        public static ColorMode ColorMode
+        public static ColorMode ColorModeSetting
         {
             get => _eColorMode;
             set

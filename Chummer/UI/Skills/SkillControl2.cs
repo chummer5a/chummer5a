@@ -310,7 +310,7 @@ namespace Chummer.UI.Skills
         public bool CustomAttributeSet => _objAttributeActive != _objSkill.AttributeObject;
 
         [UsedImplicitly]
-        public int NameWidth => lblName.PreferredWidth + LogicalToDeviceUnits(3) + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
+        public int NameWidth => lblName.PreferredWidth + 3 + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
 
         [UsedImplicitly]
         public int NudSkillWidth => nudSkill.Visible ? nudSkill.Width : 0;

@@ -501,21 +501,26 @@ namespace Chummer
                 // change position if RTL
                 bool fixPos = RightToLeft == RightToLeft.Yes ^ UpDownAlign == LeftRightAlignment.Left;
 
+                int int2PxWidth = 2;
+                int int16PxWidth = 16;
+                using (Graphics g = CreateGraphics())
+                {
+                    int2PxWidth = (int)(int2PxWidth * g.DpiX / 96.0f);
+                    int16PxWidth = (int)(int16PxWidth * g.DpiX / 96.0f);
+                }
                 if (_mouseOver)
                 {
-                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - LogicalToDeviceUnits(2);
+                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - int2PxWidth;
                     if (fixPos)
-                        _textbox.Location = new Point(LogicalToDeviceUnits(16), _textbox.Location.Y);
+                        _textbox.Location = new Point(int16PxWidth, _textbox.Location.Y);
                 }
                 else
                 {
                     if (fixPos)
-                        _textbox.Location = new Point(LogicalToDeviceUnits(2), _textbox.Location.Y);
-                    _textbox.Width = ClientSize.Width - _textbox.Left - LogicalToDeviceUnits(2);
+                        _textbox.Location = new Point(int2PxWidth, _textbox.Location.Y);
+                    _textbox.Width = ClientSize.Width - _textbox.Left - int2PxWidth;
                 }
-
             }
-
         }
 
         #endregion
