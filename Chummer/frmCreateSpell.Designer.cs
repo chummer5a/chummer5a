@@ -50,7 +50,7 @@ namespace Chummer
             this.chkModifier12 = new Chummer.ColorableCheckBox();
             this.chkModifier11 = new Chummer.ColorableCheckBox();
             this.chkModifier10 = new Chummer.ColorableCheckBox();
-            this.nudNumberOfEffects = new System.Windows.Forms.NumericUpDown();
+            this.nudNumberOfEffects = new Chummer.NumericUpDownEx();
             this.chkModifier9 = new Chummer.ColorableCheckBox();
             this.chkModifier8 = new Chummer.ColorableCheckBox();
             this.chkModifier7 = new Chummer.ColorableCheckBox();
@@ -704,7 +704,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkModifier3;
         private Chummer.ColorableCheckBox chkModifier2;
         private Chummer.ColorableCheckBox chkModifier1;
-        private System.Windows.Forms.NumericUpDown nudNumberOfEffects;
+        private Chummer.NumericUpDownEx nudNumberOfEffects;
         private Chummer.ColorableCheckBox chkModifier14;
         private Chummer.ColorableCheckBox chkModifier13;
         private Chummer.ColorableCheckBox chkModifier12;

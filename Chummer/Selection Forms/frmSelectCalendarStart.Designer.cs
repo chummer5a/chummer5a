@@ -30,11 +30,11 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.lblYear = new System.Windows.Forms.Label();
-            this.nudYear = new System.Windows.Forms.NumericUpDown();
+            this.nudYear = new Chummer.NumericUpDownEx();
             this.lblMonth = new System.Windows.Forms.Label();
-            this.nudMonth = new System.Windows.Forms.NumericUpDown();
+            this.nudMonth = new Chummer.NumericUpDownEx();
             this.lblWeek = new System.Windows.Forms.Label();
-            this.nudWeek = new System.Windows.Forms.NumericUpDown();
+            this.nudWeek = new Chummer.NumericUpDownEx();
             this.lblCalendarStart = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -279,11 +279,11 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.Label lblYear;
-        private System.Windows.Forms.NumericUpDown nudYear;
+        private Chummer.NumericUpDownEx nudYear;
         private System.Windows.Forms.Label lblMonth;
-        private System.Windows.Forms.NumericUpDown nudMonth;
+        private Chummer.NumericUpDownEx nudMonth;
         private System.Windows.Forms.Label lblWeek;
-        private System.Windows.Forms.NumericUpDown nudWeek;
+        private Chummer.NumericUpDownEx nudWeek;
         private System.Windows.Forms.Label lblCalendarStart;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;

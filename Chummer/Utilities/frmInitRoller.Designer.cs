@@ -28,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.nudDiceResult = new System.Windows.Forms.NumericUpDown();
+            this.nudDiceResult = new Chummer.NumericUpDownEx();
             this.lblDice = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblDescription = new System.Windows.Forms.Label();
@@ -135,7 +135,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.NumericUpDown nudDiceResult;
+        private Chummer.NumericUpDownEx nudDiceResult;
         private System.Windows.Forms.Label lblDice;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblDescription;

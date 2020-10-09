@@ -31,7 +31,7 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDiceRoller));
             this.lblRoll = new System.Windows.Forms.Label();
-            this.nudDice = new System.Windows.Forms.NumericUpDown();
+            this.nudDice = new Chummer.NumericUpDownEx();
             this.lblD6 = new System.Windows.Forms.Label();
             this.cmdRollDice = new System.Windows.Forms.Button();
             this.cboMethod = new Chummer.ElasticComboBox();
@@ -39,9 +39,9 @@ namespace Chummer
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lstResults = new System.Windows.Forms.ListBox();
             this.lblResultsLabel = new System.Windows.Forms.Label();
-            this.nudGremlins = new System.Windows.Forms.NumericUpDown();
+            this.nudGremlins = new Chummer.NumericUpDownEx();
             this.lblGremlins = new System.Windows.Forms.Label();
-            this.nudThreshold = new System.Windows.Forms.NumericUpDown();
+            this.nudThreshold = new Chummer.NumericUpDownEx();
             this.chkRuleOf6 = new Chummer.ColorableCheckBox();
             this.lblThreshold = new System.Windows.Forms.Label();
             this.chkCinematicGameplay = new Chummer.ColorableCheckBox();
@@ -415,7 +415,7 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.Label lblRoll;
-        private System.Windows.Forms.NumericUpDown nudDice;
+        private Chummer.NumericUpDownEx nudDice;
         private System.Windows.Forms.Label lblD6;
         private System.Windows.Forms.Button cmdRollDice;
         private ElasticComboBox cboMethod;
@@ -424,9 +424,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblResults;
         private System.Windows.Forms.ListBox lstResults;
         private System.Windows.Forms.Label lblResultsLabel;
-        private System.Windows.Forms.NumericUpDown nudGremlins;
+        private Chummer.NumericUpDownEx nudGremlins;
         private System.Windows.Forms.Label lblGremlins;
-        private System.Windows.Forms.NumericUpDown nudThreshold;
+        private Chummer.NumericUpDownEx nudThreshold;
         private Chummer.ColorableCheckBox chkRuleOf6;
         private System.Windows.Forms.Label lblThreshold;
         private Chummer.ColorableCheckBox chkBubbleDie;

@@ -28,7 +28,7 @@ namespace Chummer.UI.Table
         /// </summary>
         private void InitializeComponent()
         {
-            this._spinner = new System.Windows.Forms.NumericUpDown();
+            this._spinner = new Chummer.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this._spinner)).BeginInit();
             this.SuspendLayout();
             // 
@@ -58,6 +58,6 @@ namespace Chummer.UI.Table
 
         #endregion
 
-        private System.Windows.Forms.NumericUpDown _spinner;
+        private Chummer.NumericUpDownEx _spinner;
     }
 }

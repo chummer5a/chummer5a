@@ -47,7 +47,7 @@ namespace Chummer
             this.lblTestLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
@@ -66,7 +66,7 @@ namespace Chummer
             this.chkPrototypeTranshuman = new Chummer.ColorableCheckBox();
             this.flpDiscount = new System.Windows.Forms.FlowLayoutPanel();
             this.lblESSDiscountLabel = new System.Windows.Forms.Label();
-            this.nudESSDiscount = new System.Windows.Forms.NumericUpDown();
+            this.nudESSDiscount = new Chummer.NumericUpDownEx();
             this.lblESSDiscountPercentLabel = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdOKAdd = new System.Windows.Forms.Button();
@@ -74,7 +74,7 @@ namespace Chummer
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.lblCapacity = new System.Windows.Forms.Label();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
-            this.nudRating = new System.Windows.Forms.NumericUpDown();
+            this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
             this.tlpMain.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -830,14 +830,14 @@ namespace Chummer
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblRatingLabel;
-        private System.Windows.Forms.NumericUpDown nudRating;
+        private Chummer.NumericUpDownEx nudRating;
         private System.Windows.Forms.Label lblMaximumCapacity;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
         private Chummer.ColorableCheckBox chkFree;
-        private System.Windows.Forms.NumericUpDown nudESSDiscount;
+        private Chummer.NumericUpDownEx nudESSDiscount;
         private System.Windows.Forms.Label lblESSDiscountLabel;
         private System.Windows.Forms.Label lblESSDiscountPercentLabel;
         private System.Windows.Forms.Label lblTest;
@@ -845,7 +845,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberwareNotes;
         private System.Windows.Forms.Label lblCyberwareNotesLabel;
         private Chummer.ColorableCheckBox chkBlackMarketDiscount;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;

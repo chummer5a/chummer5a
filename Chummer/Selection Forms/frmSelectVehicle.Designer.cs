@@ -60,9 +60,9 @@ namespace Chummer
             this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.chkUsedVehicle = new Chummer.ColorableCheckBox();
             this.lblUsedVehicleDiscountLabel = new System.Windows.Forms.Label();
-            this.nudUsedVehicleDiscount = new System.Windows.Forms.NumericUpDown();
+            this.nudUsedVehicleDiscount = new Chummer.NumericUpDownEx();
             this.lblUsedVehicleDiscountPercentLabel = new System.Windows.Forms.Label();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
@@ -839,9 +839,9 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkFreeItem;
         private Chummer.ColorableCheckBox chkUsedVehicle;
         private System.Windows.Forms.Label lblUsedVehicleDiscountLabel;
-        private System.Windows.Forms.NumericUpDown nudUsedVehicleDiscount;
+        private Chummer.NumericUpDownEx nudUsedVehicleDiscount;
         private System.Windows.Forms.Label lblUsedVehicleDiscountPercentLabel;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.Label lblTest;

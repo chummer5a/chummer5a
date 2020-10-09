@@ -89,7 +89,7 @@ namespace Chummer
             this.lblWeaponCost = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
             this.lblWeaponAvail = new System.Windows.Forms.Label();
@@ -1120,7 +1120,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponAccuracy;
         private System.Windows.Forms.Label lblWeaponAccuracyLabel;
         private System.Windows.Forms.Label lblTest;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private Chummer.ColorableCheckBox chkFreeItem;
         private System.Windows.Forms.Label lblSource;

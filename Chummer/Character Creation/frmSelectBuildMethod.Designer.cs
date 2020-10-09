@@ -29,22 +29,22 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.nudKarma = new System.Windows.Forms.NumericUpDown();
+            this.nudKarma = new Chummer.NumericUpDownEx();
             this.cmdOK = new System.Windows.Forms.Button();
             this.chkIgnoreRules = new Chummer.ColorableCheckBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
             this.lblMaxAvail = new System.Windows.Forms.Label();
-            this.nudMaxAvail = new System.Windows.Forms.NumericUpDown();
+            this.nudMaxAvail = new Chummer.NumericUpDownEx();
             this.cboGamePlay = new Chummer.ElasticComboBox();
             this.lblStartingKarma = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.nudMaxNuyen = new System.Windows.Forms.NumericUpDown();
+            this.nudMaxNuyen = new Chummer.NumericUpDownEx();
             this.lblMaxNuyen = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpNumericUpDowns = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblSumToX = new System.Windows.Forms.Label();
-            this.nudSumtoTen = new System.Windows.Forms.NumericUpDown();
+            this.nudSumtoTen = new Chummer.NumericUpDownEx();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
@@ -366,20 +366,20 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.NumericUpDown nudKarma;
+        private Chummer.NumericUpDownEx nudKarma;
         private System.Windows.Forms.Button cmdOK;
         private Chummer.ColorableCheckBox chkIgnoreRules;
         private System.Windows.Forms.Button cmdCancel;
         private ElasticComboBox cboBuildMethod;
         private System.Windows.Forms.Label lblMaxAvail;
-        private System.Windows.Forms.NumericUpDown nudMaxAvail;
+        private Chummer.NumericUpDownEx nudMaxAvail;
         private ElasticComboBox cboGamePlay;
         private System.Windows.Forms.Label lblStartingKarma;
         private System.Windows.Forms.Label lblDescription;
-        private System.Windows.Forms.NumericUpDown nudMaxNuyen;
+        private Chummer.NumericUpDownEx nudMaxNuyen;
         private System.Windows.Forms.Label lblMaxNuyen;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.NumericUpDown nudSumtoTen;
+        private Chummer.NumericUpDownEx nudSumtoTen;
         private System.Windows.Forms.Label lblSumToX;
         private BufferedTableLayoutPanel tlpNumericUpDowns;
         private BufferedTableLayoutPanel tlpButtons;

@@ -43,12 +43,12 @@ namespace Chummer
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.chkFreeItem = new Chummer.ColorableCheckBox();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.nudRating = new System.Windows.Forms.NumericUpDown();
+            this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.cboMount = new Chummer.ElasticComboBox();
             this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
@@ -623,8 +623,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private Chummer.ColorableCheckBox chkFreeItem;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
-        private System.Windows.Forms.NumericUpDown nudRating;
+        private Chummer.NumericUpDownEx nudMarkup;
+        private Chummer.NumericUpDownEx nudRating;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
