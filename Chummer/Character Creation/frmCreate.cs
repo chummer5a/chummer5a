@@ -8825,10 +8825,12 @@ namespace Chummer
             int intSpellPointsUsed = 0;
             int intRitualPointsUsed = 0;
             int intPrepPointsUsed = 0;
-            if (CharacterObject.MagicianEnabled ||
-                    CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells ||
-                                                                     objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT ||
-                                                                     objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill) && objImprovement.Enabled))
+            if (CharacterObject.MagicianEnabled
+                || CharacterObject.AdeptEnabled
+                || CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
+                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
+                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+                                                                      && objImprovement.Enabled))
             {
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
                 int spells = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus);
