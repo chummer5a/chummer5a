@@ -702,6 +702,13 @@ namespace Chummer
                 // This attribute is not used by the node itself, so it can be removed to speed up node importing later on.
                 objAmendingNodeAttribs.RemoveNamedItem("isidnode");
 
+                // Gets the specific operation to execute on this node.
+                XmlNode objAmendOperation = objAmendingNodeAttribs.RemoveNamedItem("amendoperation");
+                if (objAmendOperation != null)
+                {
+                    strOperation = objAmendOperation.InnerText;
+                }
+
                 // Gets the custom XPath filter defined for what children to fetch. If it exists, use that as the XPath filter for targeting nodes.
                 XmlNode objCustomXPath = objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
                 if (objCustomXPath != null)
@@ -721,7 +728,10 @@ namespace Chummer
                         objAmendingNodeId = xmlAmendingNode["name"];
                         if (objAmendingNodeId != null)
                         {
-                            sbdFilter.Append("name = ").Append(objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
+                            // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node
+                            // if there are other nodes present in the amending node or if a remove operation is specified (since that only requires an id node).
+                            if (strOperation == "remove" || xmlAmendingNode.SelectSingleNode("child::*[not(self::name)]") != null)
+                                sbdFilter.Append("name = ").Append(objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                         }
                     }
                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -737,13 +747,6 @@ namespace Chummer
                             }
                         }
                     }
-                }
-
-                // Gets the specific operation to execute on this node.
-                XmlNode objAmendOperation = objAmendingNodeAttribs.RemoveNamedItem("amendoperation");
-                if (objAmendOperation != null)
-                {
-                    strOperation = objAmendOperation.InnerText;
                 }
 
                 // Get info on whether this node should be appended if no target node is found
@@ -785,8 +788,7 @@ namespace Chummer
                 return blnReturn;
             }
 
-            sbdFilter.Insert(0, strXPath + '/' + xmlAmendingNode.Name);
-            string strNewXPath = sbdFilter.ToString();
+            string strNewXPath = strXPath + '/' + xmlAmendingNode.Name + sbdFilter.ToString();
 
             XmlNodeList objNodesToEdit = xmlDoc.SelectNodes(strNewXPath);
 
@@ -1038,7 +1040,7 @@ namespace Chummer
             else if (strOperation == "append" || blnAddIfNotFound && (strOperation == "recurse" || strOperation == "replace"))
             {
                 // Indication that we recursed into a set of nodes that don't exist in the base document, so those nodes will need to be recreated
-                if (lstExtraNodesToAddIfNotFound?.Count > 0)
+                if (lstExtraNodesToAddIfNotFound?.Count > 0 && sbdFilter.Length == 0) // Filter of any kind on this node would fail after addition, so skip if there is one
                 {
                     // Because this is a list, foreach will move from oldest element to newest
                     // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
