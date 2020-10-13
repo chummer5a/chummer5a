@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.lblProcessorLabel = new System.Windows.Forms.Label();
-            this.nudProcessor = new System.Windows.Forms.NumericUpDown();
-            this.nudSystem = new System.Windows.Forms.NumericUpDown();
+            this.nudProcessor = new Chummer.NumericUpDownEx();
+            this.nudSystem = new Chummer.NumericUpDownEx();
             this.lblSystemLabel = new System.Windows.Forms.Label();
             this.lblPersonaLimitLabel = new System.Windows.Forms.Label();
-            this.nudResponse = new System.Windows.Forms.NumericUpDown();
+            this.nudResponse = new Chummer.NumericUpDownEx();
             this.lblResponseLabel = new System.Windows.Forms.Label();
-            this.nudFirewall = new System.Windows.Forms.NumericUpDown();
+            this.nudFirewall = new Chummer.NumericUpDownEx();
             this.lblFirewallLabel = new System.Windows.Forms.Label();
             this.lblSystemAvail = new System.Windows.Forms.Label();
             this.lblSystemAvailLabel = new System.Windows.Forms.Label();
@@ -47,9 +47,9 @@
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkFreeItem = new System.Windows.Forms.CheckBox();
-            this.nudPersona = new System.Windows.Forms.NumericUpDown();
-            this.nudSignal = new System.Windows.Forms.NumericUpDown();
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.nudPersona = new Chummer.NumericUpDownEx();
+            this.nudSignal = new Chummer.NumericUpDownEx();
             this.lblSignalLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudProcessor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSystem)).BeginInit();
@@ -422,13 +422,13 @@
         #endregion
 
         private System.Windows.Forms.Label lblProcessorLabel;
-        private System.Windows.Forms.NumericUpDown nudProcessor;
-        private System.Windows.Forms.NumericUpDown nudSystem;
+        private Chummer.NumericUpDownEx nudProcessor;
+        private Chummer.NumericUpDownEx nudSystem;
         private System.Windows.Forms.Label lblSystemLabel;
         private System.Windows.Forms.Label lblPersonaLimitLabel;
-        private System.Windows.Forms.NumericUpDown nudResponse;
+        private Chummer.NumericUpDownEx nudResponse;
         private System.Windows.Forms.Label lblResponseLabel;
-        private System.Windows.Forms.NumericUpDown nudFirewall;
+        private Chummer.NumericUpDownEx nudFirewall;
         private System.Windows.Forms.Label lblFirewallLabel;
         private System.Windows.Forms.Label lblSystemAvail;
         private System.Windows.Forms.Label lblSystemAvailLabel;
@@ -440,9 +440,9 @@
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.CheckBox chkFreeItem;
-        private System.Windows.Forms.NumericUpDown nudPersona;
-        private System.Windows.Forms.NumericUpDown nudSignal;
+        private Chummer.ColorableCheckBox chkFreeItem;
+        private Chummer.NumericUpDownEx nudPersona;
+        private Chummer.NumericUpDownEx nudSignal;
         private System.Windows.Forms.Label lblSignalLabel;
     }
 }

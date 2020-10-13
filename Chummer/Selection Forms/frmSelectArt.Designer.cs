@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.chkLimitList = new System.Windows.Forms.CheckBox();
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lstArt = new System.Windows.Forms.ListBox();
@@ -217,7 +217,7 @@ namespace Chummer
         }
         #endregion
 
-        private System.Windows.Forms.CheckBox chkLimitList;
+        private Chummer.ColorableCheckBox chkLimitList;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.ListBox lstArt;

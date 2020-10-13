@@ -39,14 +39,14 @@ namespace Chummer
             this.lblCost = new System.Windows.Forms.Label();
             this.lblLifestyleNameLabel = new System.Windows.Forms.Label();
             this.txtLifestyleName = new System.Windows.Forms.TextBox();
-            this.nudPercentage = new System.Windows.Forms.NumericUpDown();
+            this.nudPercentage = new Chummer.NumericUpDownEx();
             this.lblPercentage = new System.Windows.Forms.Label();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.nudRoommates = new System.Windows.Forms.NumericUpDown();
+            this.nudRoommates = new Chummer.NumericUpDownEx();
             this.lblRoommates = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkPrimaryTenant = new System.Windows.Forms.CheckBox();
+            this.chkPrimaryTenant = new Chummer.ColorableCheckBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
@@ -380,14 +380,14 @@ namespace Chummer
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblLifestyleNameLabel;
         private System.Windows.Forms.TextBox txtLifestyleName;
-        private System.Windows.Forms.NumericUpDown nudPercentage;
+        private Chummer.NumericUpDownEx nudPercentage;
         private System.Windows.Forms.Label lblPercentage;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
-        private System.Windows.Forms.NumericUpDown nudRoommates;
+        private Chummer.NumericUpDownEx nudRoommates;
         private System.Windows.Forms.Label lblRoommates;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.CheckBox chkPrimaryTenant;
+        private Chummer.ColorableCheckBox chkPrimaryTenant;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

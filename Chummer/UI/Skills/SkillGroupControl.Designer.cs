@@ -33,11 +33,11 @@ namespace Chummer.UI.Skills
             this.lblGroupRating = new System.Windows.Forms.Label();
             this.pnlRight = new System.Windows.Forms.Panel();
             this.flpRightCareer = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpRightCreate = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblName = new Chummer.LabelWithToolTip();
             this.btnCareerIncrease = new Chummer.ButtonWithToolTip();
+            this.flpRightCreate = new System.Windows.Forms.FlowLayoutPanel();
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.nudSkill = new Chummer.NumericUpDownEx();
+            this.lblName = new Chummer.LabelWithToolTip();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.pnlRight.SuspendLayout();
             this.flpRightCareer.SuspendLayout();
@@ -52,25 +52,25 @@ namespace Chummer.UI.Skills
             this.lblGroupRating.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblGroupRating.AutoSize = true;
             this.lblGroupRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGroupRating.Location = new System.Drawing.Point(3, 5);
-            this.lblGroupRating.MinimumSize = new System.Drawing.Size(21, 0);
+            this.lblGroupRating.Location = new System.Drawing.Point(85, 5);
+            this.lblGroupRating.MinimumSize = new System.Drawing.Size(25, 0);
             this.lblGroupRating.Name = "lblGroupRating";
-            this.lblGroupRating.Size = new System.Drawing.Size(21, 13);
+            this.lblGroupRating.Size = new System.Drawing.Size(25, 13);
             this.lblGroupRating.TabIndex = 7;
             this.lblGroupRating.Text = "00";
-            this.lblGroupRating.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblGroupRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // pnlRight
             // 
             this.pnlRight.AutoSize = true;
             this.pnlRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.pnlRight.Controls.Add(this.flpRightCareer);
             this.pnlRight.Controls.Add(this.flpRightCreate);
+            this.pnlRight.Controls.Add(this.flpRightCareer);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlRight.Location = new System.Drawing.Point(72, 0);
             this.pnlRight.Margin = new System.Windows.Forms.Padding(0);
             this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(82, 24);
+            this.pnlRight.Size = new System.Drawing.Size(143, 48);
             this.pnlRight.TabIndex = 8;
             // 
             // flpRightCareer
@@ -79,13 +79,29 @@ namespace Chummer.UI.Skills
             this.flpRightCareer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpRightCareer.Controls.Add(this.btnCareerIncrease);
             this.flpRightCareer.Controls.Add(this.lblGroupRating);
-            this.flpRightCareer.Dock = System.Windows.Forms.DockStyle.Right;
+            this.flpRightCareer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpRightCareer.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpRightCareer.Location = new System.Drawing.Point(25, 0);
+            this.flpRightCareer.Location = new System.Drawing.Point(0, 0);
             this.flpRightCareer.Name = "flpRightCareer";
-            this.flpRightCareer.Size = new System.Drawing.Size(57, 24);
+            this.flpRightCareer.Size = new System.Drawing.Size(143, 48);
             this.flpRightCareer.TabIndex = 0;
             this.flpRightCareer.WrapContents = false;
+            // 
+            // btnCareerIncrease
+            // 
+            this.btnCareerIncrease.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCareerIncrease.AutoSize = true;
+            this.btnCareerIncrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
+            this.btnCareerIncrease.Location = new System.Drawing.Point(116, 0);
+            this.btnCareerIncrease.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.btnCareerIncrease.Name = "btnCareerIncrease";
+            this.btnCareerIncrease.Padding = new System.Windows.Forms.Padding(1);
+            this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
+            this.btnCareerIncrease.TabIndex = 22;
+            this.btnCareerIncrease.ToolTipText = "";
+            this.btnCareerIncrease.UseVisualStyleBackColor = true;
+            this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
             // flpRightCreate
             // 
@@ -98,46 +114,17 @@ namespace Chummer.UI.Skills
             this.flpRightCreate.Location = new System.Drawing.Point(0, 0);
             this.flpRightCreate.Margin = new System.Windows.Forms.Padding(0);
             this.flpRightCreate.Name = "flpRightCreate";
-            this.flpRightCreate.Size = new System.Drawing.Size(82, 24);
+            this.flpRightCreate.Size = new System.Drawing.Size(143, 48);
             this.flpRightCreate.TabIndex = 7;
             this.flpRightCreate.WrapContents = false;
-            // 
-            // lblName
-            // 
-            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(3, 5);
-            this.lblName.Margin = new System.Windows.Forms.Padding(3, 5, 3, 6);
-            this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(66, 13);
-            this.lblName.TabIndex = 6;
-            this.lblName.Text = "[groupname]";
-            this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblName.ToolTipText = "";
-            // 
-            // btnCareerIncrease
-            // 
-            this.btnCareerIncrease.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnCareerIncrease.AutoSize = true;
-            this.btnCareerIncrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
-            this.btnCareerIncrease.Location = new System.Drawing.Point(30, 0);
-            this.btnCareerIncrease.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.btnCareerIncrease.Name = "btnCareerIncrease";
-            this.btnCareerIncrease.Padding = new System.Windows.Forms.Padding(1);
-            this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
-            this.btnCareerIncrease.TabIndex = 22;
-            this.btnCareerIncrease.ToolTipText = "";
-            this.btnCareerIncrease.UseVisualStyleBackColor = true;
-            this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
             // 
             // nudKarma
             // 
             this.nudKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.nudKarma.AutoSize = true;
             this.nudKarma.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
-            this.nudKarma.Location = new System.Drawing.Point(44, 0);
-            this.nudKarma.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.nudKarma.Location = new System.Drawing.Point(105, 2);
+            this.nudKarma.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
             0,
@@ -152,8 +139,8 @@ namespace Chummer.UI.Skills
             this.nudSkill.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.nudSkill.AutoSize = true;
             this.nudSkill.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
-            this.nudSkill.Location = new System.Drawing.Point(3, 0);
-            this.nudSkill.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.nudSkill.Location = new System.Drawing.Point(64, 2);
+            this.nudSkill.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
             0,
@@ -162,6 +149,18 @@ namespace Chummer.UI.Skills
             this.nudSkill.Name = "nudSkill";
             this.nudSkill.Size = new System.Drawing.Size(35, 20);
             this.nudSkill.TabIndex = 2;
+            // 
+            // lblName
+            // 
+            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblName.AutoSize = true;
+            this.lblName.Location = new System.Drawing.Point(3, 17);
+            this.lblName.Name = "lblName";
+            this.lblName.Size = new System.Drawing.Size(66, 13);
+            this.lblName.TabIndex = 6;
+            this.lblName.Text = "[groupname]";
+            this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblName.ToolTipText = "";
             // 
             // tlpMain
             // 
@@ -178,7 +177,7 @@ namespace Chummer.UI.Skills
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(154, 24);
+            this.tlpMain.Size = new System.Drawing.Size(215, 48);
             this.tlpMain.TabIndex = 25;
             // 
             // SkillGroupControl
@@ -190,8 +189,9 @@ namespace Chummer.UI.Skills
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillGroupControl";
-            this.Size = new System.Drawing.Size(154, 24);
+            this.Size = new System.Drawing.Size(215, 48);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
+            this.DpiChangedAfterParent += new System.EventHandler(this.SkillGroupControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.pnlRight.ResumeLayout(false);
             this.pnlRight.PerformLayout();

@@ -3013,6 +3013,10 @@
             <text>Geschlecht:</text>
         </string>
         <string>
+            <key>Label_Gender</key>
+            <text>Geschlecht:</text>
+        </string>
+        <string>
             <key>Label_Age</key>
             <text>Alter:</text>
         </string>

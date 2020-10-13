@@ -405,7 +405,8 @@ namespace Chummer.Backend.Equipment
                     {
                         Weapon objWeapon = new Weapon(_objCharacter)
                         {
-                            ParentVehicle = Parent
+                            ParentVehicle = Parent,
+                            ParentVehicleMod = this
                         };
                         objWeapon.Load(nodChild, blnCopy);
                         _lstVehicleWeapons.Add(objWeapon);

@@ -35,12 +35,12 @@ namespace Chummer
             this.btnBrowse = new System.Windows.Forms.Button();
             this.txtName = new System.Windows.Forms.TextBox();
             this.lblInit = new System.Windows.Forms.Label();
-            this.nudInit = new System.Windows.Forms.NumericUpDown();
+            this.nudInit = new Chummer.NumericUpDownEx();
             this.lbld6 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.chkAutoRollInit = new System.Windows.Forms.CheckBox();
-            this.nudInitStart = new System.Windows.Forms.NumericUpDown();
+            this.chkAutoRollInit = new Chummer.ColorableCheckBox();
+            this.nudInitStart = new Chummer.NumericUpDownEx();
             this.lblStartingInit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudInit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudInitStart)).BeginInit();
@@ -194,12 +194,12 @@ namespace Chummer
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Label lblInit;
-        private System.Windows.Forms.NumericUpDown nudInit;
+        private Chummer.NumericUpDownEx nudInit;
         private System.Windows.Forms.Label lbld6;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.CheckBox chkAutoRollInit;
-        private System.Windows.Forms.NumericUpDown nudInitStart;
+        private Chummer.ColorableCheckBox chkAutoRollInit;
+        private Chummer.NumericUpDownEx nudInitStart;
         private System.Windows.Forms.Label lblStartingInit;
 
     }

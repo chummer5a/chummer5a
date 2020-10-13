@@ -34,9 +34,9 @@ namespace Chummer
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.rtbText = new System.Windows.Forms.RichTextBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.txtText = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -95,19 +95,6 @@ namespace Chummer
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
-            // rtbText
-            // 
-            this.tlpMain.SetColumnSpan(this.rtbText, 2);
-            this.rtbText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbText.Location = new System.Drawing.Point(3, 30);
-            this.rtbText.Name = "rtbText";
-            this.rtbText.ReadOnly = true;
-            this.rtbText.Size = new System.Drawing.Size(440, 201);
-            this.rtbText.TabIndex = 4;
-            this.rtbText.Text = "";
-            this.rtbText.MouseLeave += new System.EventHandler(this.rtbText_Leave);
-            this.rtbText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.rtbText_MouseUp);
-            // 
             // tlpMain
             // 
             this.tlpMain.AutoSize = true;
@@ -117,8 +104,8 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.lblExport, 0, 0);
             this.tlpMain.Controls.Add(this.cboXSLT, 1, 0);
-            this.tlpMain.Controls.Add(this.rtbText, 0, 1);
             this.tlpMain.Controls.Add(this.tlpButtons, 0, 2);
+            this.tlpMain.Controls.Add(this.txtText, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -147,6 +134,21 @@ namespace Chummer
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 6;
+            // 
+            // txtText
+            // 
+            this.tlpMain.SetColumnSpan(this.txtText, 2);
+            this.txtText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtText.Location = new System.Drawing.Point(3, 30);
+            this.txtText.MaxLength = 2147483647;
+            this.txtText.Multiline = true;
+            this.txtText.Name = "txtText";
+            this.txtText.ReadOnly = true;
+            this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtText.Size = new System.Drawing.Size(440, 201);
+            this.txtText.TabIndex = 7;
+            this.txtText.Leave += new System.EventHandler(this.txtText_Leave);
+            this.txtText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.txtText_MouseUp);
             // 
             // frmExport
             // 
@@ -183,8 +185,8 @@ namespace Chummer
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-        private System.Windows.Forms.RichTextBox rtbText;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TextBox txtText;
     }
 }

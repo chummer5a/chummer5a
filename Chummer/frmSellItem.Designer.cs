@@ -30,7 +30,7 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.lblSellForLabel = new System.Windows.Forms.Label();
-            this.nudPercent = new System.Windows.Forms.NumericUpDown();
+            this.nudPercent = new Chummer.NumericUpDownEx();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblPercentLabel = new System.Windows.Forms.Label();
@@ -199,7 +199,7 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.Label lblSellForLabel;
-        private System.Windows.Forms.NumericUpDown nudPercent;
+        private Chummer.NumericUpDownEx nudPercent;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblPercentLabel;

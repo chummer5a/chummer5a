@@ -104,8 +104,8 @@
               <td><xsl:value-of select="metatype"/></td>
             </tr>
             <tr>
-              <td class="label"><xsl:value-of select="$lang.Sex"/>:</td>
-              <td><xsl:value-of select="sex"/></td>
+              <td class="label"><xsl:value-of select="$lang.Gender"/>:</td>
+              <td><xsl:value-of select="gender"/></td>
             </tr>
             <tr>
               <td class="label"><xsl:value-of select="$lang.Height"/>:</td>

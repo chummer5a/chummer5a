@@ -32,7 +32,7 @@ namespace Chummer
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lblDescription = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.nudNumber = new System.Windows.Forms.NumericUpDown();
+            this.nudNumber = new Chummer.NumericUpDownEx();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudNumber)).BeginInit();
@@ -164,7 +164,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.NumericUpDown nudNumber;
+        private Chummer.NumericUpDownEx nudNumber;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
     }

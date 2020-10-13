@@ -226,18 +226,21 @@ namespace Chummer.Backend.Skills
         /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
         /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
         /// <returns></returns>
-        public int PoolOtherAttribute(int intAttributeTotalValue, string strAttribute, bool blnIncludeConditionals = false)
+        public int PoolOtherAttribute(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue)
         {
             if (!Enabled)
                 return 0;
             int intRating = Rating;
+            int intValue = intAttributeOverrideValue > int.MinValue
+                ? intAttributeOverrideValue
+                : CharacterObject.AttributeSection.GetAttributeByName(strAttribute).TotalValue;
             if (intRating > 0)
             {
-                return Math.Max(0, intRating + intAttributeTotalValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
+                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
             }
             if (Default)
             {
-                return Math.Max(0, intAttributeTotalValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
+                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
             }
             return 0;
         }

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 
@@ -42,7 +43,7 @@ namespace Chummer
         public frmLoading()
         {
             InitializeComponent();
-            TopMost = !Utils.IsUnitTest;
+            TopMost = !Utils.IsUnitTest && !Debugger.IsAttached;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }

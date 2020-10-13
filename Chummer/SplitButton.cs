@@ -419,9 +419,9 @@ public class SplitButton : Button
         middle.X += (dropDownRect.Width & 1);
 
         Point[] arrow = {
-            new Point(middle.X - LogicalToDeviceUnits(2), middle.Y - LogicalToDeviceUnits(1)),
-            new Point(middle.X + LogicalToDeviceUnits(3), middle.Y - LogicalToDeviceUnits(1)),
-            new Point(middle.X, middle.Y + LogicalToDeviceUnits(2)) };
+            new Point(middle.X - (int)(2 * g.DpiX / 96.0f), middle.Y - (int)(g.DpiY / 96.0f)),
+            new Point(middle.X + (int)(3 * g.DpiX / 96.0f), middle.Y - (int)(g.DpiY / 96.0f)),
+            new Point(middle.X, middle.Y + (int)(2 * g.DpiY / 96.0f)) };
 
         g.FillPolygon(Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow, arrow);
     }

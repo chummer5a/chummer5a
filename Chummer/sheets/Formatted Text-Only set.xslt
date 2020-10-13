@@ -51,7 +51,7 @@
 
                 <br/>
         <xsl:choose>
-          <xsl:when test="sex != ''">
+          <xsl:when test="gender != ''">
             <xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat(metatype,', ',sex)"/>
               <xsl:with-param name="length" select="40"/>

@@ -48169,11 +48169,11 @@
             <contact translate="Vory Shestiorka" translated="True">Vory Shestiorka</contact>
             <contact translate="Wiz Kid Ganger" translated="True">Wiz Kid Ganger</contact>
         </contacts>
-        <sexes>
-            <sex translate="Weiblich">Female</sex>
-            <sex translate="Männlich">Male</sex>
-            <sex translate="Unbekannt">Unknown</sex>
-        </sexes>
+        <genders>
+            <gender translate="Weiblich">Female</gender>
+            <gender translate="Männlich">Male</gender>
+            <gender translate="Unbekannt">Unknown</gender>
+        </genders>
         <ages>
             <age translate="Jung">Young</age>
             <age translate="Mittleren Alters">Middle-Aged</age>

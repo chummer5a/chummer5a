@@ -18,17 +18,20 @@
  */
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    // We use RTFEditor for its shortcuts, but because notes are often displayed as TreeNode tooltips,
-    // and because TreeNode tooltips only support plaintext and not any kind of formatting, frmNotes
-    // and Notes items in general use plaintext instead of RTF or HTML formatted text.
+    // We use TextBox because notes are often displayed as TreeNode tooltips, and because TreeNode tooltips
+    // only support plaintext and not any kind of formatting, frmNotes and Notes items in general have to use
+    // plaintext instead of RTF or HTML formatted text.
     public partial class frmNotes : Form
 	{
-		private static int s_IntWidth = 640;
-		private static int s_IntHeight = 360;
+        // Set to DPI-based 640 in constructor, needs to be there because of DPI dependency
+        private static int _intWidth = int.MinValue;
+        // Set to DPI-based 360 in constructor, needs to be there because of DPI dependency
+        private static int _intHeight = int.MinValue;
 	    private readonly bool _blnLoading;
         private string _strNotes;
 
@@ -36,25 +39,34 @@ namespace Chummer
         public frmNotes()
 		{
             InitializeComponent();
-            rtfNotes.ContentKeyDown += rtfNotes_KeyDown;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            if (_intWidth <= 0 || _intHeight <= 0)
+            {
+                using (Graphics g = CreateGraphics())
+                {
+                    if (_intWidth <= 0)
+                        _intWidth = (int)(640 * g.DpiX / 96.0f);
+                    if (_intHeight <= 0)
+                        _intHeight = (int)(360 * g.DpiY / 96.0f);
+                }
+            }
             _blnLoading = true;
-			Width = s_IntWidth;
-			Height = s_IntHeight;
+            Width = _intWidth;
+			Height = _intHeight;
             _blnLoading = false;
         }
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-            Notes = rtfNotes.Text;
+            _strNotes = txtNotes.Text;
             DialogResult = DialogResult.OK;
 		}
 
-        private void rtfNotes_KeyDown(object sender, KeyEventArgs e)
+        private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
-                DialogResult = DialogResult.OK;
+                Close();
         }
 
         private void frmNotes_Resize(object sender, EventArgs e)
@@ -62,13 +74,15 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            s_IntWidth = Width;
-            s_IntHeight = Height;
+            _intWidth = Width;
+            _intHeight = Height;
         }
 
         private void frmNotes_Shown(object sender, EventArgs e)
         {
-            rtfNotes.FocusContent();
+            txtNotes.Focus();
+            txtNotes.SelectionLength = 0;
+            txtNotes.SelectionStart = txtNotes.TextLength;
         }
         #endregion
 
@@ -82,10 +96,11 @@ namespace Chummer
             get => _strNotes;
             set
             {
-                if (_strNotes != value)
+                string strNewValue = value.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
+                if (_strNotes != strNewValue)
                 {
-                    _strNotes = value;
-                    rtfNotes.Text = value;
+                    _strNotes = strNewValue;
+                    txtNotes.Text = strNewValue;
                 }
             }
         }

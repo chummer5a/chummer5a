@@ -255,7 +255,7 @@ namespace Chummer
                         txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
 
                         txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
-                        txtSex.DoDatabinding("Text", CharacterObject, nameof(Character.Sex));
+                        txtGender.DoDatabinding("Text", CharacterObject, nameof(Character.Gender));
                         txtAge.DoDatabinding("Text", CharacterObject, nameof(Character.Age));
                         txtEyes.DoDatabinding("Text", CharacterObject, nameof(Character.Eyes));
                         txtHeight.DoDatabinding("Text", CharacterObject, nameof(Character.Height));
@@ -3119,7 +3119,7 @@ namespace Chummer
             }
             else if (objSelectedNodeTag is ICanRemove selectedObject)
             {
-                if (selectedObject.Remove( CharacterObjectOptions.ConfirmDelete))
+                if (selectedObject.Remove(CharacterObjectOptions.ConfirmDelete))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;
@@ -4516,6 +4516,7 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(CharacterObject)
                         {
                             ParentVehicle = objVehicle,
+                            ParentVehicleMod = objMod != null ? objMod : null,
                             ParentMount = objMod == null ? objWeaponMount : null
                         };
                         objWeapon.Create(objXmlWeapon, lstWeapons);
@@ -6779,7 +6780,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background colour for all other Nodes.
             treWeapons.ClearNodeBackground(objNode);
@@ -6853,7 +6854,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background colour for all other Nodes.
             treArmor.ClearNodeBackground(objNode);
@@ -6971,7 +6972,7 @@ namespace Chummer
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
             if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background colour for all other Nodes.
             treLifestyles.ClearNodeBackground(objNode);
@@ -7250,10 +7251,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = ColorManager.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDarker;
             }
             else
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treGear.ClearNodeBackground(objNode);
@@ -7657,10 +7658,10 @@ namespace Chummer
             if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = ColorManager.ControlDark;
+                    objNode.BackColor = ColorManager.ControlDarker;
             }
             else
-                objNode.BackColor = ColorManager.ControlDark;
+                objNode.BackColor = ColorManager.ControlDarker;
 
             // Clear the background color for all other Nodes.
             treVehicles.ClearNodeBackground(objNode);
@@ -8824,10 +8825,12 @@ namespace Chummer
             int intSpellPointsUsed = 0;
             int intRitualPointsUsed = 0;
             int intPrepPointsUsed = 0;
-            if (CharacterObject.MagicianEnabled ||
-                    CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells ||
-                                                                     objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT ||
-                                                                     objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill) && objImprovement.Enabled))
+            if (CharacterObject.MagicianEnabled
+                || CharacterObject.AdeptEnabled
+                || CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
+                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
+                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+                                                                      && objImprovement.Enabled))
             {
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
                 int spells = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus);
@@ -14147,7 +14150,7 @@ namespace Chummer
             if (destination == null)
                 return;
 
-            destination.BackColor = ColorManager.ControlDark;
+            destination.BackColor = ColorManager.ControlDarker;
             foreach (ContactControl objControl in panContacts.Controls)
             {
                 if (objControl != destination as ContactControl)
@@ -14336,9 +14339,10 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                ? PictureBoxSizeMode.CenterImage
-                : PictureBoxSizeMode.Zoom;
+            if (!picMugshot.IsDisposed)
+                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                    ? PictureBoxSizeMode.CenterImage
+                    : PictureBoxSizeMode.Zoom;
         }
 
         private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)

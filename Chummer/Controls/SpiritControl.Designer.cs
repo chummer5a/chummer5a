@@ -31,10 +31,10 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblServices = new System.Windows.Forms.Label();
-            this.nudServices = new System.Windows.Forms.NumericUpDown();
+            this.nudServices = new Chummer.NumericUpDownEx();
             this.lblForce = new System.Windows.Forms.Label();
-            this.nudForce = new System.Windows.Forms.NumericUpDown();
-            this.chkBound = new System.Windows.Forms.CheckBox();
+            this.nudForce = new Chummer.NumericUpDownEx();
+            this.chkBound = new Chummer.ColorableCheckBox();
             this.cboSpiritName = new Chummer.ElasticComboBox();
             this.imgLink = new System.Windows.Forms.PictureBox();
             this.cmsSpirit = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -44,7 +44,7 @@ namespace Chummer
             this.tsCreateCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.txtCritterName = new System.Windows.Forms.TextBox();
-            this.chkFettered = new System.Windows.Forms.CheckBox();
+            this.chkFettered = new Chummer.ColorableCheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudServices)).BeginInit();
@@ -328,10 +328,10 @@ namespace Chummer
 
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblServices;
-        private System.Windows.Forms.NumericUpDown nudServices;
+        private Chummer.NumericUpDownEx nudServices;
         private System.Windows.Forms.Label lblForce;
-        private System.Windows.Forms.NumericUpDown nudForce;
-        private System.Windows.Forms.CheckBox chkBound;
+        private Chummer.NumericUpDownEx nudForce;
+        private Chummer.ColorableCheckBox chkBound;
         private ElasticComboBox cboSpiritName;
         private System.Windows.Forms.PictureBox imgLink;
         private System.Windows.Forms.ContextMenuStrip cmsSpirit;
@@ -341,7 +341,7 @@ namespace Chummer
         private System.Windows.Forms.PictureBox imgNotes;
         private System.Windows.Forms.ToolStripMenuItem tsCreateCharacter;
         private System.Windows.Forms.TextBox txtCritterName;
-        private System.Windows.Forms.CheckBox chkFettered;
+        private Chummer.ColorableCheckBox chkFettered;
         private BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpRight;
     }

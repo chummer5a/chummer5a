@@ -46559,11 +46559,11 @@
             <contact translate="Parabotanist">Parabotanist</contact>
             <contact translate="Parabiologist">Parabiologist</contact>
         </contacts>
-        <sexes>
-            <sex translate="Female">Female</sex>
-            <sex translate="Male">Male</sex>
-            <sex translate="Unknown">Unknown</sex>
-        </sexes>
+        <genders>
+            <gender translate="Female">Female</gender>
+            <gender translate="Male">Male</gender>
+            <gender translate="Unknown">Unknown</gender>
+        </genders>
         <ages>
             <age translate="Young">Young</age>
             <age translate="Middle-Aged">Middle-Aged</age>

@@ -1,6 +1,6 @@
 Future Build 213
 Application Fixes:
-- Added a limited dark mode. Chummer will look at the system's settings for whether or not to use dark mode for applications and (re)color itself accordingly
+- Added a limited dark mode. The mode can be set and previewed in the Options menu. For existing users, Chummer will default to Light mode; for new users, Chummer will default to automatically checking the setting in Windows for whether apps should run in Light or Dark mode.
 - Fixed an incorrect tag on submersion groups in career mode. 
 - Fixed incorrect default multiplier for Technomancer Ordeals/Tasks. 
 - Fixed a crash when changing priority selection if the character has FreeSpellsSkill improvements (ie Dedicated Spellslinger).
@@ -67,6 +67,9 @@ Application Fixes:
 - Changing 'ware grades during character creation now properly updates the list of available 'ware based on availability modifiers.
 - Items can now be sold at 0% of their original cost instead of being limited to at least 0.01%. While normally, items that are to be deleted without reimbursement should be deleted instead of going through the selling process, this change should let people who do go through the selling process instead for some reason still be able to "sell" the item at 0%, equivalent to deleting it.
 - Toggling an adept power's adept way discount should now always result in Chummer properly recognizing the change in spent PP.
+- Weapons added directly to vehicle modifications can now properly be removed.
+- Updated all mentions of "Sex" for a character's/contact's properties to "Gender".
+- Adepts are now properly charged karma for any rituals that they learn at character generation.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -113,6 +116,9 @@ Data Changes:
 - Ondansetron is now properly called Ondansetron instead of Ondanstron.
 - The Ares Armatus is now properly recognized as a Laser Weapon.
 - Peak-discharge power packs are now properly available for the Ares Redline, the Ares Lancer MP Laser, the Underbarrel Laser, and the Repeating Laser.
+- The maximum number of times that Ambidextrous can be taken is now based on the number of arms the character has instead of fixed at 3. Characters who have multiple arms will still need to track for which arms they have taken Ambidextrous, as Chummer currently does not track Ambidextrous in an arm-specific fashion.
+- Removed unnecessary affectbase attribute from Wendigo and Bandersnatch qualities. Closes #4232
+- The AR Nails gear's page reference is now correct.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
@@ -153,6 +159,11 @@ Changed/New Strings:
 - Message_DeleteVehicleMod
 - Checkbox_ShowChart
 - Message_File_Cannot_Be_Read_Accessed
+- Label_Gender
+- Label_Options_ColorMode
+- String_Automatic
+- String_Light
+- String_Dark
 
 Build 212
 Application Changes:

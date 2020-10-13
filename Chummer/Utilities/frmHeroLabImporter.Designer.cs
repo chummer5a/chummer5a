@@ -273,7 +273,6 @@ namespace Chummer
             // 
             this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picMugshot.Location = new System.Drawing.Point(463, 3);
-            this.picMugshot.MinimumSize = new System.Drawing.Size(21, 31);
             this.picMugshot.Name = "picMugshot";
             this.tlpMain.SetRowSpan(this.picMugshot, 7);
             this.picMugshot.Size = new System.Drawing.Size(300, 300);

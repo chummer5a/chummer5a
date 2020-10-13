@@ -34,8 +34,8 @@
             this._btnApplyStun = new System.Windows.Forms.Button();
             this._lblPhysical = new System.Windows.Forms.Label();
             this._lblStun = new System.Windows.Forms.Label();
-            this._nudPhysical = new System.Windows.Forms.NumericUpDown();
-            this.nudStun = new System.Windows.Forms.NumericUpDown();
+            this._nudPhysical = new Chummer.NumericUpDownEx();
+            this.nudStun = new Chummer.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this._nudPhysical)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStun)).BeginInit();
             this.SuspendLayout();
@@ -147,8 +147,8 @@
         private System.Windows.Forms.Button _btnApplyStun;
         private System.Windows.Forms.Label _lblPhysical;
         private System.Windows.Forms.Label _lblStun;
-        private System.Windows.Forms.NumericUpDown _nudPhysical;
-        private System.Windows.Forms.NumericUpDown nudStun;
+        private Chummer.NumericUpDownEx _nudPhysical;
+        private Chummer.NumericUpDownEx nudStun;
 
 
     }

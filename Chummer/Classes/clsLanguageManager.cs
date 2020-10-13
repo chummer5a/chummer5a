@@ -110,6 +110,7 @@ namespace Chummer
         {
             if (!Utils.IsDesignerMode)
             {
+                objObject.SuspendLayout();
                 if (string.IsNullOrEmpty(strIntoLanguage))
                     strIntoLanguage = GlobalOptions.Language;
                 if (LoadLanguage(strIntoLanguage))
@@ -124,6 +125,7 @@ namespace Chummer
                 }
                 else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
                     UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
+                objObject.ResumeLayout();
             }
         }
 
@@ -609,7 +611,7 @@ namespace Chummer
                 x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/contacts/contact",
                 x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
-            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/sexes/sex",
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/genders/gender",
                 x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/ages/age",
                 x => x.InnerText, x => x.Attributes?["translate"]?.InnerText),

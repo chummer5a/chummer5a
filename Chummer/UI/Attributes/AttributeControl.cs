@@ -80,7 +80,6 @@ namespace Chummer.UI.Attributes
                 nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
                 nudBase.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
 
-                nudKarma.Minimum = 0;
                 nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
                 nudKarma.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
                 nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));

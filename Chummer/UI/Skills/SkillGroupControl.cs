@@ -33,6 +33,7 @@ namespace Chummer.UI.Skills
                 return;
             _skillGroup = skillGroup;
             InitializeComponent();
+            SkillGroupControl_DpiChangedAfterParent(null, EventArgs.Empty);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -147,5 +148,13 @@ namespace Chummer.UI.Skills
             ActiveButton = null;
         }
         #endregion
+
+        private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            using (Graphics g = CreateGraphics())
+            {
+                lblGroupRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
+            }
+        }
     }
 }

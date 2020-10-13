@@ -160,10 +160,10 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
-        private void cboSex_TextChanged(object sender, EventArgs e)
+        private void cboGender_TextChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Sex"));
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
         }
 
         private void cboAge_TextChanged(object sender, EventArgs e)
@@ -402,7 +402,7 @@ namespace Chummer
             {
                 ListItem.Blank
             };
-            List<ListItem> lstSexes = new List<ListItem> (5)
+            List<ListItem> lstGenders = new List<ListItem> (5)
             {
                 ListItem.Blank
             };
@@ -440,12 +440,12 @@ namespace Chummer
                 //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                 //        }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("sexes/sex"))
+                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("genders/gender"))
                     if (xmlNodeList != null)
                         foreach (XmlNode xmlNode in xmlNodeList)
                         {
                             string strName = xmlNode.InnerText;
-                            lstSexes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                            lstGenders.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                         }
 
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("ages/age"))
@@ -512,7 +512,7 @@ namespace Chummer
 
             ContactArchetypes.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
-            lstSexes.Sort(CompareListItems.CompareNames);
+            lstGenders.Sort(CompareListItems.CompareNames);
             lstAges.Sort(CompareListItems.CompareNames);
             lstPersonalLives.Sort(CompareListItems.CompareNames);
             lstTypes.Sort(CompareListItems.CompareNames);
@@ -531,11 +531,11 @@ namespace Chummer
             cboMetatype.DataSource = lstMetatypes;
             cboMetatype.EndUpdate();
 
-            cboSex.BeginUpdate();
-            cboSex.ValueMember = nameof(ListItem.Value);
-            cboSex.DisplayMember = nameof(ListItem.Name);
-            cboSex.DataSource = lstSexes;
-            cboSex.EndUpdate();
+            cboGender.BeginUpdate();
+            cboGender.ValueMember = nameof(ListItem.Value);
+            cboGender.DisplayMember = nameof(ListItem.Name);
+            cboGender.DataSource = lstGenders;
+            cboGender.EndUpdate();
 
             cboAge.BeginUpdate();
             cboAge.ValueMember = nameof(ListItem.Value);
@@ -588,7 +588,7 @@ namespace Chummer
             txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
             cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
             cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
-            cboSex.DoDatabinding("Text", _objContact, nameof(_objContact.DisplaySex));
+            cboGender.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayGender));
             cboAge.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayAge));
             cboPersonalLife.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPersonalLife));
             cboType.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayType));
@@ -600,7 +600,7 @@ namespace Chummer
             // Properties controllable by the character themselves
             txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
             cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboSex.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            cboGender.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
             cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
         }
 
@@ -620,7 +620,7 @@ namespace Chummer
 
             //lblmetatype.left = cbometatype.left - 7 - lblmetatype.width;
             //lblage.left = cboage.left - 7 - lblage.width;
-            //lblsex.left = cbosex.left - 7 - lblsex.width;
+            //lblsex.left = cboGender.left - 7 - lblsex.width;
             //lbltype.left = cbotype.left - 7 - lbltype.width;
 
             //lblpersonallife.left = cbopersonallife.left - 7 - lblpersonallife.width;

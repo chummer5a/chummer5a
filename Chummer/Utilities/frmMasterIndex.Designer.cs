@@ -35,12 +35,12 @@ namespace Chummer
             this.lblSearch = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new Chummer.LabelWithToolTip();
-            this.rtbNotes = new System.Windows.Forms.RichTextBox();
             this.lblSourceClickReminder = new System.Windows.Forms.Label();
             this.tlpTopLeft = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblFile = new System.Windows.Forms.Label();
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
+            this.txtNotes = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.tlpTopLeft.SuspendLayout();
@@ -77,8 +77,8 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblSearch, 0, 0);
             this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 1);
             this.tlpRight.Controls.Add(this.lblSource, 1, 1);
-            this.tlpRight.Controls.Add(this.rtbNotes, 0, 2);
             this.tlpRight.Controls.Add(this.lblSourceClickReminder, 2, 1);
+            this.tlpRight.Controls.Add(this.txtNotes, 0, 2);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRight.Location = new System.Drawing.Point(383, 0);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
@@ -141,20 +141,6 @@ namespace Chummer
             this.lblSource.ToolTipText = "";
             this.lblSource.Visible = false;
             this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
-            // 
-            // rtbNotes
-            // 
-            this.rtbNotes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tlpRight.SetColumnSpan(this.rtbNotes, 3);
-            this.rtbNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbNotes.Location = new System.Drawing.Point(3, 54);
-            this.rtbNotes.Name = "rtbNotes";
-            this.rtbNotes.ReadOnly = true;
-            this.rtbNotes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbNotes.Size = new System.Drawing.Size(377, 486);
-            this.rtbNotes.TabIndex = 4;
-            this.rtbNotes.Text = "";
-            this.rtbNotes.Visible = false;
             // 
             // lblSourceClickReminder
             // 
@@ -222,6 +208,20 @@ namespace Chummer
             this.lstItems.TabIndex = 2;
             this.lstItems.SelectedIndexChanged += new System.EventHandler(this.lstItems_SelectedIndexChanged);
             // 
+            // txtNotes
+            // 
+            this.tlpRight.SetColumnSpan(this.txtNotes, 3);
+            this.txtNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNotes.Location = new System.Drawing.Point(3, 54);
+            this.txtNotes.MaxLength = 2147483647;
+            this.txtNotes.Multiline = true;
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.ReadOnly = true;
+            this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtNotes.Size = new System.Drawing.Size(377, 486);
+            this.txtNotes.TabIndex = 6;
+            this.txtNotes.Visible = false;
+            // 
             // frmMasterIndex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -259,7 +259,7 @@ namespace Chummer
         private System.Windows.Forms.ListBox lstItems;
         private System.Windows.Forms.Label lblSourceLabel;
         private LabelWithToolTip lblSource;
-        private System.Windows.Forms.RichTextBox rtbNotes;
         private System.Windows.Forms.Label lblSourceClickReminder;
+        private System.Windows.Forms.TextBox txtNotes;
     }
 }

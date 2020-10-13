@@ -36,6 +36,7 @@ using Size = System.Drawing.Size;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Drawing;
 using System.Net;
 using System.Text;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -388,7 +389,14 @@ namespace Chummer
 
                 if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
                 {
-                    Size = new Size(LogicalToDeviceUnits(1280), LogicalToDeviceUnits(720));
+                    int intDefaultWidth = 1280;
+                    int intDefaultHeight = 720;
+                    using (Graphics g = CreateGraphics())
+                    {
+                        intDefaultWidth = (int)(intDefaultWidth * g.DpiX / 96.0f);
+                        intDefaultHeight = (int)(intDefaultHeight * g.DpiY / 96.0f);
+                    }
+                    Size = new Size(intDefaultWidth, intDefaultHeight);
                     StartPosition = FormStartPosition.CenterScreen;
                 }
                 else
@@ -1379,9 +1387,10 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                FormWindowState wsPreference = OpenCharacterForms.Any(x => x.WindowState != FormWindowState.Maximized)
-                    ? FormWindowState.Normal
-                    : FormWindowState.Maximized;
+                FormWindowState wsPreference = MdiChildren.Length == 0
+                                               || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
+                    ? FormWindowState.Maximized
+                    : FormWindowState.Normal;
                 List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
                 foreach (Character objCharacter in lstCharacters)
                 {

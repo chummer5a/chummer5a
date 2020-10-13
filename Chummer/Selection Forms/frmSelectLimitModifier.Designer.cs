@@ -32,7 +32,7 @@ namespace Chummer
             this.cmdCancel = new System.Windows.Forms.Button();
             this.txtName = new System.Windows.Forms.TextBox();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.nudBonus = new System.Windows.Forms.NumericUpDown();
+            this.nudBonus = new Chummer.NumericUpDownEx();
             this.lblNameLabel = new System.Windows.Forms.Label();
             this.lblBonusLabel = new System.Windows.Forms.Label();
             this.lblCondition = new System.Windows.Forms.Label();
@@ -249,7 +249,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Button cmdOK;
-        internal System.Windows.Forms.NumericUpDown nudBonus;
+        internal Chummer.NumericUpDownEx nudBonus;
         internal System.Windows.Forms.Label lblNameLabel;
         internal System.Windows.Forms.Label lblBonusLabel;
         internal System.Windows.Forms.Label lblCondition;

@@ -42,7 +42,7 @@ namespace Chummer
             this.lblCritterPowerCategory = new System.Windows.Forms.Label();
             this.lblCritterPowerCategoryLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerRatingLabel = new System.Windows.Forms.Label();
-            this.nudCritterPowerRating = new System.Windows.Forms.NumericUpDown();
+            this.nudCritterPowerRating = new Chummer.NumericUpDownEx();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.trePowers = new System.Windows.Forms.TreeView();
@@ -546,7 +546,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCritterPowerCategory;
         private System.Windows.Forms.Label lblCritterPowerCategoryLabel;
         private System.Windows.Forms.Label lblCritterPowerRatingLabel;
-        private System.Windows.Forms.NumericUpDown nudCritterPowerRating;
+        private Chummer.NumericUpDownEx nudCritterPowerRating;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.TreeView trePowers;

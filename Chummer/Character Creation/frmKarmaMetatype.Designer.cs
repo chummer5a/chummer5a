@@ -39,11 +39,11 @@ namespace Chummer
             this.lblCHALabel = new System.Windows.Forms.Label();
             this.lblCHA = new System.Windows.Forms.Label();
             this.lblSTRLabel = new System.Windows.Forms.Label();
-            this.nudForce = new System.Windows.Forms.NumericUpDown();
+            this.nudForce = new Chummer.NumericUpDownEx();
             this.lblSTR = new System.Windows.Forms.Label();
             this.tlpBottom = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkBloodSpirit = new System.Windows.Forms.CheckBox();
-            this.chkPossessionBased = new System.Windows.Forms.CheckBox();
+            this.chkBloodSpirit = new Chummer.ColorableCheckBox();
+            this.chkPossessionBased = new Chummer.ColorableCheckBox();
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
             this.lblForceLabel = new System.Windows.Forms.Label();
             this.lblINI = new System.Windows.Forms.Label();
@@ -622,10 +622,10 @@ namespace Chummer
         }
 
         #endregion
-        private System.Windows.Forms.CheckBox chkBloodSpirit;
+        private Chummer.ColorableCheckBox chkBloodSpirit;
         private ElasticComboBox cboPossessionMethod;
-        private System.Windows.Forms.CheckBox chkPossessionBased;
-        private System.Windows.Forms.NumericUpDown nudForce;
+        private Chummer.ColorableCheckBox chkPossessionBased;
+        private Chummer.NumericUpDownEx nudForce;
         private System.Windows.Forms.Label lblForceLabel;
         private ElasticComboBox cboCategory;
         internal System.Windows.Forms.Button cmdCancel;

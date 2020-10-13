@@ -392,6 +392,12 @@
       <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="helpers\CenterableMessageBox.cs" />
+    <Compile Include="helpers\ColorableCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\ColorableCheckBox.Designer.cs">
+      <DependentUpon>ColorableCheckBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\CursorWait.cs" />
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\ElasticComboBox.cs">
@@ -1374,6 +1380,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Table\HeaderCell.resx">
+      <DependentUpon>HeaderCell.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Table\TableRow.resx">
       <DependentUpon>TableRow.cs</DependentUpon>

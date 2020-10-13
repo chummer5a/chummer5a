@@ -29,20 +29,20 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.chkAttributes = new System.Windows.Forms.CheckBox();
-            this.chkQualities = new System.Windows.Forms.CheckBox();
-            this.chkStartingNuyen = new System.Windows.Forms.CheckBox();
-            this.chkActiveSkills = new System.Windows.Forms.CheckBox();
-            this.chkKnowledgeSkills = new System.Windows.Forms.CheckBox();
-            this.chkMartialArts = new System.Windows.Forms.CheckBox();
-            this.chkSpells = new System.Windows.Forms.CheckBox();
-            this.chkComplexForms = new System.Windows.Forms.CheckBox();
-            this.chkCyberware = new System.Windows.Forms.CheckBox();
-            this.chkLifestyle = new System.Windows.Forms.CheckBox();
-            this.chkArmor = new System.Windows.Forms.CheckBox();
-            this.chkWeapons = new System.Windows.Forms.CheckBox();
-            this.chkGear = new System.Windows.Forms.CheckBox();
-            this.chkVehicles = new System.Windows.Forms.CheckBox();
+            this.chkAttributes = new Chummer.ColorableCheckBox();
+            this.chkQualities = new Chummer.ColorableCheckBox();
+            this.chkStartingNuyen = new Chummer.ColorableCheckBox();
+            this.chkActiveSkills = new Chummer.ColorableCheckBox();
+            this.chkKnowledgeSkills = new Chummer.ColorableCheckBox();
+            this.chkMartialArts = new Chummer.ColorableCheckBox();
+            this.chkSpells = new Chummer.ColorableCheckBox();
+            this.chkComplexForms = new Chummer.ColorableCheckBox();
+            this.chkCyberware = new Chummer.ColorableCheckBox();
+            this.chkLifestyle = new Chummer.ColorableCheckBox();
+            this.chkArmor = new Chummer.ColorableCheckBox();
+            this.chkWeapons = new Chummer.ColorableCheckBox();
+            this.chkGear = new Chummer.ColorableCheckBox();
+            this.chkVehicles = new Chummer.ColorableCheckBox();
             this.lblNameLabel = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.txtFileName = new System.Windows.Forms.TextBox();
@@ -409,20 +409,20 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.CheckBox chkAttributes;
-        private System.Windows.Forms.CheckBox chkQualities;
-        private System.Windows.Forms.CheckBox chkStartingNuyen;
-        private System.Windows.Forms.CheckBox chkActiveSkills;
-        private System.Windows.Forms.CheckBox chkKnowledgeSkills;
-        private System.Windows.Forms.CheckBox chkMartialArts;
-        private System.Windows.Forms.CheckBox chkSpells;
-        private System.Windows.Forms.CheckBox chkComplexForms;
-        private System.Windows.Forms.CheckBox chkCyberware;
-        private System.Windows.Forms.CheckBox chkLifestyle;
-        private System.Windows.Forms.CheckBox chkArmor;
-        private System.Windows.Forms.CheckBox chkWeapons;
-        private System.Windows.Forms.CheckBox chkGear;
-        private System.Windows.Forms.CheckBox chkVehicles;
+        private Chummer.ColorableCheckBox chkAttributes;
+        private Chummer.ColorableCheckBox chkQualities;
+        private Chummer.ColorableCheckBox chkStartingNuyen;
+        private Chummer.ColorableCheckBox chkActiveSkills;
+        private Chummer.ColorableCheckBox chkKnowledgeSkills;
+        private Chummer.ColorableCheckBox chkMartialArts;
+        private Chummer.ColorableCheckBox chkSpells;
+        private Chummer.ColorableCheckBox chkComplexForms;
+        private Chummer.ColorableCheckBox chkCyberware;
+        private Chummer.ColorableCheckBox chkLifestyle;
+        private Chummer.ColorableCheckBox chkArmor;
+        private Chummer.ColorableCheckBox chkWeapons;
+        private Chummer.ColorableCheckBox chkGear;
+        private Chummer.ColorableCheckBox chkVehicles;
         private System.Windows.Forms.Label lblNameLabel;
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.TextBox txtFileName;

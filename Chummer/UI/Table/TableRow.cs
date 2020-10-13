@@ -50,7 +50,7 @@ namespace Chummer.UI.Table
             }
             else
             {
-                BackColor = (intIndex & 1 ) == 0 ? ColorManager.ControlLightLight : ColorManager.Control;
+                BackColor = (intIndex & 1 ) == 0 ? ColorManager.ControlLightest : ColorManager.Control;
             }
         }
 
