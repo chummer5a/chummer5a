@@ -9567,6 +9567,10 @@
             <text>Archetypen</text>
         </string>
         <string>
+          <key>Menu_Tools_NeonJungleLCCheckFlags</key>
+          <text>prüfe Flags-Zahl</text>
+        </string>
+        <string>
             <key>Menu_Tools_SINners</key>
             <text>SINner-Gruppen</text>
         </string>

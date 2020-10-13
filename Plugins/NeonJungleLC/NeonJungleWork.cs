@@ -50,6 +50,7 @@ namespace NeonJungleLC
                 Program.MainForm.ShowMessageBox("Please open a character to calculate it.");
                 return;
             }
+            var useFlags = gsh.GetUsedFlags(activeChar);
             var lockedFlags = gsh.GetLockedFlags(activeChar);
 
 

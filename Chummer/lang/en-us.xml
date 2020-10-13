@@ -10081,6 +10081,10 @@
       <text>Archetypes</text>
     </string>
     <string>
+      <key>Menu_Tools_NeonJungleLCCheckFlags</key>
+      <text>Check Flags count</text>
+    </string>
+    <string>
       <key>Menu_Tools_SINnerSearch</key>
       <text>SINner search</text>
     </string>
