@@ -16997,10 +16997,19 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (!picMugshot.IsDisposed)
-                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                    ? PictureBoxSizeMode.CenterImage
-                    : PictureBoxSizeMode.Zoom;
+            if (!Disposing && !picMugshot.Disposing && !picMugshot.IsDisposed)
+            {
+                try
+                {
+                    picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            }
         }
 
         private void cmdCyberwareChangeMount_Click(object sender, EventArgs e)

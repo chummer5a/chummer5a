@@ -6236,10 +6236,16 @@ namespace Chummer
 
             Image imgMugshot = _objCharacter.Mugshots[intCurrentMugshotIndexInList];
 
-            if (imgMugshot != null && picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width)
-                picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
-            else
+            try
+            {
+                picMugshot.SizeMode = imgMugshot != null && picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width
+                    ? PictureBoxSizeMode.CenterImage
+                    : PictureBoxSizeMode.Zoom;
+            }
+            catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+            {
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+            }
             picMugshot.Image = imgMugshot;
         }
 
