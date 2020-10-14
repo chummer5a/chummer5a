@@ -71,6 +71,7 @@ Application Fixes:
 - Updated all mentions of "Sex" for a character's/contact's properties to "Gender".
 - Adepts are now properly charged karma for any rituals that they learn at character generation.
 - Custom date and/or time formats are now saved properly.
+- Updated the link to the Chummer5a wiki to actually point to the GitHub wiki.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

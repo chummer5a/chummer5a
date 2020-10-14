@@ -757,7 +757,7 @@ namespace Chummer
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
         {
-            Process.Start("http://www.chummergen.com/chummer/wiki/");
+            Process.Start("https://github.com/chummer5a/chummer5a/wiki/");
         }
 
         private void mnuChummerDiscord_Click(object sender, EventArgs e)
