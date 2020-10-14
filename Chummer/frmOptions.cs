@@ -896,6 +896,10 @@ namespace Chummer
             GlobalOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             GlobalOptions.DefaultBuildMethod = cboBuildMethod.SelectedValue?.ToString() ?? GlobalOptions.DefaultBuildMethodDefaultValue;
             GlobalOptions.DefaultGameplayOption = XmlManager.Load("gameplayoptions.xml", _strSelectedLanguage).SelectSingleNode("/chummer/gameplayoptions/gameplayoption[id = \"" + cboDefaultGameplayOption.SelectedValue + "\"]/name")?.InnerText ?? GlobalOptions.DefaultGameplayOptionDefaultValue;
+            GlobalOptions.AllowEasterEggs = chkAllowEasterEggs.Checked;
+            GlobalOptions.CustomDateTimeFormats = chkCustomDateTimeFormats.Checked;
+            GlobalOptions.CustomDateFormat = txtDateFormat.Text;
+            GlobalOptions.CustomTimeFormat = txtTimeFormat.Text;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Enabled;
             GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;
         }
