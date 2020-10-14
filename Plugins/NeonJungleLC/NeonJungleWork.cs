@@ -6,11 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NeonJungleLC.GoogleSheets;
+using NLog;
 
 namespace NeonJungleLC
 {
     public class NeonJungleWork
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         public IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem input)
         {
 
@@ -33,7 +37,7 @@ namespace NeonJungleLC
 
         private void mnuNJLCCheck_Click(object sender, EventArgs e)
         {
-            var gsh = new GoogleSheetsHandler();
+            
             var active = Program.MainForm.ActiveMdiChild;
             
             Character activeChar = null;
@@ -45,12 +49,26 @@ namespace NeonJungleLC
             {
                 activeChar = create.CharacterObject;
             }
-            else
+            else if (active is frmCharacterRoster roster)
+            {
+                if (roster.treCharacterList.SelectedNode != null)
+                {
+                    var tagobj = roster.treCharacterList.SelectedNode.Tag;
+                    if (tagobj is CharacterCache charCache)
+                    {
+                        activeChar = Program.MainForm.LoadCharacter(charCache.FilePath, "", false, false).Result;
+                    }
+
+                }
+            }
+            if (activeChar == null)
             {
                 Program.MainForm.ShowMessageBox("Please open a character to calculate it.");
                 return;
             }
-            var useFlags = gsh.GetUsedFlags(activeChar);
+            var flagcalc = new NeonJungleFlagsCalculator(activeChar);
+            var useFlags = flagcalc.GetUsedFlags();
+            var gsh = new GoogleSheetsHandler();
             var lockedFlags = gsh.GetLockedFlags(activeChar);
 
 

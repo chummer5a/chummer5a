@@ -6,19 +6,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
-using Microsoft.Extensions.Logging;
+using NLog;
 //using Google.Apis.Auth.OAuth2.Requests;
 //using Google.Apis.Json;
 //using Google.Apis.Util.Store;
 
-namespace ChummerHub.Services.GoogleDrive
+namespace NeonJungleLC.GoogleSheets
 {
     /// <summary>
     /// Handles internal token storage, bypassing filesystem
     /// </summary>
     public class GoogleIDataStore : IDataStore
     {
-        private static ILogger _logger;
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public static Dictionary<string, TokenResponse> _store;
 
         public GoogleIDataStore()
@@ -26,11 +26,10 @@ namespace ChummerHub.Services.GoogleDrive
             _store = new Dictionary<string, TokenResponse>();
         }
 
-        public GoogleIDataStore(string key, string refreshToken, ILogger Logger)
+        public GoogleIDataStore(string key, string refreshToken)
         {
             try
             {
-                _logger = Logger;
                 if (string.IsNullOrEmpty(key))
                     throw new ArgumentNullException(nameof(key));
                 if (string.IsNullOrEmpty(refreshToken))
@@ -44,7 +43,7 @@ namespace ChummerHub.Services.GoogleDrive
             }
             catch (Exception e)
             {
-                _logger.LogError("Could create GoogleIDataStore: " + e);
+                Log.Error("Could create GoogleIDataStore: " + e);
             }
 
         }

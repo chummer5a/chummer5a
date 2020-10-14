@@ -2,7 +2,6 @@ using Chummer;
 using Chummer.Plugins;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -11,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
+using NLog;
 
 namespace SamplePlugin
 {

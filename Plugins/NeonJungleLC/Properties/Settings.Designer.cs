@@ -34,5 +34,23 @@ namespace NeonJungleLC.Properties {
                 this["NeonJungleLCUserName"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("572473169505-s2ip24fluoguu33ov35m1imtalqeu9mq.apps.googleusercontent.com")]
+        public string SheetsClientID {
+            get {
+                return ((string)(this["SheetsClientID"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("wwD4UcoVS5wsZJnut4PVLPft")]
+        public string SheetsClientSecret {
+            get {
+                return ((string)(this["SheetsClientSecret"]));
+            }
+        }
     }
 }
