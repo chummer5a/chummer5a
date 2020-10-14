@@ -102,7 +102,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GoogleSheets\GoogleIDataStore.cs" />
     <Compile Include="GoogleSheets\GoogleSheetsHandler.cs" />
     <Compile Include="GoogleSheets\ProxySupportedHttpClientFactory.cs" />
     <Compile Include="NeonJungle.cs" />

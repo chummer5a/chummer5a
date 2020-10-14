@@ -26,6 +26,7 @@ namespace NeonJungleLC.GoogleSheets
     /// enable the google sheets api and autorize it
     /// https://developers.google.com/sheets/api/guides/authorizing
     /// we need an api key. you can just download the json (will look like the neonjunglelc.json, that is included in the project
+    /// This is all (of course) just a suggestion. Use it - or don't... ;)
     /// </summary>
     public class GoogleSheetsHandler
     {
