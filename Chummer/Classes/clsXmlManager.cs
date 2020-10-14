@@ -17,11 +17,13 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -41,16 +43,6 @@ namespace Chummer
             public DateTime FileDate { get; set; }
 
             /// <summary>
-            /// Name of the XML file.
-            /// </summary>
-            public string FileName { get; set; } = string.Empty;
-
-            /// <summary>
-            /// Language of the XML file.
-            /// </summary>
-            public string Language { get; set; } = GlobalOptions.DefaultLanguage;
-
-            /// <summary>
             /// Whether or not the XML file has been successfully checked for duplicate guids.
             /// </summary>
             public bool DuplicatesChecked { get; set; }
@@ -61,11 +53,10 @@ namespace Chummer
             public XmlDocument XmlContent { get; set; } = new XmlDocument { XmlResolver = null };
         }
 
-        private static readonly HashSet<XmlReference> s_LstXmlDocuments = new HashSet<XmlReference>();
-        private static readonly object s_LstXmlDocumentsLock = new object();
+        private static readonly ConcurrentDictionary<string, XmlReference> s_dicXmlDocuments = new ConcurrentDictionary<string, XmlReference>();
         private static readonly List<string> s_LstDataDirectories = new List<string>(30);
-        private static readonly object s_SetFilesWithCachedDocsLock = new object();
-        private static readonly HashSet<string> s_SetFilesWithCachedDocs = new HashSet<string>();
+        private static readonly object s_SetFilesCurrentlyLoadingLock = new object();
+        private static readonly HashSet<string> s_SetFilesCurrentlyLoading = new HashSet<string>();
 
         #region Constructor
         static XmlManager()
@@ -82,8 +73,9 @@ namespace Chummer
         #region Methods
         public static void RebuildDataDirectoryInfo()
         {
-            lock (s_SetFilesWithCachedDocsLock)
-                s_SetFilesWithCachedDocs.Clear();
+            s_dicXmlDocuments.Clear();
+            lock (s_SetFilesCurrentlyLoadingLock)
+                s_SetFilesCurrentlyLoading.Clear();
             s_LstDataDirectories.Clear();
             s_LstDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
             foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo)
@@ -119,32 +111,52 @@ namespace Chummer
                 return new XmlDocument { XmlResolver = null };
             }
 
-            lock (s_SetFilesWithCachedDocsLock)
-                if (!s_SetFilesWithCachedDocs.Contains(strFileName))
-                    blnLoadFile = true;
-
-            DateTime datDate = File.GetLastWriteTime(strPath);
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
+            string strReferenceKey = strFileName + "^" + strLanguage;
+            bool blnWaitForLoad = false;
+            bool blnReferenceExists = s_dicXmlDocuments.TryGetValue(strReferenceKey, out XmlReference objReference);
+            do
+            {
+                lock (s_SetFilesCurrentlyLoadingLock)
+                {
+                    if (s_SetFilesCurrentlyLoading.Contains(strReferenceKey))
+                        blnWaitForLoad = true;
+                    else if (!blnReferenceExists)
+                    {
+                        s_SetFilesCurrentlyLoading.Add(strReferenceKey);
+                        blnLoadFile = true;
+                        break;
+                    }
+                }
+
+                // Idle this thread while the document loads in the other one.
+                while (blnWaitForLoad)
+                {
+                    Thread.Sleep(1000);
+                    lock (s_SetFilesCurrentlyLoadingLock)
+                        blnWaitForLoad = s_SetFilesCurrentlyLoading.Contains(strReferenceKey);
+                    if (!blnReferenceExists && !blnWaitForLoad)
+                        blnReferenceExists = s_dicXmlDocuments.TryGetValue(strReferenceKey, out objReference);
+                }
+            } while (!blnReferenceExists);
+
+            DateTime datDate = File.GetLastWriteTime(strPath);
 
             // Look to see if this XmlDocument is already loaded.
-            XmlReference objReference;
-            lock (s_LstXmlDocumentsLock)
+            if (!blnReferenceExists || objReference == null || blnLoadFile)
             {
-                objReference = s_LstXmlDocuments.FirstOrDefault(x => x.FileName == strFileName);
-                if (objReference == null || blnLoadFile)
-                {
-                    // The file was not found in the reference list, so it must be loaded.
-                    objReference = new XmlReference();
-                    blnLoadFile = true;
-                    s_LstXmlDocuments.Add(objReference);
-                }
-                // The file was found in the List, so check the last write time and language.
-                else if (datDate != objReference.FileDate || strLanguage != objReference.Language)
-                {
-                    // The last write time and/or language does not match, so it must be reloaded.
-                    blnLoadFile = true;
-                }
+                // The file was not found in the reference list, so it must be loaded.
+                objReference = new XmlReference();
+                blnLoadFile = true;
+                s_dicXmlDocuments.TryRemove(strReferenceKey, out XmlReference _);
+                s_dicXmlDocuments.TryAdd(strReferenceKey, objReference);
+            }
+            // The file was found in the List, so check the last write time and language.
+            else if (datDate != objReference.FileDate)
+            {
+                // The last write time and/or language does not match, so it must be reloaded.
+                blnLoadFile = true;
             }
 
             // Create a new document that everything will be merged into.
@@ -218,17 +230,19 @@ namespace Chummer
                     }
                 }
 
-                // Cache the merged document and its relevant information.
-                objReference.FileDate = datDate;
-                objReference.FileName = strFileName;
-                objReference.Language = strLanguage;
-                if (GlobalOptions.LiveCustomData)
-                    objReference.XmlContent = objDoc.Clone() as XmlDocument;
-                else
-                    objReference.XmlContent = objDoc;
-
-                lock (s_SetFilesWithCachedDocsLock)
-                    s_SetFilesWithCachedDocs.Add(strFileName);
+                lock (s_SetFilesCurrentlyLoadingLock)
+                {
+                    if (s_SetFilesCurrentlyLoading.Contains(strReferenceKey))
+                    {
+                        // Cache the merged document and its relevant information.
+                        objReference.FileDate = datDate;
+                        if (GlobalOptions.LiveCustomData)
+                            objReference.XmlContent = objDoc.Clone() as XmlDocument;
+                        else
+                            objReference.XmlContent = objDoc;
+                        s_SetFilesCurrentlyLoading.Remove(strReferenceKey);
+                    }
+                }
             }
             else
             {
