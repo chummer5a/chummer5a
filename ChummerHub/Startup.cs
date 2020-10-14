@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Configuration;
 using ChummerHub.Data;
 using ChummerHub.Services;
 using ChummerHub.Services.Application_Insights;
@@ -61,30 +62,24 @@ namespace ChummerHub
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Startup(ILogger<Startup>, IConfiguration)'
         public Startup(ILogger<Startup> logger, IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Startup(ILogger<Startup>, IConfiguration)'
         {
             _logger = logger;
             Configuration = configuration;
+            AppSettings = ConfigurationManager.AppSettings;
             if (_gdrive == null)
                 _gdrive = new DriveHandler(logger, configuration);
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
         public IConfiguration Configuration { get; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
+        public static System.Collections.Specialized.NameValueCollection AppSettings { get; set; }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
         public IServiceCollection MyServices { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
 
         //readonly string MyAllowAllOrigins = "AllowAllOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
         public void ConfigureServices(IServiceCollection services)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
         {
             MyServices = services;
 
