@@ -9390,6 +9390,10 @@
       <key>Button_Export_SaveJsonAs</key>
       <text>Save JSON as</text>
     </string>
+    <string>
+      <key>String_Generating_Data</key>
+      <text>Generating Data...</text>
+    </string>
     <!-- End Region-->
     <!-- Region Create Spell Window -->
     <string>

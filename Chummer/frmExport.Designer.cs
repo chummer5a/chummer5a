@@ -86,6 +86,7 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Enabled = false;
             this.cmdOK.Location = new System.Drawing.Point(59, 3);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(50, 23);
@@ -147,6 +148,8 @@ namespace Chummer
             this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtText.Size = new System.Drawing.Size(440, 201);
             this.txtText.TabIndex = 7;
+            this.txtText.Tag = "String_Generating_Data";
+            this.txtText.Text = "Generating Data...";
             this.txtText.Leave += new System.EventHandler(this.txtText_Leave);
             this.txtText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.txtText_MouseUp);
             // 
@@ -168,6 +171,8 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Export Character";
+            this.UseWaitCursor = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmExport_FormClosing);
             this.Load += new System.EventHandler(this.frmExport_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
