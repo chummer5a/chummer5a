@@ -1015,7 +1015,7 @@ namespace Chummer
 
                     foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
                     {
-                        objContactControl.ContactDetailChanged -= EnemyChanged;
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                         objContactControl.DeleteContact -= DeleteEnemy;
                     }
 

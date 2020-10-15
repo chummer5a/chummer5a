@@ -4893,10 +4893,7 @@ namespace Chummer
                                     break;
                                 ContactControl objContactControl = new ContactControl(objContact);
                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                if (_objCharacter.Created)
-                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                else
-                                    objContactControl.ContactDetailChanged += EnemyChanged;
+                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objContactControl.DeleteContact += DeleteEnemy;
                                 objContactControl.MouseDown += DragContactControl;
 
@@ -4953,12 +4950,11 @@ namespace Chummer
                                                 break;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            if (_objCharacter.Created)
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                            else
-                                                objContactControl.ContactDetailChanged += EnemyChanged;
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
+
+                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
@@ -5012,10 +5008,7 @@ namespace Chummer
                                                 if (panEnemies.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
                                                 {
                                                     panEnemies.Controls.RemoveAt(i);
-                                                    if (_objCharacter.Created)
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                    else
-                                                        objContactControl.ContactDetailChanged -= EnemyChanged;
+                                                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                                     objContactControl.DeleteContact -= DeleteEnemy;
                                                     objContactControl.Dispose();
                                                 }
@@ -5074,10 +5067,7 @@ namespace Chummer
                                                 if (panEnemies.Controls[i] is ContactControl objContactControl && objContactControl.ContactObject == objLoopContact)
                                                 {
                                                     panEnemies.Controls.RemoveAt(i);
-                                                    if (_objCharacter.Created)
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                    else
-                                                        objContactControl.ContactDetailChanged -= EnemyChanged;
+                                                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                                                     objContactControl.DeleteContact -= DeleteEnemy;
                                                     objContactControl.Dispose();
                                                 }
@@ -5127,12 +5117,11 @@ namespace Chummer
                                                 break;
                                             ContactControl objContactControl = new ContactControl(objLoopContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            if (_objCharacter.Created)
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                            else
-                                                objContactControl.ContactDetailChanged += EnemyChanged;
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
+
+                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
@@ -5694,93 +5683,6 @@ namespace Chummer
             };
 
             CharacterObject.Contacts.Add(objContact);
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        protected void EnemyChanged(object sender, TextEventArgs e)
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-            ContactControl objSenderControl = sender as ContactControl;
-
-            // Handle the ConnectionRatingChanged Event for the ContactControl object.
-            int intNegativeQualityBP = 0;
-            // Calculate the BP used for Negative Qualities.
-            foreach (Quality objQuality in CharacterObject.Qualities)
-            {
-                if (objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
-                    intNegativeQualityBP += objQuality.BP;
-            }
-            // Include the amount of free Negative Qualities from Improvements.
-            intNegativeQualityBP -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
-
-            // Adjust for Karma cost multiplier.
-            intNegativeQualityBP *= CharacterObjectOptions.KarmaQuality;
-
-            // Find current enemy BP total
-            int intBPUsed = 0;
-            foreach (Contact objLoopEnemy in CharacterObject.Contacts)
-            {
-                if (objLoopEnemy.EntityType == ContactType.Enemy && !objLoopEnemy.Free)
-                {
-                    intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
-                }
-            }
-
-            int intEnemyMax = CharacterObject.GameplayOptionQualityLimit;
-            int intQualityMax = CharacterObject.GameplayOptionQualityLimit;
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strEnemyPoints = intEnemyMax.ToString(GlobalOptions.CultureInfo) + strSpace + LanguageManager.GetString("String_Karma");
-            string strQualityPoints = intQualityMax.ToString(GlobalOptions.CultureInfo) + strSpace + LanguageManager.GetString("String_Karma");
-
-            if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules && CharacterObjectOptions.EnemyKarmaQualityLimit)
-            {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_EnemyLimit"), strEnemyPoints),
-                    LanguageManager.GetString("MessageTitle_EnemyLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Contact objSenderContact = objSenderControl?.ContactObject;
-                if (objSenderContact != null)
-                {
-                    int intTotal = (intEnemyMax * -1) - intBPUsed;
-                    switch (e.Text)
-                    {
-                        case "Connection":
-                            objSenderContact.Connection -= intTotal;
-                            break;
-                        case "Loyalty":
-                            objSenderContact.Loyalty -= intTotal;
-                            break;
-                    }
-                }
-
-                return;
-            }
-
-            if (!CharacterObjectOptions.ExceedNegativeQualities && CharacterObjectOptions.EnemyKarmaQualityLimit)
-            {
-                if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
-                {
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strQualityPoints),
-                        LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Contact objSenderContact = objSenderControl?.ContactObject;
-                    if (objSenderContact != null)
-                    {
-                        switch (e.Text)
-                        {
-                            case "Connection":
-                                objSenderContact.Connection -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
-                                                                CharacterObjectOptions.KarmaQuality);
-                                break;
-                            case "Loyalty":
-                                objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
-                                                             CharacterObjectOptions.KarmaQuality);
-                                break;
-                        }
-                    }
-                }
-            }
 
             IsCharacterUpdateRequested = true;
 

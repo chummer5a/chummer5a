@@ -125,6 +125,9 @@ namespace Chummer
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
+
+            if ((!IsNotEnemy || lstNamesOfChangedProperties.Contains(nameof(IsNotEnemy))) && lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+                _objCharacter.OnPropertyChanged(nameof(Character.EnemyKarma));
         }
 
         private static readonly DependencyGraph<string, Contact> ContactDependencyGraph =
