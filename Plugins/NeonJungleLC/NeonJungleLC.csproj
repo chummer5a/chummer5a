@@ -52,8 +52,8 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Apis.1.49.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Sheets.v4, Version=1.49.0.2098, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Google.Apis.Sheets.v4.1.49.0.2098\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
+    <Reference Include="Google.Apis.Sheets.v4, Version=1.49.0.2105, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Google.Apis.Sheets.v4.1.49.0.2105\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.15.0.44797, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.15.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
