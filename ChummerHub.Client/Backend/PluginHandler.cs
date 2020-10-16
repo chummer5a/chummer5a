@@ -379,7 +379,7 @@ namespace Chummer.Plugins
         public static SINner MySINnerLoading { get; internal set; }
         public NamedPipeManager PipeManager { get; private set; }
 
-        string IPlugin.GetSaveToFileElement(Character input)
+        public string GetSaveToFileElement(Character input)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));

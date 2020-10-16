@@ -56,13 +56,13 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.21\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.22\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.4\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

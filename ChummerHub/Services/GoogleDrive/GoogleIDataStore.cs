@@ -19,20 +19,14 @@ namespace ChummerHub.Services.GoogleDrive
     public class GoogleIDataStore : IDataStore
     {
         private static ILogger _logger;
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore._store'
         public static Dictionary<string, TokenResponse> _store;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore._store'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore()'
         public GoogleIDataStore()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore()'
         {
             _store = new Dictionary<string, TokenResponse>();
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore(string, string, ILogger)'
         public GoogleIDataStore(string key, string refreshToken, ILogger Logger)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore(string, string, ILogger)'
         {
             try
             {

@@ -17,26 +17,17 @@ using Microsoft.Extensions.Logging;
 
 namespace ChummerHub.Services.GoogleDrive
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
     public class DriveHandler
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
-
     {
-#pragma warning disable CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
         GoogleCredential Credential = null;
-#pragma warning restore CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
         public static string[] Scopes = {
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
             DriveService.Scope.DriveFile,
             DriveService.Scope.Drive,
             DriveService.Scope.DriveAppdata,
             DriveService.Scope.DriveMetadata
 
         };
-#pragma warning disable CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
         static string ApplicationName = "SINners";
-#pragma warning restore CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
         private readonly ILogger _logger;
 
         private static string _contentType = "application/octet-stream";
@@ -49,9 +40,7 @@ namespace ChummerHub.Services.GoogleDrive
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         public async Task<UserCredential> GetUserCredential(IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         {
             try
             {

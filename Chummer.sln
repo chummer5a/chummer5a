@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer", "Chummer\Chummer.csproj", "{95279469-5A3E-42E6-993C-6A403586C86E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -33,6 +33,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChummerHub.Client", "ChummerHub.Client\ChummerHub.Client.csproj", "{3C2FBA71-EAA6-490E-9213-69EDA4E64DB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChummerHub.Client.Tests", "ChummerHub.Client.Tests\ChummerHub.Client.Tests.csproj", "{D9095AB5-F0FA-4262-B9E2-40974212A7AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{9C112322-31EA-418C-AC07-C6D030155FA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePlugin", "Plugins\SamplePlugin\SamplePlugin.csproj", "{EA016472-2F78-43F9-AF2C-809BDF766645}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonJungleLC", "Plugins\NeonJungleLC\NeonJungleLC.csproj", "{D35849C0-F0D0-4D69-A467-4E069C10D51D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,9 +121,29 @@ Global
 		{D9095AB5-F0FA-4262-B9E2-40974212A7AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9095AB5-F0FA-4262-B9E2-40974212A7AC}.Release|x86.ActiveCfg = Release|Any CPU
 		{D9095AB5-F0FA-4262-B9E2-40974212A7AC}.Release|x86.Build.0 = Release|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA016472-2F78-43F9-AF2C-809BDF766645}.Release|x86.Build.0 = Release|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Debug|x86.Build.0 = Debug|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Release|x86.ActiveCfg = Release|Any CPU
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA016472-2F78-43F9-AF2C-809BDF766645} = {9C112322-31EA-418C-AC07-C6D030155FA3}
+		{D35849C0-F0D0-4D69-A467-4E069C10D51D} = {9C112322-31EA-418C-AC07-C6D030155FA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {55540ABF-8BD7-4553-8C6D-03B5E024555F}
