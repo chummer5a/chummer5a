@@ -30,7 +30,7 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.lblKarma = new System.Windows.Forms.Label();
-            this.nudAmount = new System.Windows.Forms.NumericUpDown();
+            this.nudAmount = new Chummer.NumericUpDownEx();
             this.lblDescription = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -38,7 +38,7 @@ namespace Chummer
             this.chkRefund = new Chummer.ColorableCheckBox();
             this.datDate = new System.Windows.Forms.DateTimePicker();
             this.lblDateLabel = new System.Windows.Forms.Label();
-            this.nudPercent = new System.Windows.Forms.NumericUpDown();
+            this.nudPercent = new Chummer.NumericUpDownEx();
             this.lblPercent = new System.Windows.Forms.Label();
             this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -333,7 +333,7 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.Label lblKarma;
-        private System.Windows.Forms.NumericUpDown nudAmount;
+        private Chummer.NumericUpDownEx nudAmount;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.TextBox txtDescription;
         private System.Windows.Forms.Button cmdCancel;
@@ -341,7 +341,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkRefund;
         private System.Windows.Forms.DateTimePicker datDate;
         private System.Windows.Forms.Label lblDateLabel;
-        private System.Windows.Forms.NumericUpDown nudPercent;
+        private Chummer.NumericUpDownEx nudPercent;
         private System.Windows.Forms.Label lblPercent;
         private Chummer.ColorableCheckBox chkKarmaNuyenExchange;
         private Chummer.BufferedTableLayoutPanel tlpMain;

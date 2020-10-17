@@ -28,6 +28,7 @@
 // ============================================================================ '
 
 using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -73,6 +74,63 @@ namespace Chummer
             _upDownButtons.MouseLeave += _mouseEnterLeave;
             base.MouseEnter += _mouseEnterLeave;
             base.MouseLeave += _mouseEnterLeave;
+            // DPI handler for margins (WinForms is buggy with handling scaling of margins on numeric up-downs)
+            MarginChanged += OnMarginChanged;
+        }
+
+        private bool _blnDoProcessMargins = true;
+        private void OnMarginChanged(object sender, EventArgs e)
+        {
+            if (!_blnDoProcessMargins)
+                return;
+            using (Graphics g = CreateGraphics())
+            {
+                // Only care about adjusting margins for non-standard DPI
+                if (Math.Abs(g.DpiX - 96.0f) < float.Epsilon && Math.Abs(g.DpiY - 96.0f) < float.Epsilon)
+                    return;
+
+                int intMinNonZeroMargin = int.MaxValue;
+                BitArray ablnConsiderMargins = new BitArray(4, false);
+                if (Margin.Left != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Left, intMinNonZeroMargin);
+                    ablnConsiderMargins[0] = true;
+                }
+                if (Margin.Top != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Top, intMinNonZeroMargin);
+                    ablnConsiderMargins[1] = true;
+                }
+                if (Margin.Right != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Right, intMinNonZeroMargin);
+                    ablnConsiderMargins[2] = true;
+                }
+                if (Margin.Bottom != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Bottom, intMinNonZeroMargin);
+                    ablnConsiderMargins[3] = true;
+                }
+                // No non-zero margins, exit
+                if (intMinNonZeroMargin == int.MaxValue)
+                    return;
+
+                int intNewCommonMarginX = (int)(3 * g.DpiX / 96.0f);
+                int intNewCommonMarginY = (int)(3 * g.DpiY / 96.0f);
+                Padding objNewMargins = new Padding(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom);
+                if (ablnConsiderMargins[0])
+                    objNewMargins.Left += intNewCommonMarginX - intMinNonZeroMargin;
+                if (ablnConsiderMargins[1])
+                    objNewMargins.Top += intNewCommonMarginY - intMinNonZeroMargin;
+                if (ablnConsiderMargins[2])
+                    objNewMargins.Right += intNewCommonMarginX - intMinNonZeroMargin;
+                if (ablnConsiderMargins[3])
+                    objNewMargins.Bottom += intNewCommonMarginY - intMinNonZeroMargin;
+
+                _blnDoProcessMargins = false;
+                Margin = objNewMargins;
+                _blnDoProcessMargins = true;
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -501,21 +559,26 @@ namespace Chummer
                 // change position if RTL
                 bool fixPos = RightToLeft == RightToLeft.Yes ^ UpDownAlign == LeftRightAlignment.Left;
 
+                int int2PxWidth = 2;
+                int int16PxWidth = 16;
+                using (Graphics g = CreateGraphics())
+                {
+                    int2PxWidth = (int)(int2PxWidth * g.DpiX / 96.0f);
+                    int16PxWidth = (int)(int16PxWidth * g.DpiX / 96.0f);
+                }
                 if (_mouseOver)
                 {
-                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - LogicalToDeviceUnits(2);
+                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - int2PxWidth;
                     if (fixPos)
-                        _textbox.Location = new Point(LogicalToDeviceUnits(16), _textbox.Location.Y);
+                        _textbox.Location = new Point(int16PxWidth, _textbox.Location.Y);
                 }
                 else
                 {
                     if (fixPos)
-                        _textbox.Location = new Point(LogicalToDeviceUnits(2), _textbox.Location.Y);
-                    _textbox.Width = ClientSize.Width - _textbox.Left - LogicalToDeviceUnits(2);
+                        _textbox.Location = new Point(int2PxWidth, _textbox.Location.Y);
+                    _textbox.Width = ClientSize.Width - _textbox.Left - int2PxWidth;
                 }
-
             }
-
         }
 
         #endregion

@@ -107,6 +107,7 @@ namespace Chummer.UI.Skills
             this.splitSkills.Size = new System.Drawing.Size(800, 611);
             this.splitSkills.SplitterDistance = 420;
             this.splitSkills.TabIndex = 0;
+            this.splitSkills.Resize += new System.EventHandler(this.splitSkills_Resize);
             // 
             // tlpTopPanel
             // 

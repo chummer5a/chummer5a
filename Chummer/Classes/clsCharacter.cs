@@ -425,9 +425,11 @@ namespace Chummer
         {
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
-                _intCachedNegativeQualities = int.MinValue;
-                _intCachedNegativeQualityLimitKarma = int.MinValue;
-                _intCachedPositiveQualities = int.MinValue;
+                OnMultiplePropertyChanged(nameof(NegativeQualityKarma),
+                    nameof(NegativeQualityLimitKarma),
+                    nameof(PositiveQualityKarma),
+                    nameof(PositiveQualityKarmaTotal),
+                    nameof(EnemyKarma));
             }
         }
         private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -15538,10 +15540,19 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(EnemyKarma)),
                             new DependencyGraphNode<string, Character>(nameof(Contacts)),
                             new DependencyGraphNode<string, Character>(nameof(Qualities))
+                        ),
+                        new DependencyGraphNode<string, Character>(nameof(NegativeQualityLimitKarma),
+                            new DependencyGraphNode<string, Character>(nameof(EnemyKarma)),
+                            new DependencyGraphNode<string, Character>(nameof(Contacts)),
+                            new DependencyGraphNode<string, Character>(nameof(Qualities))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayPositiveQualityKarma),
                         new DependencyGraphNode<string, Character>(nameof(PositiveQualityKarma),
+                            new DependencyGraphNode<string, Character>(nameof(Contacts)),
+                            new DependencyGraphNode<string, Character>(nameof(Qualities))
+                        ),
+                        new DependencyGraphNode<string, Character>(nameof(PositiveQualityKarmaTotal),
                             new DependencyGraphNode<string, Character>(nameof(Contacts)),
                             new DependencyGraphNode<string, Character>(nameof(Qualities))
                         )
@@ -15719,7 +15730,7 @@ namespace Chummer
                 RefreshWoundPenalties();
             }
 
-            if (lstNamesOfChangedProperties.Contains(nameof(Contacts)))
+            if (lstNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
             {
                 _intCachedEnemyKarma = int.MinValue;
             }
@@ -17840,7 +17851,7 @@ namespace Chummer
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualities += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
-                        .Sum(x => x.ContactPoints);
+                        .Sum(x => x.ContactPoints) * Options.KarmaContact;
                     // Each spell costs KarmaSpell.
                     int spellCost = SpellKarmaCost("Spells");
                     // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
@@ -17887,7 +17898,7 @@ namespace Chummer
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualitiesTotal += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
-                        .Sum(x => x.ContactPoints);
+                        .Sum(x => x.ContactPoints) * Options.KarmaContact;
 
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualitiesTotal -=
@@ -18084,7 +18095,7 @@ namespace Chummer
                 if (_intCachedEnemyKarma == int.MinValue)
                 {
                     _intCachedEnemyKarma = Contacts
-                        .Where(x => x.EntityType == ContactType.Enemy && x.IsGroup && !x.Free)
+                        .Where(x => x.EntityType == ContactType.Enemy && !x.Free)
                         .Sum(x => (x.Connection + x.Loyalty) * Options.KarmaEnemy);
                 }
 

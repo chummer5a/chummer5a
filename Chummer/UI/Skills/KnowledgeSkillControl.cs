@@ -266,7 +266,7 @@ namespace Chummer.UI.Skills
         }
 
         [UsedImplicitly]
-        public int NameWidth => tlpName.Width - lblName.Margin.Left - lblName.Margin.Right;
+        public int NameWidth => tlpName.Width - (lblName.Visible ? lblName.Margin.Left + lblName.Margin.Right : cboName.Margin.Left + cboName.Margin.Right);
 
         [UsedImplicitly]
         public int NudSkillWidth => !_skill.CharacterObject.Created && _skill.AllowUpgrade && _skill.CharacterObject.SkillsSection.HasKnowledgePoints
@@ -322,8 +322,11 @@ namespace Chummer.UI.Skills
 
         private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            lblRating.MinimumSize = new Size(LogicalToDeviceUnits(25), 0);
-            lblModifiedRating.MinimumSize = new Size(LogicalToDeviceUnits(50), 0);
+            using (Graphics g = CreateGraphics())
+            {
+                lblRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
+            }
         }
 
         // Hacky solution to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update

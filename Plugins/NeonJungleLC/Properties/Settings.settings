@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NeonJungleLC.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="NeonJungleLCUserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="SheetsClientID" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">572473169505-s2ip24fluoguu33ov35m1imtalqeu9mq.apps.googleusercontent.com</Value>
+    </Setting>
+    <Setting Name="SheetsClientSecret" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">wwD4UcoVS5wsZJnut4PVLPft</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

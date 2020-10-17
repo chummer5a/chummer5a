@@ -33,7 +33,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblDice = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
-            this.nudDiceResult = new System.Windows.Forms.NumericUpDown();
+            this.nudDiceResult = new Chummer.NumericUpDownEx();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).BeginInit();
             this.tlpMain.SuspendLayout();
@@ -159,7 +159,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblDice;
         private System.Windows.Forms.Label lblResult;
-        private System.Windows.Forms.NumericUpDown nudDiceResult;
+        private Chummer.NumericUpDownEx nudDiceResult;
         private Chummer.BufferedTableLayoutPanel tlpMain;
     }
 }

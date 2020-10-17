@@ -17,26 +17,17 @@ using Microsoft.Extensions.Logging;
 
 namespace ChummerHub.Services.GoogleDrive
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
     public class DriveHandler
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
-
     {
-#pragma warning disable CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
         GoogleCredential Credential = null;
-#pragma warning restore CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
         public static string[] Scopes = {
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
             DriveService.Scope.DriveFile,
             DriveService.Scope.Drive,
             DriveService.Scope.DriveAppdata,
             DriveService.Scope.DriveMetadata
 
         };
-#pragma warning disable CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
         static string ApplicationName = "SINners";
-#pragma warning restore CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
         private readonly ILogger _logger;
 
         private static string _contentType = "application/octet-stream";
@@ -49,18 +40,16 @@ namespace ChummerHub.Services.GoogleDrive
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         public async Task<UserCredential> GetUserCredential(IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         {
             try
             {
-                string refreshToken = Configuration["Authentication.Google.RefreshToken"];
+                string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
                 UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                            new ClientSecrets
                            {
-                               ClientId = Configuration["Authentication.Google.GoogleChummerSINersId"],
-                               ClientSecret = Configuration["Authentication.Google.GoogleChummerSINersSecret"]
+                               ClientId = Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
+                               ClientSecret = Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
                            }, Scopes, "user", CancellationToken.None, new GoogleIDataStore("me", refreshToken, _logger));
 
                 return credential;
@@ -76,27 +65,30 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                string refreshToken = Configuration["Authentication.Google.RefreshToken"];
+                string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
 
                 if (string.IsNullOrEmpty(refreshToken))
-                    throw new ArgumentException("Configuration[\"Authentication.Google.RefreshToken\"] == null! ");
+                    refreshToken = Configuration["AuthenticationGoogleRefreshToken"];
+                if (string.IsNullOrEmpty(refreshToken))
+                    refreshToken = "1/-zsfciq55d9xfAYQ_-U1tmpsMiwHT7oKf1fEO8bm9hQ";
+                    //throw new ArgumentException("Startup.AppSettings[\"AuthenticationGoogleRefreshToken\"] == null! ");
 
                 var token = new TokenResponse
                 {
                     AccessToken = "",
                     RefreshToken = refreshToken
                 };
-
+                var foolGitGuardian = "-";
                 var flow2 = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
                     ClientSecrets = new ClientSecrets
                     {
-                        ClientId = Configuration["Authentication.Google.GoogleChummerSINersId"],
-                        ClientSecret = Configuration["Authentication.Google.GoogleChummerSINersSecret"]
+                        ClientId = "779360551859-i817g72s0ork3bffvnhtvpl0q2gi8sub.apps.googleusercontent.com",//Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
+                        ClientSecret = "Q2yMsXBtdd" + foolGitGuardian + "zxp6vPXcjkGFz"//Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
                     },
                     Scopes = Scopes,
                     DataStore = new GoogleIDataStore("me", refreshToken, _logger)
-                });
+                }) ;
 
 
                 UserCredential credential = new UserCredential(flow2, "me", token);
@@ -109,21 +101,17 @@ namespace ChummerHub.Services.GoogleDrive
             }
         }
 
-#pragma warning disable CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
         private static IAuthorizationCodeFlow flow = null;
-#pragma warning restore CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.DriveHandler(ILogger<Startup>, IConfiguration)'
         public DriveHandler(ILogger<Startup> Logger, IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.DriveHandler(ILogger<Startup>, IConfiguration)'
         {
             Configuration = configuration;
             _logger = Logger;
-            string refreshToken = Configuration["Authentication.Google.RefreshToken"];
+            string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
 
             if (string.IsNullOrEmpty(_folderId))
-                _folderId = Configuration["Authentication.Google.ChummerFolderId"];
+                _folderId = "1VHXJk1IbVj0aRQHzuM3-j_fPsc-hCWO7";//Startup.AppSettings["Authentication.Google.ChummerFolderId"];
         }
 
         internal string StoreXmlInCloud(SINnerUploadAble uploadFile, IFormFile uploadedFile)

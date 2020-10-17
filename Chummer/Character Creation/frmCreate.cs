@@ -1005,7 +1005,7 @@ namespace Chummer
 
                     foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
                     {
-                        objContactControl.ContactDetailChanged -= EnemyChanged;
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                         objContactControl.DeleteContact -= DeleteEnemy;
                     }
 
@@ -8855,7 +8855,7 @@ namespace Chummer
                 {
                     intHighPlacesFriends += objContact.Connection + objContact.Loyalty;
                 }
-                else if (objContact.IsGroup == false)
+                else if (!objContact.IsGroup)
                 {
                     int over = intContactPointsLeft - objContact.ContactPoints;
 
@@ -8931,7 +8931,7 @@ namespace Chummer
                             ? objGroupContact.Name
                             : LanguageManager.GetString("String_Unknown"),
                         strSpace,
-                        objGroupContact.ContactPoints).AppendLine();
+                        objGroupContact.ContactPoints * CharacterObjectOptions.KarmaContact).AppendLine();
                 }
             }
 
@@ -9023,10 +9023,12 @@ namespace Chummer
             int intSpellPointsUsed = 0;
             int intRitualPointsUsed = 0;
             int intPrepPointsUsed = 0;
-            if (CharacterObject.MagicianEnabled ||
-                    CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells ||
-                                                                     objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT ||
-                                                                     objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill) && objImprovement.Enabled))
+            if (CharacterObject.MagicianEnabled
+                || CharacterObject.AdeptEnabled
+                || CharacterObject.Improvements.Any(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.FreeSpells
+                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsATT
+                                                                       || objImprovement.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+                                                                      && objImprovement.Enabled))
             {
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
                 int spells = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus);
@@ -14536,10 +14538,19 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (!picMugshot.IsDisposed)
-                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                    ? PictureBoxSizeMode.CenterImage
-                    : PictureBoxSizeMode.Zoom;
+            if (!Disposing && !picMugshot.Disposing && !picMugshot.IsDisposed)
+            {
+                try
+                {
+                    picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            }
         }
 
         private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)

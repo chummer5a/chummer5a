@@ -69,7 +69,7 @@ namespace Chummer
             this.lblAvail = new System.Windows.Forms.Label();
             this.lblArmorValue = new System.Windows.Forms.Label();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.chkFreeItem = new Chummer.ColorableCheckBox();
@@ -79,7 +79,7 @@ namespace Chummer
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
-            this.nudRating = new System.Windows.Forms.NumericUpDown();
+            this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
             this.lblAvailLabel = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
@@ -955,7 +955,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblArmorValueLabel;
         private System.Windows.Forms.Label lblTest;
         private System.Windows.Forms.Label lblTestLabel;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.Label lblCapacity;
@@ -979,7 +979,7 @@ namespace Chummer
         private DataGridViewTextBoxColumnTranslated Cost;
         private CheckBox chkHideOverAvailLimit;
         private FlowLayoutPanel flpRating;
-        private NumericUpDown nudRating;
+        private NumericUpDownEx nudRating;
         private Label lblRatingNALabel;
         private CheckBox chkShowOnlyAffordItems;
         private DataGridViewTextBoxColumnTranslated dataGridViewTextBoxColumnTranslated1;

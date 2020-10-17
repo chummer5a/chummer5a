@@ -34,7 +34,7 @@ namespace Chummer
             this.lstGear = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
-            this.nudRating = new System.Windows.Forms.NumericUpDown();
+            this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
@@ -49,11 +49,11 @@ namespace Chummer
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblCapacity = new System.Windows.Forms.Label();
-            this.nudGearQty = new System.Windows.Forms.NumericUpDown();
+            this.nudGearQty = new Chummer.NumericUpDownEx();
             this.lblGearQtyLabel = new System.Windows.Forms.Label();
             this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.chkDoItYourself = new Chummer.ColorableCheckBox();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.chkStack = new Chummer.ColorableCheckBox();
             this.lblTest = new System.Windows.Forms.Label();
@@ -763,7 +763,7 @@ namespace Chummer
         private System.Windows.Forms.ListBox lstGear;
         private System.Windows.Forms.Label lblCategory;
         private ElasticComboBox cboCategory;
-        private System.Windows.Forms.NumericUpDown nudRating;
+        private Chummer.NumericUpDownEx nudRating;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblCostLabel;
@@ -778,11 +778,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblCapacity;
-        private System.Windows.Forms.NumericUpDown nudGearQty;
+        private Chummer.NumericUpDownEx nudGearQty;
         private System.Windows.Forms.Label lblGearQtyLabel;
         private Chummer.ColorableCheckBox chkFreeItem;
         private Chummer.ColorableCheckBox chkDoItYourself;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupLabel;
         private Chummer.ColorableCheckBox chkStack;
         private System.Windows.Forms.Label lblTest;

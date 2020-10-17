@@ -125,6 +125,21 @@ namespace Chummer
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
+
+            if (!Free
+                || lstNamesOfChangedProperties.Contains(nameof(Free))
+                || lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+            {
+                if (!IsNotEnemy || lstNamesOfChangedProperties.Contains(nameof(IsNotEnemy)))
+                {
+                    _objCharacter.OnPropertyChanged(nameof(Character.EnemyKarma));
+                }
+                if ((IsNotEnemy
+                     || lstNamesOfChangedProperties.Contains(nameof(IsNotEnemy)))
+                    && (IsGroup
+                        || lstNamesOfChangedProperties.Contains(nameof(IsGroup))))
+                    _objCharacter.OnPropertyChanged(nameof(Character.PositiveQualityKarmaTotal));
+            }
         }
 
         private static readonly DependencyGraph<string, Contact> ContactDependencyGraph =

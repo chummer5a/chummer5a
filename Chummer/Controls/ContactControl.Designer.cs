@@ -29,8 +29,8 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.nudConnection = new System.Windows.Forms.NumericUpDown();
-            this.nudLoyalty = new System.Windows.Forms.NumericUpDown();
+            this.nudConnection = new Chummer.NumericUpDownEx();
+            this.nudLoyalty = new Chummer.NumericUpDownEx();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -708,8 +708,8 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.NumericUpDown nudConnection;
-        private System.Windows.Forms.NumericUpDown nudLoyalty;
+        private Chummer.NumericUpDownEx nudConnection;
+        private Chummer.NumericUpDownEx nudLoyalty;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.PictureBox imgLink;
         private System.Windows.Forms.ContextMenuStrip cmsContact;

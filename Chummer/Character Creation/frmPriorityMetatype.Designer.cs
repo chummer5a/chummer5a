@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.nudForce = new System.Windows.Forms.NumericUpDown();
+            this.nudForce = new Chummer.NumericUpDownEx();
             this.lblForceLabel = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -892,7 +892,7 @@ namespace Chummer
         #endregion
         
         internal System.Windows.Forms.Label lblMetavariantKarma;
-        private System.Windows.Forms.NumericUpDown nudForce;
+        private Chummer.NumericUpDownEx nudForce;
         private System.Windows.Forms.Label lblForceLabel;
         private ElasticComboBox cboCategory;
         internal System.Windows.Forms.Button cmdCancel;

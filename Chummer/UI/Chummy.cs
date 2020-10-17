@@ -50,9 +50,12 @@ namespace Chummer
         {
             InitializeComponent();
 
-            _eyeballCenter = new Point(LogicalToDeviceUnits(95), LogicalToDeviceUnits(15));
-            _mouthCenter = new Point(LogicalToDeviceUnits(100), LogicalToDeviceUnits(50));
-            _thickPen = new Pen(Color.Black, LogicalToDeviceUnits(3));
+            using (Graphics g = CreateGraphics())
+            {
+                _eyeballCenter = new Point((int)(95 * g.DpiX / 96.0f), (int)(15 * g.DpiY / 96.0f));
+                _mouthCenter = new Point((int)(100 * g.DpiX / 96.0f), (int)(50 * g.DpiY / 96.0f));
+                _thickPen = new Pen(Color.Black, (int)(3 * g.DpiY / 96.0f));
+            }
 
             Paint += panel1_Paint;
 
@@ -131,16 +134,16 @@ namespace Chummer
             Point localPos = PointToClient(_oldMousePos);
 
             // Find the positions of the eyes.
-            int x1 = _eyeballCenter.X - LogicalToDeviceUnits(DistanceBetweenEyes);
-            int x2 = _eyeballCenter.X + LogicalToDeviceUnits(DistanceBetweenEyes);
+            int x1 = _eyeballCenter.X - (int)(DistanceBetweenEyes * gr.DpiX / 96.0f);
+            int x2 = _eyeballCenter.X + (int)(DistanceBetweenEyes * gr.DpiX / 96.0f);
 
             // Create a Bitmap on which to draw.
             gr.SmoothingMode = SmoothingMode.AntiAlias;
             //gr.Clear(this.BackColor);
 
             // Draw the eyes.
-            DrawEye(gr, localPos, x1, _eyeballCenter.Y, LogicalToDeviceUnits(EyeBallWidth), LogicalToDeviceUnits(EyeBallHeight));
-            DrawEye(gr, localPos, x2, _eyeballCenter.Y, LogicalToDeviceUnits(EyeBallWidth), LogicalToDeviceUnits(EyeBallHeight));
+            DrawEye(gr, localPos, x1, _eyeballCenter.Y, (int)(EyeBallWidth * gr.DpiX / 96.0f), (int)(EyeBallHeight * gr.DpiY / 96.0f));
+            DrawEye(gr, localPos, x2, _eyeballCenter.Y, (int)(EyeBallWidth * gr.DpiX / 96.0f), (int)(EyeBallHeight * gr.DpiY / 96.0f));
         }
 
         private void DrawEye(Graphics gr, Point local_pos,

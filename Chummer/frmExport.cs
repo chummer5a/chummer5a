@@ -18,6 +18,7 @@
  */
  using System;
  using System.Collections.Concurrent;
+ using System.ComponentModel;
  using System.IO;
  using System.Text;
  using System.Windows.Forms;
@@ -32,20 +33,31 @@ namespace Chummer
     {
         private readonly XmlDocument _objCharacterXML;
         private readonly ConcurrentDictionary<string, string> _dicCache = new ConcurrentDictionary<string, string>();
+        private readonly BackgroundWorker _workerJsonLoader = new BackgroundWorker();
+        private readonly BackgroundWorker _workerXmlLoader = new BackgroundWorker();
         private bool _blnSelected;
+        private string _strXslt;
 
         #region Control Events
         public frmExport(XmlDocument objCharacterXML)
         {
             _objCharacterXML = objCharacterXML;
+            _workerJsonLoader.WorkerSupportsCancellation = true;
+            _workerJsonLoader.WorkerReportsProgress = false;
+            _workerJsonLoader.DoWork += GenerateJson;
+            _workerJsonLoader.RunWorkerCompleted += SetTextToWorkerResult;
+            _workerXmlLoader.WorkerSupportsCancellation = true;
+            _workerXmlLoader.WorkerReportsProgress = false;
+            _workerXmlLoader.DoWork += GenerateXml;
+            _workerXmlLoader.RunWorkerCompleted += SetTextToWorkerResult;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            MoveControls();
         }
 
         private void frmExport_Load(object sender, EventArgs e)
         {
+            cboXSLT.BeginUpdate();
             cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
             string exportDirectoryPath = Path.Combine(Utils.GetStartupPath, "export");
@@ -61,6 +73,13 @@ namespace Chummer
 
             if (cboXSLT.Items.Count > 0)
                 cboXSLT.SelectedIndex = 0;
+            cboXSLT.EndUpdate();
+        }
+
+        private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _workerJsonLoader.CancelAsync();
+            _workerXmlLoader.CancelAsync();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -70,37 +89,47 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            string strXSLT = cboXSLT.Text;
-            if (string.IsNullOrEmpty(strXSLT))
+            if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            if (strXSLT == "Export JSON")
+            using (new CursorWait(this))
             {
-                ExportJson();
-            }
-            else
-            {
-                ExportNormal();
+                if (_strXslt == "Export JSON")
+                {
+                    ExportJson();
+                }
+                else
+                {
+                    ExportNormal();
+                }
             }
         }
 
         private void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strXSLT = cboXSLT.Text;
-            if (string.IsNullOrEmpty(strXSLT))
+            _strXslt = cboXSLT.Text;
+            if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            if (_dicCache.TryGetValue(strXSLT, out string strBoxText))
+            UseWaitCursor = true;
+            cmdOK.Enabled = false;
+            txtText.Text = LanguageManager.GetString("String_Generating_Data");
+            if (_dicCache.TryGetValue(_strXslt, out string strBoxText))
             {
                 txtText.Text = strBoxText;
-            }
-            else if (strXSLT == "Export JSON")
-            {
-                GenerateJson();
+                cmdOK.Enabled = true;
+                UseWaitCursor = false;
             }
             else
             {
-                GenerateXml();
+                if (_strXslt == "Export JSON")
+                {
+                    _workerJsonLoader.RunWorkerAsync();
+                }
+                else
+                {
+                    _workerXmlLoader.RunWorkerAsync();
+                }
             }
         }
 
@@ -119,16 +148,12 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private void MoveControls()
-        {
-            cboXSLT.Left = lblExport.Left + lblExport.Width + 6;
-        }
         #region XML
         private void ExportNormal()
         {
             // Look for the file extension information.
             string strExtension = "xml";
-            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
             using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
             {
                 string strLine;
@@ -159,42 +184,54 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void GenerateXml()
+        private void GenerateXml(object sender, DoWorkEventArgs e)
         {
-            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", cboXSLT.Text + ".xsl");
+            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
 
             XslCompiledTransform objXSLTransform = new XslCompiledTransform();
             objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.
-
+            if (e.Cancel)
+                return;
             XmlWriterSettings objSettings = objXSLTransform.OutputSettings.Clone();
             objSettings.CheckCharacters = false;
             objSettings.ConformanceLevel = ConformanceLevel.Fragment;
 
-            MemoryStream objStream = new MemoryStream();
-            using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
-                if (objWriter != null)
-                    objXSLTransform.Transform(_objCharacterXML, null, objWriter);
-            objStream.Position = 0;
+            using (MemoryStream objStream = new MemoryStream())
+            {
+                using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
+                    if (objWriter != null)
+                        objXSLTransform.Transform(_objCharacterXML, null, objWriter);
+                if (e.Cancel)
+                    return;
+                objStream.Position = 0;
 
-            // Read in the resulting code and pass it to the browser.
-            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                SetText(objReader.ReadToEnd());
+                // Read in the resulting code and pass it to the browser.
+                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                    e.Result = objReader.ReadToEnd();
+            }
         }
 
-        private void SetText(string strText)
+        private void GenerateJson(object sender, DoWorkEventArgs e)
         {
-            string strExportMode = cboXSLT.Text;
-            if (!_dicCache.ContainsKey(strExportMode))
-                _dicCache.TryAdd(strExportMode, strText);
-            txtText.DoThreadSafe(() => txtText.Text = strText);
+            e.Result = JsonConvert.SerializeXmlNode(_objCharacterXML, Formatting.Indented);
+        }
+
+        private void SetTextToWorkerResult(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                cmdOK.Enabled = true;
+                UseWaitCursor = false;
+                return;
+            }
+            string strText = e.Result.ToString();
+            _dicCache.AddOrUpdate(_strXslt, x => strText, (a, b) => strText);
+            txtText.Text = strText;
+            cmdOK.Enabled = true;
+            UseWaitCursor = false;
         }
         #endregion
         #region JSON
-        private void GenerateJson()
-        {
-            string json = JsonConvert.SerializeXmlNode(_objCharacterXML, Formatting.Indented);
-            SetText(json);
-        }
 
         private void ExportJson()
         {
@@ -212,6 +249,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
+
         #endregion
     }
 }

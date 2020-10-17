@@ -45,7 +45,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private string _strSelectedLanguage = GlobalOptions.Language;
         private CultureInfo _objSelectedCultureInfo = GlobalOptions.CultureInfo;
-        private ColorMode _eSelectedColorMode = GlobalOptions.ColorMode;
+        private ColorMode _eSelectedColorModeSetting = GlobalOptions.ColorModeSetting;
 
         #region Form Events
         public frmOptions(string strActiveTab = "")
@@ -449,7 +449,7 @@ namespace Chummer
                 }
             }
             GlobalOptions.Language = _strSelectedLanguage;
-            GlobalOptions.ColorMode = _eSelectedColorMode;
+            GlobalOptions.ColorModeSetting = _eSelectedColorModeSetting;
             GlobalOptions.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.SingleDiceRoller = chkSingleDiceRoller.Checked;
             GlobalOptions.DefaultCharacterSheet = cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue;
@@ -614,9 +614,9 @@ namespace Chummer
             string strOldSelected = cboUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalOptions.UseLoggingApplicationInsights.ToString();
 
             List<ListItem> lstUseAIOptions = new List<ListItem>(6);
-            foreach (var myoption in Enum.GetValues(typeof(UseAILogging)))
+            foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
             {
-                lstUseAIOptions.Add(new ListItem(myoption, LanguageManager.GetString("String_ApplicationInsights_" + myoption, _strSelectedLanguage)));
+                lstUseAIOptions.Add(new ListItem(eOption, LanguageManager.GetString("String_ApplicationInsights_" + eOption, _strSelectedLanguage)));
             }
 
             cboUseLoggingApplicationInsights.BeginUpdate();
@@ -634,7 +634,7 @@ namespace Chummer
 
         private void PopulateColorModes()
         {
-            string strOldSelected = cboColorMode.SelectedValue?.ToString() ?? GlobalOptions.ColorMode.ToString();
+            string strOldSelected = cboColorMode.SelectedValue?.ToString() ?? GlobalOptions.ColorModeSetting.ToString();
 
             List<ListItem> lstColorModes = new List<ListItem>(3);
             foreach (ColorMode eLoopColorMode in Enum.GetValues(typeof(ColorMode)))
@@ -1269,9 +1269,9 @@ namespace Chummer
                 return;
             using (new CursorWait(this))
             {
-                if (Enum.TryParse(cboColorMode.SelectedValue.ToString(), true, out ColorMode eNewColorMode) && _eSelectedColorMode != eNewColorMode)
+                if (Enum.TryParse(cboColorMode.SelectedValue.ToString(), true, out ColorMode eNewColorMode) && _eSelectedColorModeSetting != eNewColorMode)
                 {
-                    _eSelectedColorMode = eNewColorMode;
+                    _eSelectedColorModeSetting = eNewColorMode;
                     switch (eNewColorMode)
                     {
                         case ColorMode.Automatic:

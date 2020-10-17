@@ -44,9 +44,9 @@ namespace Chummer
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.chkNotMetagenic = new Chummer.ColorableCheckBox();
-            this.nudMinimumBP = new System.Windows.Forms.NumericUpDown();
-            this.nudValueBP = new System.Windows.Forms.NumericUpDown();
-            this.nudMaximumBP = new System.Windows.Forms.NumericUpDown();
+            this.nudMinimumBP = new Chummer.NumericUpDownEx();
+            this.nudValueBP = new Chummer.NumericUpDownEx();
+            this.nudMaximumBP = new Chummer.NumericUpDownEx();
             this.lblMinimumBP = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -533,9 +533,9 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
         private Chummer.ColorableCheckBox chkNotMetagenic;
-        private System.Windows.Forms.NumericUpDown nudMinimumBP;
-        private System.Windows.Forms.NumericUpDown nudValueBP;
-        private System.Windows.Forms.NumericUpDown nudMaximumBP;
+        private Chummer.NumericUpDownEx nudMinimumBP;
+        private Chummer.NumericUpDownEx nudValueBP;
+        private Chummer.NumericUpDownEx nudMaximumBP;
         private System.Windows.Forms.Label lblMinimumBP;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

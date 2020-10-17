@@ -725,9 +725,19 @@ namespace Chummer
 
         private void ProcessMugshotSizeMode()
         {
-            picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                ? PictureBoxSizeMode.CenterImage
-                : PictureBoxSizeMode.Zoom;
+            if (!Disposing && !picMugshot.Disposing && !picMugshot.IsDisposed)
+            {
+                try
+                {
+                    picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            }
         }
         #endregion
 
@@ -872,6 +882,13 @@ namespace Chummer
 
         public ContextMenuStrip CreateContextMenuStrip(bool blnIncludeCloseOpenCharacter)
         {
+            int intToolStripWidth = 180;
+            int intToolStripHeight = 22;
+            using (Graphics g = CreateGraphics())
+            {
+                intToolStripWidth = (int)(intToolStripWidth * g.DpiX / 96.0f);
+                intToolStripHeight = (int)(intToolStripHeight * g.DpiY / 96.0f);
+            }
             // 
             // tsToggleFav
             //
@@ -879,7 +896,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.asterisk_orange,
                 Name = "tsToggleFav",
-                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
+                Size = new Size(intToolStripWidth, intToolStripHeight),
                 Tag = "Menu_ToggleFavorite"
             };
             tsToggleFav.Click += tsToggleFav_Click;
@@ -890,7 +907,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.page_refresh,
                 Name = "tsSort",
-                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
+                Size = new Size(intToolStripWidth, intToolStripHeight),
                 Tag = "Menu_Sort"
             };
             tsSort.Click += tsSort_Click;
@@ -901,7 +918,7 @@ namespace Chummer
             {
                 Image = Properties.Resources.delete,
                 Name = "tsDelete",
-                Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
+                Size = new Size(intToolStripWidth, intToolStripHeight),
                 Tag = "Menu_Delete"
             };
             tsDelete.Click += tsDelete_Click;
@@ -911,7 +928,7 @@ namespace Chummer
             ContextMenuStrip cmsRoster = new ContextMenuStrip
             {
                 Name = "cmsRoster",
-                Size = new Size(LogicalToDeviceUnits(181), LogicalToDeviceUnits(114))
+                Size = new Size(intToolStripWidth, intToolStripHeight * 5)
             };
             cmsRoster.Items.AddRange(new ToolStripItem[]
             {
@@ -933,7 +950,7 @@ namespace Chummer
                 {
                     Image = Properties.Resources.door_out,
                     Name = "tsCloseOpenCharacter",
-                    Size = new Size(LogicalToDeviceUnits(180), LogicalToDeviceUnits(22)),
+                    Size = new Size(intToolStripWidth, intToolStripHeight),
                     Tag = "Menu_Close"
                 };
                 tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;

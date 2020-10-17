@@ -504,7 +504,7 @@ namespace Chummer
             // Prefer Nightly Updates.
             LoadBoolFromRegistry(ref _blnPreferNightlyUpdates, "prefernightlybuilds");
 
-            LoadBoolFromRegistry(ref _blnCustomDateTimeFormats, "customdatetimeformats");
+            LoadBoolFromRegistry(ref _blnCustomDateTimeFormats, "usecustomdatetime");
             LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
             LoadStringFromRegistry(ref _strCustomTimeFormat, "customtimeformat");
 
@@ -577,7 +577,7 @@ namespace Chummer
                 objRegistry.SetValue("liveupdatecleancharacterfiles", LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
-                objRegistry.SetValue("colormode", ColorMode.ToString());
+                objRegistry.SetValue("colormode", ColorModeSetting.ToString());
                 objRegistry.SetValue("language", Language);
                 objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
@@ -811,7 +811,7 @@ namespace Chummer
         /// <summary>
         /// Whether the program should be forced to use Light/Dark mode or to obey default color schemes automatically
         /// </summary>
-        public static ColorMode ColorMode
+        public static ColorMode ColorModeSetting
         {
             get => _eColorMode;
             set

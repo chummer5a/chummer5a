@@ -812,5 +812,12 @@ namespace Chummer.UI.Skills
                 _lstKnowledgeSkills.ResumeLayout();
             }
         }
+
+        private void splitSkills_Resize(object sender, EventArgs e)
+        {
+            RefreshSkillGroupLabels();
+            RefreshSkillLabels();
+            RefreshKnowledgeSkillLabels();
+        }
     }
 }

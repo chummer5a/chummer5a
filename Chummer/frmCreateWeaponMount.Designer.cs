@@ -46,7 +46,7 @@ namespace Chummer
             this.lblSlots = new System.Windows.Forms.Label();
             this.lblSlotsLabel = new System.Windows.Forms.Label();
             this.chkFreeItem = new Chummer.ColorableCheckBox();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.treMods = new System.Windows.Forms.TreeView();
@@ -537,7 +537,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSlots;
         private System.Windows.Forms.Label lblSlotsLabel;
         private Chummer.ColorableCheckBox chkFreeItem;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.TreeView treMods;

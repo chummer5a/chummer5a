@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -28,9 +29,9 @@ namespace Chummer
     public partial class frmNotes : Form
 	{
         // Set to DPI-based 640 in constructor, needs to be there because of DPI dependency
-        private static int s_IntWidth = int.MinValue;
+        private static int _intWidth = int.MinValue;
         // Set to DPI-based 360 in constructor, needs to be there because of DPI dependency
-        private static int s_IntHeight = int.MinValue;
+        private static int _intHeight = int.MinValue;
 	    private readonly bool _blnLoading;
         private string _strNotes;
 
@@ -40,13 +41,19 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            if (s_IntWidth <= 0)
-                s_IntWidth = LogicalToDeviceUnits(640);
-            if (s_IntHeight <= 0)
-                s_IntHeight = LogicalToDeviceUnits(360);
+            if (_intWidth <= 0 || _intHeight <= 0)
+            {
+                using (Graphics g = CreateGraphics())
+                {
+                    if (_intWidth <= 0)
+                        _intWidth = (int)(640 * g.DpiX / 96.0f);
+                    if (_intHeight <= 0)
+                        _intHeight = (int)(360 * g.DpiY / 96.0f);
+                }
+            }
             _blnLoading = true;
-            Width = s_IntWidth;
-			Height = s_IntHeight;
+            Width = _intWidth;
+			Height = _intHeight;
             _blnLoading = false;
         }
 
@@ -67,13 +74,15 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            s_IntWidth = Width;
-            s_IntHeight = Height;
+            _intWidth = Width;
+            _intHeight = Height;
         }
 
         private void frmNotes_Shown(object sender, EventArgs e)
         {
             txtNotes.Focus();
+            txtNotes.SelectionLength = 0;
+            txtNotes.SelectionStart = txtNotes.TextLength;
         }
         #endregion
 

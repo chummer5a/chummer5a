@@ -34,7 +34,7 @@ namespace Chummer
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblAvail = new System.Windows.Forms.Label();
             this.lblAvailLabel = new System.Windows.Forms.Label();
-            this.nudRating = new System.Windows.Forms.NumericUpDown();
+            this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -50,7 +50,7 @@ namespace Chummer
             this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
@@ -677,7 +677,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblAvail;
         private System.Windows.Forms.Label lblAvailLabel;
-        private System.Windows.Forms.NumericUpDown nudRating;
+        private Chummer.NumericUpDownEx nudRating;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
@@ -693,7 +693,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkFreeItem;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearchLabel;
-        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.Label lblTest;
