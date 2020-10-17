@@ -8657,7 +8657,7 @@ namespace Chummer
                 {
                     intHighPlacesFriends += objContact.Connection + objContact.Loyalty;
                 }
-                else if (objContact.IsGroup == false)
+                else if (!objContact.IsGroup)
                 {
                     int over = intContactPointsLeft - objContact.ContactPoints;
 
@@ -8733,7 +8733,7 @@ namespace Chummer
                             ? objGroupContact.Name
                             : LanguageManager.GetString("String_Unknown"),
                         strSpace,
-                        objGroupContact.ContactPoints).AppendLine();
+                        objGroupContact.ContactPoints * CharacterObjectOptions.KarmaContact).AppendLine();
                 }
             }
 

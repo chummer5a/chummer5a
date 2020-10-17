@@ -74,6 +74,8 @@ Application Fixes:
 - Updated the link to the Chummer5a wiki to actually point to the GitHub wiki.
 - The Export screen is now more informative about its (potentially quite long) loading times instead of freezing up the entire program while it loads in the exported data.
 - Enemies are now handled consistently regarding Karma, and new ones can now be properly added that would make the character go temporarily over their Negative Quality Karma limits, though they will cause the character to fail their validity check if the limit stays overshot. Fixes #4235.
+- Group contact Karma costs are now properly in sync with contact Karma costs should the latter be set to a higher value through Karma cost options.
+- Karma expenditures for group contacts are now properly updated if/when the setting for whether a contact is a group contact is toggled in some way.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

@@ -17876,7 +17876,7 @@ namespace Chummer
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualities += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
-                        .Sum(x => x.ContactPoints);
+                        .Sum(x => x.ContactPoints) * Options.KarmaContact;
                     // Each spell costs KarmaSpell.
                     int spellCost = SpellKarmaCost("Spells");
                     // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
@@ -17923,7 +17923,7 @@ namespace Chummer
                     // Group contacts are counted as positive qualities
                     _intCachedPositiveQualitiesTotal += Contacts
                         .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
-                        .Sum(x => x.ContactPoints);
+                        .Sum(x => x.ContactPoints) * Options.KarmaContact;
 
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualitiesTotal -=
