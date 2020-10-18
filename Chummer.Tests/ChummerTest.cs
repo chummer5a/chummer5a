@@ -234,7 +234,7 @@ namespace Chummer.Tests
             Assert.IsNotNull(c);
             try
             {
-                c.Save(path);
+                c.Save(path, false);
             }
             catch (AssertFailedException e)
             {
