@@ -4352,6 +4352,7 @@ namespace Chummer
             this.lblCMStun.TabIndex = 25;
             this.lblCMStun.Text = "0";
             this.lblCMStun.ToolTipText = "";
+            this.lblCMStun.Visible = true;
             // 
             // lblMatrixINICold
             // 

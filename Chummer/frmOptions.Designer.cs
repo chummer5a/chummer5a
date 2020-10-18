@@ -112,8 +112,9 @@ namespace Chummer
             this.chkHideMasterIndex = new Chummer.ColorableCheckBox(this.components);
             this.chkAllowHoverIncrement = new Chummer.ColorableCheckBox(this.components);
             this.chkLifeModule = new Chummer.ColorableCheckBox(this.components);
-            this.lblColorMode = new System.Windows.Forms.Label();
+            this.tlpColorMode = new System.Windows.Forms.TableLayoutPanel();
             this.cboColorMode = new System.Windows.Forms.ComboBox();
+            this.lblColorMode = new System.Windows.Forms.Label();
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.tabCharacterOptions = new System.Windows.Forms.TabPage();
@@ -344,7 +345,6 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpColorMode = new System.Windows.Forms.TableLayoutPanel();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -369,6 +369,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).BeginInit();
             this.flpMugshotCompressionQuality.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMugshotCompressionQuality)).BeginInit();
+            this.tlpColorMode.SuspendLayout();
             this.gpbEditSourcebookInfo.SuspendLayout();
             this.tabCharacterOptions.SuspendLayout();
             this.tlpCharacterOptions.SuspendLayout();
@@ -445,7 +446,6 @@ namespace Chummer
             this.tlpPlugins.SuspendLayout();
             this.grpAvailablePlugins.SuspendLayout();
             this.flpOKCancel.SuspendLayout();
-            this.tlpColorMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -1715,16 +1715,24 @@ namespace Chummer
             this.chkLifeModule.UseVisualStyleBackColor = true;
             this.chkLifeModule.CheckedChanged += new System.EventHandler(this.chkLifeModules_CheckedChanged);
             // 
-            // lblColorMode
+            // tlpColorMode
             // 
-            this.lblColorMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblColorMode.AutoSize = true;
-            this.lblColorMode.Location = new System.Drawing.Point(3, 7);
-            this.lblColorMode.Name = "lblColorMode";
-            this.lblColorMode.Size = new System.Drawing.Size(64, 13);
-            this.lblColorMode.TabIndex = 70;
-            this.lblColorMode.Tag = "Label_Options_ColorMode";
-            this.lblColorMode.Text = "Color Mode:";
+            this.tlpColorMode.AutoSize = true;
+            this.tlpColorMode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpColorMode.ColumnCount = 2;
+            this.tlpGlobalOptions.SetColumnSpan(this.tlpColorMode, 3);
+            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpColorMode.Controls.Add(this.cboColorMode, 1, 0);
+            this.tlpColorMode.Controls.Add(this.lblColorMode, 0, 0);
+            this.tlpColorMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpColorMode.Location = new System.Drawing.Point(0, 127);
+            this.tlpColorMode.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpColorMode.Name = "tlpColorMode";
+            this.tlpColorMode.RowCount = 1;
+            this.tlpColorMode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpColorMode.Size = new System.Drawing.Size(403, 27);
+            this.tlpColorMode.TabIndex = 72;
             // 
             // cboColorMode
             // 
@@ -1736,6 +1744,17 @@ namespace Chummer
             this.cboColorMode.Size = new System.Drawing.Size(327, 21);
             this.cboColorMode.TabIndex = 71;
             this.cboColorMode.SelectedIndexChanged += new System.EventHandler(this.cboColorMode_SelectedIndexChanged);
+            // 
+            // lblColorMode
+            // 
+            this.lblColorMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblColorMode.AutoSize = true;
+            this.lblColorMode.Location = new System.Drawing.Point(3, 7);
+            this.lblColorMode.Name = "lblColorMode";
+            this.lblColorMode.Size = new System.Drawing.Size(64, 13);
+            this.lblColorMode.TabIndex = 70;
+            this.lblColorMode.Tag = "Label_Options_ColorMode";
+            this.lblColorMode.Text = "Color Mode:";
             // 
             // gpbEditSourcebookInfo
             // 
@@ -4956,25 +4975,6 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // tlpColorMode
-            // 
-            this.tlpColorMode.AutoSize = true;
-            this.tlpColorMode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpColorMode.ColumnCount = 2;
-            this.tlpGlobalOptions.SetColumnSpan(this.tlpColorMode, 3);
-            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpColorMode.Controls.Add(this.cboColorMode, 1, 0);
-            this.tlpColorMode.Controls.Add(this.lblColorMode, 0, 0);
-            this.tlpColorMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpColorMode.Location = new System.Drawing.Point(0, 127);
-            this.tlpColorMode.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpColorMode.Name = "tlpColorMode";
-            this.tlpColorMode.RowCount = 1;
-            this.tlpColorMode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpColorMode.Size = new System.Drawing.Size(403, 27);
-            this.tlpColorMode.TabIndex = 72;
-            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5035,6 +5035,8 @@ namespace Chummer
             this.flpMugshotCompressionQuality.ResumeLayout(false);
             this.flpMugshotCompressionQuality.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMugshotCompressionQuality)).EndInit();
+            this.tlpColorMode.ResumeLayout(false);
+            this.tlpColorMode.PerformLayout();
             this.gpbEditSourcebookInfo.ResumeLayout(false);
             this.tabCharacterOptions.ResumeLayout(false);
             this.tabCharacterOptions.PerformLayout();
@@ -5128,8 +5130,6 @@ namespace Chummer
             this.grpAvailablePlugins.ResumeLayout(false);
             this.flpOKCancel.ResumeLayout(false);
             this.flpOKCancel.PerformLayout();
-            this.tlpColorMode.ResumeLayout(false);
-            this.tlpColorMode.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

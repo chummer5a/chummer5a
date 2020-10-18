@@ -123,9 +123,9 @@ namespace Chummer
             UpdateGearInfo();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
-            BuildModList();
+            RefreshList();
         }
 
         private void nudRating_ValueChanged(object sender, EventArgs e)
@@ -165,19 +165,14 @@ namespace Chummer
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
-                BuildModList();
+                RefreshList();
             UpdateGearInfo();
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildModList();
         }
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
-                BuildModList();
+                RefreshList();
             UpdateGearInfo();
         }
 
@@ -211,16 +206,6 @@ namespace Chummer
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
-        }
-
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildModList();
-        }
-
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildModList();
         }
         #endregion
 
@@ -274,7 +259,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Mods.
         /// </summary>
-        private void BuildModList()
+        private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
@@ -778,23 +763,23 @@ namespace Chummer
 
         private string ReplaceStrings(string strInput, int intExtraSlots = 0)
         {
-            StringBuilder objInputBuilder = new StringBuilder(strInput);
-            objInputBuilder.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Vehicle Cost", _objVehicle.Cost);
-            objInputBuilder.Replace("Weapon Cost", 0.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Total Cost", 0.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Body", _objVehicle.Body.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Handling", _objVehicle.Handling.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Offroad Handling", _objVehicle.OffroadHandling.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Speed", _objVehicle.Speed.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Offroad Speed", _objVehicle.OffroadSpeed.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Acceleration", _objVehicle.Accel.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Sensor", _objVehicle.BaseSensor.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Armor", _objVehicle.Armor.ToString(GlobalOptions.InvariantCultureInfo));
-            objInputBuilder.Replace("Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalOptions.InvariantCultureInfo));
+            StringBuilder sbdInput = new StringBuilder(strInput);
+            sbdInput.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Vehicle Cost", _objVehicle.Cost);
+            sbdInput.Replace("Weapon Cost", 0.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Total Cost", 0.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Body", _objVehicle.Body.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Handling", _objVehicle.Handling.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Offroad Handling", _objVehicle.OffroadHandling.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Speed", _objVehicle.Speed.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Offroad Speed", _objVehicle.OffroadSpeed.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Acceleration", _objVehicle.Accel.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Sensor", _objVehicle.BaseSensor.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Armor", _objVehicle.Armor.ToString(GlobalOptions.InvariantCultureInfo));
+            sbdInput.Replace("Slots", (_intWeaponMountSlots + intExtraSlots).ToString(GlobalOptions.InvariantCultureInfo));
 
-            return objInputBuilder.ToString();
+            return sbdInput.ToString();
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

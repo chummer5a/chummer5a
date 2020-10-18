@@ -79,13 +79,13 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             _blnLoading = false;
-            BuildAccessoryList();
+            RefreshList();
         }
 
         /// <summary>
         /// Build the list of available weapon accessories.
         /// </summary>
-        private void BuildAccessoryList()
+        private void RefreshList()
         {
             List<ListItem> lstAccessories = new List<ListItem>();
 
@@ -175,7 +175,7 @@ namespace Chummer
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
-                BuildAccessoryList();
+                RefreshList();
             UpdateGearInfo();
         }
 
@@ -187,7 +187,7 @@ namespace Chummer
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked  && !chkFreeItem.Checked)
-                BuildAccessoryList();
+                RefreshList();
             UpdateGearInfo();
         }
 
@@ -209,13 +209,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                 UpdateGearInfo(false);
         }
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
-            BuildAccessoryList();
-        }
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildAccessoryList();
+            RefreshList();
         }
         #endregion
 
@@ -296,7 +292,7 @@ namespace Chummer
         #region Methods
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildAccessoryList();
+            RefreshList();
         }
 
         private void UpdateMountFields(bool boolChangeExtraMountFirst)

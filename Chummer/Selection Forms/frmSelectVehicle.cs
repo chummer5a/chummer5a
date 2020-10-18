@@ -112,7 +112,7 @@ namespace Chummer
             cboCategory.EndUpdate();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
             RefreshList();
         }
@@ -213,16 +213,6 @@ namespace Chummer
         {
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
-        }
-
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
-
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshList();
         }
         #endregion
 

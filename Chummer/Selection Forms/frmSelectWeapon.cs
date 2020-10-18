@@ -128,7 +128,7 @@ namespace Chummer
             RefreshList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
             RefreshList();
         }
@@ -715,11 +715,6 @@ namespace Chummer
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
-            RefreshList();
-        }
-
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
             RefreshList();
         }
 

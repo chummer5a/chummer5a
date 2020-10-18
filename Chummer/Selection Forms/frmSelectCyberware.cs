@@ -414,7 +414,7 @@ namespace Chummer
             UpdateCyberwareInfo();
         }
 
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
             RefreshList(_strSelectedCategory);
         }

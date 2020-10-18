@@ -72,7 +72,7 @@ namespace Chummer
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             _blnLoading = false;
-            BuildModList();
+            RefreshList();
         }
 
         private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
@@ -112,7 +112,7 @@ namespace Chummer
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                BuildModList();
+                RefreshList();
             }
             UpdateSelectedArmor();
         }
@@ -121,7 +121,7 @@ namespace Chummer
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                BuildModList();
+                RefreshList();
             }
             UpdateSelectedArmor();
         }
@@ -401,10 +401,15 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
+        private void RefreshCurrentList(object sender, EventArgs e)
+        {
+            RefreshList();
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        private void BuildModList()
+        private void RefreshList()
         {
             List<ListItem> lstMods = new List<ListItem>();
 
@@ -512,15 +517,5 @@ namespace Chummer
             CommonFunctions.OpenPDFFromControl(sender, e);
         }
         #endregion
-
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
-        {
-            BuildModList();
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            BuildModList();
-        }
     }
 }
