@@ -1433,13 +1433,22 @@ namespace Chummer
                 }
                     break;
                 case ImprovementType.SkillGroup:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillGroup == ImprovedName)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.PoolModifiers));
+                    }
+                }
+                    break;
                 case ImprovementType.BlockSkillDefault:
                 {
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objTargetSkill.SkillGroup == ImprovedName)
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                nameof(Skill.DisplayPool));
+                                nameof(Skill.Default));
                     }
                 }
                     break;
@@ -1450,13 +1459,13 @@ namespace Chummer
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName)
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                nameof(Skill.DisplayPool));
+                                nameof(Skill.PoolModifiers));
                     }
                     foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         if (objTargetSkill.SkillCategory == ImprovedName)
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                nameof(Skill.DisplayPool));
+                                nameof(Skill.PoolModifiers));
                     }
                 }
                     break;
@@ -1467,13 +1476,13 @@ namespace Chummer
                     {
                         if (objTargetSkill.Attribute == ImprovedName)
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                nameof(Skill.DisplayPool));
+                                nameof(Skill.PoolModifiers));
                     }
                     foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
                         if (objTargetSkill.Attribute == ImprovedName)
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                                nameof(Skill.DisplayPool));
+                                nameof(Skill.PoolModifiers));
                     }
                 }
                     break;
@@ -1720,7 +1729,7 @@ namespace Chummer
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.DisplayPool));
+                            nameof(Skill.GetSpecializationBonus));
                     }
                 }
                     break;
