@@ -147,44 +147,48 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                string strAutosavePath;
                 try
                 {
-                    strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
-                }
-                catch (ArgumentException e)
-                {
-                    Log.Error(e, "Path: " + Utils.GetStartupPath);
-                    return;
-                }
-
-                if (!Directory.Exists(strAutosavePath))
-                {
+                    string strAutosavePath;
                     try
                     {
-                        Directory.CreateDirectory(strAutosavePath);
+                        strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
                     }
-                    catch (UnauthorizedAccessException)
+                    catch (ArgumentException e)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
-                        AutosaveStopWatch.Restart();
+                        Log.Error(e, "Path: " + Utils.GetStartupPath);
                         return;
                     }
+
+                    if (!Directory.Exists(strAutosavePath))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(strAutosavePath);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                            return;
+                        }
+                    }
+
+                    string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+
+                    if (string.IsNullOrEmpty(strShowFileName))
+                        strShowFileName = _objCharacter.CharacterName;
+                    foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                    {
+                        strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                    }
+
+                    string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
+                    _objCharacter.Save(strFilePath, false, false);
                 }
-
-                string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-
-                if (string.IsNullOrEmpty(strShowFileName))
-                    strShowFileName = _objCharacter.CharacterName;
-                var replaceChars = Path.GetInvalidFileNameChars();
-                foreach (var invalidChar in replaceChars)
+                finally
                 {
-                    strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                    AutosaveStopWatch.Restart();
                 }
-
-                string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                _objCharacter.Save(strFilePath, false, false);
-                AutosaveStopWatch.Restart();
             }
         }
 
