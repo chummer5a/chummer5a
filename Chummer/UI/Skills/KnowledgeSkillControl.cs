@@ -30,10 +30,13 @@ namespace Chummer.UI.Skills
         private bool _blnUpdatingName = true;
         private readonly KnowledgeSkill _skill;
         private readonly Timer _tmrNameChangeTimer;
+        private readonly Graphics _objGraphics;
+
         public KnowledgeSkillControl(KnowledgeSkill skill)
         {
             if (skill == null)
                 return;
+            _objGraphics = CreateGraphics();
             _skill = skill;
             _tmrNameChangeTimer = new Timer { Interval = 1000 };
             _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
@@ -322,11 +325,8 @@ namespace Chummer.UI.Skills
 
         private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            using (Graphics g = CreateGraphics())
-            {
-                lblRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
-                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
-            }
+            lblRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
+            lblModifiedRating.MinimumSize = new Size((int)(50 * _objGraphics.DpiX / 96.0f), 0);
         }
 
         // Hacky solution to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update

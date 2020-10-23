@@ -79,6 +79,7 @@ namespace Chummer
         public frmChummerMain(bool isUnitTest = false)
         {
             Utils.IsUnitTest = isUnitTest;
+
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

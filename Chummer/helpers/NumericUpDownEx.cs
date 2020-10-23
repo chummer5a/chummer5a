@@ -46,11 +46,14 @@ namespace Chummer
         // default value that will be used when incrementing via mousewheel
         private int _intMouseIncrement = 1;
 
+        private readonly Graphics _objGraphics;
+
         /// <summary>
         /// object creator
         /// </summary>
         public NumericUpDownEx()
         {
+            _objGraphics = CreateGraphics();
             // get a reference to the underlying UpDownButtons field
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
             _upDownButtons = Controls[0];
@@ -83,54 +86,51 @@ namespace Chummer
         {
             if (!_blnDoProcessMargins)
                 return;
-            using (Graphics g = CreateGraphics())
+            // Only care about adjusting margins for non-standard DPI
+            if (Math.Abs(_objGraphics.DpiX - 96.0f) < float.Epsilon && Math.Abs(_objGraphics.DpiY - 96.0f) < float.Epsilon)
+                return;
+
+            int intMinNonZeroMargin = int.MaxValue;
+            BitArray ablnConsiderMargins = new BitArray(4, false);
+            if (Margin.Left != 0)
             {
-                // Only care about adjusting margins for non-standard DPI
-                if (Math.Abs(g.DpiX - 96.0f) < float.Epsilon && Math.Abs(g.DpiY - 96.0f) < float.Epsilon)
-                    return;
-
-                int intMinNonZeroMargin = int.MaxValue;
-                BitArray ablnConsiderMargins = new BitArray(4, false);
-                if (Margin.Left != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Left, intMinNonZeroMargin);
-                    ablnConsiderMargins[0] = true;
-                }
-                if (Margin.Top != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Top, intMinNonZeroMargin);
-                    ablnConsiderMargins[1] = true;
-                }
-                if (Margin.Right != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Right, intMinNonZeroMargin);
-                    ablnConsiderMargins[2] = true;
-                }
-                if (Margin.Bottom != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Bottom, intMinNonZeroMargin);
-                    ablnConsiderMargins[3] = true;
-                }
-                // No non-zero margins, exit
-                if (intMinNonZeroMargin == int.MaxValue)
-                    return;
-
-                int intNewCommonMarginX = (int)(3 * g.DpiX / 96.0f);
-                int intNewCommonMarginY = (int)(3 * g.DpiY / 96.0f);
-                Padding objNewMargins = new Padding(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom);
-                if (ablnConsiderMargins[0])
-                    objNewMargins.Left += intNewCommonMarginX - intMinNonZeroMargin;
-                if (ablnConsiderMargins[1])
-                    objNewMargins.Top += intNewCommonMarginY - intMinNonZeroMargin;
-                if (ablnConsiderMargins[2])
-                    objNewMargins.Right += intNewCommonMarginX - intMinNonZeroMargin;
-                if (ablnConsiderMargins[3])
-                    objNewMargins.Bottom += intNewCommonMarginY - intMinNonZeroMargin;
-
-                _blnDoProcessMargins = false;
-                Margin = objNewMargins;
-                _blnDoProcessMargins = true;
+                intMinNonZeroMargin = Math.Min(Margin.Left, intMinNonZeroMargin);
+                ablnConsiderMargins[0] = true;
             }
+            if (Margin.Top != 0)
+            {
+                intMinNonZeroMargin = Math.Min(Margin.Top, intMinNonZeroMargin);
+                ablnConsiderMargins[1] = true;
+            }
+            if (Margin.Right != 0)
+            {
+                intMinNonZeroMargin = Math.Min(Margin.Right, intMinNonZeroMargin);
+                ablnConsiderMargins[2] = true;
+            }
+            if (Margin.Bottom != 0)
+            {
+                intMinNonZeroMargin = Math.Min(Margin.Bottom, intMinNonZeroMargin);
+                ablnConsiderMargins[3] = true;
+            }
+            // No non-zero margins, exit
+            if (intMinNonZeroMargin == int.MaxValue)
+                return;
+
+            int intNewCommonMarginX = (int)(3 * _objGraphics.DpiX / 96.0f);
+            int intNewCommonMarginY = (int)(3 * _objGraphics.DpiY / 96.0f);
+            Padding objNewMargins = new Padding(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom);
+            if (ablnConsiderMargins[0])
+                objNewMargins.Left += intNewCommonMarginX - intMinNonZeroMargin;
+            if (ablnConsiderMargins[1])
+                objNewMargins.Top += intNewCommonMarginY - intMinNonZeroMargin;
+            if (ablnConsiderMargins[2])
+                objNewMargins.Right += intNewCommonMarginX - intMinNonZeroMargin;
+            if (ablnConsiderMargins[3])
+                objNewMargins.Bottom += intNewCommonMarginY - intMinNonZeroMargin;
+
+            _blnDoProcessMargins = false;
+            Margin = objNewMargins;
+            _blnDoProcessMargins = true;
         }
 
         protected override void Dispose(bool disposing)
@@ -139,6 +139,7 @@ namespace Chummer
             {
                 _textbox?.Dispose();
                 _upDownButtons?.Dispose();
+                _objGraphics?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -559,13 +560,8 @@ namespace Chummer
                 // change position if RTL
                 bool fixPos = RightToLeft == RightToLeft.Yes ^ UpDownAlign == LeftRightAlignment.Left;
 
-                int int2PxWidth = 2;
-                int int16PxWidth = 16;
-                using (Graphics g = CreateGraphics())
-                {
-                    int2PxWidth = (int)(int2PxWidth * g.DpiX / 96.0f);
-                    int16PxWidth = (int)(int16PxWidth * g.DpiX / 96.0f);
-                }
+                int int2PxWidth = (int)(2 * _objGraphics.DpiX / 96.0f);
+                int int16PxWidth = (int)(16 * _objGraphics.DpiX / 96.0f);
                 if (_mouseOver)
                 {
                     _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - int2PxWidth;

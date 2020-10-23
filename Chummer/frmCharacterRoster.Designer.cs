@@ -20,6 +20,7 @@ namespace Chummer
             {
                 components?.Dispose();
                 watcherCharacterRosterFolder?.Dispose();
+                _objGraphics?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -487,7 +488,6 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmCharacterRoster";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.Tag = "String_CharacterRoster";
             this.Text = "Character Roster";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCharacterRoster_FormClosing);

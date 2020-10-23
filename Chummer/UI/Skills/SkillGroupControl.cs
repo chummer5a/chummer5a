@@ -27,10 +27,13 @@ namespace Chummer.UI.Skills
     public partial class SkillGroupControl : UserControl
     {
         private readonly SkillGroup _skillGroup;
+        private readonly Graphics _objGraphics;
+
         public SkillGroupControl(SkillGroup skillGroup)
         {
             if (skillGroup == null)
                 return;
+            _objGraphics = CreateGraphics();
             _skillGroup = skillGroup;
             InitializeComponent();
             SkillGroupControl_DpiChangedAfterParent(null, EventArgs.Empty);
@@ -151,10 +154,7 @@ namespace Chummer.UI.Skills
 
         private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            using (Graphics g = CreateGraphics())
-            {
-                lblGroupRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
-            }
+            lblGroupRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
         }
     }
 }

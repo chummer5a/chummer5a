@@ -234,7 +234,6 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMasterIndex";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.Tag = "Title_MasterIndex";
             this.Text = "Master Index";
             this.Load += new System.EventHandler(this.frmMasterIndex_Load);

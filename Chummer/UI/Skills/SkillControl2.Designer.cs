@@ -22,6 +22,7 @@ namespace Chummer.UI.Skills
                 components?.Dispose();
                 _fntItalic?.Dispose();
                 _fntItalicName?.Dispose();
+                _objGraphics?.Dispose();
                 UnbindSkillControl();
             }
             base.Dispose(disposing);

@@ -38,11 +38,13 @@ namespace Chummer.UI.Skills
         private readonly Font _fntNormalName;
         private readonly Font _fntItalicName;
         private CharacterAttrib _objAttributeActive;
+        private readonly Graphics _objGraphics;
 
         public SkillControl2(Skill objSkill)
         {
             if (objSkill == null)
                 return;
+            _objGraphics = CreateGraphics();
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
@@ -416,12 +418,9 @@ namespace Chummer.UI.Skills
 
         private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            using (Graphics g = CreateGraphics())
-            {
-                pnlAttributes.MinimumSize = new Size((int)(40 * g.DpiX / 96.0f), 0);
-                lblCareerRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
-                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
-            }
+            pnlAttributes.MinimumSize = new Size((int)(40 * _objGraphics.DpiX / 96.0f), 0);
+            lblCareerRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
+            lblModifiedRating.MinimumSize = new Size((int)(50 * _objGraphics.DpiX / 96.0f), 0);
         }
     }
 }
