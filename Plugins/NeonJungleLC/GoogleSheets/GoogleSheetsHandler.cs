@@ -51,7 +51,8 @@ namespace NeonJungleLC.GoogleSheets
                 new ServiceAccountCredential.Initializer(serviceAccountEmail)
                 {
                     Scopes = Scopes,
-                    HttpClientFactory = new ProxySupportedHttpClientFactory()
+                    //Use the HttpClientFactory ONLY if you are behind a proxy!
+                    //HttpClientFactory = new ProxySupportedHttpClientFactory()
                 }.FromPrivateKey(privatekey));
 
 
@@ -60,7 +61,8 @@ namespace NeonJungleLC.GoogleSheets
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "Chummer",
-                HttpClientFactory = new ProxySupportedHttpClientFactory()
+                //Use the HttpClientFactory ONLY if you are behind a proxy!
+                //HttpClientFactory = new ProxySupportedHttpClientFactory()
             });
       
    
