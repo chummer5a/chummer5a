@@ -178,7 +178,8 @@ namespace Chummer.Backend.Equipment
                 objXmlWriter.WriteElementString("rating", _intAddictionRating.ToString(GlobalOptions.InvariantCultureInfo));
             if (_intAddictionThreshold != 0)
                 objXmlWriter.WriteElementString("threshold", _intAddictionThreshold.ToString(GlobalOptions.InvariantCultureInfo));
-            objXmlWriter.WriteElementString("grade", Grade.Name);
+            if (Grade != null)
+                objXmlWriter.WriteElementString("grade", Grade.Name);
             objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objXmlWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalOptions.InvariantCultureInfo));
             objXmlWriter.WriteElementString("source", _strSource);
