@@ -168,7 +168,7 @@ namespace Chummer
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add1;
+            this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add;
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
