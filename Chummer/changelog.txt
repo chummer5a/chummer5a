@@ -76,6 +76,7 @@ Application Fixes:
 - Enemies are now handled consistently regarding Karma, and new ones can now be properly added that would make the character go temporarily over their Negative Quality Karma limits, though they will cause the character to fail their validity check if the limit stays overshot. Fixes #4235.
 - Group contact Karma costs are now properly in sync with contact Karma costs should the latter be set to a higher value through Karma cost options.
 - Karma expenditures for group contacts are now properly updated if/when the setting for whether a contact is a group contact is toggled in some way.
+- Fixed an issue with the context menu for character tabs not being translated properly. Closes #4142
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

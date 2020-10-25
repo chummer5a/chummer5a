@@ -355,6 +355,12 @@ namespace Chummer
                         tssItem.UpdateLightDarkMode();
                         tssItem.TranslateToolStripItemsRecursively();
                     }
+
+                    foreach (ToolStripMenuItem tssItem in mnuProcessFile.Items.OfType<ToolStripMenuItem>())
+                    {
+                        tssItem.UpdateLightDarkMode();
+                        tssItem.TranslateToolStripItemsRecursively();
+                    }
                 }
                 catch (Exception ex)
                 {
