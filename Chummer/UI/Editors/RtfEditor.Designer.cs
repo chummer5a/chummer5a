@@ -40,10 +40,13 @@ namespace Chummer.UI.Editors
             this.tsbForeColor = new System.Windows.Forms.ToolStripButton();
             this.tsbBackColor = new System.Windows.Forms.ToolStripButton();
             this.tss2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbSuperscript = new System.Windows.Forms.ToolStripButton();
+            this.tsbSubscript = new System.Windows.Forms.ToolStripButton();
+            this.tss3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbAlignLeft = new System.Windows.Forms.ToolStripButton();
             this.tsbAlignCenter = new System.Windows.Forms.ToolStripButton();
             this.tsbAlignRight = new System.Windows.Forms.ToolStripButton();
-            this.tss3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tss4 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbUnorderedList = new System.Windows.Forms.ToolStripButton();
             this.tsbIncreaseIndent = new System.Windows.Forms.ToolStripButton();
             this.tsbDecreaseIndent = new System.Windows.Forms.ToolStripButton();
@@ -66,17 +69,20 @@ namespace Chummer.UI.Editors
             this.tsbForeColor,
             this.tsbBackColor,
             this.tss2,
+            this.tsbSuperscript,
+            this.tsbSubscript,
+            this.tss3,
             this.tsbAlignLeft,
             this.tsbAlignCenter,
             this.tsbAlignRight,
-            this.tss3,
+            this.tss4,
             this.tsbUnorderedList,
             this.tsbIncreaseIndent,
             this.tsbDecreaseIndent});
             this.tsControls.Location = new System.Drawing.Point(0, 0);
             this.tsControls.Name = "tsControls";
             this.tsControls.Padding = new System.Windows.Forms.Padding(3);
-            this.tsControls.Size = new System.Drawing.Size(325, 29);
+            this.tsControls.Size = new System.Drawing.Size(408, 29);
             this.tsControls.Stretch = true;
             this.tsControls.TabIndex = 0;
             // 
@@ -174,6 +180,33 @@ namespace Chummer.UI.Editors
             this.tss2.Name = "tss2";
             this.tss2.Size = new System.Drawing.Size(6, 23);
             // 
+            // tsbSuperscript
+            // 
+            this.tsbSuperscript.CheckOnClick = true;
+            this.tsbSuperscript.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbSuperscript.Image = global::Chummer.Properties.Resources.text_superscript;
+            this.tsbSuperscript.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSuperscript.Name = "tsbSuperscript";
+            this.tsbSuperscript.Size = new System.Drawing.Size(23, 20);
+            this.tsbSuperscript.Text = "Superscript";
+            this.tsbSuperscript.Click += new System.EventHandler(this.tsbSuperscript_Click);
+            // 
+            // tsbSubscript
+            // 
+            this.tsbSubscript.CheckOnClick = true;
+            this.tsbSubscript.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbSubscript.Image = global::Chummer.Properties.Resources.text_subscript;
+            this.tsbSubscript.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSubscript.Name = "tsbSubscript";
+            this.tsbSubscript.Size = new System.Drawing.Size(23, 20);
+            this.tsbSubscript.Text = "Subscript";
+            this.tsbSubscript.Click += new System.EventHandler(this.tsbSubscript_Click);
+            // 
+            // tss3
+            // 
+            this.tss3.Name = "tss3";
+            this.tss3.Size = new System.Drawing.Size(6, 23);
+            // 
             // tsbAlignLeft
             // 
             this.tsbAlignLeft.CheckOnClick = true;
@@ -213,10 +246,10 @@ namespace Chummer.UI.Editors
             this.tsbAlignRight.CheckedChanged += new System.EventHandler(this.tsbAlignRight_CheckedChanged);
             this.tsbAlignRight.Click += new System.EventHandler(this.tsbAlignRight_Click);
             // 
-            // tss3
+            // tss4
             // 
-            this.tss3.Name = "tss3";
-            this.tss3.Size = new System.Drawing.Size(6, 23);
+            this.tss4.Name = "tss4";
+            this.tss4.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbUnorderedList
             // 
@@ -266,7 +299,7 @@ namespace Chummer.UI.Editors
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(325, 60);
+            this.tlpMain.Size = new System.Drawing.Size(408, 60);
             this.tlpMain.TabIndex = 1;
             // 
             // rtbContent
@@ -277,7 +310,7 @@ namespace Chummer.UI.Editors
             this.rtbContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbContent.Location = new System.Drawing.Point(3, 32);
             this.rtbContent.Name = "rtbContent";
-            this.rtbContent.Size = new System.Drawing.Size(319, 25);
+            this.rtbContent.Size = new System.Drawing.Size(402, 25);
             this.rtbContent.TabIndex = 1;
             this.rtbContent.TabStop = false;
             this.rtbContent.Text = "";
@@ -295,7 +328,7 @@ namespace Chummer.UI.Editors
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(0, 60);
             this.Name = "RtfEditor";
-            this.Size = new System.Drawing.Size(325, 60);
+            this.Size = new System.Drawing.Size(408, 60);
             this.tsControls.ResumeLayout(false);
             this.tsControls.PerformLayout();
             this.tlpMain.ResumeLayout(false);
@@ -310,12 +343,12 @@ namespace Chummer.UI.Editors
         private System.Windows.Forms.ToolStripButton tsbBold;
         private System.Windows.Forms.ToolStripButton tsbItalic;
         private System.Windows.Forms.ToolStripButton tsbUnderline;
-        private System.Windows.Forms.ToolStripSeparator tss2;
+        private System.Windows.Forms.ToolStripSeparator tss3;
         private System.Windows.Forms.ToolStripButton tsbUnorderedList;
         private System.Windows.Forms.ToolStripButton tsbAlignLeft;
         private System.Windows.Forms.ToolStripButton tsbAlignCenter;
         private System.Windows.Forms.ToolStripButton tsbAlignRight;
-        private System.Windows.Forms.ToolStripSeparator tss3;
+        private System.Windows.Forms.ToolStripSeparator tss4;
         private System.Windows.Forms.ToolStripButton tsbIncreaseIndent;
         private System.Windows.Forms.ToolStripButton tsbDecreaseIndent;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
@@ -325,5 +358,8 @@ namespace Chummer.UI.Editors
         private System.Windows.Forms.RichTextBox rtbContent;
         private System.Windows.Forms.ToolStripButton tsbBackColor;
         private System.Windows.Forms.ToolStripButton tsbStrikeout;
+        private System.Windows.Forms.ToolStripSeparator tss2;
+        private System.Windows.Forms.ToolStripButton tsbSuperscript;
+        private System.Windows.Forms.ToolStripButton tsbSubscript;
     }
 }
