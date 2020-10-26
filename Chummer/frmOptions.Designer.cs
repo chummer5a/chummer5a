@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOptions));
             this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.lblSetting = new System.Windows.Forms.Label();
@@ -4984,11 +4985,10 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tlpOptions);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(48, 50);
             this.Name = "frmOptions";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Options";

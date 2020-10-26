@@ -29,9 +29,10 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSelectBuildMethod));
             this.nudKarma = new Chummer.NumericUpDownEx();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkIgnoreRules = new Chummer.ColorableCheckBox();
+            this.chkIgnoreRules = new Chummer.ColorableCheckBox(this.components);
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
             this.lblMaxAvail = new System.Windows.Forms.Label();
@@ -94,6 +95,7 @@ namespace Chummer
             this.chkIgnoreRules.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreRules.AutoSize = true;
             this.chkIgnoreRules.CheckAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.chkIgnoreRules.DefaultColorScheme = true;
             this.chkIgnoreRules.Location = new System.Drawing.Point(3, 160);
             this.chkIgnoreRules.Name = "chkIgnoreRules";
             this.chkIgnoreRules.Size = new System.Drawing.Size(177, 17);
@@ -340,6 +342,7 @@ namespace Chummer
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSelectBuildMethod";

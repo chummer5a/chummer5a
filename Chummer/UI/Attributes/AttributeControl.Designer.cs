@@ -132,7 +132,7 @@ namespace Chummer.UI.Attributes
             this.cmdBurnEdge.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdBurnEdge.AutoSize = true;
             this.cmdBurnEdge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdBurnEdge.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdBurnEdge.Image = global::Chummer.Properties.Resources.fire;
             this.cmdBurnEdge.Location = new System.Drawing.Point(85, 0);
             this.cmdBurnEdge.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cmdBurnEdge.MinimumSize = new System.Drawing.Size(24, 24);

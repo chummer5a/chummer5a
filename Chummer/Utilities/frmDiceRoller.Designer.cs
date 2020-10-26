@@ -42,17 +42,17 @@ namespace Chummer
             this.nudGremlins = new Chummer.NumericUpDownEx();
             this.lblGremlins = new System.Windows.Forms.Label();
             this.nudThreshold = new Chummer.NumericUpDownEx();
-            this.chkRuleOf6 = new Chummer.ColorableCheckBox();
+            this.chkRuleOf6 = new Chummer.ColorableCheckBox(this.components);
             this.lblThreshold = new System.Windows.Forms.Label();
-            this.chkCinematicGameplay = new Chummer.ColorableCheckBox();
-            this.chkRushJob = new Chummer.ColorableCheckBox();
+            this.chkCinematicGameplay = new Chummer.ColorableCheckBox(this.components);
+            this.chkRushJob = new Chummer.ColorableCheckBox(this.components);
             this.tlpTopBar = new System.Windows.Forms.TableLayoutPanel();
             this.flpRollParameters = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRollControls = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResults = new System.Windows.Forms.Label();
-            this.chkVariableGlitch = new Chummer.ColorableCheckBox();
-            this.chkBubbleDie = new Chummer.ColorableCheckBox();
+            this.chkVariableGlitch = new Chummer.ColorableCheckBox(this.components);
+            this.chkBubbleDie = new Chummer.ColorableCheckBox(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
@@ -234,6 +234,7 @@ namespace Chummer
             this.chkRuleOf6.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRuleOf6.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkRuleOf6, 2);
+            this.chkRuleOf6.DefaultColorScheme = true;
             this.chkRuleOf6.Location = new System.Drawing.Point(154, 32);
             this.chkRuleOf6.Name = "chkRuleOf6";
             this.chkRuleOf6.Size = new System.Drawing.Size(97, 17);
@@ -259,6 +260,7 @@ namespace Chummer
             this.chkCinematicGameplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCinematicGameplay.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkCinematicGameplay, 2);
+            this.chkCinematicGameplay.DefaultColorScheme = true;
             this.chkCinematicGameplay.Location = new System.Drawing.Point(154, 55);
             this.chkCinematicGameplay.Name = "chkCinematicGameplay";
             this.chkCinematicGameplay.Size = new System.Drawing.Size(99, 17);
@@ -272,6 +274,7 @@ namespace Chummer
             this.chkRushJob.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRushJob.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkRushJob, 2);
+            this.chkRushJob.DefaultColorScheme = true;
             this.chkRushJob.Location = new System.Drawing.Point(154, 78);
             this.chkRushJob.Name = "chkRushJob";
             this.chkRushJob.Size = new System.Drawing.Size(164, 17);
@@ -356,6 +359,7 @@ namespace Chummer
             this.chkVariableGlitch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkVariableGlitch.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkVariableGlitch, 2);
+            this.chkVariableGlitch.DefaultColorScheme = true;
             this.chkVariableGlitch.Location = new System.Drawing.Point(154, 124);
             this.chkVariableGlitch.Name = "chkVariableGlitch";
             this.chkVariableGlitch.Size = new System.Drawing.Size(246, 17);
@@ -369,6 +373,7 @@ namespace Chummer
             this.chkBubbleDie.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBubbleDie.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkBubbleDie, 2);
+            this.chkBubbleDie.DefaultColorScheme = true;
             this.chkBubbleDie.Location = new System.Drawing.Point(154, 101);
             this.chkBubbleDie.Name = "chkBubbleDie";
             this.chkBubbleDie.Size = new System.Drawing.Size(248, 17);
