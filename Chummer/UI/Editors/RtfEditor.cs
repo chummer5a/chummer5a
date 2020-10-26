@@ -62,11 +62,11 @@ namespace Chummer.UI.Editors
             }
             if (tsbSuperscript.Checked)
             {
-                rtbContent.SelectionCharOffset = 30;
+                rtbContent.SelectionCharOffset = 3;
             }
             else if (tsbSubscript.Checked)
             {
-                rtbContent.SelectionCharOffset = -30;
+                rtbContent.SelectionCharOffset = -3;
             }
             else
             {
@@ -218,7 +218,7 @@ namespace Chummer.UI.Editors
         {
             if (tsbSuperscript.Checked)
             {
-                rtbContent.SelectionCharOffset = 30;
+                rtbContent.SelectionCharOffset = 3;
                 tsbSubscript.Checked = false;
             }
             else
@@ -231,7 +231,7 @@ namespace Chummer.UI.Editors
         {
             if (tsbSubscript.Checked)
             {
-                rtbContent.SelectionCharOffset = -30;
+                rtbContent.SelectionCharOffset = -3;
                 tsbSuperscript.Checked = false;
             }
             else
