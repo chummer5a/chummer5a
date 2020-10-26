@@ -294,16 +294,8 @@ namespace Chummer
                 case KnowledgeSkillControl _:
                     // These controls have colors that are always data-bound
                     break;
-                case RichTextBox rtbControl:
-                    rtbControl.ForeColor = rtbControl.ForeColor == ErrorColor
-                        ? ErrorColor
-                        : blnLightMode ? WindowTextLight : WindowTextDark;
-                    rtbControl.BackColor = rtbControl.ReadOnly
-                        ? blnLightMode ? ControlLight : ControlDark
-                        : blnLightMode ? WindowLight : WindowDark;
-                    break;
-                case RtfEditor _:
-                    // Rtf Editor is special because we don't want any color changes for the controls inside of it, otherwise it will mess up the saved Rtf text
+                case RichTextBox _:
+                    // Rtf TextBox is special because we don't want any color changes, otherwise it will mess up the saved Rtf text
                     return;
                 case CheckBox chkControl:
                     if (chkControl.Appearance != Appearance.Button)
