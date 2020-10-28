@@ -316,7 +316,6 @@ namespace ChummerHub.Client.UI
             // ucSINnerGroupCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "ucSINnerGroupCreate";
             this.Size = new System.Drawing.Size(438, 307);

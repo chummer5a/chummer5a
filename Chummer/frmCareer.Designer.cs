@@ -9197,7 +9197,6 @@ namespace Chummer
             // 
             this.tabCyberwareCM.Controls.Add(this.tabCyberwareMatrixCM);
             this.tabCyberwareCM.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tabCyberwareCM.ItemSize = new System.Drawing.Size(176, 18);
             this.tabCyberwareCM.Location = new System.Drawing.Point(3, 411);
             this.tabCyberwareCM.Name = "tabCyberwareCM";
             this.tabCyberwareCM.SelectedIndex = 0;
@@ -10387,7 +10386,6 @@ namespace Chummer
             // 
             this.tabGearMatrixCM.Controls.Add(this.tabGearMatrixCMPage);
             this.tabGearMatrixCM.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tabGearMatrixCM.ItemSize = new System.Drawing.Size(176, 18);
             this.tabGearMatrixCM.Location = new System.Drawing.Point(3, 262);
             this.tabGearMatrixCM.Name = "tabGearMatrixCM";
             this.tabGearMatrixCM.SelectedIndex = 0;
@@ -12820,7 +12818,6 @@ namespace Chummer
             // 
             this.tabWeaponMatrixCM.Controls.Add(this.tabWeaponMatrixCMPage);
             this.tabWeaponMatrixCM.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tabWeaponMatrixCM.ItemSize = new System.Drawing.Size(176, 18);
             this.tabWeaponMatrixCM.Location = new System.Drawing.Point(3, 479);
             this.tabWeaponMatrixCM.Name = "tabWeaponMatrixCM";
             this.tabWeaponMatrixCM.SelectedIndex = 0;
@@ -15692,7 +15689,6 @@ namespace Chummer
             this.panVehicleCM.Controls.Add(this.tabVehiclePhysicalCM);
             this.panVehicleCM.Controls.Add(this.tabVehicleMatrixCM);
             this.panVehicleCM.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panVehicleCM.ItemSize = new System.Drawing.Size(176, 18);
             this.panVehicleCM.Location = new System.Drawing.Point(3, 601);
             this.panVehicleCM.Name = "panVehicleCM";
             this.panVehicleCM.SelectedIndex = 0;

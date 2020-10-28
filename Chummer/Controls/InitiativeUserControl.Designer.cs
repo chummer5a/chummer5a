@@ -454,7 +454,6 @@ namespace Chummer
             // InitiativeUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpMain);
             this.Name = "InitiativeUserControl";
             this.Size = new System.Drawing.Size(420, 265);
