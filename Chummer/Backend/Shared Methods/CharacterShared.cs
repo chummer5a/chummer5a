@@ -4943,8 +4943,6 @@ namespace Chummer
                                             objContactControl.DeleteContact += DeleteContact;
                                             objContactControl.MouseDown += DragContactControl;
 
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
-
                                             panContacts.Controls.Add(objContactControl);
                                         }
                                         break;
@@ -4957,8 +4955,6 @@ namespace Chummer
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
-
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
@@ -5110,8 +5106,6 @@ namespace Chummer
                                             objContactControl.DeleteContact += DeleteContact;
                                             objContactControl.MouseDown += DragContactControl;
 
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
-
                                             panContacts.Controls.Add(objContactControl);
                                         }
                                         break;
@@ -5124,8 +5118,6 @@ namespace Chummer
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
-
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
