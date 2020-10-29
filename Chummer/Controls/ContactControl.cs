@@ -64,6 +64,8 @@ namespace Chummer
 
         private void ContactControl_Load(object sender, EventArgs e)
         {
+            if (Disposing)
+                return;
             LoadContactList();
 
             DoDataBindings();

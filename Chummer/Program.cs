@@ -36,7 +36,6 @@ using System.Linq;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
- using Microsoft.ApplicationInsights.Extensibility.PerfCounterCollector.QuickPulse;
  using Microsoft.ApplicationInsights.Metrics;
  using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
@@ -224,7 +223,6 @@ namespace Chummer
                         Properties.Settings.Default.Save();
                     }
 
-                    
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
 
@@ -497,7 +495,5 @@ namespace Chummer
             get;
             private set;
         }
-
-        
     }
 }

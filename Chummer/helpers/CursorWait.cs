@@ -46,9 +46,12 @@ namespace Chummer
             }
             else
             {
-                _blnControlIsForm = objControl is Form;
+                if (objControl is Form frmControl)
+                    _blnControlIsForm = true;
+                else
+                    frmControl = null;
                 Cursor objNewCursor = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-                if (objNewCursor != Cursors.AppStarting && !_blnControlIsForm)
+                if (objNewCursor != Cursors.AppStarting && (!_blnControlIsForm || frmControl?.IsMdiChild == true))
                 {
                     if (_objControl is UserControl objUserControl)
                     {

@@ -15787,7 +15787,7 @@ namespace Chummer
                 }
             }
 
-            if (Program.MainForm == null)
+            if (Program.MainForm == null || IsLoading)
                 return;
             foreach(Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)
             {
