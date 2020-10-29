@@ -12835,6 +12835,7 @@ namespace Chummer
                     if (intCurrentBoxTag <= intConditionMax)
                     {
                         chkCmBox.Visible = true;
+                        chkCmBox.Image = null;
                         if (intCurrentBoxTag > intThresholdOffset && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
                         {
                             int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
@@ -12847,11 +12848,13 @@ namespace Chummer
                     {
                         chkCmBox.Visible = true;
                         chkCmBox.BackColor = SystemColors.ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
-                        chkCmBox.Text = intCurrentBoxTag == intConditionMax + intOverflow ? LanguageManager.GetString("String_CMDown") : string.Empty;
+                        chkCmBox.Image = intCurrentBoxTag == intConditionMax + intOverflow
+                            ? global::Chummer.Properties.Resources.skull_old : null;
                     }
                     else
                     {
                         chkCmBox.Visible = false;
+                        chkCmBox.Image = null;
                         chkCmBox.Text = " "; // Non-breaking save to help with DPI stuff
                     }
 
