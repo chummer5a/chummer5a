@@ -76,10 +76,11 @@ namespace Chummer.UI.Skills
 
             if (_skill.CharacterObject.Created)
             {
-                flpButtonsCreate.Visible = false;
-                tlpSpecsCreate.Visible = false;
-                flpButtonsCareer.Dock = DockStyle.Fill;
-                tlpSpecsCareer.Dock = DockStyle.Fill;
+                nudSkill.Visible = false;
+                nudKarma.Visible = false;
+                chkNativeLanguage.Visible = false;
+                cboSpec.Visible = false;
+                chkKarma.Visible = false;
 
                 lblRating.DoOneWayNegatableDatabinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
                 lblRating.DoOneWayDataBinding("Text", _skill, nameof(Skill.Rating));
@@ -96,10 +97,11 @@ namespace Chummer.UI.Skills
             }
             else
             {
-                flpButtonsCareer.Visible = false;
-                tlpSpecsCareer.Visible = false;
-                flpButtonsCreate.Dock = DockStyle.Fill;
-                tlpSpecsCreate.Dock = DockStyle.Fill;
+                lblRating.Visible = false;
+                btnCareerIncrease.Visible = false;
+                lblSpec.Visible = false;
+                btnAddSpec.Visible = false;
+                chkKarma.Visible = false;
 
                 nudSkill.DoOneWayDataBinding("Visible", _skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 nudSkill.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
@@ -269,7 +271,7 @@ namespace Chummer.UI.Skills
         }
 
         [UsedImplicitly]
-        public int NameWidth => tlpName.Width - (lblName.Visible ? lblName.Margin.Left + lblName.Margin.Right : cboName.Margin.Left + cboName.Margin.Right);
+        public int NameWidth => tlpLeft.Width - (lblName.Visible ? lblName.Margin.Left + lblName.Margin.Right : cboName.Margin.Left + cboName.Margin.Right);
 
         [UsedImplicitly]
         public int NudSkillWidth => !_skill.CharacterObject.Created && _skill.AllowUpgrade && _skill.CharacterObject.SkillsSection.HasKnowledgePoints

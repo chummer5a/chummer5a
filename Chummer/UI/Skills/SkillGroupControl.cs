@@ -48,7 +48,8 @@ namespace Chummer.UI.Skills
 
             if (skillGroup.CharacterObject.Created)
             {
-                flpRightCreate.Visible = false;
+                nudKarma.Visible = false;
+                nudSkill.Visible = false;
 
                 btnCareerIncrease.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
                 btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
@@ -57,7 +58,8 @@ namespace Chummer.UI.Skills
             }
             else
             {
-                flpRightCareer.Visible = false;
+                btnCareerIncrease.Visible = false;
+                lblGroupRating.Visible = false;
 
                 nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
                 nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));

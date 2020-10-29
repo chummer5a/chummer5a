@@ -57,7 +57,8 @@ namespace Chummer.UI.Attributes
             lblValue.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
             if (_objCharacter.Created)
             {
-                flpButtonsCreate.Visible = false;
+                nudBase.Visible = false;
+                nudKarma.Visible = false;
 
                 cmdImproveATT.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
                 cmdImproveATT.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
@@ -66,7 +67,8 @@ namespace Chummer.UI.Attributes
             }
             else
             {
-                flpButtonsCareer.Visible = false;
+                cmdImproveATT.Visible = false;
+                cmdBurnEdge.Visible = false;
 
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
                     _objAttribute.Base -= 1;
@@ -107,7 +109,7 @@ namespace Chummer.UI.Attributes
                     lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
             }
 
-            if (flpButtonsCreate.Visible && nudBase.Visible && intNudKarmaWidth >= 0)
+            if (nudKarma.Visible && nudBase.Visible && intNudKarmaWidth >= 0)
             {
                 nudKarma.Margin = new Padding(
                     nudKarma.Margin.Right + Math.Max(intNudKarmaWidth - nudKarma.Width, 0),

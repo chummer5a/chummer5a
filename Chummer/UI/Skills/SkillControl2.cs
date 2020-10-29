@@ -82,10 +82,10 @@ namespace Chummer.UI.Skills
 
             if (objSkill.CharacterObject.Created)
             {
-                flpButtonsCreate.Visible = false;
-                tlpSpecsCreate.Visible = false;
-                flpButtonsCareer.Dock = DockStyle.Fill;
-                tlpSpecsCareer.Dock = DockStyle.Fill;
+                nudSkill.Visible = false;
+                nudKarma.Visible = false;
+                cboSpec.Visible = false;
+                chkKarma.Visible = false;
 
                 lblCareerRating.DoOneWayDataBinding("Text", objSkill, nameof(Skill.Rating));
                 btnCareerIncrease.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
@@ -112,8 +112,9 @@ namespace Chummer.UI.Skills
             }
             else
             {
-                flpButtonsCareer.Visible = false;
-                flpButtonsCreate.Dock = DockStyle.Fill;
+                lblCareerRating.Visible = false;
+                btnCareerIncrease.Visible = false;
+                btnAddSpec.Visible = false;
 
                 // Trick to make it seem like the button is a label (+ onclick method not doing anything in Create mode)
                 btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
@@ -129,15 +130,13 @@ namespace Chummer.UI.Skills
 
                 if (objSkill.IsExoticSkill)
                 {
-                    tlpSpecsCreate.Visible = false;
-                    tlpSpecsCareer.Dock = DockStyle.Fill;
-                    btnAddSpec.Visible = false;
+                    cboSpec.Visible = false;
+                    chkKarma.Visible = false;
                     lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
                 }
                 else
                 {
-                    tlpSpecsCareer.Visible = false;
-                    tlpSpecsCreate.Dock = DockStyle.Fill;
+                    lblCareerSpec.Visible = false;
                     cboSpec.BeginUpdate();
                     cboSpec.DataSource = null;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
