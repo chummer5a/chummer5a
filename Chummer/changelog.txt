@@ -77,6 +77,7 @@ Application Fixes:
 - Group contact Karma costs are now properly in sync with contact Karma costs should the latter be set to a higher value through Karma cost options.
 - Karma expenditures for group contacts are now properly updated if/when the setting for whether a contact is a group contact is toggled in some way.
 - Fixed an issue with the context menu for character tabs not being translated properly. Closes #4142
+- Characters with more than the default amount of arms and/or legs should now be able to properly add multiple modular connectors associated with their extra limbs on the same side.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

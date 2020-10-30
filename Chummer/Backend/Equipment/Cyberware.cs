@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -160,6 +161,28 @@ namespace Chummer.Backend.Equipment
             }
 
             return lstGrades.FirstOrDefault(x => x.Name == "Standard");
+        }
+
+        /// <summary>
+        /// Returns the limb type associated with a particular mount.
+        /// </summary>
+        /// <param name="strMount">Mount to check.</param>
+        /// <returns>Limb associated with <paramref name="strMount"/>. If there is none, returns an empty string.</returns>
+        public static string MountToLimbType(string strMount)
+        {
+            switch (strMount)
+            {
+                case "wrist":
+                case "elbow":
+                case "shoulder":
+                    return "arm";
+                case "ankle":
+                case "knee":
+                case "hip":
+                    return "leg";
+            }
+
+            return string.Empty;
         }
 
         #endregion
@@ -687,30 +710,79 @@ namespace Chummer.Backend.Equipment
                         string strForcedSide = string.Empty;
                         if (_strForced == "Right" || _strForced == "Left")
                             strForcedSide = _strForced;
-                        // TODO: Fix for modular mounts / banned mounts if someone has an amount of limbs different from the default amount
                         if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                         {
                             XPathNavigator xpnCyberware = objXmlCyberware.CreateNavigator();
                             ObservableCollection<Cyberware> lstCyberwareToCheck =
                                 Parent == null ? _objCharacter.Cyberware : Parent.Children;
-                            if (!xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                    string.Empty, "Left") ||
-                                (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x =>
-                                    !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" &&
-                                    BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount))) ||
-                                (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x =>
-                                    !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" &&
-                                    x.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(HasModularMount))))
-                                strForcedSide = "Right";
-                            else if (!xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                         string.Empty, "Right") ||
-                                     (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x =>
-                                         !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Right" &&
-                                         BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount))) ||
-                                     (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x =>
-                                         !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Right" &&
-                                         x.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(HasModularMount))))
-                                strForcedSide = "Left";
+                            Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
+                            Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
+                            foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
+                            {
+                                if (!string.IsNullOrEmpty(objCheckCyberware.BlocksMounts))
+                                {
+                                    Dictionary<string, int> dicToUse = null;
+                                    if (objCheckCyberware.Location == "Left")
+                                        dicToUse = dicNumLeftMountBlockers;
+                                    else if (objCheckCyberware.Location == "Right")
+                                        dicToUse = dicNumRightMountBlockers;
+                                    else
+                                        continue;
+                                    foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (dicToUse.ContainsKey(strBlockMount))
+                                            dicToUse[strBlockMount] += objCheckCyberware.LimbSlotCount;
+                                        else
+                                            dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
+                                    }
+                                }
+                            }
+
+                            bool blnAllowLeft = true;
+                            bool blnAllowRight = true;
+                            // Fairly expensive check that can (and therefore should) be parallelized
+                            Parallel.Invoke(
+                                () =>
+                                {
+                                    blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty, string.Empty, "Left")
+                                                   && (string.IsNullOrEmpty(BlocksMounts)
+                                                       || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
+                                                                                        && x.Location == "Left"
+                                                                                        && BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount)
+                                                                                        && (string.IsNullOrEmpty(MountToLimbType(x.HasModularMount))
+                                                                                            || _objCharacter.LimbCount(MountToLimbType(x.HasModularMount)) / 2 <= (dicNumLeftMountBlockers.ContainsKey(x.HasModularMount)
+                                                                                                ? dicNumLeftMountBlockers[x.HasModularMount] + LimbSlotCount
+                                                                                                : LimbSlotCount))))
+                                                   && (string.IsNullOrEmpty(HasModularMount)
+                                                       || !dicNumLeftMountBlockers.ContainsKey(HasModularMount)
+                                                       || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
+                                                            || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <= dicNumLeftMountBlockers[HasModularMount]));
+                                },
+                                () =>
+                                {
+                                    blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty, string.Empty, "Right")
+                                                    && (string.IsNullOrEmpty(BlocksMounts)
+                                                        || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
+                                                                                         && x.Location == "Right"
+                                                                                         && BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount)
+                                                                                         && (string.IsNullOrEmpty(MountToLimbType(x.HasModularMount))
+                                                                                             || _objCharacter.LimbCount(MountToLimbType(x.HasModularMount)) / 2 <= (dicNumRightMountBlockers.ContainsKey(x.HasModularMount)
+                                                                                                 ? dicNumRightMountBlockers[x.HasModularMount] + LimbSlotCount
+                                                                                                 : LimbSlotCount))))
+                                                    && (string.IsNullOrEmpty(HasModularMount)
+                                                        || !dicNumRightMountBlockers.ContainsKey(HasModularMount)
+                                                        || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
+                                                             || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <= dicNumRightMountBlockers[HasModularMount]));
+                                }
+                            );
+                            // Only one side is allowed.
+                            if (blnAllowLeft != blnAllowRight)
+                                strForcedSide = blnAllowLeft ? "Left" : "Right";
+#if DEBUG
+                            // Should never happen, so break immediately if we have a debugger attached
+                            else if (!blnAllowLeft && !blnAllowRight)
+                                Utils.BreakIfDebug();
+#endif
                         }
 
                         if (!string.IsNullOrEmpty(strForcedSide))
