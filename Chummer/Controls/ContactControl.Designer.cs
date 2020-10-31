@@ -50,21 +50,6 @@ namespace Chummer
             this.chkFamily = new Chummer.ColorableCheckBox(this.components);
             this.chkBlackmail = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpStatBlock = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cboMetatype = new Chummer.ElasticComboBox();
-            this.cboGender = new Chummer.ElasticComboBox();
-            this.cboType = new Chummer.ElasticComboBox();
-            this.cboAge = new Chummer.ElasticComboBox();
-            this.lblType = new System.Windows.Forms.Label();
-            this.lblMetatype = new System.Windows.Forms.Label();
-            this.lblGender = new System.Windows.Forms.Label();
-            this.lblAge = new System.Windows.Forms.Label();
-            this.lblPersonalLife = new System.Windows.Forms.Label();
-            this.cboPersonalLife = new Chummer.ElasticComboBox();
-            this.lblPreferredPayment = new System.Windows.Forms.Label();
-            this.cboPreferredPayment = new Chummer.ElasticComboBox();
-            this.lblHobbiesVice = new System.Windows.Forms.Label();
-            this.cboHobbiesVice = new Chummer.ElasticComboBox();
             this.tlpComboBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).BeginInit();
@@ -72,7 +57,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             this.tlpMain.SuspendLayout();
-            this.tlpStatBlock.SuspendLayout();
             this.tlpComboBoxes.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -373,7 +357,6 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.chkFamily, 11, 1);
             this.tlpMain.Controls.Add(this.chkFree, 7, 1);
             this.tlpMain.Controls.Add(this.lblQuickStats, 10, 0);
-            this.tlpMain.Controls.Add(this.tlpStatBlock, 0, 2);
             this.tlpMain.Controls.Add(this.lblConnection, 0, 1);
             this.tlpMain.Controls.Add(this.cmdExpand, 0, 0);
             this.tlpMain.Controls.Add(this.chkBlackmail, 9, 1);
@@ -387,213 +370,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(553, 170);
             this.tlpMain.TabIndex = 35;
-            // 
-            // tlpStatBlock
-            // 
-            this.tlpStatBlock.AutoSize = true;
-            this.tlpStatBlock.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpStatBlock.ColumnCount = 4;
-            this.tlpMain.SetColumnSpan(this.tlpStatBlock, 13);
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpStatBlock.Controls.Add(this.cboMetatype, 1, 1);
-            this.tlpStatBlock.Controls.Add(this.cboGender, 1, 2);
-            this.tlpStatBlock.Controls.Add(this.cboType, 1, 4);
-            this.tlpStatBlock.Controls.Add(this.cboAge, 1, 3);
-            this.tlpStatBlock.Controls.Add(this.lblType, 0, 4);
-            this.tlpStatBlock.Controls.Add(this.lblMetatype, 0, 1);
-            this.tlpStatBlock.Controls.Add(this.lblGender, 0, 2);
-            this.tlpStatBlock.Controls.Add(this.lblAge, 0, 3);
-            this.tlpStatBlock.Controls.Add(this.lblPersonalLife, 2, 1);
-            this.tlpStatBlock.Controls.Add(this.cboPersonalLife, 3, 1);
-            this.tlpStatBlock.Controls.Add(this.lblPreferredPayment, 2, 2);
-            this.tlpStatBlock.Controls.Add(this.cboPreferredPayment, 3, 2);
-            this.tlpStatBlock.Controls.Add(this.lblHobbiesVice, 2, 3);
-            this.tlpStatBlock.Controls.Add(this.cboHobbiesVice, 3, 3);
-            this.tlpStatBlock.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpStatBlock.Location = new System.Drawing.Point(3, 59);
-            this.tlpStatBlock.Name = "tlpStatBlock";
-            this.tlpStatBlock.RowCount = 5;
-            this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpStatBlock.Size = new System.Drawing.Size(547, 108);
-            this.tlpStatBlock.TabIndex = 34;
-            this.tlpStatBlock.Visible = false;
-            // 
-            // cboMetatype
-            // 
-            this.cboMetatype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboMetatype.FormattingEnabled = true;
-            this.cboMetatype.Location = new System.Drawing.Point(63, 3);
-            this.cboMetatype.Name = "cboMetatype";
-            this.cboMetatype.Size = new System.Drawing.Size(186, 21);
-            this.cboMetatype.TabIndex = 20;
-            this.cboMetatype.TooltipText = "";
-            this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
-            // 
-            // cboGender
-            // 
-            this.cboGender.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboGender.FormattingEnabled = true;
-            this.cboGender.Location = new System.Drawing.Point(63, 30);
-            this.cboGender.Name = "cboGender";
-            this.cboGender.Size = new System.Drawing.Size(186, 21);
-            this.cboGender.TabIndex = 21;
-            this.cboGender.TooltipText = "";
-            this.cboGender.TextChanged += new System.EventHandler(this.cboGender_TextChanged);
-            // 
-            // cboType
-            // 
-            this.cboType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboType.FormattingEnabled = true;
-            this.cboType.Location = new System.Drawing.Point(63, 84);
-            this.cboType.Name = "cboType";
-            this.cboType.Size = new System.Drawing.Size(186, 21);
-            this.cboType.TabIndex = 22;
-            this.cboType.TooltipText = "";
-            this.cboType.TextChanged += new System.EventHandler(this.cboType_TextChanged);
-            // 
-            // cboAge
-            // 
-            this.cboAge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboAge.FormattingEnabled = true;
-            this.cboAge.Location = new System.Drawing.Point(63, 57);
-            this.cboAge.Name = "cboAge";
-            this.cboAge.Size = new System.Drawing.Size(186, 21);
-            this.cboAge.TabIndex = 24;
-            this.cboAge.TooltipText = "";
-            this.cboAge.TextChanged += new System.EventHandler(this.cboAge_TextChanged);
-            // 
-            // lblType
-            // 
-            this.lblType.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblType.AutoSize = true;
-            this.lblType.Location = new System.Drawing.Point(23, 88);
-            this.lblType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblType.Name = "lblType";
-            this.lblType.Size = new System.Drawing.Size(34, 13);
-            this.lblType.TabIndex = 31;
-            this.lblType.Tag = "Label_Type";
-            this.lblType.Text = "Type:";
-            this.lblType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblMetatype
-            // 
-            this.lblMetatype.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMetatype.AutoSize = true;
-            this.lblMetatype.Location = new System.Drawing.Point(3, 7);
-            this.lblMetatype.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMetatype.Name = "lblMetatype";
-            this.lblMetatype.Size = new System.Drawing.Size(54, 13);
-            this.lblMetatype.TabIndex = 27;
-            this.lblMetatype.Tag = "Label_Metatype";
-            this.lblMetatype.Text = "Metatype:";
-            this.lblMetatype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblGender
-            // 
-            this.lblGender.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblGender.AutoSize = true;
-            this.lblGender.Location = new System.Drawing.Point(12, 34);
-            this.lblGender.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblGender.Name = "lblGender";
-            this.lblGender.Size = new System.Drawing.Size(45, 13);
-            this.lblGender.TabIndex = 28;
-            this.lblGender.Tag = "Label_Gender";
-            this.lblGender.Text = "Gender:";
-            this.lblGender.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblAge
-            // 
-            this.lblAge.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblAge.AutoSize = true;
-            this.lblAge.Location = new System.Drawing.Point(28, 61);
-            this.lblAge.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblAge.Name = "lblAge";
-            this.lblAge.Size = new System.Drawing.Size(29, 13);
-            this.lblAge.TabIndex = 29;
-            this.lblAge.Tag = "Label_Age";
-            this.lblAge.Text = "Age:";
-            this.lblAge.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblPersonalLife
-            // 
-            this.lblPersonalLife.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblPersonalLife.AutoSize = true;
-            this.lblPersonalLife.Location = new System.Drawing.Point(281, 7);
-            this.lblPersonalLife.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPersonalLife.Name = "lblPersonalLife";
-            this.lblPersonalLife.Size = new System.Drawing.Size(71, 13);
-            this.lblPersonalLife.TabIndex = 30;
-            this.lblPersonalLife.Tag = "Label_Contact_PersonalLife";
-            this.lblPersonalLife.Text = "Personal Life:";
-            this.lblPersonalLife.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cboPersonalLife
-            // 
-            this.cboPersonalLife.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboPersonalLife.FormattingEnabled = true;
-            this.cboPersonalLife.Location = new System.Drawing.Point(358, 3);
-            this.cboPersonalLife.Name = "cboPersonalLife";
-            this.cboPersonalLife.Size = new System.Drawing.Size(186, 21);
-            this.cboPersonalLife.TabIndex = 26;
-            this.cboPersonalLife.TooltipText = "";
-            this.cboPersonalLife.TextChanged += new System.EventHandler(this.cboPersonalLife_TextChanged);
-            // 
-            // lblPreferredPayment
-            // 
-            this.lblPreferredPayment.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblPreferredPayment.AutoSize = true;
-            this.lblPreferredPayment.Location = new System.Drawing.Point(255, 34);
-            this.lblPreferredPayment.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPreferredPayment.Name = "lblPreferredPayment";
-            this.lblPreferredPayment.Size = new System.Drawing.Size(97, 13);
-            this.lblPreferredPayment.TabIndex = 32;
-            this.lblPreferredPayment.Tag = "Label_Contact_PreferredPayment";
-            this.lblPreferredPayment.Text = "Preferred Payment:";
-            this.lblPreferredPayment.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cboPreferredPayment
-            // 
-            this.cboPreferredPayment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboPreferredPayment.FormattingEnabled = true;
-            this.cboPreferredPayment.Location = new System.Drawing.Point(358, 30);
-            this.cboPreferredPayment.Name = "cboPreferredPayment";
-            this.cboPreferredPayment.Size = new System.Drawing.Size(186, 21);
-            this.cboPreferredPayment.TabIndex = 23;
-            this.cboPreferredPayment.TooltipText = "";
-            this.cboPreferredPayment.TextChanged += new System.EventHandler(this.cboPreferredPayment_TextChanged);
-            // 
-            // lblHobbiesVice
-            // 
-            this.lblHobbiesVice.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblHobbiesVice.AutoSize = true;
-            this.lblHobbiesVice.Location = new System.Drawing.Point(277, 61);
-            this.lblHobbiesVice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblHobbiesVice.Name = "lblHobbiesVice";
-            this.lblHobbiesVice.Size = new System.Drawing.Size(75, 13);
-            this.lblHobbiesVice.TabIndex = 33;
-            this.lblHobbiesVice.Tag = "Label_Contact_HobbiesVice";
-            this.lblHobbiesVice.Text = "Hobbies/Vice:";
-            this.lblHobbiesVice.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cboHobbiesVice
-            // 
-            this.cboHobbiesVice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboHobbiesVice.FormattingEnabled = true;
-            this.cboHobbiesVice.Location = new System.Drawing.Point(358, 57);
-            this.cboHobbiesVice.Name = "cboHobbiesVice";
-            this.cboHobbiesVice.Size = new System.Drawing.Size(186, 21);
-            this.cboHobbiesVice.TabIndex = 25;
-            this.cboHobbiesVice.TooltipText = "";
-            this.cboHobbiesVice.TextChanged += new System.EventHandler(this.cboHobbiesVice_TextChanged);
             // 
             // tlpComboBoxes
             // 
@@ -635,8 +411,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.tlpStatBlock.ResumeLayout(false);
-            this.tlpStatBlock.PerformLayout();
             this.tlpComboBoxes.ResumeLayout(false);
             this.tlpComboBoxes.PerformLayout();
             this.ResumeLayout(false);
@@ -666,21 +440,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblLoyalty;
         private BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpComboBoxes;
-        private BufferedTableLayoutPanel tlpStatBlock;
-        private ElasticComboBox cboMetatype;
-        private ElasticComboBox cboGender;
-        private System.Windows.Forms.Label lblHobbiesVice;
-        private ElasticComboBox cboType;
-        private System.Windows.Forms.Label lblPreferredPayment;
-        private ElasticComboBox cboAge;
-        private System.Windows.Forms.Label lblPersonalLife;
-        private System.Windows.Forms.Label lblType;
-        private System.Windows.Forms.Label lblMetatype;
-        private System.Windows.Forms.Label lblGender;
-        private System.Windows.Forms.Label lblAge;
-        private ElasticComboBox cboPreferredPayment;
-        private ElasticComboBox cboHobbiesVice;
-        private ElasticComboBox cboPersonalLife;
         private Chummer.ColorableCheckBox chkBlackmail;
         private Chummer.ColorableCheckBox chkFamily;
     }
