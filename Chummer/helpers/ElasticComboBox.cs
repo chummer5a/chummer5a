@@ -74,11 +74,10 @@ namespace Chummer
             get => base.DataSource;
             set
             {
-                if (base.DataSource != value)
-                {
-                    base.DataSource = value;
-                    ResizeDropDown();
-                }
+                if (base.DataSource == value)
+                    return;
+                base.DataSource = value;
+                ResizeDropDown();
             }
         }
         public new string DisplayMember
@@ -86,11 +85,10 @@ namespace Chummer
             get => base.DisplayMember;
             set
             {
-                if (base.DisplayMember != value)
-                {
-                    base.DisplayMember = value;
-                    ResizeDropDown();
-                }
+                if (base.DisplayMember == value)
+                    return;
+                base.DisplayMember = value;
+                ResizeDropDown();
             }
         }
         public new string ValueMember
@@ -98,17 +96,16 @@ namespace Chummer
             get => base.ValueMember;
             set
             {
-                if (base.ValueMember != value)
-                {
-                    base.ValueMember = value;
-                    ResizeDropDown();
-                }
+                if (base.ValueMember == value)
+                    return;
+                base.ValueMember = value;
+                ResizeDropDown();
             }
         }
 
         private void ResizeDropDown()
         {
-            float fltMaxItemWidth = Width;
+            int intMaxItemWidth = Width;
             foreach (var objItem in Items)
             {
                 string strItemText = string.Empty;
@@ -116,11 +113,11 @@ namespace Chummer
                     strItemText = objListItem.Name;
                 if (string.IsNullOrEmpty(strItemText))
                     strItemText = GetItemText(objItem);
-                float fltLoopItemWidth = TextRenderer.MeasureText(strItemText, Font).Width;
-                if (fltLoopItemWidth > fltMaxItemWidth)
-                    fltMaxItemWidth = fltLoopItemWidth;
+                int intLoopItemWidth = TextRenderer.MeasureText(strItemText, Font).Width;
+                if (intLoopItemWidth > intMaxItemWidth)
+                    intMaxItemWidth = intLoopItemWidth;
             }
-            DropDownWidth = Convert.ToInt32(Math.Ceiling(fltMaxItemWidth));
+            DropDownWidth = intMaxItemWidth;
         }
 
         protected override void Dispose(bool disposing)
