@@ -79,6 +79,7 @@ Application Fixes:
 - Fixed an issue with the context menu for character tabs not being translated properly. Closes #4142
 - Characters with more than the default amount of arms and/or legs should now be able to properly add multiple modular connectors associated with their extra limbs on the same side.
 - Cyberlimbs now block modular connectors to the same limb that are not part of said cyberlimb.
+- MAG (Adept) no longer shows up in the list of attributes for a skill if the character does not have the house rule enabled that has Mystic Adepts have two Magic attributes instead of separate Mystic Adept PPs.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

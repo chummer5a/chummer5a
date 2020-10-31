@@ -99,8 +99,17 @@ namespace Chummer.UI.Skills
                 List<ListItem> lstAttributeItems = new List<ListItem>(AttributeSection.AttributeStrings.Count);
                 foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
                 {
-                    string strAttributeShort = LanguageManager.GetString("String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);
-                    lstAttributeItems.Add(new ListItem(strLoopAttribute, !string.IsNullOrEmpty(strAttributeShort) ? strAttributeShort : strLoopAttribute));
+                    if (strLoopAttribute == "MAGAdept")
+                    {
+                        if (!objSkill.CharacterObject.Options.MysAdeptSecondMAGAttribute)
+                            continue;
+                        lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.MAGAdeptString()));
+                    }
+                    else
+                    {
+                        string strAttributeShort = LanguageManager.GetString("String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);
+                        lstAttributeItems.Add(new ListItem(strLoopAttribute, !string.IsNullOrEmpty(strAttributeShort) ? strAttributeShort : strLoopAttribute));
+                    }
                 }
                 cboSelectAttribute.BeginUpdate();
                 cboSelectAttribute.DataSource = null;
