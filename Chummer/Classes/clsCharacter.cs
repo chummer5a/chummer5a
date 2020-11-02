@@ -298,7 +298,6 @@ namespace Chummer
             _objTradition = new Tradition(this);
         }
 
-        private XPathNavigator _xmlMetatypeNode;
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
         {
             XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
@@ -307,22 +306,21 @@ namespace Chummer
                 : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
             if (blnReturnMetatypeOnly)
                 return xmlMetatypeNode;
-            _xmlMetatypeNode = xmlMetatypeNode;
-            if (MetavariantGuid != Guid.Empty && !string.IsNullOrEmpty(Metavariant) && _xmlMetatypeNode != null)
+            if (MetavariantGuid != Guid.Empty && !string.IsNullOrEmpty(Metavariant) && xmlMetatypeNode != null)
             {
-                XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
+                XPathNavigator xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
                     ? "metavariants/metavariant[name = \"" + Metavariant + "\"]"
                     : "metavariants/metavariant[id = \"" + MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
                 if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
                 {
                     xmlMetavariantNode =
-                        _xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
                 }
                 if (xmlMetavariantNode != null)
-                    _xmlMetatypeNode = xmlMetavariantNode;
+                    return xmlMetavariantNode;
             }
 
-            return _xmlMetatypeNode;
+            return xmlMetatypeNode;
         }
 
         public void RefreshAttributeBindings()
@@ -3530,8 +3528,8 @@ namespace Chummer
                             if (objOldQuality != null)
                             {
                                 Qualities.Remove(objOldQuality);
-                                if (Qualities.Any(x => x.Name.Equals("Resistance to Pathogens/Toxins", StringComparison.Ordinal)) == false &&
-                                    Qualities.Any(x => x.Name.Equals("Dwarf Resistance", StringComparison.Ordinal)) == false)
+                                if (Qualities.All(x => !x.Name.Equals("Resistance to Pathogens/Toxins", StringComparison.Ordinal))
+                                    && Qualities.All(x => !x.Name.Equals("Dwarf Resistance", StringComparison.Ordinal)))
                                 {
                                     XmlNode objXmlDwarfQuality =
                                         xmlRootQualitiesNode.SelectSingleNode(
@@ -4854,7 +4852,7 @@ namespace Chummer
                     if(objReturnGear != null)
                     {
                         StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                        if(objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                        if(objReturnGear.Parent is Gear parent)
                             sbdGearReturn.Append(strSpace).Append('(').Append(parent.DisplayNameShort(strLanguage)).Append(')');
                         if (wireless)
                             sbdGearReturn.Append(strSpace).Append(LanguageManager.GetString("String_Wireless", strLanguage));
@@ -4871,7 +4869,7 @@ namespace Chummer
                             if(objReturnGear != null)
                             {
                                 StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                if (objReturnGear.Parent is Gear parent)
                                     sbdGearReturn.Append(strSpace).Append('(').Append(objWeapon.DisplayNameShort(strLanguage)).Append(',')
                                         .Append(strSpace).Append(objAccessory.DisplayNameShort(strLanguage)).Append(',')
                                         .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
@@ -4892,7 +4890,7 @@ namespace Chummer
                         if(objReturnGear != null)
                         {
                             StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            if (objReturnGear.Parent is Gear parent)
                                 sbdGearReturn.Append(strSpace).Append('(').Append(objArmor.DisplayNameShort(strLanguage)).Append(',')
                                     .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
                             else
@@ -4910,7 +4908,7 @@ namespace Chummer
                         if(objReturnGear != null)
                         {
                             StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            if (objReturnGear.Parent is Gear parent)
                                 sbdGearReturn.Append(strSpace).Append('(').Append(objCyberware.DisplayNameShort(strLanguage)).Append(',')
                                     .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
                             else
@@ -4928,7 +4926,7 @@ namespace Chummer
                         if(objReturnGear != null)
                         {
                             StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            if (objReturnGear.Parent is Gear parent)
                                 sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                     .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
                             else
@@ -4948,7 +4946,7 @@ namespace Chummer
                                 if(objReturnGear != null)
                                 {
                                     StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    if (objReturnGear.Parent is Gear parent)
                                         sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objWeapon.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objAccessory.DisplayNameShort(strLanguage)).Append(',')
@@ -4976,7 +4974,7 @@ namespace Chummer
                                     if(objReturnGear != null)
                                     {
                                         StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                        if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                        if (objReturnGear.Parent is Gear parent)
                                             sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                                 .Append(strSpace).Append(objVehicleMod.DisplayNameShort(strLanguage)).Append(',')
                                                 .Append(strSpace).Append(objWeapon.DisplayNameShort(strLanguage)).Append(',')
@@ -5002,7 +5000,7 @@ namespace Chummer
                                 if(objReturnGear != null)
                                 {
                                     StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    if (objReturnGear.Parent is Gear parent)
                                         sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objVehicleMod.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objCyberware.DisplayNameShort(strLanguage)).Append(',')
@@ -10317,7 +10315,7 @@ namespace Chummer
 
                     if (blnDoAdd)
                     {
-                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('+')))
+                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                             intStacking += objArmor.TotalArmor;
                         else
                             intStacking += objArmor.TotalOverrideArmor;
@@ -11119,7 +11117,7 @@ namespace Chummer
 
                     if (blnDoAdd)
                     {
-                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('+')))
+                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                             intTotalA += objArmor.TotalArmor;
                         else
                             intTotalA += objArmor.TotalOverrideArmor;
@@ -15604,7 +15602,7 @@ namespace Chummer
                 }
             }
 
-            if((lstNamesOfChangedProperties?.Count > 0) != true)
+            if(lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             if(lstNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))

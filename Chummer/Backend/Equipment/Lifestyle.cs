@@ -385,9 +385,7 @@ namespace Chummer.Backend.Equipment
             {
                 XmlNode xmlLifestyleNode =
                     xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
-                {
-                    xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
-                }
+                xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             }
             if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
             {
@@ -1364,7 +1362,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)

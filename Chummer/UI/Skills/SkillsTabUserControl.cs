@@ -249,14 +249,12 @@ namespace Chummer.UI.Skills
 
         private void SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SkillsSection.KnowledgeSkillPointsRemain)
-                || e.PropertyName == nameof(SkillsSection.KnowledgeSkillPoints)
-                || e.PropertyName == nameof(SkillsSection.SkillPointsSpentOnKnoskills))
+            if ((e.PropertyName == nameof(SkillsSection.KnowledgeSkillPointsRemain)
+                 || e.PropertyName == nameof(SkillsSection.KnowledgeSkillPoints)
+                 || e.PropertyName == nameof(SkillsSection.SkillPointsSpentOnKnoskills))
+                && _objCharacter?.Created == false)
             {
-                if (_objCharacter?.Created == false)
-                {
-                    UpdateKnoSkillRemaining();
-                }
+                UpdateKnoSkillRemaining();
             }
         }
 

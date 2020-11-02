@@ -34,6 +34,8 @@ namespace Chummer.Backend.Skills
             node.TryGetStringFieldQuickly("specific", ref _strSpecific);
         }
 
+        public override bool IsExoticSkill => true;
+
         public override bool AllowDelete => !CharacterObject.Created;
 
         public override int CurrentSpCost => Math.Max(BasePoints, 0);

@@ -454,30 +454,28 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
             //Should the App "Phone home"
+            try
             {
-                try
+                string useAI = "NotSet";
+                LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
+                switch (useAI)
                 {
-                    string useAI = "NotSet";
-                    LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
-                    switch (useAI)
-                    {
-                        case "False":
-                            _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
-                            break;
-                        case "True":
-                        case "Yes":
-                            _enumUseLoggingApplicationInsights = UseAILogging.Info;
-                            break;
-                        default:
-                            _enumUseLoggingApplicationInsights = (UseAILogging) Enum.Parse(typeof(UseAILogging), useAI);
-                            break;
-                    }
+                    case "False":
+                        _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                        break;
+                    case "True":
+                    case "Yes":
+                        _enumUseLoggingApplicationInsights = UseAILogging.Info;
+                        break;
+                    default:
+                        _enumUseLoggingApplicationInsights = (UseAILogging) Enum.Parse(typeof(UseAILogging), useAI);
+                        break;
                 }
-                catch (Exception e)
-                {
-                    Log.Warn(e);
-                    _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
-                }
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+                _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
             }
 
             string strColorMode = string.Empty;

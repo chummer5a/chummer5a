@@ -298,13 +298,13 @@ namespace Chummer
                     {
                         strNotes = CommonFunctions.GetTextFromPDF(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
 
-                        if (string.IsNullOrEmpty(strNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                        if (string.IsNullOrEmpty(strNotes)
+                            && GlobalOptions.Language != GlobalOptions.DefaultLanguage
+                            && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
+                                || objEntry.Source.Page != objEntry.DisplaySource.Page))
                         {
                             // don't check again it is not translated
-                            if (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage || objEntry.Source.Page != objEntry.DisplaySource.Page)
-                            {
-                                strNotes = CommonFunctions.GetTextFromPDF(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
-                            }
+                            strNotes = CommonFunctions.GetTextFromPDF(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
                         }
 
                         _dicCachedNotes.TryAdd(objEntry, strNotes);

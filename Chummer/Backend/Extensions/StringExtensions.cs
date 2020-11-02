@@ -816,21 +816,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Determines whether the last char of this string instance matches the specified char.
-        /// </summary>
-        /// <param name="strInput">String to check.</param>
-        /// <param name="chrToCheck">Char to check.</param>
-        /// <returns>True if string has a non-zero length and ends with the char, false otherwise.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EndsWith(this string strInput, char chrToCheck)
-        {
-            if (strInput == null)
-                return false;
-            int intLength = strInput.Length;
-            return (intLength > 0 && strInput[intLength - 1] == chrToCheck);
-        }
-
-        /// <summary>
         /// Determines whether the first char of this string instance matches any of the specified chars.
         /// </summary>
         /// <param name="strInput">String to check.</param>
@@ -842,30 +827,6 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput) || achrToCheck == null)
                 return false;
             char chrCharToCheck = strInput[0];
-            int intParamsLength = achrToCheck.Length;
-            for (int i = 0; i < intParamsLength; ++i)
-            {
-                if (chrCharToCheck == achrToCheck[i])
-                    return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether the last char of this string instance matches any of the specified chars.
-        /// </summary>
-        /// <param name="strInput">String to check.</param>
-        /// <param name="achrToCheck">Chars to check.</param>
-        /// <returns>True if string has a non-zero length and ends with any of the specified chars, false otherwise.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool EndsWith(this string strInput, params char[] achrToCheck)
-        {
-            if (strInput == null || achrToCheck == null)
-                return false;
-            int intLength = strInput.Length;
-            if (intLength == 0)
-                return false;
-            char chrCharToCheck = strInput[intLength - 1];
             int intParamsLength = achrToCheck.Length;
             for (int i = 0; i < intParamsLength; ++i)
             {
@@ -894,6 +855,45 @@ namespace Chummer
                         return true;
                     }
                 }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether the last char of this string instance matches the specified char.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="chrToCheck">Char to check.</param>
+        /// <returns>True if string has a non-zero length and ends with the char, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool EndsWith(this string strInput, char chrToCheck)
+        {
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            return (intLength > 0 && strInput[intLength - 1] == chrToCheck);
+        }
+
+        /// <summary>
+        /// Determines whether the last char of this string instance matches any of the specified chars.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="achrToCheck">Chars to check.</param>
+        /// <returns>True if string has a non-zero length and ends with any of the specified chars, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool EndsWith(this string strInput, params char[] achrToCheck)
+        {
+            if (strInput == null || achrToCheck == null)
+                return false;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return false;
+            char chrCharToCheck = strInput[intLength - 1];
+            int intParamsLength = achrToCheck.Length;
+            for (int i = 0; i < intParamsLength; ++i)
+            {
+                if (chrCharToCheck == achrToCheck[i])
+                    return true;
             }
             return false;
         }

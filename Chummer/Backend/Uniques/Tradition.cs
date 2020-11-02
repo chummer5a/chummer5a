@@ -1038,7 +1038,7 @@ namespace Chummer.Backend.Uniques
                 }
             }
 
-            if((lstNamesOfChangedProperties?.Count > 0) != true)
+            if(lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             foreach(string strPropertyToChange in lstNamesOfChangedProperties)

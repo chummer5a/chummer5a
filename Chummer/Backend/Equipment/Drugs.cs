@@ -1076,7 +1076,7 @@ namespace Chummer.Backend.Equipment
 
         public DrugComponent(Character objCharacter)
         {
-            _guidId = new Guid();
+            _guidId = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
 
@@ -1618,7 +1618,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Drug Effect
     /// </summary>
-    public class DrugEffect : object
+    public class DrugEffect
     {
         public DrugEffect()
         {

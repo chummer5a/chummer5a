@@ -195,12 +195,9 @@ public class SplitButton : Button
                 State = PushButtonState.Normal;
             }
         }
-        else if (kevent.KeyCode.Equals(Keys.Apps))
+        else if (kevent.KeyCode.Equals(Keys.Apps) && MouseButtons == MouseButtons.None && !_isSplitMenuVisible)
         {
-            if (MouseButtons == MouseButtons.None && !_isSplitMenuVisible)
-            {
-                ShowContextMenuStrip();
-            }
+            ShowContextMenuStrip();
         }
 
         base.OnKeyUp(kevent);
@@ -262,19 +259,19 @@ public class SplitButton : Button
         }
     }
 
-    protected override void OnMouseDown(MouseEventArgs e)
+    protected override void OnMouseDown(MouseEventArgs mevent)
     {
         if (!_showSplit)
         {
-            base.OnMouseDown(e);
+            base.OnMouseDown(mevent);
             return;
         }
 
         //handle ContextMenu re-clicking the drop-down region to close the menu
-        if (m_SplitMenu != null && e.Button == MouseButtons.Left && !isMouseEntered)
+        if (m_SplitMenu != null && mevent.Button == MouseButtons.Left && !isMouseEntered)
             _skipNextOpen = true;
 
-        if (_dropDownRectangle.Contains(e.Location) && !_isSplitMenuVisible && e.Button == MouseButtons.Left)
+        if (_dropDownRectangle.Contains(mevent.Location) && !_isSplitMenuVisible && mevent.Button == MouseButtons.Left)
         {
             ShowContextMenuStrip();
         }
@@ -539,10 +536,6 @@ public class SplitButton : Button
 
         switch (alignment)
         {
-            case System.Drawing.ContentAlignment.TopLeft:
-                x = 4;
-                y = 4;
-                break;
             case System.Drawing.ContentAlignment.TopCenter:
                 x = (container.Width - sizeOfObject.Width) / 2;
                 y = 4;

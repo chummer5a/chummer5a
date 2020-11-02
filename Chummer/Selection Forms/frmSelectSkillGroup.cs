@@ -18,7 +18,8 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
@@ -55,13 +56,14 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(_strExcludeCategory))
                             {
-                                string strExclude = string.Empty;
+                                StringBuilder sbdExclude = new StringBuilder();
                                 foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                    strExclude += "category != \"" + strCategory.Trim() + "\" and ";
+                                    sbdExclude.Append("category != \"").Append(strCategory.Trim()).Append("\" and ");
                                 // Remove the trailing " and ";
-                                strExclude = strExclude.Substring(0, strExclude.Length - 5);
+                                if (sbdExclude.Length > 0)
+                                    sbdExclude.Length -= 5;
 
-                                XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
+                                XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + sbdExclude.ToString() + " and skillgroup = \"" + objXmlSkill.InnerText + "\"]");
                                 if (objXmlNodeList == null || objXmlNodeList.Count == 0)
                                     continue;
                             }

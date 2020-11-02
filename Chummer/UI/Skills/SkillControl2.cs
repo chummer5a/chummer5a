@@ -256,16 +256,17 @@ namespace Chummer.UI.Skills
             decimal decSpecCostMultiplier = 1.0m;
             foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
             {
-                if (objLoopImprovement.Minimum <= intTotalBaseRating &&
-                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created) && objLoopImprovement.Enabled)
+                if (objLoopImprovement.Minimum <= intTotalBaseRating
+                    && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                        || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created
+                        || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created)
+                    && objLoopImprovement.Enabled
+                    && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
                 {
-                    if (objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
-                    {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                            intExtraSpecCost += objLoopImprovement.Value;
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                    }
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                        intExtraSpecCost += objLoopImprovement.Value;
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                        decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                 }
             }
             if (decSpecCostMultiplier != 1.0m)

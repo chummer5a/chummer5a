@@ -211,9 +211,9 @@ namespace Chummer.Backend.Skills
             get
             {
                 int intOtherBonus = RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled).Sum(x => x.Maximum);
-                return (CharacterObject.Created  || CharacterObject.IgnoreRules
-                    ? 12
-                    : (IsKnowledgeSkill && CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + intOtherBonus;
+                if (CharacterObject.Created || CharacterObject.IgnoreRules)
+                    return 12 + intOtherBonus;
+                return (IsKnowledgeSkill && CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6) + intOtherBonus;
             }
         }
 
@@ -222,7 +222,7 @@ namespace Chummer.Backend.Skills
         /// value for the attribute part of the test. This allows calculation of dice pools
         /// while using cyberlimbs or while rigging
         /// </summary>
-        /// <param name="intAttributeTotalValue">The value of the used attribute</param>
+        /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
         /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
         /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
         /// <returns></returns>
@@ -452,13 +452,12 @@ namespace Chummer.Backend.Skills
                     if (objLoopImprovement.Minimum <= intTotalBaseRating &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImprovedName == SkillCategory)
-                        {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                                intExtraSpecCost += objLoopImprovement.Value * intSpecCount;
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                        }
+                        if (objLoopImprovement.ImprovedName != SkillCategory)
+                            continue;
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                            intExtraSpecCost += objLoopImprovement.Value * intSpecCount;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
@@ -713,16 +712,17 @@ namespace Chummer.Backend.Skills
                         decimal decSpecCostMultiplier = 1.0m;
                         foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                         {
-                            if (objLoopImprovement.Minimum <= intTotalBaseRating &&
-                                (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                            if (objLoopImprovement.Minimum <= intTotalBaseRating
+                                && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                                    || (objLoopImprovement.Condition == "career") == CharacterObject.Created
+                                    || (objLoopImprovement.Condition == "create") != CharacterObject.Created)
+                                && objLoopImprovement.Enabled
+                                && objLoopImprovement.ImprovedName == SkillCategory)
                             {
-                                if (objLoopImprovement.ImprovedName == SkillCategory)
-                                {
-                                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                                        intExtraSpecCost += objLoopImprovement.Value;
-                                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                                        decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                                }
+                                if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                                    intExtraSpecCost += objLoopImprovement.Value;
+                                else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                                    decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                             }
                         }
                         if (decSpecCostMultiplier != 1.0m)
@@ -749,16 +749,16 @@ namespace Chummer.Backend.Skills
                 decimal decSpecCostMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
-                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating
+                        && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                            || (objLoopImprovement.Condition == "career") == CharacterObject.Created
+                            || (objLoopImprovement.Condition == "create") != CharacterObject.Created)
+                        && objLoopImprovement.Enabled && objLoopImprovement.ImprovedName == SkillCategory)
                     {
-                        if (objLoopImprovement.ImprovedName == SkillCategory)
-                        {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                                intExtraSpecCost += objLoopImprovement.Value;
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                        }
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                            intExtraSpecCost += objLoopImprovement.Value;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)

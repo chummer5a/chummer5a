@@ -477,14 +477,12 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strFile) && !string.IsNullOrEmpty(strCharacterId))
                     {
                         string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-                        if (!File.Exists(strFilePath))
+                        if (!File.Exists(strFilePath)
+                            && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            {
-                                using (new CursorWait(this))
-                                    using (frmOptions frmOptions = new frmOptions())
-                                        frmOptions.ShowDialog(this);
-                            }
+                            using (new CursorWait(this))
+                                using (frmOptions frmOptions = new frmOptions())
+                                    frmOptions.ShowDialog(this);
                         }
 
                         using (new CursorWait(this))

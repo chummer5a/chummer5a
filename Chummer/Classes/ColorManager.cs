@@ -20,7 +20,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Windows.Forms;
-using Chummer.UI.Editors;
 using Chummer.UI.Skills;
 using Chummer.UI.Table;
 using Microsoft.Win32;

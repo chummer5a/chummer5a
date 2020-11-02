@@ -100,7 +100,7 @@ namespace Chummer.Plugins
                 }
             }
 
-            if (reregisterKey == false)
+            if (!reregisterKey)
             {
                 Log.Info("Url Protocol Handler for Chummer was already registered!");
                 return true;
@@ -327,7 +327,7 @@ namespace Chummer.Plugins
             get
             {
                 List<IPlugin> result = new List<IPlugin>();
-                if (GlobalOptions.PluginsEnabled == false)
+                if (!GlobalOptions.PluginsEnabled)
                     return result;
                 foreach(IPlugin plugin in MyPlugins)
                 {

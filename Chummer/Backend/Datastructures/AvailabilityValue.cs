@@ -115,6 +115,11 @@ namespace Chummer
             return intCompareResult;
         }
 
+        public bool Equals(AvailabilityValue other)
+        {
+            return Value.Equals(other.Value) && Suffix.Equals(other.Suffix) && AddToParent.Equals(other.AddToParent);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is AvailabilityValue objOther)
@@ -157,11 +162,6 @@ namespace Chummer
         public static bool operator >=(AvailabilityValue left, AvailabilityValue right)
         {
             return left.CompareTo(right) >= 0;
-        }
-
-        public bool Equals(AvailabilityValue other)
-        {
-            return Value.Equals(other.Value) && Suffix.Equals(other.Suffix) && AddToParent.Equals(other.AddToParent);
         }
     }
 }

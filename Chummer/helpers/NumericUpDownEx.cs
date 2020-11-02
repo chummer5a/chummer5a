@@ -146,7 +146,7 @@ namespace Chummer
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_upDownButtons.Visible == false)
+            if (!_upDownButtons.Visible)
             {
                 e.Graphics.Clear(BackColor);
             }

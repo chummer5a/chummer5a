@@ -963,7 +963,6 @@ namespace ChummerHub.Client.Backend
                                 PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                             });
                         }
-                       
                     }
                 }
                 catch (HttpOperationException ex)

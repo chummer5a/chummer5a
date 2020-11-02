@@ -157,10 +157,9 @@ namespace Chummer
                 if (!_workerRefresher.IsBusy)
                     _workerRefresher.RunWorkerAsync();
             }
-            else if (_blnQueueOutputGeneratorRun)
+            else if (_blnQueueOutputGeneratorRun && !_workerOutputGenerator.IsBusy)
             {
-                if (!_workerOutputGenerator.IsBusy)
-                    _workerOutputGenerator.RunWorkerAsync();
+                _workerOutputGenerator.RunWorkerAsync();
             }
         }
 

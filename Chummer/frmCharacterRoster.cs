@@ -136,7 +136,6 @@ namespace Chummer
                 {
                     treCharacterList.Nodes.Clear();
                     LoadCharacters(true, true, true, false);
-                    GC.Collect();
                 }
                 catch (ObjectDisposedException)
                 {

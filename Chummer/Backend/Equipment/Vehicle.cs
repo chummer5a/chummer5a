@@ -1395,14 +1395,9 @@ namespace Chummer.Backend.Equipment
 
                 // Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
                 // The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
-                foreach (Gear objGear in Gear)
-                {
-                    if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
-                    {
-                        objGear.Rating = Math.Max(intSensor, 0);
-                    }
-                    break;
-                }
+                Gear objGear = Gear.FirstOrDefault(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                if (objGear != null)
+                    objGear.Rating = Math.Max(intSensor, 0);
 
                 return intSensor;
             }

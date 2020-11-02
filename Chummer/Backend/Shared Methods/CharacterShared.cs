@@ -98,6 +98,11 @@ namespace Chummer
                 Control = objControl;
             }
 
+            public bool Equals(TransportWrapper other)
+            {
+                return Control.Equals(other.Control);
+            }
+
             public override bool Equals(object obj)
             {
                 return Control.Equals(obj);
@@ -131,11 +136,6 @@ namespace Chummer
             public override string ToString()
             {
                 return Control.ToString();
-            }
-
-            public bool Equals(TransportWrapper other)
-            {
-                return Control.Equals(other.Control);
             }
         }
 
@@ -2903,20 +2903,6 @@ namespace Chummer
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        {
-                            foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
-                            {
-                                treGear.FindNodeByTag(d)?.Remove();
-                            }
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                AddToTree(d, intNewIndex);
-                                intNewIndex += 1;
-                            }
-                            treGear.SelectedNode = treGear.FindNode(strSelectedId);
-                        }
-                        break;
                     case NotifyCollectionChangedAction.Move:
                         {
                             foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
@@ -3116,8 +3102,10 @@ namespace Chummer
                                 Tag = "Node_UnequippedModularCyberware",
                                 Text = LanguageManager.GetString("Node_UnequippedModularCyberware")
                             };
-                            treCyberware.Nodes.Insert(objBiowareRoot == null && objCyberwareRoot == null ? 0 :
-                                (objBiowareRoot == null) != (objCyberwareRoot == null) ? 1 : 2, objModularRoot);
+                            int intIndex = 0;
+                            if (objBiowareRoot != null || objCyberwareRoot != null)
+                                intIndex = objBiowareRoot != null && objCyberwareRoot != null ? 2 : 1;
+                            treCyberware.Nodes.Insert(intIndex, objModularRoot);
                             objModularRoot.Expand();
                         }
                         nodParent = objModularRoot;
@@ -6490,23 +6478,19 @@ namespace Chummer
                         }
 
 
-                        bool blnMatchFound = false;
+                        Gear objExistingGear = null;
                         // If this is Ammunition, see if the character already has it on them.
                         if (objGear.Category == "Ammunition" && frmPickGear.Stack)
                         {
-                            foreach (Gear objVehicleGear in objSelectedVehicle.Gear.Where(objVehicleGear =>
-                                objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
-                                objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                                objVehicleGear.Children.SequenceEqual(objGear.Children)))
-                            {
-                                // A match was found, so increase the quantity instead.
-                                objVehicleGear.Quantity += objGear.Quantity;
-                                blnMatchFound = true;
-                                break;
-                            }
+                            objExistingGear = objSelectedVehicle.Gear.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                         }
 
-                        if (!blnMatchFound)
+                        if (objExistingGear != null)
+                        {
+                            // A match was found, so increase the quantity instead.
+                            objExistingGear.Quantity += objGear.Quantity;
+                        }
+                        else
                         {
                             // Add the Gear to the Vehicle.
                             objLocation?.Children.Add(objGear);

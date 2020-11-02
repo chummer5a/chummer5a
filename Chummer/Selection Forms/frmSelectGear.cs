@@ -1064,10 +1064,10 @@ namespace Chummer
                 decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
-                if (!blnDoUIUpdate ||
-                    ((!chkHideOverAvailLimit.Checked || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier) &&
-                    (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                    objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))))
+                if (!blnDoUIUpdate || !chkHideOverAvailLimit.Checked || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier)
+                    && (chkFreeItem.Checked
+                        || !chkShowOnlyAffordItems.Checked
+                        || objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
                     string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 

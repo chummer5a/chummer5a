@@ -5239,66 +5239,64 @@ namespace Chummer.Backend.Equipment
                     objCyberware.Location = Location;
                 }
 
-                if (objCyberware.SourceType != SourceType) return true;
+                if (objCyberware.SourceType != SourceType)
+                    return true;
+                string strAllowedSubsystems = AllowedSubsystems;
+                if (!string.IsNullOrEmpty(strAllowedSubsystems))
                 {
-                    string strAllowedSubsystems = AllowedSubsystems;
-                    if (!string.IsNullOrEmpty(strAllowedSubsystems))
-                    {
-                        return strAllowedSubsystems.SplitNoAlloc(',')
-                            .All(strSubsystem => objCyberware.Category != strSubsystem);
-                    }
+                    return strAllowedSubsystems.SplitNoAlloc(',')
+                        .All(strSubsystem => objCyberware.Category != strSubsystem);
+                }
 
-                    if (string.IsNullOrEmpty(objCyberware.HasModularMount) &&
-                        string.IsNullOrEmpty(objCyberware.BlocksMounts)) return true;
-                    HashSet<string> setDisallowedMounts = new HashSet<string>();
-                    HashSet<string> setHasMounts = new HashSet<string>();
-                    foreach (string strLoop in BlocksMounts.SplitNoAlloc(','))
-                        setDisallowedMounts.Add(strLoop + Location);
-                    string strLoopHasModularMount = HasModularMount;
-                    if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                if (string.IsNullOrEmpty(objCyberware.HasModularMount) &&
+                    string.IsNullOrEmpty(objCyberware.BlocksMounts)) return true;
+                HashSet<string> setDisallowedMounts = new HashSet<string>();
+                HashSet<string> setHasMounts = new HashSet<string>();
+                foreach (string strLoop in BlocksMounts.SplitNoAlloc(','))
+                    setDisallowedMounts.Add(strLoop + Location);
+                string strLoopHasModularMount = HasModularMount;
+                if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                    setHasMounts.Add(strLoopHasModularMount);
+                foreach (Cyberware objLoopCyberware in Children.DeepWhere(
+                    x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                {
+                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(','))
+                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                    strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                    if (string.IsNullOrEmpty(strLoopHasModularMount)) continue;
+                    if (!setHasMounts.Contains(strLoopHasModularMount))
                         setHasMounts.Add(strLoopHasModularMount);
-                    foreach (Cyberware objLoopCyberware in Children.DeepWhere(
-                        x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
-                    {
-                        foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(','))
-                            if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
-                        strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                        if (string.IsNullOrEmpty(strLoopHasModularMount)) continue;
-                        if (!setHasMounts.Contains(strLoopHasModularMount))
-                            setHasMounts.Add(strLoopHasModularMount);
-                    }
+                }
 
-                    if (!string.IsNullOrEmpty(objCyberware.HasModularMount) &&
-                        setDisallowedMounts.Count > 0)
+                if (!string.IsNullOrEmpty(objCyberware.HasModularMount) &&
+                    setDisallowedMounts.Count > 0)
+                {
+                    foreach (string strLoop in setDisallowedMounts)
                     {
-                        foreach (string strLoop in setDisallowedMounts)
+                        if (strLoop.EndsWith("Right", StringComparison.Ordinal))
+                            continue;
+                        string strCheck = strLoop;
+                        if (strCheck.EndsWith("Left", StringComparison.Ordinal))
                         {
-                            if (strLoop.EndsWith("Right", StringComparison.Ordinal))
+                            strCheck = strCheck.TrimEndOnce("Left", true);
+                            if (!setDisallowedMounts.Contains(strCheck + "Right"))
                                 continue;
-                            string strCheck = strLoop;
-                            if (strCheck.EndsWith("Left", StringComparison.Ordinal))
-                            {
-                                strCheck = strCheck.TrimEndOnce("Left", true);
-                                if (!setDisallowedMounts.Contains(strCheck + "Right"))
-                                    continue;
-                            }
+                        }
 
-                            if (strCheck == objCyberware.HasModularMount)
-                            {
-                                return false;
-                            }
+                        if (strCheck == objCyberware.HasModularMount)
+                        {
+                            return false;
                         }
                     }
-
-                    if (string.IsNullOrEmpty(objCyberware.BlocksMounts)) return true;
-                    {
-                        if (string.IsNullOrEmpty(objCyberware.Location) && string.IsNullOrEmpty(Location) &&
-                            (Children.All(x => x.Location != "Left") || Children.All(x => x.Location != "Right")))
-                            return true;
-                        return objCyberware.BlocksMounts.SplitNoAlloc(',').All(strLoop => !setHasMounts.Contains(strLoop));
-                    }
                 }
+
+                if (string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                    return true;
+                if (string.IsNullOrEmpty(objCyberware.Location) && string.IsNullOrEmpty(Location) &&
+                    (Children.All(x => x.Location != "Left") || Children.All(x => x.Location != "Right")))
+                    return true;
+                return objCyberware.BlocksMounts.SplitNoAlloc(',').All(strLoop => !setHasMounts.Contains(strLoop));
             }
 
             return true;

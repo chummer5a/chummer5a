@@ -112,6 +112,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public override bool IsKnowledgeSkill => true;
+
         public override bool AllowDelete => (!ForcedName || FreeBase + FreeKarma + RatingModifiers(Attribute) == 0) && !IsNativeLanguage;
 
         public override bool AllowNameChange => !ForcedName && (AllowUpgrade || IsNativeLanguage) && (!CharacterObject.Created || (Karma == 0 && Base == 0 && !IsNativeLanguage));

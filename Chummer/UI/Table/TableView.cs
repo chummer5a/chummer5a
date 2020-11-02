@@ -38,7 +38,7 @@ namespace Chummer.UI.Table
                 _table = table;
             }
 
-            public override bool Layout(object objContainer, LayoutEventArgs layoutEventArgs)
+            public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 _table.SuspendLayout();
                 Span<int> widths = _table._columns.Count > GlobalOptions.MaxStackLimit

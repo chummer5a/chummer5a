@@ -1832,14 +1832,6 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.ArmorMod:
-                    {
-                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
-                        if (xmlAddonCategoryList?.Count > 0)
-                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
-
-                        return false;
-                    }
                     case ClipboardContentType.Gear:
                     {
                         var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");

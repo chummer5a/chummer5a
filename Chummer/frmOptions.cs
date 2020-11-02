@@ -146,19 +146,6 @@ namespace Chummer
             _characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
             _characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
             _characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
-            try
-            {
-                _characterOptions.FreeContactsMultiplier = decimal.ToInt32(nudContactMultiplier.Value);
-                _characterOptions.EssenceDecimals = decimal.ToInt32(nudEssenceDecimals.Value);
-                _characterOptions.DroneArmorMultiplier = decimal.ToInt32(nudDroneArmorMultiplier.Value);
-                _characterOptions.FreeKnowledgeMultiplier = decimal.ToInt32(nudKnowledgeMultiplier.Value);
-                _characterOptions.MetatypeCostsKarmaMultiplier = decimal.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
-                _characterOptions.NuyenPerBP = decimal.ToInt32(nudKarmaNuyenPer.Value);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                Log.Error(ex.Message);
-            }
 
             _characterOptions.DontRoundEssenceInternally = chkDontRoundEssenceInternally.Checked;
             _characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
@@ -235,6 +222,13 @@ namespace Chummer
 
             try
             {
+                _characterOptions.FreeContactsMultiplier = decimal.ToInt32(nudContactMultiplier.Value);
+                _characterOptions.EssenceDecimals = decimal.ToInt32(nudEssenceDecimals.Value);
+                _characterOptions.DroneArmorMultiplier = decimal.ToInt32(nudDroneArmorMultiplier.Value);
+                _characterOptions.FreeKnowledgeMultiplier = decimal.ToInt32(nudKnowledgeMultiplier.Value);
+                _characterOptions.MetatypeCostsKarmaMultiplier = decimal.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
+                _characterOptions.NuyenPerBP = decimal.ToInt32(nudKarmaNuyenPer.Value);
+
                 StringBuilder objNuyenFormat = new StringBuilder("#,0");
                 int intNuyenDecimalPlacesMaximum = decimal.ToInt32(nudNuyenDecimalsMaximum.Value);
                 int intNuyenDecimalPlacesMinimum = decimal.ToInt32(nudNuyenDecimalsMinimum.Value);
@@ -576,12 +570,10 @@ namespace Chummer
             SetToolTips();
 
             string strSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
-            if(strSheetLanguage != _strSelectedLanguage)
+            if(strSheetLanguage != _strSelectedLanguage
+               && cboSheetLanguage.Items.Cast<ListItem>().Any(x => x.Value.ToString() == _strSelectedLanguage))
             {
-                if(cboSheetLanguage.Items.Cast<ListItem>().Any(x => x.Value.ToString() == _strSelectedLanguage))
-                {
-                    cboSheetLanguage.SelectedValue = _strSelectedLanguage;
-                }
+                cboSheetLanguage.SelectedValue = _strSelectedLanguage;
             }
 
             PopulatePDFParameters();
@@ -2087,18 +2079,17 @@ namespace Chummer
             if (_blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging) ((ListItem) cboUseLoggingApplicationInsights.SelectedItem).Value;
-            if (useAI > UseAILogging.Info && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info)
-            {
-                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
+            if (useAI > UseAILogging.Info
+                && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info
+                && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(),
                     LanguageManager.GetString("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
-                {
-                    _blnLoading = true;
-                    cboUseLoggingApplicationInsights.SelectedItem = UseAILogging.Info;
-                    _blnLoading = false;
-                    return;
-                }
+            {
+                _blnLoading = true;
+                cboUseLoggingApplicationInsights.SelectedItem = UseAILogging.Info;
+                _blnLoading = false;
+                return;
             }
             OptionsChanged(sender, e);
         }
