@@ -5030,7 +5030,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\scroll_pane_text.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\scroll_pane_text_image.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\scroll_pane_tree.png" />
-    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\scull.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\skull.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\sd_memory_adapter.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\search_accounts.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\search_field.png" />
@@ -8959,7 +8959,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\scroll_pane_text.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\scroll_pane_text_image.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\scroll_pane_tree.ico" />
-    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\scull.ico" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\skull.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\sd_memory_adapter.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\search_accounts.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\search_field.ico" />
@@ -12888,7 +12888,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\scroll_pane_text.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\scroll_pane_text_image.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\scroll_pane_tree.png" />
-    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\scull.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\skull.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\sd_memory_adapter.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\search_accounts.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\search_field.png" />
@@ -16817,7 +16817,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\scroll_pane_text.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\scroll_pane_text_image.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\scroll_pane_tree.ico" />
-    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\scull.ico" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\skull.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\sd_memory_adapter.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\search_accounts.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\search_field.ico" />
