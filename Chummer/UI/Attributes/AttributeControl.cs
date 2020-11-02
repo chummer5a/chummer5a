@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -23,6 +24,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
+using Chummer.Properties;
 
 namespace Chummer.UI.Attributes
 {
@@ -37,6 +39,11 @@ namespace Chummer.UI.Attributes
         private readonly Character _objCharacter;
         private readonly BindingSource _dataSource;
 
+        private readonly NumericUpDownEx nudKarma;
+        private readonly NumericUpDownEx nudBase;
+        private readonly ButtonWithToolTip cmdBurnEdge;
+        private readonly ButtonWithToolTip cmdImproveATT;
+
         public AttributeControl(CharacterAttrib attribute)
         {
             if (attribute == null)
@@ -48,6 +55,7 @@ namespace Chummer.UI.Attributes
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
+            SuspendLayout();
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
             _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
@@ -57,24 +65,75 @@ namespace Chummer.UI.Attributes
             lblValue.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
             if (_objCharacter.Created)
             {
-                nudBase.Visible = false;
-                nudKarma.Visible = false;
-
+                cmdImproveATT = new ButtonWithToolTip
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Image = Resources.add,
+                    Margin = new Padding(3, 0, 3, 0),
+                    MinimumSize = new Size(24, 24),
+                    Name = "cmdImproveATT",
+                    UseVisualStyleBackColor = true
+                };
+                cmdImproveATT.Click += cmdImproveATT_Click;
                 cmdImproveATT.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
                 cmdImproveATT.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
-                cmdBurnEdge.Visible = AttributeName == "EDG";
-                cmdBurnEdge.ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge");
+                cmdImproveATT.UpdateLightDarkMode();
+                cmdImproveATT.TranslateWinForm();
+                flpRight.Controls.Add(cmdImproveATT);
+                if (AttributeName == "EDG")
+                {
+                    cmdBurnEdge = new ButtonWithToolTip
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                        Image = Resources.fire,
+                        Margin = new Padding(3, 0, 3, 0),
+                        MinimumSize = new Size(24, 24),
+                        Name = "cmdBurnEdge",
+                        ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge"),
+                        UseVisualStyleBackColor = true
+                    };
+                    cmdBurnEdge.Click += cmdBurnEdge_Click;
+                    cmdBurnEdge.UpdateLightDarkMode();
+                    cmdBurnEdge.TranslateWinForm();
+                    flpRight.Controls.Add(cmdBurnEdge);
+                }
             }
             else
             {
-                cmdImproveATT.Visible = false;
-                cmdBurnEdge.Visible = false;
-
                 while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
                     _objAttribute.Base -= 1;
                 // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
                 if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
                     _objAttribute.Karma = _objAttribute.KarmaMaximum;
+
+                nudKarma = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    MinimumSize = new Size(35, 0),
+                    Name = "nudKarma"
+                };
+                nudKarma.BeforeValueIncrement += nudKarma_BeforeValueIncrement;
+                nudKarma.ValueChanged += nudKarma_ValueChanged;
+                nudBase = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    MinimumSize = new Size(35, 0),
+                    Name = "nudBase"
+                };
+                nudBase.BeforeValueIncrement += nudBase_BeforeValueIncrement;
+                nudBase.ValueChanged += nudBase_ValueChanged;
 
                 nudBase.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
                 nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
@@ -85,7 +144,17 @@ namespace Chummer.UI.Attributes
                 nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
                 nudKarma.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
                 nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode));
+
+                nudBase.UpdateLightDarkMode();
+                nudBase.TranslateWinForm();
+                nudKarma.UpdateLightDarkMode();
+                nudKarma.TranslateWinForm();
+
+                flpRight.Controls.Add(nudKarma);
+                flpRight.Controls.Add(nudBase);
             }
+
+            ResumeLayout();
         }
 
         private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -109,7 +178,7 @@ namespace Chummer.UI.Attributes
                     lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
             }
 
-            if (nudKarma.Visible && nudBase.Visible && intNudKarmaWidth >= 0)
+            if (nudKarma?.Visible == true && nudBase?.Visible == true && intNudKarmaWidth >= 0)
             {
                 nudKarma.Margin = new Padding(
                     nudKarma.Margin.Right + Math.Max(intNudKarmaWidth - nudKarma.Width, 0),

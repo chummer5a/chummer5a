@@ -16,12 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Skills;
+using Chummer.Properties;
 
 namespace Chummer.UI.Skills
 {
@@ -31,6 +33,15 @@ namespace Chummer.UI.Skills
         private readonly KnowledgeSkill _skill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Graphics _objGraphics;
+        private readonly NumericUpDownEx nudKarma;
+        private readonly NumericUpDownEx nudSkill;
+        private readonly Label lblRating;
+        private readonly ButtonWithToolTip btnCareerIncrease;
+        private readonly ColorableCheckBox chkNativeLanguage;
+        private readonly ElasticComboBox cboSpec;
+        private readonly ColorableCheckBox chkKarma;
+        private readonly Label lblSpec;
+        private readonly ButtonWithToolTip btnAddSpec;
 
         public KnowledgeSkillControl(KnowledgeSkill skill)
         {
@@ -44,6 +55,8 @@ namespace Chummer.UI.Skills
             KnowledgeSkillControl_DpiChangedAfterParent(null, EventArgs.Empty);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+
+            SuspendLayout();
 
             lblModifiedRating.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.DisplayPool));
             lblModifiedRating.DoOneWayDataBinding("ToolTipText", _skill, nameof(KnowledgeSkill.PoolToolTip));
@@ -76,32 +89,98 @@ namespace Chummer.UI.Skills
 
             if (_skill.CharacterObject.Created)
             {
-                nudSkill.Visible = false;
-                nudKarma.Visible = false;
-                chkNativeLanguage.Visible = false;
-                cboSpec.Visible = false;
-                chkKarma.Visible = false;
+                lblRating = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    MinimumSize = new Size((int) (25 * _objGraphics.DpiX / 96.0f), 0),
+                    Name = "lblRating",
+                    Text = "00",
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                btnCareerIncrease = new ButtonWithToolTip
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Image = Resources.add,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "btnCareerIncrease",
+                    Padding = new Padding(1),
+                    UseVisualStyleBackColor = true
+                };
+                btnCareerIncrease.Click += btnCareerIncrease_Click;
 
                 lblRating.DoOneWayNegatableDatabinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
                 lblRating.DoOneWayDataBinding("Text", _skill, nameof(Skill.Rating));
-                lblSpec.DoOneWayNegatableDatabinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
-                lblSpec.DoOneWayDataBinding("Text", _skill, nameof(Skill.CurrentDisplaySpecialization));
 
                 btnCareerIncrease.DoOneWayDataBinding("Visible", _skill, nameof(KnowledgeSkill.AllowUpgrade));
                 btnCareerIncrease.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanUpgradeCareer));
                 btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.UpgradeToolTip));
 
+                lblRating.UpdateLightDarkMode();
+                lblRating.TranslateWinForm();
+                btnCareerIncrease.UpdateLightDarkMode();
+                btnCareerIncrease.TranslateWinForm();
+                tlpMain.Controls.Add(lblRating, 1, 0);
+                tlpMain.Controls.Add(btnCareerIncrease, 2, 0);
+
+                lblSpec = new Label
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    Name = "lblSpec",
+                    Text = "[SPEC]",
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                btnAddSpec = new ButtonWithToolTip
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Image = Resources.add,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "btnAddSpec",
+                    Padding = new Padding(1),
+                    UseVisualStyleBackColor = true
+                };
+                btnAddSpec.Click += btnAddSpec_Click;
+
+                lblSpec.DoOneWayNegatableDatabinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
+                lblSpec.DoOneWayDataBinding("Text", _skill, nameof(Skill.CurrentDisplaySpecialization));
+
                 btnAddSpec.DoOneWayDataBinding("Visible", _skill, nameof(Skill.CanHaveSpecs));
                 btnAddSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanAffordSpecialization));
                 btnAddSpec.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.AddSpecToolTip));
+
+                lblSpec.UpdateLightDarkMode();
+                lblSpec.TranslateWinForm();
+                btnAddSpec.UpdateLightDarkMode();
+                btnAddSpec.TranslateWinForm();
+                tlpMiddle.SetColumnSpan(lblSpec, 2);
+                tlpMiddle.Controls.Add(lblSpec, 1, 0);
+                tlpMiddle.Controls.Add(btnAddSpec, 3, 0);
             }
             else
             {
-                lblRating.Visible = false;
-                btnCareerIncrease.Visible = false;
-                lblSpec.Visible = false;
-                btnAddSpec.Visible = false;
-                chkKarma.Visible = false;
+                nudSkill = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 2, 3, 2),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Name = "nudSkill"
+                };
+                nudKarma = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 2, 3, 2),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Name = "nudKarma"
+                };
 
                 nudSkill.DoOneWayDataBinding("Visible", _skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 nudSkill.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
@@ -110,6 +189,42 @@ namespace Chummer.UI.Skills
                 nudKarma.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
                 nudKarma.DoDatabinding("Value", _skill, nameof(Skill.Karma));
                 nudKarma.DoOneWayDataBinding("InterceptMouseWheel", _skill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+
+                nudSkill.UpdateLightDarkMode();
+                nudSkill.TranslateWinForm();
+                nudKarma.UpdateLightDarkMode();
+                nudKarma.TranslateWinForm();
+                tlpMain.Controls.Add(nudSkill, 1, 0);
+                tlpMain.Controls.Add(nudKarma, 2, 0);
+
+                chkNativeLanguage = new ColorableCheckBox(components)
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    DefaultColorScheme = true,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "chkNativeLanguage",
+                    Tag = "Skill_NativeLanguageLong",
+                    Text = "Native",
+                    UseVisualStyleBackColor = true
+                };
+                cboSpec = new ElasticComboBox
+                {
+                    Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                    AutoCompleteMode = AutoCompleteMode.Suggest,
+                    FormattingEnabled = true,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "cboSpec",
+                    TabStop = false
+                };
+                chkKarma = new ColorableCheckBox(components)
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    DefaultColorScheme = true,
+                    Name = "chkKarma",
+                    UseVisualStyleBackColor = true
+                };
 
                 chkNativeLanguage.DoOneWayDataBinding("Visible", _skill, nameof(Skill.IsLanguage));
                 chkNativeLanguage.Enabled = _skill.IsNativeLanguage || _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
@@ -124,8 +239,19 @@ namespace Chummer.UI.Skills
                 cboSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
                 cboSpec.DoDatabinding("Text", _skill, nameof(Skill.Specialization));
                 cboSpec.EndUpdate();
+
                 chkKarma.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
                 chkKarma.DoDatabinding("Checked", _skill, nameof(Skill.BuyWithKarma));
+
+                chkNativeLanguage.UpdateLightDarkMode();
+                chkNativeLanguage.TranslateWinForm();
+                cboSpec.UpdateLightDarkMode();
+                cboSpec.TranslateWinForm();
+                chkKarma.UpdateLightDarkMode();
+                chkKarma.TranslateWinForm();
+                tlpMiddle.Controls.Add(chkNativeLanguage, 1, 0);
+                tlpMiddle.Controls.Add(cboSpec, 2, 0);
+                tlpMiddle.Controls.Add(chkKarma, 3, 0);
             }
 
             if (_skill.ForcedName)
@@ -133,13 +259,15 @@ namespace Chummer.UI.Skills
                 this.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.Enabled));
             }
 
+            ResumeLayout();
+
             _skill.PropertyChanged += Skill_PropertyChanged;
             _skill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
         }
 
         private void OnSkillsSectionPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SkillsSection.HasAvailableNativeLanguageSlots) && !_skill.CharacterObject.Created)
+            if (e.PropertyName == nameof(SkillsSection.HasAvailableNativeLanguageSlots) && chkNativeLanguage != null)
             {
                 chkNativeLanguage.Enabled = _skill.IsNativeLanguage || _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
             }
@@ -154,7 +282,7 @@ namespace Chummer.UI.Skills
                     blnAll = true;
                     goto case nameof(Skill.CGLSpecializations);
                 case nameof(Skill.CGLSpecializations):
-                    if (!_skill.CharacterObject.Created)
+                    if (cboSpec != null)
                     {
                         string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
                         cboSpec.BeginUpdate();
@@ -183,7 +311,7 @@ namespace Chummer.UI.Skills
                         goto case nameof(Skill.IsNativeLanguage);
                     break;
                 case nameof(Skill.IsNativeLanguage):
-                    if (!_skill.CharacterObject.Created)
+                    if (chkNativeLanguage != null)
                         chkNativeLanguage.Enabled = _skill.IsNativeLanguage || _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                     break;
             }
@@ -272,9 +400,7 @@ namespace Chummer.UI.Skills
         public int NameWidth => tlpLeft.Width - (lblName.Visible ? lblName.Margin.Left + lblName.Margin.Right : cboName.Margin.Left + cboName.Margin.Right);
 
         [UsedImplicitly]
-        public int NudSkillWidth => !_skill.CharacterObject.Created && _skill.AllowUpgrade && _skill.CharacterObject.SkillsSection.HasKnowledgePoints
-            ? nudSkill.Width
-            : 0;
+        public int NudSkillWidth => nudSkill?.Visible == true ? nudSkill.Width : 0;
 
         [UsedImplicitly]
         public int RightButtonsWidth => tlpRight.Width;
@@ -325,7 +451,8 @@ namespace Chummer.UI.Skills
 
         private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            lblRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
+            if (lblRating != null)
+                lblRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
             lblModifiedRating.MinimumSize = new Size((int)(50 * _objGraphics.DpiX / 96.0f), 0);
         }
 
