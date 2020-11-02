@@ -32,8 +32,8 @@ namespace Chummer.UI.Attributes
             this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblValue = new Chummer.LabelWithToolTip();
             this.lblLimits = new Chummer.LabelWithToolTip();
+            this.lblValue = new Chummer.LabelWithToolTip();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpRight.SuspendLayout();
             this.tlpMain.SuspendLayout();
@@ -66,6 +66,19 @@ namespace Chummer.UI.Attributes
             this.flpRight.TabIndex = 76;
             this.flpRight.WrapContents = false;
             // 
+            // lblLimits
+            // 
+            this.lblLimits.AutoSize = true;
+            this.lblLimits.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblLimits.Location = new System.Drawing.Point(59, 0);
+            this.lblLimits.MinimumSize = new System.Drawing.Size(65, 0);
+            this.lblLimits.Name = "lblLimits";
+            this.lblLimits.Size = new System.Drawing.Size(65, 13);
+            this.lblLimits.TabIndex = 72;
+            this.lblLimits.Text = "00 / 00 (00)";
+            this.lblLimits.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblLimits.ToolTipText = null;
+            // 
             // lblValue
             // 
             this.lblValue.AutoSize = true;
@@ -79,19 +92,6 @@ namespace Chummer.UI.Attributes
             this.lblValue.Text = "00 (00)";
             this.lblValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblValue.ToolTipText = null;
-            // 
-            // lblLimits
-            // 
-            this.lblLimits.AutoSize = true;
-            this.lblLimits.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLimits.Location = new System.Drawing.Point(59, 0);
-            this.lblLimits.MinimumSize = new System.Drawing.Size(65, 0);
-            this.lblLimits.Name = "lblLimits";
-            this.lblLimits.Size = new System.Drawing.Size(65, 13);
-            this.lblLimits.TabIndex = 72;
-            this.lblLimits.Text = "00 / 00 (00)";
-            this.lblLimits.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblLimits.ToolTipText = null;
             // 
             // tlpMain
             // 
