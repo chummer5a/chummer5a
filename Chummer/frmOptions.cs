@@ -878,7 +878,6 @@ namespace Chummer
             GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
             GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
-            GlobalOptions.OmaeEnabled = chkOmaeEnabled.Checked;
             GlobalOptions.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
             GlobalOptions.Dronemods = chkDronemods.Checked;
             GlobalOptions.DronemodsMaximumPilot = chkDronemodsMaximumPilot.Checked;
@@ -925,7 +924,6 @@ namespace Chummer
                     objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
                     objRegistry.SetValue("pdfparameters", cboPDFParameters.SelectedValue.ToString());
                     objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString(GlobalOptions.InvariantCultureInfo));
-                    objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("dronemodsPilot", chkDronemodsMaximumPilot.Checked.ToString(GlobalOptions.InvariantCultureInfo));
@@ -1538,7 +1536,6 @@ namespace Chummer
             PopulateColorModes();
 
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
-            chkOmaeEnabled.Checked = GlobalOptions.OmaeEnabled;
             chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
             chkStartupFullscreen.Checked = GlobalOptions.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.SingleDiceRoller;
@@ -1604,35 +1601,12 @@ namespace Chummer
             return lstSheets;
         }
 
-        private static List<ListItem> GetXslFilesFromOmaeDirectory(string strLanguage)
-        {
-            List<ListItem> lstItems = new List<ListItem>(5);
-
-            // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
-            string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", strLanguage);
-
-            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
-            // (hidden because they are partial templates that cannot be used on their own).
-            foreach(string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
-            {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + fileName));
-            }
-
-            return lstItems;
-        }
-
         private void PopulateXsltList()
         {
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2));
 
             List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
-            if(GlobalOptions.OmaeEnabled)
-            {
-                foreach(ListItem objFile in GetXslFilesFromOmaeDirectory(strSelectedSheetLanguage))
-                    lstFiles.Add(objFile);
-            }
 
             string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
             // Strip away the language prefix
@@ -1794,18 +1768,6 @@ namespace Chummer
             if(Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                 chkLifeModule.Checked = false;
-            else
-            {
-                OptionsChanged(sender, e);
-            }
-        }
-
-        private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!chkOmaeEnabled.Checked || _blnLoading) return;
-            if(Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), Application.ProductName,
-                   MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
-                chkOmaeEnabled.Checked = false;
             else
             {
                 OptionsChanged(sender, e);

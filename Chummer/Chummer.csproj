@@ -346,7 +346,6 @@
     <Compile Include="Classes\clsLanguageManager.cs" />
     <Compile Include="Classes\clsListItems.cs" />
     <Compile Include="Classes\clsLog.cs" />
-    <Compile Include="Classes\clsOmaeHelper.cs" />
     <Compile Include="Classes\clsOptions.cs" />
     <Compile Include="Classes\clsParameterAttribute.cs" />
     <Compile Include="Classes\clsStoryBuilder.cs" />
@@ -873,48 +872,6 @@
     <Compile Include="frmNotes.Designer.cs">
       <DependentUpon>frmNotes.cs</DependentUpon>
     </Compile>
-    <None Include="Omae\frmOmae.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Omae\frmOmae.Designer.cs">
-      <DependentUpon>frmOmae.cs</DependentUpon>
-    </None>
-    <None Include="Omae\frmOmaeAccount.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Omae\frmOmaeAccount.Designer.cs">
-      <DependentUpon>frmOmaeAccount.cs</DependentUpon>
-    </None>
-    <None Include="Omae\frmOmaeCompress.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Omae\frmOmaeCompress.Designer.cs">
-      <DependentUpon>frmOmaeCompress.cs</DependentUpon>
-    </None>
-    <None Include="Omae\frmOmaeUpload.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Omae\frmOmaeUpload.Designer.cs">
-      <DependentUpon>frmOmaeUpload.cs</DependentUpon>
-    </None>
-    <None Include="Omae\frmOmaeUploadData.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Omae\frmOmaeUploadData.Designer.cs">
-      <DependentUpon>frmOmaeUploadData.cs</DependentUpon>
-    </None>
-    <None Include="Omae\frmOmaeUploadLanguage.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Omae\frmOmaeUploadLanguage.Designer.cs">
-      <DependentUpon>frmOmaeUploadLanguage.cs</DependentUpon>
-    </None>
-    <None Include="Omae\frmOmaeUploadSheet.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Omae\frmOmaeUploadSheet.Designer.cs">
-      <DependentUpon>frmOmaeUploadSheet.cs</DependentUpon>
-    </None>
     <None Include="frmPlayerDashboard.cs">
       <SubType>Form</SubType>
     </None>
@@ -1222,27 +1179,11 @@
     <Compile Include="Controls\InitiativeUserControl.Designer.cs">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </Compile>
-    <None Include="Omae\OmaeRecord.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="Omae\OmaeRecord.Designer.cs">
-      <DependentUpon>OmaeRecord.cs</DependentUpon>
-    </None>
     <Compile Include="Controls\PetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Service References\OmaeService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Service References\TranslationService\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Character Creation\frmCreate.cs">
@@ -1426,28 +1367,6 @@
     <EmbeddedResource Include="frmNotes.resx">
       <DependentUpon>frmNotes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Omae\frmOmae.resx">
-      <DependentUpon>frmOmae.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Omae\frmOmaeAccount.resx">
-      <DependentUpon>frmOmaeAccount.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Omae\frmOmaeCompress.resx">
-      <DependentUpon>frmOmaeCompress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Omae\frmOmaeUpload.resx">
-      <DependentUpon>frmOmaeUpload.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Omae\frmOmaeUploadData.resx">
-      <DependentUpon>frmOmaeUploadData.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Omae\frmOmaeUploadLanguage.resx">
-      <DependentUpon>frmOmaeUploadLanguage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Omae\frmOmaeUploadSheet.resx">
-      <DependentUpon>frmOmaeUploadSheet.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmPlayerDashboard.resx">
       <DependentUpon>frmPlayerDashboard.cs</DependentUpon>
     </EmbeddedResource>
@@ -1601,9 +1520,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InitiativeUserControl.resx">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Omae\OmaeRecord.resx">
-      <DependentUpon>OmaeRecord.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
@@ -1820,8 +1736,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Service References\OmaeService\omae.wsdl" />
-    <None Include="Service References\TranslationService\translation.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -1847,43 +1761,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="chummer.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\OmaeService\" />
-    <WCFMetadataStorage Include="Service References\TranslationService\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OmaeService\omae.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OmaeService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OmaeService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OmaeService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\TranslationService\translation.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\TranslationService\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\TranslationService\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\TranslationService\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Backend\Improvements\ImprovementMethods.tt">

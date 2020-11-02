@@ -75,7 +75,6 @@ namespace Chummer
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuToolsTranslator = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHeroLabImporter = new System.Windows.Forms.ToolStripMenuItem();
@@ -464,7 +463,6 @@ namespace Chummer
             this.optionsToolStripMenuItem,
             this.mnuToolsUpdate,
             this.mnuRestart,
-            this.mnuToolsOmae,
             this.toolStripSeparator6,
             this.mnuToolsTranslator,
             this.mnuHeroLabImporter});
@@ -513,14 +511,6 @@ namespace Chummer
             this.mnuRestart.Tag = "Button_Update_RestartChummer";
             this.mnuRestart.Text = "Restart Chummer";
             this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
-            // 
-            // mnuToolsOmae
-            // 
-            this.mnuToolsOmae.Name = "mnuToolsOmae";
-            this.mnuToolsOmae.Size = new System.Drawing.Size(180, 22);
-            this.mnuToolsOmae.Tag = "Menu_Main_Omae";
-            this.mnuToolsOmae.Text = "Omae";
-            this.mnuToolsOmae.Click += new System.EventHandler(this.mnuToolsOmae_Click);
             // 
             // toolStripSeparator6
             // 
@@ -901,7 +891,6 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabForms;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsDiceRoller;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem mnuToolsOmae;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpDumpshock;
         private System.Windows.Forms.ToolStripMenuItem mnuClearUnpinnedItems;
         private System.Windows.Forms.ToolStripMenuItem mnuRestart;

@@ -286,12 +286,6 @@ namespace Chummer
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(new XoRoShiRo128starstar());
 
-        // Omae Information.
-        private static bool _omaeEnabled;
-        private static string _strOmaeUserName = string.Empty;
-        private static string _strOmaePassword = string.Empty;
-        private static bool _blnOmaeAutoLogin;
-
         // Plugins information
         public static Dictionary<string, bool> PluginsEnabledDic { get; } = new Dictionary<string, bool>();
 
@@ -448,7 +442,6 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnLiveCustomData, "livecustomdata");
             LoadBoolFromRegistry(ref _blnLiveUpdateCleanCharacterFiles, "liveupdatecleancharacterfiles");
             LoadBoolFromRegistry(ref _lifeModuleEnabled, "lifemodule");
-            LoadBoolFromRegistry(ref _omaeEnabled, "omaeenabled");
 
             // Whether or not the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
@@ -519,13 +512,6 @@ namespace Chummer
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
 
-            // Omae Settings.
-            // Username.
-            LoadStringFromRegistry(ref _strOmaeUserName, "omaeusername");
-            // Password.
-            LoadStringFromRegistry(ref _strOmaePassword, "omaepassword");
-            // AutoLogin.
-            LoadBoolFromRegistry(ref _blnOmaeAutoLogin, "omaeautologin");
             // Language.
             string strLanguage = _strLanguage;
             if(LoadStringFromRegistry(ref strLanguage, "language"))
@@ -808,33 +794,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Omae user name.
-        /// </summary>
-        public static string OmaeUserName
-        {
-            get => _strOmaeUserName;
-            set => _strOmaeUserName = value;
-        }
-
-        /// <summary>
-        /// Omae password (Base64 encoded).
-        /// </summary>
-        public static string OmaePassword
-        {
-            get => _strOmaePassword;
-            set => _strOmaePassword = value;
-        }
-
-        /// <summary>
-        /// Omae AutoLogin.
-        /// </summary>
-        public static bool OmaeAutoLogin
-        {
-            get => _blnOmaeAutoLogin;
-            set => _blnOmaeAutoLogin = value;
-        }
-
-        /// <summary>
         /// Language.
         /// </summary>
         public static string Language
@@ -1096,12 +1055,6 @@ namespace Chummer
         /// List of CustomDataDirectoryInfo.
         /// </summary>
         public static List<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
-
-        public static bool OmaeEnabled
-        {
-            get => _omaeEnabled;
-            set => _omaeEnabled = value;
-        }
 
         /// <summary>
         /// Should the updater check for Release builds, or Nightly builds

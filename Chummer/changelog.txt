@@ -80,6 +80,7 @@ Application Fixes:
 - Characters with more than the default amount of arms and/or legs should now be able to properly add multiple modular connectors associated with their extra limbs on the same side.
 - Cyberlimbs now block modular connectors to the same limb that are not part of said cyberlimb.
 - MAG (Adept) no longer shows up in the list of attributes for a skill if the character does not have the house rule enabled that has Mystic Adepts have two Magic attributes instead of separate Mystic Adept PPs.
+- Removed vestigial code for supporting and handling Omae and Omae-managed files. The service has been offline for so long that there really isn't any use for this code anymore.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -175,6 +176,9 @@ Changed/New Strings:
 - String_Light
 - String_Dark
 - String_Generating_Data
+
+Deleted Strings:
+[All roughly 65 strings related to Omae]
 
 Build 212
 Application Changes:

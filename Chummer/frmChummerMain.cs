@@ -47,9 +47,6 @@ namespace Chummer
     public sealed partial class frmChummerMain : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-#if LEGACY
-        private frmOmae _frmOmae;
-#endif
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
         private frmLoading _frmLoading;
@@ -418,8 +415,6 @@ namespace Chummer
 
                 if (GlobalOptions.StartupFullscreen)
                     WindowState = FormWindowState.Maximized;
-
-                mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
             }
         }
 
@@ -1034,22 +1029,6 @@ namespace Chummer
                 frmDiceRoller frmRoller = new frmDiceRoller(this);
                 frmRoller.Show();
             }
-        }
-
-        private void mnuToolsOmae_Click(object sender, EventArgs e)
-        {
-#if LEGACY
-            // Only a single instance of Omae can be open, so either find the current instance and focus on it, or create a new one.
-            if (_frmOmae == null)
-            {
-                _frmOmae = new frmOmae(this);
-                _frmOmae.Show();
-            }
-            else
-            {
-                _frmOmae.Focus();
-            }
-#endif
         }
 
         private void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
@@ -1757,23 +1736,6 @@ namespace Chummer
         #endregion
 
         #region Application Properties
-#if LEGACY
-        /// <summary>
-        /// The frmOmae window being used by the application.
-        /// </summary>
-        public frmOmae OmaeWindow
-        {
-            get
-            {
-                return _frmOmae;
-            }
-            set
-            {
-                _frmOmae = value;
-            }
-        }
-#endif
-
         /// <summary>
         /// The frmDiceRoller window being used by the application.
         /// </summary>

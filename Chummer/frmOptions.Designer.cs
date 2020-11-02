@@ -57,7 +57,6 @@ namespace Chummer
             this.chkSearchInCategoryOnly = new Chummer.ColorableCheckBox(this.components);
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
             this.chkAllowEasterEggs = new Chummer.ColorableCheckBox(this.components);
-            this.chkOmaeEnabled = new Chummer.ColorableCheckBox(this.components);
             this.grpCharacterDefaults = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel7 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cboBuildMethod = new Chummer.ElasticComboBox();
@@ -714,7 +713,6 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkSearchInCategoryOnly, 3, 10);
             this.tlpGlobalOptions.Controls.Add(this.lblCharacterRosterLabel, 0, 19);
             this.tlpGlobalOptions.Controls.Add(this.chkAllowEasterEggs, 0, 6);
-            this.tlpGlobalOptions.Controls.Add(this.chkOmaeEnabled, 0, 11);
             this.tlpGlobalOptions.Controls.Add(this.grpCharacterDefaults, 3, 14);
             this.tlpGlobalOptions.Controls.Add(this.chkPrintToFileFirst, 0, 16);
             this.tlpGlobalOptions.Controls.Add(this.chkPreferNightlyBuilds, 0, 14);
@@ -913,22 +911,6 @@ namespace Chummer
             this.chkAllowEasterEggs.Text = "Allow Easter Eggs";
             this.chkAllowEasterEggs.UseVisualStyleBackColor = true;
             this.chkAllowEasterEggs.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkOmaeEnabled
-            // 
-            this.chkOmaeEnabled.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkOmaeEnabled.AutoSize = true;
-            this.tlpGlobalOptions.SetColumnSpan(this.chkOmaeEnabled, 3);
-            this.chkOmaeEnabled.DefaultColorScheme = true;
-            this.chkOmaeEnabled.Location = new System.Drawing.Point(3, 341);
-            this.chkOmaeEnabled.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkOmaeEnabled.Name = "chkOmaeEnabled";
-            this.chkOmaeEnabled.Size = new System.Drawing.Size(101, 17);
-            this.chkOmaeEnabled.TabIndex = 24;
-            this.chkOmaeEnabled.Tag = "Checkbox_Options_OmaeEnabled";
-            this.chkOmaeEnabled.Text = "[Omae enabled]";
-            this.chkOmaeEnabled.UseVisualStyleBackColor = true;
-            this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
             // 
             // grpCharacterDefaults
             // 
@@ -5165,7 +5147,6 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkSearchInCategoryOnly;
         private System.Windows.Forms.Label lblCharacterRosterLabel;
         private Chummer.ColorableCheckBox chkAllowEasterEggs;
-        private Chummer.ColorableCheckBox chkOmaeEnabled;
         private System.Windows.Forms.GroupBox grpCharacterDefaults;
         private BufferedTableLayoutPanel tableLayoutPanel7;
         private ElasticComboBox cboBuildMethod;
