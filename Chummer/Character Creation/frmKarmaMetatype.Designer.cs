@@ -78,48 +78,46 @@ namespace Chummer
             // 
             // tlpMetatypes
             // 
-            this.tlpMetatypes.ColumnCount = 7;
+            this.tlpMetatypes.ColumnCount = 6;
             this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.999999F));
-            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19F));
-            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19F));
-            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19F));
-            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19F));
-            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19F));
+            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.75F));
+            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.75F));
+            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.75F));
+            this.tlpMetatypes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.75F));
             this.tlpMetatypes.Controls.Add(this.lstMetatypes, 0, 1);
             this.tlpMetatypes.Controls.Add(this.cboCategory, 0, 0);
-            this.tlpMetatypes.Controls.Add(this.lblCHALabel, 6, 0);
-            this.tlpMetatypes.Controls.Add(this.lblCHA, 6, 1);
-            this.tlpMetatypes.Controls.Add(this.lblSTRLabel, 5, 0);
-            this.tlpMetatypes.Controls.Add(this.nudForce, 6, 3);
-            this.tlpMetatypes.Controls.Add(this.lblSTR, 5, 1);
+            this.tlpMetatypes.Controls.Add(this.lblCHALabel, 5, 0);
+            this.tlpMetatypes.Controls.Add(this.lblCHA, 5, 1);
+            this.tlpMetatypes.Controls.Add(this.lblSTRLabel, 4, 0);
+            this.tlpMetatypes.Controls.Add(this.nudForce, 5, 3);
+            this.tlpMetatypes.Controls.Add(this.lblSTR, 4, 1);
             this.tlpMetatypes.Controls.Add(this.tlpBottom, 1, 7);
-            this.tlpMetatypes.Controls.Add(this.lblForceLabel, 6, 2);
-            this.tlpMetatypes.Controls.Add(this.lblINI, 5, 3);
-            this.tlpMetatypes.Controls.Add(this.lblINILabel, 5, 2);
-            this.tlpMetatypes.Controls.Add(this.lblWIL, 4, 3);
-            this.tlpMetatypes.Controls.Add(this.lblLOG, 3, 3);
-            this.tlpMetatypes.Controls.Add(this.lblLOGLabel, 3, 2);
-            this.tlpMetatypes.Controls.Add(this.lblWILLabel, 4, 2);
-            this.tlpMetatypes.Controls.Add(this.lblREA, 4, 1);
-            this.tlpMetatypes.Controls.Add(this.lblREALabel, 4, 0);
-            this.tlpMetatypes.Controls.Add(this.lblAGILabel, 3, 0);
-            this.tlpMetatypes.Controls.Add(this.lblAGI, 3, 1);
-            this.tlpMetatypes.Controls.Add(this.lblINT, 2, 3);
-            this.tlpMetatypes.Controls.Add(this.lblINTLabel, 2, 2);
-            this.tlpMetatypes.Controls.Add(this.lblBODLabel, 2, 0);
-            this.tlpMetatypes.Controls.Add(this.lblBOD, 2, 1);
-            this.tlpMetatypes.Controls.Add(this.lblQualities, 3, 6);
+            this.tlpMetatypes.Controls.Add(this.lblForceLabel, 5, 2);
+            this.tlpMetatypes.Controls.Add(this.lblINI, 4, 3);
+            this.tlpMetatypes.Controls.Add(this.lblINILabel, 4, 2);
+            this.tlpMetatypes.Controls.Add(this.lblWIL, 3, 3);
+            this.tlpMetatypes.Controls.Add(this.lblLOG, 2, 3);
+            this.tlpMetatypes.Controls.Add(this.lblLOGLabel, 2, 2);
+            this.tlpMetatypes.Controls.Add(this.lblWILLabel, 3, 2);
+            this.tlpMetatypes.Controls.Add(this.lblREA, 3, 1);
+            this.tlpMetatypes.Controls.Add(this.lblREALabel, 3, 0);
+            this.tlpMetatypes.Controls.Add(this.lblAGILabel, 2, 0);
+            this.tlpMetatypes.Controls.Add(this.lblAGI, 2, 1);
+            this.tlpMetatypes.Controls.Add(this.lblINT, 1, 3);
+            this.tlpMetatypes.Controls.Add(this.lblINTLabel, 1, 2);
+            this.tlpMetatypes.Controls.Add(this.lblBODLabel, 1, 0);
+            this.tlpMetatypes.Controls.Add(this.lblBOD, 1, 1);
+            this.tlpMetatypes.Controls.Add(this.lblQualities, 2, 6);
             this.tlpMetatypes.Controls.Add(this.lblMetavariantLabel, 1, 4);
             this.tlpMetatypes.Controls.Add(this.lblKarmaLabel, 1, 5);
             this.tlpMetatypes.Controls.Add(this.lblQualitiesLabel, 1, 6);
-            this.tlpMetatypes.Controls.Add(this.lblKarma, 3, 5);
-            this.tlpMetatypes.Controls.Add(this.cboMetavariant, 3, 4);
-            this.tlpMetatypes.Controls.Add(this.tlpButtons, 2, 8);
+            this.tlpMetatypes.Controls.Add(this.lblKarma, 2, 5);
+            this.tlpMetatypes.Controls.Add(this.cboMetavariant, 2, 4);
             this.tlpMetatypes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMetatypes.Location = new System.Drawing.Point(9, 9);
             this.tlpMetatypes.Name = "tlpMetatypes";
-            this.tlpMetatypes.RowCount = 9;
+            this.tlpMetatypes.RowCount = 8;
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -127,7 +125,6 @@ namespace Chummer
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMetatypes.Size = new System.Drawing.Size(734, 519);
             this.tlpMetatypes.TabIndex = 70;
@@ -138,7 +135,7 @@ namespace Chummer
             this.lstMetatypes.FormattingEnabled = true;
             this.lstMetatypes.Location = new System.Drawing.Point(3, 30);
             this.lstMetatypes.Name = "lstMetatypes";
-            this.tlpMetatypes.SetRowSpan(this.lstMetatypes, 8);
+            this.tlpMetatypes.SetRowSpan(this.lstMetatypes, 7);
             this.lstMetatypes.Size = new System.Drawing.Size(295, 486);
             this.lstMetatypes.Sorted = true;
             this.lstMetatypes.TabIndex = 35;
@@ -162,7 +159,7 @@ namespace Chummer
             this.lblCHALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCHALabel.AutoSize = true;
             this.lblCHALabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCHALabel.Location = new System.Drawing.Point(653, 8);
+            this.lblCHALabel.Location = new System.Drawing.Point(655, 8);
             this.lblCHALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCHALabel.Name = "lblCHALabel";
             this.lblCHALabel.Size = new System.Drawing.Size(32, 13);
@@ -173,7 +170,7 @@ namespace Chummer
             // lblCHA
             // 
             this.lblCHA.AutoSize = true;
-            this.lblCHA.Location = new System.Drawing.Point(653, 33);
+            this.lblCHA.Location = new System.Drawing.Point(655, 33);
             this.lblCHA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCHA.Name = "lblCHA";
             this.lblCHA.Size = new System.Drawing.Size(51, 13);
@@ -185,7 +182,7 @@ namespace Chummer
             this.lblSTRLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSTRLabel.AutoSize = true;
             this.lblSTRLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSTRLabel.Location = new System.Drawing.Point(571, 8);
+            this.lblSTRLabel.Location = new System.Drawing.Point(574, 8);
             this.lblSTRLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSTRLabel.Name = "lblSTRLabel";
             this.lblSTRLabel.Size = new System.Drawing.Size(32, 13);
@@ -198,7 +195,7 @@ namespace Chummer
             this.nudForce.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudForce.AutoSize = true;
-            this.nudForce.Location = new System.Drawing.Point(653, 80);
+            this.nudForce.Location = new System.Drawing.Point(655, 80);
             this.nudForce.Maximum = new decimal(new int[] {
             20,
             0,
@@ -210,7 +207,7 @@ namespace Chummer
             0,
             0});
             this.nudForce.Name = "nudForce";
-            this.nudForce.Size = new System.Drawing.Size(78, 20);
+            this.nudForce.Size = new System.Drawing.Size(76, 20);
             this.nudForce.TabIndex = 57;
             this.nudForce.Value = new decimal(new int[] {
             1,
@@ -222,7 +219,7 @@ namespace Chummer
             // lblSTR
             // 
             this.lblSTR.AutoSize = true;
-            this.lblSTR.Location = new System.Drawing.Point(571, 33);
+            this.lblSTR.Location = new System.Drawing.Point(574, 33);
             this.lblSTR.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSTR.Name = "lblSTR";
             this.lblSTR.Size = new System.Drawing.Size(51, 13);
@@ -234,20 +231,22 @@ namespace Chummer
             this.tlpBottom.AutoSize = true;
             this.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpBottom.ColumnCount = 3;
-            this.tlpMetatypes.SetColumnSpan(this.tlpBottom, 6);
+            this.tlpMetatypes.SetColumnSpan(this.tlpBottom, 5);
             this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpBottom.Controls.Add(this.chkBloodSpirit, 0, 0);
             this.tlpBottom.Controls.Add(this.chkPossessionBased, 1, 0);
             this.tlpBottom.Controls.Add(this.cboPossessionMethod, 2, 0);
+            this.tlpBottom.Controls.Add(this.tlpButtons, 0, 1);
             this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBottom.Location = new System.Drawing.Point(301, 463);
             this.tlpBottom.Margin = new System.Windows.Forms.Padding(0);
             this.tlpBottom.Name = "tlpBottom";
-            this.tlpBottom.RowCount = 1;
+            this.tlpBottom.RowCount = 2;
+            this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBottom.Size = new System.Drawing.Size(433, 27);
+            this.tlpBottom.Size = new System.Drawing.Size(433, 56);
             this.tlpBottom.TabIndex = 70;
             // 
             // chkBloodSpirit
@@ -299,7 +298,7 @@ namespace Chummer
             this.lblForceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblForceLabel.AutoSize = true;
             this.lblForceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblForceLabel.Location = new System.Drawing.Point(653, 58);
+            this.lblForceLabel.Location = new System.Drawing.Point(655, 58);
             this.lblForceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblForceLabel.Name = "lblForceLabel";
             this.lblForceLabel.Size = new System.Drawing.Size(48, 13);
@@ -311,7 +310,7 @@ namespace Chummer
             // lblINI
             // 
             this.lblINI.AutoSize = true;
-            this.lblINI.Location = new System.Drawing.Point(571, 83);
+            this.lblINI.Location = new System.Drawing.Point(574, 83);
             this.lblINI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblINI.Name = "lblINI";
             this.lblINI.Size = new System.Drawing.Size(51, 13);
@@ -323,7 +322,7 @@ namespace Chummer
             this.lblINILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblINILabel.AutoSize = true;
             this.lblINILabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblINILabel.Location = new System.Drawing.Point(571, 58);
+            this.lblINILabel.Location = new System.Drawing.Point(574, 58);
             this.lblINILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblINILabel.Name = "lblINILabel";
             this.lblINILabel.Size = new System.Drawing.Size(24, 13);
@@ -334,7 +333,7 @@ namespace Chummer
             // lblWIL
             // 
             this.lblWIL.AutoSize = true;
-            this.lblWIL.Location = new System.Drawing.Point(489, 83);
+            this.lblWIL.Location = new System.Drawing.Point(493, 83);
             this.lblWIL.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWIL.Name = "lblWIL";
             this.lblWIL.Size = new System.Drawing.Size(51, 13);
@@ -344,7 +343,7 @@ namespace Chummer
             // lblLOG
             // 
             this.lblLOG.AutoSize = true;
-            this.lblLOG.Location = new System.Drawing.Point(407, 83);
+            this.lblLOG.Location = new System.Drawing.Point(412, 83);
             this.lblLOG.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLOG.Name = "lblLOG";
             this.lblLOG.Size = new System.Drawing.Size(51, 13);
@@ -356,7 +355,7 @@ namespace Chummer
             this.lblLOGLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblLOGLabel.AutoSize = true;
             this.lblLOGLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLOGLabel.Location = new System.Drawing.Point(407, 58);
+            this.lblLOGLabel.Location = new System.Drawing.Point(412, 58);
             this.lblLOGLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLOGLabel.Name = "lblLOGLabel";
             this.lblLOGLabel.Size = new System.Drawing.Size(32, 13);
@@ -369,7 +368,7 @@ namespace Chummer
             this.lblWILLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWILLabel.AutoSize = true;
             this.lblWILLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblWILLabel.Location = new System.Drawing.Point(489, 58);
+            this.lblWILLabel.Location = new System.Drawing.Point(493, 58);
             this.lblWILLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWILLabel.Name = "lblWILLabel";
             this.lblWILLabel.Size = new System.Drawing.Size(30, 13);
@@ -380,7 +379,7 @@ namespace Chummer
             // lblREA
             // 
             this.lblREA.AutoSize = true;
-            this.lblREA.Location = new System.Drawing.Point(489, 33);
+            this.lblREA.Location = new System.Drawing.Point(493, 33);
             this.lblREA.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblREA.Name = "lblREA";
             this.lblREA.Size = new System.Drawing.Size(51, 13);
@@ -392,7 +391,7 @@ namespace Chummer
             this.lblREALabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblREALabel.AutoSize = true;
             this.lblREALabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblREALabel.Location = new System.Drawing.Point(489, 8);
+            this.lblREALabel.Location = new System.Drawing.Point(493, 8);
             this.lblREALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblREALabel.Name = "lblREALabel";
             this.lblREALabel.Size = new System.Drawing.Size(32, 13);
@@ -405,7 +404,7 @@ namespace Chummer
             this.lblAGILabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblAGILabel.AutoSize = true;
             this.lblAGILabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAGILabel.Location = new System.Drawing.Point(407, 8);
+            this.lblAGILabel.Location = new System.Drawing.Point(412, 8);
             this.lblAGILabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAGILabel.Name = "lblAGILabel";
             this.lblAGILabel.Size = new System.Drawing.Size(28, 13);
@@ -416,7 +415,7 @@ namespace Chummer
             // lblAGI
             // 
             this.lblAGI.AutoSize = true;
-            this.lblAGI.Location = new System.Drawing.Point(407, 33);
+            this.lblAGI.Location = new System.Drawing.Point(412, 33);
             this.lblAGI.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAGI.Name = "lblAGI";
             this.lblAGI.Size = new System.Drawing.Size(51, 13);
@@ -426,8 +425,8 @@ namespace Chummer
             // lblINT
             // 
             this.lblINT.AutoSize = true;
-            this.lblINT.Location = new System.Drawing.Point(325, 83);
-            this.lblINT.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblINT.Location = new System.Drawing.Point(324, 83);
+            this.lblINT.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
             this.lblINT.Name = "lblINT";
             this.lblINT.Size = new System.Drawing.Size(51, 13);
             this.lblINT.TabIndex = 49;
@@ -438,8 +437,8 @@ namespace Chummer
             this.lblINTLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblINTLabel.AutoSize = true;
             this.lblINTLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblINTLabel.Location = new System.Drawing.Point(325, 58);
-            this.lblINTLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblINTLabel.Location = new System.Drawing.Point(324, 58);
+            this.lblINTLabel.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
             this.lblINTLabel.Name = "lblINTLabel";
             this.lblINTLabel.Size = new System.Drawing.Size(28, 13);
             this.lblINTLabel.TabIndex = 48;
@@ -451,8 +450,8 @@ namespace Chummer
             this.lblBODLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblBODLabel.AutoSize = true;
             this.lblBODLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBODLabel.Location = new System.Drawing.Point(325, 8);
-            this.lblBODLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBODLabel.Location = new System.Drawing.Point(324, 8);
+            this.lblBODLabel.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
             this.lblBODLabel.Name = "lblBODLabel";
             this.lblBODLabel.Size = new System.Drawing.Size(33, 13);
             this.lblBODLabel.TabIndex = 38;
@@ -462,8 +461,8 @@ namespace Chummer
             // lblBOD
             // 
             this.lblBOD.AutoSize = true;
-            this.lblBOD.Location = new System.Drawing.Point(325, 33);
-            this.lblBOD.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBOD.Location = new System.Drawing.Point(324, 33);
+            this.lblBOD.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
             this.lblBOD.Name = "lblBOD";
             this.lblBOD.Size = new System.Drawing.Size(51, 13);
             this.lblBOD.TabIndex = 39;
@@ -473,7 +472,7 @@ namespace Chummer
             // 
             this.lblQualities.AutoSize = true;
             this.tlpMetatypes.SetColumnSpan(this.lblQualities, 4);
-            this.lblQualities.Location = new System.Drawing.Point(407, 161);
+            this.lblQualities.Location = new System.Drawing.Point(412, 161);
             this.lblQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblQualities.Name = "lblQualities";
             this.lblQualities.Size = new System.Drawing.Size(33, 13);
@@ -485,10 +484,9 @@ namespace Chummer
             // 
             this.lblMetavariantLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetavariantLabel.AutoSize = true;
-            this.tlpMetatypes.SetColumnSpan(this.lblMetavariantLabel, 2);
             this.lblMetavariantLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMetavariantLabel.Location = new System.Drawing.Point(323, 110);
-            this.lblMetavariantLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMetavariantLabel.Location = new System.Drawing.Point(328, 110);
+            this.lblMetavariantLabel.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
             this.lblMetavariantLabel.Name = "lblMetavariantLabel";
             this.lblMetavariantLabel.Size = new System.Drawing.Size(78, 13);
             this.lblMetavariantLabel.TabIndex = 58;
@@ -499,10 +497,9 @@ namespace Chummer
             // 
             this.lblKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaLabel.AutoSize = true;
-            this.tlpMetatypes.SetColumnSpan(this.lblKarmaLabel, 2);
             this.lblKarmaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKarmaLabel.Location = new System.Drawing.Point(355, 136);
-            this.lblKarmaLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaLabel.Location = new System.Drawing.Point(360, 136);
+            this.lblKarmaLabel.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
             this.lblKarmaLabel.Name = "lblKarmaLabel";
             this.lblKarmaLabel.Size = new System.Drawing.Size(46, 13);
             this.lblKarmaLabel.TabIndex = 60;
@@ -513,10 +510,9 @@ namespace Chummer
             // 
             this.lblQualitiesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblQualitiesLabel.AutoSize = true;
-            this.tlpMetatypes.SetColumnSpan(this.lblQualitiesLabel, 2);
             this.lblQualitiesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblQualitiesLabel.Location = new System.Drawing.Point(341, 161);
-            this.lblQualitiesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblQualitiesLabel.Location = new System.Drawing.Point(346, 161);
+            this.lblQualitiesLabel.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
             this.lblQualitiesLabel.Name = "lblQualitiesLabel";
             this.lblQualitiesLabel.Size = new System.Drawing.Size(60, 13);
             this.lblQualitiesLabel.TabIndex = 62;
@@ -527,7 +523,7 @@ namespace Chummer
             // 
             this.lblKarma.AutoSize = true;
             this.tlpMetatypes.SetColumnSpan(this.lblKarma, 3);
-            this.lblKarma.Location = new System.Drawing.Point(407, 136);
+            this.lblKarma.Location = new System.Drawing.Point(412, 136);
             this.lblKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarma.Name = "lblKarma";
             this.lblKarma.Size = new System.Drawing.Size(13, 13);
@@ -540,25 +536,25 @@ namespace Chummer
             this.tlpMetatypes.SetColumnSpan(this.cboMetavariant, 4);
             this.cboMetavariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetavariant.FormattingEnabled = true;
-            this.cboMetavariant.Location = new System.Drawing.Point(407, 106);
+            this.cboMetavariant.Location = new System.Drawing.Point(412, 106);
             this.cboMetavariant.Name = "cboMetavariant";
-            this.cboMetavariant.Size = new System.Drawing.Size(324, 21);
+            this.cboMetavariant.Size = new System.Drawing.Size(319, 21);
             this.cboMetavariant.TabIndex = 59;
             this.cboMetavariant.TooltipText = "";
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
             // tlpButtons
             // 
-            this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 2;
-            this.tlpMetatypes.SetColumnSpan(this.tlpButtons, 5);
+            this.tlpBottom.SetColumnSpan(this.tlpButtons, 3);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(622, 490);
+            this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Right;
+            this.tlpButtons.Location = new System.Drawing.Point(321, 27);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -634,10 +630,7 @@ namespace Chummer
         private ElasticComboBox cboCategory;
         internal System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Label lblQualities;
-        private System.Windows.Forms.Label lblQualitiesLabel;
         internal System.Windows.Forms.Label lblKarma;
-        internal System.Windows.Forms.Label lblKarmaLabel;
-        private System.Windows.Forms.Label lblMetavariantLabel;
         private ElasticComboBox cboMetavariant;
         internal System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.Label lblINILabel;
@@ -662,5 +655,8 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpMetatypes;
         private BufferedTableLayoutPanel tlpBottom;
         private BufferedTableLayoutPanel tlpButtons;
+        private Label lblMetavariantLabel;
+        internal Label lblKarmaLabel;
+        private Label lblQualitiesLabel;
     }
 }
