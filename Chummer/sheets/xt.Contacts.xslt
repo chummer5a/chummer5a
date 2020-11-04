@@ -68,80 +68,80 @@
       </tr>
 
       <xsl:if test="$ProduceNotes">
-      <xsl:if test="metatype != '' or gender != '' or age != '' or preferredpayment != '' or hobbiesvice != '' or personallife != '' or contacttype != ''">
+      <xsl:if test="normalize-space(metatype) != '' or normalize-space(gender) != '' or normalize-space(age) != '' or normalize-space(preferredpayment) != '' or normalize-space(hobbiesvice) != '' or normalize-space(personallife) != '' or normalize-space(contacttype) != ''">
       <tr>
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td/>
         <td colspan="4">
-          <table>
-            <xsl:if test="metatype != ''">
+          <table style="width: 100%;">
+            <xsl:if test="normalize-space(metatype) != ''">
               <tr>
-                <td style="text-align: right; padding-right: 1em; width: 25%;">
+                <td style="text-align: right; padding-right: 1em; width: 20%;">
                   <xsl:value-of select="$lang.Metatype"/>: 
                 </td>
-                <td style="text-align: left;">
+                <td style="text-align: left; width: 80%;">
                   <xsl:value-of select="metatype"/>
                 </td>
               </tr>
             </xsl:if>
-            <xsl:if test="gender != ''">
+            <xsl:if test="normalize-space(gender) != ''">
             <tr>
-              <td style="text-align: right; padding-right: 1em; width: 25%;">
+              <td style="text-align: right; padding-right: 1em; width: 20%;">
                 <xsl:value-of select="$lang.Gender"/>: 
               </td>
-              <td style="text-align: left;">
+              <td style="text-align: left; width: 80%;">
                 <xsl:value-of select="gender"/>
               </td>
             </tr>
             </xsl:if>
-            <xsl:if test="age != ''">
+            <xsl:if test="normalize-space(age) != ''">
             <tr>
-              <td style="text-align: right; padding-right: 1em; width: 25%;">
+              <td style="text-align: right; padding-right: 1em; width: 20%;">
                 <xsl:value-of select="$lang.Age"/>: 
               </td>
-              <td style="text-align: left;">
+              <td style="text-align: left; width: 80%;">
                 <xsl:value-of select="age"/>
               </td>
             </tr>
             </xsl:if>
-            <xsl:if test="preferredpayment != ''">
+            <xsl:if test="normalize-space(preferredpayment) != ''">
             <tr>
-              <td style="text-align: right; padding-right: 1em; width: 25%;">
+              <td style="text-align: right; padding-right: 1em; width: 20%;">
                 <xsl:value-of select="$lang.PreferredPayment"/>: 
               </td>
-              <td style="text-align: left;">
+              <td style="text-align: left; width: 80%;">
                 <xsl:value-of select="preferredpayment"/>
               </td>
             </tr>
             </xsl:if>
-            <xsl:if test="hobbiesvice != ''">
+            <xsl:if test="normalize-space(hobbiesvice) != ''">
             <tr>
-              <td style="text-align: right; padding-right: 1em; width: 25%;">
+              <td style="text-align: right; padding-right: 1em; width: 20%;">
                 <xsl:value-of select="$lang.HobbiesVice"/>: 
               </td>
-              <td style="text-align: left;">
+              <td style="text-align: left; width: 80%;">
                 <xsl:value-of select="hobbiesvice"/>
               </td>
             </tr>
             </xsl:if>
-            <xsl:if test="personallife != ''">
+            <xsl:if test="normalize-space(personallife) != ''">
             <tr>
-              <td style="text-align: right; padding-right: 1em; width: 25%;">
+              <td style="text-align: right; padding-right: 1em; width: 20%;">
                 <xsl:value-of select="$lang.PersonalLife"/>: 
               </td>
-              <td style="text-align: left;">
+              <td style="text-align: left; width: 80%;">
                 <xsl:value-of select="personallife"/>
               </td>
             </tr>
             </xsl:if>
-            <xsl:if test="contacttype != ''">
+            <xsl:if test="normalize-space(contacttype) != ''">
             <tr>
-              <td style="text-align: right; padding-right: 1em; width: 25%;">
+              <td style="text-align: right; padding-right: 1em; width: 20%;">
                 <xsl:value-of select="$lang.Type"/>: 
               </td>
-              <td style="text-align: left;">
+              <td style="text-align: left; width: 80%;">
                 <xsl:value-of select="contacttype"/>
               </td>
             </tr>
