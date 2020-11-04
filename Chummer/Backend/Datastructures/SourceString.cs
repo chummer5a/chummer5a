@@ -154,6 +154,11 @@ namespace Chummer
             source.SetToolTip(LanguageBookTooltip);
         }
 
+        public bool Equals(SourceString other)
+        {
+            return other != null && Language == other.Language && Code == other.Code && Page == other.Page;
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
@@ -166,11 +171,6 @@ namespace Chummer
         public override int GetHashCode()
         {
             return _intHashCode;
-        }
-
-        public bool Equals(SourceString other)
-        {
-            return other != null && Language == other.Language && Code == other.Code && Page == other.Page;
         }
 
         public static bool operator ==(SourceString left, SourceString right)

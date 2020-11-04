@@ -41,6 +41,11 @@ namespace Chummer
             return !((objFirstEdge.Node == null && objSecondEdge.Node == null) || objFirstEdge.Node?.Equals(objSecondEdge.Node) == true);
         }
 
+        public bool Equals(DependencyGraphNodeWithCondition<T, T2> other)
+        {
+            return (Node == null && other.Node == null) || Node?.Equals(other.Node) == true;
+        }
+
         public override bool Equals(object obj)
         {
             return obj is DependencyGraphNodeWithCondition<T, T2> objOtherEdge && Equals(objOtherEdge);
@@ -54,11 +59,6 @@ namespace Chummer
         public override string ToString()
         {
             return Node?.ToString() ?? string.Empty;
-        }
-
-        public bool Equals(DependencyGraphNodeWithCondition<T, T2> other)
-        {
-            return (Node == null && other.Node == null) || Node?.Equals(other.Node) == true;
         }
     }
 }

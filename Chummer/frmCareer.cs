@@ -4108,7 +4108,7 @@ namespace Chummer
                 CharacterObject.MainMugshotIndex = decimal.ToInt32(nudMugshotIndex.Value) - 1;
                 blnStatusChanged = true;
             }
-            else if (chkIsMainMugshot.Checked == false && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            else if (!chkIsMainMugshot.Checked && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
             {
                 CharacterObject.MainMugshotIndex = -1;
                 blnStatusChanged = true;
@@ -5660,10 +5660,8 @@ namespace Chummer
                             if (intKarmaCost > CharacterObject.Karma && !objSelectedQuality.StagedPurchase)
                             {
                                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                {
-                                    UpdateQualityLevelValue(objSelectedQuality);
-                                    break;
-                                }
+                                UpdateQualityLevelValue(objSelectedQuality);
+                                break;
                             }
 
                             string strDisplayName = objXmlSelectedQuality["translate"]?.InnerText ?? objXmlSelectedQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
@@ -6184,7 +6182,7 @@ namespace Chummer
             else if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
             {
                 foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
-                    objArmor.Equipped == false && objArmor.Location == null))
+                    !objArmor.Equipped && objArmor.Location == null))
                 {
                     objArmor.Equipped = true;
                 }
@@ -6987,7 +6985,7 @@ namespace Chummer
                 Weapon objWeapon = new Weapon(CharacterObject)
                 {
                     ParentVehicle = objVehicle,
-                    ParentVehicleMod = objMod != null ? objMod : null,
+                    ParentVehicleMod = objMod,
                     ParentMount = objMod == null ? objWeaponMount : null
                 };
                 objWeapon.Create(objXmlWeapon, lstWeapons);
@@ -7225,7 +7223,7 @@ namespace Chummer
                 objWeapon.Create(objXmlWeapon, lstWeapons);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
                 objWeapon.Parent = objSelectedWeapon;
-                if (objSelectedWeapon.AllowAccessory == false)
+                if (!objSelectedWeapon.AllowAccessory)
                     objWeapon.AllowAccessory = false;
 
                 decimal decCost = objWeapon.TotalCost;
@@ -7266,7 +7264,7 @@ namespace Chummer
 
                 foreach (Weapon objLoopWeapon in lstWeapons)
                 {
-                    if (objSelectedWeapon.AllowAccessory == false)
+                    if (!objSelectedWeapon.AllowAccessory)
                         objLoopWeapon.AllowAccessory = false;
                     objSelectedWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
                 }
@@ -11052,11 +11050,9 @@ namespace Chummer
                             objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal))
                         {
                             lstVehicles.Add(objCharacterVehicle);
-                            goto NextVehicle;
+                            break;
                         }
                     }
-
-                    NextVehicle:;
                 }
             }
 
@@ -13068,24 +13064,27 @@ namespace Chummer
                     if (intCurrentBoxTag <= intConditionMax)
                     {
                         chkCmBox.Visible = true;
+                        chkCmBox.Image = null;
                         if (intCurrentBoxTag > intThresholdOffset && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
                         {
                             int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
                             chkCmBox.Text = intModifiers.ToString(GlobalOptions.CultureInfo);
                         }
                         else
-                            chkCmBox.Text = " "; // Non-breaking save to help with DPI stuff
+                            chkCmBox.Text = " "; // Non-breaking space to help with DPI stuff
                     }
                     else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
                     {
                         chkCmBox.Visible = true;
                         chkCmBox.BackColor = SystemColors.ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
-                        chkCmBox.Text = intCurrentBoxTag == intConditionMax + intOverflow ? LanguageManager.GetString("String_CMDown") : string.Empty;
+                        chkCmBox.Image = intCurrentBoxTag == intConditionMax + intOverflow
+                            ? Properties.Resources.skull_old : null;
                     }
                     else
                     {
                         chkCmBox.Visible = false;
-                        chkCmBox.Text = " "; // Non-breaking save to help with DPI stuff
+                        chkCmBox.Image = null;
+                        chkCmBox.Text = " "; // Non-breaking space to help with DPI stuff
                     }
 
                     intMaxDimension = Math.Max(intMaxDimension, Math.Max(chkCmBox.Width, chkCmBox.Height));

@@ -33,6 +33,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmViewer));
             this.tsSaveAsHtml = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSaveAsXml = new System.Windows.Forms.ToolStripMenuItem();
@@ -224,10 +225,10 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 120);
             this.Name = "frmViewer";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CharacterViewer";
             this.Text = "Character Viewer";

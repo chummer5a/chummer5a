@@ -3454,7 +3454,7 @@ namespace Chummer
                 CharacterObject.MainMugshotIndex = decimal.ToInt32(nudMugshotIndex.Value) - 1;
                 blnStatusChanged = true;
             }
-            else if (chkIsMainMugshot.Checked == false && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            else if (!chkIsMainMugshot.Checked && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
             {
                 CharacterObject.MainMugshotIndex = -1;
                 blnStatusChanged = true;
@@ -4716,7 +4716,7 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(CharacterObject)
                         {
                             ParentVehicle = objVehicle,
-                            ParentVehicleMod = objMod != null ? objMod : null,
+                            ParentVehicleMod = objMod,
                             ParentMount = objMod == null ? objWeaponMount : null
                         };
                         objWeapon.Create(objXmlWeapon, lstWeapons);
@@ -4858,13 +4858,13 @@ namespace Chummer
 
                     objWeapon.Parent = objSelectedWeapon;
                     objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
-                    if (objSelectedWeapon.AllowAccessory == false)
+                    if (!objSelectedWeapon.AllowAccessory)
                         objWeapon.AllowAccessory = false;
 
                     foreach (Weapon objLoopWeapon in lstWeapons)
                     {
                         objSelectedWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
-                        if (objSelectedWeapon.AllowAccessory == false)
+                        if (!objSelectedWeapon.AllowAccessory)
                             objLoopWeapon.AllowAccessory = false;
                     }
                 }
@@ -5225,7 +5225,7 @@ namespace Chummer
                     objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
                     objWeapon.Parent = objSelectedWeapon;
                     objWeapon.AllowAccessory = objSelectedWeapon.AllowAccessory;
-                    if (objSelectedWeapon.AllowAccessory == false)
+                    if (!objSelectedWeapon.AllowAccessory)
                         objWeapon.AllowAccessory = false;
 
                     if (frmPickWeapon.FreeCost)
@@ -10678,14 +10678,6 @@ namespace Chummer
                     lblGearCost.Text = objGear.Cost + '¥';
                 }
                 lblGearAvail.Text = objGear.DisplayTotalAvail;
-                try
-                {
-                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                }
-                catch (FormatException)
-                {
-                    lblGearCost.Text = objGear.Cost + '¥';
-                }
                 lblGearCapacity.Text = objGear.DisplayCapacity;
                 chkGearEquipped.Visible = true;
                 chkGearEquipped.Checked = objGear.Equipped;
@@ -13343,12 +13335,12 @@ namespace Chummer
                                 Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
                                 objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
                                 objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
-                                if (objWeapon.AllowAccessory == false)
+                                if (!objWeapon.AllowAccessory)
                                     objUnderbarrelWeapon.AllowAccessory = false;
 
                                 foreach (Weapon objLoopWeapon in lstLoopWeapons)
                                 {
-                                    if (objWeapon.AllowAccessory == false)
+                                    if (!objWeapon.AllowAccessory)
                                         objLoopWeapon.AllowAccessory = false;
                                     objWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
                                 }
@@ -13576,12 +13568,12 @@ namespace Chummer
                                         Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
                                         objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
                                         objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
-                                        if (objWeapon.AllowAccessory == false)
+                                        if (!objWeapon.AllowAccessory)
                                             objUnderbarrelWeapon.AllowAccessory = false;
 
                                         foreach (Weapon objLoopWeapon in lstLoopWeapons)
                                         {
-                                            if (objWeapon.AllowAccessory == false)
+                                            if (!objWeapon.AllowAccessory)
                                                 objLoopWeapon.AllowAccessory = false;
                                             objWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
                                         }

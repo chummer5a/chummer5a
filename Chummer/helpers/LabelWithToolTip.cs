@@ -70,10 +70,9 @@ namespace Chummer
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && _tt != null && _tt != ToolTipFactory.ToolTip)
             {
-                if (_tt != null && _tt != ToolTipFactory.ToolTip)
-                    _tt.Dispose();
+                _tt.Dispose();
             }
             base.Dispose(disposing);
         }

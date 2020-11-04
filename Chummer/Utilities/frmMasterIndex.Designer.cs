@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMasterIndex));
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -36,11 +37,11 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new Chummer.LabelWithToolTip();
             this.lblSourceClickReminder = new System.Windows.Forms.Label();
+            this.txtNotes = new System.Windows.Forms.TextBox();
             this.tlpTopLeft = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblFile = new System.Windows.Forms.Label();
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
-            this.txtNotes = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.tlpTopLeft.SuspendLayout();
@@ -156,6 +157,20 @@ namespace Chummer
             this.lblSourceClickReminder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSourceClickReminder.Visible = false;
             // 
+            // txtNotes
+            // 
+            this.tlpRight.SetColumnSpan(this.txtNotes, 3);
+            this.txtNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNotes.Location = new System.Drawing.Point(3, 54);
+            this.txtNotes.MaxLength = 2147483647;
+            this.txtNotes.Multiline = true;
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.ReadOnly = true;
+            this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtNotes.Size = new System.Drawing.Size(377, 486);
+            this.txtNotes.TabIndex = 6;
+            this.txtNotes.Visible = false;
+            // 
             // tlpTopLeft
             // 
             this.tlpTopLeft.AutoSize = true;
@@ -208,20 +223,6 @@ namespace Chummer
             this.lstItems.TabIndex = 2;
             this.lstItems.SelectedIndexChanged += new System.EventHandler(this.lstItems_SelectedIndexChanged);
             // 
-            // txtNotes
-            // 
-            this.tlpRight.SetColumnSpan(this.txtNotes, 3);
-            this.txtNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNotes.Location = new System.Drawing.Point(3, 54);
-            this.txtNotes.MaxLength = 2147483647;
-            this.txtNotes.Multiline = true;
-            this.txtNotes.Name = "txtNotes";
-            this.txtNotes.ReadOnly = true;
-            this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtNotes.Size = new System.Drawing.Size(377, 486);
-            this.txtNotes.TabIndex = 6;
-            this.txtNotes.Visible = false;
-            // 
             // frmMasterIndex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -230,9 +231,9 @@ namespace Chummer
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMasterIndex";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.Tag = "Title_MasterIndex";
             this.Text = "Master Index";
             this.Load += new System.EventHandler(this.frmMasterIndex_Load);

@@ -43,11 +43,11 @@ namespace Chummer.UI.Skills
         public SkillsTabUserControl()
         {
             InitializeComponent();
-            flpSkillGroupLabels.Margin = new Padding(
-                flpSkillGroupLabels.Margin.Left,
-                flpSkillGroupLabels.Margin.Top,
-                flpSkillGroupLabels.Margin.Right + SystemInformation.VerticalScrollBarWidth,
-                flpSkillGroupLabels.Margin.Bottom);
+            lblGroupKarma.Margin = new Padding(
+                lblGroupKarma.Margin.Left,
+                lblGroupKarma.Margin.Top,
+                lblGroupKarma.Margin.Right + SystemInformation.VerticalScrollBarWidth,
+                lblGroupKarma.Margin.Bottom);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -123,7 +123,7 @@ namespace Chummer.UI.Skills
             swDisplays.TaskEnd("_lstActiveSkills");
 
             tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
-            tlpActiveSkills.SetColumnSpan(_lstActiveSkills, 3);
+            tlpActiveSkills.SetColumnSpan(_lstActiveSkills, 5);
 
             swDisplays.TaskEnd("_lstActiveSkills add");
 
@@ -137,7 +137,7 @@ namespace Chummer.UI.Skills
             swDisplays.TaskEnd("_lstKnowledgeSkills");
 
             tlpBottomPanel.Controls.Add(_lstKnowledgeSkills, 0, 2);
-            tlpBottomPanel.SetColumnSpan(_lstKnowledgeSkills, 3);
+            tlpBottomPanel.SetColumnSpan(_lstKnowledgeSkills, 4);
 
             swDisplays.TaskEnd("_lstKnowledgeSkills add");
 
@@ -155,7 +155,7 @@ namespace Chummer.UI.Skills
                 swDisplays.TaskEnd("_lstSkillGroups");
 
                 tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
-                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 2);
+                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 3);
 
                 swDisplays.TaskEnd("_lstSkillGroups add");
             }
@@ -225,13 +225,13 @@ namespace Chummer.UI.Skills
             }
             else
             {
-                flpSkillGroupLabels.Visible = false;
-
+                lblGroupsSp.Visible = false;
+                lblGroupKarma.Visible = false;
                 lblActiveSp.Visible = false;
                 lblActiveKarma.Visible = false;
                 lblBuyWithKarma.Visible = false;
-
-                flpKnowledgeSkillsLabels.Visible = false;
+                lblKnoSp.Visible = false;
+                lblKnoKarma.Visible = false;
                 lblKnoBwk.Visible = false;
                 lblKnowledgeSkillPoints.Visible = false;
                 lblKnowledgeSkillPointsTitle.Visible = false;
@@ -250,14 +250,12 @@ namespace Chummer.UI.Skills
 
         private void SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SkillsSection.KnowledgeSkillPointsRemain)
-                || e.PropertyName == nameof(SkillsSection.KnowledgeSkillPoints)
-                || e.PropertyName == nameof(SkillsSection.SkillPointsSpentOnKnoskills))
+            if ((e.PropertyName == nameof(SkillsSection.KnowledgeSkillPointsRemain)
+                 || e.PropertyName == nameof(SkillsSection.KnowledgeSkillPoints)
+                 || e.PropertyName == nameof(SkillsSection.SkillPointsSpentOnKnoskills))
+                && _objCharacter?.Created == false)
             {
-                if (_objCharacter?.Created == false)
-                {
-                    UpdateKnoSkillRemaining();
-                }
+                UpdateKnoSkillRemaining();
             }
         }
 

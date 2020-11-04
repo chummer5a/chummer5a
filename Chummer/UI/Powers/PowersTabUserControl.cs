@@ -462,7 +462,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(deleteColumn);
             _table.UpdateLightDarkMode();
             _table.TranslateWinForm();
-            tlpMain.SetColumnSpan(_table, 2);
+            tlpMain.SetColumnSpan(_table, 4);
             tlpMain.Controls.Add(_table, 0, 2);
         }
 

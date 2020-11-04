@@ -26,11 +26,11 @@ namespace Chummer
         public delegate void BeforeRemoveEventHandler(object sender, RemovingOldEventArgs e);
         public event BeforeRemoveEventHandler BeforeRemove;
 
-        protected override void RemoveItem(int intIndex)
+        protected override void RemoveItem(int index)
         {
-            BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[intIndex], intIndex));
+            BeforeRemove?.Invoke(this, new RemovingOldEventArgs(Items[index], index));
 
-            base.RemoveItem(intIndex);
+            base.RemoveItem(index);
         }
 
         protected override void ClearItems()

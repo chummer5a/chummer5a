@@ -45,7 +45,6 @@ namespace Chummer.UI.Table
             // CheckBoxTableCell
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this._checkBox);
             this.Name = "CheckBoxTableCell";
             this.Size = new System.Drawing.Size(83, 22);

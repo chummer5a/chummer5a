@@ -98,6 +98,11 @@ namespace Chummer
                 Control = objControl;
             }
 
+            public bool Equals(TransportWrapper other)
+            {
+                return Control.Equals(other.Control);
+            }
+
             public override bool Equals(object obj)
             {
                 return Control.Equals(obj);
@@ -132,11 +137,6 @@ namespace Chummer
             {
                 return Control.ToString();
             }
-
-            public bool Equals(TransportWrapper other)
-            {
-                return Control.Equals(other.Control);
-            }
         }
 
         protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
@@ -147,44 +147,48 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                string strAutosavePath;
                 try
                 {
-                    strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
-                }
-                catch (ArgumentException e)
-                {
-                    Log.Error(e, "Path: " + Utils.GetStartupPath);
-                    return;
-                }
-
-                if (!Directory.Exists(strAutosavePath))
-                {
+                    string strAutosavePath;
                     try
                     {
-                        Directory.CreateDirectory(strAutosavePath);
+                        strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
                     }
-                    catch (UnauthorizedAccessException)
+                    catch (ArgumentException e)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
-                        AutosaveStopWatch.Restart();
+                        Log.Error(e, "Path: " + Utils.GetStartupPath);
                         return;
                     }
+
+                    if (!Directory.Exists(strAutosavePath))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(strAutosavePath);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                            return;
+                        }
+                    }
+
+                    string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+
+                    if (string.IsNullOrEmpty(strShowFileName))
+                        strShowFileName = _objCharacter.CharacterName;
+                    foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                    {
+                        strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                    }
+
+                    string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
+                    _objCharacter.Save(strFilePath, false, false);
                 }
-
-                string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-
-                if (string.IsNullOrEmpty(strShowFileName))
-                    strShowFileName = _objCharacter.CharacterName;
-                var replaceChars = Path.GetInvalidFileNameChars();
-                foreach (var invalidChar in replaceChars)
+                finally
                 {
-                    strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                    AutosaveStopWatch.Restart();
                 }
-
-                string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                _objCharacter.Save(strFilePath, false, false);
-                AutosaveStopWatch.Restart();
             }
         }
 
@@ -2899,20 +2903,6 @@ namespace Chummer
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        {
-                            foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
-                            {
-                                treGear.FindNodeByTag(d)?.Remove();
-                            }
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                AddToTree(d, intNewIndex);
-                                intNewIndex += 1;
-                            }
-                            treGear.SelectedNode = treGear.FindNode(strSelectedId);
-                        }
-                        break;
                     case NotifyCollectionChangedAction.Move:
                         {
                             foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
@@ -3112,8 +3102,10 @@ namespace Chummer
                                 Tag = "Node_UnequippedModularCyberware",
                                 Text = LanguageManager.GetString("Node_UnequippedModularCyberware")
                             };
-                            treCyberware.Nodes.Insert(objBiowareRoot == null && objCyberwareRoot == null ? 0 :
-                                (objBiowareRoot == null) != (objCyberwareRoot == null) ? 1 : 2, objModularRoot);
+                            int intIndex = 0;
+                            if (objBiowareRoot != null || objCyberwareRoot != null)
+                                intIndex = objBiowareRoot != null && objCyberwareRoot != null ? 2 : 1;
+                            treCyberware.Nodes.Insert(intIndex, objModularRoot);
                             objModularRoot.Expand();
                         }
                         nodParent = objModularRoot;
@@ -4939,8 +4931,6 @@ namespace Chummer
                                             objContactControl.DeleteContact += DeleteContact;
                                             objContactControl.MouseDown += DragContactControl;
 
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
-
                                             panContacts.Controls.Add(objContactControl);
                                         }
                                         break;
@@ -4953,8 +4943,6 @@ namespace Chummer
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
-
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
@@ -5106,8 +5094,6 @@ namespace Chummer
                                             objContactControl.DeleteContact += DeleteContact;
                                             objContactControl.MouseDown += DragContactControl;
 
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
-
                                             panContacts.Controls.Add(objContactControl);
                                         }
                                         break;
@@ -5120,8 +5106,6 @@ namespace Chummer
                                             objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             //objContactControl.MouseDown += DragContactControl;
-
-                                            objContactControl.Expanded = true; // Manually adding a contact = expand by default
 
                                             panEnemies.Controls.Add(objContactControl);
                                         }
@@ -6494,23 +6478,19 @@ namespace Chummer
                         }
 
 
-                        bool blnMatchFound = false;
+                        Gear objExistingGear = null;
                         // If this is Ammunition, see if the character already has it on them.
                         if (objGear.Category == "Ammunition" && frmPickGear.Stack)
                         {
-                            foreach (Gear objVehicleGear in objSelectedVehicle.Gear.Where(objVehicleGear =>
-                                objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
-                                objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                                objVehicleGear.Children.SequenceEqual(objGear.Children)))
-                            {
-                                // A match was found, so increase the quantity instead.
-                                objVehicleGear.Quantity += objGear.Quantity;
-                                blnMatchFound = true;
-                                break;
-                            }
+                            objExistingGear = objSelectedVehicle.Gear.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                         }
 
-                        if (!blnMatchFound)
+                        if (objExistingGear != null)
+                        {
+                            // A match was found, so increase the quantity instead.
+                            objExistingGear.Quantity += objGear.Quantity;
+                        }
+                        else
                         {
                             // Add the Gear to the Vehicle.
                             objLocation?.Children.Add(objGear);

@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class ConditionMonitorUserControl
     {
@@ -121,7 +121,6 @@
             // ConditionMonitorUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.nudStun);
             this.Controls.Add(this._nudPhysical);
             this.Controls.Add(this._lblStun);

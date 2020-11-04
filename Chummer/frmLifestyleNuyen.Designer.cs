@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLifestyleNuyen));
             this.lblDescription = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblDice = new System.Windows.Forms.Label();
@@ -136,6 +137,7 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmLifestyleNuyen";

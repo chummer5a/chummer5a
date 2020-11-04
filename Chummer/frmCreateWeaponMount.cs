@@ -392,7 +392,6 @@ namespace Chummer
 
             cmdDeleteMod.Enabled = false;
             string strSelectedModId = treMods.SelectedNode?.Tag.ToString();
-            string strSpace = LanguageManager.GetString("String_Space");
             if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
             {
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedModId);
@@ -674,7 +673,9 @@ namespace Chummer
         private void cmdDeleteMod_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treMods.SelectedNode;
-            string strSelectedId = objSelectedNode?.Tag.ToString();
+            if (objSelectedNode == null)
+                return;
+            string strSelectedId = objSelectedNode.Tag.ToString();
             if (!string.IsNullOrEmpty(strSelectedId) && strSelectedId.IsGuid())
             {
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedId);
@@ -742,23 +743,17 @@ namespace Chummer
                             continue;
 
                         XmlNode xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("forbidden/vehicledetails");
-                        if (xmlTestNode != null)
+                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
-                            if (xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                            {
-                                continue;
-                            }
+                            continue;
                         }
 
                         xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("required/vehicledetails");
-                        if (xmlTestNode != null)
+                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
-                            if (!xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                            {
-                                continue;
-                            }
+                            continue;
                         }
 
                         string strName = xmlWeaponMountOptionNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
@@ -785,6 +780,7 @@ namespace Chummer
                                     blnAddItem = false;
                                     xmlNodeList = xmlRequiredNode.SelectNodes("visibility");
                                     if (xmlNodeList?.Count > 0)
+                                    {
                                         foreach (XmlNode xmlLoopNode in xmlNodeList)
                                         {
                                             if (xmlLoopNode.InnerText == strName)
@@ -793,6 +789,7 @@ namespace Chummer
                                                 break;
                                             }
                                         }
+                                    }
                                 }
 
                                 if (blnAddItem)
@@ -819,6 +816,7 @@ namespace Chummer
                                     blnAddItem = false;
                                     xmlNodeList = xmlRequiredNode.SelectNodes("flexibility");
                                     if (xmlNodeList?.Count > 0)
+                                    {
                                         foreach (XmlNode xmlLoopNode in xmlNodeList)
                                         {
                                             if (xmlLoopNode.InnerText == strName)
@@ -827,6 +825,7 @@ namespace Chummer
                                                 break;
                                             }
                                         }
+                                    }
                                 }
 
                                 if (blnAddItem)
@@ -853,6 +852,7 @@ namespace Chummer
                                     blnAddItem = false;
                                     xmlNodeList = xmlRequiredNode.SelectNodes("control");
                                     if (xmlNodeList?.Count > 0)
+                                    {
                                         foreach (XmlNode xmlLoopNode in xmlNodeList)
                                         {
                                             if (xmlLoopNode.InnerText == strName)
@@ -861,6 +861,7 @@ namespace Chummer
                                                 break;
                                             }
                                         }
+                                    }
                                 }
 
                                 if (blnAddItem)

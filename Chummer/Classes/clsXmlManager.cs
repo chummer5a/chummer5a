@@ -1032,7 +1032,7 @@ namespace Chummer
                     }
                 }
                 // ... otherwise loop through any nodes that satisfy the XPath filter.
-                else
+                else if (objNodesToEdit != null)
                 {
                     foreach (XmlNode objNodeToEdit in objNodesToEdit)
                     {

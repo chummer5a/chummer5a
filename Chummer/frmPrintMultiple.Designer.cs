@@ -34,6 +34,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPrintMultiple));
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.cmdSelectCharacter = new System.Windows.Forms.Button();
             this.cmdPrint = new System.Windows.Forms.Button();
@@ -164,6 +165,7 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmPrintMultiple";

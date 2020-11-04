@@ -75,7 +75,6 @@ namespace Chummer
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuToolsTranslator = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHeroLabImporter = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,7 +119,7 @@ namespace Chummer
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.MdiWindowListItem = this.windowsMenu;
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1174, 24);
+            this.menuStrip.Size = new System.Drawing.Size(1264, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "MenuStrip";
             this.menuStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menuStrip_ItemAdded);
@@ -168,7 +167,7 @@ namespace Chummer
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add1;
+            this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add;
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
@@ -464,7 +463,6 @@ namespace Chummer
             this.optionsToolStripMenuItem,
             this.mnuToolsUpdate,
             this.mnuRestart,
-            this.mnuToolsOmae,
             this.toolStripSeparator6,
             this.mnuToolsTranslator,
             this.mnuHeroLabImporter});
@@ -477,7 +475,7 @@ namespace Chummer
             // 
             this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die;
             this.mnuToolsDiceRoller.Name = "mnuToolsDiceRoller";
-            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsDiceRoller.Tag = "Menu_Main_DiceRoller";
             this.mnuToolsDiceRoller.Text = "&Dice Roller";
             this.mnuToolsDiceRoller.Click += new System.EventHandler(this.mnuToolsDiceRoller_Click);
@@ -485,13 +483,13 @@ namespace Chummer
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Image = global::Chummer.Properties.Resources.cog_edit;
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.optionsToolStripMenuItem.Tag = "Menu_Main_Options";
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
@@ -500,7 +498,7 @@ namespace Chummer
             // 
             this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.database_refresh;
             this.mnuToolsUpdate.Name = "mnuToolsUpdate";
-            this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsUpdate.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsUpdate.Tag = "Menu_Main_Update";
             this.mnuToolsUpdate.Text = "Check for Updates";
             this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
@@ -509,29 +507,21 @@ namespace Chummer
             // 
             this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
             this.mnuRestart.Name = "mnuRestart";
-            this.mnuRestart.Size = new System.Drawing.Size(171, 22);
+            this.mnuRestart.Size = new System.Drawing.Size(180, 22);
             this.mnuRestart.Tag = "Button_Update_RestartChummer";
             this.mnuRestart.Text = "Restart Chummer";
             this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
             // 
-            // mnuToolsOmae
-            // 
-            this.mnuToolsOmae.Name = "mnuToolsOmae";
-            this.mnuToolsOmae.Size = new System.Drawing.Size(171, 22);
-            this.mnuToolsOmae.Tag = "Menu_Main_Omae";
-            this.mnuToolsOmae.Text = "Omae";
-            this.mnuToolsOmae.Click += new System.EventHandler(this.mnuToolsOmae_Click);
-            // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuToolsTranslator
             // 
             this.mnuToolsTranslator.Image = global::Chummer.Properties.Resources.page_white_world;
             this.mnuToolsTranslator.Name = "mnuToolsTranslator";
-            this.mnuToolsTranslator.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsTranslator.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
@@ -540,7 +530,7 @@ namespace Chummer
             // 
             this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.HeroLab_16;
             this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
-            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(180, 22);
             this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
             this.mnuHeroLabImporter.Text = "Hero Lab Importer";
             this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
@@ -651,7 +641,7 @@ namespace Chummer
             this.helpToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(1174, 25);
+            this.toolStrip.Size = new System.Drawing.Size(1264, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "ToolStrip";
             this.toolStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemAdded);
@@ -741,7 +731,7 @@ namespace Chummer
             this.tabForms.Location = new System.Drawing.Point(0, 49);
             this.tabForms.Name = "tabForms";
             this.tabForms.SelectedIndex = 0;
-            this.tabForms.Size = new System.Drawing.Size(1174, 22);
+            this.tabForms.Size = new System.Drawing.Size(1264, 22);
             this.tabForms.TabIndex = 3;
             this.tabForms.Visible = false;
             this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
@@ -816,7 +806,7 @@ namespace Chummer
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1174, 681);
+            this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tabForms);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
@@ -901,7 +891,6 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabForms;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsDiceRoller;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem mnuToolsOmae;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpDumpshock;
         private System.Windows.Forms.ToolStripMenuItem mnuClearUnpinnedItems;
         private System.Windows.Forms.ToolStripMenuItem mnuRestart;

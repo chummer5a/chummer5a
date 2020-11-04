@@ -58,7 +58,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill skill in _lstAffectedSkills)
                     {
                         //To trigger new calculation of skill.KarmaPoints
-                        skill.Karma = skill.Karma;
+                        skill.OnMultiplePropertyChanged(nameof(Skill.Base));
                     }
                 }
             }
@@ -91,7 +91,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill skill in _lstAffectedSkills)
                     {
                         //To trigger new calculation of skill.KarmaPoints
-                        skill.Karma = skill.Karma;
+                        skill.OnPropertyChanged(nameof(Skill.Karma));
                     }
                 }
             }
@@ -678,7 +678,7 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))

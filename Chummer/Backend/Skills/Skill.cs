@@ -776,9 +776,9 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public bool IsExoticSkill => this is ExoticSkill;
+        public virtual bool IsExoticSkill => false;
 
-        public bool IsKnowledgeSkill => this is KnowledgeSkill;
+        public virtual bool IsKnowledgeSkill => false;
 
         public virtual bool AllowNameChange => false;
 
@@ -922,25 +922,22 @@ namespace Chummer.Backend.Skills
                 {
                     Specializations.Add(new SkillSpecialization(CharacterObject, value));
                 }
+                else if (Specializations[0].Free)
+                {
+                    Specializations.MergeInto(new SkillSpecialization(CharacterObject, value), (x, y) =>
+                    {
+                        if (x.Free == y.Free)
+                        {
+                            if (x.Expertise == y.Expertise)
+                                return 0;
+                            return x.Expertise ? 1 : -1;
+                        }
+                        return x.Free ? 1 : -1;
+                    });
+                }
                 else
                 {
-                    if (Specializations[0].Free)
-                    {
-                        Specializations.MergeInto(new SkillSpecialization(CharacterObject, value), (x, y) =>
-                            x.Free == y.Free
-                            ? x.Expertise == y.Expertise
-                                ? 0
-                                : x.Expertise
-                                    ? 1
-                                    : -1
-                            : x.Free
-                                ? 1
-                                : -1);
-                    }
-                    else
-                    {
-                        Specializations[0] = new SkillSpecialization(CharacterObject, value);
-                    }
+                    Specializations[0] = new SkillSpecialization(CharacterObject, value);
                 }
             }
         }
@@ -1626,7 +1623,7 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))

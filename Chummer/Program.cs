@@ -18,7 +18,6 @@
  */
  using System;
  using System.Collections;
- using System.Collections.ObjectModel;
  using System.ComponentModel;
  using System.Diagnostics;
  using System.Globalization;
@@ -36,7 +35,6 @@ using System.Linq;
  using Microsoft.ApplicationInsights;
  using Microsoft.ApplicationInsights.DataContracts;
  using Microsoft.ApplicationInsights.Extensibility;
- using Microsoft.ApplicationInsights.Extensibility.PerfCounterCollector.QuickPulse;
  using Microsoft.ApplicationInsights.Metrics;
  using Microsoft.ApplicationInsights.NLogTarget;
  using NLog;
@@ -224,7 +222,6 @@ namespace Chummer
                         Properties.Settings.Default.Save();
                     }
 
-                    
                     if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
 
@@ -335,7 +332,7 @@ namespace Chummer
                             {
                                 if (strArgs[i].Contains("/plugin"))
                                 {
-                                    if (GlobalOptions.PluginsEnabled == false)
+                                    if (!GlobalOptions.PluginsEnabled)
                                     {
                                         string msg =
                                             "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
@@ -393,15 +390,13 @@ namespace Chummer
                 }
                 PluginLoader?.Dispose();
                 Log.Info(ExceptionHeatmap.GenerateInfo());
-                if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal)
+                if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal
+                    && ChummerTelemetryClient != null)
                 {
-                    if (ChummerTelemetryClient != null)
-                    {
-                        ChummerTelemetryClient.Flush();
-                        //we have to wait a bit to give it time to upload the data
-                        Console.WriteLine("Waiting a bit to flush logging data...");
-                        Thread.Sleep(2000);
-                    }
+                    ChummerTelemetryClient.Flush();
+                    //we have to wait a bit to give it time to upload the data
+                    Console.WriteLine("Waiting a bit to flush logging data...");
+                    Thread.Sleep(2000);
                 }
             }
         }
@@ -497,7 +492,5 @@ namespace Chummer
             get;
             private set;
         }
-
-        
     }
 }

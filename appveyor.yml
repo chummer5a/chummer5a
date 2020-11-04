@@ -24,13 +24,14 @@ init:
 
 - ps: |
     $headers = @{
-    "Authorization" = "Bearer $token"
-    "Content-type" = "application/json"
+        "Authorization" = "Bearer $token"
+        "Content-type" = "application/json"
     }
 
     $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
     $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
 
+    $doBuild = 1
     if ($history.builds.Count -eq 2)
     {
         $CurrentCommitID = $history.builds[0].commitId
@@ -39,9 +40,14 @@ init:
         Write-host "Previous Commit ID: $PreviousCommitID"
         if (($CurrentCommitID -eq $PreviousCommitID) -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
         {
-        Write-host "Current Commit ID is the same as previous, exiting build."
-        Exit-AppveyorBuild
+            Write-host "Current Commit ID is the same as previous, exiting build."
+            $doBuild = 0
         }
+    }
+    # Exit-AppVeyorBuild needs to be the last command in the last closing if
+    if ($doBuild -eq 0)
+    {
+        Exit-AppVeyorBuild
     }
 install:
 - ps: |
@@ -49,8 +55,8 @@ install:
     $accountName = 'chummer5a'
     $projectSlug = 'chummer'
     $headers = @{
-    "Authorization" = "Bearer $token"
-    "Content-type" = "application/json"
+        "Authorization" = "Bearer $token"
+        "Content-type" = "application/json"
     }
 
     Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]

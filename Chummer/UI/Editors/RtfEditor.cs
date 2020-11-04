@@ -60,6 +60,18 @@ namespace Chummer.UI.Editors
             {
                 eNewFontStyle |= FontStyle.Strikeout;
             }
+            if (tsbSuperscript.Checked)
+            {
+                rtbContent.SelectionCharOffset = 3;
+            }
+            else if (tsbSubscript.Checked)
+            {
+                rtbContent.SelectionCharOffset = -3;
+            }
+            else
+            {
+                rtbContent.SelectionCharOffset = 0;
+            }
             if (tsbAlignRight.Checked)
             {
                 if (rtbContent.SelectionAlignment != HorizontalAlignment.Right)
@@ -120,6 +132,8 @@ namespace Chummer.UI.Editors
                 tsbUnderline.Checked = rtbContent.Font.Underline;
                 tsbStrikeout.Checked = rtbContent.Font.Strikeout;
             }
+            tsbSuperscript.Checked = IsSuperscript;
+            tsbSubscript.Checked = IsSubscript;
             tsbAlignLeft.Checked = IsJustifyLeft;
             tsbAlignCenter.Checked = IsJustifyCenter;
             tsbAlignRight.Checked = IsJustifyRight;
@@ -150,6 +164,10 @@ namespace Chummer.UI.Editors
             get => rtbContent.Text;
             set => rtbContent.Text = value.RtfToPlainText();
         }
+
+        private bool IsSuperscript => rtbContent.SelectionCharOffset > 0;
+
+        private bool IsSubscript => rtbContent.SelectionCharOffset < 0;
 
         private bool IsJustifyLeft => rtbContent.SelectionAlignment == HorizontalAlignment.Left;
 
@@ -193,6 +211,32 @@ namespace Chummer.UI.Editors
                 if (dlgNewColor.ShowDialog() != DialogResult.OK)
                     return;
                 rtbContent.SelectionBackColor = dlgNewColor.Color;
+            }
+        }
+
+        private void tsbSuperscript_Click(object sender, EventArgs e)
+        {
+            if (tsbSuperscript.Checked)
+            {
+                rtbContent.SelectionCharOffset = 3;
+                tsbSubscript.Checked = false;
+            }
+            else
+            {
+                rtbContent.SelectionCharOffset = 0;
+            }
+        }
+
+        private void tsbSubscript_Click(object sender, EventArgs e)
+        {
+            if (tsbSubscript.Checked)
+            {
+                rtbContent.SelectionCharOffset = -3;
+                tsbSuperscript.Checked = false;
+            }
+            else
+            {
+                rtbContent.SelectionCharOffset = 0;
             }
         }
 

@@ -47,9 +47,6 @@ namespace Chummer
     public sealed partial class frmChummerMain : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-#if LEGACY
-        private frmOmae _frmOmae;
-#endif
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
         private frmLoading _frmLoading;
@@ -79,6 +76,7 @@ namespace Chummer
         public frmChummerMain(bool isUnitTest = false)
         {
             Utils.IsUnitTest = isUnitTest;
+
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -354,6 +352,12 @@ namespace Chummer
                         tssItem.UpdateLightDarkMode();
                         tssItem.TranslateToolStripItemsRecursively();
                     }
+
+                    foreach (ToolStripMenuItem tssItem in mnuProcessFile.Items.OfType<ToolStripMenuItem>())
+                    {
+                        tssItem.UpdateLightDarkMode();
+                        tssItem.TranslateToolStripItemsRecursively();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -411,8 +415,6 @@ namespace Chummer
 
                 if (GlobalOptions.StartupFullscreen)
                     WindowState = FormWindowState.Maximized;
-
-                mnuToolsOmae.Visible = GlobalOptions.OmaeEnabled;
             }
         }
 
@@ -896,7 +898,7 @@ namespace Chummer
                 }
 
                 // If this is a new child form and does not have a tab page, create one.
-                if(!(ActiveMdiChild.Tag is TabPage))
+                if (!(ActiveMdiChild.Tag is TabPage))
                 {
                     TabPage tp = new TabPage
                     {
@@ -1015,22 +1017,6 @@ namespace Chummer
             }
         }
 
-        private void mnuToolsOmae_Click(object sender, EventArgs e)
-        {
-#if LEGACY
-            // Only a single instance of Omae can be open, so either find the current instance and focus on it, or create a new one.
-            if (_frmOmae == null)
-            {
-                _frmOmae = new frmOmae(this);
-                _frmOmae.Show();
-            }
-            else
-            {
-                _frmOmae.Focus();
-            }
-#endif
-        }
-
         private void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             // Translate the items in the menu by finding their Tags in the translation file.
@@ -1110,6 +1096,100 @@ namespace Chummer
             string strTranslator = Path.Combine(Utils.GetStartupPath, "Translator.exe");
             if(File.Exists(strTranslator))
                 Process.Start(strTranslator);
+        }
+
+        private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
+        {
+            if (_workerVersionUpdateChecker.IsBusy)
+                _workerVersionUpdateChecker.CancelAsync();
+            Properties.Settings.Default.WindowState = WindowState;
+            if (WindowState == FormWindowState.Normal)
+            {
+                Properties.Settings.Default.Location = Location;
+                Properties.Settings.Default.Size = Size;
+            }
+            else
+            {
+                Properties.Settings.Default.Location = RestoreBounds.Location;
+                Properties.Settings.Default.Size = RestoreBounds.Size;
+            }
+
+            try
+            {
+                Properties.Settings.Default.Save();
+            }
+            catch (IOException ex)
+            {
+                Log.Warn(ex, ex.Message);
+            }
+        }
+
+        private void mnuHeroLabImporter_Click(object sender, EventArgs e)
+        {
+            if (ShowMessageBox(LanguageManager.GetString("Message_HeroLabImporterWarning"),
+                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            frmHeroLabImporter frmImporter = new frmHeroLabImporter();
+            frmImporter.Show();
+        }
+
+        private void tabForms_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                for (int i = 0; i < tabForms.TabCount; ++i)
+                {
+                    if (!tabForms.GetTabRect(i).Contains(e.Location)) continue;
+                    if (tabForms.SelectedTab.Tag is CharacterShared)
+                    {
+                        if (tabForms.SelectedIndex == i)
+                        {
+                            mnuProcessFile.Show(this, e.Location);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void tsSave_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.SaveCharacter();
+            }
+        }
+
+        private void tsSaveAs_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.SaveCharacterAs();
+            }
+        }
+
+        private void tsClose_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.Close();
+            }
+        }
+
+        private void tsPrint_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            {
+                objShared.DoPrint();
+            }
+        }
+
+        private void frmChummerMain_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            tabForms.ItemSize = new Size(
+                tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
+                tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
         }
         #endregion
 
@@ -1613,23 +1693,6 @@ namespace Chummer
         #endregion
 
         #region Application Properties
-#if LEGACY
-        /// <summary>
-        /// The frmOmae window being used by the application.
-        /// </summary>
-        public frmOmae OmaeWindow
-        {
-            get
-            {
-                return _frmOmae;
-            }
-            set
-            {
-                _frmOmae = value;
-            }
-        }
-#endif
-
         /// <summary>
         /// The frmDiceRoller window being used by the application.
         /// </summary>
@@ -1644,99 +1707,5 @@ namespace Chummer
         public ObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
 
         #endregion
-
-        private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
-        {
-            if(_workerVersionUpdateChecker.IsBusy)
-                _workerVersionUpdateChecker.CancelAsync();
-            Properties.Settings.Default.WindowState = WindowState;
-            if(WindowState == FormWindowState.Normal)
-            {
-                Properties.Settings.Default.Location = Location;
-                Properties.Settings.Default.Size = Size;
-            }
-            else
-            {
-                Properties.Settings.Default.Location = RestoreBounds.Location;
-                Properties.Settings.Default.Size = RestoreBounds.Size;
-            }
-
-            try
-            {
-                Properties.Settings.Default.Save();
-            }
-            catch (IOException ex)
-            {
-                Log.Warn(ex, ex.Message);
-            }
-        }
-
-        private void mnuHeroLabImporter_Click(object sender, EventArgs e)
-        {
-            if(ShowMessageBox(LanguageManager.GetString("Message_HeroLabImporterWarning"),
-                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                return;
-
-            frmHeroLabImporter frmImporter = new frmHeroLabImporter();
-            frmImporter.Show();
-        }
-
-        private void tabForms_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                for (int i = 0; i < tabForms.TabCount; ++i)
-                {
-                    if (!tabForms.GetTabRect(i).Contains(e.Location)) continue;
-                    if (tabForms.SelectedTab.Tag is CharacterShared)
-                    {
-                        if (tabForms.SelectedIndex == i)
-                        {
-                            mnuProcessFile.Show(this, e.Location);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void tsSave_Click(object sender, EventArgs e)
-        {
-            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
-            {
-                objShared.SaveCharacter();
-            }
-        }
-
-        private void tsSaveAs_Click(object sender, EventArgs e)
-        {
-            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
-            {
-                objShared.SaveCharacterAs();
-            }
-        }
-
-        private void tsClose_Click(object sender, EventArgs e)
-        {
-            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
-            {
-                objShared.Close();
-            }
-        }
-
-        private void tsPrint_Click(object sender, EventArgs e)
-        {
-            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
-            {
-                objShared.DoPrint();
-            }
-        }
-
-        private void frmChummerMain_DpiChanged(object sender, DpiChangedEventArgs e)
-        {
-            tabForms.ItemSize = new Size(
-                tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
-                tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
-        }
     }
 }

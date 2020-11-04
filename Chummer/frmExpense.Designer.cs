@@ -29,21 +29,22 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmExpense));
             this.lblKarma = new System.Windows.Forms.Label();
             this.nudAmount = new Chummer.NumericUpDownEx();
             this.lblDescription = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkRefund = new Chummer.ColorableCheckBox();
+            this.chkRefund = new Chummer.ColorableCheckBox(this.components);
             this.datDate = new System.Windows.Forms.DateTimePicker();
             this.lblDateLabel = new System.Windows.Forms.Label();
             this.nudPercent = new Chummer.NumericUpDownEx();
             this.lblPercent = new System.Windows.Forms.Label();
-            this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox();
+            this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpAmount = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkForceCareerVisible = new Chummer.ColorableCheckBox();
+            this.chkForceCareerVisible = new Chummer.ColorableCheckBox(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
@@ -144,6 +145,7 @@ namespace Chummer
             // 
             this.chkRefund.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRefund.AutoSize = true;
+            this.chkRefund.DefaultColorScheme = true;
             this.chkRefund.Location = new System.Drawing.Point(88, 81);
             this.chkRefund.Name = "chkRefund";
             this.chkRefund.Size = new System.Drawing.Size(275, 17);
@@ -213,6 +215,7 @@ namespace Chummer
             // 
             this.chkKarmaNuyenExchange.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKarmaNuyenExchange.AutoSize = true;
+            this.chkKarmaNuyenExchange.DefaultColorScheme = true;
             this.chkKarmaNuyenExchange.Location = new System.Drawing.Point(88, 104);
             this.chkKarmaNuyenExchange.Name = "chkKarmaNuyenExchange";
             this.chkKarmaNuyenExchange.Size = new System.Drawing.Size(161, 17);
@@ -270,6 +273,7 @@ namespace Chummer
             // 
             this.chkForceCareerVisible.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkForceCareerVisible.AutoSize = true;
+            this.chkForceCareerVisible.DefaultColorScheme = true;
             this.chkForceCareerVisible.Location = new System.Drawing.Point(88, 127);
             this.chkForceCareerVisible.Name = "chkForceCareerVisible";
             this.chkForceCareerVisible.Size = new System.Drawing.Size(167, 17);
@@ -308,6 +312,7 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmExpense";

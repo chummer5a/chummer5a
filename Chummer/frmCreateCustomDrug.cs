@@ -312,7 +312,7 @@ namespace Chummer
 		}
 	}
 
-	class clsNodeData : object
+	class clsNodeData
     {
         public DrugComponent DrugComponent { get; }
         public int Level { get; }

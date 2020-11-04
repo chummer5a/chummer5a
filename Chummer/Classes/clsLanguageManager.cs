@@ -668,8 +668,10 @@ namespace Chummer
                 x => x["name"]?.InnerText, x => x["translate"]?.InnerText),
         };
 
-        public static string MAGAdeptString(string strLanguage, bool blnLong = false)
+        public static string MAGAdeptString(string strLanguage = "", bool blnLong = false)
         {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             return new StringBuilder(GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage))
                 .Append(GetString("String_Space", strLanguage))
                 .Append('(').Append(GetString("String_DescAdept", strLanguage)).Append(')').ToString();

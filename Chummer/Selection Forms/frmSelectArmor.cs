@@ -216,7 +216,7 @@ namespace Chummer
             UpdateArmorInfo();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
             RefreshList();
         }

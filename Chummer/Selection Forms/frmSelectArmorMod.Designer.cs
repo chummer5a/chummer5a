@@ -45,7 +45,7 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
             this.lblCapacity = new System.Windows.Forms.Label();
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.nudMarkup = new Chummer.NumericUpDownEx();
@@ -53,11 +53,11 @@ namespace Chummer
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
@@ -257,6 +257,7 @@ namespace Chummer
             // 
             this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeItem.AutoSize = true;
+            this.chkFreeItem.DefaultColorScheme = true;
             this.chkFreeItem.Location = new System.Drawing.Point(3, 3);
             this.chkFreeItem.Name = "chkFreeItem";
             this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
@@ -359,6 +360,7 @@ namespace Chummer
             // 
             this.chkBlackMarketDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBlackMarketDiscount.AutoSize = true;
+            this.chkBlackMarketDiscount.DefaultColorScheme = true;
             this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 3);
             this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
             this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
@@ -374,6 +376,7 @@ namespace Chummer
             this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkHideOverAvailLimit, 4);
+            this.chkHideOverAvailLimit.DefaultColorScheme = true;
             this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 204);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
@@ -381,7 +384,7 @@ namespace Chummer
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
-            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
+            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // tlpMain
             // 
@@ -444,13 +447,14 @@ namespace Chummer
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(242, 20);
             this.txtSearch.TabIndex = 71;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            this.txtSearch.TextChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // chkShowOnlyAffordItems
             // 
             this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkShowOnlyAffordItems, 4);
+            this.chkShowOnlyAffordItems.DefaultColorScheme = true;
             this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 227);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
@@ -458,7 +462,7 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
             this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
-            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
+            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // lblSearchLabel
             // 

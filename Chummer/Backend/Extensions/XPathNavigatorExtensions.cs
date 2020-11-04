@@ -152,7 +152,7 @@ namespace Chummer
                                         case "notequals":
                                         case "!=":
                                             blnInvert = !blnInvert;
-                                            goto case "==";
+                                            goto default;
                                         case "lessthan":
                                             blnInvert = !blnInvert;
                                             goto case ">=";
@@ -188,7 +188,6 @@ namespace Chummer
                                                     != blnInvert;
                                                 break;
                                             }
-                                        case "==":
                                         default:
                                             boolSubNodeResult =
                                                 (strTargetNodeText.Trim() == strOperationChildNodeText.Trim())

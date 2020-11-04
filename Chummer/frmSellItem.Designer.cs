@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSellItem));
             this.lblSellForLabel = new System.Windows.Forms.Label();
             this.nudPercent = new Chummer.NumericUpDownEx();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -176,6 +177,7 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(224, 81);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmSellItem";

@@ -32,6 +32,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUpdate));
             this.webNotes = new System.Windows.Forms.WebBrowser();
             this.cmdUpdate = new System.Windows.Forms.Button();
             this.pgbOverallProgress = new System.Windows.Forms.ProgressBar();
@@ -186,9 +187,9 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmUpdate";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.Text = "Chummer Updater";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmUpdate_FormClosing);
             this.Load += new System.EventHandler(this.frmUpdate_Load);

@@ -45,7 +45,6 @@ namespace Chummer.UI.Table
             // SpinnerTableCell
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this._spinner);
             this.Name = "SpinnerTableCell";

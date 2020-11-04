@@ -33,6 +33,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmKarmaMetatype));
             this.tlpMetatypes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lstMetatypes = new System.Windows.Forms.ListBox();
             this.cboCategory = new Chummer.ElasticComboBox();
@@ -42,8 +43,8 @@ namespace Chummer
             this.nudForce = new Chummer.NumericUpDownEx();
             this.lblSTR = new System.Windows.Forms.Label();
             this.tlpBottom = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkBloodSpirit = new Chummer.ColorableCheckBox();
-            this.chkPossessionBased = new Chummer.ColorableCheckBox();
+            this.chkBloodSpirit = new Chummer.ColorableCheckBox(this.components);
+            this.chkPossessionBased = new Chummer.ColorableCheckBox(this.components);
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
             this.lblForceLabel = new System.Windows.Forms.Label();
             this.lblINI = new System.Windows.Forms.Label();
@@ -64,11 +65,11 @@ namespace Chummer
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblQualitiesLabel = new System.Windows.Forms.Label();
-            this.cmdOK = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
             this.lblKarma = new System.Windows.Forms.Label();
             this.cboMetavariant = new Chummer.ElasticComboBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdCancel = new System.Windows.Forms.Button();
+            this.cmdOK = new System.Windows.Forms.Button();
             this.tlpMetatypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.tlpBottom.SuspendLayout();
@@ -253,6 +254,7 @@ namespace Chummer
             // 
             this.chkBloodSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkBloodSpirit.AutoSize = true;
+            this.chkBloodSpirit.DefaultColorScheme = true;
             this.chkBloodSpirit.Location = new System.Drawing.Point(3, 5);
             this.chkBloodSpirit.Name = "chkBloodSpirit";
             this.chkBloodSpirit.Size = new System.Drawing.Size(79, 17);
@@ -267,6 +269,7 @@ namespace Chummer
             // 
             this.chkPossessionBased.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPossessionBased.AutoSize = true;
+            this.chkPossessionBased.DefaultColorScheme = true;
             this.chkPossessionBased.Location = new System.Drawing.Point(88, 5);
             this.chkPossessionBased.Name = "chkPossessionBased";
             this.chkPossessionBased.Size = new System.Drawing.Size(211, 17);
@@ -520,35 +523,6 @@ namespace Chummer
             this.lblQualitiesLabel.Tag = "String_Qualities";
             this.lblQualitiesLabel.Text = "Qualities:";
             // 
-            // cmdOK
-            // 
-            this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
-            this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
-            this.cmdOK.TabIndex = 67;
-            this.cmdOK.Tag = "String_OK";
-            this.cmdOK.Text = "OK";
-            this.cmdOK.UseVisualStyleBackColor = true;
-            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
-            this.cmdCancel.TabIndex = 68;
-            this.cmdCancel.Tag = "String_Cancel";
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
             // lblKarma
             // 
             this.lblKarma.AutoSize = true;
@@ -592,6 +566,35 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 72;
             // 
+            // cmdCancel
+            // 
+            this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.TabIndex = 68;
+            this.cmdCancel.Tag = "String_Cancel";
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            // 
+            // cmdOK
+            // 
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Name = "cmdOK";
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.TabIndex = 67;
+            this.cmdOK.Tag = "String_OK";
+            this.cmdOK.Text = "OK";
+            this.cmdOK.UseVisualStyleBackColor = true;
+            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
+            // 
             // frmKarmaMetatype
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -601,6 +604,7 @@ namespace Chummer
             this.ControlBox = false;
             this.Controls.Add(this.tlpMetatypes);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmKarmaMetatype";

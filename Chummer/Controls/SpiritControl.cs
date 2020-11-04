@@ -656,7 +656,7 @@ namespace Chummer
 
                 // Link the newly-created Critter to the Spirit.
                 imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
-                ContactDetailChanged?.Invoke(this, null);
+                ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
                 Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(true);
 

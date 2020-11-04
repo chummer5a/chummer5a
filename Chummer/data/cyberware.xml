@@ -1109,6 +1109,7 @@
         </oneof>
       </forbidden>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>c7b88f7e-4e3c-4c29-9f86-a4e244ec5066</id>
@@ -1148,6 +1149,7 @@
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>eee044c5-3586-4f04-9577-5e290466c485</id>
@@ -1183,6 +1185,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>cc503281-ff05-4e22-9121-09116a4a8306</id>
@@ -1214,6 +1217,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>fdb0ef96-2234-46fa-9d51-55c7d1164b7a</id>
@@ -1259,6 +1263,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>f769235c-c295-4c31-9843-e9d413d77adf</id>
@@ -1307,6 +1312,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>48e490fb-fe6a-482c-a47d-40cb04985897</id>
@@ -1417,6 +1423,7 @@
         </oneof>
       </forbidden>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>bf29ff5e-839a-4fd3-8063-371ce05065d6</id>
@@ -1456,6 +1463,7 @@
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>1e511ad7-4806-4862-8685-a04887b1bec9</id>
@@ -1491,6 +1499,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>a1591e59-d859-40fc-aaf8-30fde5cf6a42</id>
@@ -1522,6 +1531,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>4e8c4c99-b0bf-494f-b82c-1ab15ec26eb7</id>
@@ -1567,6 +1577,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>d3a7e6f2-cb8c-42c0-9aef-c88b26648859</id>
@@ -1616,6 +1627,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>40878e5d-cabc-4980-ad87-0dd5d5f5c037</id>
@@ -7420,6 +7432,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>4ca30ddc-f990-40bc-bf1f-4789996ae34c</id>
@@ -7451,6 +7464,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>1839428f-b8a2-4461-af47-c821ae808dde</id>
@@ -7482,6 +7496,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>b8d74993-2ae6-4c42-98ef-f72e96415d7b</id>
@@ -7513,6 +7528,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>4415180f-c3a0-4bb9-8580-3ed689ab6863</id>

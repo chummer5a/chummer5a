@@ -131,18 +131,19 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
 
-            if (chkBubbleDie.Checked)
+            if (chkBubbleDie.Checked
+                && (chkVariableGlitch.Checked
+                    || (intGlitchCount == intGlitchThreshold - 1
+                        && (decimal.ToInt32(nudDice.Value) & 1) == 0)))
             {
-                if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
+                int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
+                    LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
+                if ((cboMethod.SelectedValue.ToString() == "Standard"
+                     || cboMethod.SelectedValue.ToString() == "Large")
+                    && intBubbleDieResult <= intGlitchMin)
                 {
-                    int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
-                        LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
-                    if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
-                    {
-                        if (intBubbleDieResult <= intGlitchMin)
-                            intGlitchCount++;
-                    }
+                    intGlitchCount++;
                 }
             }
 
@@ -204,11 +205,10 @@ namespace Chummer
         private void cmdReroll_Click(object sender, EventArgs e)
         {
             int intKeepThreshold = 5;
-            if (cboMethod.SelectedValue.ToString() == "Standard")
+            if (cboMethod.SelectedValue.ToString() == "Standard" && chkCinematicGameplay.Checked)
             {
                 // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
-                if (chkCinematicGameplay.Checked)
-                    intKeepThreshold = 4;
+                intKeepThreshold = 4;
             }
 
             int intKeepSum = 0;
@@ -286,18 +286,19 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
 
-            if (chkBubbleDie.Checked)
+            if (chkBubbleDie.Checked
+                && (chkVariableGlitch.Checked
+                    || (intGlitchCount == intGlitchThreshold - 1
+                        && (decimal.ToInt32(nudDice.Value) & 1) == 0)))
             {
-                if (chkVariableGlitch.Checked || (intGlitchCount == intGlitchThreshold - 1 && (decimal.ToInt32(nudDice.Value) & 1) == 0))
+                int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
+                    LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
+                if ((cboMethod.SelectedValue.ToString() == "Standard"
+                     || cboMethod.SelectedValue.ToString() == "Large")
+                    && intBubbleDieResult <= intGlitchMin)
                 {
-                    int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                    _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
-                        LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
-                    if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
-                    {
-                        if (intBubbleDieResult <= intGlitchMin)
-                            intGlitchCount++;
-                    }
+                    intGlitchCount++;
                 }
             }
 

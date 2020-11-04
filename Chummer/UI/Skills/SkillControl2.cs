@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,8 +24,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using Chummer.Annotations;
-using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
+using Chummer.Properties;
 
 namespace Chummer.UI.Skills
 {
@@ -38,11 +40,23 @@ namespace Chummer.UI.Skills
         private readonly Font _fntNormalName;
         private readonly Font _fntItalicName;
         private CharacterAttrib _objAttributeActive;
+        private readonly Graphics _objGraphics;
+        private readonly Button cmdDelete;
+        private readonly ButtonWithToolTip btnCareerIncrease;
+        private readonly Label lblCareerRating;
+        private readonly NumericUpDownEx nudKarma;
+        private readonly NumericUpDownEx nudSkill;
+        private readonly Label lblCareerSpec;
+        private readonly ButtonWithToolTip btnAddSpec;
+        private readonly ElasticComboBox cboSpec;
+        private readonly ColorableCheckBox chkKarma;
+        private readonly ElasticComboBox cboSelectAttribute;
 
         public SkillControl2(Skill objSkill)
         {
             if (objSkill == null)
                 return;
+            _objGraphics = CreateGraphics();
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
@@ -75,31 +89,118 @@ namespace Chummer.UI.Skills
             lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
             lblModifiedRating.ToolTipText = objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
 
+            // Creating controls outside of the designer saves on handles if the controls would be invisible anyway
             if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
-                cmdDelete.Visible = true;
+            {
+                cmdDelete = new Button
+                {
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "cmdDelete",
+                    Tag = "String_Delete",
+                    Text = "Delete",
+                    UseVisualStyleBackColor = true
+                };
+                cmdDelete.Click += cmdDelete_Click;
+                cmdDelete.UpdateLightDarkMode();
+                cmdDelete.TranslateWinForm();
+                tlpRight.Controls.Add(cmdDelete, 4, 0);
+            }
 
             if (objSkill.CharacterObject.Created)
             {
-                flpButtonsCreate.Visible = false;
-                tlpSpecsCreate.Visible = false;
-                flpButtonsCareer.Dock = DockStyle.Fill;
-                tlpSpecsCareer.Dock = DockStyle.Fill;
+                lblCareerRating = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    MinimumSize = new Size((int) (25 * _objGraphics.DpiX / 96.0f), 0),
+                    Name = "lblCareerRating",
+                    Text = "00",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                btnCareerIncrease = new ButtonWithToolTip
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Image = Resources.add,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "btnCareerIncrease",
+                    Padding = new Padding(1),
+                    UseVisualStyleBackColor = true
+                };
+                btnCareerIncrease.Click += btnCareerIncrease_Click;
 
                 lblCareerRating.DoOneWayDataBinding("Text", objSkill, nameof(Skill.Rating));
                 btnCareerIncrease.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
                 btnCareerIncrease.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.UpgradeToolTip));
 
+                lblCareerRating.UpdateLightDarkMode();
+                lblCareerRating.TranslateWinForm();
+                btnCareerIncrease.UpdateLightDarkMode();
+                btnCareerIncrease.TranslateWinForm();
+                tlpMain.Controls.Add(lblCareerRating, 2, 0);
+                tlpMain.Controls.Add(btnCareerIncrease, 3, 0);
+
+                btnAddSpec = new ButtonWithToolTip
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Image = Resources.add,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "btnAddSpec",
+                    Padding = new Padding(1),
+                    UseVisualStyleBackColor = true
+                };
+                btnAddSpec.Click += btnAddSpec_Click;
+                lblCareerSpec = new Label
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    Name = "lblCareerSpec",
+                    Text = "[Specializations]",
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
                 lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
                 btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
                 btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
                 btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
 
+                lblCareerSpec.UpdateLightDarkMode();
+                lblCareerSpec.TranslateWinForm();
+                btnAddSpec.UpdateLightDarkMode();
+                btnAddSpec.TranslateWinForm();
+                tlpRight.Controls.Add(lblCareerSpec, 0, 0);
+                tlpRight.Controls.Add(btnAddSpec, 1, 0);
+
                 List<ListItem> lstAttributeItems = new List<ListItem>(AttributeSection.AttributeStrings.Count);
                 foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
                 {
-                    string strAttributeShort = LanguageManager.GetString("String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);
-                    lstAttributeItems.Add(new ListItem(strLoopAttribute, !string.IsNullOrEmpty(strAttributeShort) ? strAttributeShort : strLoopAttribute));
+                    if (strLoopAttribute == "MAGAdept")
+                    {
+                        if (!objSkill.CharacterObject.Options.MysAdeptSecondMAGAttribute)
+                            continue;
+                        lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.MAGAdeptString()));
+                    }
+                    else
+                    {
+                        string strAttributeShort = LanguageManager.GetString("String_Attribute" + strLoopAttribute + "Short", GlobalOptions.Language, false);
+                        lstAttributeItems.Add(new ListItem(strLoopAttribute, !string.IsNullOrEmpty(strAttributeShort) ? strAttributeShort : strLoopAttribute));
+                    }
                 }
+
+                cboSelectAttribute = new ElasticComboBox
+                {
+                    Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    FormattingEnabled = true,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "cboSelectAttribute"
+                };
+                cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
                 cboSelectAttribute.BeginUpdate();
                 cboSelectAttribute.DataSource = null;
                 cboSelectAttribute.DisplayMember = nameof(ListItem.Name);
@@ -107,11 +208,30 @@ namespace Chummer.UI.Skills
                 cboSelectAttribute.DataSource = lstAttributeItems;
                 cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
                 cboSelectAttribute.EndUpdate();
+                cboSelectAttribute.UpdateLightDarkMode();
+                cboSelectAttribute.TranslateWinForm();
+                pnlAttributes.Controls.Add(cboSelectAttribute);
             }
             else
             {
-                flpButtonsCareer.Visible = false;
-                flpButtonsCreate.Dock = DockStyle.Fill;
+                nudSkill = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 2, 3, 2),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Name = "nudSkill"
+                };
+                nudKarma = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 2, 3, 2),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Name = "nudKarma"
+                };
 
                 // Trick to make it seem like the button is a label (+ onclick method not doing anything in Create mode)
                 btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
@@ -125,17 +245,40 @@ namespace Chummer.UI.Skills
                 nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
                 nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
+                nudSkill.UpdateLightDarkMode();
+                nudSkill.TranslateWinForm();
+                nudKarma.UpdateLightDarkMode();
+                nudKarma.TranslateWinForm();
+                tlpMain.Controls.Add(nudSkill, 2, 0);
+                tlpMain.Controls.Add(nudKarma, 3, 0);
+
                 if (objSkill.IsExoticSkill)
                 {
-                    tlpSpecsCreate.Visible = false;
-                    tlpSpecsCareer.Dock = DockStyle.Fill;
-                    btnAddSpec.Visible = false;
+                    lblCareerSpec = new Label
+                    {
+                        Anchor = AnchorStyles.Left,
+                        AutoSize = true,
+                        Name = "lblCareerSpec",
+                        Text = "[Specializations]",
+                        TextAlign = ContentAlignment.MiddleLeft
+                    };
                     lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
+                    lblCareerSpec.UpdateLightDarkMode();
+                    lblCareerSpec.TranslateWinForm();
+                    tlpRight.Controls.Add(lblCareerSpec, 0, 0);
                 }
                 else
                 {
-                    tlpSpecsCareer.Visible = false;
-                    tlpSpecsCreate.Dock = DockStyle.Fill;
+                    cboSpec = new ElasticComboBox
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoCompleteMode = AutoCompleteMode.Suggest,
+                        FormattingEnabled = true,
+                        Margin = new Padding(3, 0, 3, 0),
+                        Name = "cboSpec",
+                        Sorted = true,
+                        TabStop = false
+                    };
                     cboSpec.BeginUpdate();
                     cboSpec.DataSource = null;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
@@ -145,11 +288,25 @@ namespace Chummer.UI.Skills
                     cboSpec.DoDatabinding("Text", objSkill, nameof(Skill.Specialization));
                     cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                     cboSpec.EndUpdate();
+                    cboSpec.UpdateLightDarkMode();
+                    cboSpec.TranslateWinForm();
+                    chkKarma = new ColorableCheckBox(components)
+                    {
+                        Anchor = AnchorStyles.Left,
+                        AutoSize = true,
+                        DefaultColorScheme = true,
+                        Margin = new Padding(3, 0, 3, 0),
+                        Name = "chkKarma",
+                        UseVisualStyleBackColor = true
+                    };
+                    chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
+                    chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
+                    chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
+                    chkKarma.UpdateLightDarkMode();
+                    chkKarma.TranslateWinForm();
+                    tlpRight.Controls.Add(cboSpec, 0, 0);
+                    tlpRight.Controls.Add(chkKarma, 1, 0);
                 }
-
-                chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
-                chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
             }
 
             this.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.Enabled));
@@ -189,7 +346,7 @@ namespace Chummer.UI.Skills
                         goto case nameof(Skill.CGLSpecializations);
                     break;
                 case nameof(Skill.CGLSpecializations):
-                    if (cboSpec.Visible)
+                    if (cboSpec?.Visible == true)
                     {
                         string strOldSpec = cboSpec.Text;
                         cboSpec.BeginUpdate();
@@ -246,16 +403,17 @@ namespace Chummer.UI.Skills
             decimal decSpecCostMultiplier = 1.0m;
             foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
             {
-                if (objLoopImprovement.Minimum <= intTotalBaseRating &&
-                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created) && objLoopImprovement.Enabled)
+                if (objLoopImprovement.Minimum <= intTotalBaseRating
+                    && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                        || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created
+                        || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created)
+                    && objLoopImprovement.Enabled
+                    && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
                 {
-                    if (objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
-                    {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                            intExtraSpecCost += objLoopImprovement.Value;
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                    }
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                        intExtraSpecCost += objLoopImprovement.Value;
+                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                        decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                 }
             }
             if (decSpecCostMultiplier != 1.0m)
@@ -283,7 +441,7 @@ namespace Chummer.UI.Skills
 
         private void btnAttribute_Click(object sender, EventArgs e)
         {
-            if (_objSkill.CharacterObject.Created)
+            if (cboSelectAttribute != null)
             {
                 btnAttribute.Visible = false;
                 cboSelectAttribute.Visible = true;
@@ -313,15 +471,18 @@ namespace Chummer.UI.Skills
         public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
 
         [UsedImplicitly]
-        public int NudSkillWidth => nudSkill.Visible ? nudSkill.Width : 0;
+        public int NudSkillWidth => nudSkill?.Visible == true ? nudSkill.Width : 0;
 
         [UsedImplicitly]
         public void ResetSelectAttribute(object sender, EventArgs e)
         {
             if (!CustomAttributeSet)
                 return;
-            cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
-            cboSelectAttribute_Closed(sender, e);
+            if (cboSelectAttribute != null)
+            {
+                cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
+                cboSelectAttribute_Closed(sender, e);
+            }
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -416,12 +577,10 @@ namespace Chummer.UI.Skills
 
         private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            using (Graphics g = CreateGraphics())
-            {
-                pnlAttributes.MinimumSize = new Size((int)(40 * g.DpiX / 96.0f), 0);
-                lblCareerRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
-                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
-            }
+            pnlAttributes.MinimumSize = new Size((int)(40 * _objGraphics.DpiX / 96.0f), 0);
+            if (lblCareerRating != null)
+                lblCareerRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
+            lblModifiedRating.MinimumSize = new Size((int)(50 * _objGraphics.DpiX / 96.0f), 0);
         }
     }
 }

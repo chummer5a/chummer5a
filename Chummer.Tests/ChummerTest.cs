@@ -178,7 +178,7 @@ namespace Chummer.Tests
                         strErrorMessage += Environment.NewLine + e;
                         Debug.WriteLine(strErrorMessage);
                         Console.WriteLine(strErrorMessage);
-                        throw;
+                        Assert.Fail(strErrorMessage);
                     }
                 }
             }
@@ -211,6 +211,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
             }
             catch (Exception e)
             {
@@ -219,7 +220,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                throw;
+                Assert.Fail(strErrorMessage);
             }
 
             return objCharacter;
@@ -234,7 +235,7 @@ namespace Chummer.Tests
             Assert.IsNotNull(c);
             try
             {
-                c.Save(path);
+                c.Save(path, false);
             }
             catch (AssertFailedException e)
             {
@@ -242,6 +243,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
             }
             catch (InvalidOperationException e)
             {
@@ -249,6 +251,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
             }
             catch (Exception e)
             {
@@ -256,7 +259,7 @@ namespace Chummer.Tests
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
-                throw;
+                Assert.Fail(strErrorMessage);
             }
         }
     }

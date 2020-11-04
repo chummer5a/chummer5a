@@ -74,16 +74,18 @@ namespace Chummer
         /// <param name="predicate">Two-argument function that takes its first argument from the base list and the second from the target list. If it does not return true on any available pair, the method returns false.</param>
         public static bool DeepMatch<T>(this ICollection<T> objParentList, ICollection<T> objTargetList, Func<T, ICollection<T>> funcGetChildrenMethod, Func<T, T, bool> predicate)
         {
-            if (objParentList == null && objTargetList == null)
-                return true;
-            if (objParentList?.Count != objTargetList?.Count)
+            if (objParentList == null || objTargetList == null)
+                return objParentList == null && objTargetList == null;
+            if (objParentList.Count != objTargetList.Count)
                 return false;
             HashSet<T> lstExclude = new HashSet<T>();
             foreach (T objLoopChild in objParentList)
             {
                 foreach (T objTargetChild in objTargetList)
                 {
-                    if (!lstExclude.Contains(objTargetChild) && predicate(objLoopChild, objTargetChild) && funcGetChildrenMethod(objLoopChild).DeepMatch(funcGetChildrenMethod(objTargetChild), funcGetChildrenMethod, predicate))
+                    if (!lstExclude.Contains(objTargetChild)
+                        && predicate(objLoopChild, objTargetChild)
+                        && funcGetChildrenMethod(objLoopChild).DeepMatch(funcGetChildrenMethod(objTargetChild), funcGetChildrenMethod, predicate))
                     {
                         lstExclude.Add(objTargetChild);
                         goto NextItem;
@@ -208,6 +210,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to Linq's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepLast<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
+        {
+            if (objParentList == null)
+                throw new ArgumentNullException(nameof(objParentList));
+            T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod);
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
         /// Similar to Linq's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
@@ -224,19 +239,6 @@ namespace Chummer
                     objReturn = objTemp;
             }
             return objReturn;
-        }
-
-        /// <summary>
-        /// Similar to Linq's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
-        /// </summary>
-        public static T DeepLast<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
-        {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
-            T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod);
-            if (objReturn?.Equals(default(T)) == false)
-                return objReturn;
-            throw new InvalidOperationException();
         }
 
         /// <summary>

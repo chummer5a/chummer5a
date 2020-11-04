@@ -5727,12 +5727,16 @@ namespace Chummer.Backend.Equipment
                             }
                             else if (!string.IsNullOrEmpty(strName))
                             {
-                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                                if (objPlugin != null)
+                                foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
                                 {
-                                    objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
-                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                    Gear objPlugin = objLoopAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                    if (objPlugin != null)
+                                    {
+                                        objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                        objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                        objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                        break;
+                                    }
                                 }
                             }
                         }

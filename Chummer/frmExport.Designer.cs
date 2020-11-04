@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmExport));
             this.lblExport = new System.Windows.Forms.Label();
             this.cboXSLT = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -53,6 +54,7 @@ namespace Chummer
             this.lblExport.Tag = "Label_ExportTo";
             this.lblExport.Text = "Export to:";
             this.lblExport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblExport.UseWaitCursor = true;
             // 
             // cboXSLT
             // 
@@ -64,6 +66,7 @@ namespace Chummer
             this.cboXSLT.Size = new System.Drawing.Size(382, 21);
             this.cboXSLT.TabIndex = 1;
             this.cboXSLT.TooltipText = "";
+            this.cboXSLT.UseWaitCursor = true;
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
             // cmdCancel
@@ -79,6 +82,7 @@ namespace Chummer
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.UseWaitCursor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // cmdOK
@@ -94,6 +98,7 @@ namespace Chummer
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
             this.cmdOK.UseVisualStyleBackColor = true;
+            this.cmdOK.UseWaitCursor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
             // tlpMain
@@ -116,6 +121,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(446, 263);
             this.tlpMain.TabIndex = 5;
+            this.tlpMain.UseWaitCursor = true;
             // 
             // tlpButtons
             // 
@@ -135,6 +141,7 @@ namespace Chummer
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 6;
+            this.tlpButtons.UseWaitCursor = true;
             // 
             // txtText
             // 
@@ -150,6 +157,7 @@ namespace Chummer
             this.txtText.TabIndex = 7;
             this.txtText.Tag = "String_Generating_Data";
             this.txtText.Text = "Generating Data...";
+            this.txtText.UseWaitCursor = true;
             this.txtText.Leave += new System.EventHandler(this.txtText_Leave);
             this.txtText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.txtText_MouseUp);
             // 
@@ -164,6 +172,7 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmExport";

@@ -20,6 +20,7 @@ namespace Chummer
             {
                 components?.Dispose();
                 watcherCharacterRosterFolder?.Dispose();
+                _objGraphics?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -33,12 +34,18 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCharacterRoster));
             this.tabCharacterText = new System.Windows.Forms.TabControl();
             this.panCharacterBio = new System.Windows.Forms.TabPage();
+            this.txtCharacterBio = new System.Windows.Forms.TextBox();
             this.panCharacterConcept = new System.Windows.Forms.TabPage();
+            this.txtCharacterConcept = new System.Windows.Forms.TextBox();
             this.panCharacterBackground = new System.Windows.Forms.TabPage();
+            this.txtCharacterBackground = new System.Windows.Forms.TextBox();
             this.panCharacterNotes = new System.Windows.Forms.TabPage();
+            this.txtCharacterNotes = new System.Windows.Forms.TextBox();
             this.panGameNotes = new System.Windows.Forms.TabPage();
+            this.txtGameNotes = new System.Windows.Forms.TextBox();
             this.lblCharacterName = new System.Windows.Forms.Label();
             this.lblCharacterNameLabel = new System.Windows.Forms.Label();
             this.lblMetatype = new System.Windows.Forms.Label();
@@ -58,11 +65,6 @@ namespace Chummer
             this.lblSettingsLabel = new System.Windows.Forms.Label();
             this.tlpCharacterRoster = new Chummer.BufferedTableLayoutPanel(this.components);
             this.picMugshot = new System.Windows.Forms.PictureBox();
-            this.txtCharacterBio = new System.Windows.Forms.TextBox();
-            this.txtCharacterConcept = new System.Windows.Forms.TextBox();
-            this.txtCharacterBackground = new System.Windows.Forms.TextBox();
-            this.txtCharacterNotes = new System.Windows.Forms.TextBox();
-            this.txtGameNotes = new System.Windows.Forms.TextBox();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
             this.panCharacterConcept.SuspendLayout();
@@ -100,6 +102,17 @@ namespace Chummer
             this.panCharacterBio.Text = "Description";
             this.panCharacterBio.UseVisualStyleBackColor = true;
             // 
+            // txtCharacterBio
+            // 
+            this.txtCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterBio.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterBio.MaxLength = 2147483647;
+            this.txtCharacterBio.Multiline = true;
+            this.txtCharacterBio.Name = "txtCharacterBio";
+            this.txtCharacterBio.ReadOnly = true;
+            this.txtCharacterBio.Size = new System.Drawing.Size(445, 199);
+            this.txtCharacterBio.TabIndex = 0;
+            // 
             // panCharacterConcept
             // 
             this.panCharacterConcept.Controls.Add(this.txtCharacterConcept);
@@ -111,6 +124,17 @@ namespace Chummer
             this.panCharacterConcept.Tag = "Tab_Roster_Concept";
             this.panCharacterConcept.Text = "Concept";
             this.panCharacterConcept.UseVisualStyleBackColor = true;
+            // 
+            // txtCharacterConcept
+            // 
+            this.txtCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterConcept.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterConcept.MaxLength = 2147483647;
+            this.txtCharacterConcept.Multiline = true;
+            this.txtCharacterConcept.Name = "txtCharacterConcept";
+            this.txtCharacterConcept.ReadOnly = true;
+            this.txtCharacterConcept.Size = new System.Drawing.Size(445, 199);
+            this.txtCharacterConcept.TabIndex = 0;
             // 
             // panCharacterBackground
             // 
@@ -124,6 +148,17 @@ namespace Chummer
             this.panCharacterBackground.Text = "Background";
             this.panCharacterBackground.UseVisualStyleBackColor = true;
             // 
+            // txtCharacterBackground
+            // 
+            this.txtCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterBackground.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterBackground.MaxLength = 2147483647;
+            this.txtCharacterBackground.Multiline = true;
+            this.txtCharacterBackground.Name = "txtCharacterBackground";
+            this.txtCharacterBackground.ReadOnly = true;
+            this.txtCharacterBackground.Size = new System.Drawing.Size(445, 199);
+            this.txtCharacterBackground.TabIndex = 0;
+            // 
             // panCharacterNotes
             // 
             this.panCharacterNotes.Controls.Add(this.txtCharacterNotes);
@@ -136,6 +171,17 @@ namespace Chummer
             this.panCharacterNotes.Text = "Character Notes";
             this.panCharacterNotes.UseVisualStyleBackColor = true;
             // 
+            // txtCharacterNotes
+            // 
+            this.txtCharacterNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterNotes.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterNotes.MaxLength = 2147483647;
+            this.txtCharacterNotes.Multiline = true;
+            this.txtCharacterNotes.Name = "txtCharacterNotes";
+            this.txtCharacterNotes.ReadOnly = true;
+            this.txtCharacterNotes.Size = new System.Drawing.Size(445, 199);
+            this.txtCharacterNotes.TabIndex = 0;
+            // 
             // panGameNotes
             // 
             this.panGameNotes.Controls.Add(this.txtGameNotes);
@@ -147,6 +193,17 @@ namespace Chummer
             this.panGameNotes.Tag = "Tab_Roster_GameNotes";
             this.panGameNotes.Text = "Game Notes";
             this.panGameNotes.UseVisualStyleBackColor = true;
+            // 
+            // txtGameNotes
+            // 
+            this.txtGameNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtGameNotes.Location = new System.Drawing.Point(3, 3);
+            this.txtGameNotes.MaxLength = 2147483647;
+            this.txtGameNotes.Multiline = true;
+            this.txtGameNotes.Name = "txtGameNotes";
+            this.txtGameNotes.ReadOnly = true;
+            this.txtGameNotes.Size = new System.Drawing.Size(445, 199);
+            this.txtGameNotes.TabIndex = 0;
             // 
             // lblCharacterName
             // 
@@ -421,69 +478,14 @@ namespace Chummer
             this.picMugshot.TabStop = false;
             this.picMugshot.SizeChanged += new System.EventHandler(this.picMugshot_SizeChanged);
             // 
-            // txtCharacterBio
-            // 
-            this.txtCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCharacterBio.Location = new System.Drawing.Point(3, 3);
-            this.txtCharacterBio.MaxLength = 2147483647;
-            this.txtCharacterBio.Multiline = true;
-            this.txtCharacterBio.Name = "txtCharacterBio";
-            this.txtCharacterBio.ReadOnly = true;
-            this.txtCharacterBio.Size = new System.Drawing.Size(445, 199);
-            this.txtCharacterBio.TabIndex = 0;
-            // 
-            // txtCharacterConcept
-            // 
-            this.txtCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCharacterConcept.Location = new System.Drawing.Point(3, 3);
-            this.txtCharacterConcept.MaxLength = 2147483647;
-            this.txtCharacterConcept.Multiline = true;
-            this.txtCharacterConcept.Name = "txtCharacterConcept";
-            this.txtCharacterConcept.ReadOnly = true;
-            this.txtCharacterConcept.Size = new System.Drawing.Size(445, 199);
-            this.txtCharacterConcept.TabIndex = 0;
-            // 
-            // txtCharacterBackground
-            // 
-            this.txtCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCharacterBackground.Location = new System.Drawing.Point(3, 3);
-            this.txtCharacterBackground.MaxLength = 2147483647;
-            this.txtCharacterBackground.Multiline = true;
-            this.txtCharacterBackground.Name = "txtCharacterBackground";
-            this.txtCharacterBackground.ReadOnly = true;
-            this.txtCharacterBackground.Size = new System.Drawing.Size(445, 199);
-            this.txtCharacterBackground.TabIndex = 0;
-            // 
-            // txtCharacterNotes
-            // 
-            this.txtCharacterNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCharacterNotes.Location = new System.Drawing.Point(3, 3);
-            this.txtCharacterNotes.MaxLength = 2147483647;
-            this.txtCharacterNotes.Multiline = true;
-            this.txtCharacterNotes.Name = "txtCharacterNotes";
-            this.txtCharacterNotes.ReadOnly = true;
-            this.txtCharacterNotes.Size = new System.Drawing.Size(445, 199);
-            this.txtCharacterNotes.TabIndex = 0;
-            // 
-            // txtGameNotes
-            // 
-            this.txtGameNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtGameNotes.Location = new System.Drawing.Point(3, 3);
-            this.txtGameNotes.MaxLength = 2147483647;
-            this.txtGameNotes.Multiline = true;
-            this.txtGameNotes.Name = "txtGameNotes";
-            this.txtGameNotes.ReadOnly = true;
-            this.txtGameNotes.Size = new System.Drawing.Size(445, 199);
-            this.txtGameNotes.TabIndex = 0;
-            // 
             // frmCharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.ControlBox = false;
             this.Controls.Add(this.tlpCharacterRoster);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmCharacterRoster";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "String_CharacterRoster";

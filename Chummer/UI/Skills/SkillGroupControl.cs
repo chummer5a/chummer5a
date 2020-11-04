@@ -16,24 +16,33 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
+using Chummer.Properties;
 
 namespace Chummer.UI.Skills
 {
     public partial class SkillGroupControl : UserControl
     {
         private readonly SkillGroup _skillGroup;
+        private readonly Graphics _objGraphics;
+
+        private readonly NumericUpDownEx nudSkill;
+        private readonly NumericUpDownEx nudKarma;
+        private readonly Label lblGroupRating;
+        private readonly ButtonWithToolTip btnCareerIncrease;
+
         public SkillGroupControl(SkillGroup skillGroup)
         {
             if (skillGroup == null)
                 return;
+            _objGraphics = CreateGraphics();
             _skillGroup = skillGroup;
             InitializeComponent();
-            SkillGroupControl_DpiChangedAfterParent(null, EventArgs.Empty);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -43,18 +52,64 @@ namespace Chummer.UI.Skills
             lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
             lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
 
+            // Creating these controls outside of the designer saves on handles
             if (skillGroup.CharacterObject.Created)
             {
-                flpRightCreate.Visible = false;
+                lblGroupRating = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
+                    MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0),
+                    Name = "lblGroupRating",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                btnCareerIncrease = new ButtonWithToolTip
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Image = Resources.add,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Name = "btnCareerIncrease",
+                    Padding = new Padding(1),
+                    UseVisualStyleBackColor = true
+                };
+                btnCareerIncrease.Click += btnCareerIncrease_Click;
 
                 btnCareerIncrease.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
                 btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
 
                 lblGroupRating.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
+
+                lblGroupRating.UpdateLightDarkMode();
+                lblGroupRating.TranslateWinForm();
+                btnCareerIncrease.UpdateLightDarkMode();
+                btnCareerIncrease.TranslateWinForm();
+
+                tlpMain.Controls.Add(lblGroupRating, 2, 0);
+                tlpMain.Controls.Add(btnCareerIncrease, 3, 0);
             }
             else
             {
-                flpRightCareer.Visible = false;
+                nudKarma = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 2, 3, 2),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Name = "nudKarma"
+                };
+                nudSkill = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                    Margin = new Padding(3, 2, 3, 2),
+                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Name = "nudSkill"
+                };
 
                 nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
                 nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
@@ -64,6 +119,14 @@ namespace Chummer.UI.Skills
                 nudSkill.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Base));
                 nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
                 nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
+
+                nudKarma.UpdateLightDarkMode();
+                nudKarma.TranslateWinForm();
+                nudSkill.UpdateLightDarkMode();
+                nudSkill.TranslateWinForm();
+
+                tlpMain.Controls.Add(nudSkill, 2, 0);
+                tlpMain.Controls.Add(nudKarma, 3, 0);
             }
 
             ResumeLayout();
@@ -151,10 +214,8 @@ namespace Chummer.UI.Skills
 
         private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            using (Graphics g = CreateGraphics())
-            {
-                lblGroupRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
-            }
+            if (lblGroupRating != null)
+                lblGroupRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
         }
     }
 }

@@ -272,12 +272,10 @@ namespace Chummer
             SetToolTips();
 
             string strSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
-            if(strSheetLanguage != _strSelectedLanguage)
+            if(strSheetLanguage != _strSelectedLanguage
+               && cboSheetLanguage.Items.Cast<ListItem>().Any(x => x.Value.ToString() == _strSelectedLanguage))
             {
-                if(cboSheetLanguage.Items.Cast<ListItem>().Any(x => x.Value.ToString() == _strSelectedLanguage))
-                {
-                    cboSheetLanguage.SelectedValue = _strSelectedLanguage;
-                }
+                cboSheetLanguage.SelectedValue = _strSelectedLanguage;
             }
 
             PopulatePDFParameters();
@@ -808,35 +806,12 @@ namespace Chummer
             return lstSheets;
         }
 
-        private static List<ListItem> GetXslFilesFromOmaeDirectory(string strLanguage)
-        {
-            List<ListItem> lstItems = new List<ListItem>(5);
-
-            // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Utils.GetStartupPath, "sheets", "omae");
-            string menuMainOmae = LanguageManager.GetString("Menu_Main_Omae", strLanguage);
-
-            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets
-            // (hidden because they are partial templates that cannot be used on their own).
-            foreach(string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
-            {
-                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + LanguageManager.GetString("String_Colon", strLanguage) + LanguageManager.GetString("String_Space", strLanguage) + fileName));
-            }
-
-            return lstItems;
-        }
-
         private void PopulateXsltList()
         {
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2));
 
             List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
-            if(GlobalOptions.OmaeEnabled)
-            {
-                foreach(ListItem objFile in GetXslFilesFromOmaeDirectory(strSelectedSheetLanguage))
-                    lstFiles.Add(objFile);
-            }
 
             string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
             // Strip away the language prefix
@@ -1169,18 +1144,17 @@ namespace Chummer
             if (_blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging) ((ListItem) cboUseLoggingApplicationInsights.SelectedItem).Value;
-            if (useAI > UseAILogging.Info && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info)
-            {
-                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
+            if (useAI > UseAILogging.Info
+                && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info
+                && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(),
                     LanguageManager.GetString("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
-                {
-                    _blnLoading = true;
-                    cboUseLoggingApplicationInsights.SelectedItem = UseAILogging.Info;
-                    _blnLoading = false;
-                    return;
-                }
+            {
+                _blnLoading = true;
+                cboUseLoggingApplicationInsights.SelectedItem = UseAILogging.Info;
+                _blnLoading = false;
+                return;
             }
             OptionsChanged(sender, e);
         }

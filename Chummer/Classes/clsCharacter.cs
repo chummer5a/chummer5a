@@ -280,7 +280,6 @@ namespace Chummer
             _objTradition = new Tradition(this);
         }
 
-        private XPathNavigator _xmlMetatypeNode;
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
         {
             XmlDocument xmlDoc = LoadData(IsCritter ? "critters.xml" : "metatypes.xml");
@@ -289,22 +288,21 @@ namespace Chummer
                 : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
             if (blnReturnMetatypeOnly)
                 return xmlMetatypeNode;
-            _xmlMetatypeNode = xmlMetatypeNode;
-            if (MetavariantGuid != Guid.Empty && !string.IsNullOrEmpty(Metavariant) && _xmlMetatypeNode != null)
+            if (MetavariantGuid != Guid.Empty && !string.IsNullOrEmpty(Metavariant) && xmlMetatypeNode != null)
             {
-                XPathNavigator xmlMetavariantNode = _xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
+                XPathNavigator xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
                     ? "metavariants/metavariant[name = \"" + Metavariant + "\"]"
                     : "metavariants/metavariant[id = \"" + MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
                 if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
                 {
                     xmlMetavariantNode =
-                        _xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
                 }
                 if (xmlMetavariantNode != null)
-                    _xmlMetatypeNode = xmlMetavariantNode;
+                    return xmlMetavariantNode;
             }
 
-            return _xmlMetatypeNode;
+            return xmlMetatypeNode;
         }
 
         public void RefreshAttributeBindings()
@@ -2171,13 +2169,11 @@ namespace Chummer
                         // Metatype information.
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
-                        if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype))
+                        if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype)
+                            && !Guid.TryParse(GetNode(true)?.SelectSingleNode("id")?.Value, out _guiMetatype))
                         {
-                            if (!Guid.TryParse(GetNode(true)?.SelectSingleNode("id")?.Value, out _guiMetatype))
-                            {
-                                IsLoading = false;
-                                return false;
-                            }
+                            IsLoading = false;
+                            return false;
                         }
                         xmlCharacterNavigator.TryGetStringFieldQuickly("movement", ref _strMovement);
 
@@ -2700,11 +2696,8 @@ namespace Chummer
                                     else
                                     {
                                         xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
-                                        if (xmlTraditionDataNode != null)
-                                        {
-                                            if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                                _objTradition.ResetTradition();
-                                        }
+                                        if (xmlTraditionDataNode != null && !_objTradition.Create(xmlTraditionDataNode, true))
+                                            _objTradition.ResetTradition();
                                     }
                                 }
                             }
@@ -2745,10 +2738,9 @@ namespace Chummer
                                         xmlTraditionDataNode =
                                             xmlTraditionListDataNode.SelectSingleNode(
                                                 "tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
-                                        if (xmlTraditionDataNode != null)
+                                        if (xmlTraditionDataNode != null && !_objTradition.Create(xmlTraditionDataNode))
                                         {
-                                            if (!_objTradition.Create(xmlTraditionDataNode))
-                                                _objTradition.ResetTradition();
+                                            _objTradition.ResetTradition();
                                         }
                                     }
                                 }
@@ -3584,8 +3576,8 @@ namespace Chummer
                             if (objOldQuality != null)
                             {
                                 Qualities.Remove(objOldQuality);
-                                if (Qualities.Any(x => x.Name.Equals("Resistance to Pathogens/Toxins", StringComparison.Ordinal)) == false &&
-                                    Qualities.Any(x => x.Name.Equals("Dwarf Resistance", StringComparison.Ordinal)) == false)
+                                if (Qualities.All(x => !x.Name.Equals("Resistance to Pathogens/Toxins", StringComparison.Ordinal))
+                                    && Qualities.All(x => !x.Name.Equals("Dwarf Resistance", StringComparison.Ordinal)))
                                 {
                                     XmlNode objXmlDwarfQuality =
                                         xmlRootQualitiesNode.SelectSingleNode(
@@ -4848,7 +4840,7 @@ namespace Chummer
                     if(objReturnGear != null)
                     {
                         StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                        if(objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                        if(objReturnGear.Parent is Gear parent)
                             sbdGearReturn.Append(strSpace).Append('(').Append(parent.DisplayNameShort(strLanguage)).Append(')');
                         if (wireless)
                             sbdGearReturn.Append(strSpace).Append(LanguageManager.GetString("String_Wireless", strLanguage));
@@ -4865,7 +4857,7 @@ namespace Chummer
                             if(objReturnGear != null)
                             {
                                 StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                if (objReturnGear.Parent is Gear parent)
                                     sbdGearReturn.Append(strSpace).Append('(').Append(objWeapon.DisplayNameShort(strLanguage)).Append(',')
                                         .Append(strSpace).Append(objAccessory.DisplayNameShort(strLanguage)).Append(',')
                                         .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
@@ -4886,7 +4878,7 @@ namespace Chummer
                         if(objReturnGear != null)
                         {
                             StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            if (objReturnGear.Parent is Gear parent)
                                 sbdGearReturn.Append(strSpace).Append('(').Append(objArmor.DisplayNameShort(strLanguage)).Append(',')
                                     .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
                             else
@@ -4904,7 +4896,7 @@ namespace Chummer
                         if(objReturnGear != null)
                         {
                             StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            if (objReturnGear.Parent is Gear parent)
                                 sbdGearReturn.Append(strSpace).Append('(').Append(objCyberware.DisplayNameShort(strLanguage)).Append(',')
                                     .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
                             else
@@ -4922,7 +4914,7 @@ namespace Chummer
                         if(objReturnGear != null)
                         {
                             StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                            if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                            if (objReturnGear.Parent is Gear parent)
                                 sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                     .Append(strSpace).Append(parent.DisplayNameShort(strLanguage)).Append(')');
                             else
@@ -4942,7 +4934,7 @@ namespace Chummer
                                 if(objReturnGear != null)
                                 {
                                     StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    if (objReturnGear.Parent is Gear parent)
                                         sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objWeapon.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objAccessory.DisplayNameShort(strLanguage)).Append(',')
@@ -4970,7 +4962,7 @@ namespace Chummer
                                     if(objReturnGear != null)
                                     {
                                         StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                        if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                        if (objReturnGear.Parent is Gear parent)
                                             sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                                 .Append(strSpace).Append(objVehicleMod.DisplayNameShort(strLanguage)).Append(',')
                                                 .Append(strSpace).Append(objWeapon.DisplayNameShort(strLanguage)).Append(',')
@@ -4996,7 +4988,7 @@ namespace Chummer
                                 if(objReturnGear != null)
                                 {
                                     StringBuilder sbdGearReturn = new StringBuilder(objReturnGear.DisplayNameShort(strLanguage));
-                                    if (objReturnGear.Parent != null && objReturnGear.Parent is Gear parent)
+                                    if (objReturnGear.Parent is Gear parent)
                                         sbdGearReturn.Append(strSpace).Append('(').Append(objVehicle.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objVehicleMod.DisplayNameShort(strLanguage)).Append(',')
                                             .Append(strSpace).Append(objCyberware.DisplayNameShort(strLanguage)).Append(',')
@@ -7992,48 +7984,45 @@ namespace Chummer
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
-                                if (!blnCountImprovement)
+                                if (!blnCountImprovement && objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                    while (objQuality != null)
                                     {
-                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        while (objQuality != null)
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
                                         {
-                                            if (objQuality.OriginSource == QualitySource.Metatype
-                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                                || objQuality.OriginSource == QualitySource.BuiltIn
-                                                || objQuality.OriginSource == QualitySource.LifeModule
-                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.Enabled);
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
                                             {
                                                 blnCountImprovement = true;
                                                 break;
                                             }
-                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                             {
-                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                    && x.ImprovedName == objQuality.InternalId
-                                                    && x.Enabled);
-                                                if (objParentImprovement == null)
-                                                    break;
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                {
-                                                    blnCountImprovement = true;
-                                                    break;
-                                                }
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
-                                                {
-                                                    // Qualities that add other qualities get added to the list to be checked, too
-                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
-                                                }
-                                                else
-                                                    break;
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
                                             }
                                             else
                                                 break;
                                         }
+                                        else
+                                            break;
                                     }
                                 }
                                 if (blnCountImprovement)
@@ -8293,48 +8282,46 @@ namespace Chummer
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
-                                if (!blnCountImprovement)
+                                if (!blnCountImprovement
+                                    && objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                    while (objQuality != null)
                                     {
-                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        while (objQuality != null)
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
                                         {
-                                            if (objQuality.OriginSource == QualitySource.Metatype
-                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                                || objQuality.OriginSource == QualitySource.BuiltIn
-                                                || objQuality.OriginSource == QualitySource.LifeModule
-                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.Enabled);
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
                                             {
                                                 blnCountImprovement = true;
                                                 break;
                                             }
-                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                             {
-                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                    && x.ImprovedName == objQuality.InternalId
-                                                    && x.Enabled);
-                                                if (objParentImprovement == null)
-                                                    break;
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                {
-                                                    blnCountImprovement = true;
-                                                    break;
-                                                }
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
-                                                {
-                                                    // Qualities that add other qualities get added to the list to be checked, too
-                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
-                                                }
-                                                else
-                                                    break;
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
                                             }
                                             else
                                                 break;
                                         }
+                                        else
+                                            break;
                                     }
                                 }
                                 if (blnCountImprovement)
@@ -8381,10 +8368,9 @@ namespace Chummer
                             else
                             {
                                 xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
-                                if(xmlTraditionDataNode != null)
+                                if(xmlTraditionDataNode != null && !MagicTradition.Create(xmlTraditionDataNode, true))
                                 {
-                                    if(!MagicTradition.Create(xmlTraditionDataNode, true))
-                                        MagicTradition.ResetTradition();
+                                    MagicTradition.ResetTradition();
                                 }
                             }
                         }
@@ -8515,48 +8501,46 @@ namespace Chummer
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
-                                if (!blnCountImprovement)
+                                if (!blnCountImprovement
+                                    && objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                    while (objQuality != null)
                                     {
-                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        while (objQuality != null)
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
                                         {
-                                            if (objQuality.OriginSource == QualitySource.Metatype
-                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                                || objQuality.OriginSource == QualitySource.BuiltIn
-                                                || objQuality.OriginSource == QualitySource.LifeModule
-                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.Enabled);
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
                                             {
                                                 blnCountImprovement = true;
                                                 break;
                                             }
-                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                             {
-                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                    && x.ImprovedName == objQuality.InternalId
-                                                    && x.Enabled);
-                                                if (objParentImprovement == null)
-                                                    break;
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                {
-                                                    blnCountImprovement = true;
-                                                    break;
-                                                }
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
-                                                {
-                                                    // Qualities that add other qualities get added to the list to be checked, too
-                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
-                                                }
-                                                else
-                                                    break;
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
                                             }
                                             else
                                                 break;
                                         }
+                                        else
+                                            break;
                                     }
                                 }
                                 if (blnCountImprovement)
@@ -10257,7 +10241,7 @@ namespace Chummer
 
                     if (blnDoAdd)
                     {
-                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('+')))
+                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                             intStacking += objArmor.TotalArmor;
                         else
                             intStacking += objArmor.TotalOverrideArmor;
@@ -11059,7 +11043,7 @@ namespace Chummer
 
                     if (blnDoAdd)
                     {
-                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('+')))
+                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                             intTotalA += objArmor.TotalArmor;
                         else
                             intTotalA += objArmor.TotalOverrideArmor;
@@ -11739,24 +11723,21 @@ namespace Chummer
             get
             {
                 int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
-                if(IsAI)
+                if(IsAI && HomeNode != null)
                 {
-                    if(HomeNode != null)
+                    if(HomeNode is Vehicle objHomeNodeVehicle)
                     {
-                        if(HomeNode is Vehicle objHomeNodeVehicle)
+                        int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                        if(intHomeNodeSensor > intLimit)
                         {
-                            int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
-                            if(intHomeNodeSensor > intLimit)
-                            {
-                                intLimit = intHomeNodeSensor;
-                            }
+                            intLimit = intHomeNodeSensor;
                         }
+                    }
 
-                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                        if(intHomeNodeDP > intLimit)
-                        {
-                            intLimit = intHomeNodeDP;
-                        }
+                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                    if(intHomeNodeDP > intLimit)
+                    {
+                        intLimit = intHomeNodeDP;
                     }
                 }
 
@@ -15598,7 +15579,7 @@ namespace Chummer
                 }
             }
 
-            if((lstNamesOfChangedProperties?.Count > 0) != true)
+            if(lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             if(lstNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
@@ -15785,7 +15766,7 @@ namespace Chummer
                 }
             }
 
-            if (Program.MainForm == null)
+            if (Program.MainForm == null || IsLoading)
                 return;
             foreach(Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)
             {
@@ -16754,6 +16735,7 @@ namespace Chummer
                                 Convert.ToInt32(xmlImportAttributes["connection"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                             objContact.Loyalty = Convert.ToInt32(xmlImportAttributes["loyalty"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                             string strDescription = xmlContactToImport["description"]?.InnerText;
+                            StringBuilder sbdNotes = new StringBuilder();
                             foreach (string strLine in strDescription.SplitNoAlloc('\n', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 string[] astrLineColonSplit = strLine.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -16781,12 +16763,13 @@ namespace Chummer
                                         objContact.Type = astrLineColonSplit[1].Trim();
                                         break;
                                     default:
-                                        objContact.Notes += strLine + Environment.NewLine;
+                                        sbdNotes.AppendLine(strLine);
                                         break;
                                 }
                             }
-
-                            objContact.Notes = objContact.Notes.TrimEnd(Environment.NewLine);
+                            if (sbdNotes.Length > 0)
+                                sbdNotes.Length -= Environment.NewLine.Length;
+                            objContact.Notes = sbdNotes.ToString();
                             _lstContacts.Add(objContact);
                         }
 
@@ -17394,13 +17377,9 @@ namespace Chummer
 
                                             string strSecondPart = astrOriginalNameSplit[1].Trim();
                                             int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
-                                            if (intSecondPartParenthesesEnd != -1)
-                                            {
-                                                if (!int.TryParse(
-                                                    strSecondPart.Substring(0, intSecondPartParenthesesEnd),
-                                                    out intRating))
-                                                    intRating = 1;
-                                            }
+                                            if (intSecondPartParenthesesEnd != -1
+                                                && !int.TryParse(strSecondPart.Substring(0, intSecondPartParenthesesEnd), out intRating))
+                                                intRating = 1;
 
                                             astrOriginalNameSplit = strSecondPart.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                             if (astrOriginalNameSplit.Length >= 2)

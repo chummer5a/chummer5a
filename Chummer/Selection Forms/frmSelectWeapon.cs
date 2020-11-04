@@ -128,7 +128,7 @@ namespace Chummer
             RefreshList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
             RefreshList();
         }
@@ -364,30 +364,25 @@ namespace Chummer
                 DataSet set = new DataSet("weapons");
                 set.Tables.Add(tabWeapons);
                 string strSelectedCategory = cboCategory.SelectedValue?.ToString();
-                if (string.IsNullOrEmpty(strSelectedCategory) || strSelectedCategory == "Show All")
+                if (string.IsNullOrEmpty(strSelectedCategory)
+                    || strSelectedCategory == "Show All"
+                    || !(strSelectedCategory == "Blades"
+                         || strSelectedCategory == "Clubs"
+                         || strSelectedCategory == "Improvised Weapons"
+                         || strSelectedCategory == "Exotic Melee Weapons"
+                         || strSelectedCategory == "Unarmed"))
                 {
                     //dgvWeapons.Columns[5].Visible = true;
                     dgvWeapons.Columns[6].Visible = true;
                     dgvWeapons.Columns[7].Visible = true;
                     dgvWeapons.Columns[8].Visible = true;
                 }
-                else if (strSelectedCategory == "Blades" ||
-                         strSelectedCategory == "Clubs" ||
-                         strSelectedCategory == "Improvised Weapons" ||
-                         strSelectedCategory == "Exotic Melee Weapons" ||
-                         strSelectedCategory == "Unarmed")
+                else
                 {
                     //dgvWeapons.Columns[5].Visible = false;
                     dgvWeapons.Columns[6].Visible = false;
                     dgvWeapons.Columns[7].Visible = false;
                     dgvWeapons.Columns[8].Visible = false;
-                }
-                else
-                {
-                    //dgvWeapons.Columns[5].Visible = true;
-                    dgvWeapons.Columns[6].Visible = true;
-                    dgvWeapons.Columns[7].Visible = true;
-                    dgvWeapons.Columns[8].Visible = true;
                 }
                 dgvWeapons.Columns[0].Visible = false;
                 dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
@@ -715,11 +710,6 @@ namespace Chummer
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
-            RefreshList();
-        }
-
-        private void chkShowOnlyAffordItems_CheckedChanged(object sender, EventArgs e)
-        {
             RefreshList();
         }
 

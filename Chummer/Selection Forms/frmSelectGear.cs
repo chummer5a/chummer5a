@@ -170,7 +170,7 @@ namespace Chummer
             if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
                 cboCategory.SelectedIndex = 0;
             else
-                RefreshList(cboCategory.SelectedValue?.ToString());
+                RefreshList();
 
             if (!string.IsNullOrEmpty(_strSelectedGear))
                 lstGear.SelectedValue = _strSelectedGear;
@@ -181,10 +181,8 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelectedCategory = cboCategory.SelectedValue?.ToString();
-
             // Show the Do It Yourself CheckBox if the Commlink Upgrade category is selected.
-            if (strSelectedCategory == "Commlink Upgrade")
+            if (cboCategory.SelectedValue?.ToString() == "Commlink Upgrade")
                 chkDoItYourself.Visible = true;
             else
             {
@@ -192,7 +190,7 @@ namespace Chummer
                 chkDoItYourself.Checked = false;
             }
 
-            RefreshList(strSelectedCategory);
+            RefreshList();
         }
 
         private void lstGear_SelectedIndexChanged(object sender, EventArgs e)
@@ -307,7 +305,7 @@ namespace Chummer
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList(cboCategory.SelectedValue?.ToString());
+            RefreshList();
         }
 
         private void lstGear_DoubleClick(object sender, EventArgs e)
@@ -331,7 +329,7 @@ namespace Chummer
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList(cboCategory.SelectedValue?.ToString());
+                RefreshList();
             }
             UpdateGearInfo();
         }
@@ -340,7 +338,7 @@ namespace Chummer
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList(cboCategory.SelectedValue?.ToString());
+                RefreshList();
             }
             UpdateGearInfo();
         }
@@ -349,9 +347,14 @@ namespace Chummer
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList(cboCategory.SelectedValue?.ToString());
+                RefreshList();
             }
             UpdateGearInfo();
+        }
+
+        private void RefreshCurrentList(object sender, EventArgs e)
+        {
+            RefreshList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -945,11 +948,13 @@ namespace Chummer
             }
         }
 
-        private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> RefreshList(string strCategory = "", bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
-            StringBuilder strFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ')');
+            if (string.IsNullOrEmpty(strCategory))
+                strCategory = cboCategory.SelectedValue?.ToString();
+            StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter.Append(" and category = \"" + strCategory + '\"');
+                sbdFilter.Append(" and category = \"" + strCategory + '\"');
             else if (_setAllowedCategories.Count > 0)
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
@@ -960,37 +965,37 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
+                    sbdFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
                 }
             }
             if (_setAllowedNames.Count > 0)
             {
-                StringBuilder objNameFilter = new StringBuilder();
+                StringBuilder sbdNameFilter = new StringBuilder();
                 foreach (var strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
                 {
-                    objNameFilter.Append("name = \"" + strItem + "\" or ");
+                    sbdNameFilter.Append("name = \"" + strItem + "\" or ");
                 }
-                if (objNameFilter.Length > 0)
+                if (sbdNameFilter.Length > 0)
                 {
-                    strFilter.Append(" and (" + objNameFilter.ToString().TrimEndOnce(" or ") + ')');
+                    sbdFilter.Append(" and (" + sbdNameFilter.ToString().TrimEndOnce(" or ") + ')');
                 }
             }
             if (ShowArmorCapacityOnly)
-                strFilter.Append(" and (contains(armorcapacity, \"[\") or category = \"Custom\")");
+                sbdFilter.Append(" and (contains(armorcapacity, \"[\") or category = \"Custom\")");
             else if (ShowPositiveCapacityOnly)
-                strFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
+                sbdFilter.Append(" and (not(contains(capacity, \"[\")) or category = \"Custom\")");
             else if (ShowNegativeCapacityOnly)
-                strFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
+                sbdFilter.Append(" and (contains(capacity, \"[\") or category = \"Custom\")");
             if (ShowFlechetteAmmoOnly)
-                strFilter.Append(" and isflechetteammo = 'True'");
+                sbdFilter.Append(" and isflechetteammo = 'True'");
             if (_objGearParent == null)
-                strFilter.Append(" and not(requireparent)");
+                sbdFilter.Append(" and not(requireparent)");
             foreach (string strPrefix in ForceItemPrefixStrings)
-                strFilter.Append(" and starts-with(name,\"" + strPrefix + "\")");
+                sbdFilter.Append(" and starts-with(name,\"" + strPrefix + "\")");
 
-            strFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+            sbdFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
+            return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
         private List<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
@@ -1051,10 +1056,10 @@ namespace Chummer
                 decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
-                if (!blnDoUIUpdate ||
-                    ((!chkHideOverAvailLimit.Checked || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier) &&
-                    (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                    objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))))
+                if (!blnDoUIUpdate || !chkHideOverAvailLimit.Checked || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier)
+                    && (chkFreeItem.Checked
+                        || !chkShowOnlyAffordItems.Checked
+                        || objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)))
                 {
                     string strDisplayName = objXmlGear.SelectSingleNode("translate")?.Value ?? objXmlGear.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
 

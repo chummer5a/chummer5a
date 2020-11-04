@@ -16,12 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
-using System.IO;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Xml;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
+using System.Xml;
+using Chummer.Properties;
 
 namespace Chummer
 {
@@ -42,7 +46,6 @@ namespace Chummer
             if (objContact == null)
                 throw new ArgumentNullException(nameof(objContact));
             InitializeComponent();
-
             //We don't actually pay for contacts in play so everyone is free
             //Don't present a useless field
             if (objContact.CharacterObject.Created)
@@ -51,7 +54,6 @@ namespace Chummer
             }
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            MoveControls();
 
             _objContact = objContact;
 
@@ -64,6 +66,8 @@ namespace Chummer
 
         private void ContactControl_Load(object sender, EventArgs e)
         {
+            if (Disposing)
+                return;
             LoadContactList();
 
             DoDataBindings();
@@ -251,7 +255,7 @@ namespace Chummer
                     }
                 }
                 string strFile = blnUseRelative ? Path.GetFullPath(_objContact.RelativeFileName) : _objContact.FileName;
-                System.Diagnostics.Process.Start(strFile);
+                Process.Start(strFile);
             }
         }
 
@@ -349,11 +353,13 @@ namespace Chummer
 
         public bool Expanded
         {
-            get => tlpStatBlock.Visible;
+            get => tlpStatBlock?.Visible == true;
             set
             {
-                tlpStatHeader.Visible = tlpStatBlock.Visible = value;
-                cmdExpand.Image = value ? Properties.Resources.Collapse : Properties.Resources.Expand;
+                cmdExpand.Image = value ? Resources.Collapse : Resources.Expand;
+                if (value && tlpStatBlock == null)
+                    CreateStatBlock(); // Create statblock only on the first expansion to save on handles and load times
+                tlpStatBlock.Visible = value;
             }
         }
         #endregion
@@ -369,32 +375,248 @@ namespace Chummer
                 return;
             }
 
+            //the values are now loaded direct in the (new) property lstContactArchetypes (see above).
+            //I only left this in here for better understanding what happend before (and because of bug #3566)
+            //using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
+            //    if (xmlNodeList != null)
+            //        foreach (XmlNode xmlNode in xmlNodeList)
+            //        {
+            //            string strName = xmlNode.InnerText;
+            //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            //        }
+
+            cboContactRole.BeginUpdate();
+            cboContactRole.ValueMember = nameof(ListItem.Value);
+            cboContactRole.DisplayMember = nameof(ListItem.Name);
+            cboContactRole.DataSource = new BindingSource { DataSource = Contact.ContactArchetypes(_objContact.CharacterObject) };
+            cboContactRole.EndUpdate();
+        }
+
+        private void DoDataBindings()
+        {
+            chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
+            chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
+            chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
+            chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
+            chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
+            chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+            chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
+            chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+            lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
+            nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
+            nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
+            nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
+            nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
+            nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
+            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
+            txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
+            cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
+            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
+            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
+
+            // Properties controllable by the character themselves
+            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+        }
+
+        private BufferedTableLayoutPanel tlpStatBlock;
+        private Label lblHobbiesVice;
+        private Label lblPreferredPayment;
+        private Label lblPersonalLife;
+        private Label lblType;
+        private Label lblMetatype;
+        private Label lblGender;
+        private Label lblAge;
+        private ElasticComboBox cboMetatype;
+        private ElasticComboBox cboGender;
+        private ElasticComboBox cboType;
+        private ElasticComboBox cboAge;
+        private ElasticComboBox cboPersonalLife;
+        private ElasticComboBox cboPreferredPayment;
+        private ElasticComboBox cboHobbiesVice;
+
+        /// <summary>
+        /// Method to dynamically create stat block is separated out so that we only create it if the control is expanded
+        /// </summary>
+        private void CreateStatBlock()
+        {
+            using (new CursorWait(this))
+            {
+                cboMetatype = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype"};
+                cboGender = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender"};
+                cboAge = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge"};
+                cboType = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType"};
+                cboPersonalLife = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPersonalLife"};
+                cboPreferredPayment = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPreferredPayment"};
+                cboHobbiesVice = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboHobbiesVice"};
+
+                LoadStatBlockLists();
+
+                if (_objContact != null)
+                {
+                    cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
+                    cboGender.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayGender));
+                    cboAge.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayAge));
+                    cboPersonalLife.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPersonalLife));
+                    cboType.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayType));
+                    cboPreferredPayment.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPreferredPayment));
+                    cboHobbiesVice.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayHobbiesVice));
+                    // Properties controllable by the character themselves
+                    cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+                    cboGender.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+                    cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+                }
+
+                cboMetatype.TextChanged += cboMetatype_TextChanged;
+                cboGender.TextChanged += cboGender_TextChanged;
+                cboAge.TextChanged += cboAge_TextChanged;
+                cboType.TextChanged += cboType_TextChanged;
+                cboPersonalLife.TextChanged += cboPersonalLife_TextChanged;
+                cboPreferredPayment.TextChanged += cboPreferredPayment_TextChanged;
+                cboHobbiesVice.TextChanged += cboHobbiesVice_TextChanged;
+
+                lblType = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Margin = new Padding(3, 6, 3, 6),
+                    Name = "lblType",
+                    Tag = "Label_Type",
+                    Text = "Type:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                lblMetatype = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Margin = new Padding(3, 6, 3, 6),
+                    Name = "lblMetatype",
+                    Tag = "Label_Metatype",
+                    Text = "Metatype:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                lblGender = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Margin = new Padding(3, 6, 3, 6),
+                    Name = "lblGender",
+                    Tag = "Label_Gender",
+                    Text = "Gender:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                lblAge = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Margin = new Padding(3, 6, 3, 6),
+                    Name = "lblAge",
+                    Tag = "Label_Age",
+                    Text = "Age:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                lblPersonalLife = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Margin = new Padding(3, 6, 3, 6),
+                    Name = "lblPersonalLife",
+                    Tag = "Label_Contact_PersonalLife",
+                    Text = "Personal Life:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                lblPreferredPayment = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Margin = new Padding(3, 6, 3, 6),
+                    Name = "lblPreferredPayment",
+                    Tag = "Label_Contact_PreferredPayment",
+                    Text = "Preferred Payment:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                lblHobbiesVice = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Margin = new Padding(3, 6, 3, 6),
+                    Name = "lblHobbiesVice",
+                    Tag = "Label_Contact_HobbiesVice",
+                    Text = "Hobbies/Vice:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+
+                tlpStatBlock = new BufferedTableLayoutPanel(components)
+                {
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    ColumnCount = 4,
+                    RowCount = 5,
+                    Dock = DockStyle.Fill,
+                    Name = "tlpStatBlock"
+                };
+                tlpStatBlock.ColumnStyles.Add(new ColumnStyle());
+                tlpStatBlock.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+                tlpStatBlock.ColumnStyles.Add(new ColumnStyle());
+                tlpStatBlock.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+                tlpStatBlock.RowStyles.Add(new RowStyle());
+                tlpStatBlock.RowStyles.Add(new RowStyle());
+                tlpStatBlock.RowStyles.Add(new RowStyle());
+                tlpStatBlock.RowStyles.Add(new RowStyle());
+                tlpStatBlock.Controls.Add(lblMetatype, 0, 0);
+                tlpStatBlock.Controls.Add(cboMetatype, 1, 0);
+                tlpStatBlock.Controls.Add(lblGender, 0, 1);
+                tlpStatBlock.Controls.Add(cboGender, 1, 1);
+                tlpStatBlock.Controls.Add(lblAge, 0, 2);
+                tlpStatBlock.Controls.Add(cboAge, 1, 2);
+                tlpStatBlock.Controls.Add(lblType, 0, 3);
+                tlpStatBlock.Controls.Add(cboType, 1, 3);
+                tlpStatBlock.Controls.Add(lblPersonalLife, 2, 0);
+                tlpStatBlock.Controls.Add(cboPersonalLife, 3, 0);
+                tlpStatBlock.Controls.Add(lblPreferredPayment, 2, 1);
+                tlpStatBlock.Controls.Add(cboPreferredPayment, 3, 1);
+                tlpStatBlock.Controls.Add(lblHobbiesVice, 2, 2);
+                tlpStatBlock.Controls.Add(cboHobbiesVice, 3, 2);
+
+                tlpStatBlock.TranslateWinForm();
+                tlpStatBlock.UpdateLightDarkMode();
+
+                SuspendLayout();
+                tlpMain.SuspendLayout();
+                tlpMain.SetColumnSpan(tlpStatBlock, 13);
+                tlpMain.Controls.Add(tlpStatBlock, 0, 2);
+                tlpMain.ResumeLayout();
+                ResumeLayout();
+            }
+        }
+
+        private void LoadStatBlockLists()
+        {
             // Read the list of Categories from the XML file.
-            List<ListItem> lstMetatypes = new List<ListItem> (10)
+            List<ListItem> lstMetatypes = new List<ListItem>(10)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstGenders = new List<ListItem> (5)
+            List<ListItem> lstGenders = new List<ListItem>(5)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstAges = new List<ListItem> (5)
+            List<ListItem> lstAges = new List<ListItem>(5)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstPersonalLives = new List<ListItem> (10)
+            List<ListItem> lstPersonalLives = new List<ListItem>(10)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstTypes = new List<ListItem> (10)
+            List<ListItem> lstTypes = new List<ListItem>(10)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstPreferredPayments = new List<ListItem> (20)
+            List<ListItem> lstPreferredPayments = new List<ListItem>(20)
             {
                 ListItem.Blank
             };
-            List<ListItem> lstHobbiesVices = new List<ListItem> (20)
+            List<ListItem> lstHobbiesVices = new List<ListItem>(20)
             {
                 ListItem.Blank
             };
@@ -402,68 +624,84 @@ namespace Chummer
             XmlNode xmlContactsBaseNode = _objContact.CharacterObject.LoadData("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
-                //the values are now loaded direct in the (new) property lstContactArchetypes (see above).
-                //I only left this in here for better understanding what happend before (and because of bug #3566)
-                //using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
-                //    if (xmlNodeList != null)
-                //        foreach (XmlNode xmlNode in xmlNodeList)
-                //        {
-                //            string strName = xmlNode.InnerText;
-                //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                //        }
-
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("genders/gender"))
+                {
                     if (xmlNodeList != null)
+                    {
                         foreach (XmlNode xmlNode in xmlNodeList)
                         {
                             string strName = xmlNode.InnerText;
                             lstGenders.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                         }
+                    }
+                }
 
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("ages/age"))
+                {
                     if (xmlNodeList != null)
+                    {
                         foreach (XmlNode xmlNode in xmlNodeList)
                         {
                             string strName = xmlNode.InnerText;
                             lstAges.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                         }
+                    }
+                }
 
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("personallives/personallife"))
+                {
                     if (xmlNodeList != null)
+                    {
                         foreach (XmlNode xmlNode in xmlNodeList)
                         {
                             string strName = xmlNode.InnerText;
                             lstPersonalLives.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                         }
+                    }
+                }
 
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("types/type"))
+                {
                     if (xmlNodeList != null)
+                    {
                         foreach (XmlNode xmlNode in xmlNodeList)
                         {
                             string strName = xmlNode.InnerText;
                             lstTypes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                         }
+                    }
+                }
 
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("preferredpayments/preferredpayment"))
+                {
                     if (xmlNodeList != null)
+                    {
                         foreach (XmlNode xmlNode in xmlNodeList)
                         {
                             string strName = xmlNode.InnerText;
                             lstPreferredPayments.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                         }
+                    }
+                }
 
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("hobbiesvices/hobbyvice"))
+                {
                     if (xmlNodeList != null)
+                    {
                         foreach (XmlNode xmlNode in xmlNodeList)
                         {
                             string strName = xmlNode.InnerText;
                             lstHobbiesVices.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
                         }
+                    }
+                }
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
             using (XmlNodeList xmlMetatypeList = _objContact.CharacterObject.LoadData("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+            {
                 if (xmlMetatypeList != null)
+                {
                     foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
                     {
                         string strName = xmlMetatypeNode["name"]?.InnerText;
@@ -481,6 +719,8 @@ namespace Chummer
                             }
                         }
                     }
+                }
+            }
 
             lstMetatypes.Sort(CompareListItems.CompareNames);
             lstGenders.Sort(CompareListItems.CompareNames);
@@ -489,12 +729,6 @@ namespace Chummer
             lstTypes.Sort(CompareListItems.CompareNames);
             lstHobbiesVices.Sort(CompareListItems.CompareNames);
             lstPreferredPayments.Sort(CompareListItems.CompareNames);
-
-            cboContactRole.BeginUpdate();
-            cboContactRole.ValueMember = nameof(ListItem.Value);
-            cboContactRole.DisplayMember = nameof(ListItem.Name);
-            cboContactRole.DataSource = new BindingSource { DataSource = Contact.ContactArchetypes(_objContact.CharacterObject) };
-            cboContactRole.EndUpdate();
 
             cboMetatype.BeginUpdate();
             cboMetatype.ValueMember = nameof(ListItem.Value);
@@ -537,66 +771,6 @@ namespace Chummer
             cboHobbiesVice.DisplayMember = nameof(ListItem.Name);
             cboHobbiesVice.DataSource = lstHobbiesVices;
             cboHobbiesVice.EndUpdate();
-        }
-
-        private void DoDataBindings()
-        {
-            chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
-            chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
-            chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
-            chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
-            chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
-            chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-            chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
-            chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-            lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
-            nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
-            nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
-            nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
-            nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
-            nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
-            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
-            txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
-            cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
-            cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
-            cboGender.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayGender));
-            cboAge.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayAge));
-            cboPersonalLife.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPersonalLife));
-            cboType.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayType));
-            cboPreferredPayment.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPreferredPayment));
-            cboHobbiesVice.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayHobbiesVice));
-            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
-            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
-
-            // Properties controllable by the character themselves
-            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboGender.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-        }
-
-        private void MoveControls()
-        {
-            // no need to do anything here using TableLayoutPanels
-            //lblConnection.Left = txtContactName.Left;
-            //nudConnection.Left = lblConnection.Right + 2;
-            //lblLoyalty.Left = nudConnection.Right + 2;
-            //nudLoyalty.Left = lblLoyalty.Right + 2;
-            //imgLink.Left = nudLoyalty.Right + 4;
-            //imgNotes.Left = imgLink.Right + 4;
-            //chkGroup.Left = imgNotes.Right + 4;
-            //chkFree.Left = chkGroup.Right + 2;
-            //chkBlackmail.Left = chkFree.Right + 2;
-            //chkFamily.Left = chkBlackmail.Right + 2;
-
-            //lblmetatype.left = cbometatype.left - 7 - lblmetatype.width;
-            //lblage.left = cboage.left - 7 - lblage.width;
-            //lblsex.left = cboGender.left - 7 - lblsex.width;
-            //lbltype.left = cbotype.left - 7 - lbltype.width;
-
-            //lblpersonallife.left = cbopersonallife.left - 7 - lblpersonallife.width;
-            //lblpreferredpayment.left = cbopreferredpayment.left - 7 - lblpreferredpayment.width;
-            //lblhobbiesvice.left = cbohobbiesvice.left - 7 - lblhobbiesvice.width;
         }
         #endregion
 

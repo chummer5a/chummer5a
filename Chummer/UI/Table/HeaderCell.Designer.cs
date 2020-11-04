@@ -13,9 +13,10 @@ namespace Chummer.UI.Table
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                components?.Dispose();
+                _objGraphics?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -43,7 +44,6 @@ namespace Chummer.UI.Table
             // HeaderCell
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlText;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this._lblCellText);
