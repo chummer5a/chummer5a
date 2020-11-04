@@ -1980,22 +1980,22 @@ namespace Chummer
                         }
 
                         // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                        string strMissingBooks = string.Empty;
+                        StringBuilder sbdMissingBooks = new StringBuilder();
                         //Does the list of enabled books contain the current item?
                         foreach (XPathNavigator xmlSourceNode in xmlCharacterNavigator.Select("sources/source"))
                         {
                             string strLoopString = xmlSourceNode.Value;
                             if (strLoopString.Length > 0 && !Options.Books.Contains(strLoopString))
                             {
-                                strMissingBooks += strLoopString + ';';
+                                sbdMissingBooks.Append(strLoopString).Append(';');
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(strMissingBooks) && !Utils.IsUnitTest && showWarnings)
+                        if (sbdMissingBooks.Length > 0 && !Utils.IsUnitTest && showWarnings)
                         {
                             if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
                                         LanguageManager.GetString("Message_MissingSourceBooks"),
-                                        TranslatedBookList(strMissingBooks)),
+                                        TranslatedBookList(sbdMissingBooks.ToString())),
                                     LanguageManager.GetString("Message_MissingSourceBooks_Title"),
                                     MessageBoxButtons.YesNo) == DialogResult.No)
                             {
@@ -2005,7 +2005,7 @@ namespace Chummer
                         }
 
                         // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                        string strMissingSourceNames = string.Empty;
+                        StringBuilder sbdMissingSourceNames = new StringBuilder();
                         //Does the list of enabled books contain the current item?
                         foreach (XPathNavigator xmlDirectoryName in xmlCharacterNavigator.Select(
                             "customdatadirectorynames/directoryname"))
@@ -2014,15 +2014,15 @@ namespace Chummer
                             if (strLoopString.Length > 0 &&
                                 !Options.CustomDataDirectoryNames.Contains(strLoopString))
                             {
-                                strMissingSourceNames += strLoopString + ';' + Environment.NewLine;
+                                sbdMissingSourceNames.Append(strLoopString).AppendLine(";");
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(strMissingSourceNames) && !Utils.IsUnitTest && showWarnings)
+                        if (sbdMissingSourceNames.Length > 0 && !Utils.IsUnitTest && showWarnings)
                         {
                             if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
                                     LanguageManager.GetString("Message_MissingCustomDataDirectories"),
-                                    strMissingSourceNames),
+                                    sbdMissingSourceNames.ToString()),
                                 LanguageManager.GetString("Message_MissingCustomDataDirectories_Title"),
                                 MessageBoxButtons.YesNo) == DialogResult.No)
                             {
@@ -2044,13 +2044,11 @@ namespace Chummer
                         // Metatype information.
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("iscritter", ref _blnIsCritter);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("metatype", ref _strMetatype);
-                        if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype))
+                        if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype)
+                            && !Guid.TryParse(GetNode(true)?.SelectSingleNode("id")?.Value, out _guiMetatype))
                         {
-                            if (!Guid.TryParse(GetNode(true)?.SelectSingleNode("id")?.Value, out _guiMetatype))
-                            {
-                                IsLoading = false;
-                                return false;
-                            }
+                            IsLoading = false;
+                            return false;
                         }
                         xmlCharacterNavigator.TryGetStringFieldQuickly("movement", ref _strMovement);
 
@@ -2644,11 +2642,8 @@ namespace Chummer
                                     else
                                     {
                                         xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
-                                        if (xmlTraditionDataNode != null)
-                                        {
-                                            if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                                _objTradition.ResetTradition();
-                                        }
+                                        if (xmlTraditionDataNode != null && !_objTradition.Create(xmlTraditionDataNode, true))
+                                            _objTradition.ResetTradition();
                                     }
                                 }
                             }
@@ -2689,10 +2684,9 @@ namespace Chummer
                                         xmlTraditionDataNode =
                                             xmlTraditionListDataNode.SelectSingleNode(
                                                 "tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
-                                        if (xmlTraditionDataNode != null)
+                                        if (xmlTraditionDataNode != null && !_objTradition.Create(xmlTraditionDataNode))
                                         {
-                                            if (!_objTradition.Create(xmlTraditionDataNode))
-                                                _objTradition.ResetTradition();
+                                            _objTradition.ResetTradition();
                                         }
                                     }
                                 }
@@ -8050,48 +8044,45 @@ namespace Chummer
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
-                                if (!blnCountImprovement)
+                                if (!blnCountImprovement && objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                    while (objQuality != null)
                                     {
-                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        while (objQuality != null)
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
                                         {
-                                            if (objQuality.OriginSource == QualitySource.Metatype
-                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                                || objQuality.OriginSource == QualitySource.BuiltIn
-                                                || objQuality.OriginSource == QualitySource.LifeModule
-                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.Enabled);
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
                                             {
                                                 blnCountImprovement = true;
                                                 break;
                                             }
-                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                             {
-                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                    && x.ImprovedName == objQuality.InternalId
-                                                    && x.Enabled);
-                                                if (objParentImprovement == null)
-                                                    break;
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                {
-                                                    blnCountImprovement = true;
-                                                    break;
-                                                }
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
-                                                {
-                                                    // Qualities that add other qualities get added to the list to be checked, too
-                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
-                                                }
-                                                else
-                                                    break;
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
                                             }
                                             else
                                                 break;
                                         }
+                                        else
+                                            break;
                                     }
                                 }
                                 if (blnCountImprovement)
@@ -8351,48 +8342,46 @@ namespace Chummer
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
-                                if (!blnCountImprovement)
+                                if (!blnCountImprovement
+                                    && objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                    while (objQuality != null)
                                     {
-                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        while (objQuality != null)
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
                                         {
-                                            if (objQuality.OriginSource == QualitySource.Metatype
-                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                                || objQuality.OriginSource == QualitySource.BuiltIn
-                                                || objQuality.OriginSource == QualitySource.LifeModule
-                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.Enabled);
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
                                             {
                                                 blnCountImprovement = true;
                                                 break;
                                             }
-                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                             {
-                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                    && x.ImprovedName == objQuality.InternalId
-                                                    && x.Enabled);
-                                                if (objParentImprovement == null)
-                                                    break;
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                {
-                                                    blnCountImprovement = true;
-                                                    break;
-                                                }
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
-                                                {
-                                                    // Qualities that add other qualities get added to the list to be checked, too
-                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
-                                                }
-                                                else
-                                                    break;
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
                                             }
                                             else
                                                 break;
                                         }
+                                        else
+                                            break;
                                     }
                                 }
                                 if (blnCountImprovement)
@@ -8439,10 +8428,9 @@ namespace Chummer
                             else
                             {
                                 xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
-                                if(xmlTraditionDataNode != null)
+                                if(xmlTraditionDataNode != null && !MagicTradition.Create(xmlTraditionDataNode, true))
                                 {
-                                    if(!MagicTradition.Create(xmlTraditionDataNode, true))
-                                        MagicTradition.ResetTradition();
+                                    MagicTradition.ResetTradition();
                                 }
                             }
                         }
@@ -8573,48 +8561,46 @@ namespace Chummer
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
                                                            || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage;
-                                if (!blnCountImprovement)
+                                if (!blnCountImprovement
+                                    && objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
+                                    Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
+                                    while (objQuality != null)
                                     {
-                                        Quality objQuality = Qualities.FirstOrDefault(x => x.InternalId == objImprovement.SourceName);
-                                        while (objQuality != null)
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
                                         {
-                                            if (objQuality.OriginSource == QualitySource.Metatype
-                                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                                || objQuality.OriginSource == QualitySource.BuiltIn
-                                                || objQuality.OriginSource == QualitySource.LifeModule
-                                                || objQuality.OriginSource == QualitySource.Heritage)
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+                                        else if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
+                                                x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                                && x.ImprovedName == objQuality.InternalId
+                                                && x.Enabled);
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
                                             {
                                                 blnCountImprovement = true;
                                                 break;
                                             }
-                                            else if (objQuality.OriginSource == QualitySource.Improvement)
+                                            if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
                                             {
-                                                Improvement objParentImprovement = Improvements.FirstOrDefault(x =>
-                                                    x.ImproveType == Improvement.ImprovementType.SpecificQuality
-                                                    && x.ImprovedName == objQuality.InternalId
-                                                    && x.Enabled);
-                                                if (objParentImprovement == null)
-                                                    break;
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant
-                                                    || objParentImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                                                {
-                                                    blnCountImprovement = true;
-                                                    break;
-                                                }
-                                                if (objParentImprovement.ImproveSource == Improvement.ImprovementSource.Quality)
-                                                {
-                                                    // Qualities that add other qualities get added to the list to be checked, too
-                                                    objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
-                                                }
-                                                else
-                                                    break;
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = Qualities.FirstOrDefault(x => x.InternalId == objParentImprovement.SourceName);
                                             }
                                             else
                                                 break;
                                         }
+                                        else
+                                            break;
                                     }
                                 }
                                 if (blnCountImprovement)
@@ -11852,24 +11838,21 @@ namespace Chummer
             get
             {
                 int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
-                if(IsAI)
+                if(IsAI && HomeNode != null)
                 {
-                    if(HomeNode != null)
+                    if(HomeNode is Vehicle objHomeNodeVehicle)
                     {
-                        if(HomeNode is Vehicle objHomeNodeVehicle)
+                        int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                        if(intHomeNodeSensor > intLimit)
                         {
-                            int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
-                            if(intHomeNodeSensor > intLimit)
-                            {
-                                intLimit = intHomeNodeSensor;
-                            }
+                            intLimit = intHomeNodeSensor;
                         }
+                    }
 
-                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                        if(intHomeNodeDP > intLimit)
-                        {
-                            intLimit = intHomeNodeDP;
-                        }
+                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
+                    if(intHomeNodeDP > intLimit)
+                    {
+                        intLimit = intHomeNodeDP;
                     }
                 }
 
@@ -16740,6 +16723,7 @@ namespace Chummer
                                 Convert.ToInt32(xmlImportAttributes["connection"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                             objContact.Loyalty = Convert.ToInt32(xmlImportAttributes["loyalty"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
                             string strDescription = xmlContactToImport["description"]?.InnerText;
+                            StringBuilder sbdNotes = new StringBuilder();
                             foreach (string strLine in strDescription.SplitNoAlloc('\n', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 string[] astrLineColonSplit = strLine.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -16767,12 +16751,13 @@ namespace Chummer
                                         objContact.Type = astrLineColonSplit[1].Trim();
                                         break;
                                     default:
-                                        objContact.Notes += strLine + Environment.NewLine;
+                                        sbdNotes.AppendLine(strLine);
                                         break;
                                 }
                             }
-
-                            objContact.Notes = objContact.Notes.TrimEnd(Environment.NewLine);
+                            if (sbdNotes.Length > 0)
+                                sbdNotes.Length -= Environment.NewLine.Length;
+                            objContact.Notes = sbdNotes.ToString();
                             _lstContacts.Add(objContact);
                         }
 
@@ -17380,13 +17365,9 @@ namespace Chummer
 
                                             string strSecondPart = astrOriginalNameSplit[1].Trim();
                                             int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
-                                            if (intSecondPartParenthesesEnd != -1)
-                                            {
-                                                if (!int.TryParse(
-                                                    strSecondPart.Substring(0, intSecondPartParenthesesEnd),
-                                                    out intRating))
-                                                    intRating = 1;
-                                            }
+                                            if (intSecondPartParenthesesEnd != -1
+                                                && !int.TryParse(strSecondPart.Substring(0, intSecondPartParenthesesEnd), out intRating))
+                                                intRating = 1;
 
                                             astrOriginalNameSplit = strSecondPart.Split(':', StringSplitOptions.RemoveEmptyEntries);
                                             if (astrOriginalNameSplit.Length >= 2)

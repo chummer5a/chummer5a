@@ -31,6 +31,7 @@ init:
     $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
     $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
 
+    $doBuild = 1
     if ($history.builds.Count -eq 2)
     {
         $CurrentCommitID = $history.builds[0].commitId
@@ -40,8 +41,13 @@ init:
         if (($CurrentCommitID -eq $PreviousCommitID) -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
         {
             Write-host "Current Commit ID is the same as previous, exiting build."
-            Exit-AppVeyorBuild
+            $doBuild = 0
         }
+    }
+    # Exit-AppVeyorBuild needs to be the last command in the last closing if
+    if ($doBuild -eq 0)
+    {
+        Exit-AppVeyorBuild
     }
 install:
 - ps: |
