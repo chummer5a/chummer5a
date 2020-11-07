@@ -1346,11 +1346,6 @@
                 <br/>&#160;&#160;&#160;+ <xsl:value-of select="."/>
             </xsl:for-each>
         </xsl:for-each>
-        <xsl:for-each select="martialartmaneuvers/martialartmaneuver">
-            <xsl:sort select="name"/>
-            <br/>
-            <xsl:value-of select="name"/>
-        </xsl:for-each>
     </xsl:template>
 
     <xsl:template name="karmaexpenses">

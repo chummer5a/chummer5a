@@ -428,13 +428,6 @@
                   )
                   </xsl:if>
                 </xsl:for-each></p>
-                <xsl:if test="martialartmaneuvers/martialartmaneuver">
-                  <p><strong><xsl:value-of select="$lang.Maneuvers"/>: </strong>
-                  <xsl:for-each select="martialartmaneuvers/martialartmaneuver">
-                    <xsl:sort select="name" />
-                    <xsl:value-of select="name" /><xsl:if test="position() != last()">, </xsl:if>
-                  </xsl:for-each></p>
-                </xsl:if>
               </xsl:if>
 
               <xsl:if test="spells/spell">

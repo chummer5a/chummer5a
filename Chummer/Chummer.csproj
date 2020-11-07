@@ -317,7 +317,6 @@
     <Compile Include="Backend\Uniques\LimitModifier.cs" />
     <Compile Include="Backend\Uniques\Location.cs" />
     <Compile Include="Backend\Uniques\MartialArt.cs" />
-    <Compile Include="Backend\Uniques\MartialArtManeuver.cs" />
     <Compile Include="Backend\Uniques\MartialArtTechnique.cs" />
     <Compile Include="Backend\Uniques\MentorSpirit.cs" />
     <Compile Include="Backend\Uniques\Metamagic.cs" />
@@ -981,12 +980,6 @@
       <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
     <None Include="Properties\app.manifest" />
-    <None Include="Selection Forms\frmSelectMartialArtManeuver.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
-      <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
-    </None>
     <Compile Include="Selection Forms\frmSelectMentorSpirit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -999,12 +992,6 @@
     <Compile Include="Selection Forms\frmSelectMetamagic.Designer.cs">
       <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
     </Compile>
-    <None Include="Selection Forms\frmSelectNexus.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Selection Forms\frmSelectNexus.Designer.cs">
-      <DependentUpon>frmSelectNexus.cs</DependentUpon>
-    </None>
     <Compile Include="Selection Forms\frmSelectNumber.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1421,17 +1408,11 @@
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArtTechnique.resx">
       <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtManeuver.resx">
-      <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectMentorSpirit.resx">
       <DependentUpon>frmSelectMentorSpirit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectMetamagic.resx">
       <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectNexus.resx">
-      <DependentUpon>frmSelectNexus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectNumber.resx">
       <DependentUpon>frmSelectNumber.cs</DependentUpon>

@@ -1263,7 +1263,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ispersona", (Name == "Living Persona").ToString(GlobalOptions.InvariantCultureInfo));
-            //objWriter.WriteElementString("isnexus", (Category == "Nexus").ToString());
             objWriter.WriteElementString("isammo", (Category == "Ammunition").ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("isos", bool.FalseString);

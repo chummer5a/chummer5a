@@ -150,7 +150,6 @@
   <xsl:variable name="lang.Magic"      select="'Magic'"/>
   <xsl:variable name="lang.Magician"      select="'Magician'"/>
   <xsl:variable name="lang.Mana"    select="'Mana'"/>
-  <xsl:variable name="lang.Maneuvers"    select="'Maneuvers'"/>
   <xsl:variable name="lang.Manipulation"  select="'Manipulation'"/>
   <xsl:variable name="lang.Manual"    select="'Manual'"/>
   <xsl:variable name="lang.Memory"    select="'Memory'"/>

@@ -125,20 +125,17 @@ namespace Chummer
         // Karma variables.
         private int _intKarmaAttribute = 5;
         private int _intKarmaCarryover = 7;
-        private int _intKarmaComplexFormOption = 2;
-        private int _intKarmaComplexFormSkillfot = 1;
         private int _intKarmaContact = 1;
         private int _intKarmaEnemy = 1;
         private int _intKarmaEnhancement = 2;
         private int _intKarmaImproveActiveSkill = 2;
-        private int _intKarmaImproveComplexForm = 1;
         private int _intKarmaImproveKnowledgeSkill = 1;
         private int _intKarmaImproveSkillGroup = 5;
         private int _intKarmaInitiation = 3;
         private int _intKarmaInitiationFlat = 10;
         private int _intKarmaJoinGroup = 5;
         private int _intKarmaLeaveGroup = 1;
-        private int _intKarmaManeuver = 5;
+        private int _intKarmaTechnique = 5;
         private int _intKarmaMetamagic = 15;
         private int _intKarmaNewActiveSkill = 2;
         private int _intKarmaNewComplexForm = 4;
@@ -449,8 +446,6 @@ namespace Chummer
                     objWriter.WriteElementString("karmaenhancement", _intKarmaEnhancement.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmanewcomplexform />
                     objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <karmaimprovecomplexform />
-                    objWriter.WriteElementString("karmaimprovecomplexform", _intKarmaImproveComplexForm.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmanewaiprogram />
                     objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmanewaiadvancedprogram />
@@ -466,17 +461,13 @@ namespace Chummer
                     // <karmaspirit />
                     objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmamaneuver />
-                    objWriter.WriteElementString("karmamaneuver", _intKarmaManeuver.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("karmatechnique", _intKarmaTechnique.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmainitiation />
                     objWriter.WriteElementString("karmainitiation", _intKarmaInitiation.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmainitiationflat />
                     objWriter.WriteElementString("karmainitiationflat", _intKarmaInitiationFlat.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmametamagic />
                     objWriter.WriteElementString("karmametamagic", _intKarmaMetamagic.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <karmacomplexformoption />
-                    objWriter.WriteElementString("karmacomplexformoption", _intKarmaComplexFormOption.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <karmacomplexformskillsoft />
-                    objWriter.WriteElementString("karmacomplexformskillsoft", _intKarmaComplexFormSkillfot.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmajoingroup />
                     objWriter.WriteElementString("karmajoingroup", _intKarmaJoinGroup.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmaleavegroup />
@@ -809,7 +800,6 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
                 objXmlNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
-                objXmlNode.TryGetInt32FieldQuickly("karmaimprovecomplexform", ref _intKarmaImproveComplexForm);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
                 objXmlNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
                 objXmlNode.TryGetInt32FieldQuickly("karmanuyenper", ref _intKarmaNuyenPer);
@@ -817,14 +807,13 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
                 objXmlNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
                 objXmlNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
-                objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaManeuver);
+                if (!objXmlNode.TryGetInt32FieldQuickly("karmatechnique", ref _intKarmaTechnique))
+                    objXmlNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaTechnique);
                 objXmlNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
                 objXmlNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
                 objXmlNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
-                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformoption", ref _intKarmaComplexFormOption);
                 objXmlNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
                 objXmlNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
-                objXmlNode.TryGetInt32FieldQuickly("karmacomplexformskillsoft", ref _intKarmaComplexFormSkillfot);
                 objXmlNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
                 objXmlNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
 
@@ -949,7 +938,6 @@ namespace Chummer
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpell, "karmaspell", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaEnhancement, "karmaenhancement", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewComplexForm, "karmanewcomplexform", string.Empty, true);
-            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaImproveComplexForm, "karmaimprovecomplexform", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaNuyenPer, "karmanuyenper", string.Empty, true);
@@ -957,11 +945,10 @@ namespace Chummer
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit", string.Empty, true);
-            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaManeuver, "karmamaneuver", string.Empty, true);
+            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaTechnique, "karmamaneuver", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaInitiationFlat, "karmainitiationflat", string.Empty, true);
             GlobalOptions.LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic", string.Empty, true);
-            GlobalOptions.LoadInt32FromRegistry(ref _intKarmaComplexFormOption, "karmacomplexformoption", string.Empty, true);
 
             // Retrieve the sourcebooks that are in the Registry.
             string strBookList;
@@ -1984,33 +1971,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost to improve a Complex Form = New Rating x this value.
-        /// </summary>
-        public int KarmaImproveComplexForm
-        {
-            get => _intKarmaImproveComplexForm;
-            set => _intKarmaImproveComplexForm = value;
-        }
-
-        /// <summary>
-        /// Karma cost for Complex Form Options = Rating x this value.
-        /// </summary>
-        public int KarmaComplexFormOption
-        {
-            get => _intKarmaComplexFormOption;
-            set => _intKarmaComplexFormOption = value;
-        }
-
-        /// <summary>
-        /// Karma cost for Complex Form Skillsofts = Rating x this value.
-        /// </summary>
-        public int KarmaComplexFormSkillsoft
-        {
-            get => _intKarmaComplexFormSkillfot;
-            set => _intKarmaComplexFormSkillfot = value;
-        }
-
-        /// <summary>
         /// Karma cost for a new AI Program
         /// </summary>
         public int KarmaNewAIProgram
@@ -2074,12 +2034,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Karma cost for a Combat Maneuver = this value.
+        /// Karma cost for a Martial Arts Technique = this value.
         /// </summary>
-        public int KarmaManeuver
+        public int KarmaTechnique
         {
-            get => _intKarmaManeuver;
-            set => _intKarmaManeuver = value;
+            get => _intKarmaTechnique;
+            set => _intKarmaTechnique = value;
         }
 
         /// <summary>

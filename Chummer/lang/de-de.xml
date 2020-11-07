@@ -727,15 +727,11 @@
             <text>Ausrüstung hinzufügen</text>
         </string>
         <string>
-            <key>Menu_AddNexus</key>
-            <text>Nexus hinzufügen</text>
-        </string>
-        <string>
             <key>Menu_AddWeapon</key>
             <text>Waffe hinzufügen</text>
         </string>
         <string>
-            <key>Menu_AddAdvantage</key>
+            <key>Menu_AddTechnique</key>
             <text>Technik &amp;hinzufügen</text>
         </string>
         <string>
@@ -1003,10 +999,6 @@
             <text>Möchten Sie diese Komplexe Form wirklich löschen?</text>
         </string>
         <string>
-            <key>Message_DeleteComplexFormOption</key>
-            <text>Möchten Sie diese Komplexe Form Einstellung wirklich löschen?</text>
-        </string>
-        <string>
             <key>Message_DeleteQuality</key>
             <text>Möchten Sie diese Gabe wirklich löschen?</text>
         </string>
@@ -1042,15 +1034,7 @@
             <key>MessageTitle_PowerLevel</key>
             <text>Kraftstufe</text>
         </string>
-        <string>
-            <key>Message_MartialArtManeuverLimit</key>
-            <text>Sie dürfen bis zu 2 Manöver pro Kampfkunstpunkt wählen</text>
-        </string>
-        <string>
-            <key>MessageTitle_MartialArtManeuverLimit</key>
-            <text>Maximale Anzahl von Manövern</text>
-        </string>
-        <string>
+      <string>
             <key>Message_SelectMartialArtTechnique</key>
             <text>Sie müssen eine Kampfsportart wählen, für die Sie eine Gabe hinzufügen wollen</text>
         </string>
@@ -1343,14 +1327,6 @@
             <text>Komplexe Form auswählen</text>
         </string>
         <string>
-            <key>Message_CannotAddComplexFormOption</key>
-            <text>Diese komplexe Form erlaubt keine Optionen.</text>
-        </string>
-        <string>
-            <key>MessageTitle_CannotAddComplexFormOption</key>
-            <text>Option kann nicht hinzugefügt werden</text>
-        </string>
-        <string>
             <key>Message_FocusMaximumForce</key>
             <text>Die kombinierten Kraftstufen Ihrer gebundenen Foki können Ihr fünffaches Magie-Attribut nicht übersteigen.</text>
         </string>
@@ -1525,10 +1501,6 @@
         <string>
             <key>Message_ConfirmKarmaExpenseRemove</key>
             <text>Sind Sie sicher, dass Sie Karma für das Entfernen von {0} ausgeben möchten?</text>
-        </string>
-        <string>
-            <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
-            <text>Sind Sie sicher, dass Sie diese Komplexe Form Option hinzufügen möchten?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseFocus</key>
@@ -1783,14 +1755,6 @@
             <text>Komplexe Form</text>
         </string>
         <string>
-            <key>String_ExpenseAddComplexFormOption</key>
-            <text>Komplexe Form Option hinzugefügt</text>
-        </string>
-        <string>
-            <key>String_ExpenseComplexFormOption</key>
-            <text>Komplexe Form Option</text>
-        </string>
-        <string>
             <key>String_ExpensePurchaseGear</key>
             <text>Gekaufte Ausrüstung</text>
         </string>
@@ -1905,10 +1869,6 @@
         <string>
             <key>String_ExpenseLearnMartialArt</key>
             <text>Kampfkünste gelernt</text>
-        </string>
-        <string>
-            <key>String_ExpenseLearnManeuver</key>
-            <text>Gelernte Manöver</text>
         </string>
         <string>
             <key>String_ExpenseLearnMetamagic</key>
@@ -2549,16 +2509,8 @@
             <text>Kampfkunst &amp;hinzufügen</text>
         </string>
         <string>
-            <key>Button_AddManeuver</key>
-            <text>&amp;Manöver hinzufügen</text>
-        </string>
-        <string>
             <key>Node_SelectedMartialArts</key>
             <text>Kampfkünste</text>
-        </string>
-        <string>
-            <key>Node_SelectedManeuvers</key>
-            <text>Manöver</text>
         </string>
         <string>
             <key>Label_SelectedSpells</key>
@@ -4009,20 +3961,12 @@
             <text>Neue Komplexe Form</text>
         </string>
         <string>
-            <key>Label_Options_ImproveComplexForm</key>
-            <text>Steigere Komplexe Form um 1</text>
-        </string>
-        <string>
-            <key>Label_Options_ComplexFormOptions</key>
-            <text>Komplexe Form Einstellungen</text>
-        </string>
-        <string>
             <key>Label_Options_Spirit</key>
             <text>Geist</text>
         </string>
         <string>
-            <key>Label_Options_CombatManeuver</key>
-            <text>Kampfmanöver</text>
+            <key>Label_Options_MartialArtTechnique</key>
+            <text>Kampfkunst Manöver</text>
         </string>
         <string>
             <key>Label_Options_Nuyen</key>
@@ -4433,10 +4377,6 @@
             <text>Technik auswählen</text>
         </string>
         <string>
-            <key>Title_SelectMartialArtManeuver</key>
-            <text>Manöver auswählen</text>
-        </string>
-        <string>
             <key>Title_SelectMentorSpirit</key>
             <text>Schutzgeist auswählen</text>
         </string>
@@ -4451,30 +4391,6 @@
         <string>
             <key>Label_SelectMetamagic_Disadvantage</key>
             <text>Nachteil:</text>
-        </string>
-        <string>
-            <key>Title_SelectNexus</key>
-            <text>Nexus bauen</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Nexus</key>
-            <text>Nexus</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_Processor</key>
-            <text>Prozessor:</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Processor</key>
-            <text>Prozessor</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_PersonaLimit</key>
-            <text>Persona Begrenzung:</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_PersonaLimit</key>
-            <text>Persona Begrenzung</text>
         </string>
         <string>
             <key>Title_SelectNumber</key>
@@ -4853,10 +4769,6 @@
             <text>Charakter kann nicht geladen werden</text>
         </string>
         <string>
-            <key>Label_Options_ComplexFormSkillsoft</key>
-            <text>Komplexe-Form Talentsoft</text>
-        </string>
-        <string>
             <key>Button_EditExpense</key>
             <text>Aufwendungen bearbeiten</text>
         </string>
@@ -5098,11 +5010,7 @@
         </string>
         <string>
             <key>Label_Options_BPMartialArt</key>
-            <text>Kampfkunst (pro Stufe)</text>
-        </string>
-        <string>
-            <key>Label_Options_BPMartialArtManeuver</key>
-            <text>Kampfkunst Manöver</text>
+            <text>Kampfkunst</text>
         </string>
         <string>
             <key>Label_Options_BPSkillGroup</key>
@@ -5134,11 +5042,7 @@
         </string>
         <string>
             <key>Label_Options_BPComplexForm</key>
-            <text>Komplexe Form (pro Stufe)</text>
-        </string>
-        <string>
-            <key>Label_Options_BPComplexFormOption</key>
-            <text>Komplexe Form Optionen (pro Stufe)</text>
+            <text>Komplexe Form</text>
         </string>
         <string>
             <key>Label_SelectMentor_ChooseOne</key>
@@ -5840,11 +5744,6 @@
         <string>
             <key>Button_AddPet</key>
             <text>Haustier &amp;hinzufügen</text>
-        </string>
-        <!-- Version 380 -->
-        <string>
-            <key>Message_CannotAddComplexFormOptionLimit</key>
-            <text>Diese komplexe Form kann aufgrund ihrer Wertung nicht über mehr als {0} Optionen verfügen.</text>
         </string>
         <!-- Version  -->
         <string>

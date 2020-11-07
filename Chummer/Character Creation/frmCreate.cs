@@ -1816,7 +1816,7 @@ namespace Chummer
                     }
                 }
 
-                // Refresh Martial Art Advantages.
+                // Refresh Martial Art Techniques.
                 foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                 {
                     XmlNode objMartialArtNode = objMartialArt.GetNode();
@@ -3146,45 +3146,6 @@ namespace Chummer
                 }
             }
         }
-
-#if LEGACY
-        private void cmdAddManeuver_Click(object sender, EventArgs e)
-        {
-            // Characters may only have 2 Maneuvers per Martial Art Rating.
-            int intTotalRating = 0;
-            foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
-                intTotalRating += objMartialArt.Rating * 2;
-
-            if (CharacterObject.MartialArtManeuvers.Count >= intTotalRating && !CharacterObject.IgnoreRules)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_MartialArtManeuverLimit"), LanguageManager.GetString("MessageTitle_MartialArtManeuverLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            frmSelectMartialArtManeuver frmPickMartialArtManeuver = new frmSelectMartialArtManeuver(CharacterObject);
-            frmPickMartialArtManeuver.ShowDialog(this);
-
-            if (frmPickMartialArtManeuver.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
-
-            XmlNode objXmlManeuver = objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + frmPickMartialArtManeuver.SelectedManeuver + "\"]");
-
-            MartialArtManeuver objManeuver = new MartialArtManeuver(CharacterObject);
-            objManeuver.Create(objXmlManeuver);
-            CharacterObject.MartialArtManeuvers.Add(objManeuver);
-
-            TreeNode objSelectedNode = treMartialArts.FindNode(objManeuver.InternalId);
-            if (objSelectedNode != null)
-                treMartialArts.SelectedNode = objSelectedNode;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-#endif
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
         {
@@ -4684,7 +4645,7 @@ namespace Chummer
             tsVehicleAddUnderbarrelWeapon_Click(sender, e);
         }
 
-        private void tsMartialArtsAddAdvantage_Click(object sender, EventArgs e)
+        private void tsMartialArtsAddTechnique_Click(object sender, EventArgs e)
         {
             // Select the Martial Arts node if we're currently on a child.
             while (treMartialArts.SelectedNode != null && treMartialArts.SelectedNode.Level > 1)
@@ -4721,13 +4682,13 @@ namespace Chummer
                         xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
                     }
 
-                    // Create the Improvements for the Advantage if there are any.
-                    MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-                    objAdvantage.Create(xmlTechnique);
-                    if (objAdvantage.InternalId.IsEmptyGuid())
+                    // Create the Improvements for the Technique if there are any.
+                    MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
+                    objTechnique.Create(xmlTechnique);
+                    if (objTechnique.InternalId.IsEmptyGuid())
                         return;
 
-                    objMartialArt.Techniques.Add(objAdvantage);
+                    objMartialArt.Techniques.Add(objTechnique);
 
                     IsCharacterUpdateRequested = true;
 
@@ -5065,63 +5026,6 @@ namespace Chummer
             }
         }
 
-#if LEGACY
-        private void tsGearAddNexus_Click(object sender, EventArgs e)
-        {
-            treGear.SelectedNode = treGear.Nodes[0];
-
-            frmSelectNexus frmPickNexus = new frmSelectNexus(CharacterObject);
-            frmPickNexus.ShowDialog(this);
-
-            if (frmPickNexus.DialogResult == DialogResult.Cancel)
-                return;
-
-            Gear objGear = frmPickNexus.SelectedNexus;
-
-            CharacterObject.Gear.Add(objGear);
-
-            IsCharacterUpdateRequested = true;
-        }
-
-        private void tsVehicleAddNexus_Click(object sender, EventArgs e)
-        {
-            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Attempt to locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            frmSelectNexus frmPickNexus = new frmSelectNexus(CharacterObject);
-            frmPickNexus.ShowDialog(this);
-
-            if (frmPickNexus.DialogResult == DialogResult.Cancel)
-                return;
-
-            Gear objGear = frmPickNexus.SelectedNexus;
-
-            treVehicles.SelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsVehicleGear));
-            treVehicles.SelectedNode.Expand();
-
-            objSelectedVehicle.Gear.Add(objGear);
-            objGear.Parent = objSelectedVehicle;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-#endif
-
         private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
             cmdAddArmor_Click(sender, e);
@@ -5237,18 +5141,6 @@ namespace Chummer
                 WriteNotes(objNotes, treMartialArts.SelectedNode);
             }
         }
-
-#if LEGACY
-        private void tsMartialArtManeuverNotes_Click(object sender, EventArgs e)
-        {
-            if (treMartialArts.SelectedNode == null)
-                return;
-            if (treMartialArts.SelectedNode?.Tag is IHasNotes objNotes)
-            {
-                WriteNotes(objNotes, treMartialArts.SelectedNode);
-            }
-        }
-#endif
 
         private void tsSpellNotes_Click(object sender, EventArgs e)
         {
@@ -8762,7 +8654,7 @@ namespace Chummer
             {
                 if (!objMartialArt.IsQuality)
                 {
-                    int intLoopCost = objMartialArt.Rating * objMartialArt.Cost * CharacterObjectOptions.KarmaQuality;
+                    int intLoopCost = objMartialArt.Cost;
                     intMartialArtsPoints += intLoopCost;
 
                     if (blnDoUIUpdate)
@@ -8780,7 +8672,7 @@ namespace Chummer
                                 continue;
                             }
 
-                            intLoopCost = 5 * CharacterObjectOptions.KarmaQuality;
+                            intLoopCost = CharacterObjectOptions.KarmaTechnique;
                             intMartialArtsPoints += intLoopCost;
 
                             strMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace).Append(objTechnique.CurrentDisplayName)
@@ -8789,7 +8681,7 @@ namespace Chummer
                     }
                     else
                         // Add in the Techniques
-                        intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0) * 5 * CharacterObjectOptions.KarmaQuality;
+                        intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0) * CharacterObjectOptions.KarmaTechnique;
                 }
             }
             intKarmaPointsRemain -= intMartialArtsPoints;
@@ -9113,15 +9005,6 @@ namespace Chummer
             }
             intKarmaPointsRemain -= intKarmaCost;
             intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
-
-#if LEGACY
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Martial Art Maneuvers.
-            // Each Maneuver costs KarmaManeuver.
-            int intManeuverPointsUsed = CharacterObject.MartialArtManeuvers.Count * CharacterObjectOptions.KarmaManeuver;
-            intFreestyleBP += intManeuverPointsUsed;
-            intKarmaPointsRemain -= intManeuverPointsUsed;
-#endif
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Initiation.
@@ -12838,7 +12721,6 @@ namespace Chummer
             if (xmlSelectMartialArt != null)
             {
                 string strForcedValue = xmlSelectMartialArt.Attributes?["select"]?.InnerText ?? string.Empty;
-                int intRating = Convert.ToInt32(xmlSelectMartialArt.Attributes?["rating"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
 
                 using (frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(CharacterObject)
                 {
@@ -12856,7 +12738,6 @@ namespace Chummer
 
                         MartialArt objMartialArt = new MartialArt(CharacterObject);
                         objMartialArt.Create(objXmlArt);
-                        objMartialArt.Rating = intRating;
                         CharacterObject.MartialArts.Add(objMartialArt);
                     }
                 }
@@ -12876,16 +12757,15 @@ namespace Chummer
                     if (objXmlArtNode != null)
                     {
                         objArt.Create(objXmlArtNode);
-                        objArt.Rating = Convert.ToInt32(objXmlArt["rating"].InnerText, GlobalOptions.InvariantCultureInfo);
                         CharacterObject.MartialArts.Add(objArt);
 
-                        // Check for Advantages.
-                        foreach (XmlNode objXmlAdvantage in objXmlArt.SelectNodes("techniques/technique"))
+                        // Check for Techniques.
+                        foreach (XmlNode xmlTechnique in objXmlArt.SelectNodes("techniques/technique"))
                         {
-                            MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-                            XmlNode objXmlAdvantageNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlAdvantage["name"].InnerText + "\"]");
-                            objAdvantage.Create(objXmlAdvantageNode);
-                            objArt.Techniques.Add(objAdvantage);
+                            MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
+                            XmlNode xmlTechniqueNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + xmlTechnique["name"].InnerText + "\"]");
+                            objTechnique.Create(xmlTechniqueNode);
+                            objArt.Techniques.Add(objTechnique);
                         }
                     }
                 }

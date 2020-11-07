@@ -345,41 +345,23 @@ namespace Chummer
                             };
                             objChild.Text += strSpace + objXmlArt.SelectSingleNode("rating")?.Value;
 
-                            // Check for Advantages.
-                            foreach (XPathNavigator objXmlAdvantage in objXmlArt.Select("techniques/technique"))
+                            // Check for Techniques.
+                            foreach (XPathNavigator xmlTechnique in objXmlArt.Select("techniques/technique"))
                             {
-                                if (objXmlAdvantage.SelectSingleNode("hide") != null)
+                                if (xmlTechnique.SelectSingleNode("hide") != null)
                                     continue;
-                                string strAdvantageName = objXmlAdvantage.SelectSingleNode("name").Value;
-                                XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + _objCharacter.Options.BookXPath() + ") and name = " + strAdvantageName.CleanXPath() + "]");
+                                string strTechniqueName = xmlTechnique.SelectSingleNode("name").Value;
+                                XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[(" + _objCharacter.Options.BookXPath() + ") and name = " + strTechniqueName.CleanXPath() + "]");
                                 if (objNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
                                 {
-                                    Text = objChildNode.SelectSingleNode("@translate")?.Value ?? strAdvantageName
+                                    Text = objChildNode.SelectSingleNode("@translate")?.Value ?? strTechniqueName
                                 };
 
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
-
-                            objParent.Nodes.Add(objChild);
-                            objParent.Expand();
-                        }
-
-                        foreach (XPathNavigator objXmlManeuver in objXmlItem.Select("maneuver"))
-                        {
-                            if (objXmlManeuver.SelectSingleNode("hide") != null)
-                                continue;
-                            string strAdvantageName = objXmlManeuver.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("maneuvers/maneuver[(" + _objCharacter.Options.BookXPath() + ") and name = " + strAdvantageName.CleanXPath() + "]");
-                            if (objNode == null)
-                                continue;
-                            TreeNode objChild = new TreeNode
-                            {
-                                Text = objNode.SelectSingleNode("translate")?.Value ?? strAdvantageName
-                            };
-                            objChild.Text += strSpace + objXmlManeuver.SelectSingleNode("rating")?.Value;
 
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();

@@ -133,12 +133,11 @@ namespace Chummer
             this.lblBuildPrepsBPLabel = new System.Windows.Forms.Label();
             this.lblPublicAware = new System.Windows.Forms.Label();
             this.cmsMartialArts = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsMartialArtsAddAdvantage = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMartialArtsAddTechnique = new System.Windows.Forms.ToolStripMenuItem();
             this.tsMartialArtsNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSpellButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsCreateSpell = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsComplexForm = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAddComplexFormOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsComplexFormNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsCyberwareAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
@@ -2112,19 +2111,19 @@ namespace Chummer
             // cmsMartialArts
             // 
             this.cmsMartialArts.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsMartialArtsAddAdvantage,
+            this.tsMartialArtsAddTechnique,
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
             this.cmsMartialArts.Size = new System.Drawing.Size(154, 48);
             // 
-            // tsMartialArtsAddAdvantage
+            // tsMartialArtsAddTechnique
             // 
-            this.tsMartialArtsAddAdvantage.Image = global::Chummer.Properties.Resources.medal_gold_add;
-            this.tsMartialArtsAddAdvantage.Name = "tsMartialArtsAddAdvantage";
-            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(153, 22);
-            this.tsMartialArtsAddAdvantage.Tag = "Menu_AddAdvantage";
-            this.tsMartialArtsAddAdvantage.Text = "&Add Technique";
-            this.tsMartialArtsAddAdvantage.Click += new System.EventHandler(this.tsMartialArtsAddAdvantage_Click);
+            this.tsMartialArtsAddTechnique.Image = global::Chummer.Properties.Resources.medal_gold_add;
+            this.tsMartialArtsAddTechnique.Name = "tsMartialArtsAddTechnique";
+            this.tsMartialArtsAddTechnique.Size = new System.Drawing.Size(153, 22);
+            this.tsMartialArtsAddTechnique.Tag = "Menu_AddTechnique";
+            this.tsMartialArtsAddTechnique.Text = "&Add Technique";
+            this.tsMartialArtsAddTechnique.Click += new System.EventHandler(this.tsMartialArtsAddTechnique_Click);
             // 
             // tsMartialArtsNotes
             // 
@@ -2154,19 +2153,9 @@ namespace Chummer
             // cmsComplexForm
             // 
             this.cmsComplexForm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsAddComplexFormOption,
             this.tsComplexFormNotes});
             this.cmsComplexForm.Name = "cmsComplexForm";
             this.cmsComplexForm.Size = new System.Drawing.Size(137, 48);
-            // 
-            // tsAddComplexFormOption
-            // 
-            this.tsAddComplexFormOption.Enabled = false;
-            this.tsAddComplexFormOption.Image = global::Chummer.Properties.Resources.plugin_add;
-            this.tsAddComplexFormOption.Name = "tsAddComplexFormOption";
-            this.tsAddComplexFormOption.Size = new System.Drawing.Size(136, 22);
-            this.tsAddComplexFormOption.Tag = "Menu_AddOption";
-            this.tsAddComplexFormOption.Text = "&Add Option";
             // 
             // tsComplexFormNotes
             // 
@@ -14822,7 +14811,7 @@ namespace Chummer
         private System.Windows.Forms.TreeView treMartialArts;
         private System.Windows.Forms.Button cmdDeleteMartialArt;
         private System.Windows.Forms.ContextMenuStrip cmsMartialArts;
-        private System.Windows.Forms.ToolStripMenuItem tsMartialArtsAddAdvantage;
+        private System.Windows.Forms.ToolStripMenuItem tsMartialArtsAddTechnique;
         private System.Windows.Forms.TabPage tabCharacterInfo;
         private System.Windows.Forms.TextBox txtSkin;
         private System.Windows.Forms.Label lblSkin;
@@ -14938,7 +14927,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblFadingAttributesLabel;
         private System.Windows.Forms.Label lblStreamLabel;
         private System.Windows.Forms.ContextMenuStrip cmsComplexForm;
-        private System.Windows.Forms.ToolStripMenuItem tsAddComplexFormOption;
         private System.Windows.Forms.Label lblWeaponConceal;
         private System.Windows.Forms.Label lblWeaponConcealLabel;
         private System.Windows.Forms.ContextMenuStrip cmsGearButton;

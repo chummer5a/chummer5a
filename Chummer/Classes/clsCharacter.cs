@@ -216,9 +216,6 @@ namespace Chummer
         private readonly ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
         private readonly ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private readonly ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
-#if LEGACY
-        private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>(10);
-#endif
         private readonly ObservableCollection<LimitModifier> _lstLimitModifiers =
             new ObservableCollection<LimitModifier>();
 
@@ -1481,17 +1478,6 @@ namespace Chummer
 
                     // </martialarts>
                     objWriter.WriteEndElement();
-
-#if LEGACY
-// <martialartmaneuvers>
-            objWriter.WriteStartElement("martialartmaneuvers");
-            foreach (MartialArtManeuver objManeuver in _lstMartialArtManeuvers)
-            {
-                objManeuver.Save(objWriter);
-            }
-            // </martialartmaneuvers>
-            objWriter.WriteEndElement();
-#endif
 
                     // <limitmodifiers>
                     objWriter.WriteStartElement("limitmodifiers");
@@ -3196,22 +3182,7 @@ namespace Chummer
 
                         //Timekeeper.Finish("load_char_marts");
                     }
-#if LEGACY
-                using (var op_load_char_mam = Timekeeper.StartSyncron("load_char_mam"))
-                {
 
-                    // Martial Art Maneuvers.
-                    objXmlNodeList = objXmlCharacter.SelectNodes("martialartmaneuvers/martialartmaneuver");
-                    foreach (XmlNode objXmlManeuver in objXmlNodeList)
-                    {
-                        MartialArtManeuver objManeuver = new MartialArtManeuver(this);
-                        objManeuver.Load(objXmlManeuver);
-                        _lstMartialArtManeuvers.Add(objManeuver);
-                    }
-
-                    //Timekeeper.Finish("load_char_mam");
-                }
-#endif
                     using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
@@ -4411,17 +4382,6 @@ namespace Chummer
             // </martialarts>
             objWriter.WriteEndElement();
 
-#if LEGACY
-// <martialartmaneuvers>
-            objWriter.WriteStartElement("martialartmaneuvers");
-            foreach (MartialArtManeuver objManeuver in MartialArtManeuvers)
-            {
-                objManeuver.Print(objWriter, strLanguageToPrint);
-            }
-            // </martialartmaneuvers>
-            objWriter.WriteEndElement();
-#endif
-
             // <armors>
             objWriter.WriteStartElement("armors");
             foreach(Armor objArmor in Armor)
@@ -4738,9 +4698,6 @@ namespace Chummer
             _lstComplexForms.Clear();
             _lstAIPrograms.Clear();
             _lstMartialArts.Clear();
-#if LEGACY
-            _lstMartialArtManeuvers.Clear();
-#endif
             _lstLimitModifiers.Clear();
             _lstArmor.Clear();
             _lstCyberware.Clear();
@@ -5150,11 +5107,11 @@ namespace Chummer
                 case Improvement.ImprovementSource.MartialArtTechnique:
                     foreach(MartialArt objMartialArt in MartialArts)
                     {
-                        foreach(MartialArtTechnique objAdvantage in objMartialArt.Techniques)
+                        foreach(MartialArtTechnique objTechnique in objMartialArt.Techniques)
                         {
-                            if(objAdvantage.InternalId == objImprovement.SourceName)
+                            if(objTechnique.InternalId == objImprovement.SourceName)
                             {
-                                return objAdvantage.DisplayName(strLanguage);
+                                return objTechnique.DisplayName(strLanguage);
                             }
                         }
                     }
@@ -10080,19 +10037,6 @@ namespace Chummer
         /// Martial Arts.
         /// </summary>
         public ObservableCollection<MartialArt> MartialArts => _lstMartialArts;
-
-#if LEGACY
-/// <summary>
-/// Martial Arts Maneuvers.
-/// </summary>
-        public List<MartialArtManeuver> MartialArtManeuvers
-        {
-            get
-            {
-                return _lstMartialArtManeuvers;
-            }
-        }
-#endif
 
         /// <summary>
         /// Limit Modifiers.

@@ -3850,7 +3850,7 @@ namespace Chummer
                         if (objMartialArt != null)
                         {
                             EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled).ToArray());
-                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
                                 EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique && x.SourceName == objTechnique.InternalId && x.Enabled).ToArray());
@@ -4121,7 +4121,7 @@ namespace Chummer
                         if (objMartialArt != null)
                         {
                             DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled).ToArray());
-                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
                                 DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique && x.SourceName == objTechnique.InternalId && x.Enabled).ToArray());
@@ -4532,10 +4532,10 @@ namespace Chummer
                         if (objMartialArt != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
-                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-                            foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
+                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
-                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId);
                             }
                             objCharacter.MartialArts.Remove(objMartialArt);
                         }

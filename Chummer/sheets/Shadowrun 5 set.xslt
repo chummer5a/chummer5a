@@ -2479,20 +2479,6 @@
         <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
       </xsl:call-template>
     </xsl:for-each>
-    <xsl:if test="martialartmaneuvers/martialartmaneuver">
-      <tr><td colspan="100%"><strong><xsl:value-of select="$lang.Maneuvers"/></strong></td></tr>
-      <tr><td colspan="100%" class="indent">
-        <xsl:for-each select="martialartmaneuvers/martialartmaneuver">
-          <xsl:sort select="name"/>
-          <xsl:value-of select="name"/>
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="source"/>
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="page"/>
-          <xsl:if test="last() &gt; 1">; </xsl:if>
-        </xsl:for-each>
-      </td></tr>
-    </xsl:if>
   </xsl:template>
 
   <xsl:template name="resistances">
