@@ -83,6 +83,7 @@ Application Fixes:
 - Removed vestigial code for supporting and handling Omae and Omae-managed files. The service has been offline for so long that there really isn't any use for this code anymore.
 - Improvement values and augmented values can now be decimals, not just integers. Non-integer improvements that would modify a value that must always be an integer will always get rounded up.
 - The total amount of power points that an adept of some kind has can now be a non-integer.
+- Unhardcoded the way Running, Swimming, and Flight require ground, swimming, and flying movement speeds in order to be enabled. Skills can now be set to require one or more of these movement speeds through the requiresgroundmovement, requiresswimmovement, and requiresflymovement nodes, and the Running, Swimming, and Flight skills have these nodes present in the base data set.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
