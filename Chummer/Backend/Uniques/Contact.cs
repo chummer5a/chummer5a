@@ -397,16 +397,16 @@ namespace Chummer
             {
                 if (Free)
                     return 0;
-                int intReturn = Connection + Loyalty;
+                decimal decReturn = Connection + Loyalty;
                 if (Family)
-                    intReturn += 1;
+                    decReturn += 1;
                 if (Blackmail)
-                    intReturn += 2;
-                intReturn +=
+                    decReturn += 2;
+                decReturn +=
                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
-                intReturn = Math.Max(intReturn,
+                decReturn = Math.Max(decReturn,
                     _intKarmaMinimum + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
-                return intReturn;
+                return decimal.ToInt32(decimal.Ceiling(decReturn));
             }
         }
 
@@ -979,7 +979,7 @@ namespace Chummer
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == UniqueId && objImprovement.Enabled)
                     {
-                        intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value);
+                        intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, decimal.ToInt32(decimal.Ceiling(objImprovement.Value)));
                     }
                 }
 

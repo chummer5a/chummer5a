@@ -204,18 +204,18 @@ namespace Chummer
                 {
                     if (objFoundationNodeData.DrugComponent.Category != "Foundation")
                         continue;
-                    Dictionary<string, int> dctFoundationAttributes = objFoundationNodeData.DrugComponent.DrugEffects[0].Attributes;
-                    Dictionary<string, int> dctBlockAttributes = objNodeData.DrugComponent.DrugEffects[objNodeData.Level].Attributes;
-                    foreach (KeyValuePair<string, int> objItem in dctFoundationAttributes)
+                    Dictionary<string, decimal> dctFoundationAttributes = objFoundationNodeData.DrugComponent.DrugEffects[0].Attributes;
+                    Dictionary<string, decimal> dctBlockAttributes = objNodeData.DrugComponent.DrugEffects[objNodeData.Level].Attributes;
+                    foreach (KeyValuePair<string, decimal> objItem in dctFoundationAttributes)
                     {
                         if (objItem.Value < 0 &&
-                            dctBlockAttributes.TryGetValue(objItem.Key, out int intBlockAttrValue) &&
-                            intBlockAttrValue > 0)
+                            dctBlockAttributes.TryGetValue(objItem.Key, out decimal decBlockAttrValue) &&
+                            decBlockAttrValue > 0)
                         {
                             string message = new StringBuilder(LanguageManager.GetString("String_MaximumDrugBlockLevel")).
                                 AppendLine().
                                 Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;", GlobalOptions.CultureInfo)).AppendLine().
-                                Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(intBlockAttrValue.ToString("+#;-#;", GlobalOptions.CultureInfo)).
+                                Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(decBlockAttrValue.ToString("+#.#;-#.#;", GlobalOptions.CultureInfo)).
                                 ToString();
                             Program.MainForm.ShowMessageBox(this, message);
                             return;

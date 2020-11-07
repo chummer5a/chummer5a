@@ -4019,7 +4019,7 @@ namespace Chummer
             // <fallingarmor />
             objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString(objCulture));
 
-            int intDamageResistanceDice = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
+            int intDamageResistanceDice = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance)));
             // <armordicestun />
             objWriter.WriteElementString("armordicestun",
                 (BOD.TotalValue + intDamageResistanceDice + TotalArmorRating).ToString(objCulture));
@@ -5305,13 +5305,13 @@ namespace Chummer
                         decPowerPoints += objPower.PowerPoints;
                 }
 
-                int intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
+                int intPowerPoints = EDG.TotalValue + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints)));
 
                 // If the house rule to base Power Points on the character's MAG value instead, use the character's MAG.
                 if(Options.FreeSpiritPowerPointsMAG)
                     intPowerPoints = MAG.TotalValue +
-                                     ImprovementManager.ValueOf(this,
-                                         Improvement.ImprovementType.FreeSpiritPowerPoints);
+                                     decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,
+                                         Improvement.ImprovementType.FreeSpiritPowerPoints)));
 
                 sbdReturn = new StringBuilder(intPowerPoints.ToString(GlobalOptions.CultureInfo))
                     .Append(strSpace).Append('(').Append((intPowerPoints - decPowerPoints).ToString(GlobalOptions.CultureInfo))
@@ -5324,7 +5324,7 @@ namespace Chummer
                 if(Metatype == "Free Spirit")
                 {
                     // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
-                    intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
+                    intPowerPoints = EDG.TotalValue + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints)));
                 }
                 else if(Metatype == "Ally Spirit")
                 {
@@ -5366,7 +5366,7 @@ namespace Chummer
                     intUsedPowerPoints += 1;
             }
 
-            int intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints);
+            int intPowerPoints = EDG.TotalValue + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints)));
 
             string strSpace = LanguageManager.GetString("String_Space");
 
@@ -7258,7 +7258,7 @@ namespace Chummer
         /// <summary>
         /// Astral Reputation (SG 207).
         /// </summary>
-        public int TotalAstralReputation => Math.Max(0, AstralReputation + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation));
+        public int TotalAstralReputation => Math.Max(0, AstralReputation + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputation))));
 
         /// <summary>
         /// Points of Astral Reputation that have added or removed manually (latter usually by burning Wild Reputation).
@@ -7303,7 +7303,7 @@ namespace Chummer
         public int TotalWildReputation =>
             Math.Max(0,
                 WildReputation
-                + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild));
+                + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild))));
 
         /// <summary>
         /// Points of Wild Reputation that have added or removed manually (latter usually by burning it to lower Astral Reputation).
@@ -7665,12 +7665,12 @@ namespace Chummer
         /// <summary>
         /// The highest number of free Metagenic qualities the character can have.
         /// </summary>
-        public int MetagenicLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.MetageneticLimit);
+        public int MetagenicLimit => decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MetageneticLimit)));
 
         /// <summary>
         /// The highest number of free Metagenic qualities the character can have.
         /// </summary>
-        public int SpecialModificationLimit => ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpecialModificationLimit);
+        public int SpecialModificationLimit => decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpecialModificationLimit)));
 
         /// <summary>
         /// Whether or not the character is possessed by a Spirit.
@@ -7706,7 +7706,7 @@ namespace Chummer
 
         public int SpellKarmaCost(string strCategory = "")
         {
-            int intReturn = Options.KarmaSpell;
+            decimal decReturn = Options.KarmaSpell;
 
             decimal decMultiplier = 1.0m;
             foreach(Improvement objLoopImprovement in Improvements.Where(imp =>
@@ -7719,23 +7719,23 @@ namespace Chummer
                                                    (objLoopImprovement.Condition == "create") != Created))
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost)
-                        intReturn += objLoopImprovement.Value;
+                        decReturn += objLoopImprovement.Value;
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
                         decMultiplier *= objLoopImprovement.Value / 100.0m;
                 }
             }
 
-            if(decMultiplier != 1.0m)
-                intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+            if (decMultiplier != 1.0m)
+                decReturn *= decMultiplier;
 
-            return Math.Max(intReturn, 0);
+            return Math.Max(decimal.ToInt32(decimal.Ceiling(decReturn)), 0);
         }
 
         public int ComplexFormKarmaCost
         {
             get
             {
-                int intReturn = Options.KarmaNewComplexForm;
+                decimal decReturn = Options.KarmaNewComplexForm;
 
                 decimal decMultiplier = 1.0m;
                 foreach(Improvement objLoopImprovement in Improvements)
@@ -7745,7 +7745,7 @@ namespace Chummer
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
                         if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewComplexFormKarmaCost)
-                            intReturn += objLoopImprovement.Value;
+                            decReturn += objLoopImprovement.Value;
                         if(objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier)
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
@@ -7753,9 +7753,9 @@ namespace Chummer
                 }
 
                 if(decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+                    decReturn *= decMultiplier;
 
-                return Math.Max(intReturn, 0);
+                return Math.Max(decimal.ToInt32(decimal.Ceiling(decReturn)), 0);
             }
         }
 
@@ -7763,7 +7763,7 @@ namespace Chummer
         {
             get
             {
-                int intReturn = Options.KarmaNewAIProgram;
+                decimal decReturn = Options.KarmaNewAIProgram;
 
                 decimal decMultiplier = 1.0m;
                 foreach(Improvement objLoopImprovement in Improvements)
@@ -7773,17 +7773,17 @@ namespace Chummer
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
                         if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIProgramKarmaCost)
-                            intReturn += objLoopImprovement.Value;
+                            decReturn += objLoopImprovement.Value;
                         if(objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier)
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
 
-                if(decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
 
-                return Math.Max(intReturn, 0);
+                return Math.Max(decimal.ToInt32(decimal.Ceiling(decReturn)), 0);
             }
         }
 
@@ -7791,7 +7791,7 @@ namespace Chummer
         {
             get
             {
-                int intReturn = Options.KarmaNewAIAdvancedProgram;
+                decimal decReturn = Options.KarmaNewAIAdvancedProgram;
 
                 decimal decMultiplier = 1.0m;
                 foreach(Improvement objLoopImprovement in Improvements)
@@ -7801,17 +7801,17 @@ namespace Chummer
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
                         if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost)
-                            intReturn += objLoopImprovement.Value;
+                            decReturn += objLoopImprovement.Value;
                         if(objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier)
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
 
-                if(decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
 
-                return Math.Max(intReturn, 0);
+                return Math.Max(decimal.ToInt32(decimal.Ceiling(decReturn)), 0);
             }
         }
 
@@ -8184,16 +8184,16 @@ namespace Chummer
         /// <summary>
         /// Total Amount of Power Points this character has.
         /// </summary>
-        public int PowerPointsTotal
+        public decimal PowerPointsTotal
         {
             get
             {
-                int intMAG = UseMysticAdeptPPs ? MysticAdeptPowerPoints : MAGAdept.TotalValue;
+                decimal decMAG = UseMysticAdeptPPs ? MysticAdeptPowerPoints : MAGAdept.TotalValue;
 
                 // Add any Power Point Improvements to MAG.
-                intMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
+                decMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
 
-                return Math.Max(intMAG, 0);
+                return Math.Max(decMAG, 0);
             }
         }
 
@@ -9025,8 +9025,9 @@ namespace Chummer
         {
             get
             {
-                int intExtraIP = _intInitiativeDice + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice) +
-                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd);
+                int intExtraIP = _intInitiativeDice
+                                 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice)))
+                                 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDiceAdd)));
 
                 return Math.Min(intExtraIP, 5);
             }
@@ -9044,7 +9045,7 @@ namespace Chummer
                 }
 
                 int intINI = (INT.TotalValue + REA.TotalValue) + WoundModifier;
-                intINI += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative);
+                intINI += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative)));
                 if(intINI < 0)
                     intINI = 0;
                 return intINI;
@@ -9208,12 +9209,12 @@ namespace Chummer
                 int intReturn;
                 // A.I.s always have 4 Matrix Initiative Dice.
                 if(IsAI)
-                    intReturn = 4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice);
+                    intReturn = 4 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice)));
                 else
                     intReturn = InitiativeDice;
 
                 // Add in any additional Matrix Initiative Pass bonuses.
-                intReturn += ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDiceAdd);
+                intReturn += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDiceAdd)));
 
                 return Math.Min(intReturn, 5);
             }
@@ -9288,7 +9289,7 @@ namespace Chummer
 
                 int intCommlinkDP = ActiveCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0;
                 return INT.TotalValue + intCommlinkDP + WoundModifier +
-                       ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative);
+                       decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative)));
             }
         }
 
@@ -9304,7 +9305,7 @@ namespace Chummer
                     return MatrixInitiativeDice;
                 }
 
-                return Math.Min(3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice),
+                return Math.Min(3 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice))),
                     5);
             }
         }
@@ -9378,7 +9379,7 @@ namespace Chummer
 
                 int intCommlinkDP = ActiveCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0;
                 return INT.TotalValue + intCommlinkDP + WoundModifier +
-                       ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative);
+                       decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiative)));
             }
         }
 
@@ -9394,7 +9395,7 @@ namespace Chummer
                     return MatrixInitiativeDice;
                 }
 
-                return Math.Min(4 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice),
+                return Math.Min(4 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MatrixInitiativeDice))),
                     5);
             }
         }
@@ -9408,7 +9409,7 @@ namespace Chummer
         /// <summary>
         /// Character's total Spell Resistance from qualities and metatype properties.
         /// </summary>
-        public int SpellResistance => ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance);
+        public int SpellResistance => decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)));
 
         #endregion
 
@@ -9418,7 +9419,7 @@ namespace Chummer
         /// Composure (WIL + CHA).
         /// </summary>
         public int Composure => WIL.TotalValue + CHA.TotalValue +
-                                ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure);
+                                decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure)));
 
         public string ComposureToolTip
         {
@@ -9447,8 +9448,8 @@ namespace Chummer
         /// Judge Intentions (INT + CHA).
         /// </summary>
         public int JudgeIntentions => INT.TotalValue + CHA.TotalValue +
-                                      ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) +
-                                      ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense);
+                                      decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) +
+                                                                      ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense)));
 
         public string JudgeIntentionsToolTip
         {
@@ -9478,8 +9479,8 @@ namespace Chummer
         /// Judge Intentions Resist (CHA + WIL).
         /// </summary>
         public int JudgeIntentionsResist => CHA.TotalValue + WIL.TotalValue +
-                                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) +
-                                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense);
+                                            decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions) +
+                                                                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense)));
 
         public string JudgeIntentionsResistToolTip
         {
@@ -9509,7 +9510,7 @@ namespace Chummer
         /// Lifting and Carrying (STR + BOD).
         /// </summary>
         public int LiftAndCarry => STR.TotalValue + BOD.TotalValue +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry);
+                                   decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry)));
 
         public string LiftAndCarryToolTip
         {
@@ -9540,7 +9541,7 @@ namespace Chummer
         /// Memory (LOG + WIL).
         /// </summary>
         public int Memory => LOG.TotalValue + WIL.TotalValue +
-                             ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory);
+                             decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory)));
 
         public string MemoryToolTip
         {
@@ -9569,19 +9570,19 @@ namespace Chummer
         /// Resist test to Fatigue damage (BOD + WIL).
         /// </summary>
         public int FatigueResist => BOD.TotalValue + WIL.TotalValue +
-                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.FatigueResist);
+                                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FatigueResist)));
 
         /// <summary>
         /// Resist test to Radiation damage (BOD + WIL).
         /// </summary>
         public int RadiationResist => BOD.TotalValue + WIL.TotalValue +
-                                      ImprovementManager.ValueOf(this, Improvement.ImprovementType.RadiationResist);
+                                      decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.RadiationResist)));
 
         /// <summary>
         /// Resist test to Sonic Attacks damage (WIL).
         /// </summary>
         public int SonicResist =>
-            WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SonicResist);
+            WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SonicResist)));
 
         /// <summary>
         /// Resist test to Contact-vector Toxins (BOD + WIL).
@@ -9592,7 +9593,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinContactImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinContactResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinContactResist))))
                 .ToString(objCulture);
         }
 
@@ -9605,7 +9606,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinIngestionImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinIngestionResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinIngestionResist))))
                 .ToString(objCulture);
         }
 
@@ -9618,7 +9619,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInhalationImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInhalationResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInhalationResist))))
                 .ToString(objCulture);
         }
 
@@ -9631,7 +9632,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInjectionImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInjectionResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInjectionResist))))
                 .ToString(objCulture);
         }
 
@@ -9644,7 +9645,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenContactImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenContactResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenContactResist))))
                 .ToString(objCulture);
         }
 
@@ -9657,7 +9658,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenIngestionImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenIngestionResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenIngestionResist))))
                 .ToString(objCulture);
         }
 
@@ -9670,7 +9671,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInhalationImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInhalationResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInhalationResist))))
                 .ToString(objCulture);
         }
 
@@ -9683,7 +9684,7 @@ namespace Chummer
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInjectionImmune))
                 return LanguageManager.GetString("String_Immune", strLanguage);
             return (BOD.TotalValue + WIL.TotalValue +
-                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInjectionResist))
+                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInjectionResist))))
                 .ToString(objCulture);
         }
 
@@ -9691,31 +9692,31 @@ namespace Chummer
         /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
         /// </summary>
         public int PhysiologicalAddictionResistFirstTime => BOD.TotalValue + WIL.TotalValue +
-                                                            ImprovementManager.ValueOf(this,
+                                                            decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,
                                                                 Improvement.ImprovementType
-                                                                    .PhysiologicalAddictionFirstTime);
+                                                                    .PhysiologicalAddictionFirstTime)));
 
         /// <summary>
         /// Resist test to Psychological Addiction (LOG + WIL) if you are not addicted yet.
         /// </summary>
         public int PsychologicalAddictionResistFirstTime => LOG.TotalValue + WIL.TotalValue +
-                                                            ImprovementManager.ValueOf(this,
+                                                            decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,
                                                                 Improvement.ImprovementType
-                                                                    .PsychologicalAddictionFirstTime);
+                                                                    .PsychologicalAddictionFirstTime)));
 
         /// <summary>
         /// Resist test to Physiological Addiction (BOD + WIL) if you are already addicted.
         /// </summary>
         public int PhysiologicalAddictionResistAlreadyAddicted =>
-            BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this,
-                Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted);
+            BOD.TotalValue + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,
+                Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted)));
 
         /// <summary>
         /// Resist test to Psychological Addiction (LOG + WIL) if you are already addicted.
         /// </summary>
         public int PsychologicalAddictionResistAlreadyAddicted =>
-            LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this,
-                Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted);
+            LOG.TotalValue + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,
+                Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted)));
 
         /// <summary>
         /// Dicepool for natural recovery from Stun CM box damage (BOD + WIL).
@@ -9728,7 +9729,7 @@ namespace Chummer
                 if(IsAI)
                     return 0;
                 int intReturn = BOD.TotalValue + WIL.TotalValue +
-                                ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery);
+                                decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery)));
                 if(Improvements.Any(x =>
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
                     intReturn += decimal.ToInt32(decimal.Floor(Essence()));
@@ -9752,7 +9753,7 @@ namespace Chummer
                     int intAIReturn =
                         (SkillsSection.GetActiveSkill("Software")?.PoolOtherAttribute("DEP") ??
                          DEP.TotalValue - 1) +
-                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
+                        decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery)));
                     if(Improvements.Any(x =>
                        x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
                         intAIReturn += decimal.ToInt32(decimal.Floor(Essence()));
@@ -9760,7 +9761,7 @@ namespace Chummer
                 }
 
                 int intReturn = 2 * BOD.TotalValue +
-                                ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
+                                decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery)));
                 if(Improvements.Any(x =>
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
                     intReturn += decimal.ToInt32(decimal.Floor(Essence()));
@@ -9781,8 +9782,8 @@ namespace Chummer
             {
                 // Street Cred = Career Karma / 10, rounded down
                 int intReturn = CareerKarma /
-                                (10 + ImprovementManager.ValueOf(this,
-                                     Improvement.ImprovementType.StreetCredMultiplier));
+                                (10 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,
+                                     Improvement.ImprovementType.StreetCredMultiplier))));
 
                 // Deduct burnt Street Cred.
                 intReturn -= BurntStreetCred;
@@ -9797,7 +9798,7 @@ namespace Chummer
         public int TotalStreetCred =>
             Math.Max(
                 CalculatedStreetCred + StreetCred +
-                ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCred), 0);
+                decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCred))), 0);
 
         public string CareerDisplayStreetCred
         {
@@ -9854,8 +9855,8 @@ namespace Chummer
             get
             {
                 // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
-                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety) -
-                                (BurntStreetCred / 2); // + Contacts.Count(x => x.EntityType == ContactType.Enemy);
+                int intReturn = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety))) -
+                                                                (BurntStreetCred / 2); // + Contacts.Count(x => x.EntityType == ContactType.Enemy);
 
                 return intReturn;
             }
@@ -9921,7 +9922,7 @@ namespace Chummer
         {
             get
             {
-                int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PublicAwareness);
+                int intReturn = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PublicAwareness)));
                 if(Options.UseCalculatedPublicAwareness)
                 {
                     // Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
@@ -10314,7 +10315,7 @@ namespace Chummer
 
         public int DamageResistancePool =>
             (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating +
-            ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
+            decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance)));
 
         public string DamageResistancePoolToolTip
         {
@@ -10416,8 +10417,8 @@ namespace Chummer
         #endregion
         #region Indirect Soak
         public int SpellDefenseIndirectSoak =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + TotalArmorRating +
-            SpellResistance + ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance);
+            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + ArmorRating
+            + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) + ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance)));
 
         public string DisplaySpellDefenseIndirectSoak => CurrentCounterspellingDice == 0
             ? SpellDefenseIndirectSoak.ToString(GlobalOptions.CultureInfo)
@@ -10448,8 +10449,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance)));
 
                 if(intModifiers != 0)
                 {
@@ -10464,7 +10465,9 @@ namespace Chummer
         }
         #endregion
         #region Direct Soak Mana
-        public int SpellDefenseDirectSoakMana => WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist) + SpellResistance;
+        public int SpellDefenseDirectSoakMana => WIL.TotalValue
+                                                 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                     + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist)));
 
         public string DisplaySpellDefenseDirectSoakMana => CurrentCounterspellingDice == 0
             ? SpellDefenseDirectSoakMana.ToString(GlobalOptions.CultureInfo)
@@ -10484,7 +10487,7 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10501,7 +10504,9 @@ namespace Chummer
         #endregion
         #region Direct Soak Physical
         public int SpellDefenseDirectSoakPhysical =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist) + SpellResistance;
+            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue)
+            + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                              + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist)));
 
         public string DisplaySpellDefenseDirectSoakPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseDirectSoakPhysical.ToString(GlobalOptions.CultureInfo)
@@ -10529,7 +10534,7 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectPhysicalSpellResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10549,8 +10554,8 @@ namespace Chummer
         #endregion
         #region Detection
         public int SpellDefenseDetection => LOG.TotalValue + WIL.TotalValue + SpellResistance +
-                                            ImprovementManager.ValueOf(this,
-                                                Improvement.ImprovementType.DetectionSpellResist);
+                                            decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,
+                                                Improvement.ImprovementType.DetectionSpellResist)));
 
         public string DisplaySpellDefenseDetection => CurrentCounterspellingDice == 0
             ? SpellDefenseDetection.ToString(GlobalOptions.CultureInfo)
@@ -10572,8 +10577,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10593,7 +10598,9 @@ namespace Chummer
         }
         #endregion
         #region Decrease Attributes
-        public int SpellDefenseDecreaseBOD => BOD.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist);
+        public int SpellDefenseDecreaseBOD => BOD.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist)));
 
         public string DisplaySpellDefenseDecreaseBOD => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseBOD.ToString(GlobalOptions.CultureInfo)
@@ -10615,7 +10622,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseBODResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10634,7 +10642,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseDecreaseAGI => AGI.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist);
+        public int SpellDefenseDecreaseAGI => AGI.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist)));
 
         public string DisplaySpellDefenseDecreaseAGI => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseAGI.ToString(GlobalOptions.CultureInfo)
@@ -10656,7 +10666,7 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseAGIResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10675,7 +10685,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseDecreaseREA => REA.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist);
+        public int SpellDefenseDecreaseREA => REA.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist)));
 
         public string DisplaySpellDefenseDecreaseREA => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseREA.ToString(GlobalOptions.CultureInfo)
@@ -10697,7 +10709,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseREAResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10716,7 +10729,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseDecreaseSTR => STR.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist);
+        public int SpellDefenseDecreaseSTR => STR.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist)));
 
         public string DisplaySpellDefenseDecreaseSTR => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseSTR.ToString(GlobalOptions.CultureInfo)
@@ -10738,7 +10753,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseSTRResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10756,7 +10772,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseDecreaseCHA => CHA.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist);
+        public int SpellDefenseDecreaseCHA => CHA.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist)));
 
         public string DisplaySpellDefenseDecreaseCHA => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseCHA.ToString(GlobalOptions.CultureInfo)
@@ -10778,7 +10796,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseCHAResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10797,7 +10816,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseDecreaseINT => INT.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist);
+        public int SpellDefenseDecreaseINT => INT.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist)));
 
         public string DisplaySpellDefenseDecreaseINT => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseINT.ToString(GlobalOptions.CultureInfo)
@@ -10819,7 +10840,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseINTResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10838,7 +10860,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseDecreaseLOG => LOG.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist);
+        public int SpellDefenseDecreaseLOG => LOG.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist)));
 
         public string DisplaySpellDefenseDecreaseLOG => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseLOG.ToString(GlobalOptions.CultureInfo)
@@ -10860,7 +10884,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseLOGResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10879,7 +10904,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseDecreaseWIL => WIL.TotalValue + WIL.TotalValue + SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist);
+        public int SpellDefenseDecreaseWIL => WIL.TotalValue + WIL.TotalValue
+                                                             + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist)));
 
         public string DisplaySpellDefenseDecreaseWIL => CurrentCounterspellingDice == 0
             ? SpellDefenseDecreaseWIL.ToString(GlobalOptions.CultureInfo)
@@ -10901,7 +10928,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo) + ')');
 
-                int intModifiers = SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DecreaseWILResist)));
 
                 if(intModifiers != 0)
                 {
@@ -10922,7 +10950,7 @@ namespace Chummer
         #endregion
         #endregion
 
-        public int Surprise => REA.TotalValue + INT.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise);
+        public int Surprise => REA.TotalValue + INT.TotalValue + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise)));
 
         public string SurpriseToolTip
         {
@@ -10938,7 +10966,7 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise)));
 
                 if (intModifiers != 0)
                 {
@@ -10961,7 +10989,7 @@ namespace Chummer
         /// </summary>
         [HubTag]
         public int TotalArmorRating =>
-            ArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
+            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor)));
 
         public string TotalArmorRatingToolTip
         {
@@ -10988,36 +11016,36 @@ namespace Chummer
         /// The Character's total Armor Rating against Fire attacks.
         /// </summary>
         public int TotalFireArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor);
+            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor)));
 
         /// <summary>
         /// The Character's total Armor Rating against Cold attacks.
         /// </summary>
         public int TotalColdArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor);
+            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor)));
 
         /// <summary>
         /// The Character's total Armor Rating against Electricity attacks.
         /// </summary>
         public int TotalElectricityArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ElectricityArmor);
+            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ElectricityArmor)));
 
         /// <summary>
         /// The Character's total Armor Rating against Acid attacks.
         /// </summary>
         public int TotalAcidArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor);
+            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor)));
 
         /// <summary>
         /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
         /// </summary>
         public int TotalFallingArmorRating =>
-            TotalArmorRating + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor);
+            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor)));
 
         /// <summary>
         /// The Character's total bonus to Dodge Rating (to add on top of REA + INT).
         /// </summary>
-        public int TotalBonusDodgeRating => ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge);
+        public int TotalBonusDodgeRating => decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge)));
 
         /// <summary>
         /// Armor Encumbrance modifier from Armor.
@@ -11121,9 +11149,9 @@ namespace Chummer
         #endregion
 
         #region Spell Defense
-        public int SpellDefenseIllusionMana => LOG.TotalValue + WIL.TotalValue + SpellResistance +
-                                               ImprovementManager.ValueOf(this,
-                                                   Improvement.ImprovementType.ManaIllusionResist);
+        public int SpellDefenseIllusionMana => LOG.TotalValue + WIL.TotalValue
+                                                              + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                  + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist)));
 
         public string DisplaySpellDefenseIllusionMana => CurrentCounterspellingDice == 0
             ? SpellDefenseIllusionMana.ToString(GlobalOptions.CultureInfo)
@@ -11145,8 +11173,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ManaIllusionResist)));
 
                 if(intModifiers != 0)
                 {
@@ -11165,9 +11193,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseIllusionPhysical => LOG.TotalValue + INT.TotalValue + SpellResistance +
-                                                   ImprovementManager.ValueOf(this,
-                                                       Improvement.ImprovementType.PhysicalIllusionResist);
+        public int SpellDefenseIllusionPhysical => LOG.TotalValue + INT.TotalValue
+                                                                  + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                      + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist)));
 
         public string DisplaySpellDefenseIllusionPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseIllusionPhysical.ToString(GlobalOptions.CultureInfo)
@@ -11189,8 +11217,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalIllusionResist)));
 
                 if(intModifiers != 0)
                 {
@@ -11209,9 +11237,9 @@ namespace Chummer
             }
         }
 
-        public int SpellDefenseManipulationMental => LOG.TotalValue + WIL.TotalValue + SpellResistance +
-                                                     ImprovementManager.ValueOf(this,
-                                                         Improvement.ImprovementType.MentalManipulationResist);
+        public int SpellDefenseManipulationMental => LOG.TotalValue + WIL.TotalValue
+                                                                    + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                        + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist)));
 
         public string DisplaySpellDefenseManipulationMental => CurrentCounterspellingDice == 0
             ? SpellDefenseManipulationMental.ToString(GlobalOptions.CultureInfo)
@@ -11233,8 +11261,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                                                   + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalManipulationResist)));
 
                 if(intModifiers != 0)
                 {
@@ -11255,7 +11283,8 @@ namespace Chummer
 
         public int SpellDefenseManipulationPhysical =>
             (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody * 2 : 0) : BOD.TotalValue + STR.TotalValue) +
-            SpellResistance + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist);
+            decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
+                                            + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist)));
 
         public string DisplaySpellDefenseManipulationPhysical => CurrentCounterspellingDice == 0
             ? SpellDefenseManipulationPhysical.ToString(GlobalOptions.CultureInfo)
@@ -11294,8 +11323,8 @@ namespace Chummer
                     sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_CounterspellingDice"))
                         .Append(strSpace).Append('(').Append(CurrentCounterspellingDice.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                int intModifiers = SpellResistance +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist);
+                int intModifiers = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) +
+                                                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalManipulationResist)));
 
                 if(intModifiers != 0)
                 {
@@ -11347,7 +11376,7 @@ namespace Chummer
                 }
 
                 // Include Improvements in the Condition Monitor values.
-                intCMPhysical += ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
+                intCMPhysical += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM)));
                 return intCMPhysical;
             }
         }
@@ -11395,7 +11424,7 @@ namespace Chummer
                             .Append('÷').Append(2.ToString(GlobalOptions.CultureInfo)).Append(')')
                             .Append(strSpace).Append('(').Append(((DEP.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                        intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
+                        intBonus = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM)));
                         if(intBonus != 0)
                             sbdCM.Append(strSpace).Append('+').Append(strSpace).Append(strModifiers)
                                 .Append(strSpace).Append('(').Append(intBonus.ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -11408,7 +11437,7 @@ namespace Chummer
                         .Append('÷').Append(2.ToString(GlobalOptions.CultureInfo)).Append(')')
                         .Append(strSpace).Append('(').Append(((BOD.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                    intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM);
+                    intBonus = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCM)));
                     if(intBonus != 0)
                         sbdCM.Append(strSpace).Append('+').Append(strSpace).Append(strModifiers)
                             .Append(strSpace).Append('(').Append(intBonus.ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -11438,7 +11467,7 @@ namespace Chummer
                 {
                     intCMStun = 8 + (WIL.TotalValue + 1) / 2;
                     // Include Improvements in the Condition Monitor values.
-                    intCMStun += ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
+                    intCMStun += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM)));
                 }
 
                 return intCMStun;
@@ -11489,7 +11518,7 @@ namespace Chummer
                         .Append(strSpace).Append('+').Append(strSpace).Append('(').Append(WIL.DisplayAbbrev).Append('÷').Append(2.ToString(GlobalOptions.CultureInfo)).Append(')')
                         .Append(strSpace).Append('(').Append(((WIL.TotalValue + 1) / 2).ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                    intBonus = ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM);
+                    intBonus = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCM)));
                     if (intBonus != 0)
                         sbdCM.Append(strSpace).Append('+').Append(strSpace).Append(strModifiers)
                             .Append(strSpace).Append('(').Append(intBonus.ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -11506,7 +11535,7 @@ namespace Chummer
         {
             get
             {
-                int intCMThreshold = 3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThreshold);
+                int intCMThreshold = 3 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThreshold)));
                 return intCMThreshold;
             }
         }
@@ -11531,17 +11560,17 @@ namespace Chummer
                 if(IsAI || Improvements.Any(objImprovement =>
                        objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun &&
                        objImprovement.Enabled))
-                    return ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
-                           ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset);
+                    return decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
+                                                           ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset)));
 
-                int intCMThresholdOffset =
+                decimal decCMThresholdOffset =
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
                 // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
-                int intCMSharedThresholdOffset = intCMThresholdOffset +
+                decimal decCMSharedThresholdOffset = decCMThresholdOffset +
                                                  ImprovementManager.ValueOf(this,
                                                      Improvement.ImprovementType.CMSharedThresholdOffset) -
-                                                 Math.Max(StunCMFilled - CMThreshold - intCMThresholdOffset, 0);
-                return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
+                                                 Math.Max(StunCMFilled - CMThreshold - decCMThresholdOffset, 0);
+                return decimal.ToInt32(decimal.Ceiling(Math.Max(decCMThresholdOffset, decCMSharedThresholdOffset)));
             }
         }
 
@@ -11562,17 +11591,17 @@ namespace Chummer
                 if(Improvements.Any(objImprovement =>
                    objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical &&
                    objImprovement.Enabled))
-                    return ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
-                           ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset);
+                    return decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset) +
+                                                           ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMSharedThresholdOffset)));
 
-                int intCMThresholdOffset =
+                decimal decCMThresholdOffset =
                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThresholdOffset);
                 // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
-                int intCMSharedThresholdOffset = intCMThresholdOffset +
+                decimal decCMSharedThresholdOffset = decCMThresholdOffset +
                                                  ImprovementManager.ValueOf(this,
                                                      Improvement.ImprovementType.CMSharedThresholdOffset) -
-                                                 Math.Max(PhysicalCMFilled - CMThreshold - intCMThresholdOffset, 0);
-                return Math.Max(intCMThresholdOffset, intCMSharedThresholdOffset);
+                                                 Math.Max(PhysicalCMFilled - CMThreshold - decCMThresholdOffset, 0);
+                return decimal.ToInt32(decimal.Ceiling(Math.Max(decCMThresholdOffset, decCMSharedThresholdOffset)));
             }
         }
 
@@ -11589,7 +11618,7 @@ namespace Chummer
                 {
                     // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
                     intCMOverflow = BOD.TotalValue +
-                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMOverflow) + 1;
+                                    decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMOverflow))) + 1;
                 }
 
                 return intCMOverflow;
@@ -11791,7 +11820,7 @@ namespace Chummer
                 }
 
                 int intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
-                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
+                return intLimit + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit)));
             }
         }
 
@@ -11856,7 +11885,7 @@ namespace Chummer
                     }
                 }
 
-                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit);
+                return intLimit + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.MentalLimit)));
             }
         }
 
@@ -11942,7 +11971,7 @@ namespace Chummer
                                3;
                 }
 
-                return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit);
+                return intLimit + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.SocialLimit)));
             }
         }
 
@@ -12132,11 +12161,11 @@ namespace Chummer
         {
             if(string.IsNullOrEmpty(strLimbSlot))
             {
-                return Options.LimbCount + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AddLimb);
+                return Options.LimbCount + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.AddLimb)));
             }
 
             int intReturn =
-                1 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AddLimb, false, strLimbSlot);
+                1 + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.AddLimb, false, strLimbSlot)));
             if(strLimbSlot == "arm" || strLimbSlot == "leg")
                 intReturn += 1;
             return intReturn;
@@ -12359,17 +12388,17 @@ namespace Chummer
         /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
-        public int WalkingRate(string strType = "Ground")
+        public decimal WalkingRate(string strType = "Ground")
         {
-            int intTmp = int.MinValue;
+            decimal decTmp = decimal.MinValue;
             foreach(Improvement objImprovement in Improvements.Where(i =>
                i.ImproveType == Improvement.ImprovementType.WalkSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                intTmp = Math.Max(intTmp, objImprovement.Value);
+                decTmp = Math.Max(decTmp, objImprovement.Value);
             }
 
-            if(intTmp != int.MinValue)
-                return intTmp;
+            if(decTmp != decimal.MinValue)
+                return decTmp;
 
             string[] strReturn = CurrentWalkingRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
@@ -12377,36 +12406,36 @@ namespace Chummer
             {
                 case "Fly":
                     if(strReturn.Length > 2)
-                        int.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intTmp);
+                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
                     break;
                 case "Swim":
                     if(strReturn.Length > 1)
-                        int.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intTmp);
+                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
                     break;
                 case "Ground":
                     if(strReturn.Length > 0)
-                        int.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intTmp);
+                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
                     break;
             }
 
-            return intTmp;
+            return decTmp;
         }
 
         /// <summary>
         /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
-        public int RunningRate(string strType = "Ground")
+        public decimal RunningRate(string strType = "Ground")
         {
-            int intTmp = int.MinValue;
+            decimal decTmp = decimal.MinValue;
             foreach(Improvement objImprovement in Improvements.Where(i =>
                i.ImproveType == Improvement.ImprovementType.RunSpeed && i.ImprovedName == strType && i.Enabled))
             {
-                intTmp = Math.Max(intTmp, objImprovement.Value);
+                decTmp = Math.Max(decTmp, objImprovement.Value);
             }
 
-            if(intTmp != int.MinValue)
-                return intTmp;
+            if(decTmp != decimal.MinValue)
+                return decTmp;
 
             string[] strReturn = CurrentRunningRateString.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
@@ -12414,19 +12443,19 @@ namespace Chummer
             {
                 case "Fly":
                     if(strReturn.Length > 2)
-                        int.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intTmp);
+                        decimal.TryParse(strReturn[2], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
                     break;
                 case "Swim":
                     if(strReturn.Length > 1)
-                        int.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intTmp);
+                        decimal.TryParse(strReturn[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
                     break;
                 case "Ground":
                     if(strReturn.Length > 0)
-                        int.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intTmp);
+                        decimal.TryParse(strReturn[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decTmp);
                     break;
             }
 
-            return intTmp;
+            return decTmp;
         }
 
         /// <summary>
@@ -12936,7 +12965,7 @@ namespace Chummer
                 List<Improvement> lstTrustFundImprovements = Improvements
                     .Where(x => x.ImproveType == Improvement.ImprovementType.TrustFund && x.Enabled).ToList();
                 return _intCachedTrustFund = lstTrustFundImprovements.Count > 0
-                    ? lstTrustFundImprovements.Max(x => x.Value)
+                    ? decimal.ToInt32(decimal.Ceiling(lstTrustFundImprovements.Max(x => x.Value)))
                     : 0;
             }
         }
@@ -12954,7 +12983,7 @@ namespace Chummer
                 {
                     foreach(Improvement objImprovment in Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.RestrictedGear && x.Enabled))
                     {
-                        _intCachedRestrictedGear = Math.Max(_intCachedRestrictedGear, objImprovment.Value);
+                        _intCachedRestrictedGear = Math.Max(_intCachedRestrictedGear, decimal.ToInt32(decimal.Ceiling(objImprovment.Value)));
                     }
                 }
 
@@ -14198,19 +14227,19 @@ namespace Chummer
                             {
                                 case "RES":
                                     intOldRESCareerMinimumReduction -=
-                                        objImprovement.Minimum + objImprovement.Augmented;
+                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
                                     break;
                                 case "DEP":
                                     intOldDEPCareerMinimumReduction -=
-                                        objImprovement.Minimum + objImprovement.Augmented;
+                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
                                     break;
                                 case "MAG":
                                     intOldMAGCareerMinimumReduction -=
-                                        objImprovement.Minimum + objImprovement.Augmented;
+                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
                                     break;
                                 case "MAGAdept":
                                     intOldMAGAdeptCareerMinimumReduction -=
-                                        objImprovement.Minimum + objImprovement.Augmented;
+                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
                                     break;
                             }
                         }
@@ -14341,16 +14370,16 @@ namespace Chummer
                             if(UseMysticAdeptPPs)
                             {
                                 // First burn away PPs gained during chargen...
-                                int intPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
-                                MysticAdeptPowerPoints -= intPPBurn;
+                                decimal decPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
+                                MysticAdeptPowerPoints -= decimal.ToInt32(decPPBurn);
                                 // ... now burn away PPs gained from initiations.
-                                intPPBurn = Math.Min(intMAGMinimumReductionDelta - intPPBurn,
+                                decPPBurn = Math.Min(intMAGMinimumReductionDelta - decPPBurn,
                                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
                                 // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
-                                if(intPPBurn != 0)
+                                if(decPPBurn != 0)
                                     ImprovementManager.CreateImprovement(this, string.Empty,
                                         Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
-                                        Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                                        Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -decPPBurn);
                             }
                         }
                         // If the new MAG reduction is less than our old one, the character doesn't actually get any new values back
@@ -14903,7 +14932,7 @@ namespace Chummer
             {
                 //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
                 //in Career Mode. Create mode manages itself.
-                int intFreeGenericSpells = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpells);
+                int intFreeGenericSpells = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpells)));
                 int intFreeTouchOnlySpells = 0;
                 foreach (Improvement imp in Improvements.Where(i =>
                     (i.ImproveType == Improvement.ImprovementType.FreeSpellsATT ||
@@ -17870,7 +17899,7 @@ namespace Chummer
                     }
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualities -=
-                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality;
+                        decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality));
 
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)
@@ -17906,7 +17935,7 @@ namespace Chummer
 
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualitiesTotal -=
-                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality;
+                        decimal.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality);
 
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)
@@ -17962,7 +17991,7 @@ namespace Chummer
 
                     // Deduct the amount for free Qualities.
                     _intCachedNegativeQualities -=
-                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+                        decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities)));
 
                     // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
                     if (Options.ExceedNegativeQualitiesLimit)
@@ -18000,7 +18029,7 @@ namespace Chummer
 
                     // Deduct the amount for free Qualities.
                     _intCachedNegativeQualityLimitKarma -=
-                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+                        decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities)));
 
                     // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
                     if (Options.ExceedNegativeQualitiesLimit)
@@ -18070,7 +18099,7 @@ namespace Chummer
 
                     // Deduct the amount for free Qualities.
                     _intCachedMetagenicNegativeQualities -=
-                        ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities);
+                        decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeNegativeQualities)));
                 }
 
                 return _intCachedMetagenicNegativeQualities;
@@ -18141,22 +18170,22 @@ namespace Chummer
         {
             get
             {
-                int intMAG;
+                decimal decMAG;
                 if (IsMysticAdept && Options.MysAdeptSecondMAGAttribute)
                 {
                     // If both Adept and Magician are enabled, this is a Mystic Adept, so use the MAG amount assigned to this portion.
-                    intMAG = MAGAdept.TotalValue;
+                    decMAG = MAGAdept.TotalValue;
                 }
                 else
                 {
                     // The character is just an Adept, so use the full value.
-                    intMAG = MAG.TotalValue;
+                    decMAG = MAG.TotalValue;
                 }
 
                 // Add any Power Point Improvements to MAG.
-                intMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
+                decMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
 
-                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < Math.Floor(Convert.ToDouble(intMAG / 2));
+                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < decimal.ToInt32(decimal.Floor(decMAG / 2));
             }
         }
 

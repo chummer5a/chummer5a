@@ -8856,18 +8856,18 @@ namespace Chummer
                     intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectOptions.KarmaSpell;
                 }
 
-                int limitMod = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit) +
-                               ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells);
-                int limitModTouchOnly = 0;
+                int intLimitMod = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
+                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells));
+                int intLimitModTouchOnly = 0;
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
                 {
                     int intAttValue = CharacterObject.GetAttribute(imp.ImprovedName).TotalValue;
                     if (imp.UniqueName.Contains("half"))
                         intAttValue = (intAttValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
-                        limitModTouchOnly += intAttValue;
+                        intLimitModTouchOnly += intAttValue;
                     else
-                        limitMod += intAttValue;
+                        intLimitMod += intAttValue;
                 }
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
                 {
@@ -8878,9 +8878,9 @@ namespace Chummer
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
-                        limitModTouchOnly += intSkillValue;
+                        intLimitModTouchOnly += intSkillValue;
                     else
-                        limitMod += intSkillValue;
+                        intLimitMod += intSkillValue;
                     //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
                     foreach (SkillSpecialization spec in skill.Specializations)
                     {
@@ -8902,12 +8902,12 @@ namespace Chummer
                     intAttributePointsUsed = intPPBought * CharacterObject.Options.KarmaMysticAdeptPowerPoint;
                     intKarmaPointsRemain -= intAttributePointsUsed;
                 }
-                spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - limitModTouchOnly);
+                spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
 
-                int spellPoints  = limit + limitMod;
-                int ritualPoints = limit + limitMod;
-                int prepPoints   = limit + limitMod;
-                for (int i = limit + limitMod; i > 0; i--)
+                int spellPoints  = limit + intLimitMod;
+                int ritualPoints = limit + intLimitMod;
+                int prepPoints   = limit + intLimitMod;
+                for (int i = limit + intLimitMod; i > 0; i--)
                 {
                     if (spells > 0)
                     {
@@ -8949,31 +8949,31 @@ namespace Chummer
                     lblSpellsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
                     lblBuildRitualsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
                     lblBuildPrepsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
-                    if (limit + limitMod > 0)
+                    if (limit + intLimitMod > 0)
                     {
                         if (lblBuildPrepsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints, strOf, limit + limitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints, strOf, limit + intLimitMod);
                             if (intPrepPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
                             lblBuildPrepsBP.Text = strText;
                         }
                         if (lblSpellsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", spellPoints, strOf, limit + limitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", spellPoints, strOf, limit + intLimitMod);
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
                             lblSpellsBP.Text = strText;
                         }
                         if (lblBuildRitualsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", ritualPoints, strOf, limit + limitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", ritualPoints, strOf, limit + intLimitMod);
                             if (intRitualPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
                             lblBuildRitualsBP.Text = strText;
                         }
                     }
-                    else if (limitMod == 0)
+                    else if (intLimitMod == 0)
                     {
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
@@ -8988,7 +8988,7 @@ namespace Chummer
                     else
                     {
                         //TODO: Make the costs render better, currently looks wrong as hell
-                        strFormat = new StringBuilder("{0}").Append(strOf).Append(limitMod.ToString(GlobalOptions.CultureInfo)).Append(strColon)
+                        strFormat = new StringBuilder("{0}").Append(strOf).Append(intLimitMod.ToString(GlobalOptions.CultureInfo)).Append(strColon)
                             .Append(strSpace).Append("{1}").Append(strSpace).Append(strPoints).ToString();
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
@@ -12060,7 +12060,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
-                int intRestrictedAllowed = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount);
+                int intRestrictedAllowed = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount));
                 int intRestrictedCount = 0;
                 string strAvailItems = string.Empty;
                 string strExConItems = string.Empty;
@@ -12257,7 +12257,7 @@ namespace Chummer
                 // Check if the character has more than the permitted amount of native languages.
                 int intLanguages = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
 
-                int intLanguageLimit = 1 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit);
+                int intLanguageLimit = 1 + decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit));
 
                 if (intLanguages != intLanguageLimit)
                 {

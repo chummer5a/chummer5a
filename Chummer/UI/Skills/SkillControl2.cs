@@ -398,7 +398,7 @@ namespace Chummer.UI.Skills
         {
             int price = _objSkill.CharacterObject.Options.KarmaSpecialization;
 
-            int intExtraSpecCost = 0;
+            decimal decExtraSpecCost = 0;
             int intTotalBaseRating = _objSkill.TotalBaseRating;
             decimal decSpecCostMultiplier = 1.0m;
             foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
@@ -411,14 +411,15 @@ namespace Chummer.UI.Skills
                     && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
                 {
                     if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                        intExtraSpecCost += objLoopImprovement.Value;
+                        decExtraSpecCost += objLoopImprovement.Value;
                     else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
                         decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                 }
             }
             if (decSpecCostMultiplier != 1.0m)
-                price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
-            price += intExtraSpecCost; //Spec
+                price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier + decExtraSpecCost));
+            else
+                price += decimal.ToInt32(decimal.Ceiling(decExtraSpecCost)); //Spec
 
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 

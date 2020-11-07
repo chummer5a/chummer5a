@@ -965,7 +965,7 @@ namespace Chummer.Backend.Skills
                     fromAttributes *= (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
                 }
 
-                int val = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills);
+                int val = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills)));
                 return fromAttributes + val;
             }
         }

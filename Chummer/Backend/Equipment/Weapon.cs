@@ -2079,7 +2079,7 @@ namespace Chummer.Backend.Equipment
             */
 
             // Factor in the character's Concealability modifiers.
-            intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability);
+            intReturn += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability)));
 
             string strReturn;
             if (intReturn >= 0)
@@ -2179,7 +2179,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
+                    intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
             }
 
             foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
@@ -2261,7 +2261,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Include WeaponCategoryDV Improvements.
-            int intImprove = 0;
+            decimal decImprove = 0;
             if (_objCharacter != null)
             {
                 string strCategory = Category;
@@ -2274,7 +2274,7 @@ namespace Chummer.Backend.Equipment
 
                 string strExoticMelee = "Exotic Melee Weapon (" + UseSkillSpec + ')';
                 string strExoticRanged = "Exotic Ranged Weapon (" + UseSkillSpec + ')';
-                intImprove += _objCharacter.Improvements.Where(objImprovement =>
+                decImprove += _objCharacter.Improvements.Where(objImprovement =>
                         objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV
                         && objImprovement.Enabled
                         && (objImprovement.ImprovedName == strCategory
@@ -2295,17 +2295,17 @@ namespace Chummer.Backend.Equipment
                     if (strDamageType == "S" && objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDVPhysical && objImprovement.Enabled)
                         strDamageType = "P";
                     if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDV && objImprovement.Enabled)
-                        intImprove += objImprovement.Value;
+                        decImprove += objImprovement.Value;
                 }
             }
 
             // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
             else if (Skill?.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
             {
-                intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
             }
             if (_objCharacter.Options.MoreLethalGameplay)
-                intImprove += 2;
+                decImprove += 2;
 
             bool blnDamageReplaced = false;
             StringBuilder sbdBonusDamage = new StringBuilder();
@@ -2436,8 +2436,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = Convert.ToInt32(Math.Ceiling((double) objProcess));
-                            intDamage += intImprove;
+                            int intDamage = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal((double) objProcess) + decImprove));
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
@@ -2505,8 +2504,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = Convert.ToInt32(Math.Ceiling((double)objProcess));
-                            intDamage += intImprove;
+                            int intDamage = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal((double)objProcess) + decImprove));
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
@@ -3105,7 +3103,7 @@ namespace Chummer.Backend.Equipment
                     if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
                         _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                     {
-                        intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
+                        intImprove += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP)));
                     }
                 }
             }
@@ -3229,7 +3227,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
+                    intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
             }
 
             foreach (string strAttribute in AttributeSection.AttributeStrings)
@@ -3497,7 +3495,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
+                intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
 
             int intStrRC = (intUseSTR + 2) / 3;
 
@@ -3533,12 +3531,12 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intReach = Reach;
-                intReach += WeaponAccessories.Sum(i => i.Reach);
+                decimal decReach = Reach;
+                decReach += WeaponAccessories.Sum(i => i.Reach);
                 if (WeaponType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
-                    intReach += _objCharacter.Improvements
+                    decReach += _objCharacter.Improvements
                         .Where(objImprovement =>
                             objImprovement.ImproveType == Improvement.ImprovementType.Reach &&
                             (objImprovement.ImprovedName == Name || string.IsNullOrEmpty(objImprovement.ImprovedName)) &&
@@ -3549,13 +3547,13 @@ namespace Chummer.Backend.Equipment
                 if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
                     _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                 {
-                    intReach += _objCharacter.Improvements
+                    decReach += _objCharacter.Improvements
                         .Where(objImprovement =>
                             objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach &&
                             objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
                 }
 
-                return intReach;
+                return decimal.ToInt32(decimal.Ceiling(decReach));
             }
         }
 
@@ -3668,7 +3666,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                        intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
+                        intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
                 }
 
                 Func<string> funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalOptions.InvariantCultureInfo);
@@ -3731,6 +3729,7 @@ namespace Chummer.Backend.Equipment
 
                 string strNameUpper = Name.ToUpperInvariant();
 
+                decimal decImproveAccuracy = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponAccuracy && objImprovement.Enabled)
@@ -3740,10 +3739,12 @@ namespace Chummer.Backend.Equipment
                             || strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
                             && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true).ToUpperInvariant()))
                         {
-                            intAccuracy += objImprovement.Value;
+                            decImproveAccuracy += objImprovement.Value;
                         }
                     }
                 }
+
+                intAccuracy += decimal.ToInt32(decimal.Ceiling(decImproveAccuracy));
 
                 string strSkill = UseSkill;
                 string strSpec = Spec;
@@ -3819,7 +3820,7 @@ namespace Chummer.Backend.Equipment
                     strSkill += LanguageManager.GetString("String_Space")
                                 + '(' + (!string.IsNullOrEmpty(strSpec) ? strSpec : UseSkillSpec) + ')';
                 }
-                intAccuracy += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, false, strSkill);
+                intAccuracy += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, false, strSkill)));
 
                 return intAccuracy;
             }
@@ -4026,8 +4027,8 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                 {
-                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
-                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR);
+                    intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
+                                                                 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR)));
                 }
             }
 
@@ -4284,7 +4285,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intDicePool = 0;
-                int intDicePoolModifier = WeaponAccessories.Where(a => a.Equipped).Sum(a => a.DicePool);
+                decimal decDicePoolModifier = WeaponAccessories.Where(a => a.Equipped).Sum(a => a.DicePool);
                 switch (FireMode)
                 {
                     case FiringMode.DogBrain:
@@ -4298,7 +4299,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (ParentVehicle.Gear.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
                                 {
-                                    ++intDicePoolModifier;
+                                    ++decDicePoolModifier;
                                 }
                             }
                             break;
@@ -4310,10 +4311,10 @@ namespace Chummer.Backend.Equipment
 
                             if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
                             {
-                                intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                                decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
                             }
 
-                            intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                            decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                             break;
                         }
                     case FiringMode.ManualOperation:
@@ -4322,11 +4323,11 @@ namespace Chummer.Backend.Equipment
 
                             if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
                             {
-                                intDicePoolModifier +=
+                                decDicePoolModifier +=
                                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
                             }
 
-                            intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                            decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                             break;
                         }
                     case FiringMode.Skill:
@@ -4338,11 +4339,11 @@ namespace Chummer.Backend.Equipment
 
                                 if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
                                 {
-                                    intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                                    decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
                                 }
 
-                                intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
-                                intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
+                                decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                                decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
 
                                 // If the character has a Specialization, include it in the Dice Pool string.
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
@@ -4360,7 +4361,7 @@ namespace Chummer.Backend.Equipment
 
                                     if (objSpec != null)
                                     {
-                                        intDicePoolModifier += objSpec.SpecializationBonus;
+                                        decDicePoolModifier += objSpec.SpecializationBonus;
                                     }
                                 }
                             }
@@ -4392,11 +4393,11 @@ namespace Chummer.Backend.Equipment
                             strWeaponBonusPool = objAmmo.WeaponBonus?["pool"]?.InnerText;
 
                         if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                            intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool, GlobalOptions.InvariantCultureInfo);
+                            decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalOptions.InvariantCultureInfo);
                     }
                 }
 
-                return intDicePool + intDicePoolModifier;
+                return intDicePool + decimal.ToInt32(decimal.Ceiling(decDicePoolModifier));
             }
         }
 

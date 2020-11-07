@@ -46,12 +46,12 @@ namespace Chummer
             this.lblSelect = new System.Windows.Forms.Label();
             this.txtSelect = new System.Windows.Forms.TextBox();
             this.cmdChangeSelection = new System.Windows.Forms.Button();
-            this.chkApplyToRating = new Chummer.ColorableCheckBox();
-            this.chkFree = new Chummer.ColorableCheckBox();
+            this.chkApplyToRating = new Chummer.ColorableCheckBox(this.components);
+            this.chkFree = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
             this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkIgnoreLimits = new Chummer.ColorableCheckBox();
+            this.chkIgnoreLimits = new Chummer.ColorableCheckBox(this.components);
             this.txtHelp = new System.Windows.Forms.TextBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).BeginInit();
@@ -132,6 +132,7 @@ namespace Chummer
             // nudVal
             // 
             this.nudVal.AutoSize = true;
+            this.nudVal.DecimalPlaces = 2;
             this.nudVal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVal.Location = new System.Drawing.Point(107, 85);
             this.nudVal.Minimum = new decimal(new int[] {
@@ -140,7 +141,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudVal.Name = "nudVal";
-            this.nudVal.Size = new System.Drawing.Size(41, 20);
+            this.nudVal.Size = new System.Drawing.Size(56, 20);
             this.nudVal.TabIndex = 8;
             // 
             // lblName
@@ -175,7 +176,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMin.Name = "nudMin";
-            this.nudMin.Size = new System.Drawing.Size(41, 20);
+            this.nudMin.Size = new System.Drawing.Size(56, 20);
             this.nudMin.TabIndex = 11;
             // 
             // lblMin
@@ -201,7 +202,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudMax.Name = "nudMax";
-            this.nudMax.Size = new System.Drawing.Size(41, 20);
+            this.nudMax.Size = new System.Drawing.Size(56, 20);
             this.nudMax.TabIndex = 13;
             // 
             // lblMax
@@ -227,7 +228,7 @@ namespace Chummer
             0,
             -2147483648});
             this.nudAug.Name = "nudAug";
-            this.nudAug.Size = new System.Drawing.Size(41, 20);
+            this.nudAug.Size = new System.Drawing.Size(56, 20);
             this.nudAug.TabIndex = 15;
             // 
             // lblAug
@@ -282,7 +283,8 @@ namespace Chummer
             // 
             this.chkApplyToRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkApplyToRating.AutoSize = true;
-            this.chkApplyToRating.Location = new System.Drawing.Point(154, 86);
+            this.chkApplyToRating.DefaultColorScheme = true;
+            this.chkApplyToRating.Location = new System.Drawing.Point(169, 86);
             this.chkApplyToRating.Name = "chkApplyToRating";
             this.chkApplyToRating.Size = new System.Drawing.Size(98, 17);
             this.chkApplyToRating.TabIndex = 9;
@@ -294,7 +296,8 @@ namespace Chummer
             // 
             this.chkFree.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFree.AutoSize = true;
-            this.chkFree.Location = new System.Drawing.Point(154, 112);
+            this.chkFree.DefaultColorScheme = true;
+            this.chkFree.Location = new System.Drawing.Point(169, 112);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(50, 17);
             this.chkFree.TabIndex = 19;
@@ -377,6 +380,7 @@ namespace Chummer
             // chkIgnoreLimits
             // 
             this.chkIgnoreLimits.AutoSize = true;
+            this.chkIgnoreLimits.DefaultColorScheme = true;
             this.chkIgnoreLimits.Dock = System.Windows.Forms.DockStyle.Left;
             this.chkIgnoreLimits.Location = new System.Drawing.Point(86, 3);
             this.chkIgnoreLimits.Name = "chkIgnoreLimits";

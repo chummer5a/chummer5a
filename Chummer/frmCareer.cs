@@ -12589,23 +12589,23 @@ namespace Chummer
 #region Other Control Events
         private void cmdEdgeSpent_Click(object sender, EventArgs e)
         {
-            int intEdgeUsed = 0;
+            decimal decEdgeUsed = 0;
             foreach (Improvement objImprovement in CharacterObject.Improvements)
             {
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == "EDG" && objImprovement.ImproveSource == Improvement.ImprovementSource.EdgeUse && objImprovement.Enabled)
-                    intEdgeUsed += objImprovement.Augmented * objImprovement.Rating;
+                    decEdgeUsed += objImprovement.Augmented * objImprovement.Rating;
             }
 
-            if (intEdgeUsed - 1 < CharacterObject.EDG.Value * -1)
+            if (decEdgeUsed - 1 < CharacterObject.EDG.Value * -1)
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotSpendEdge"), LanguageManager.GetString("MessageTitle_CannotSpendEdge"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EdgeUse);
-            intEdgeUsed -= 1;
+            decEdgeUsed -= 1;
 
-            ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intEdgeUsed);
+            ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, decEdgeUsed);
             ImprovementManager.Commit(CharacterObject);
             IsCharacterUpdateRequested = true;
 
@@ -12614,25 +12614,25 @@ namespace Chummer
 
         private void cmdEdgeGained_Click(object sender, EventArgs e)
         {
-            int intEdgeUsed = 0;
+            decimal decEdgeUsed = 0;
             foreach (Improvement objImprovement in CharacterObject.Improvements)
             {
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == "EDG" && objImprovement.ImproveSource == Improvement.ImprovementSource.EdgeUse && objImprovement.Enabled)
-                    intEdgeUsed += objImprovement.Augmented * objImprovement.Rating;
+                    decEdgeUsed += objImprovement.Augmented * objImprovement.Rating;
             }
 
-            if (intEdgeUsed + 1 > 0)
+            if (decEdgeUsed + 1 > 0)
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotRegainEdge"), LanguageManager.GetString("MessageTitle_CannotRegainEdge"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EdgeUse);
-            intEdgeUsed += 1;
+            decEdgeUsed += 1;
 
-            if (intEdgeUsed < 0)
+            if (decEdgeUsed < 0)
             {
-                ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intEdgeUsed);
+                ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, decEdgeUsed);
                 ImprovementManager.Commit(CharacterObject);
             }
             IsCharacterUpdateRequested = true;
