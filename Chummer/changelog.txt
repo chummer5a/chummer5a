@@ -134,6 +134,7 @@ Data Changes:
 - The maximum number of times that Ambidextrous can be taken is now based on the number of arms the character has instead of fixed at 3. Characters who have multiple arms will still need to track for which arms they have taken Ambidextrous, as Chummer currently does not track Ambidextrous in an arm-specific fashion.
 - Removed unnecessary affectbase attribute from Wendigo and Bandersnatch qualities. Closes #4232
 - The AR Nails gear's page reference is now correct.
+- Fixed claw bioware incorrectly adding Reach to all unarmed attacks instead of the specific weapon. Closes #4158
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

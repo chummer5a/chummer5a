@@ -1400,7 +1400,7 @@
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <selectside />
       <pairbonus>
-        <unarmedreach>1</unarmedreach>
+        <reach name="Retractable Claws (Bio-Weapon)">1</reach>
       </pairbonus>
       <source>CF</source>
       <page>120</page>
@@ -1418,7 +1418,7 @@
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
       <pairbonus>
-        <unarmedreach>1</unarmedreach>
+        <reach name="Claws (Bio-Weapon)">1</reach>
       </pairbonus>
       <source>CF</source>
       <page>120</page>
@@ -1436,7 +1436,7 @@
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
       <pairbonus>
-        <unarmedreach>1</unarmedreach>
+        <reach name="Retractable Claws (Bio-Weapon)">1</reach>
       </pairbonus>
       <source>CF</source>
       <page>120</page>
