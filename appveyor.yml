@@ -21,7 +21,6 @@ environment:
   - project_name: Chummer
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
 init:
-
 - ps: |
     $headers = @{
         "Authorization" = "Bearer $token"
@@ -38,7 +37,7 @@ init:
         $PreviousCommitID = $history.builds[1].commitId
         Write-host "Current Commit ID: $CurrentCommitID"
         Write-host "Previous Commit ID: $PreviousCommitID"
-        if (($CurrentCommitID -eq $PreviousCommitID) -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
+        if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
         {
             Write-host "Current Commit ID is the same as previous, exiting build."
             $doBuild = 0
