@@ -99,8 +99,8 @@ deploy:
   draft: false
   prerelease: true
 on_failure:
-  - ps: Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
-  - ps: |
+- ps: |
+    Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
     if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
     {
       Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
