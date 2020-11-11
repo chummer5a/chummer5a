@@ -24,7 +24,7 @@ environment:
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
     APPVEYOR_RDP_PASSWORD: fjeLKXiMix992f35Mu#^!Vk$JZcY
 install:
-- ps: nuget restore
+- ps: ''
 nuget:
   account_feed: true
   project_feed: true
@@ -50,6 +50,7 @@ before_build:
             Exit-AppVeyorBuild
         }
     }
+    nuget restore
     & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
     Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
     Write-Host "Environment Variable: $env:OldMinorVersion"
