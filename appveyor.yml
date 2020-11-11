@@ -24,15 +24,37 @@ environment:
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
     APPVEYOR_RDP_PASSWORD: fjeLKXiMix992f35Mu#^!Vk$JZcY
 install:
+- ps: nuget restore
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+before_build:
 - ps: >-
     $token = $env:api_token
-    $accountName = 'chummer5a'
-    $projectSlug = 'chummer'
     $headers = @{
         "Authorization" = "Bearer $token"
         "Content-type" = "application/json"
     }
 
+    $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
+    $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
+
+    if ($history.builds.Count -eq 2)
+    {
+        $CurrentCommitID = $history.builds[0].commitId
+        $PreviousCommitID = $history.builds[1].commitId
+        Write-host "Current Commit ID: $CurrentCommitID"
+        Write-host "Previous Commit ID: $PreviousCommitID"
+        if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
+        {
+            Write-host "Current Commit ID is the same as previous, exiting build."
+            Exit-AppVeyorBuild
+        }
+    }
+
+    & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
+    
     Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
     Write-Host "Environment Variable: $env:OldMinorVersion"
     $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
@@ -68,37 +90,6 @@ install:
     {
       Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
     }
-nuget:
-  account_feed: true
-  project_feed: true
-  disable_publish_on_pr: true
-before_build:
-- ps: >-
-    $token = $env:api_token
-    $headers = @{
-        "Authorization" = "Bearer $token"
-        "Content-type" = "application/json"
-    }
-
-    $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
-    $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
-
-    if ($history.builds.Count -eq 2)
-    {
-        $CurrentCommitID = $history.builds[0].commitId
-        $PreviousCommitID = $history.builds[1].commitId
-        Write-host "Current Commit ID: $CurrentCommitID"
-        Write-host "Previous Commit ID: $PreviousCommitID"
-        if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
-        {
-            Write-host "Current Commit ID is the same as previous, exiting build."
-            Exit-AppVeyorBuild
-        }
-    }
-    
-    nuget restore
-
-    & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
 build:
   project: Chummer.sln
   verbosity: normal
@@ -117,12 +108,6 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
-notifications:
-- provider: Webhook
-  url: https://discord.com/api/webhooks/776194471510671361/IZvRFV0SdIlwNO4b2PzSfvMmRtkc-bZeiDqoimm_CbaVwOCsyQmAOhH5WfL0fSgLZqRu
-  method: POST
-  headers:
-    content: '"AppVeyor build Nightly-v$(appveyor_build_version) has failed! Please check the AppVeyor logs!"'
-  on_build_success: false
-  on_build_failure: true
-  on_build_status_changed: false
+on_failure:
+  - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: ./send.ps1 failure https://discord.com/api/webhooks/776194471510671361/IZvRFV0SdIlwNO4b2PzSfvMmRtkc-bZeiDqoimm_CbaVwOCsyQmAOhH5WfL0fSgLZqRu
