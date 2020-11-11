@@ -31,54 +31,53 @@ nuget:
   disable_publish_on_pr: true
 before_build:
 - ps: |
-    $token = $env:api_token
+    $token = $env:api_token;
     $headers = @{
         "Authorization" = "Bearer $token"
         "Content-type" = "application/json"
     }
-    $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
-    $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
+    $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG";
+    $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get;
     if ($history.builds.Count -eq 2)
     {
-        $CurrentCommitID = $history.builds[0].commitId
-        $PreviousCommitID = $history.builds[1].commitId
-        Write-host "Current Commit ID: $CurrentCommitID"
-        Write-host "Previous Commit ID: $PreviousCommitID"
+        $CurrentCommitID = $history.builds[0].commitId;
+        $PreviousCommitID = $history.builds[1].commitId;
+        Write-host "Current Commit ID: $CurrentCommitID";
+        Write-host "Previous Commit ID: $PreviousCommitID";
         if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
         {
-            Write-host "Current Commit ID is the same as previous, exiting build."
-            Exit-AppVeyorBuild
+            Write-host "Current Commit ID is the same as previous, exiting build.";
+            Exit-AppVeyorBuild;
         }
     }
-    & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
-    Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
-    Write-Host "Environment Variable: $env:OldMinorVersion"
-    $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
-    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))', 
-    [System.Text.RegularExpressions.RegexOptions]::MultiLine)
-    $content = [IO.File]::ReadAllText($assemblyFile)
-    $version = $null
-    $match = $regex.Match($content)
+    & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt';
+    Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1];
+    Write-Host "Environment Variable: $env:OldMinorVersion";
+    $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs";
+    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))', [System.Text.RegularExpressions.RegexOptions]::MultiLine);
+    $content = [IO.File]::ReadAllText($assemblyFile);
+    $version = $null;
+    $match = $regex.Match($content);
     if($match.Success) {
-    $version = $match.groups[3].value
+    $version = $match.groups[3].value;
     }
-    $Major = $version.Split('.')[0]
-    $Minor = $version.Split('.')[1]
+    $Major = $version.Split('.')[0];
+    $Minor = $version.Split('.')[1];
     if ($Minor -ne $($env:OldMinorVersion)) {
-      Write-Host "Current Minor: $Minor"
-      Write-Host "Old Minor: $($env:OldMinorVersion))"
-      Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
-      $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
-      $BuildNumber = '{ nextBuildNumber: 1; }'
-      $Format = '{ versionFormat: $Major.$Minor.1; }'
+      Write-Host "Current Minor: $Minor";
+      Write-Host "Old Minor: $($env:OldMinorVersion))";
+      Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already.";
+      $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug';
+      $BuildNumber = '{ nextBuildNumber: 1; }';
+      $Format = '{ versionFormat: $Major.$Minor.1; }';
       # get project with last build details
-      Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber
-      Invoke-RestMethod -Method Put -Uri "$apiUrl/settings" -Headers $headers -Body $BuildNumber
-      Update-AppveyorBuild -Version "$Major.$Minor.1"
+      Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber;
+      Invoke-RestMethod -Method Put -Uri "$apiUrl/settings" -Headers $headers -Body $BuildNumber;
+      Update-AppveyorBuild -Version "$Major.$Minor.1";
     }
     else
     {
-      Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
+      Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number";
     }
 build:
   project: Chummer.sln
@@ -100,8 +99,8 @@ deploy:
   prerelease: true
 on_failure:
   - ps: |
-    Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
+    Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed";
     if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true) {
-      Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
-      ./send.ps1 failure https://discord.com/api/webhooks/776194471510671361/IZvRFV0SdIlwNO4b2PzSfvMmRtkc-bZeiDqoimm_CbaVwOCsyQmAOhH5WfL0fSgLZqRu
+      Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1;
+      ./send.ps1 failure https://discord.com/api/webhooks/776194471510671361/IZvRFV0SdIlwNO4b2PzSfvMmRtkc-bZeiDqoimm_CbaVwOCsyQmAOhH5WfL0fSgLZqRu;
     }
