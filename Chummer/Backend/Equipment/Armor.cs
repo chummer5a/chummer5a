@@ -403,7 +403,7 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlArmorGear in objXmlGearList)
                 {
                     Gear objGear = new Gear(_objCharacter);
-                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, blnSkipSelectForms))
+                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms))
                         continue;
                     foreach (Weapon objWeapon in lstChildWeapons)
                     {

@@ -86,6 +86,7 @@ Application Fixes:
 - The total amount of power points that an adept of some kind has can now be a non-integer.
 - Unhardcoded the way Running, Swimming, and Flight require ground, swimming, and flying movement speeds in order to be enabled. Skills can now be set to require one or more of these movement speeds through the requiresgroundmovement, requiresswimmovement, and requiresflymovement nodes, and the Running, Swimming, and Flight skills have these nodes present in the base data set.
 - Improvements that can alter a character's walking, running, or sprinting speeds on ground, in water, and in the air can now be added through the Improvements tab after character creation. Adding/increasing walking, running, and/or sprinting speeds in the air are a way to unlock skills that require such a movement speed to get enabled, such as Flight.
+- Browsing certain pieces of armor or weapons to buy no longer fills the character's improvements list with orphaned improvements and phantom limit modifiers.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
