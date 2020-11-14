@@ -291,6 +291,8 @@ namespace Chummer
             _lstPowers.ListChanged += PowersOnListChanged;
             _lstPowers.BeforeRemove += PowersOnBeforeRemove;
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
+            _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
+            _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
 
             _objTradition = new Tradition(this);
         }
@@ -366,29 +368,49 @@ namespace Chummer
 
         private void PowersOnListChanged(object sender, ListChangedEventArgs e)
         {
-            HashSet<string> setChangedProperties = new HashSet<string>();
-            switch(e.ListChangedType)
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+            switch (e.ListChangedType)
             {
                 case ListChangedType.Reset:
                     {
-                        setChangedProperties.Add(nameof(PowerPointsUsed));
-                        setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                        setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                        dicChangedProperties.Add(this, new HashSet<string>
+                        {
+                            nameof(PowerPointsUsed),
+                            nameof(AnyPowerAdeptWayDiscountEnabled),
+                            nameof(AllowAdeptWayPowerDiscount)
+                        });
                     }
                     break;
                 case ListChangedType.ItemAdded:
                     {
-                        setChangedProperties.Add(nameof(PowerPointsUsed));
-                        if (Powers[e.NewIndex].AdeptWayDiscountEnabled)
+                        dicChangedProperties.Add(this, new HashSet<string> {nameof(PowerPointsUsed)});
+                        Power objNewPower = Powers[e.NewIndex];
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        foreach (Improvement objImprovement in Improvements)
                         {
-                            setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                            if (objImprovement.SourceName == objNewPower.InternalId && objImprovement.Enabled)
+                            {
+                                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                {
+                                    if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                        setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                    else
+                                        dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                }
+                            }
+                        }
+                        if (objNewPower.AdeptWayDiscountEnabled)
+                        {
+                            dicChangedProperties[this].Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                            dicChangedProperties[this].Add(nameof(AllowAdeptWayPowerDiscount));
                         }
                     }
                     break;
                 case ListChangedType.ItemDeleted:
                     {
-                        setChangedProperties.Add(nameof(PowerPointsUsed));
+                        dicChangedProperties.Add(this, new HashSet<string> { nameof(PowerPointsUsed) });
                     }
                     break;
                 case ListChangedType.ItemChanged:
@@ -400,45 +422,178 @@ namespace Chummer
 
                         if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
                         {
-                            setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                            dicChangedProperties.Add(this, new HashSet<string>
+                            {
+                                nameof(AnyPowerAdeptWayDiscountEnabled),
+                                nameof(AllowAdeptWayPowerDiscount)
+                            });
                         }
-                        else if (setChangedProperties.Add(nameof(Power.DiscountedAdeptWay)))
+                        else if (e.PropertyDescriptor.Name == nameof(Power.DiscountedAdeptWay))
                         {
-                            setChangedProperties.Add(nameof(PowerPointsUsed));
-                            setChangedProperties.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                            setChangedProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                            dicChangedProperties.Add(this, new HashSet<string>
+                            {
+                                nameof(PowerPointsUsed),
+                                nameof(AnyPowerAdeptWayDiscountEnabled),
+                                nameof(AllowAdeptWayPowerDiscount)
+                            });
                             foreach (Power objPower in Powers)
                             {
-                                objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
+                                dicChangedProperties.Add(objPower, new HashSet<string>{ nameof(Power.AdeptWayDiscountEnabled) });
                             }
                         }
                         else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
                         {
-                            setChangedProperties.Add(nameof(PowerPointsUsed));
+                            dicChangedProperties.Add(this, new HashSet<string> { nameof(PowerPointsUsed) });
                         }
                     }
                     break;
             }
 
-            OnMultiplePropertyChanged(setChangedProperties.ToArray());
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+            {
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+            }
         }
 
         private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(MentorSpirits));
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+            dicChangedProperties.Add(this, new HashSet<string> {nameof(MentorSpirits)});
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (MentorSpirit objNewItem in e.NewItems)
+                {
+                    // Needed in order to properly process named sources where
+                    // the tooltip was built before the object was added to the character
+                    foreach (Improvement objImprovement in Improvements)
+                    {
+                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        {
+                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
+                                objImprovement.GetRelevantPropertyChangers())
+                            {
+                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
+                                    out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                else
+                                    dicChangedProperties.Add(tuplePropertyChanged.Item1,
+                                        new HashSet<string> {tuplePropertyChanged.Item2});
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+            {
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+            }
         }
 
         private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if(e.Action != NotifyCollectionChangedAction.Move)
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+            dicChangedProperties.Add(this, new HashSet<string> { nameof(Qualities) });
+            if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 foreach(Power objPower in Powers)
                 {
-                    objPower.OnPropertyChanged(nameof(Power.AdeptWayDiscountEnabled));
+                    dicChangedProperties.Add(objPower, new HashSet<string>{ nameof(Power.AdeptWayDiscountEnabled)} );
+                }
+
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach (Quality objNewItem in e.NewItems)
+                    {
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        foreach (Improvement objImprovement in Improvements)
+                        {
+                            if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                            {
+                                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
+                                    objImprovement.GetRelevantPropertyChangers())
+                                {
+                                    if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
+                                        out HashSet<string> setChangedProperties))
+                                        setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                    else
+                                        dicChangedProperties.Add(tuplePropertyChanged.Item1,
+                                            new HashSet<string> { tuplePropertyChanged.Item2 });
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            OnPropertyChanged(nameof(Qualities));
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+            {
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+            }
+        }
+
+        private void MartialArtsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                    new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+                foreach (MartialArt objNewItem in e.NewItems)
+                {
+                    // Needed in order to properly process named sources where
+                    // the tooltip was built before the object was added to the character
+                    foreach (Improvement objImprovement in Improvements)
+                    {
+                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        {
+                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                            {
+                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                else
+                                    dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                            }
+                        }
+                    }
+                }
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                }
+            }
+        }
+
+        private void MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                    new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+                foreach (Metamagic objNewItem in e.NewItems)
+                {
+                    // Needed in order to properly process named sources where
+                    // the tooltip was built before the object was added to the character
+                    foreach (Improvement objImprovement in Improvements)
+                    {
+                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        {
+                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                            {
+                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                else
+                                    dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                            }
+                        }
+                    }
+                }
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                }
+            }
         }
 
         private void ExpenseLogOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -504,8 +659,10 @@ namespace Chummer
 
         private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             bool blnDoEncumbranceRefresh = false;
-            switch(e.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach(Armor objNewItem in e.NewItems)
@@ -513,7 +670,21 @@ namespace Chummer
                         if(objNewItem.Equipped && objNewItem.Encumbrance)
                         {
                             blnDoEncumbranceRefresh = true;
-                            break;
+                        }
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        foreach (Improvement objImprovement in Improvements)
+                        {
+                            if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
+                            {
+                                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                {
+                                    if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                        setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                    else
+                                        dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                }
+                            }
                         }
                     }
 
@@ -557,25 +728,49 @@ namespace Chummer
                     break;
             }
 
-            if(blnDoEncumbranceRefresh)
+            if (blnDoEncumbranceRefresh)
             {
-                OnPropertyChanged(nameof(ArmorRating));
-                RefreshEncumbrance();
+                if (dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                    setChangedProperties.Add(nameof(ArmorRating));
+                else
+                    dicChangedProperties.Add(this, new HashSet<string> { nameof(ArmorRating) });
             }
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+            {
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+            }
+            if (blnDoEncumbranceRefresh)
+                RefreshEncumbrance();
         }
 
         private void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             bool blnDoCyberlimbAttributesRefresh = false;
-            HashSet<string> setEssenceImprovementsToRefresh = new HashSet<string>();
-            switch(e.Action)
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
-                    foreach(Cyberware objNewItem in e.NewItems)
+                    dicChangedProperties.Add(this, new HashSet<string> { nameof(RedlinerBonus) });
+                    foreach (Cyberware objNewItem in e.NewItems)
                     {
-                        setEssenceImprovementsToRefresh.Add(objNewItem.EssencePropertyName);
-                        if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
+                        dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
+                        // Needed in order to properly process named sources where
+                        // the tooltip was built before the object was added to the character
+                        foreach (Improvement objImprovement in Improvements)
+                        {
+                            if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
+                            {
+                                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                {
+                                    if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                        setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                    else
+                                        dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                }
+                            }
+                        }
+                        if (!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
                             objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
                             objNewItem.ParentVehicle == null &&
                             !string.IsNullOrWhiteSpace(objNewItem.LimbSlot) &&
@@ -587,10 +782,10 @@ namespace Chummer
 
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
-                    foreach(Cyberware objOldItem in e.OldItems)
+                    dicChangedProperties.Add(this, new HashSet<string> { nameof(RedlinerBonus) });
+                    foreach (Cyberware objOldItem in e.OldItems)
                     {
-                        setEssenceImprovementsToRefresh.Add(objOldItem.EssencePropertyName);
+                        dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                         if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
                             objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
                             objOldItem.ParentVehicle == null &&
@@ -603,12 +798,12 @@ namespace Chummer
 
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
-                    if(!Options.DontUseCyberlimbCalculation)
+                    dicChangedProperties.Add(this, new HashSet<string> { nameof(RedlinerBonus) });
+                    if (!Options.DontUseCyberlimbCalculation)
                     {
                         foreach(Cyberware objOldItem in e.OldItems)
                         {
-                            setEssenceImprovementsToRefresh.Add(objOldItem.EssencePropertyName);
+                            dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                             if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
                                 objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
                                 objOldItem.ParentVehicle == null &&
@@ -621,7 +816,7 @@ namespace Chummer
 
                         foreach(Cyberware objNewItem in e.NewItems)
                         {
-                            setEssenceImprovementsToRefresh.Add(objNewItem.EssencePropertyName);
+                            dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
                             if(!blnDoCyberlimbAttributesRefresh && !Options.DontUseCyberlimbCalculation &&
                                 objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
                                 objNewItem.ParentVehicle == null &&
@@ -636,20 +831,27 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     blnDoCyberlimbAttributesRefresh = !Options.DontUseCyberlimbCalculation;
-                    setEssenceImprovementsToRefresh.Add(nameof(RedlinerBonus));
-                    setEssenceImprovementsToRefresh.Add(nameof(Essence));
+                    dicChangedProperties.Add(this, new HashSet<string>
+                    {
+                        nameof(RedlinerBonus),
+                        nameof(Essence)
+                    });
                     break;
             }
 
             if(blnDoCyberlimbAttributesRefresh)
             {
-                GetAttribute("AGI")?.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                GetAttribute("STR")?.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
+                CharacterAttrib objAttribute = GetAttribute("AGI");
+                if (objAttribute != null)
+                    dicChangedProperties.Add(objAttribute, new HashSet<string> { nameof(CharacterAttrib.TotalValue) });
+                objAttribute = GetAttribute("STR");
+                if (objAttribute != null)
+                    dicChangedProperties.Add(objAttribute, new HashSet<string> { nameof(CharacterAttrib.TotalValue) });
             }
 
-            if(setEssenceImprovementsToRefresh.Count > 0)
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
-                OnMultiplePropertyChanged(setEssenceImprovementsToRefresh.ToArray());
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
             }
         }
 
@@ -4745,18 +4947,13 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            string strImprovedGuid = objImprovement.SourceName;
+            string strImprovedGuid = objImprovement.SourceName.TrimEndOnce("Pair");
             bool wireless = false;
 
-            if (strImprovedGuid.EndsWith("WirelessPair", StringComparison.Ordinal))
+            if (strImprovedGuid.EndsWith("Wireless", StringComparison.Ordinal))
             {
                 wireless = true;
-                strImprovedGuid = strImprovedGuid.Replace("WirelessPair", string.Empty);
-            }
-            else if (strImprovedGuid.EndsWith("Wireless", StringComparison.Ordinal))
-            {
-                wireless = true;
-                strImprovedGuid = strImprovedGuid.Replace("Wireless", string.Empty);
+                strImprovedGuid = strImprovedGuid.TrimEndOnce("Wireless", true);
             }
 
             switch (objImprovement.ImproveSource)

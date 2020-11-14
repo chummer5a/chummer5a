@@ -205,17 +205,37 @@ namespace Chummer.Backend.Equipment
             bool blnDoCyberlimbSTRRefresh = false;
             bool blnDoEssenceImprovementsRefresh = false;
             bool blnDoRedlinerRefresh = false;
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Cyberware objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
+                        if (_objCharacter != null)
+                        {
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            foreach (Improvement objImprovement in _objCharacter.Improvements)
+                            {
+                                if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
+                                {
+                                    foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                    {
+                                        if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                            setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                        else
+                                            dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                    }
+                                }
+                            }
+                        }
                         if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                             Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                            !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            _objCharacter?.Options.DontUseCyberlimbCalculation != true &&
                             !string.IsNullOrWhiteSpace(LimbSlot) &&
-                            !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                            _objCharacter?.Options.ExcludeLimbSlot.Contains(LimbSlot) != true)
                         {
                             if (InheritAttributes)
                             {
@@ -385,15 +405,32 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
             {
-                List<string> lstPropertiesToChange = new List<string>(3);
                 if (blnDoRedlinerRefresh)
-                    lstPropertiesToChange.Add(nameof(Character.RedlinerBonus));
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(nameof(Character.RedlinerBonus));
+                    else
+                        dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.RedlinerBonus) });
+                }
                 if (blnDoEssenceImprovementsRefresh)
-                    lstPropertiesToChange.Add(EssencePropertyName);
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(EssencePropertyName);
+                    else
+                        dicChangedProperties.Add(_objCharacter, new HashSet<string> { EssencePropertyName });
+                }
                 if (blnDoMovementUpdate)
-                    lstPropertiesToChange.Add(nameof(Character.GetMovement));
-                if (lstPropertiesToChange.Count > 0)
-                    _objCharacter.OnMultiplePropertyChanged(lstPropertiesToChange.ToArray());
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(nameof(Character.GetMovement));
+                    else
+                        dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.GetMovement) });
+                }
+            }
+
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+            {
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
             }
         }
 
