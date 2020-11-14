@@ -206,8 +206,6 @@ namespace Chummer
             this.mnuSpecialCreatePACKSKit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialChangeMetatype = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialChangeOptions = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSpecialMutantCritter = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSpecialToxicCritter = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialCyberzombie = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialConvertToFreeSprite = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialReapplyImprovements = new System.Windows.Forms.ToolStripMenuItem();
@@ -2155,13 +2153,13 @@ namespace Chummer
             this.cmsComplexForm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsComplexFormNotes});
             this.cmsComplexForm.Name = "cmsComplexForm";
-            this.cmsComplexForm.Size = new System.Drawing.Size(137, 48);
+            this.cmsComplexForm.Size = new System.Drawing.Size(106, 26);
             // 
             // tsComplexFormNotes
             // 
             this.tsComplexFormNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsComplexFormNotes.Name = "tsComplexFormNotes";
-            this.tsComplexFormNotes.Size = new System.Drawing.Size(136, 22);
+            this.tsComplexFormNotes.Size = new System.Drawing.Size(105, 22);
             this.tsComplexFormNotes.Tag = "Menu_Notes";
             this.tsComplexFormNotes.Text = "&Notes";
             this.tsComplexFormNotes.Click += new System.EventHandler(this.tsComplexFormNotes_Click);
@@ -2602,7 +2600,7 @@ namespace Chummer
             this.mnuCreateSpecial});
             this.mnuCreateMenu.Location = new System.Drawing.Point(0, 0);
             this.mnuCreateMenu.Name = "mnuCreateMenu";
-            this.mnuCreateMenu.Size = new System.Drawing.Size(1085, 24);
+            this.mnuCreateMenu.Size = new System.Drawing.Size(1264, 24);
             this.mnuCreateMenu.TabIndex = 51;
             this.mnuCreateMenu.Text = "Top Level Menu";
             this.mnuCreateMenu.Visible = false;
@@ -2738,8 +2736,6 @@ namespace Chummer
             this.mnuSpecialCreatePACKSKit,
             this.mnuSpecialChangeMetatype,
             this.mnuSpecialChangeOptions,
-            this.mnuSpecialMutantCritter,
-            this.mnuSpecialToxicCritter,
             this.mnuSpecialCyberzombie,
             this.mnuSpecialConvertToFreeSprite,
             this.mnuSpecialReapplyImprovements,
@@ -2825,16 +2821,6 @@ namespace Chummer
             this.mnuSpecialChangeOptions.Text = "Change &Options File";
             this.mnuSpecialChangeOptions.Click += new System.EventHandler(this.mnuSpecialChangeOptions_Click);
             // 
-            // mnuSpecialMutantCritter
-            // 
-            this.mnuSpecialMutantCritter.Name = "mnuSpecialMutantCritter";
-            this.mnuSpecialMutantCritter.Size = new System.Drawing.Size(213, 22);
-            // 
-            // mnuSpecialToxicCritter
-            // 
-            this.mnuSpecialToxicCritter.Name = "mnuSpecialToxicCritter";
-            this.mnuSpecialToxicCritter.Size = new System.Drawing.Size(213, 22);
-            // 
             // mnuSpecialCyberzombie
             // 
             this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.transmit_go;
@@ -2901,7 +2887,7 @@ namespace Chummer
             this.tsbPaste});
             this.tsMain.Location = new System.Drawing.Point(0, 0);
             this.tsMain.Name = "tsMain";
-            this.tsMain.Size = new System.Drawing.Size(1085, 25);
+            this.tsMain.Size = new System.Drawing.Size(1264, 25);
             this.tsMain.TabIndex = 53;
             this.tsMain.Text = "ToolStrip";
             this.tsMain.Visible = false;
@@ -12218,7 +12204,7 @@ namespace Chummer
             this.rtfDescription.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfDescription.Name = "rtfDescription";
             this.rtfDescription.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfDescription.Size = new System.Drawing.Size(712, 118);
             this.rtfDescription.TabIndex = 0;
@@ -12248,7 +12234,7 @@ namespace Chummer
             this.rtfBackground.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfBackground.Name = "rtfBackground";
             this.rtfBackground.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfBackground.Size = new System.Drawing.Size(712, 118);
             this.rtfBackground.TabIndex = 0;
@@ -12278,7 +12264,7 @@ namespace Chummer
             this.rtfConcept.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfConcept.Name = "rtfConcept";
             this.rtfConcept.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfConcept.Size = new System.Drawing.Size(712, 118);
             this.rtfConcept.TabIndex = 0;
@@ -12308,7 +12294,7 @@ namespace Chummer
             this.rtfNotes.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfNotes.Name = "rtfNotes";
             this.rtfNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfNotes.Size = new System.Drawing.Size(712, 119);
             this.rtfNotes.TabIndex = 0;
@@ -14956,8 +14942,6 @@ namespace Chummer
         private LabelWithToolTip lblComposure;
         private System.Windows.Forms.Label lblComposureLabel;
         private ColorableCheckBox chkGearEquipped;
-        private System.Windows.Forms.ToolStripMenuItem mnuSpecialMutantCritter;
-        private System.Windows.Forms.ToolStripMenuItem mnuSpecialToxicCritter;
         private System.Windows.Forms.Label lblArmorCapacity;
         private System.Windows.Forms.Label lblArmorCapacityLabel;
         private System.Windows.Forms.ToolStripMenuItem tsAddArmorGear;
