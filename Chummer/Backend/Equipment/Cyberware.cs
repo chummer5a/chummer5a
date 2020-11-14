@@ -821,9 +821,6 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                        _strExtra = ImprovementManager.SelectedValue;
-
                     if (PairBonus != null)
                     {
                         // This cyberware should not be included in the count to make things easier.
@@ -849,11 +846,19 @@ namespace Chummer.Backend.Equipment
                             intCount = intCount > 0 ? 1 : 0;
                         }
 
-                        if ((intCount & 1) == 1 && !ImprovementManager.CreateImprovements(_objCharacter, objSource,
-                            _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Pair", PairBonus, Rating, DisplayNameShort(GlobalOptions.Language)))
+                        if ((intCount & 1) == 1)
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                ImprovementManager.ForcedValue = _strForced;
+                            else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                ImprovementManager.ForcedValue = _strExtra;
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
+                                _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Pair", PairBonus, Rating,
+                                DisplayNameShort(GlobalOptions.Language)))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
                         }
                     }
                 }

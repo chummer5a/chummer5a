@@ -137,6 +137,7 @@ Data Changes:
 - Removed unnecessary affectbase attribute from Wendigo and Bandersnatch qualities. Closes #4232
 - The AR Nails gear's page reference is now correct.
 - Fixed claw bioware incorrectly adding Reach to all unarmed attacks instead of the specific weapon. Closes #4158
+- Cyberlimb Optimization should now properly let a skill be selected for each iteration of the cyberware and therefore properly apply its dicepool bonus when paired up instead of it being inconsistent with both.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
