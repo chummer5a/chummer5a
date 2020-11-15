@@ -16,6 +16,11 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>ChummerHub.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
 
