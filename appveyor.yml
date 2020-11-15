@@ -51,7 +51,7 @@ before_build:
         }
     }
     nuget restore
-    & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
+    & 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
     Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
     Write-Host "Environment Variable: $env:OldMinorVersion"
     $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
