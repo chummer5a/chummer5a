@@ -85,6 +85,9 @@ Application Fixes:
 - Improvement values and augmented values can now be decimals, not just integers. Non-integer improvements that would modify a value that must always be an integer will always get rounded up.
 - The total amount of power points that an adept of some kind has can now be a non-integer.
 - Unhardcoded the way Running, Swimming, and Flight require ground, swimming, and flying movement speeds in order to be enabled. Skills can now be set to require one or more of these movement speeds through the requiresgroundmovement, requiresswimmovement, and requiresflymovement nodes, and the Running, Swimming, and Flight skills have these nodes present in the base data set.
+- Improvements that can alter a character's walking, running, or sprinting speeds on ground, in water, and in the air can now be added through the Improvements tab after character creation. Adding/increasing walking, running, and/or sprinting speeds in the air are a way to unlock skills that require such a movement speed to get enabled, such as Flight.
+- Browsing certain pieces of armor or weapons to buy no longer fills the character's improvements list with orphaned improvements and phantom limit modifiers.
+- Cancelling out of a Mentor Spirit or Paragon selection form now properly aborts the attempt to add a Mentor Spirit or Paragon.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -135,6 +138,7 @@ Data Changes:
 - Removed unnecessary affectbase attribute from Wendigo and Bandersnatch qualities. Closes #4232
 - The AR Nails gear's page reference is now correct.
 - Fixed claw bioware incorrectly adding Reach to all unarmed attacks instead of the specific weapon. Closes #4158
+- Cyberlimb Optimization should now properly let a skill be selected for each iteration of the cyberware and therefore properly apply its dicepool bonus when paired up instead of it being inconsistent with both.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden

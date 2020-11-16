@@ -4752,14 +4752,12 @@ namespace Chummer
             {
                 foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
                 {
-                    if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setLoopPropertiesChanged))
-                    {
+                    if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1,
+                        out HashSet<string> setLoopPropertiesChanged))
                         setLoopPropertiesChanged.Add(tuplePropertyChanged.Item2);
-                    }
                     else
-                    {
-                        dicPropertiesChanged.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
-                    }
+                        dicPropertiesChanged.Add(tuplePropertyChanged.Item1,
+                            new HashSet<string> {tuplePropertyChanged.Item2});
                 }
             }
             // Fire each event once

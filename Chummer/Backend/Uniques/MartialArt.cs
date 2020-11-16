@@ -17,9 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using NLog;
@@ -49,6 +52,39 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _guiID = Guid.NewGuid();
+
+            _lstTechniques.CollectionChanged += TechniquesOnCollectionChanged;
+        }
+
+        private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                    new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+                foreach (MartialArtTechnique objNewItem in e.NewItems)
+                {
+                    // Needed in order to properly process named sources where
+                    // the tooltip was built before the object was added to the character
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        {
+                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                            {
+                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                else
+                                    dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                            }
+                        }
+                    }
+                }
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                }
+            }
         }
 
         /// Create a Martial Art from an XmlNode.
@@ -163,22 +199,30 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
 
             using (XmlNodeList xmlLegacyTechniqueList = objNode.SelectNodes("martialartadvantages/martialartadvantage"))
+            {
                 if (xmlLegacyTechniqueList != null)
+                {
                     foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
                     {
                         MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
                         objTechnique.Load(nodTechnique);
                         _lstTechniques.Add(objTechnique);
                     }
+                }
+            }
 
             using (XmlNodeList xmlTechniqueList = objNode.SelectNodes("martialarttechniques/martialarttechnique"))
+            {
                 if (xmlTechniqueList != null)
+                {
                     foreach (XmlNode nodTechnique in xmlTechniqueList)
                     {
                         MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
                         objTechnique.Load(nodTechnique);
                         _lstTechniques.Add(objTechnique);
                     }
+                }
+            }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }

@@ -782,5 +782,41 @@
       <xml><![CDATA[{val}]]></xml>
       <page>Adjusts the character's Social Limit by the listed value.</page>
     </improvement>
+    <improvement>
+      <name>Walk Multiplier</name>
+      <id>walkmultiplier</id>
+      <internal>walkmultiplier</internal>
+      <fields>
+        <field>category</field>
+        <field>val</field>
+        <field>percent</field>
+      </fields>
+      <xml><![CDATA[<category>{category}</category><val>{val}</val><percent>{percent}</percent>]]></xml>
+      <page>Increases the walking speed of a character for a particular category of movement. Positive numbers increase the factor by which attributes are multiplied to get walking speeds. Negative numbers decrease the factor by which attributes are multiplied to get walking speeds. Category can be Ground, Swim, or Fly for walking speed on land, in water, and in the air respectively. Value increases the walking factor by a fixed amount. Percent increases the walking factor by a percentage amount. Fields may be left at 0 if you do not want to affect walking speed in that particular way.</page>
+    </improvement>
+    <improvement>
+      <name>Run Multiplier</name>
+      <id>runmultiplier</id>
+      <internal>runmultiplier</internal>
+      <fields>
+        <field>category</field>
+        <field>val</field>
+        <field>percent</field>
+      </fields>
+      <xml><![CDATA[<category>{category}</category><val>{val}</val><percent>{percent}</percent>]]></xml>
+      <page>Increases the running speed of a character for a particular category of movement. Positive numbers increase the factor by which attributes are multiplied to get running speeds. Negative numbers decrease the factor by which attributes are multiplied to get running speeds. Category can be Ground, Swim, or Fly for running speed on land, in water, and in the air respectively. Value increases the running factor by a fixed amount. Percent increases the running factor by a percentage amount. Fields may be left at 0 if you do not want to affect running speed in that particular way.</page>
+    </improvement>
+    <improvement>
+      <name>Sprint Bonus</name>
+      <id>sprintbonus</id>
+      <internal>sprintbonus</internal>
+      <fields>
+        <field>category</field>
+        <field>val</field>
+        <field>percent</field>
+      </fields>
+      <xml><![CDATA[<category>{category}</category><val>{val}</val><percent>{percent}</percent>]]></xml>
+      <page>Increases the sprinting speed of a character for a particular category of movement. Positive numbers increase the number of meters sprinted per hit. Negative numbers decrease the number of meters sprinted per hit. Category can be Ground, Swim, or Fly for sprinting speed on land, in water, and in the air respectively. Value increases sprinted meters per hit by a fixed amount. Percent increases the sprinted meters per hit by a percentage amount. Fields may be left at 0 if you do not want to affect sprinting speed in that particular way.</page>
+    </improvement>
   </improvements>
 </chummer>
