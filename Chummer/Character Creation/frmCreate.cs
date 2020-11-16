@@ -2375,7 +2375,16 @@ namespace Chummer
                         }
                         else
                         {
-                            CharacterObject.Cyberware.Add(objCyberware);
+                            if (objCyberware.LimbSlot != string.Empty &&
+                                !objCyberware.GetValidLimbSlot(objCyberware.GetNode(GlobalOptions.Language)))
+                            {
+                                objCyberware.DeleteCyberware();
+                                return;
+                            }
+                            else
+                            {
+                                CharacterObject.Cyberware.Add(objCyberware);
+                            }
                         }
 
                         AddChildVehicles(objCyberware.InternalId);
