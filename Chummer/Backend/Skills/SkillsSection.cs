@@ -239,9 +239,18 @@ namespace Chummer.Backend.Skills
                             {
                                 foreach (XmlNode xmlNode in xmlGroupsList)
                                 {
-                                    SkillGroup objGroup = new SkillGroup(_objCharacter);
-                                    objGroup.Load(xmlNode);
-                                    lstLoadingSkillGroups.Add(objGroup);
+                                    string strName = xmlNode["name"]?.InnerText;
+                                    SkillGroup objGroup = null;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        objGroup = SkillGroups.FirstOrDefault(x => x.Name == strName);
+                                    if (objGroup == null)
+                                    {
+                                        objGroup = new SkillGroup(_objCharacter, strName);
+                                        objGroup.Load(xmlNode);
+                                        lstLoadingSkillGroups.Add(objGroup);
+                                    }
+                                    else
+                                        objGroup.Load(xmlNode);
                                 }
                             }
                         }

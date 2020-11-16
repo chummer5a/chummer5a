@@ -506,25 +506,28 @@ namespace Chummer.Backend.Skills
 
         private void SkillOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Skill.BasePoints) ||
-                e.PropertyName == nameof(Skill.FreeBase))
+            switch (e.PropertyName)
             {
-                OnMultiplePropertyChanged(nameof(BaseUnbroken), nameof(KarmaUnbroken));
+                case nameof(Skill.BasePoints):
+                case nameof(Skill.FreeBase):
+                    OnMultiplePropertyChanged(nameof(BaseUnbroken), nameof(KarmaUnbroken));
+                    break;
+                case nameof(Skill.KarmaPoints):
+                case nameof(Skill.FreeKarma):
+                    OnPropertyChanged(nameof(KarmaUnbroken));
+                    break;
+                case nameof(Skill.Specializations):
+                    OnPropertyChanged(nameof(CareerIncrease));
+                    break;
+                case nameof(Skill.TotalBaseRating):
+                case nameof(Skill.Enabled):
+                    OnMultiplePropertyChanged(nameof(CareerIncrease),
+                        nameof(DisplayRating),
+                        nameof(UpgradeToolTip),
+                        nameof(CurrentKarmaCost),
+                        nameof(UpgradeKarmaCost));
+                    break;
             }
-            else if (e.PropertyName == nameof(Skill.KarmaPoints) ||
-                e.PropertyName == nameof(Skill.FreeKarma))
-            {
-                OnPropertyChanged(nameof(KarmaUnbroken));
-            }
-            else if (e.PropertyName == nameof(Skill.Specializations))
-                OnPropertyChanged(nameof(CareerIncrease));
-            else if (e.PropertyName == nameof(Skill.TotalBaseRating) ||
-                e.PropertyName == nameof(Skill.Enabled))
-                OnMultiplePropertyChanged(nameof(CareerIncrease),
-                                          nameof(DisplayRating),
-                                          nameof(UpgradeToolTip),
-                                          nameof(CurrentKarmaCost),
-                                          nameof(UpgradeKarmaCost));
         }
 
         private readonly List<Skill> _lstAffectedSkills = new List<Skill>(4);

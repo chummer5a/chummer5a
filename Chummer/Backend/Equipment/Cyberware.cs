@@ -213,7 +213,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        if (_objCharacter != null)
+                        if (_objCharacter?.IsLoading == false)
                         {
                             // Needed in order to properly process named sources where
                             // the tooltip was built before the object was added to the character

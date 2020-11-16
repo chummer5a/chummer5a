@@ -58,7 +58,7 @@ namespace Chummer
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if (e.Action == NotifyCollectionChangedAction.Add && _objCharacter?.IsLoading == false)
             {
                 Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
                     new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
