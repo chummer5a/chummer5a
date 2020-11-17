@@ -140,6 +140,7 @@ Data Changes:
 - The AR Nails gear's page reference is now correct.
 - Fixed claw bioware incorrectly adding Reach to all unarmed attacks instead of the specific weapon. Closes #4158
 - Cyberlimb Optimization should now properly let a skill be selected for each iteration of the cyberware and therefore properly apply its dicepool bonus when paired up instead of it being inconsistent with both.
+- The costs and availabilities of Superior Reagents and Refined Superior Reagents are now correct.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
