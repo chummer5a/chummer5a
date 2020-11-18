@@ -26,29 +26,34 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
+            * {
             font-family: segoe condensed, tahoma, trebuchet ms, arial;
             font-size: 8pt;
             margin: 0;
             text-align: left;
-          }
-          html {
+            }
+            html {
             height: 100%;
             margin: 0px;  /* this affects the margin on the html before sending to printer */
-          }
-          .commlinkcategory {
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .commlinkcategory {
             font-family: segoe condensed, tahoma, trebuchet ms, arial;
             font-size: 8pt;
             text-align: right;
-          }
-          .tableborder {
+            }
+            .tableborder {
             border: solid 2px #1c4a2d;
             border-collapse: collapse;
             padding: 5px;
-          }
-          .block {
+            }
+            .block {
             page-break-inside: avoid;
-          }
+            }
         </style>
         <style media="print">
            @page {

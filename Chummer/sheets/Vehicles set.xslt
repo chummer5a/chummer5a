@@ -33,79 +33,84 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
-          font-family: segoe, tahoma, 'trebuchet ms', arial;
-          font-size: 9pt;
-          margin: 0;
-          text-align: left;
-          vertical-align: top;
-          }
-          .tablestyle {
-          border-collapse: collapse;
-          border-color: #1c4a2d;
-          border-style: solid;
-          border-width: 2px;
-          cellpadding: 0;
-          cellspacing: 0;
-          width: 100%;
-          }
-          .tableborderbottom {
-          border-collapse: collapse;
-          border-bottom: solid 2px #1c4a2d;
-          cellpadding: 0;
-          cellspacing: 0;
-          }
-          .tablebordertop {
-          border-collapse: collapse;
-          border-top: solid 2px #1c4a2d;
-          cellpadding: 0;
-          cellspacing: 0;
-          }
-          .tablebordertopleft {
-          border-collapse: collapse;
-          border-top: solid 2px #1c4a2d;
-          border-left: solid 2px #1c4a2d;
-          cellpadding: 0;
-          cellspacing: 0;
-          }
-          .tableborderright {
-          border-collapse: collapse;
-          border-right: solid 2px #1c4a2d;
-          cellpadding: 0;
-          cellspacing: 0;
-          }
-          .tableborderleft {
-          border-collapse: collapse;
-          border-left: solid 2px #1c4a2d;
-          cellpadding: 0;
-          cellspacing: 0;
-          }
-          .AttribName {
-          text-align: right;
-          font-weight: bold;
-          padding-right: 3px;
-          }
-          .AttribValue {
-          text-align: left;
-          padding-left: 3px;
-          }
-          .block {
-          page-break-inside: avoid;
-          }
-          .upper {
-          text-transform: uppercase;
-          }
-          .hseparator {
-          height: 5px;
-          }
-          .ItemListHeader {
-          text-align: left;
-          font-weight: bold;
-          text-decoration:underline;
-          }
-          th {
-          text-align: center;
-          }
+            * {
+            font-family: segoe, tahoma, 'trebuchet ms', arial;
+            font-size: 9pt;
+            margin: 0;
+            text-align: left;
+            vertical-align: top;
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .tablestyle {
+            border-collapse: collapse;
+            border-color: #1c4a2d;
+            border-style: solid;
+            border-width: 2px;
+            cellpadding: 0;
+            cellspacing: 0;
+            width: 100%;
+            }
+            .tableborderbottom {
+            border-collapse: collapse;
+            border-bottom: solid 2px #1c4a2d;
+            cellpadding: 0;
+            cellspacing: 0;
+            }
+            .tablebordertop {
+            border-collapse: collapse;
+            border-top: solid 2px #1c4a2d;
+            cellpadding: 0;
+            cellspacing: 0;
+            }
+            .tablebordertopleft {
+            border-collapse: collapse;
+            border-top: solid 2px #1c4a2d;
+            border-left: solid 2px #1c4a2d;
+            cellpadding: 0;
+            cellspacing: 0;
+            }
+            .tableborderright {
+            border-collapse: collapse;
+            border-right: solid 2px #1c4a2d;
+            cellpadding: 0;
+            cellspacing: 0;
+            }
+            .tableborderleft {
+            border-collapse: collapse;
+            border-left: solid 2px #1c4a2d;
+            cellpadding: 0;
+            cellspacing: 0;
+            }
+            .AttribName {
+            text-align: right;
+            font-weight: bold;
+            padding-right: 3px;
+            }
+            .AttribValue {
+            text-align: left;
+            padding-left: 3px;
+            }
+            .block {
+            page-break-inside: avoid;
+            }
+            .upper {
+            text-transform: uppercase;
+            }
+            .hseparator {
+            height: 5px;
+            }
+            .ItemListHeader {
+            text-align: left;
+            font-weight: bold;
+            text-decoration:underline;
+            }
+            th {
+            text-align: center;
+            }
         </style>
         <style media="print">
            @page {

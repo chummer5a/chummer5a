@@ -8744,6 +8744,18 @@
       <key>String_Generating_Sheet</key>
       <text>Generating Sheet...</text>
     </string>
+    <string>
+      <key>MessageTitle_Viewer_FoundPDFPrinter</key>
+      <text>Use Print to PDF Instead?</text>
+    </string>
+    <string>
+      <key>Message_Viewer_FoundPDFPrinter</key>
+      <text>The printer "{0}" was found installed on this system. This printer can "print" character sheets directly into a PDF file in a way that is more advanced than the PDF saver that comes with Chummer5a.\n\nDo you wish to open a Print dialog to print with "{0}" instead?</text>
+    </string>
+    <string>
+      <key>Message_Viewer_PDFPrinterError</key>
+      <text>An error was encountered while attempting to open up the printing dialog for "{0}". Chummer5a will now proceed with its built-in PDF file saving system.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Create Improvement Window -->
     <string>

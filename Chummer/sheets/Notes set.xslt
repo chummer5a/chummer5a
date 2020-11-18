@@ -47,6 +47,11 @@
           height: 100%;
           margin: 0px;  /* this affects the margin on the html before sending to printer */
           }
+          body {
+          color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          }
           .notesrow {
           text-align: justify;
           }

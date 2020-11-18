@@ -23,14 +23,19 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
-          font-family: tahoma, 'trebuchet ms', arial;
-          font-size: 8pt;
-          margin: 0;
-          }
-          .indent {
-          padding-left: 0.5em;
-          }
+            * {
+            font-family: tahoma, 'trebuchet ms', arial;
+            font-size: 8pt;
+            margin: 0;
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .indent {
+            padding-left: 0.5em;
+            }
         </style>
         <style media="print">
            @page {

@@ -26,132 +26,138 @@
         <meta charset="UTF-8" />
         <title><xsl:value-of select="$TitleName" /></title>
         <style type="text/css">
-          *
-          {
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 12px;
-          vertical-align: top;
-          }
-          hr
-          {
-          color: lightgrey;
-          height: 1px;
-          margin-left: 2px;
-          margin-right: 2px;
-          }
-          ul
-          {
-          margin-top: 0px;
-          margin-bottom: 0px;
-          margin-left: 20px;
-          padding-left: 0px;
-          list-style-type: none;
-          }
-          li
-          {
-          margin-top: 2px;
-          }
-          .fill33
-          {
-          width: 33%;
-          }
-          .fill66
-          {
-          width: 66%;
-          }
-          {
-          .fill100
-          width: 100%;
-          }
-          table.stats
-          {
-          border-style: solid;
-          border-width: 1px;
-          border-color: grey;
-          width: 100%;
-          border-collapse: collapse;
-          }
-          table.stats td
-          {
-          padding: 2px;
-          }
-          table.stats .bigheader
-          {
-          color: white;
-          background-color: grey;
-          font-weight: normal;
-          font-variant: small-caps;
-          font-size: 110%;
-          text-align: center;
-          padding-top: 1px;
-          padding-bottom: 2px;
-          }
-          tr:nth-child(odd) {
-          background: #eee
-          }
-          .smallheader
-          {
-          color: grey;
-          font-weight: bold;
-          }
-          td
-          {
-          page-break-inside: avoid;
-          }
-          strong
-          {
-          font-size: 105%;
-          }
-          @media screen
-          {
-          .page_breaker_off, .page_breaker_on
-          {
-          display: initial;
-          text-align: left;
-          }
-          .page_breaker_off td, .page_breaker_on td
-          {
-          border-style: solid;
-          border-width: 1px;
-          border-color: lightgrey;
-          }
-          }
-          @media print
-          {
-          *
-          {
-          font-size: 10px;
-          }
-          .page_breaker_off
-          {
-          page-break-before: auto;
-          display: none;
-          }
-          .page_breaker_on
-          {
-          page-break-before: always;
-          visibility: hidden;
-          }
-          .noprint
-          {
-          display: none;
-          }
-          }
-          .mugshot {
-          height: auto;
-          width: auto;
-          max-width: 100%;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-          .mugshot {
-          height: auto;
-          width: inherit;
-          max-width: 100%;
-          object-fit: scale-down;
-          }
-          }
+            *
+            {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            vertical-align: top;
+            }
+            body
+            {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            hr
+            {
+            color: lightgrey;
+            height: 1px;
+            margin-left: 2px;
+            margin-right: 2px;
+            }
+            ul
+            {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            margin-left: 20px;
+            padding-left: 0px;
+            list-style-type: none;
+            }
+            li
+            {
+            margin-top: 2px;
+            }
+            .fill33
+            {
+            width: 33%;
+            }
+            .fill66
+            {
+            width: 66%;
+            }
+            {
+            .fill100
+            width: 100%;
+            }
+            table.stats
+            {
+            border-style: solid;
+            border-width: 1px;
+            border-color: grey;
+            width: 100%;
+            border-collapse: collapse;
+            }
+            table.stats td
+            {
+            padding: 2px;
+            }
+            table.stats .bigheader
+            {
+            color: white;
+            background-color: grey;
+            font-weight: normal;
+            font-variant: small-caps;
+            font-size: 110%;
+            text-align: center;
+            padding-top: 1px;
+            padding-bottom: 2px;
+            }
+            tr:nth-child(odd) {
+            background: #eee
+            }
+            .smallheader
+            {
+            color: grey;
+            font-weight: bold;
+            }
+            td
+            {
+            page-break-inside: avoid;
+            }
+            strong
+            {
+            font-size: 105%;
+            }
+            @media screen
+            {
+            .page_breaker_off, .page_breaker_on
+            {
+            display: initial;
+            text-align: left;
+            }
+            .page_breaker_off td, .page_breaker_on td
+            {
+            border-style: solid;
+            border-width: 1px;
+            border-color: lightgrey;
+            }
+            }
+            @media print
+            {
+            *
+            {
+            font-size: 10px;
+            }
+            .page_breaker_off
+            {
+            page-break-before: auto;
+            display: none;
+            }
+            .page_breaker_on
+            {
+            page-break-before: always;
+            visibility: hidden;
+            }
+            .noprint
+            {
+            display: none;
+            }
+            }
+            .mugshot {
+            height: auto;
+            width: auto;
+            max-width: 100%;
+            object-fit: scale-down;
+            image-rendering: optimizeQuality;
+            }
+            @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+            .mugshot {
+            height: auto;
+            width: inherit;
+            max-width: 100%;
+            object-fit: scale-down;
+            }
+            }
         </style>
         <!--[if IE]
         <style type="text/css">

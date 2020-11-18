@@ -24,33 +24,38 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
-          font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-          font-size: 9pt;
-          margin: 0;
-          vertical-align: top;
-          }
-          html {
-          height: 100%;
-          margin: 0px;  /* this affects the margin on the html before sending to printer */
-          }
-          .label {
-          font-weight: bold;
-          width: 15%;
-          }
-          .mugshot {
-          width: auto;
-          max-width: 100%;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-          .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          }
-          }
+            * {
+            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+            font-size: 9pt;
+            margin: 0;
+            vertical-align: top;
+            }
+            html {
+            height: 100%;
+            margin: 0px;  /* this affects the margin on the html before sending to printer */
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .label {
+            font-weight: bold;
+            width: 15%;
+            }
+            .mugshot {
+            width: auto;
+            max-width: 100%;
+            object-fit: scale-down;
+            image-rendering: optimizeQuality;
+            }
+            @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+            .mugshot {
+            width: 100%;
+            max-width: inherit;
+            object-fit: scale-down;
+            }
+            }
         </style>
         <!--[if IE]
         <style type="text/css">
