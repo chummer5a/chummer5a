@@ -90,6 +90,7 @@ Application Fixes:
 - Cancelling out of a Mentor Spirit or Paragon selection form now properly aborts the attempt to add a Mentor Spirit or Paragon.
 - Added simple support for copy-pasting cyberlimbs in create mode to allow them to properly select the side. To do this, use the copy button, select the root-level cyberware node and paste it. Closes #4254
 - The "Show" and "Page Break" options in the Shadowrun 5 character sheet set now work properly.
+- Buying cyberware plugins in Career mode that do not affect essence when they are plugins no longer decreases the sizes of Essence holes when a character has one.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.

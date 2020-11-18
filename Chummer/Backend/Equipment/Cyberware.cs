@@ -5165,12 +5165,6 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (_objCharacter.Created && objVehicle == null && _objParent == null)
-                {
-                    _objCharacter.DecreaseEssenceHole((int) (CalculatedESS * 100),
-                        SourceID == EssenceAntiHoleGUID);
-                }
-
                 lstCyberwareCollection?.Add(this);
 
                 foreach (Weapon objWeapon in lstWeapons)
@@ -5182,6 +5176,12 @@ namespace Chummer.Backend.Equipment
                 foreach (Vehicle objLoopVehicle in lstVehicles)
                 {
                     lstVehicleCollection?.Add(objLoopVehicle);
+                }
+
+                if (_objCharacter.Created && objVehicle == null && _objParent == null)
+                {
+                    _objCharacter.DecreaseEssenceHole((int)(CalculatedESS * 100),
+                        SourceID == EssenceAntiHoleGUID);
                 }
             }
 
