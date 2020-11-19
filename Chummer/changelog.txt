@@ -1,3 +1,7 @@
+Build 214
+Data Changes:
+- The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
+
 Build 213
 Application Fixes:
 - Added a limited dark mode. The mode can be set and previewed in the Options menu. For existing users, Chummer will default to Light mode; for new users, Chummer will default to automatically checking the setting in Windows for whether apps should run in Light or Dark mode.
