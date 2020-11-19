@@ -1,4 +1,4 @@
-version: 5.212.{build}
+version: 5.213.{build}
 branches:
   only:
   - master
@@ -22,7 +22,6 @@ environment:
   matrix:
   - project_name: Chummer
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
-    APPVEYOR_RDP_PASSWORD: fjeLKXiMix992f35Mu#^!Vk$JZcY
 install:
 - ps: ''
 nuget:

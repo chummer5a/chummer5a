@@ -49,6 +49,6 @@ using System.Resources;
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("5.212.0.0")]
-[assembly: AssemblyFileVersion("5.212.0.0")]
+[assembly: AssemblyVersion("5.213.0.0")]
+[assembly: AssemblyFileVersion("5.213.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]

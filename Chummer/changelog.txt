@@ -1,4 +1,4 @@
-Future Build 213
+Build 213
 Application Fixes:
 - Added a limited dark mode. The mode can be set and previewed in the Options menu. For existing users, Chummer will default to Light mode; for new users, Chummer will default to automatically checking the setting in Windows for whether apps should run in Light or Dark mode.
 - Fixed an incorrect tag on submersion groups in career mode. 
