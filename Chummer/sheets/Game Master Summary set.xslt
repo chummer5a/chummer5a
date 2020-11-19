@@ -76,7 +76,7 @@
                   <xsl:with-param name="movrate" select="movementfly"/>
                 </xsl:call-template>&#160;&#160;&#160;&#160;
               </xsl:if>
-              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory]">
+              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory] and attributes/attributecategory != ''">
                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                   <strong><xsl:value-of select="$lang.CurrentForm"/>: </strong><xsl:value-of select="attributes/attributecategory"/>
               </xsl:if>

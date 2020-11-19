@@ -443,7 +443,7 @@
               </tr>
               <tr>
                 <xsl:choose>
-                  <xsl:when test="attributes/attribute[../attributecategory_english != metatypecategory]">
+                  <xsl:when test="attributes/attribute[../attributecategory_english != metatypecategory] and attributes/attributecategory != ''">
                     <td width="75%" colspan="3" class="attributecell">
                       <p>
                         <xsl:value-of select="$lang.CurrentForm"/>: <xsl:value-of select="attributes/attributecategory"/>

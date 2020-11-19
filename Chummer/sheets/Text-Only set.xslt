@@ -107,7 +107,7 @@
 
           <br/>
           <br/>== <xsl:value-of select="$lang.Attributes"/> ==
-          <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory]">
+          <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory] and attributes/attributecategory != ''">
             <br/><xsl:value-of select="$lang.CurrentForm"/>: <xsl:value-of select="attributes/attributecategory"/>
           </xsl:if>
           <br/><xsl:value-of select="$lang.BOD"/>: <xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/base"/>
