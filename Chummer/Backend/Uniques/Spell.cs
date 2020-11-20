@@ -814,9 +814,9 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell's dicepool.
-                intReturn += RelevantImprovements(x =>
+                intReturn += decimal.ToInt32(decimal.Ceiling(RelevantImprovements(x =>
                     x.ImproveType == Improvement.ImprovementType.SpellCategory
-                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value);
+                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value)));
 
                 return intReturn;
             }

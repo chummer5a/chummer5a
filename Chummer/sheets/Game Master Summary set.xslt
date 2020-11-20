@@ -23,14 +23,19 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
-          font-family: tahoma, 'trebuchet ms', arial;
-          font-size: 8pt;
-          margin: 0;
-          }
-          .indent {
-          padding-left: 0.5em;
-          }
+            * {
+            font-family: tahoma, 'trebuchet ms', arial;
+            font-size: 8pt;
+            margin: 0;
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .indent {
+            padding-left: 0.5em;
+            }
         </style>
         <style media="print">
            @page {
@@ -71,7 +76,7 @@
                   <xsl:with-param name="movrate" select="movementfly"/>
                 </xsl:call-template>&#160;&#160;&#160;&#160;
               </xsl:if>
-              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory]">
+              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory] and attributes/attributecategory != ''">
                 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                   <strong><xsl:value-of select="$lang.CurrentForm"/>: </strong><xsl:value-of select="attributes/attributecategory"/>
               </xsl:if>
@@ -428,13 +433,6 @@
                   )
                   </xsl:if>
                 </xsl:for-each></p>
-                <xsl:if test="martialartmaneuvers/martialartmaneuver">
-                  <p><strong><xsl:value-of select="$lang.Maneuvers"/>: </strong>
-                  <xsl:for-each select="martialartmaneuvers/martialartmaneuver">
-                    <xsl:sort select="name" />
-                    <xsl:value-of select="name" /><xsl:if test="position() != last()">, </xsl:if>
-                  </xsl:for-each></p>
-                </xsl:if>
               </xsl:if>
 
               <xsl:if test="spells/spell">

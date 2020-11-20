@@ -791,15 +791,11 @@
             <text>装備を追加 (&amp;D)</text>
         </string>
         <string>
-            <key>Menu_AddNexus</key>
-            <text>ネクサスを追加 (&amp;N)</text>
-        </string>
-        <string>
             <key>Menu_AddWeapon</key>
             <text>武器を追加 (&amp;W)</text>
         </string>
         <string>
-            <key>Menu_AddAdvantage</key>
+            <key>Menu_AddTechnique</key>
             <text>利点を追加 (&amp;A)</text>
         </string>
         <string>
@@ -1119,10 +1115,6 @@
             <text>この複合体を削除してもよろしいですか?</text>
         </string>
         <string>
-            <key>Message_DeleteComplexFormOption</key>
-            <text>この複合体のオプションを削除してもよろしいですか?</text>
-        </string>
-        <string>
             <key>Message_DeleteQuality</key>
             <text>この資質を削除してもよろしいですか?</text>
         </string>
@@ -1173,14 +1165,6 @@
         <string>
             <key>MessageTitle_PowerLevel</key>
             <text>パワーレベル</text>
-        </string>
-        <string>
-            <key>Message_MartialArtManeuverLimit</key>
-            <text>「格闘技」のレーティング1につき習得できる格闘動作は2つまでです.</text>
-        </string>
-        <string>
-            <key>MessageTitle_MartialArtManeuverLimit</key>
-            <text>格闘動作の最大数</text>
         </string>
         <string>
             <key>Message_SelectMartialArtTechnique</key>
@@ -1511,18 +1495,6 @@
             <text>複合体を選択</text>
         </string>
         <string>
-            <key>Message_CannotAddComplexFormOption</key>
-            <text>この複合体にオプションを追加できません.</text>
-        </string>
-        <string>
-            <key>Message_CannotAddComplexFormOptionLimit</key>
-            <text>レーティングによる制限のため, この複合体には {0} より多くのオプションを追加できません.</text>
-        </string>
-        <string>
-            <key>MessageTitle_CannotAddComplexFormOption</key>
-            <text>オプションを追加できません</text>
-        </string>
-        <string>
             <key>Message_FocusMaximumForce</key>
             <text>結合済みの収束具の【フォース】の合計は, 【魔力】の5倍を超えることはできません.</text>
         </string>
@@ -1697,10 +1669,6 @@
         <string>
             <key>Message_ConfirmKarmaExpenseRemove</key>
             <text>{0} を削除するために {1} カルマ消費してもよろしいですか?</text>
-        </string>
-        <string>
-            <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
-            <text>この複合体オプションの追加のために {0} カルマ消費してもよろしいですか?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseFocus</key>
@@ -2011,14 +1979,6 @@
             <text>複合体</text>
         </string>
         <string>
-            <key>String_ExpenseAddComplexFormOption</key>
-            <text>複合体オプションの追加</text>
-        </string>
-        <string>
-            <key>String_ExpenseComplexFormOption</key>
-            <text>複合体オプション</text>
-        </string>
-        <string>
             <key>String_ExpenseQuickenMetamagic</key>
             <text>固着術の使用</text>
         </string>
@@ -2153,10 +2113,6 @@
         <string>
             <key>String_ExpenseLearnMartialArt</key>
             <text>格闘技の習得</text>
-        </string>
-        <string>
-            <key>String_ExpenseLearnManeuver</key>
-            <text>格闘動作の習得</text>
         </string>
         <string>
             <key>String_ExpenseLearnMetamagic</key>
@@ -2820,10 +2776,6 @@
         <string>
             <key>Node_SelectedMartialArts</key>
             <text>習得した格闘技</text>
-        </string>
-        <string>
-            <key>Node_SelectedManeuvers</key>
-            <text>習得した格闘動作</text>
         </string>
         <!-- Spells Tab -->
         <string>
@@ -4517,10 +4469,6 @@
             <text>格闘技</text>
         </string>
         <string>
-            <key>Label_Options_BPMartialArtManeuver</key>
-            <text>格闘動作</text>
-        </string>
-        <string>
             <key>Label_Options_BPSkillGroup</key>
             <text>技能グループの技能値</text>
         </string>
@@ -4551,10 +4499,6 @@
         <string>
             <key>Label_Options_BPComplexForm</key>
             <text>複合体のレーティング</text>
-        </string>
-        <string>
-            <key>Label_Options_BPComplexFormOption</key>
-            <text>複合体オプションのレーティング</text>
         </string>
         <string>
             <key>Label_Options_NewSpecialization</key>
@@ -4637,23 +4581,11 @@
             <text>新しい複合体</text>
         </string>
         <string>
-            <key>Label_Options_ImproveComplexForm</key>
-            <text>複合体を1成長</text>
-        </string>
-        <string>
-            <key>Label_Options_ComplexFormOptions</key>
-            <text>複合体オプション</text>
-        </string>
-        <string>
-            <key>Label_Options_ComplexFormSkillsoft</key>
-            <text>複合体スキルソフト</text>
-        </string>
-        <string>
             <key>Label_Options_Spirit</key>
             <text>精霊</text>
         </string>
         <string>
-            <key>Label_Options_CombatManeuver</key>
+            <key>Label_Options_MartialArtTechnique</key>
             <text>格闘動作</text>
         </string>
         <string>
@@ -5288,15 +5220,10 @@
             <key>Title_SelectMartialArt</key>
             <text>格闘技を選択</text>
         </string>
-        <!-- Select Martial Art Advantage Window -->
+        <!-- Select Martial Art Technique Window -->
         <string>
             <key>Title_SelectMartialArtTechnique</key>
             <text>利点を選択</text>
-        </string>
-        <!-- Select Martial Art Maneuver Window -->
-        <string>
-            <key>Title_SelectMartialArtManeuver</key>
-            <text>格闘動作を選択</text>
         </string>
         <!-- Select Mentor Spirit Window -->
         <string>
@@ -5320,31 +5247,6 @@
             <text>どちらかを選択:</text>
         </string>
         <!-- Select Metamagic Window -->
-        <!-- Select Nexus Window -->
-        <string>
-            <key>Title_SelectNexus</key>
-            <text>ネクサスを作成</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Nexus</key>
-            <text>ネクサス</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_Processor</key>
-            <text>プロセッサ:</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Processor</key>
-            <text>プロセッサ</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_PersonaLimit</key>
-            <text>ペルソナ上限:</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_PersonaLimit</key>
-            <text>ペルソナ上限</text>
-        </string>
         <!-- Select Number Window -->
         <string>
             <key>Title_SelectNumber</key>
@@ -7212,7 +7114,7 @@
         </string>
       <string>
         <key>About_Label_Disclaimer_Text</key>
-        <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from Mark James' Silk and Flag icon sets available at http://www.famfamfam.com/, as well as from the FatCow Icon Set available at https://www.fatcow.com/free-icons.</text>
+        <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummerは、https://www.fatcow.com/free-icons で入手可能なFatCow Icon Setのアイコンを使用しています。</text>
       </string>
         <string>
             <key>Label_Roster_File_Name</key>

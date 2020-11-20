@@ -216,6 +216,8 @@ namespace Chummer.UI.Table
                 {
                     foreach (int intColumnIndex in lstColumns)
                     {
+                        if (intIndex >= _lstCells[intColumnIndex].cells.Count)
+                            continue;
                         UpdateCell(_columns[intColumnIndex], _lstCells[intColumnIndex].cells[intIndex], objItem);
                     }
                 }
@@ -285,6 +287,8 @@ namespace Chummer.UI.Table
             for (int i = 0; i < _columns.Count; i++)
             {
                 IList<TableCell> cells = _lstCells[i].cells;
+                if (index >= cells.Count)
+                    continue;
                 TableColumn<T> column = _columns[i];
                 TableCell cell = cells[index];
                 UpdateCell(column, cell, item);

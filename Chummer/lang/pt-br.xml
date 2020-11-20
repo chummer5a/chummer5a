@@ -1319,15 +1319,11 @@
       <text>A&amp;dicionar Equipamento</text>
     </string>
     <string>
-      <key>Menu_AddNexus</key>
-      <text>Adicionar &amp;Nexo</text>
-    </string>
-    <string>
       <key>Menu_AddWeapon</key>
       <text>Adiconar A&amp;rma</text>
     </string>
     <string>
-      <key>Menu_AddAdvantage</key>
+      <key>Menu_AddTechnique</key>
       <text>&amp;Adicionar Técnica</text>
     </string>
     <string>
@@ -1699,10 +1695,6 @@
       <text>Você tem certeza que quer excluir esta Forma Complexa?</text>
     </string>
     <string>
-      <key>Message_DeleteComplexFormOption</key>
-      <text>Você tem certeza que quer excluir esta Opção de Forma Complexa?</text>
-    </string>
-    <string>
       <key>Message_DeleteQuality</key>
       <text>Você tem certeza que quer excluir esta Qualidade?</text>
     </string>
@@ -1769,14 +1761,6 @@
     <string>
       <key>MessageTitle_CannotDeleteLimitModifier</key>
       <text>Não Foi Possível Excluir</text>
-    </string>
-    <string>
-      <key>Message_MartialArtManeuverLimit</key>
-      <text>Você só pode ter 2 Manobras por Nível de Arte Marcial.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtManeuverLimit</key>
-      <text>Número Máximo de Manobras</text>
     </string>
     <string>
       <key>Message_SelectMartialArtTechnique</key>
@@ -2131,18 +2115,6 @@
       <text>Selecione Forma Complexa</text>
     </string>
     <string>
-      <key>Message_CannotAddComplexFormOption</key>
-      <text>Esta Forma Complexa não permite Opções.</text>
-    </string>
-    <string>
-      <key>Message_CannotAddComplexFormOptionLimit</key>
-      <text>Esta Forma Complexa não pode ter mais do que {0} Opções devido ao seu Nível.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotAddComplexFormOption</key>
-      <text>Não Foi Possível Adicionar Opção</text>
-    </string>
-    <string>
       <key>Message_FocusMaximumForce</key>
       <text>A Potência total de todos os seus Focos vinculados não pode exceder cinco vezes seu valor de MAG.</text>
     </string>
@@ -2421,10 +2393,6 @@
     <string>
       <key>Message_ConfirmKarmaExpenseRemove</key>
       <text>Você tem certeza que quer gastar {1} Carma removendo {0}?</text>
-    </string>
-    <string>
-      <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
-      <text>Você tem certeza que quer adicionar esta Forma Complexa por {0} Carma?</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpenseFocus</key>
@@ -2811,14 +2779,6 @@
       <text>Forma Complexa</text>
     </string>
     <string>
-      <key>String_ExpenseAddComplexFormOption</key>
-      <text>Opção de Forma Complexa Adicionada</text>
-    </string>
-    <string>
-      <key>String_ExpenseComplexFormOption</key>
-      <text>Opção de Forma Complexa</text>
-    </string>
-    <string>
       <key>String_ExpenseLearnProgram</key>
       <text>Programa de IA Aprendido</text>
     </string>
@@ -2961,10 +2921,6 @@
     <string>
       <key>String_ExpenseLearnMartialArt</key>
       <text>Arte Marcial Aprendida</text>
-    </string>
-    <string>
-      <key>String_ExpenseLearnManeuver</key>
-      <text>Manobra Aprendida</text>
     </string>
     <string>
       <key>String_ExpenseLearnMetamagic</key>
@@ -3811,10 +3767,6 @@
     <string>
       <key>Node_SelectedMartialArts</key>
       <text>Artes Marciais</text>
-    </string>
-    <string>
-      <key>Node_SelectedManeuvers</key>
-      <text>Manobras</text>
     </string>
     <!-- End Region -->
     <!-- Region Spells Tab -->
@@ -5936,10 +5888,6 @@
       <text>Nível de Arte Marcial</text>
     </string>
     <string>
-      <key>Label_Options_BPMartialArtManeuver</key>
-      <text>Manobra de Arte Marcial</text>
-    </string>
-    <string>
       <key>Label_Options_BPSkillGroup</key>
       <text>Nível de Grupo de Perícia</text>
     </string>
@@ -5969,11 +5917,7 @@
     </string>
     <string>
       <key>Label_Options_BPComplexForm</key>
-      <text>Nível de Forma Complexa</text>
-    </string>
-    <string>
-      <key>Label_Options_BPComplexFormOption</key>
-      <text>Nível de Opção de Forma Complexa</text>
+      <text>Forma Complexa</text>
     </string>
     <string>
       <key>Label_Options_NewSpecialization</key>
@@ -6052,24 +5996,12 @@
       <text>Nova Forma Complexa</text>
     </string>
     <string>
-      <key>Label_Options_ImproveComplexForm</key>
-      <text>Melhorar Forma Complexa em 1</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormOptions</key>
-      <text>Opções de Forma Complexa</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormSkillsoft</key>
-      <text>Períciasoft de Forma Complexa</text>
-    </string>
-    <string>
       <key>Label_Options_Spirit</key>
       <text>Espírito</text>
     </string>
     <string>
-      <key>Label_Options_CombatManeuver</key>
-      <text>Manobra de Combate</text>
+      <key>Label_Options_MartialArtTechnique</key>
+      <text>Manobra de Arte Marcial</text>
     </string>
     <string>
       <key>Label_Options_Nuyen</key>
@@ -6943,16 +6875,10 @@
       <text>Selecione uma Arte Marcial</text>
     </string>
     <!-- End Region-->
-    <!-- Region Select Martial Art Advantage Window -->
+    <!-- Region Select Martial Art Technique Window -->
     <string>
       <key>Title_SelectMartialArtTechnique</key>
       <text>Selecione uma Vantagem</text>
-    </string>
-    <!-- End Region-->
-    <!-- Region Select Martial Art Maneuver Window -->
-    <string>
-      <key>Title_SelectMartialArtManeuver</key>
-      <text>Selecione uma Manobra</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Mentor Spirit Window -->
@@ -7009,32 +6935,6 @@
     <string>
       <key>Checkbox_SelectGeneric_LimitList</key>
       <text>Mostrar apenas {0} que eu posso pegar</text>
-    </string>
-    <!-- End Region-->
-    <!-- Region Select Nexus Window -->
-    <string>
-      <key>Title_SelectNexus</key>
-      <text>Construir Nexo</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Nexus</key>
-      <text>Nexo</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_Processor</key>
-      <text>Processador:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Processor</key>
-      <text>Processador</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_PersonaLimit</key>
-      <text>Limite de Persona:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_PersonaLimit</key>
-      <text>Limite de Persona</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Number Window -->
@@ -8586,7 +8486,7 @@
     </string>
     <string>
       <key>About_Label_Disclaimer_Text</key>
-      <text>Chummer é completamente não oficial e não é de forma alguma endossado por The Topps Company, Inc. ou Catalyst Game Labs. The Topps Company, Inc. tem a propriedade exclusiva dos nomes, logos, artes, marcas, fotografias, sons, audios, vídeos e/ou qualquer outro material proprietário usado em conexão com o jogo Shadowrun.\n\r\n\rA não ser que acordado por escrito, o desenvolvedor fornece o Trabalho (e cada Contribuidor fornece suas Contribuições) da forma "COMO ESTÁ", SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO, tanto expressas quanto implícitas, incluindo, sem limitações, quaisquer garantias ou condições de TÍTULO, NÃO-VIOLAÇÃO, COMERCIALIZAÇÃO ou ADEQUAÇÃO PARA UM PROPÓSITO ESPECÍFICO.\n\r\n\rAo utilizar Chummer Você concorda que Você possui legalmente uma cópia do livro de regras de Shadowrun e qualquer suplemento na qual as informações você selecionou para usar. Você é o único responsável por determinar a apropriabilidade do uso e redistribuição do conteúdo que Você criar e assume quaisquer riscos associados com Seu exercício de permissões sob esta Licença.\n\r\n\rChummer utiliza ícones do conjunto de ícones Silk feito por Mark James que está disponível em at www.famfamfam.com.</text>
+      <text>Chummer é completamente não oficial e não é de forma alguma endossado por The Topps Company, Inc. ou Catalyst Game Labs. The Topps Company, Inc. tem a propriedade exclusiva dos nomes, logos, artes, marcas, fotografias, sons, audios, vídeos e/ou qualquer outro material proprietário usado em conexão com o jogo Shadowrun.\n\r\n\rA não ser que acordado por escrito, o desenvolvedor fornece o Trabalho (e cada Contribuidor fornece suas Contribuições) da forma "COMO ESTÁ", SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO, tanto expressas quanto implícitas, incluindo, sem limitações, quaisquer garantias ou condições de TÍTULO, NÃO-VIOLAÇÃO, COMERCIALIZAÇÃO ou ADEQUAÇÃO PARA UM PROPÓSITO ESPECÍFICO.\n\r\n\rAo utilizar Chummer Você concorda que Você possui legalmente uma cópia do livro de regras de Shadowrun e qualquer suplemento na qual as informações você selecionou para usar. Você é o único responsável por determinar a apropriabilidade do uso e redistribuição do conteúdo que Você criar e assume quaisquer riscos associados com Seu exercício de permissões sob esta Licença.\n\r\n\rChummer utiliza ícones do 'FatCow Icon Set' disponíveis em https://www.fatcow.com/free-icons.</text>
     </string>
     <string>
       <key>String_MutantCritter</key>

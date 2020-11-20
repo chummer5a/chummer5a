@@ -16,18 +16,21 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing.Printing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
-using System.ComponentModel;
- using System.Linq;
 using Codaxy.WkHtmlToPdf;
-using System.Diagnostics;
-using System.Globalization;
 using Microsoft.Win32;
 using NLog;
 
@@ -498,6 +501,33 @@ namespace Chummer
 
         private void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
+            // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
+            string strPdfPrinter = string.Empty;
+            foreach (string strPrinter in PrinterSettings.InstalledPrinters)
+            {
+                if (strPrinter == "Microsoft Print to PDF" || strPrinter == "Foxit Reader PDF Printer" || strPrinter == "Adobe PDF")
+                {
+                    strPdfPrinter = strPrinter;
+                    break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(strPdfPrinter))
+            {
+                DialogResult ePdfPrinterDialogResult = Program.MainForm.ShowMessageBox(this,
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Viewer_FoundPDFPrinter"), strPdfPrinter),
+                    LanguageManager.GetString("MessageTitle_Viewer_FoundPDFPrinter"),
+                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                if (ePdfPrinterDialogResult == DialogResult.Cancel)
+                    return;
+                if (ePdfPrinterDialogResult == DialogResult.Yes)
+                {
+                    if (DoPdfPrinterShortcut(strPdfPrinter))
+                        return;
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
+                }
+            }
+
             // Save the generated output as PDF.
             SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' + LanguageManager.GetString("DialogFilter_All");
             SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsPdf");
@@ -532,6 +562,8 @@ namespace Chummer
                     return;
                 }
             }
+
+            // No PDF printer found, let's use wkhtmltopdf
 
             PdfDocument objPdfDocument = new PdfDocument
             {
@@ -581,6 +613,84 @@ namespace Chummer
         }
 
 
+
+        private bool DoPdfPrinterShortcut(string strPdfPrinterName)
+        {
+            // We've got a proper, built-in PDF printer, so let's use that instead of wkhtmltopdf
+            string strOldHeader = null;
+            string strOldFooter = null;
+            string strOldPrintBackground = null;
+            string strOldShrinkToFit = null;
+            string strOldDefaultPrinter = null;
+            try
+            {
+                strOldDefaultPrinter = SystemPrinters.GetDefaultPrinter();
+                // Try to remove headers and footers from the printer and set default printer settings to be conducive to sheet printing
+                try
+                {
+                    using (RegistryKey objKey =
+                        Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Internet Explorer\\PageSetup", true))
+                    {
+                        if (objKey != null)
+                        {
+                            strOldHeader = objKey.GetValue("header")?.ToString();
+                            objKey.SetValue("header", string.Empty);
+                            strOldFooter = objKey.GetValue("footer")?.ToString();
+                            objKey.SetValue("footer", string.Empty);
+                            strOldPrintBackground = objKey.GetValue("Print_Background")?.ToString();
+                            objKey.SetValue("Print_Background", "yes");
+                            strOldShrinkToFit = objKey.GetValue("Shrink_To_Fit")?.ToString();
+                            objKey.SetValue("Shrink_To_Fit", "yes");
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                }
+
+                // webBrowser can only print to the default printer, so we (temporarily) change it to the PDF printer
+                if (SystemPrinters.SetDefaultPrinter(strPdfPrinterName))
+                {
+                    // There is also no way to silently have it print to a PDF, so we have to show the print dialog
+                    // and have the user click through, though the PDF printer will be temporarily set as their default
+                    webViewer.ShowPrintDialog();
+                }
+            }
+            catch (Exception)
+            {
+                // Error of some kind occured, proceed to use wkhtmltopdf instead
+                return false;
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(strOldDefaultPrinter))
+                    SystemPrinters.SetDefaultPrinter(strOldDefaultPrinter);
+                // Try to remove headers and footers from the printer and
+                try
+                {
+                    using (RegistryKey objKey =
+                        Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Internet Explorer\\PageSetup", true))
+                    {
+                        if (objKey != null)
+                        {
+                            if (strOldHeader != null)
+                                objKey.SetValue("header", strOldHeader);
+                            if (strOldFooter != null)
+                                objKey.SetValue("footer", strOldFooter);
+                            if (strOldPrintBackground != null)
+                                objKey.SetValue("Print_Background", strOldPrintBackground);
+                            if (strOldShrinkToFit != null)
+                                objKey.SetValue("Shrink_To_Fit", strOldShrinkToFit);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return true;
+        }
 
         private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
@@ -665,6 +775,40 @@ namespace Chummer
             }
             _blnLoading = false;
             RefreshCharacters();
+        }
+
+        public static class SystemPrinters
+        {
+            [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern bool SetDefaultPrinter(string strName);
+
+            [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern bool GetDefaultPrinter(StringBuilder sbdBuffer, ref int ptrBuffer);
+
+            public static string GetDefaultPrinter()
+            {
+
+                int ptrBuffer = 0;
+                if (GetDefaultPrinter(null, ref ptrBuffer))
+                {
+                    return null;
+                }
+                int intLastWin32Error = Marshal.GetLastWin32Error();
+                if (intLastWin32Error == 122) // ERROR_INSUFFICIENT_BUFFER
+                {
+                    StringBuilder sbdBuffer = new StringBuilder(ptrBuffer);
+                    if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
+                    {
+                        return sbdBuffer.ToString();
+                    }
+                    intLastWin32Error = Marshal.GetLastWin32Error();
+                }
+                if (intLastWin32Error == 2) // ERROR_FILE_NOT_FOUND
+                {
+                    return null;
+                }
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
         }
     }
 }

@@ -582,20 +582,20 @@ namespace Chummer.Backend.Uniques
                 }
 
                 string strDrain = sbdDrain.ToString();
-                if(!int.TryParse(strDrain, out int intDrain))
+                if(!decimal.TryParse(strDrain, out decimal decDrain))
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
                     if(blnIsSuccess)
-                        intDrain = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                        decDrain = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                 }
 
                 // Add any Improvements for Drain Resistance.
                 if(Type == TraditionType.RES)
-                    intDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingResistance);
+                    decDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingResistance);
                 else
-                    intDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
+                    decDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
 
-                return intDrain;
+                return decimal.ToInt32(decimal.Ceiling(decDrain));
             }
         }
 

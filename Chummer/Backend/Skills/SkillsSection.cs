@@ -281,9 +281,18 @@ namespace Chummer.Backend.Skills
                             {
                                 foreach (XmlNode xmlNode in xmlGroupsList)
                                 {
-                                    SkillGroup objGroup = new SkillGroup(_objCharacter);
-                                    objGroup.Load(xmlNode);
-                                    lstLoadingSkillGroups.Add(objGroup);
+                                    string strName = xmlNode["name"]?.InnerText;
+                                    SkillGroup objGroup = null;
+                                    if (!string.IsNullOrEmpty(strName))
+                                        objGroup = SkillGroups.FirstOrDefault(x => x.Name == strName);
+                                    if (objGroup == null)
+                                    {
+                                        objGroup = new SkillGroup(_objCharacter, strName);
+                                        objGroup.Load(xmlNode);
+                                        lstLoadingSkillGroups.Add(objGroup);
+                                    }
+                                    else
+                                        objGroup.Load(xmlNode);
                                 }
                             }
                         }
@@ -1013,7 +1022,7 @@ namespace Chummer.Backend.Skills
                     else
                         int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int _intCachedKnowledgePoints);
 
-                    _intCachedKnowledgePoints += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills);
+                    _intCachedKnowledgePoints += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills)));
                 }
 
                 return _intCachedKnowledgePoints;

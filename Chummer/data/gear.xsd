@@ -107,7 +107,7 @@
                         <xs:sequence>
                             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                             <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-							<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                            <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -119,9 +119,9 @@
                                     <xs:simpleContent>
                                         <xs:extension base="xs:string">
                                             <xs:attribute name="select" type="xs:string" use="optional" />
-											<xs:attribute name="createchildren" type="xs:string" use="optional" />
-											<xs:attribute name="addimprovements" type="xs:string" use="optional" />
-											<xs:attribute name="qty" type="xs:string" use="optional" />
+                                            <xs:attribute name="createchildren" type="xs:string" use="optional" />
+                                            <xs:attribute name="addimprovements" type="xs:string" use="optional" />
+                                            <xs:attribute name="qty" type="xs:string" use="optional" />
                                         </xs:extension>
                                     </xs:simpleContent>
                                 </xs:complexType>
@@ -129,47 +129,47 @@
                             <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                             <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
                             <xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" />
-							<xs:element name="page" type="xs:integer" minOccurs="0" maxOccurs="1" />
-							<xs:element name="source" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                            <xs:element name="page" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                            <xs:element name="source" type="xs:integer" minOccurs="0" maxOccurs="1" />
                             <xs:element ref="gears" minOccurs="0" maxOccurs="1">
-							</xs:element>
+                            </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-				<xs:element name="choosegear" minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="choosegear" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="usegear" minOccurs="0" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="name" minOccurs="1" maxOccurs="1">
-											<xs:complexType>
-												<xs:simpleContent>
-													<xs:extension base="xs:string">
-														<xs:attribute name="select" type="xs:string" use="optional" />
-														<xs:attribute name="createchildren" type="xs:string" use="optional" />
-														<xs:attribute name="addimprovements" type="xs:string" use="optional" />
-														<xs:attribute name="qty" type="xs:string" use="optional" />
-													</xs:extension>
-												</xs:simpleContent>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
-										<xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="page" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element name="source" type="xs:integer" minOccurs="0" maxOccurs="1" />
-										<xs:element ref="gears" minOccurs="0" maxOccurs="1">
-										</xs:element>
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="name" minOccurs="1" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute name="select" type="xs:string" use="optional" />
+                                                        <xs:attribute name="createchildren" type="xs:string" use="optional" />
+                                                        <xs:attribute name="addimprovements" type="xs:string" use="optional" />
+                                                        <xs:attribute name="qty" type="xs:string" use="optional" />
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+                                        <xs:element name="rating" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="page" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="source" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element ref="gears" minOccurs="0" maxOccurs="1">
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
                         </xs:sequence>
                     </xs:complexType>
-					<xs:attribute name="required" type="xs:string" use="optional" />
+                    <xs:attribute name="required" type="xs:string" use="optional" />
                 </xs:element>
             </xs:sequence>
-			<xs:attribute name="startcollapsed" type="xs:string" use="optional" />
+            <xs:attribute name="startcollapsed" type="xs:string" use="optional" />
         </xs:complexType>
     </xs:element>
 

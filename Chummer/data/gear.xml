@@ -11727,8 +11727,8 @@
       <rating>0</rating>
       <source>FA</source>
       <page>187</page>
-      <avail>60</avail>
-      <cost>14R</cost>
+      <avail>14R</avail>
+      <cost>60</cost>
       <bonus>
         <selecttradition />
       </bonus>
@@ -11740,7 +11740,7 @@
       <rating>0</rating>
       <source>FA</source>
       <page>187</page>
-      <avail>18E</avail>
+      <avail>18R</avail>
       <cost>300</cost>
       <bonus>
         <selecttradition />

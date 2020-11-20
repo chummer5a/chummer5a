@@ -4199,7 +4199,7 @@
           <name>Smartgun System, Internal</name>
         </accessory>
         <accessory>
-          <name>Silencer, Ares Light Fire 70</name>
+          <name>Silencer, Ares Light Fire 75</name>
         </accessory>
       </accessories>
       <accessorymounts>
@@ -15240,7 +15240,7 @@
       <rc>0</rc>
       <ammo>38(c)</ammo>
       <avail>5R</avail>
-      <cost>500</cost>
+      <cost>1000</cost>
       <source>KK</source>
       <page>9</page>
       <accessories>

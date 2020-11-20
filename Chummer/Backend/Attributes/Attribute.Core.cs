@@ -237,7 +237,7 @@ namespace Chummer.Backend.Attributes
 
                 if (Abbrev == "ESS")
                 {
-                    intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.EssenceMax);
+                    intReturn += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.EssenceMax)));
                 }
                 return intReturn;
             }
@@ -298,7 +298,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int TotalBase => Math.Max(Base + FreeBase + RawMinimum, TotalMinimum);
 
-        public int FreeBase => Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum);
+        public int FreeBase => decimal.ToInt32(decimal.Ceiling(Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum)));
 
         /// <summary>
         /// Current karma value of the CharacterAttribute.
@@ -389,12 +389,12 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
         /// </summary>
-        public int AttributeModifiers => ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev);
+        public int AttributeModifiers => decimal.ToInt32(decimal.Ceiling(ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev)));
 
         /// <summary>
         /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
         /// </summary>
-        public int AttributeValueModifiers => ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base");
+        public int AttributeValueModifiers => decimal.ToInt32(decimal.Ceiling(ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base")));
 
         /// <summary>
         /// Whether or not the CharacterAttribute has any modifiers from Improvements.
@@ -567,8 +567,7 @@ namespace Chummer.Backend.Attributes
             {
                 if (_objCharacter.CritterEnabled || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
                     return 0;
-                else
-                    return 1;
+                return 1;
             }
             return intReturn;
         }
@@ -742,8 +741,8 @@ namespace Chummer.Backend.Attributes
                 StringBuilder sbdModifier = new StringBuilder();
 
                 HashSet<string> lstUniqueName = new HashSet<string>();
-                List<Tuple<string, int, string>> lstUniquePair = new List<Tuple<string, int, string>>();
-                int intBaseValue = 0;
+                List<Tuple<string, decimal, string>> lstUniquePair = new List<Tuple<string, decimal, string>>();
+                decimal decBaseValue = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement =>
                     objImprovement.Enabled && !objImprovement.Custom && objImprovement.ImproveType == Improvement.ImprovementType.Attribute
                     && objImprovement.ImprovedName == Abbrev && string.IsNullOrEmpty(objImprovement.Condition)))
@@ -756,14 +755,14 @@ namespace Chummer.Backend.Attributes
                             lstUniqueName.Add(strUniqueName);
 
                         // Add the values to the UniquePair List so we can check them later.
-                        lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
+                        lstUniquePair.Add(new Tuple<string, decimal, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
                     }
                     else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                     {
-                        int intValue = objImprovement.Augmented * objImprovement.Rating;
+                        decimal decValue = objImprovement.Augmented * objImprovement.Rating;
                         sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language))
-                            .Append(strSpace).Append('(').Append((intValue).ToString(GlobalOptions.CultureInfo)).Append(')');
-                        intBaseValue += intValue;
+                            .Append(strSpace).Append('(').Append(decValue.ToString(GlobalOptions.CultureInfo)).Append(')');
+                        decBaseValue += decValue;
                     }
                 }
 
@@ -771,16 +770,16 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve only the highest precedence0 value.
                     // Run through the list of UniqueNames and pick out the highest value for each one.
-                    int intHighest = int.MinValue;
+                    decimal decHighest = decimal.MinValue;
 
                     StringBuilder strNewModifier = new StringBuilder();
-                    foreach (Tuple<string, int, string> strValues in lstUniquePair)
+                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
                     {
                         if (strValues.Item1 == "precedence0")
                         {
-                            if (strValues.Item2 > intHighest)
+                            if (strValues.Item2 > decHighest)
                             {
-                                intHighest = strValues.Item2;
+                                decHighest = strValues.Item2;
                                 strNewModifier = new StringBuilder(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
                                     .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
                             }
@@ -788,25 +787,25 @@ namespace Chummer.Backend.Attributes
                     }
                     if (lstUniqueName.Contains("precedence-1"))
                     {
-                        foreach (Tuple<string, int, string> strValues in lstUniquePair)
+                        foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
                         {
                             if (strValues.Item1 == "precedence-1")
                             {
-                                intHighest += strValues.Item2;
+                                decHighest += strValues.Item2;
                                 strNewModifier.Append(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
                                     .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
                             }
                         }
                     }
 
-                    if (intHighest >= intBaseValue)
+                    if (decHighest >= decBaseValue)
                         sbdModifier = strNewModifier;
                 }
                 else if (lstUniqueName.Contains("precedence1"))
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
                     StringBuilder strNewModifier = new StringBuilder();
-                    foreach (Tuple<string, int, string> strValues in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
+                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                     {
                         strNewModifier.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace, strValues.Item3, strValues.Item2);
                     }
@@ -817,14 +816,14 @@ namespace Chummer.Backend.Attributes
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     foreach (string strName in lstUniqueName)
                     {
-                        int intHighest = int.MinValue;
-                        foreach (Tuple<string, int, string> strValues in lstUniquePair)
+                        decimal decHighest = decimal.MinValue;
+                        foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
                         {
                             if (strValues.Item1 == strName)
                             {
-                                if (strValues.Item2 > intHighest)
+                                if (strValues.Item2 > decHighest)
                                 {
-                                    intHighest = strValues.Item2;
+                                    decHighest = strValues.Item2;
                                     sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
                                         .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
                                 }
@@ -848,7 +847,7 @@ namespace Chummer.Backend.Attributes
                             lstUniqueName.Add(strUniqueName);
 
                         // Add the values to the UniquePair List so we can check them later.
-                        lstUniquePair.Add(new Tuple<string, int, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
+                        lstUniquePair.Add(new Tuple<string, decimal, string>(strUniqueName, objImprovement.Augmented * objImprovement.Rating, _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)));
                     }
                     else
                     {
@@ -860,14 +859,14 @@ namespace Chummer.Backend.Attributes
                 // Run through the list of UniqueNames and pick out the highest value for each one.
                 foreach (string strName in lstUniqueName)
                 {
-                    int intHighest = int.MinValue;
-                    foreach (Tuple<string, int, string> strValues in lstUniquePair)
+                    decimal decHighest = decimal.MinValue;
+                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
                     {
                         if (strValues.Item1 == strName)
                         {
-                            if (strValues.Item2 > intHighest)
+                            if (strValues.Item2 > decHighest)
                             {
-                                intHighest = strValues.Item2;
+                                decHighest = strValues.Item2;
                                 sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
                                     .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
                             }
@@ -905,7 +904,7 @@ namespace Chummer.Backend.Attributes
                 int intBase = Base;
                 int intReturn = intBase;
 
-                int intExtra = 0;
+                decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
@@ -914,14 +913,15 @@ namespace Chummer.Backend.Attributes
                         objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCost)
-                            intExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                            decExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
                         else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCostMultiplier)
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier));
-                intReturn += intExtra;
+                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier + decExtra));
+                else
+                    intReturn += decimal.ToInt32(decimal.Ceiling(decExtra));
 
                 return Math.Max(intReturn, 0);
             }
@@ -962,7 +962,7 @@ namespace Chummer.Backend.Attributes
                 if (_objCharacter.Options.AlternateMetatypeAttributeKarma)
                     intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
-                int intExtra = 0;
+                decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
@@ -971,14 +971,15 @@ namespace Chummer.Backend.Attributes
                             (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
-                            intExtra += objLoopImprovement.Value;
+                            decExtra += objLoopImprovement.Value;
                         else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intUpgradeCost = decimal.ToInt32(decimal.Ceiling(intUpgradeCost * decMultiplier));
-                intUpgradeCost += intExtra;
+                    intUpgradeCost = decimal.ToInt32(decimal.Ceiling(intUpgradeCost * decMultiplier + decExtra));
+                else
+                    intUpgradeCost += decimal.ToInt32(decimal.Ceiling(decExtra));
 
                 return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
             }
@@ -1011,7 +1012,7 @@ namespace Chummer.Backend.Attributes
                 // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
                 int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Options.KarmaAttribute;
 
-                int intExtra = 0;
+                decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
@@ -1020,14 +1021,15 @@ namespace Chummer.Backend.Attributes
                             objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
-                            intExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
+                            decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
                         else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier));
-                intCost += intExtra;
+                    intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier + decExtra));
+                else
+                    intCost += decimal.ToInt32(decimal.Ceiling(decExtra));
 
                 return Math.Max(intCost, 0);
             }

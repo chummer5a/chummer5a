@@ -322,24 +322,19 @@ namespace Chummer
                             // <martialart>
                             objWriter.WriteStartElement("martialart");
                             objWriter.WriteElementString("name", objArt.Name);
-                            objWriter.WriteElementString("rating", objArt.Rating.ToString(GlobalOptions.InvariantCultureInfo));
                             if (objArt.Techniques.Count > 0)
                             {
-                                // <advantages>
-                                objWriter.WriteStartElement("advantages");
-                                foreach (MartialArtTechnique objAdvantage in objArt.Techniques)
-                                    objWriter.WriteElementString("advantage", objAdvantage.Name);
-                                // </advantages>
+                                // <techniques>
+                                objWriter.WriteStartElement("techniques");
+                                foreach (MartialArtTechnique objTechnique in objArt.Techniques)
+                                    objWriter.WriteElementString("technique", objTechnique.Name);
+                                // </techniques>
                                 objWriter.WriteEndElement();
                             }
 
                             // </martialart>
                             objWriter.WriteEndElement();
                         }
-#if LEGACY
-                foreach (MartialArtManeuver objManeuver in _objCharacter.MartialArtManeuvers)
-                    objWriter.WriteElementString("maneuver", objManeuver.Name);
-#endif
                         // </martialarts>
                         objWriter.WriteEndElement();
                     }
@@ -771,26 +766,24 @@ namespace Chummer
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in lstGear)
             {
-                // Do not attempt to export Nexi since they're completely custom objects.
-                if (!objGear.Name.StartsWith("Nexus", StringComparison.Ordinal) && !objGear.IncludedInParent)
-                {
-                    // <gear>
-                    objWriter.WriteStartElement("gear");
-                    objWriter.WriteStartElement("name");
-                    if (!string.IsNullOrEmpty(objGear.Extra))
-                        objWriter.WriteAttributeString("select", objGear.Extra);
-                    objWriter.WriteValue(objGear.Name);
-                    objWriter.WriteEndElement();
-                    objWriter.WriteElementString("category", objGear.Category);
-                    if (objGear.Rating > 0)
-                        objWriter.WriteElementString("rating", objGear.Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                    if (objGear.Quantity != 1)
-                        objWriter.WriteElementString("qty", objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
-                    if (objGear.Children.Count > 0)
-                        WriteGear(objWriter, objGear.Children);
-                    // </gear>
-                    objWriter.WriteEndElement();
-                }
+                if (objGear.IncludedInParent)
+                    continue;
+                // <gear>
+                objWriter.WriteStartElement("gear");
+                objWriter.WriteStartElement("name");
+                if (!string.IsNullOrEmpty(objGear.Extra))
+                    objWriter.WriteAttributeString("select", objGear.Extra);
+                objWriter.WriteValue(objGear.Name);
+                objWriter.WriteEndElement();
+                objWriter.WriteElementString("category", objGear.Category);
+                if (objGear.Rating > 0)
+                    objWriter.WriteElementString("rating", objGear.Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                if (objGear.Quantity != 1)
+                    objWriter.WriteElementString("qty", objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
+                if (objGear.Children.Count > 0)
+                    WriteGear(objWriter, objGear.Children);
+                // </gear>
+                objWriter.WriteEndElement();
             }
             // </gears>
             objWriter.WriteEndElement();

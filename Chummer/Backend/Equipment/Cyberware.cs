@@ -205,17 +205,37 @@ namespace Chummer.Backend.Equipment
             bool blnDoCyberlimbSTRRefresh = false;
             bool blnDoEssenceImprovementsRefresh = false;
             bool blnDoRedlinerRefresh = false;
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Cyberware objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
+                        if (_objCharacter?.IsLoading == false)
+                        {
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            foreach (Improvement objImprovement in _objCharacter.Improvements)
+                            {
+                                if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
+                                {
+                                    foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                    {
+                                        if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                            setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                        else
+                                            dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                    }
+                                }
+                            }
+                        }
                         if ((!blnDoCyberlimbAGIRefresh || !blnDoCyberlimbSTRRefresh) &&
                             Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                            !_objCharacter.Options.DontUseCyberlimbCalculation &&
+                            _objCharacter?.Options.DontUseCyberlimbCalculation != true &&
                             !string.IsNullOrWhiteSpace(LimbSlot) &&
-                            !_objCharacter.Options.ExcludeLimbSlot.Contains(LimbSlot))
+                            _objCharacter?.Options.ExcludeLimbSlot.Contains(LimbSlot) != true)
                         {
                             if (InheritAttributes)
                             {
@@ -385,15 +405,32 @@ namespace Chummer.Backend.Equipment
 
             if (_objCharacter != null)
             {
-                List<string> lstPropertiesToChange = new List<string>(3);
                 if (blnDoRedlinerRefresh)
-                    lstPropertiesToChange.Add(nameof(Character.RedlinerBonus));
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(nameof(Character.RedlinerBonus));
+                    else
+                        dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.RedlinerBonus) });
+                }
                 if (blnDoEssenceImprovementsRefresh)
-                    lstPropertiesToChange.Add(EssencePropertyName);
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(EssencePropertyName);
+                    else
+                        dicChangedProperties.Add(_objCharacter, new HashSet<string> { EssencePropertyName });
+                }
                 if (blnDoMovementUpdate)
-                    lstPropertiesToChange.Add(nameof(Character.GetMovement));
-                if (lstPropertiesToChange.Count > 0)
-                    _objCharacter.OnMultiplePropertyChanged(lstPropertiesToChange.ToArray());
+                {
+                    if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                        setChangedProperties.Add(nameof(Character.GetMovement));
+                    else
+                        dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.GetMovement) });
+                }
+            }
+
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+            {
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
             }
         }
 
@@ -700,105 +737,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    using (frmSelectSide frmPickSide = new frmSelectSide
-                    {
-                        Description =
-                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectSide"),
-                                DisplayNameShort(GlobalOptions.Language))
-                    })
-                    {
-                        string strForcedSide = string.Empty;
-                        if (_strForced == "Right" || _strForced == "Left")
-                            strForcedSide = _strForced;
-                        if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
-                        {
-                            XPathNavigator xpnCyberware = objXmlCyberware.CreateNavigator();
-                            ObservableCollection<Cyberware> lstCyberwareToCheck =
-                                Parent == null ? _objCharacter.Cyberware : Parent.Children;
-                            Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
-                            Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
-                            foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
-                            {
-                                if (!string.IsNullOrEmpty(objCheckCyberware.BlocksMounts))
-                                {
-                                    Dictionary<string, int> dicToUse = null;
-                                    if (objCheckCyberware.Location == "Left")
-                                        dicToUse = dicNumLeftMountBlockers;
-                                    else if (objCheckCyberware.Location == "Right")
-                                        dicToUse = dicNumRightMountBlockers;
-                                    else
-                                        continue;
-                                    foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                    {
-                                        if (dicToUse.ContainsKey(strBlockMount))
-                                            dicToUse[strBlockMount] += objCheckCyberware.LimbSlotCount;
-                                        else
-                                            dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
-                                    }
-                                }
-                            }
-
-                            bool blnAllowLeft = true;
-                            bool blnAllowRight = true;
-                            // Fairly expensive check that can (and therefore should) be parallelized
-                            Parallel.Invoke(
-                                () =>
-                                {
-                                    blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty, string.Empty, "Left")
-                                                   && (string.IsNullOrEmpty(BlocksMounts)
-                                                       || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                        && x.Location == "Left"
-                                                                                        && BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount)
-                                                                                        && (string.IsNullOrEmpty(MountToLimbType(x.HasModularMount))
-                                                                                            || _objCharacter.LimbCount(MountToLimbType(x.HasModularMount)) / 2 <= (dicNumLeftMountBlockers.ContainsKey(x.HasModularMount)
-                                                                                                ? dicNumLeftMountBlockers[x.HasModularMount] + LimbSlotCount
-                                                                                                : LimbSlotCount))))
-                                                   && (string.IsNullOrEmpty(HasModularMount)
-                                                       || !dicNumLeftMountBlockers.ContainsKey(HasModularMount)
-                                                       || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
-                                                            || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <= dicNumLeftMountBlockers[HasModularMount]));
-                                },
-                                () =>
-                                {
-                                    blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty, string.Empty, "Right")
-                                                    && (string.IsNullOrEmpty(BlocksMounts)
-                                                        || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                         && x.Location == "Right"
-                                                                                         && BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(x.HasModularMount)
-                                                                                         && (string.IsNullOrEmpty(MountToLimbType(x.HasModularMount))
-                                                                                             || _objCharacter.LimbCount(MountToLimbType(x.HasModularMount)) / 2 <= (dicNumRightMountBlockers.ContainsKey(x.HasModularMount)
-                                                                                                 ? dicNumRightMountBlockers[x.HasModularMount] + LimbSlotCount
-                                                                                                 : LimbSlotCount))))
-                                                    && (string.IsNullOrEmpty(HasModularMount)
-                                                        || !dicNumRightMountBlockers.ContainsKey(HasModularMount)
-                                                        || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
-                                                             || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <= dicNumRightMountBlockers[HasModularMount]));
-                                }
-                            );
-                            // Only one side is allowed.
-                            if (blnAllowLeft != blnAllowRight)
-                                strForcedSide = blnAllowLeft ? "Left" : "Right";
-#if DEBUG
-                            // Should never happen, so break immediately if we have a debugger attached
-                            else if (!blnAllowLeft && !blnAllowRight)
-                                Utils.BreakIfDebug();
-#endif
-                        }
-
-                        if (!string.IsNullOrEmpty(strForcedSide))
-                            frmPickSide.ForceValue(strForcedSide);
-                        else
-                            frmPickSide.ShowDialog(Program.MainForm);
-
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickSide.DialogResult == DialogResult.Cancel)
-                        {
-                            _guiID = Guid.Empty;
-                            return;
-                        }
-
-                        _strLocation = frmPickSide.SelectedSide;
-                    }
+                    if (!GetValidLimbSlot(objXmlCyberware)) return;
                 }
             }
 
@@ -817,9 +756,6 @@ namespace Chummer.Backend.Equipment
                         _guiID = Guid.Empty;
                         return;
                     }
-
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                        _strExtra = ImprovementManager.SelectedValue;
 
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
@@ -849,11 +785,19 @@ namespace Chummer.Backend.Equipment
                             intCount = intCount > 0 ? 1 : 0;
                         }
 
-                        if ((intCount & 1) == 1 && !ImprovementManager.CreateImprovements(_objCharacter, objSource,
-                            _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Pair", PairBonus, Rating, DisplayNameShort(GlobalOptions.Language)))
+                        if ((intCount & 1) == 1)
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                ImprovementManager.ForcedValue = _strForced;
+                            else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                ImprovementManager.ForcedValue = _strExtra;
+                            if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
+                                _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Pair", PairBonus, Rating,
+                                DisplayNameShort(GlobalOptions.Language)))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
                         }
                     }
                 }
@@ -933,6 +877,130 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(_strPlugsIntoModularMount))
                 ChangeModularEquip(false);
+        }
+
+        public bool GetValidLimbSlot(XmlNode objXmlCyberware)
+        {
+            using (frmSelectSide frmPickSide = new frmSelectSide
+            {
+                Description =
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectSide"),
+                        DisplayNameShort(GlobalOptions.Language))
+            })
+            {
+                string strForcedSide = string.Empty;
+                if (_strForced == "Right" || _strForced == "Left")
+                    strForcedSide = _strForced;
+                if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
+                {
+                    XPathNavigator xpnCyberware = objXmlCyberware.CreateNavigator();
+                    ObservableCollection<Cyberware> lstCyberwareToCheck =
+                        Parent == null ? _objCharacter.Cyberware : Parent.Children;
+                    Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
+                    Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
+                    foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
+                    {
+                        if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts)) continue;
+                        Dictionary<string, int> dicToUse = null;
+                        if (objCheckCyberware.Location == "Left")
+                            dicToUse = dicNumLeftMountBlockers;
+                        else if (objCheckCyberware.Location == "Right")
+                            dicToUse = dicNumRightMountBlockers;
+                        else
+                            continue;
+                        foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
+                            StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (dicToUse.ContainsKey(strBlockMount))
+                                dicToUse[strBlockMount] += objCheckCyberware.LimbSlotCount;
+                            else
+                                dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
+                        }
+                    }
+
+                    bool blnAllowLeft = true;
+                    bool blnAllowRight = true;
+                    // Fairly expensive check that can (and therefore should) be parallelized
+                    Parallel.Invoke(
+                        () =>
+                        {
+                            blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
+                                               string.Empty, "Left")
+                                           && (string.IsNullOrEmpty(BlocksMounts)
+                                               || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
+                                                                                && x.Location == "Left"
+                                                                                && BlocksMounts
+                                                                                    .SplitNoAlloc(',',
+                                                                                        StringSplitOptions.RemoveEmptyEntries)
+                                                                                    .Contains(x.HasModularMount)
+                                                                                && (string.IsNullOrEmpty(
+                                                                                        MountToLimbType(x.HasModularMount))
+                                                                                    || _objCharacter.LimbCount(
+                                                                                        MountToLimbType(x.HasModularMount)) /
+                                                                                    2 <= (dicNumLeftMountBlockers.ContainsKey(
+                                                                                        x.HasModularMount)
+                                                                                        ? dicNumLeftMountBlockers[
+                                                                                              x.HasModularMount] + LimbSlotCount
+                                                                                        : LimbSlotCount))))
+                                           && (string.IsNullOrEmpty(HasModularMount)
+                                               || !dicNumLeftMountBlockers.ContainsKey(HasModularMount)
+                                               || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
+                                                    || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
+                                                    dicNumLeftMountBlockers[HasModularMount]));
+                        },
+                        () =>
+                        {
+                            blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
+                                                string.Empty, "Right")
+                                            && (string.IsNullOrEmpty(BlocksMounts)
+                                                || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
+                                                                                 && x.Location == "Right"
+                                                                                 && BlocksMounts
+                                                                                     .SplitNoAlloc(',',
+                                                                                         StringSplitOptions.RemoveEmptyEntries)
+                                                                                     .Contains(x.HasModularMount)
+                                                                                 && (string.IsNullOrEmpty(
+                                                                                         MountToLimbType(x.HasModularMount))
+                                                                                     || _objCharacter.LimbCount(
+                                                                                         MountToLimbType(x.HasModularMount)) /
+                                                                                     2 <= (dicNumRightMountBlockers.ContainsKey(
+                                                                                         x.HasModularMount)
+                                                                                         ? dicNumRightMountBlockers[
+                                                                                               x.HasModularMount] +
+                                                                                           LimbSlotCount
+                                                                                         : LimbSlotCount))))
+                                            && (string.IsNullOrEmpty(HasModularMount)
+                                                || !dicNumRightMountBlockers.ContainsKey(HasModularMount)
+                                                || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
+                                                     || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
+                                                     dicNumRightMountBlockers[HasModularMount]));
+                        }
+                    );
+                    // Only one side is allowed.
+                    if (blnAllowLeft != blnAllowRight)
+                        strForcedSide = blnAllowLeft ? "Left" : "Right";
+#if DEBUG
+                    // Should never happen, so break immediately if we have a debugger attached
+                    else if (!blnAllowLeft && !blnAllowRight)
+                        Utils.BreakIfDebug();
+#endif
+                }
+
+                if (!string.IsNullOrEmpty(strForcedSide))
+                    frmPickSide.ForceValue(strForcedSide);
+                else
+                    frmPickSide.ShowDialog(Program.MainForm);
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSide.DialogResult == DialogResult.Cancel)
+                {
+                    _guiID = Guid.Empty;
+                    return false;
+                }
+
+                _strLocation = frmPickSide.SelectedSide;
+                return true;
+            }
         }
 
         private void CreateChildren(XmlNode objParentNode, Grade objGrade, IList<Weapon> lstWeapons,
@@ -5118,12 +5186,6 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                if (_objCharacter.Created && objVehicle == null && _objParent == null)
-                {
-                    _objCharacter.DecreaseEssenceHole((int) (CalculatedESS * 100),
-                        SourceID == EssenceAntiHoleGUID);
-                }
-
                 lstCyberwareCollection?.Add(this);
 
                 foreach (Weapon objWeapon in lstWeapons)
@@ -5135,6 +5197,12 @@ namespace Chummer.Backend.Equipment
                 foreach (Vehicle objLoopVehicle in lstVehicles)
                 {
                     lstVehicleCollection?.Add(objLoopVehicle);
+                }
+
+                if (_objCharacter.Created && objVehicle == null && _objParent == null)
+                {
+                    _objCharacter.DecreaseEssenceHole((int)(CalculatedESS * 100),
+                        SourceID == EssenceAntiHoleGUID);
                 }
             }
 

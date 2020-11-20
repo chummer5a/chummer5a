@@ -214,21 +214,16 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode objXmlArmorGear in xmlUseGearList)
                         {
-                            intRating = 0;
-                            string strForceValue = string.Empty;
-                            objXmlArmorGear.TryGetInt32FieldQuickly("rating", ref intRating);
-                            objXmlArmorGear.TryGetStringFieldQuickly("select", ref strForceValue);
-
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlArmorGear.InnerText.CleanXPath() + "]");
                             Gear objGear = new Gear(_objCharacter);
-
-                            objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
-
-                            objGear.Capacity = "[0]";
-                            objGear.ArmorCapacity = "[0]";
-                            objGear.Cost = "0";
+                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstWeapons, !blnSkipSelectForms))
+                                continue;
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                objWeapon.ParentID = InternalId;
+                            }
+                            objGear.Parent = this;
                             objGear.ParentID = InternalId;
-                            _lstGear.Add(objGear);
+                            Gear.Add(objGear);
                         }
                     }
                 }

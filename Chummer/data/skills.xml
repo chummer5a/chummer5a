@@ -672,6 +672,7 @@
       <category>Physical Active</category>
       <default>False</default>
       <skillgroup>Athletics</skillgroup>
+      <requiresflymovement>True</requiresflymovement>
       <specs>
         <spec>Desert</spec>
         <spec>Distance</spec>
@@ -1175,6 +1176,7 @@
       <category>Physical Active</category>
       <default>True</default>
       <skillgroup>Athletics</skillgroup>
+      <requiresgroundmovement>True</requiresgroundmovement>
       <specs>
         <spec>Desert</spec>
         <spec>Distance</spec>
@@ -1285,6 +1287,7 @@
       <category>Physical Active</category>
       <default>True</default>
       <skillgroup>Athletics</skillgroup>
+      <requiresswimmovement>True</requiresswimmovement>
       <specs>
         <spec>Dash</spec>
         <spec>Long Distance</spec>

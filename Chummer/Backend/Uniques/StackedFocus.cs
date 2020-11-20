@@ -140,7 +140,7 @@ namespace Chummer
         {
             get
             {
-                int intCost = 0;
+                decimal decCost = 0;
                 foreach (Gear objFocus in Gear)
                 {
                     // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
@@ -152,84 +152,84 @@ namespace Chummer
                     intPosition = strFocusName.IndexOf(',');
                     if (intPosition > -1)
                         strFocusName = strFocusName.Substring(0, intPosition);
-                    int intExtraKarmaCost = 0;
+                    decimal decExtraKarmaCost = 0;
                     if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
                     {
-                        intExtraKarmaCost = -2;
+                        decExtraKarmaCost = -2;
                         strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
                     }
                     else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
                     {
-                        intExtraKarmaCost = -1;
+                        decExtraKarmaCost = -1;
                         strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
                     }
 
-                    int intKarmaMultiplier;
+                    decimal decKarmaMultiplier;
                     switch (strFocusName)
                     {
                         case "Qi Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaQiFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaQiFocus;
                             break;
                         case "Sustaining Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaSustainingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaSustainingFocus;
                             break;
                         case "Counterspelling Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaCounterspellingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaCounterspellingFocus;
                             break;
                         case "Banishing Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaBanishingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaBanishingFocus;
                             break;
                         case "Binding Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaBindingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaBindingFocus;
                             break;
                         case "Weapon Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaWeaponFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaWeaponFocus;
                             break;
                         case "Spellcasting Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaSpellcastingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaSpellcastingFocus;
                             break;
                         case "Summoning Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaSummoningFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaSummoningFocus;
                             break;
                         case "Alchemical Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaAlchemicalFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaAlchemicalFocus;
                             break;
                         case "Centering Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaCenteringFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaCenteringFocus;
                             break;
                         case "Masking Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaMaskingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaMaskingFocus;
                             break;
                         case "Disenchanting Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaDisenchantingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaDisenchantingFocus;
                             break;
                         case "Power Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaPowerFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaPowerFocus;
                             break;
                         case "Flexible Signature Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaFlexibleSignatureFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaFlexibleSignatureFocus;
                             break;
                         case "Ritual Spellcasting Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaRitualSpellcastingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaRitualSpellcastingFocus;
                             break;
                         case "Spell Shaping Focus":
-                            intKarmaMultiplier = _objCharacter.Options.KarmaSpellShapingFocus;
+                            decKarmaMultiplier = _objCharacter.Options.KarmaSpellShapingFocus;
                             break;
                         default:
-                            intKarmaMultiplier = 1;
+                            decKarmaMultiplier = 1;
                             break;
                     }
 
                     foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
                     {
                         if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
-                            intExtraKarmaCost += objLoopImprovement.Value;
+                            decExtraKarmaCost += objLoopImprovement.Value;
                         else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
-                            intKarmaMultiplier += objLoopImprovement.Value;
+                            decKarmaMultiplier += objLoopImprovement.Value;
                     }
-                    intCost += (objFocus.Rating * intKarmaMultiplier) + intExtraKarmaCost;
+                    decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
                 }
-                return intCost;
+                return decimal.ToInt32(decimal.Ceiling(decCost));
             }
         }
 

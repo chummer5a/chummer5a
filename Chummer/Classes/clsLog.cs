@@ -77,15 +77,9 @@ namespace Chummer
         //        public static void Enter
         //        (
         //            object[] info = null,
-        //#if LEGACY
-        //            string file = "LEGACY",
-        //            string method = "LEGACY",
-        //            int line = 0
-        //#else
         //            [CallerFilePath] string file = "",
         //            [CallerMemberName] string method = "",
         //            [CallerLineNumber] int line = 0
-        //#endif
         //        )
         //        {
         //            writeLog(info, file, method, line, "Entering ");
@@ -103,15 +97,9 @@ namespace Chummer
         public static void Entering
         (
             string info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
         )
         {
             writeLog(("Entering " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
@@ -129,15 +117,9 @@ namespace Chummer
         public static void Exit
         (
             string info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
         )
         {
             writeLog(("Exiting " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
@@ -155,15 +137,9 @@ namespace Chummer
         public static void Error
             (
             object[] info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
             )
         {
             writeLog(info?.Select(x => x.ToString()), file ?? String.Empty, method, line, LogLevel.Error);
@@ -181,15 +157,9 @@ namespace Chummer
         public static void Error
             (
             object info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
             )
         {
             writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Error);
@@ -207,15 +177,9 @@ namespace Chummer
         public static void Debug
         (
             object info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
         )
         {
             writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
@@ -233,15 +197,9 @@ namespace Chummer
         public static void Trace
         (
             string info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
         )
         {
             writeLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Trace);
@@ -261,15 +219,9 @@ namespace Chummer
         (
             Exception exception,
             object info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
         )
         {
             writeLog(EnumerableExtensions.ToEnumerable(exception.ToString(), info?.ToString() ?? string.Empty), file ?? string.Empty, method, line, LogLevel.Trace);
@@ -308,15 +260,9 @@ namespace Chummer
         public static void Warning
             (
             object[] info= null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
             )
         {
             writeLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Warn);
@@ -334,15 +280,9 @@ namespace Chummer
         public static void Warning
             (
             object info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
             )
         {
             writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Warn);
@@ -360,15 +300,9 @@ namespace Chummer
         public static void Info
             (
             object[] info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
             )
         {
             writeLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Info);
@@ -386,15 +320,9 @@ namespace Chummer
         public static void Info
             (
             string info = null,
-#if LEGACY
-            string file = "LEGACY",
-            string method = "LEGACY",
-            int line = 0
-#else
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
-#endif
             )
         {
             writeLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Info);

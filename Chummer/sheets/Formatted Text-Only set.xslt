@@ -213,7 +213,7 @@
                 <br/>
                 <br/>== <xsl:value-of select="$lang.Attributes"/> ==
                 <br/>
-              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory]">
+              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory] and attributes/attributecategory != ''">
                 <xsl:value-of select="$lang.CurrentForm"/>: <xsl:value-of select="attributes/attributecategory"/><br/>
               </xsl:if>
         <xsl:variable name="tBOD">
@@ -1345,11 +1345,6 @@
                 <xsl:sort select="."/>
                 <br/>&#160;&#160;&#160;+ <xsl:value-of select="."/>
             </xsl:for-each>
-        </xsl:for-each>
-        <xsl:for-each select="martialartmaneuvers/martialartmaneuver">
-            <xsl:sort select="name"/>
-            <br/>
-            <xsl:value-of select="name"/>
         </xsl:for-each>
     </xsl:template>
 

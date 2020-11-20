@@ -44,7 +44,7 @@ namespace Chummer
         private string DisplayDebug()
         {
             return string.Format(GlobalOptions.InvariantCultureInfo, "{0} ({1}, {2}) 🡐 {3}, {4}, {5}",
-                _objImprovementType, _intVal, _intRating, _objImprovementSource, _strSourceName, _strImprovedName);
+                _objImprovementType, _decVal, _intRating, _objImprovementSource, _strSourceName, _strImprovedName);
         }
 
         public enum ImprovementType
@@ -408,9 +408,9 @@ namespace Chummer
         private string _strSourceName = string.Empty;
         private int _intMin;
         private int _intMax;
-        private int _intAug;
+        private decimal _decAug;
         private int _intAugMax;
-        private int _intVal;
+        private decimal _decVal;
         private int _intRating = 1;
         private string _strExclude = string.Empty;
         private string _strCondition = string.Empty;
@@ -482,9 +482,9 @@ namespace Chummer
             objWriter.WriteElementString("sourcename", _strSourceName);
             objWriter.WriteElementString("min", _intMin.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("max", _intMax.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("aug", _intAug.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("aug", _decAug.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("augmax", _intAugMax.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("val", _intVal.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("val", _decVal.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("exclude", _strExclude);
             objWriter.WriteElementString("condition", _strCondition);
@@ -519,9 +519,9 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             objNode.TryGetInt32FieldQuickly("min", ref _intMin);
             objNode.TryGetInt32FieldQuickly("max", ref _intMax);
-            objNode.TryGetInt32FieldQuickly("aug", ref _intAug);
+            objNode.TryGetDecFieldQuickly("aug", ref _decAug);
             objNode.TryGetInt32FieldQuickly("augmax", ref _intAugMax);
-            objNode.TryGetInt32FieldQuickly("val", ref _intVal);
+            objNode.TryGetDecFieldQuickly("val", ref _decVal);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
             objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
@@ -535,9 +535,9 @@ namespace Chummer
                 _strCondition = _strExclude;
                 _strExclude = string.Empty;
             }
-            else if (_objImprovementType == ImprovementType.RestrictedGear && _intVal == 0)
+            else if (_objImprovementType == ImprovementType.RestrictedGear && _decVal == 0)
             {
-                _intVal = 24;
+                _decVal = 24;
             }
             objNode.TryGetBoolFieldQuickly("custom", ref _blnCustom);
             objNode.TryGetStringFieldQuickly("customname", ref _strCustomName);
@@ -698,14 +698,14 @@ namespace Chummer
         /// <summary>
         /// Augmented score modifier.
         /// </summary>
-        public int Augmented
+        public decimal Augmented
         {
-            get => _intAug;
+            get => _decAug;
             set
             {
-                if (_intAug != value)
+                if (_decAug != value)
                 {
-                    _intAug = value;
+                    _decAug = value;
                     if (Enabled)
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
                 }
@@ -715,14 +715,14 @@ namespace Chummer
         /// <summary>
         /// Value modifier.
         /// </summary>
-        public int Value
+        public decimal Value
         {
-            get => _intVal;
+            get => _decVal;
             set
             {
-                if (_intVal != value)
+                if (_decVal != value)
                 {
-                    _intVal = value;
+                    _decVal = value;
                     if (Enabled)
                         ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
                 }
@@ -2381,8 +2381,8 @@ namespace Chummer
         private static string s_StrSelectedValue = string.Empty;
         private static string s_StrForcedValue = string.Empty;
         private static readonly ConcurrentDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<TransactingImprovement>>(8, 10);
-        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
-        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, int> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, int>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, decimal> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, decimal>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
+        private static readonly ConcurrentDictionary<ImprovementDictionaryKey, decimal> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, decimal>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
 
         #region Properties
         /// <summary>
@@ -2418,17 +2418,17 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strImprovementName))
             {
                 ImprovementDictionaryKey objCheckKey = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
-                if (!s_DictionaryCachedValues.TryAdd(objCheckKey, int.MinValue))
-                    s_DictionaryCachedValues[objCheckKey] = int.MinValue;
-                if (!s_DictionaryCachedAugmentedValues.TryAdd(objCheckKey, int.MinValue))
-                    s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+                if (!s_DictionaryCachedValues.TryAdd(objCheckKey, decimal.MinValue))
+                    s_DictionaryCachedValues[objCheckKey] = decimal.MinValue;
+                if (!s_DictionaryCachedAugmentedValues.TryAdd(objCheckKey, decimal.MinValue))
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = decimal.MinValue;
             }
             else
             {
                 foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
-                    s_DictionaryCachedValues[objCheckKey] = int.MinValue;
+                    s_DictionaryCachedValues[objCheckKey] = decimal.MinValue;
                 foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType).ToList())
-                    s_DictionaryCachedAugmentedValues[objCheckKey] = int.MinValue;
+                    s_DictionaryCachedAugmentedValues[objCheckKey] = decimal.MinValue;
             }
         }
 
@@ -2437,12 +2437,12 @@ namespace Chummer
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.ToList())
             {
                 if (objKey.CharacterObject == objCharacter)
-                    s_DictionaryCachedValues.TryRemove(objKey, out int _);
+                    s_DictionaryCachedValues.TryRemove(objKey, out decimal _);
             }
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.ToList())
             {
                 if (objKey.CharacterObject == objCharacter)
-                    s_DictionaryCachedAugmentedValues.TryRemove(objKey, out int _);
+                    s_DictionaryCachedAugmentedValues.TryRemove(objKey, out decimal _);
             }
             s_DictionaryTransactions.TryRemove(objCharacter, out List<TransactingImprovement> _);
         }
@@ -2458,7 +2458,7 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
-        public static int ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+        public static decimal ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
             //Log.Enter("ValueOf");
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
@@ -2477,41 +2477,41 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strImprovedName))
                 {
                     ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
-                    if (s_DictionaryCachedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+                    if (s_DictionaryCachedValues.TryGetValue(objCacheKey, out decimal decCachedValue) && decCachedValue != decimal.MinValue)
                     {
-                        return intCachedValue;
+                        return decCachedValue;
                     }
                 }
                 else
                 {
                     bool blnDoRecalculate = true;
-                    int intCachedValue = 0;
-                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of int.MinValue
-                    foreach (KeyValuePair<ImprovementDictionaryKey, int> objLoopCachedEntry in s_DictionaryCachedValues)
+                    decimal decCachedValue = 0;
+                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
+                    foreach (KeyValuePair<ImprovementDictionaryKey, decimal> objLoopCachedEntry in s_DictionaryCachedValues)
                     {
                         ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
                         if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
                         {
                             blnDoRecalculate = false;
-                            int intLoopCachedValue = objLoopCachedEntry.Value;
-                            if (intLoopCachedValue == int.MinValue)
+                            decimal decLoopCachedValue = objLoopCachedEntry.Value;
+                            if (decLoopCachedValue == decimal.MinValue)
                             {
                                 blnDoRecalculate = true;
                                 break;
                             }
-                            intCachedValue += intLoopCachedValue;
+                            decCachedValue += decLoopCachedValue;
                         }
                     }
                     if (!blnDoRecalculate)
                     {
-                        return intCachedValue;
+                        return decCachedValue;
                     }
                 }
             }
 
             Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
-            Dictionary<string, List<Tuple<string, int>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, int>>>();
-            Dictionary<string, int> dicValues = new Dictionary<string, int>();
+            Dictionary<string, List<Tuple<string, decimal>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, decimal>>>();
+            Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (objImprovement.ImproveType != objImprovementType || !objImprovement.Enabled ||
@@ -2543,13 +2543,13 @@ namespace Chummer
                     }
 
                     // Add the values to the UniquePair List so we can check them later.
-                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                     {
-                        lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                        lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Value));
                     }
                     else
                     {
-                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>>(1) { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Value) });
                     }
 
                     if (!dicValues.ContainsKey(strLoopImprovedName))
@@ -2571,56 +2571,56 @@ namespace Chummer
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
                 HashSet<string> lstUniqueNames = objLoopValuePair.Value;
-                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                 {
                     if (lstUniqueNames.Contains("precedence0"))
                     {
                         // Retrieve only the highest precedence0 value.
                         // Run through the list of UniqueNames and pick out the highest value for each one.
-                        int intHighest = int.MinValue;
-                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        decimal decHighest = decimal.MinValue;
+                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == "precedence0")
-                                intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                                decHighest = Math.Max(decHighest, objLoopUniquePair.Item2);
                         }
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
-                            intHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
                         }
-                        intLoopValue = Math.Max(intLoopValue, intHighest);
+                        decLoopValue = Math.Max(decLoopValue, decHighest);
                     }
                     else if (lstUniqueNames.Contains("precedence1"))
                     {
                         // Retrieve all of the items that are precedence1 and nothing else.
-                        intLoopValue = Math.Max(intLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
+                        decLoopValue = Math.Max(decLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
                     }
                     else
                     {
                         // Run through the list of UniqueNames and pick out the highest value for each one.
                         foreach (string strUniqueName in lstUniqueNames)
                         {
-                            int intInnerLoopValue = int.MinValue;
-                            foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                            decimal decInnerLoopValue = decimal.MinValue;
+                            foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
                             {
                                 if (objLoopUniquePair.Item1 == strUniqueName)
-                                    intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                                    decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                             }
-                            if (intInnerLoopValue != int.MinValue)
-                                intLoopValue += intInnerLoopValue;
+                            if (decInnerLoopValue != decimal.MinValue)
+                                decLoopValue += decInnerLoopValue;
                         }
                     }
                     if (blnValuesDictionaryContains)
-                        dicValues[strLoopImprovedName] = intLoopValue;
+                        dicValues[strLoopImprovedName] = decLoopValue;
                     else
-                        dicValues.Add(strLoopImprovedName, intLoopValue);
+                        dicValues.Add(strLoopImprovedName, decLoopValue);
                 }
             }
 
             // Factor in Custom Improvements.
             dicUniqueNames.Clear();
             dicUniquePairs.Clear();
-            Dictionary<string, int> dicCustomValues = new Dictionary<string, int>();
+            Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (!objImprovement.Custom || !objImprovement.Enabled ||
@@ -2650,13 +2650,13 @@ namespace Chummer
                     }
 
                     // Add the values to the UniquePair List so we can check them later.
-                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                    if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                     {
-                        lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Value));
+                        lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Value));
                     }
                     else
                     {
-                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>>(1) { new Tuple<string, int>(strUniqueName, objImprovement.Value) });
+                        dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Value) });
                     }
 
                     if (!dicCustomValues.ContainsKey(strLoopImprovedName))
@@ -2678,29 +2678,29 @@ namespace Chummer
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
                 HashSet<string> lstUniqueNames = objLoopValuePair.Value;
-                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                 {
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     foreach (string strUniqueName in lstUniqueNames)
                     {
-                        int intInnerLoopValue = int.MinValue;
-                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        decimal decInnerLoopValue = decimal.MinValue;
+                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == strUniqueName)
-                                intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                                decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                         }
-                        if (intInnerLoopValue != int.MinValue)
-                            intLoopValue += intInnerLoopValue;
+                        if (decInnerLoopValue != decimal.MinValue)
+                            decLoopValue += decInnerLoopValue;
                     }
                     if (blnValuesDictionaryContains)
-                        dicCustomValues[strLoopImprovedName] = intLoopValue;
+                        dicCustomValues[strLoopImprovedName] = decLoopValue;
                     else
-                        dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                        dicCustomValues.Add(strLoopImprovedName, decLoopValue);
                 }
             }
 
-            foreach (KeyValuePair<string, int> objLoopValuePair in dicCustomValues)
+            foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
                 if (dicValues.ContainsKey(strLoopImprovedName))
@@ -2713,24 +2713,24 @@ namespace Chummer
                 }
             }
 
-            int intReturn = 0;
+            decimal decReturn = 0;
 
             //Log.Exit("ValueOf");
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && blnUnconditionalOnly)
             {
-                foreach (KeyValuePair<string, int> objLoopValuePair in dicValues)
+                foreach (KeyValuePair<string, decimal> objLoopValuePair in dicValues)
                 {
                     string strLoopImprovedName = objLoopValuePair.Key;
-                    int intLoopValue = objLoopValuePair.Value;
+                    decimal decLoopValue = objLoopValuePair.Value;
                     ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
-                    if (!s_DictionaryCachedValues.TryAdd(objLoopCacheKey, intLoopValue))
-                        s_DictionaryCachedValues[objLoopCacheKey] = intLoopValue;
-                    intReturn += intLoopValue;
+                    if (!s_DictionaryCachedValues.TryAdd(objLoopCacheKey, decLoopValue))
+                        s_DictionaryCachedValues[objLoopCacheKey] = decLoopValue;
+                    decReturn += decLoopValue;
                 }
             }
 
-            return intReturn;
+            return decReturn;
         }
 
         /// <summary>
@@ -2741,7 +2741,7 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
-        public static int AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
+        public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType, bool blnAddToRating = false, string strImprovedName = "", bool blnUnconditionalOnly = true)
         {
             //Log.Enter("AugmentedValueOf");
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
@@ -2760,41 +2760,41 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strImprovedName))
                 {
                     ImprovementDictionaryKey objCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strImprovedName);
-                    if (s_DictionaryCachedAugmentedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+                    if (s_DictionaryCachedAugmentedValues.TryGetValue(objCacheKey, out decimal decCachedValue) && decCachedValue != decimal.MinValue)
                     {
-                        return intCachedValue;
+                        return decCachedValue;
                     }
                 }
                 else
                 {
                     bool blnDoRecalculate = true;
-                    int intCachedValue = 0;
-                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of int.MinValue
-                    foreach (KeyValuePair<ImprovementDictionaryKey, int> objLoopCachedEntry in s_DictionaryCachedAugmentedValues)
+                    decimal decCachedValue = 0;
+                    // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
+                    foreach (KeyValuePair<ImprovementDictionaryKey, decimal> objLoopCachedEntry in s_DictionaryCachedAugmentedValues)
                     {
                         ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
                         if (objLoopKey.CharacterObject == objCharacter && objLoopKey.ImprovementType == objImprovementType)
                         {
                             blnDoRecalculate = false;
-                            int intLoopCachedValue = objLoopCachedEntry.Value;
-                            if (intLoopCachedValue == int.MinValue)
+                            decimal decLoopCachedValue = objLoopCachedEntry.Value;
+                            if (decLoopCachedValue == decimal.MinValue)
                             {
                                 blnDoRecalculate = true;
                                 break;
                             }
-                            intCachedValue += intLoopCachedValue;
+                            decCachedValue += decLoopCachedValue;
                         }
                     }
                     if (!blnDoRecalculate)
                     {
-                        return intCachedValue;
+                        return decCachedValue;
                     }
                 }
             }
 
             Dictionary<string, HashSet<string>> dicUniqueNames = new Dictionary<string, HashSet<string>>();
-            Dictionary<string, List<Tuple<string, int>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, int>>>();
-            Dictionary<string, int> dicValues = new Dictionary<string, int>();
+            Dictionary<string, List<Tuple<string, decimal>>> dicUniquePairs = new Dictionary<string, List<Tuple<string, decimal>>>();
+            Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (objImprovement.ImproveType == objImprovementType && objImprovement.Enabled && !objImprovement.Custom && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
@@ -2825,13 +2825,13 @@ namespace Chummer
                             }
 
                             // Add the values to the UniquePair List so we can check them later.
-                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                             {
-                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
+                                lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
                             }
                             else
                             {
-                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>>(1) { new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
                             }
 
                             if (!dicValues.ContainsKey(strLoopImprovedName))
@@ -2855,56 +2855,56 @@ namespace Chummer
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
                 HashSet<string> lstUniqueNames = objLoopValuePair.Value;
-                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                bool blnValuesDictionaryContains = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                 {
                     if (lstUniqueNames.Contains("precedence0"))
                     {
                         // Retrieve only the highest precedence0 value.
                         // Run through the list of UniqueNames and pick out the highest value for each one.
-                        int intHighest = int.MinValue;
-                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        decimal decHighest = decimal.MinValue;
+                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == "precedence0")
-                                intHighest = Math.Max(intHighest, objLoopUniquePair.Item2);
+                                decHighest = Math.Max(decHighest, objLoopUniquePair.Item2);
                         }
                         if (lstUniqueNames.Contains("precedence-1"))
                         {
-                            intHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
+                            decHighest += lstUniquePairs.Where(strValues => strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2);
                         }
-                        intLoopValue = Math.Max(intLoopValue, intHighest);
+                        decLoopValue = Math.Max(decLoopValue, decHighest);
                     }
                     else if (lstUniqueNames.Contains("precedence1"))
                     {
                         // Retrieve all of the items that are precedence1 and nothing else.
-                        intLoopValue = Math.Max(intLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
+                        decLoopValue = Math.Max(decLoopValue, lstUniquePairs.Where(strValues => strValues.Item1 == "precedence1" || strValues.Item1 == "precedence-1").Sum(strValues => strValues.Item2));
                     }
                     else
                     {
                         // Run through the list of UniqueNames and pick out the highest value for each one.
                         foreach (string strUniqueName in lstUniqueNames)
                         {
-                            int intInnerLoopValue = int.MinValue;
-                            foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                            decimal decInnerLoopValue = decimal.MinValue;
+                            foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
                             {
                                 if (objLoopUniquePair.Item1 == strUniqueName)
-                                    intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                                    decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                             }
-                            if (intInnerLoopValue != int.MinValue)
-                                intLoopValue += intInnerLoopValue;
+                            if (decInnerLoopValue != decimal.MinValue)
+                                decLoopValue += decInnerLoopValue;
                         }
                     }
                     if (blnValuesDictionaryContains)
-                        dicValues[strLoopImprovedName] = intLoopValue;
+                        dicValues[strLoopImprovedName] = decLoopValue;
                     else
-                        dicValues.Add(strLoopImprovedName, intLoopValue);
+                        dicValues.Add(strLoopImprovedName, decLoopValue);
                 }
             }
 
             // Factor in Custom Improvements.
             dicUniqueNames.Clear();
             dicUniquePairs.Clear();
-            Dictionary<string, int> dicCustomValues = new Dictionary<string, int>();
+            Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>();
             foreach (Improvement objImprovement in objCharacter.Improvements)
             {
                 if (objImprovement.Custom && objImprovement.Enabled && (!blnUnconditionalOnly || string.IsNullOrEmpty(objImprovement.Condition)))
@@ -2935,13 +2935,13 @@ namespace Chummer
                             }
 
                             // Add the values to the UniquePair List so we can check them later.
-                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                             {
-                                lstUniquePairs.Add(new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
+                                lstUniquePairs.Add(new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating));
                             }
                             else
                             {
-                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, int>>(1) { new Tuple<string, int>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
+                                dicUniquePairs.Add(strLoopImprovedName, new List<Tuple<string, decimal>>(1) { new Tuple<string, decimal>(strUniqueName, objImprovement.Augmented * objImprovement.Rating) });
                             }
 
                             if (!dicCustomValues.ContainsKey(strLoopImprovedName))
@@ -2965,29 +2965,29 @@ namespace Chummer
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
                 HashSet<string> lstUniqueNames = objLoopValuePair.Value;
-                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out int intLoopValue);
-                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, int>> lstUniquePairs))
+                bool blnValuesDictionaryContains = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                if (dicUniquePairs.TryGetValue(strLoopImprovedName, out List<Tuple<string, decimal>> lstUniquePairs))
                 {
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     foreach (string strUniqueName in lstUniqueNames)
                     {
-                        int intInnerLoopValue = int.MinValue;
-                        foreach (Tuple<string, int> objLoopUniquePair in lstUniquePairs)
+                        decimal decInnerLoopValue = decimal.MinValue;
+                        foreach (Tuple<string, decimal> objLoopUniquePair in lstUniquePairs)
                         {
                             if (objLoopUniquePair.Item1 == strUniqueName)
-                                intInnerLoopValue = Math.Max(intInnerLoopValue, objLoopUniquePair.Item2);
+                                decInnerLoopValue = Math.Max(decInnerLoopValue, objLoopUniquePair.Item2);
                         }
-                        if (intInnerLoopValue != int.MinValue)
-                            intLoopValue += intInnerLoopValue;
+                        if (decInnerLoopValue != decimal.MinValue)
+                            decLoopValue += decInnerLoopValue;
                     }
                     if (blnValuesDictionaryContains)
-                        dicCustomValues[strLoopImprovedName] = intLoopValue;
+                        dicCustomValues[strLoopImprovedName] = decLoopValue;
                     else
-                        dicCustomValues.Add(strLoopImprovedName, intLoopValue);
+                        dicCustomValues.Add(strLoopImprovedName, decLoopValue);
                 }
             }
 
-            foreach (KeyValuePair<string, int> objLoopValuePair in dicCustomValues)
+            foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
             {
                 string strLoopImprovedName = objLoopValuePair.Key;
                 if (dicValues.ContainsKey(strLoopImprovedName))
@@ -3000,24 +3000,24 @@ namespace Chummer
                 }
             }
 
-            int intReturn = 0;
+            decimal decReturn = 0;
 
             //Log.Exit("AugmentedValueOf");
             // If this is the default AugmentedValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && blnUnconditionalOnly)
             {
-                foreach (KeyValuePair<string, int> objLoopValuePair in dicValues)
+                foreach (KeyValuePair<string, decimal> objLoopValuePair in dicValues)
                 {
                     string strLoopImprovedName = objLoopValuePair.Key;
-                    int intLoopValue = objLoopValuePair.Value;
+                    decimal decLoopValue = objLoopValuePair.Value;
                     ImprovementDictionaryKey objLoopCacheKey = new ImprovementDictionaryKey(objCharacter, objImprovementType, strLoopImprovedName);
-                    if (!s_DictionaryCachedAugmentedValues.TryAdd(objLoopCacheKey, intLoopValue))
-                        s_DictionaryCachedAugmentedValues[objLoopCacheKey] = intLoopValue;
-                    intReturn += intLoopValue;
+                    if (!s_DictionaryCachedAugmentedValues.TryAdd(objLoopCacheKey, decLoopValue))
+                        s_DictionaryCachedAugmentedValues[objLoopCacheKey] = decLoopValue;
+                    decReturn += decLoopValue;
                 }
             }
 
-            return intReturn;
+            return decReturn;
         }
 
         /// <summary>
@@ -3052,7 +3052,7 @@ namespace Chummer
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn, out bool blnIsSuccess);
-                int intValue = blnIsSuccess ? Convert.ToInt32(Math.Floor((double)objProcess)) : 0;
+                int intValue = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
 
                 //Log.Exit("ValueToInt");
                 return intValue;
@@ -3060,6 +3060,48 @@ namespace Chummer
             //Log.Exit("ValueToInt");
             int.TryParse(strValue, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn);
             return intReturn;
+        }
+
+        /// <summary>
+        /// Convert a string to a decimal, converting "Rating" to a number where appropriate.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="strValue">String value to parse.</param>
+        /// <param name="intRating">Integer value to replace "Rating" with.</param>
+        public static decimal ValueToDec(Character objCharacter, string strValue, int intRating)
+        {
+            if (string.IsNullOrEmpty(strValue))
+                return 0;
+            //         Log.Enter("ValueToInt");
+            //         Log.Info("strValue = " + strValue);
+            //Log.Info("intRating = " + intRating.ToString());
+            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
+            }
+            if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
+            {
+                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                {
+                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                }
+
+                //Log.Info("strValue = " + strValue);
+                //Log.Info("strReturn = " + strReturn);
+
+                // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn, out bool blnIsSuccess);
+                decimal decValue = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+
+                //Log.Exit("ValueToInt");
+                return decValue;
+            }
+            //Log.Exit("ValueToInt");
+            decimal.TryParse(strValue, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn);
+            return decReturn;
         }
 
         public static string DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating, string strFriendlyName, ref bool blnIsKnowledgeSkill)
@@ -3747,10 +3789,10 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade += objImprovement.Value;
+                        objCharacter.InitiateGrade += decimal.ToInt32(objImprovement.Value);
                         break;
                     case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade += objImprovement.Value;
+                        objCharacter.SubmersionGrade += decimal.ToInt32(objImprovement.Value);
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -3809,7 +3851,7 @@ namespace Chummer
                         if (objMartialArt != null)
                         {
                             EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled).ToArray());
-                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
                                 EnableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique && x.SourceName == objTechnique.InternalId && x.Enabled).ToArray());
@@ -4018,10 +4060,10 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade -= objImprovement.Value;
+                        objCharacter.InitiateGrade -= decimal.ToInt32(objImprovement.Value);
                         break;
                     case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade -= objImprovement.Value;
+                        objCharacter.SubmersionGrade -= decimal.ToInt32(objImprovement.Value);
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -4080,7 +4122,7 @@ namespace Chummer
                         if (objMartialArt != null)
                         {
                             DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArt && x.SourceName == objMartialArt.InternalId && x.Enabled).ToArray());
-                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
+                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
                                 DisableImprovements(objCharacter, objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique && x.SourceName == objTechnique.InternalId && x.Enabled).ToArray());
@@ -4390,10 +4432,10 @@ namespace Chummer
                             objCharacter.Contacts.Remove(NewContact);
                         break;
                     case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade -= objImprovement.Value;
+                        objCharacter.InitiateGrade -= decimal.ToInt32(objImprovement.Value);
                         break;
                     case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade -= objImprovement.Value;
+                        objCharacter.SubmersionGrade -= decimal.ToInt32(objImprovement.Value);
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -4491,10 +4533,10 @@ namespace Chummer
                         if (objMartialArt != null)
                         {
                             decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
-                            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-                            foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
+                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
-                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId);
                             }
                             objCharacter.MartialArts.Remove(objMartialArt);
                         }
@@ -4574,11 +4616,11 @@ namespace Chummer
         /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
         /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
         /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single highest value in the pool will be applied to the character.</param>
-        /// <param name="intValue">Set a Value for the Improvement.</param>
+        /// <param name="decValue">Set a Value for the Improvement.</param>
         /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
         /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
         /// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
-        /// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+        /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
         /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
         /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
         /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
@@ -4586,7 +4628,7 @@ namespace Chummer
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
         public static void CreateImprovement(Character objCharacter, string strImprovedName, Improvement.ImprovementSource objImprovementSource,
             string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
-            int intValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, int intAugmented = 0,
+            decimal decValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, decimal decAugmented = 0,
             int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
         {
             Log.Debug("CreateImprovement");
@@ -4600,7 +4642,7 @@ namespace Chummer
                 "objImprovementType = " + objImprovementType);
             Log.Info( "strUnique = " + strUnique);
             Log.Info(
-                "intValue = " + intValue.ToString(GlobalOptions.InvariantCultureInfo));
+                "decValue = " + decValue.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
                 "intRating = " + intRating.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
@@ -4608,7 +4650,7 @@ namespace Chummer
             Log.Info(
                 "intMaximum = " + intMaximum.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
-                "intAugmented = " + intAugmented.ToString(GlobalOptions.InvariantCultureInfo));
+                "decAugmented = " + decAugmented.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info(
                 "intAugmentedMaximum = " + intAugmentedMaximum.ToString(GlobalOptions.InvariantCultureInfo));
             Log.Info( "strExclude = " + strExclude);
@@ -4627,11 +4669,11 @@ namespace Chummer
                     SourceName = strSourceName,
                     ImproveType = objImprovementType,
                     UniqueName = strUnique,
-                    Value = intValue,
+                    Value = decValue,
                     Rating = intRating,
                     Minimum = intMinimum,
                     Maximum = intMaximum,
-                    Augmented = intAugmented,
+                    Augmented = decAugmented,
                     AugmentedMaximum = intAugmentedMaximum,
                     Exclude = strExclude,
                     AddToRating = blnAddToRating,
@@ -4711,14 +4753,12 @@ namespace Chummer
             {
                 foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
                 {
-                    if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setLoopPropertiesChanged))
-                    {
+                    if (dicPropertiesChanged.TryGetValue(tuplePropertyChanged.Item1,
+                        out HashSet<string> setLoopPropertiesChanged))
                         setLoopPropertiesChanged.Add(tuplePropertyChanged.Item2);
-                    }
                     else
-                    {
-                        dicPropertiesChanged.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
-                    }
+                        dicPropertiesChanged.Add(tuplePropertyChanged.Item1,
+                            new HashSet<string> {tuplePropertyChanged.Item2});
                 }
             }
             // Fire each event once

@@ -702,7 +702,7 @@ namespace Chummer
         /// <summary>
         /// Locate a Martial Art Technique within the character's Martial Arts.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Advantage to find.</param>
+        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
         /// <param name="objFoundMartialArt">MartialArt the Technique was found in.</param>
         public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)

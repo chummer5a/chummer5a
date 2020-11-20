@@ -25,31 +25,36 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
-          font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-          font-size: 10pt;
-          margin: 0;
-          vertical-align: top;
-          }
-          html {
-          height: 100%;
-          margin: 0px;  /* this affects the margin on the html before sending to printer */
-          }
-          .tablestyle {
-          border-collapse: collapse;
-          border-color: #1c4a2d;
-          border-style: solid;
-          border-width: 0.5mm;
-          cellpadding: 2;
-          cellspacing: 0;
-          width: 100%;
-          }
-          .upper {
-          text-transform: uppercase;
-          }
-          th {
-          text-decoration: underline;
-          }
+            * {
+            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+            font-size: 10pt;
+            margin: 0;
+            vertical-align: top;
+            }
+            html {
+            height: 100%;
+            margin: 0px;  /* this affects the margin on the html before sending to printer */
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .tablestyle {
+            border-collapse: collapse;
+            border-color: #1c4a2d;
+            border-style: solid;
+            border-width: 0.5mm;
+            cellpadding: 2;
+            cellspacing: 0;
+            width: 100%;
+            }
+            .upper {
+            text-transform: uppercase;
+            }
+            th {
+            text-decoration: underline;
+            }
         </style>
         <style media="print">
            @page {

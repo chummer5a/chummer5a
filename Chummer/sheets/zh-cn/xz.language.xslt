@@ -150,7 +150,6 @@
   <xsl:variable name="lang.Magician"      select="'Magician'"/>
   <xsl:variable name="lang.Magic"      select="'魔法'"/>
   <xsl:variable name="lang.Mana"    select="'Mana'"/>
-  <xsl:variable name="lang.Maneuvers"    select="'战术'"/>
   <xsl:variable name="lang.Manipulation"  select="'操纵法术'"/>
   <xsl:variable name="lang.Manual"    select="'Manual'"/>
   <xsl:variable name="lang.Memory"    select="'记忆'"/>

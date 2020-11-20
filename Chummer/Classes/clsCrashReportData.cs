@@ -115,9 +115,7 @@ namespace Chummer
                 report.AppendFormat("Crash ID = {0:B}", Id);
                 report.AppendLine();
                 //We want to know what crash happened on
-#if LEGACY
-                report.Append("Legacy Build");
-#elif DEBUG
+#if DEBUG
                 report.Append("Debug Build");
 #else
                 report.Append("Release Build");

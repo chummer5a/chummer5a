@@ -290,8 +290,8 @@ namespace Chummer
                 if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
                     return false;
             }
-            // Find the selected Advantage object.
-            //TODO: Advantages should know what their parent is.
+            // Find the selected Technique object.
+            //TODO: Techniques should know what their parent is.
             _objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
 
             ImprovementManager.RemoveImprovements(_objCharacter,

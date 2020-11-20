@@ -1,4 +1,4 @@
-version: "5.212.{build}"
+version: 5.213.{build}
 branches:
   only:
   - master
@@ -6,7 +6,8 @@ skip_tags: true
 image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
-
+init:
+- ps: ''
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -17,68 +18,53 @@ hosts:
   api.nuget.org: 93.184.221.200
 environment:
   SolutionDir: C:\projects\chummer\
+  CHUMMER_OAUTH_TOKEN: 831e3c01126ca8da4661fe3d48a15c1c0bb2c5cb
   matrix:
   - project_name: Chummer
     api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
-init:
-
+install:
+- ps: ''
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+before_build:
 - ps: |
+    $token = $env:api_token
     $headers = @{
         "Authorization" = "Bearer $token"
         "Content-type" = "application/json"
     }
-
     $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
     $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
-
-    $doBuild = 1
     if ($history.builds.Count -eq 2)
     {
         $CurrentCommitID = $history.builds[0].commitId
         $PreviousCommitID = $history.builds[1].commitId
         Write-host "Current Commit ID: $CurrentCommitID"
         Write-host "Previous Commit ID: $PreviousCommitID"
-        if (($CurrentCommitID -eq $PreviousCommitID) -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
+        if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
         {
             Write-host "Current Commit ID is the same as previous, exiting build."
-            $doBuild = 0
+            Exit-AppVeyorBuild
         }
     }
-    # Exit-AppVeyorBuild needs to be the last command in the last closing if
-    if ($doBuild -eq 0)
-    {
-        Exit-AppVeyorBuild
-    }
-install:
-- ps: |
-    $token = $env:api_token
-    $accountName = 'chummer5a'
-    $projectSlug = 'chummer'
-    $headers = @{
-        "Authorization" = "Bearer $token"
-        "Content-type" = "application/json"
-    }
-
+    nuget restore
+    & 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
     Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
     Write-Host "Environment Variable: $env:OldMinorVersion"
     $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
-
-    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))', 
-    [System.Text.RegularExpressions.RegexOptions]::MultiLine)
-
+    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))',  [System.Text.RegularExpressions.RegexOptions]::MultiLine)
     $content = [IO.File]::ReadAllText($assemblyFile)
-
     $version = $null
-
     $match = $regex.Match($content)
     if($match.Success) {
     $version = $match.groups[3].value
     }
-
     $Major = $version.Split('.')[0]
     $Minor = $version.Split('.')[1]
-
-    If ($Minor -ne $($env:OldMinorVersion)) {
+    if ($Minor -ne $($env:OldMinorVersion))
+    {
       Write-Host "Current Minor: $Minor"
       Write-Host "Old Minor: $($env:OldMinorVersion))"
       Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
@@ -94,22 +80,13 @@ install:
     {
       Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
     }
-nuget:
-  account_feed: true
-  project_feed: true
-  disable_publish_on_pr: true
-before_build:
-- ps: 
-    nuget restore
-
-    & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
 build:
   project: Chummer.sln
   verbosity: normal
 after_build:
 - ps: 7z a Chummer.Nightly.zip C:\projects\chummer\Chummer\bin\release\* -r
-on_failure:
-- ps: Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
+test_script:
+- cmd: vstest.console /logger:Appveyor "%APPVEYOR_BUILD_FOLDER%\Chummer.Tests\bin\Release\Chummer.Tests.dll"
 artifacts:
 - path: Chummer.Nightly.zip
   name: Chummer
@@ -121,5 +98,11 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
-test_script:
-- cmd: vstest.console /logger:Appveyor "%APPVEYOR_BUILD_FOLDER%\Chummer.Tests\bin\Release\Chummer.Tests.dll"
+on_failure:
+- ps: |
+    Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
+    if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
+    {
+      Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+      ./send.ps1 failure https://discord.com/api/webhooks/776194471510671361/IZvRFV0SdIlwNO4b2PzSfvMmRtkc-bZeiDqoimm_CbaVwOCsyQmAOhH5WfL0fSgLZqRu
+    }

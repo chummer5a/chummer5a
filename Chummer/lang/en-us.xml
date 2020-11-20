@@ -1440,7 +1440,7 @@
     </string>
     <string>
       <key>About_Label_Disclaimer_Text</key>
-      <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from Mark James' Silk and Flag icon sets available at http://www.famfamfam.com/, as well as from the FatCow Icon Set available at https://www.fatcow.com/free-icons.</text>
+      <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from the FatCow Icon Set available at https://www.fatcow.com/free-icons.</text>
     </string>
     <!-- End Region -->
     <!-- Region Character Roster -->
@@ -1671,15 +1671,11 @@
       <text>A&amp;dd Gear</text>
     </string>
     <string>
-      <key>Menu_AddNexus</key>
-      <text>Add &amp;Nexus</text>
-    </string>
-    <string>
       <key>Menu_AddWeapon</key>
       <text>Add &amp;Weapon</text>
     </string>
     <string>
-      <key>Menu_AddAdvantage</key>
+      <key>Menu_AddTechnique</key>
       <text>&amp;Add Technique</text>
     </string>
     <string>
@@ -2060,7 +2056,7 @@
     </string>
     <string>
       <key>Message_DeleteMartialArt</key>
-      <text>Are you sure you want to delete this Martial Art/Maneuver?</text>
+      <text>Are you sure you want to delete this Martial Art?</text>
     </string>
     <string>
       <key>Message_DeleteMetamagic</key>
@@ -2093,10 +2089,6 @@
     <string>
       <key>Message_DeleteComplexForm</key>
       <text>Are you sure you want to delete this Complex Form?</text>
-    </string>
-    <string>
-      <key>Message_DeleteComplexFormOption</key>
-      <text>Are you sure you want to delete this Complex Form Option?</text>
     </string>
     <string>
       <key>Message_DeleteQuality</key>
@@ -2185,14 +2177,6 @@
     <string>
       <key>MessageTitle_CannotDeleteLimitModifier</key>
       <text>Cannot Delete</text>
-    </string>
-    <string>
-      <key>Message_MartialArtManeuverLimit</key>
-      <text>You may only have 2 Maneuvers per Martial Art Rating.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtManeuverLimit</key>
-      <text>Maximum Number of Maneuvers</text>
     </string>
     <string>
       <key>Message_SelectMartialArtTechnique</key>
@@ -2557,18 +2541,6 @@
     <string>
       <key>MessageTitle_SelectComplexForm</key>
       <text>Select Complex Form</text>
-    </string>
-    <string>
-      <key>Message_CannotAddComplexFormOption</key>
-      <text>This Complex Form does not allow Options.</text>
-    </string>
-    <string>
-      <key>Message_CannotAddComplexFormOptionLimit</key>
-      <text>This Complex Form cannot have more than {0} Options because of its Rating.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotAddComplexFormOption</key>
-      <text>Cannot Add Option</text>
     </string>
     <string>
       <key>Message_FocusMaximumForce</key>
@@ -2941,10 +2913,6 @@
     <string>
       <key>Message_ConfirmKarmaExpenseLowerLevel</key>
       <text>Are you sure you want to spend {1} Karma on removing a level from {0}?</text>
-    </string>
-    <string>
-      <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
-      <text>Are you sure you want to add this Complex Form Option for {0} Karma?</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpenseFocus</key>
@@ -3344,14 +3312,6 @@
       <text>Complex Form</text>
     </string>
     <string>
-      <key>String_ExpenseAddComplexFormOption</key>
-      <text>Added Complex Form Option</text>
-    </string>
-    <string>
-      <key>String_ExpenseComplexFormOption</key>
-      <text>Complex Form Option</text>
-    </string>
-    <string>
       <key>String_ExpenseLearnProgram</key>
       <text>Learned AI Program</text>
     </string>
@@ -3502,10 +3462,6 @@
     <string>
       <key>String_ExpenseLearnMartialArt</key>
       <text>Learned Martial Art</text>
-    </string>
-    <string>
-      <key>String_ExpenseLearnManeuver</key>
-      <text>Learned Maneuver</text>
     </string>
     <string>
       <key>String_ExpenseLearnMetamagic</key>
@@ -4481,16 +4437,8 @@
       <text>&amp;Add Martial Art</text>
     </string>
     <string>
-      <key>Button_AddManeuver</key>
-      <text>A&amp;dd Maneuver</text>
-    </string>
-    <string>
       <key>Node_SelectedMartialArts</key>
       <text>Martial Arts</text>
-    </string>
-    <string>
-      <key>Node_SelectedManeuvers</key>
-      <text>Selected Maneuvers</text>
     </string>
     <string>
       <key>Label_SelectMartialArt_IncludedTechniques</key>
@@ -7057,11 +7005,7 @@
     </string>
     <string>
       <key>Label_Options_BPMartialArt</key>
-      <text>Martial Art Rating</text>
-    </string>
-    <string>
-      <key>Label_Options_BPMartialArtManeuver</key>
-      <text>Martial Art Maneuver</text>
+      <text>Martial Art</text>
     </string>
     <string>
       <key>Label_Options_BPSkillGroup</key>
@@ -7093,11 +7037,7 @@
     </string>
     <string>
       <key>Label_Options_BPComplexForm</key>
-      <text>Complex Form Rating</text>
-    </string>
-    <string>
-      <key>Label_Options_BPComplexFormOption</key>
-      <text>Complex Form Option Rating</text>
+      <text>Complex Form</text>
     </string>
     <string>
       <key>Label_Options_NewSpecialization</key>
@@ -7184,24 +7124,12 @@
       <text>New Complex Form</text>
     </string>
     <string>
-      <key>Label_Options_ImproveComplexForm</key>
-      <text>Improve Complex Form by 1</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormOptions</key>
-      <text>Complex Form Options</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormSkillsoft</key>
-      <text>Complex Form Skillsoft</text>
-    </string>
-    <string>
       <key>Label_Options_Spirit</key>
       <text>Spirit</text>
     </string>
     <string>
-      <key>Label_Options_CombatManeuver</key>
-      <text>Combat Maneuver</text>
+      <key>Label_Options_MartialArtTechnique</key>
+      <text>Martial Art Technique</text>
     </string>
     <string>
       <key>Label_Options_Nuyen</key>
@@ -8301,12 +8229,6 @@
       <text>Select a Technique</text>
     </string>
     <!-- End Region-->
-    <!-- Region Select Martial Art Maneuver Window -->
-    <string>
-      <key>Title_SelectMartialArtManeuver</key>
-      <text>Select a Maneuver</text>
-    </string>
-    <!-- End Region-->
     <!-- Region Select Mentor Spirit Window -->
     <string>
       <key>Title_SelectMentorSpirit</key>
@@ -8373,32 +8295,6 @@
     <string>
       <key>Message_SelectGeneric_CareerOnlyRestriction</key>
       <text>You cannot select this {0} because your character has not been created yet.</text>
-    </string>
-    <!-- End Region-->
-    <!-- Region Select Nexus Window -->
-    <string>
-      <key>Title_SelectNexus</key>
-      <text>Build Nexus</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Nexus</key>
-      <text>Nexus</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_Processor</key>
-      <text>Processor:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Processor</key>
-      <text>Processor</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_PersonaLimit</key>
-      <text>Persona Limit:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_PersonaLimit</key>
-      <text>Persona Limit</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Number Window -->
@@ -8997,6 +8893,18 @@
     <string>
       <key>String_Generating_Sheet</key>
       <text>Generating Sheet...</text>
+    </string>
+    <string>
+      <key>MessageTitle_Viewer_FoundPDFPrinter</key>
+      <text>Use Print to PDF Instead?</text>
+    </string>
+    <string>
+      <key>Message_Viewer_FoundPDFPrinter</key>
+      <text>The printer "{0}" was found installed on this system. This printer can "print" character sheets directly into a PDF file in a way that is more advanced than the PDF saver that comes with Chummer5a.\n\nDo you wish to open a Print dialog to print with "{0}" instead?</text>
+    </string>
+    <string>
+      <key>Message_Viewer_PDFPrinterError</key>
+      <text>An error was encountered while attempting to open up the printing dialog for "{0}". Chummer5a will now proceed with its built-in PDF file saving system.</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Improvement Window -->

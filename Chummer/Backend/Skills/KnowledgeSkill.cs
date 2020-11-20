@@ -273,18 +273,18 @@ namespace Chummer.Backend.Skills
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
                                             (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
                                              objImprovement.Enabled)
-                    .Select(objImprovement => objImprovement.Value).Concat((-1).Yield()).Max();
+                    .Select(objImprovement => decimal.ToInt32(decimal.Ceiling(objImprovement.Value))).Concat((-1).Yield()).Max();
                 if (intMaxHardwire >= 0)
                 {
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
-                int intMaxSkillsoftRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess);
+                int intMaxSkillsoftRating = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess)));
                 if (intMaxSkillsoftRating <= 0) return _intCachedCyberwareRating = 0;
                 int intMax = CharacterObject.Improvements
                     .Where(objSkillsoftImprovement => objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
                                                       objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value).Concat(0.Yield()).Max();
+                    .Select(objSkillsoftImprovement => decimal.ToInt32(decimal.Ceiling(objSkillsoftImprovement.Value))).Concat(0.Yield()).Max();
 
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
 
@@ -353,26 +353,26 @@ namespace Chummer.Backend.Skills
             get
             {
                 int intTotalBaseRating = TotalBaseRating;
-                int intCost = intTotalBaseRating * (intTotalBaseRating + 1);
+                decimal decCost = intTotalBaseRating * (intTotalBaseRating + 1);
                 int intLower = Base + FreeKarma + RatingModifiers(Attribute);
-                intCost -= intLower * (intLower + 1);
+                decCost -= intLower * (intLower + 1);
 
-                intCost /= 2;
-                intCost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
+                decCost /= 2;
+                decCost *= CharacterObject.Options.KarmaImproveKnowledgeSkill;
                 // We have bought the first level with karma, too
-                if (intLower == 0 && intCost > 0)
-                    intCost += CharacterObject.Options.KarmaNewKnowledgeSkill - CharacterObject.Options.KarmaImproveKnowledgeSkill;
+                if (intLower == 0 && decCost > 0)
+                    decCost += CharacterObject.Options.KarmaNewKnowledgeSkill - CharacterObject.Options.KarmaImproveKnowledgeSkill;
 
                 decimal decMultiplier = 1.0m;
-                int intExtra = 0;
+                decimal decExtra = 0;
                 int intSpecCount = 0;
                 foreach (SkillSpecialization objSpec in Specializations)
                 {
                     if (!objSpec.Free && BuyWithKarma)
                         intSpecCount += 1;
                 }
-                int intSpecCost = CharacterObject.Options.KarmaKnowledgeSpecialization * intSpecCount;
-                int intExtraSpecCost = 0;
+                decimal decSpecCost = CharacterObject.Options.KarmaKnowledgeSpecialization * intSpecCount;
+                decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
@@ -382,32 +382,32 @@ namespace Chummer.Backend.Skills
                         if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
-                                intExtra += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                decExtra += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
                         else if (objLoopImprovement.ImprovedName == SkillCategory)
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCost)
-                                intExtra += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                decExtra += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                                intExtraSpecCost += objLoopImprovement.Value * intSpecCount;
+                                decExtraSpecCost += objLoopImprovement.Value * intSpecCount;
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
                                 decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier));
+                    decCost *= decMultiplier;
 
                 if (decSpecCostMultiplier != 1.0m)
-                    intSpecCost = decimal.ToInt32(decimal.Ceiling(intSpecCost * decSpecCostMultiplier));
-                intCost += intExtra;
-                intCost += intSpecCost + intExtraSpecCost; //Spec
+                    decSpecCost *= decSpecCostMultiplier;
+                decCost += decExtra;
+                decCost += decSpecCost + decExtraSpecCost; //Spec
 
-                return Math.Max(intCost, 0);
+                return Math.Max(decimal.ToInt32(decimal.Ceiling(decCost)), 0);
             }
         }
 
@@ -438,7 +438,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 decimal decMultiplier = 1.0m;
-                int intExtra = 0;
+                decimal decExtra = 0;
                 int intMinOverride = int.MaxValue;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
@@ -448,14 +448,14 @@ namespace Chummer.Backend.Skills
                         if (objLoopImprovement.ImprovedName == Name || string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
-                                intExtra += objLoopImprovement.Value;
+                                decExtra += objLoopImprovement.Value;
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
                         else if (objLoopImprovement.ImprovedName == SkillCategory)
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCost)
-                                intExtra += objLoopImprovement.Value;
+                                decExtra += objLoopImprovement.Value;
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
@@ -465,13 +465,14 @@ namespace Chummer.Backend.Skills
                             objLoopImprovement.ImprovedName == SkillCategory) && objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum)
                         {
-                            intMinOverride = Math.Min(intMinOverride, objLoopImprovement.Value);
+                            intMinOverride = Math.Min(intMinOverride, decimal.ToInt32(decimal.Ceiling(objLoopImprovement.Value)));
                         }
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intValue = decimal.ToInt32(decimal.Ceiling(intValue * decMultiplier));
-                intValue += intExtra;
+                    intValue = decimal.ToInt32(decimal.Ceiling(intValue * decMultiplier + decExtra));
+                else
+                    intValue += decimal.ToInt32(decimal.Ceiling(decExtra));
                 if (intMinOverride != int.MaxValue)
                 {
                     return Math.Max(intValue, intMinOverride);
@@ -490,7 +491,7 @@ namespace Chummer.Backend.Skills
             {
                 int intPointCost = BasePoints + (string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma ? 0 : 1);
 
-                int intExtra = 0;
+                decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                 {
@@ -500,22 +501,23 @@ namespace Chummer.Backend.Skills
                         if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillPointCost)
-                                intExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                decExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
                         else if (objLoopImprovement.ImprovedName == SkillCategory)
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryPointCost)
-                                intExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                decExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
                             else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategoryPointCostMultiplier)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intPointCost = decimal.ToInt32(decimal.Ceiling(intPointCost * decMultiplier));
-                intPointCost += intExtra;
+                    intPointCost = decimal.ToInt32(decimal.Ceiling(intPointCost * decMultiplier + decExtra));
+                else
+                    intPointCost += decimal.ToInt32(decimal.Ceiling(decExtra));
 
                 return Math.Max(intPointCost, 0);
             }

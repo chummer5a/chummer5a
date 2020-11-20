@@ -143,15 +143,19 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.FavoriteGuid);
             try
             {
-                Database.ExecuteSqlCommand(
-                    @"CREATE VIEW View_SINnerUserRights AS 
+                using (var dbContextTransaction = Database.BeginTransaction())
+                {
+                    Database.ExecuteSqlRaw(
+                        @"CREATE VIEW View_SINnerUserRights AS 
         SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
                          
 FROM            dbo.SINners INNER JOIN
                          dbo.SINnerMetaData ON dbo.SINners.SINnerMetaDataId = dbo.SINnerMetaData.Id INNER JOIN
                          dbo.SINnerVisibility ON dbo.SINnerMetaData.VisibilityId = dbo.SINnerVisibility.Id INNER JOIN
                          dbo.UserRights ON dbo.SINnerVisibility.Id = dbo.UserRights.SINnerVisibilityId"
-                );
+                    );
+                    dbContextTransaction.Commit();
+                }
             }
             catch (Exception e)
             {

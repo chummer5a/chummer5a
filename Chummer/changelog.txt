@@ -1,4 +1,8 @@
-Future Build 213
+Build 214
+Data Changes:
+- The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
+
+Build 213
 Application Fixes:
 - Added a limited dark mode. The mode can be set and previewed in the Options menu. For existing users, Chummer will default to Light mode; for new users, Chummer will default to automatically checking the setting in Windows for whether apps should run in Light or Dark mode.
 - Fixed an incorrect tag on submersion groups in career mode. 
@@ -81,6 +85,17 @@ Application Fixes:
 - Cyberlimbs now block modular connectors to the same limb that are not part of said cyberlimb.
 - MAG (Adept) no longer shows up in the list of attributes for a skill if the character does not have the house rule enabled that has Mystic Adepts have two Magic attributes instead of separate Mystic Adept PPs.
 - Removed vestigial code for supporting and handling Omae and Omae-managed files. The service has been offline for so long that there really isn't any use for this code anymore.
+- Removed vestigial code for supporting and handling mechanics that are specific to Shadowrun 4th Edition and were not or cannot be ported to Shadowrun 5th edition.
+- Improvement values and augmented values can now be decimals, not just integers. Non-integer improvements that would modify a value that must always be an integer will always get rounded up.
+- The total amount of power points that an adept of some kind has can now be a non-integer.
+- Unhardcoded the way Running, Swimming, and Flight require ground, swimming, and flying movement speeds in order to be enabled. Skills can now be set to require one or more of these movement speeds through the requiresgroundmovement, requiresswimmovement, and requiresflymovement nodes, and the Running, Swimming, and Flight skills have these nodes present in the base data set.
+- Improvements that can alter a character's walking, running, or sprinting speeds on ground, in water, and in the air can now be added through the Improvements tab after character creation. Adding/increasing walking, running, and/or sprinting speeds in the air are a way to unlock skills that require such a movement speed to get enabled, such as Flight.
+- Browsing certain pieces of armor or weapons to buy no longer fills the character's improvements list with orphaned improvements and phantom limit modifiers.
+- Cancelling out of a Mentor Spirit or Paragon selection form now properly aborts the attempt to add a Mentor Spirit or Paragon.
+- Added simple support for copy-pasting cyberlimbs in create mode to allow them to properly select the side. To do this, use the copy button, select the root-level cyberware node and paste it. Closes #4254
+- The "Show" and "Page Break" options in the Shadowrun 5 character sheet set now work properly.
+- Buying cyberware plugins in Career mode that do not affect essence when they are plugins no longer decreases the sizes of Essence holes when a character has one.
+- Added in support for recognizing (some) PDF printers, and if Chummer finds any when the "Save as PDF" button is clicked, it will display a message asking if it should use the PDF printer instead of the PDF-saving system that comes with Chummer.
 
 Data Changes:
 - Removed legacy nodes for Street Scum Priority values that caused incorrect nuyen amounts.
@@ -130,6 +145,9 @@ Data Changes:
 - The maximum number of times that Ambidextrous can be taken is now based on the number of arms the character has instead of fixed at 3. Characters who have multiple arms will still need to track for which arms they have taken Ambidextrous, as Chummer currently does not track Ambidextrous in an arm-specific fashion.
 - Removed unnecessary affectbase attribute from Wendigo and Bandersnatch qualities. Closes #4232
 - The AR Nails gear's page reference is now correct.
+- Fixed claw bioware incorrectly adding Reach to all unarmed attacks instead of the specific weapon. Closes #4158
+- Cyberlimb Optimization should now properly let a skill be selected for each iteration of the cyberware and therefore properly apply its dicepool bonus when paired up instead of it being inconsistent with both.
+- The costs and availabilities of Superior Reagents and Refined Superior Reagents are now correct.
 
 Changed/New Strings:
 - String_RestrictedItemsHidden
@@ -176,9 +194,11 @@ Changed/New Strings:
 - String_Light
 - String_Dark
 - String_Generating_Data
+- Menu_AddTechnique
+- Label_Options_MartialArtTechnique
 
 Deleted Strings:
-[All roughly 65 strings related to Omae]
+[All roughly 90 strings related to Omae, Nexuses, SR4e-specific Complex Form Mechanics, and Martial Arts Maneuvers]
 
 Build 212
 Application Changes:

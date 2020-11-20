@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-<xs:include schemaLocation="bonuses.xsd" /> 
+  <xs:include schemaLocation="bonuses.xsd" />
   <xs:element name="gear">
     <xs:complexType>
       <xs:sequence>
@@ -27,7 +27,7 @@
         <xs:element name="equipped" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="homenode" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
-        <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+        <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
         <xs:element name="weaponbonus" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -224,7 +224,7 @@
         <xs:element name="suite" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="essdiscount" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="forcegrade" minOccurs="1" maxOccurs="1" />
-        <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+        <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
         <xs:element name="allowgear" minOccurs="0" maxOccurs="1">
             <xs:complexType>
                 <xs:sequence>
@@ -641,25 +641,6 @@
           </xs:complexType>
         </xs:element>
         
-        <!-- Martial Arts Maneuvers -->
-        <xs:element name="martialartmaneuvers" minOccurs="1" maxOccurs="1">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="martialartmaneuver" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        
         <!-- Armor -->
         <xs:element name="armors" minOccurs="1" maxOccurs="1">
           <xs:complexType>
@@ -698,7 +679,7 @@
                                 <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                                 <xs:element name="equipped" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -766,7 +747,7 @@
                     <xs:element name="free" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
                     <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
@@ -944,7 +925,7 @@
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="paidwithkarma" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
                     <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
@@ -973,7 +954,7 @@
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="points" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="counttowardslimit" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element ref="bonus" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes" minOccurs="1" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="1" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>

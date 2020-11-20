@@ -24,17 +24,22 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
+            * {
             font-family: 'courier new', tahoma, 'trebuchet ms', arial;
             font-size: 10pt;
             margin: 0;
             vertical-align: top;
-          }
-          html {
+            }
+            html {
             height: 100%;
             margin: 0px;  /* this affects the margin on the html before sending to printer */
-          }
-          .tablestyle {
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .tablestyle {
             border-collapse: collapse;
             border-color: #1c4a2d;
             border-style: solid;
@@ -42,11 +47,11 @@
             cellpadding: 2;
             cellspacing: 0;
             width: 100%;
-          }
-          th {
+            }
+            th {
             text-align: center;
             text-decoration: underline;
-          }
+            }
         </style>
         <style media="print">
            @page {

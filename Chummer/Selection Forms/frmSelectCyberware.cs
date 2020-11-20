@@ -297,6 +297,7 @@ namespace Chummer
                     if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
                     {
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        decCostMultiplier *= _decCostMultiplier;
                         if (chkBlackMarketDiscount.Checked)
                             decCostMultiplier *= 0.9m;
                         while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))

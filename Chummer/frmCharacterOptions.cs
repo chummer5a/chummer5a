@@ -915,7 +915,6 @@ namespace Chummer
             nudKarmaImproveSkillGroup.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveSkillGroup));
             nudKarmaSpell.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpell));
             nudKarmaNewComplexForm.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewComplexForm));
-            nudKarmaImproveComplexForm.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveComplexForm));
             nudKarmaNewAIProgram.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewAIProgram));
             nudKarmaNewAIAdvancedProgram.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewAIAdvancedProgram));
             nudKarmaMetamagic.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMetamagic));
@@ -923,11 +922,9 @@ namespace Chummer
             nudKarmaEnemy.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaEnemy));
             nudKarmaCarryover.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCarryover));
             nudKarmaSpirit.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpirit));
-            nudKarmaManeuver.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaManeuver));
+            nudKarmaTechnique.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaTechnique));
             nudKarmaInitiation.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiation));
             nudKarmaInitiationFlat.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiationFlat));
-            nudKarmaComplexFormOption.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaComplexFormOption));
-            nudKarmaComplexFormSkillsoft.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaComplexFormSkillsoft));
             nudKarmaJoinGroup.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaJoinGroup));
             nudKarmaLeaveGroup.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaLeaveGroup));
             nudKarmaMysticAdeptPowerPoint.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMysticAdeptPowerPoint));
@@ -989,11 +986,9 @@ namespace Chummer
                 cmdSave.Enabled = cmdSaveAs.Enabled && !_objCharacterOptions.BuiltInOption;
                 if (e.PropertyName == nameof(CharacterOptions.EnabledCustomDataDirectoryPaths))
                     PopulateOptions();
-                if (cmdSave.Enabled)
+                if (cmdSave.Enabled && _objReferenceCharacterOptions.BuildMethod != _objCharacterOptions.BuildMethod && Program.MainForm.OpenCharacters.Any(x => !x.Created && x.Options == _objReferenceCharacterOptions))
                 {
-                    if (_objReferenceCharacterOptions.BuildMethod != _objCharacterOptions.BuildMethod
-                        && Program.MainForm.OpenCharacters.Any(x => !x.Created && x.Options == _objReferenceCharacterOptions))
-                        cmdSave.Enabled = false;
+                    cmdSave.Enabled = false;
                 }
             }
             else if (e.PropertyName == nameof(CharacterOptions.BuiltInOption))

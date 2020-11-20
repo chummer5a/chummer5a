@@ -85,6 +85,8 @@ namespace Chummer.Backend.Equipment
 
         private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
             bool blnDoEncumbranceRefresh = false;
             switch (e.Action)
             {
@@ -92,8 +94,29 @@ namespace Chummer.Backend.Equipment
                     foreach (ArmorMod objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        if (!blnDoEncumbranceRefresh && objNewItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
+                        if (objNewItem.Equipped)
+                        {
+                            if (!blnDoEncumbranceRefresh)
+                                blnDoEncumbranceRefresh = true;
+                            if (_objCharacter?.IsLoading == false)
+                            {
+                                // Needed in order to properly process named sources where
+                                // the tooltip was built before the object was added to the character
+                                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                {
+                                    if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
+                                    {
+                                        foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                        {
+                                            if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                                setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                            else
+                                                dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -123,10 +146,20 @@ namespace Chummer.Backend.Equipment
                     break;
             }
 
-            if (blnDoEncumbranceRefresh && Equipped)
+            if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
             {
-                _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
-                _objCharacter?.RefreshEncumbrance();
+                if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
+                    setChangedProperties.Add(nameof(Character.ArmorRating));
+                else
+                    dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.ArmorRating) });
+            }
+            foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+            {
+                objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+            }
+            if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
+            {
+                _objCharacter.RefreshEncumbrance();
             }
         }
 
@@ -403,7 +436,7 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlArmorGear in objXmlGearList)
                 {
                     Gear objGear = new Gear(_objCharacter);
-                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, blnSkipSelectForms))
+                    if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms))
                         continue;
                     foreach (Weapon objWeapon in lstChildWeapons)
                     {

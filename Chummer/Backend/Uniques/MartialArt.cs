@@ -17,9 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using NLog;
@@ -39,7 +42,6 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private int _intKarmaCost = 7;
-        private int _intRating = 1;
         private readonly TaggedObservableCollection<MartialArtTechnique> _lstTechniques = new TaggedObservableCollection<MartialArtTechnique>();
         private string _strNotes = string.Empty;
         private readonly Character _objCharacter;
@@ -50,6 +52,39 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _guiID = Guid.NewGuid();
+
+            _lstTechniques.CollectionChanged += TechniquesOnCollectionChanged;
+        }
+
+        private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add && _objCharacter?.IsLoading == false)
+            {
+                Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
+                    new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
+                foreach (MartialArtTechnique objNewItem in e.NewItems)
+                {
+                    // Needed in order to properly process named sources where
+                    // the tooltip was built before the object was added to the character
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        {
+                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                            {
+                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                else
+                                    dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                            }
+                        }
+                    }
+                }
+                foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
+                {
+                    objToProcess.OnMultiplePropertyChanged(dicChangedProperties[objToProcess].ToArray());
+                }
+            }
         }
 
         /// Create a Martial Art from an XmlNode.
@@ -124,7 +159,6 @@ namespace Chummer
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("cost", _intKarmaCost.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("isquality", _blnIsQuality.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteStartElement("martialarttechniques");
@@ -161,27 +195,34 @@ namespace Chummer
             }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
 
             using (XmlNodeList xmlLegacyTechniqueList = objNode.SelectNodes("martialartadvantages/martialartadvantage"))
+            {
                 if (xmlLegacyTechniqueList != null)
+                {
                     foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
                     {
                         MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
                         objTechnique.Load(nodTechnique);
                         _lstTechniques.Add(objTechnique);
                     }
+                }
+            }
 
             using (XmlNodeList xmlTechniqueList = objNode.SelectNodes("martialarttechniques/martialarttechnique"))
+            {
                 if (xmlTechniqueList != null)
+                {
                     foreach (XmlNode nodTechnique in xmlTechniqueList)
                     {
                         MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
                         objTechnique.Load(nodTechnique);
                         _lstTechniques.Add(objTechnique);
                     }
+                }
+            }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
@@ -204,12 +245,11 @@ namespace Chummer
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(objCulture));
             objWriter.WriteStartElement("martialarttechniques");
-            foreach (MartialArtTechnique objAdvantage in Techniques)
+            foreach (MartialArtTechnique objTechnique in Techniques)
             {
-                objAdvantage.Print(objWriter, strLanguageToPrint);
+                objTechnique.Print(objWriter, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
@@ -312,15 +352,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Rating.
-        /// </summary>
-        public int Rating
-        {
-            get => _intRating;
-            set => _intRating = value;
-        }
-
-        /// <summary>
         /// Karma Cost (usually 7).
         /// </summary>
         public int Cost
@@ -339,7 +370,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Selected Martial Arts Advantages.
+        /// Selected Martial Arts Techniques.
         /// </summary>
         public TaggedObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
         public TaggedObservableCollection<MartialArtTechnique> Children => Techniques;
@@ -432,7 +463,7 @@ namespace Chummer
 
                     if (objCharacter.Created)
                     {
-                        int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * objCharacter.Options.KarmaQuality;
+                        int intKarmaCost = objMartialArt.Cost;
                         if (intKarmaCost > objCharacter.Karma)
                         {
                             Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
@@ -472,11 +503,11 @@ namespace Chummer
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
                 InternalId);
-            // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-            foreach (MartialArtTechnique objAdvantage in Techniques)
+            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+            foreach (MartialArtTechnique objTechnique in Techniques)
             {
                 ImprovementManager.RemoveImprovements(_objCharacter,
-                    Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
+                    Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId);
             }
 
             _objCharacter.MartialArts.Remove(this);

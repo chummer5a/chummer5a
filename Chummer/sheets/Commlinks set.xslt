@@ -26,29 +26,34 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <style type="text/css">
-          * {
+            * {
             font-family: segoe condensed, tahoma, trebuchet ms, arial;
             font-size: 8pt;
             margin: 0;
             text-align: left;
-          }
-          html {
+            }
+            html {
             height: 100%;
             margin: 0px;  /* this affects the margin on the html before sending to printer */
-          }
-          .commlinkcategory {
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .commlinkcategory {
             font-family: segoe condensed, tahoma, trebuchet ms, arial;
             font-size: 8pt;
             text-align: right;
-          }
-          .tableborder {
+            }
+            .tableborder {
             border: solid 2px #1c4a2d;
             border-collapse: collapse;
             padding: 5px;
-          }
-          .block {
+            }
+            .block {
             page-break-inside: avoid;
-          }
+            }
         </style>
         <style media="print">
            @page {
@@ -67,37 +72,37 @@
       </head>
 
       <body>
-        <xsl:for-each select="gears/gear[iscommlink = 'True' or isnexus = 'True']">
+        <xsl:for-each select="gears/gear[iscommlink = 'True']">
           <xsl:call-template name="commlink">
             <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
-        <xsl:for-each select="armors/armor/gears/gear[iscommlink = 'True' or isnexus = 'True']">
+        <xsl:for-each select="armors/armor/gears/gear[iscommlink = 'True']">
           <xsl:call-template name="commlink">
             <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
-        <xsl:for-each select="cyberwares/cyberware/gears/gear[iscommlink = 'True' or isnexus = 'True']">
+        <xsl:for-each select="cyberwares/cyberware/gears/gear[iscommlink = 'True']">
           <xsl:call-template name="commlink">
             <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
-        <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True' or isnexus = 'True']">
+        <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']">
           <xsl:call-template name="commlink">
             <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
-        <xsl:for-each select="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True' or isnexus = 'True']">
+        <xsl:for-each select="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']">
           <xsl:call-template name="commlink">
             <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
         <xsl:choose>
-          <xsl:when test="gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
-          <xsl:when test="armors/armor/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
-          <xsl:when test="cyberwares/cyberware/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
-          <xsl:when test="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
-          <xsl:when test="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True' or isnexus = 'True']"/>
+          <xsl:when test="gears/gear[iscommlink = 'True']"/>
+          <xsl:when test="armors/armor/gears/gear[iscommlink = 'True']"/>
+          <xsl:when test="cyberwares/cyberware/gears/gear[iscommlink = 'True']"/>
+          <xsl:when test="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']"/>
+          <xsl:when test="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']"/>
           <xsl:otherwise>
             <xsl:call-template name="nothing2show">
               <xsl:with-param name="namethesheet" select="$lang.Nothing2Show4Devices"/>
@@ -155,14 +160,7 @@
             <strong><xsl:value-of select="$lang.Attack"/></strong>
           </td>
           <td width="25%" class="tableborder">
-            <xsl:choose>
-              <xsl:when test="isnexus = 'True'">
-                <xsl:value-of select="children/gear[contains(name, 'Response')]/name"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="attack"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="attack"/>
           </td>
           <td width="50%" colspan="2" rowspan="6" valign="top" class="tableborder">
             <xsl:choose>
@@ -219,14 +217,7 @@
             <strong><xsl:value-of select="$lang.Sleaze"/></strong>
           </td>
           <td width="25%" class="tableborder">
-            <xsl:choose>
-              <xsl:when test="isnexus = 'True'">
-                <xsl:value-of select="children/gear[contains(name, 'System')]/name"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="sleaze"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="sleaze"/>
           </td>
         </tr>
         <tr>
@@ -234,14 +225,7 @@
             <strong><xsl:value-of select="$lang.DataProcessing"/></strong>
           </td>
           <td width="25%" class="tableborder">
-            <xsl:choose>
-              <xsl:when test="isnexus = 'True'">
-                <xsl:value-of select="children/gear[contains(name, 'Signal')]/name"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="dataprocessing"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="dataprocessing"/>
           </td>
         </tr>
         <tr>
@@ -249,36 +233,17 @@
             <strong><xsl:value-of select="$lang.Firewall"/></strong>
           </td>
           <td width="25%" class="tableborder">
-            <xsl:choose>
-              <xsl:when test="isnexus = 'True'">
-                <xsl:value-of select="children/gear[contains(name, 'Firewall')]/name"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="firewall"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="firewall"/>
           </td>
         </tr>
         <tr>
           <td width="25%" class="tableborder">
-            <xsl:choose>
-              <xsl:when test="isnexus = 'True'">
-                <strong><xsl:value-of select="concat($lang.Persona,' ',$lang.Limit)"/></strong>
-              </xsl:when>
-              <xsl:otherwise>
-                <strong><xsl:value-of select="concat($lang.Processor,' ',$lang.Limit)"/></strong>
-              </xsl:otherwise>
-            </xsl:choose>
+            <strong>
+              <xsl:value-of select="concat($lang.Processor,' ',$lang.Limit)"/>
+            </strong>
           </td>
           <td width="25%" class="tableborder">
-            <xsl:choose>
-              <xsl:when test="isnexus = 'True'">
-                <xsl:value-of select="children/gear[contains(name, 'Persona Limit')]/name"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="processorlimit"/>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="processorlimit"/>
           </td>
         </tr>
         <tr>

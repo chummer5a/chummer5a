@@ -648,6 +648,7 @@ namespace Chummer
                             nameof(Character.PhysicalCMLabelText));
                         lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
                         lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
+                        lblCMStun.Visible = true; // Needed for some weird reason
                         lblCMStun.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
                         lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
@@ -2016,7 +2017,7 @@ namespace Chummer
                     }
                 }
 
-                // Refresh Martial Art Advantages.
+                // Refresh Martial Art Techniques.
                 foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                 {
                     XmlNode objMartialArtNode = objMartialArt.GetNode();
@@ -2575,7 +2576,16 @@ namespace Chummer
                         }
                         else
                         {
-                            CharacterObject.Cyberware.Add(objCyberware);
+                            if (objCyberware.LimbSlot != string.Empty &&
+                                !objCyberware.GetValidLimbSlot(objCyberware.GetNode(GlobalOptions.Language)))
+                            {
+                                objCyberware.DeleteCyberware();
+                                return;
+                            }
+                            else
+                            {
+                                CharacterObject.Cyberware.Add(objCyberware);
+                            }
                         }
 
                         AddChildVehicles(objCyberware.InternalId);
@@ -3346,45 +3356,6 @@ namespace Chummer
                 }
             }
         }
-
-#if LEGACY
-        private void cmdAddManeuver_Click(object sender, EventArgs e)
-        {
-            // Characters may only have 2 Maneuvers per Martial Art Rating.
-            int intTotalRating = 0;
-            foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
-                intTotalRating += objMartialArt.Rating * 2;
-
-            if (CharacterObject.MartialArtManeuvers.Count >= intTotalRating && !CharacterObject.IgnoreRules)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_MartialArtManeuverLimit"), LanguageManager.GetString("MessageTitle_MartialArtManeuverLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            frmSelectMartialArtManeuver frmPickMartialArtManeuver = new frmSelectMartialArtManeuver(CharacterObject);
-            frmPickMartialArtManeuver.ShowDialog(this);
-
-            if (frmPickMartialArtManeuver.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Open the Martial Arts XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
-
-            XmlNode objXmlManeuver = objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + frmPickMartialArtManeuver.SelectedManeuver + "\"]");
-
-            MartialArtManeuver objManeuver = new MartialArtManeuver(CharacterObject);
-            objManeuver.Create(objXmlManeuver);
-            CharacterObject.MartialArtManeuvers.Add(objManeuver);
-
-            TreeNode objSelectedNode = treMartialArts.FindNode(objManeuver.InternalId);
-            if (objSelectedNode != null)
-                treMartialArts.SelectedNode = objSelectedNode;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-#endif
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
         {
@@ -4884,7 +4855,7 @@ namespace Chummer
             tsVehicleAddUnderbarrelWeapon_Click(sender, e);
         }
 
-        private void tsMartialArtsAddAdvantage_Click(object sender, EventArgs e)
+        private void tsMartialArtsAddTechnique_Click(object sender, EventArgs e)
         {
             // Select the Martial Arts node if we're currently on a child.
             while (treMartialArts.SelectedNode != null && treMartialArts.SelectedNode.Level > 1)
@@ -4921,13 +4892,13 @@ namespace Chummer
                     xmlTechnique = CharacterObject.LoadData("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
                 }
 
-                    // Create the Improvements for the Advantage if there are any.
-                    MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-                    objAdvantage.Create(xmlTechnique);
-                    if (objAdvantage.InternalId.IsEmptyGuid())
+                    // Create the Improvements for the Technique if there are any.
+                    MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
+                    objTechnique.Create(xmlTechnique);
+                    if (objTechnique.InternalId.IsEmptyGuid())
                         return;
 
-                    objMartialArt.Techniques.Add(objAdvantage);
+                    objMartialArt.Techniques.Add(objTechnique);
 
                     IsCharacterUpdateRequested = true;
 
@@ -5265,63 +5236,6 @@ namespace Chummer
             }
         }
 
-#if LEGACY
-        private void tsGearAddNexus_Click(object sender, EventArgs e)
-        {
-            treGear.SelectedNode = treGear.Nodes[0];
-
-            frmSelectNexus frmPickNexus = new frmSelectNexus(CharacterObject);
-            frmPickNexus.ShowDialog(this);
-
-            if (frmPickNexus.DialogResult == DialogResult.Cancel)
-                return;
-
-            Gear objGear = frmPickNexus.SelectedNexus;
-
-            CharacterObject.Gear.Add(objGear);
-
-            IsCharacterUpdateRequested = true;
-        }
-
-        private void tsVehicleAddNexus_Click(object sender, EventArgs e)
-        {
-            while (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level > 1)
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Attempt to locate the selected Vehicle.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectGearVehicle"), LanguageManager.GetString("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            frmSelectNexus frmPickNexus = new frmSelectNexus(CharacterObject);
-            frmPickNexus.ShowDialog(this);
-
-            if (frmPickNexus.DialogResult == DialogResult.Cancel)
-                return;
-
-            Gear objGear = frmPickNexus.SelectedNexus;
-
-            treVehicles.SelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsVehicleGear));
-            treVehicles.SelectedNode.Expand();
-
-            objSelectedVehicle.Gear.Add(objGear);
-            objGear.Parent = objSelectedVehicle;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-#endif
-
         private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
             cmdAddArmor_Click(sender, e);
@@ -5437,18 +5351,6 @@ namespace Chummer
                 WriteNotes(objNotes, treMartialArts.SelectedNode);
             }
         }
-
-#if LEGACY
-        private void tsMartialArtManeuverNotes_Click(object sender, EventArgs e)
-        {
-            if (treMartialArts.SelectedNode == null)
-                return;
-            if (treMartialArts.SelectedNode?.Tag is IHasNotes objNotes)
-            {
-                WriteNotes(objNotes, treMartialArts.SelectedNode);
-            }
-        }
-#endif
 
         private void tsSpellNotes_Click(object sender, EventArgs e)
         {
@@ -8960,7 +8862,7 @@ namespace Chummer
             {
                 if (!objMartialArt.IsQuality)
                 {
-                    int intLoopCost = objMartialArt.Rating * objMartialArt.Cost * CharacterObjectOptions.KarmaQuality;
+                    int intLoopCost = objMartialArt.Cost;
                     intMartialArtsPoints += intLoopCost;
 
                     if (blnDoUIUpdate)
@@ -8978,7 +8880,7 @@ namespace Chummer
                                 continue;
                             }
 
-                            intLoopCost = 5 * CharacterObjectOptions.KarmaQuality;
+                            intLoopCost = CharacterObjectOptions.KarmaTechnique;
                             intMartialArtsPoints += intLoopCost;
 
                             strMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace).Append(objTechnique.CurrentDisplayName)
@@ -8987,7 +8889,7 @@ namespace Chummer
                     }
                     else
                         // Add in the Techniques
-                        intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0) * 5 * CharacterObjectOptions.KarmaQuality;
+                        intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0) * CharacterObjectOptions.KarmaTechnique;
                 }
             }
             intKarmaPointsRemain -= intMartialArtsPoints;
@@ -9054,18 +8956,18 @@ namespace Chummer
                     intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectOptions.KarmaSpell;
                 }
 
-                int limitMod = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit) +
-                               ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells);
-                int limitModTouchOnly = 0;
+                int intLimitMod = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
+                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells));
+                int intLimitModTouchOnly = 0;
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
                 {
                     int intAttValue = CharacterObject.GetAttribute(imp.ImprovedName).TotalValue;
                     if (imp.UniqueName.Contains("half"))
                         intAttValue = (intAttValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
-                        limitModTouchOnly += intAttValue;
+                        intLimitModTouchOnly += intAttValue;
                     else
-                        limitMod += intAttValue;
+                        intLimitMod += intAttValue;
                 }
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill && i.Enabled))
                 {
@@ -9076,9 +8978,9 @@ namespace Chummer
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
-                        limitModTouchOnly += intSkillValue;
+                        intLimitModTouchOnly += intSkillValue;
                     else
-                        limitMod += intSkillValue;
+                        intLimitMod += intSkillValue;
                     //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
                     foreach (SkillSpecialization spec in skill.Specializations)
                     {
@@ -9100,12 +9002,12 @@ namespace Chummer
                     intAttributePointsUsed = intPPBought * CharacterObject.Options.KarmaMysticAdeptPowerPoint;
                     intKarmaPointsRemain -= intAttributePointsUsed;
                 }
-                spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - limitModTouchOnly);
+                spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
 
-                int spellPoints  = limit + limitMod;
-                int ritualPoints = limit + limitMod;
-                int prepPoints   = limit + limitMod;
-                for (int i = limit + limitMod; i > 0; i--)
+                int spellPoints  = limit + intLimitMod;
+                int ritualPoints = limit + intLimitMod;
+                int prepPoints   = limit + intLimitMod;
+                for (int i = limit + intLimitMod; i > 0; i--)
                 {
                     if (spells > 0)
                     {
@@ -9147,31 +9049,31 @@ namespace Chummer
                     lblSpellsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
                     lblBuildRitualsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
                     lblBuildPrepsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
-                    if (limit + limitMod > 0)
+                    if (limit + intLimitMod > 0)
                     {
                         if (lblBuildPrepsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints, strOf, limit + limitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints, strOf, limit + intLimitMod);
                             if (intPrepPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
                             lblBuildPrepsBP.Text = strText;
                         }
                         if (lblSpellsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", spellPoints, strOf, limit + limitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", spellPoints, strOf, limit + intLimitMod);
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
                             lblSpellsBP.Text = strText;
                         }
                         if (lblBuildRitualsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", ritualPoints, strOf, limit + limitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", ritualPoints, strOf, limit + intLimitMod);
                             if (intRitualPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
                             lblBuildRitualsBP.Text = strText;
                         }
                     }
-                    else if (limitMod == 0)
+                    else if (intLimitMod == 0)
                     {
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
@@ -9186,7 +9088,7 @@ namespace Chummer
                     else
                     {
                         //TODO: Make the costs render better, currently looks wrong as hell
-                        strFormat = new StringBuilder("{0}").Append(strOf).Append(limitMod.ToString(GlobalOptions.CultureInfo)).Append(strColon)
+                        strFormat = new StringBuilder("{0}").Append(strOf).Append(intLimitMod.ToString(GlobalOptions.CultureInfo)).Append(strColon)
                             .Append(strSpace).Append("{1}").Append(strSpace).Append(strPoints).ToString();
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
@@ -9311,15 +9213,6 @@ namespace Chummer
             }
             intKarmaPointsRemain -= intKarmaCost;
             intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
-
-#if LEGACY
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Martial Art Maneuvers.
-            // Each Maneuver costs KarmaManeuver.
-            int intManeuverPointsUsed = CharacterObject.MartialArtManeuvers.Count * CharacterObjectOptions.KarmaManeuver;
-            intFreestyleBP += intManeuverPointsUsed;
-            intKarmaPointsRemain -= intManeuverPointsUsed;
-#endif
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Initiation.
@@ -12258,7 +12151,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
-                int intRestrictedAllowed = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount);
+                int intRestrictedAllowed = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount));
                 int intRestrictedCount = 0;
                 string strAvailItems = string.Empty;
                 string strExConItems = string.Empty;
@@ -12455,7 +12348,7 @@ namespace Chummer
                 // Check if the character has more than the permitted amount of native languages.
                 int intLanguages = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
 
-                int intLanguageLimit = 1 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit);
+                int intLanguageLimit = 1 + decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit));
 
                 if (intLanguages != intLanguageLimit)
                 {
@@ -13036,7 +12929,6 @@ namespace Chummer
             if (xmlSelectMartialArt != null)
             {
                 string strForcedValue = xmlSelectMartialArt.Attributes?["select"]?.InnerText ?? string.Empty;
-                int intRating = Convert.ToInt32(xmlSelectMartialArt.Attributes?["rating"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
 
                 using (frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(CharacterObject)
                 {
@@ -13054,7 +12946,6 @@ namespace Chummer
 
                         MartialArt objMartialArt = new MartialArt(CharacterObject);
                         objMartialArt.Create(objXmlArt);
-                        objMartialArt.Rating = intRating;
                         CharacterObject.MartialArts.Add(objMartialArt);
                     }
                 }
@@ -13074,16 +12965,15 @@ namespace Chummer
                     if (objXmlArtNode != null)
                     {
                         objArt.Create(objXmlArtNode);
-                        objArt.Rating = Convert.ToInt32(objXmlArt["rating"].InnerText, GlobalOptions.InvariantCultureInfo);
                         CharacterObject.MartialArts.Add(objArt);
 
-                        // Check for Advantages.
-                        foreach (XmlNode objXmlAdvantage in objXmlArt.SelectNodes("techniques/technique"))
+                        // Check for Techniques.
+                        foreach (XmlNode xmlTechnique in objXmlArt.SelectNodes("techniques/technique"))
                         {
-                            MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
-                            XmlNode objXmlAdvantageNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlAdvantage["name"].InnerText + "\"]");
-                            objAdvantage.Create(objXmlAdvantageNode);
-                            objArt.Techniques.Add(objAdvantage);
+                            MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
+                            XmlNode xmlTechniqueNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + xmlTechnique["name"].InnerText + "\"]");
+                            objTechnique.Create(xmlTechniqueNode);
+                            objArt.Techniques.Add(objTechnique);
                         }
                     }
                 }

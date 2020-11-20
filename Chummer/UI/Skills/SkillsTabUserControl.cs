@@ -373,7 +373,20 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = y.Rating.CompareTo(x.Rating);
                         if (intReturn == 0)
+                        {
+                            if (y.Specializations.Count > 0 || x.Specializations.Count > 0)
+                            {
+                                if (x.Specializations.Count == 0)
+                                    return 1;
+                                if (y.Specializations.Count == 0)
+                                    return -1;
+                                if (y.Specializations.Count > x.Specializations.Count)
+                                    return 1;
+                                if (y.Specializations.Count < x.Specializations.Count)
+                                    return -1;
+                            }
                             intReturn = SkillsSection.CompareSkills(x, y);
+                        }
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortDicepool"),
@@ -381,7 +394,27 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = y.Pool.CompareTo(x.Pool);
                         if (intReturn == 0)
+                        {
+                            if (y.Specializations.Count > 0 || x.Specializations.Count > 0)
+                            {
+                                if (x.Specializations.Count == 0)
+                                    return 1;
+                                if (y.Specializations.Count == 0)
+                                    return -1;
+                                int intLeftMax = x.Specializations.Max(z => z.SpecializationBonus);
+                                int intRightMax = y.Specializations.Max(z => z.SpecializationBonus);
+                                if (intRightMax > intLeftMax)
+                                    return 1;
+                                if (intRightMax < intLeftMax)
+                                    return -1;
+                                if (y.Specializations.Count > x.Specializations.Count)
+                                    return 1;
+                                if (y.Specializations.Count < x.Specializations.Count)
+                                    return -1;
+                            }
                             intReturn = SkillsSection.CompareSkills(x, y);
+                        }
+
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortLowerDicepool"),
@@ -389,7 +422,26 @@ namespace Chummer.UI.Skills
                     {
                         int intReturn = x.Pool.CompareTo(y.Pool);
                         if (intReturn == 0)
+                        {
+                            if (y.Specializations.Count > 0 || x.Specializations.Count > 0)
+                            {
+                                if (x.Specializations.Count == 0)
+                                    return -1;
+                                if (y.Specializations.Count == 0)
+                                    return 1;
+                                int intLeftMax = x.Specializations.Max(z => z.SpecializationBonus);
+                                int intRightMax = y.Specializations.Max(z => z.SpecializationBonus);
+                                if (intRightMax > intLeftMax)
+                                    return -1;
+                                if (intRightMax < intLeftMax)
+                                    return 1;
+                                if (y.Specializations.Count > x.Specializations.Count)
+                                    return -1;
+                                if (y.Specializations.Count < x.Specializations.Count)
+                                    return 1;
+                            }
                             intReturn = SkillsSection.CompareSkills(x, y);
+                        }
                         return intReturn;
                     })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeValue"),
