@@ -1146,7 +1146,7 @@ namespace Chummer
                 }
             }
 
-            string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
+            string strOldSelected = cboDefaultGameplayOption.SelectedValue?.ToString();
 
             cboDefaultGameplayOption.BeginUpdate();
             cboDefaultGameplayOption.DataSource = null;
