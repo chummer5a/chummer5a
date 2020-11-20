@@ -863,22 +863,22 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="strSource">Book code and page number to open.</param>
-        /// <param name="strPDFParamaters">PDF parameters to use. If empty, use GlobalOptions.PDFParameters.</param>
-        /// <param name="strPDFAppPath">PDF parameters to use. If empty, use GlobalOptions.PDFAppPath.</param>
-        public static void OpenPDF(string strSource, string strPDFParamaters = "", string strPDFAppPath = "")
+        /// <param name="strPdfParamaters">PDF parameters to use. If empty, use GlobalOptions.PDFParameters.</param>
+        /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PDFAppPath.</param>
+        public static void OpenPDF(string strSource, string strPdfParamaters = "", string strPdfAppPath = "")
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
-            if (string.IsNullOrEmpty(strPDFParamaters))
-                strPDFParamaters = GlobalOptions.PDFParameters;
+            if (string.IsNullOrEmpty(strPdfParamaters))
+                strPdfParamaters = GlobalOptions.PDFParameters;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPDFParamaters))
+            if (string.IsNullOrWhiteSpace(strPdfParamaters))
                 return;
 
-            if (string.IsNullOrEmpty(strPDFAppPath))
-                strPDFAppPath = GlobalOptions.PDFAppPath;
+            if (string.IsNullOrEmpty(strPdfAppPath))
+                strPdfAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPDFAppPath) || !File.Exists(strPDFAppPath))
+            if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -935,13 +935,13 @@ namespace Chummer
                 return;
             intPage += objBookInfo.Offset;
 
-            string strParams = strPDFParamaters
+            string strParams = strPdfParamaters
                 .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
                 .Replace("{localpath}", uriPath.LocalPath)
                 .Replace("{absolutepath}", uriPath.AbsolutePath);
             ProcessStartInfo objProgress = new ProcessStartInfo
             {
-                FileName = strPDFAppPath,
+                FileName = strPdfAppPath,
                 Arguments = strParams
             };
             Process.Start(objProgress);
