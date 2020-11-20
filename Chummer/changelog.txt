@@ -1,4 +1,7 @@
 Build 214
+Application Fixes:
+- Characters with MAG atttributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
+
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
 

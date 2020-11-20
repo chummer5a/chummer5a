@@ -1334,27 +1334,28 @@ namespace Chummer
                             .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
                         chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
                             .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
-                            if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
+                        if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                         {
                             CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
                         }
-
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept &&
-                            !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                         {
-                            CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                            }
                         }
                     }
                     else
                     {
-                        if (!CharacterObject.RESEnabled) tabCharacterTabs.TabPages.Remove(tabInitiation);
-                        if (CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
+                        if (!CharacterObject.RESEnabled)
+                            tabCharacterTabs.TabPages.Remove(tabInitiation);
+
+                        if (CharacterObject.AttributeSection.Attributes != null)
                         {
                             CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAG);
-                        }
-
-                        if (CharacterObject.AttributeSection.Attributes.Any(att => att.Abbrev == "MAGAdept"))
-                        {
                             CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
                         }
                     }
@@ -1476,20 +1477,28 @@ namespace Chummer
                         if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                             tabCharacterTabs.TabPages.Insert(3, tabMagician);
                         cmdAddSpell.Enabled = true;
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept &&
-                            !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                         {
-                            CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                            }
                         }
                     }
                     else
                     {
                         tabCharacterTabs.TabPages.Remove(tabMagician);
                         cmdAddSpell.Enabled = false;
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute &&
-                            CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute)
                         {
-                            CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                            }
                         }
                     }
 
@@ -1505,10 +1514,14 @@ namespace Chummer
                         if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                             tabCharacterTabs.TabPages.Insert(3, tabMagician);
                         cmdAddSpell.Enabled = true;
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept &&
-                            !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                         {
-                            CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                            }
                         }
 
                         if (!tabCharacterTabs.TabPages.Contains(tabAdept))
@@ -1520,13 +1533,18 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabMagician);
                             cmdAddSpell.Enabled = false;
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute &&
-                                CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute)
                             {
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
+                                CharacterAttrib objMAGAdept =
+                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                                if (CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                                {
+                                    CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                                }
                             }
                         }
-                        else cmdAddSpell.Enabled = true;
+                        else
+                            cmdAddSpell.Enabled = true;
 
                         tabCharacterTabs.TabPages.Remove(tabAdept);
                     }
