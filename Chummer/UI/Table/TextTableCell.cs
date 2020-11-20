@@ -33,7 +33,7 @@ namespace Chummer.UI.Table
             contentField = _lblText;
             Controls.Add(_lblText);
             _lblText.AutoSize = true;
-            _lblText.Click += CommonFunctions.OpenPDFFromControl;
+            _lblText.Click += CommonFunctions.OpenPdfFromControl;
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)

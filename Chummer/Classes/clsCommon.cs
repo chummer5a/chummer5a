@@ -854,10 +854,10 @@ namespace Chummer
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
         /// <param name="e">EventArgs used when this method was called.</param>
-        public static void OpenPDFFromControl(object sender, EventArgs e)
+        public static void OpenPdfFromControl(object sender, EventArgs e)
         {
             if (sender is Control objControl)
-                OpenPDF(objControl.Text);
+                OpenPdf(objControl.Text);
         }
         /// <summary>
         /// Opens a PDF file using the provided source information.
@@ -865,7 +865,7 @@ namespace Chummer
         /// <param name="strSource">Book code and page number to open.</param>
         /// <param name="strPdfParamaters">PDF parameters to use. If empty, use GlobalOptions.PDFParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PDFAppPath.</param>
-        public static void OpenPDF(string strSource, string strPdfParamaters = "", string strPdfAppPath = "")
+        public static void OpenPdf(string strSource, string strPdfParamaters = "", string strPdfAppPath = "")
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -953,7 +953,7 @@ namespace Chummer
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
         /// <returns></returns>
-        public static string GetTextFromPDF(string strSource, string strText)
+        public static string GetTextFromPdf(string strSource, string strText)
         {
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
@@ -1002,7 +1002,7 @@ namespace Chummer
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
             PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
-            List<string> lstStringFromPDF = new List<string>(30);
+            List<string> lstStringFromPdf = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
@@ -1015,23 +1015,23 @@ namespace Chummer
                 if (intMaxPagesToRead-- == 0)
                     break;
 
-                int intProcessedStrings = lstStringFromPDF.Count;
+                int intProcessedStrings = lstStringFromPdf.Count;
                 // each page should have its own text extraction strategy for it to work properly
                 // this way we don't need to check for previous page appearing in the current page
                 // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
                 string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy());
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPDF.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
+                lstStringFromPdf.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
 
-                for (int i = intProcessedStrings; i < lstStringFromPDF.Count; i++)
+                for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
                 {
                     // failsafe for languages that don't have case distinction (chinese, japanese, etc)
                     // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
                     if (intExtraAllCapsInfo > 10)
                         break;
 
-                    string strCurrentLine = lstStringFromPDF[i];
+                    string strCurrentLine = lstStringFromPdf[i];
                     // we still haven't found anything
                     if (intTitleIndex == -1)
                     {
@@ -1043,11 +1043,11 @@ namespace Chummer
                             if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                             {
                                 // now just add more lines to it until it is enough
-                                while (strCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPDF.Count)
+                                while (strCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
                                 {
                                     intTitleExtraLines++;
                                     // add the content plus a space
-                                    strCurrentLine += ' ' + lstStringFromPDF[i + intTitleExtraLines];
+                                    strCurrentLine += ' ' + lstStringFromPdf[i + intTitleExtraLines];
                                 }
                             }
                             else
@@ -1087,8 +1087,8 @@ namespace Chummer
                                 // if we had to concatenate stuff lets fix the list of strings before continuing
                                 if (intTitleExtraLines > 0)
                                 {
-                                    lstStringFromPDF[i] = strCurrentLine;
-                                    lstStringFromPDF.RemoveRange(i + 1, intTitleExtraLines);
+                                    lstStringFromPdf[i] = strCurrentLine;
+                                    lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
                                 }
                             }
                         }
@@ -1102,7 +1102,7 @@ namespace Chummer
                             // do we also include lines with just numbers as probably page numbers??
                             if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") || strCurrentLine.Contains("<<"))
                             {
-                                lstStringFromPDF.RemoveAt(i);
+                                lstStringFromPdf.RemoveAt(i);
                                 // rewind and go again
                                 i--;
                                 continue;
@@ -1137,7 +1137,7 @@ namespace Chummer
             // we have our textblock, lets format it and be done with it
             if (intBlockEndIndex != -1)
             {
-                string[] strArray = lstStringFromPDF.ToArray();
+                string[] strArray = lstStringFromPdf.ToArray();
                 // if it is a "paragraph title" just concatenate everything
                 if (blnTitleWithColon)
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
@@ -1167,6 +1167,7 @@ namespace Chummer
                         }
                     }
                 }
+                sbdResultContent.CleanBadLigatures();
                 return sbdResultContent.ToString();
             }
             return string.Empty;

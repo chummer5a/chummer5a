@@ -512,7 +512,7 @@ namespace Chummer.UI.Skills
 
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalOptions.Language));
+            CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalOptions.Language));
         }
 
         [UsedImplicitly]

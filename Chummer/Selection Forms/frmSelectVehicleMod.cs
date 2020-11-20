@@ -784,7 +784,7 @@ namespace Chummer
 
         private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDFFromControl(sender, e);
+            CommonFunctions.OpenPdfFromControl(sender, e);
         }
         #endregion
     }

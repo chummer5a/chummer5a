@@ -21,7 +21,7 @@ using System.Collections.Generic;
   using System.Collections.Specialized;
 using System.Windows.Forms;
 using System.Xml;
- ﻿using Chummer.Backend.Equipment;
+  using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -724,7 +724,7 @@ namespace Chummer
 
         private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDFFromControl(sender, e);
+            CommonFunctions.OpenPdfFromControl(sender, e);
         }
         #endregion
     }

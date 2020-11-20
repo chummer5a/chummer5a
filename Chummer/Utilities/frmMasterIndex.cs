@@ -227,7 +227,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDFFromControl(sender, e);
+            CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         private void RefreshList(object sender, EventArgs e)
@@ -296,7 +296,7 @@ namespace Chummer
                     lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
                     if (!_dicCachedNotes.TryGetValue(objEntry, out string strNotes))
                     {
-                        strNotes = CommonFunctions.GetTextFromPDF(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
+                        strNotes = CommonFunctions.GetTextFromPdf(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
 
                         if (string.IsNullOrEmpty(strNotes)
                             && GlobalOptions.Language != GlobalOptions.DefaultLanguage
@@ -304,7 +304,7 @@ namespace Chummer
                                 || objEntry.Source.Page != objEntry.DisplaySource.Page))
                         {
                             // don't check again it is not translated
-                            strNotes = CommonFunctions.GetTextFromPDF(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                            strNotes = CommonFunctions.GetTextFromPdf(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
                         }
 
                         _dicCachedNotes.TryAdd(objEntry, strNotes);
