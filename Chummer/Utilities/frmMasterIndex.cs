@@ -56,6 +56,7 @@ namespace Chummer
             "powers.xml",
             "programs.xml",
             "qualities.xml",
+            "references.xml",
             "skills.xml",
             "spells.xml",
             "spiritpowers.xml",
