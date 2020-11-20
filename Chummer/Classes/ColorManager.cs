@@ -227,7 +227,11 @@ namespace Chummer
             float fltSaturationHSL = fltLightness > 0 && fltLightness < 1
                 ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
                 : 0;
-            return FromHSLA(fltHue, fltSaturationHSL, 1.0f - fltLightness, objColor.A);
+            float fltNewLightness = 1.0f - fltLightness;
+            // Lighten dark colors a little (so that minimum lightness instead gets 0.1)
+            if (fltNewLightness < 0.5f)
+                fltNewLightness += 0.2f * (0.5f - fltNewLightness);
+            return FromHSLA(fltHue, fltSaturationHSL, fltNewLightness, objColor.A);
         }
 
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
