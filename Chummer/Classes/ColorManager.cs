@@ -122,7 +122,7 @@ namespace Chummer
             }
         }
 
-        private static readonly ConcurrentDictionary<Color, Color> _dicDarkModeColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
@@ -131,10 +131,10 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values inverted.</returns>
         private static Color GenerateDarkModeColor(Color objColor)
         {
-            if (!_dicDarkModeColors.TryGetValue(objColor, out Color objDarkModeColor))
+            if (!s_DicDarkModeColors.TryGetValue(objColor, out Color objDarkModeColor))
             {
                 objDarkModeColor = GetDarkModeVersion(objColor);
-                _dicDarkModeColors.TryAdd(objColor, objDarkModeColor);
+                s_DicDarkModeColors.TryAdd(objColor, objDarkModeColor);
             }
             return objDarkModeColor;
         }
@@ -234,7 +234,7 @@ namespace Chummer
             fltNewLightness += 0.1f * fltSaturationHsl * fltSaturationHsl;
             fltNewLightness = Math.Min(fltNewLightness, 1.0f);
             fltSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
-            return FromHSLA(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+            return FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
         }
 
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
@@ -426,9 +426,9 @@ namespace Chummer
         /// <param name="fltSaturation">Saturation value, between 0.0 and 1.0.</param>
         /// <param name="fltLightness">Lightness value, between 0.0 and 1.0.</param>
         /// <returns>A Color with RGB values corresponding to the HSL inputs.</returns>
-        public static Color FromHSL(float fltHue, float fltSaturation, float fltLightness)
+        public static Color FromHsl(float fltHue, float fltSaturation, float fltLightness)
         {
-            return FromHSLA(fltHue, fltSaturation, fltLightness, byte.MaxValue);
+            return FromHsla(fltHue, fltSaturation, fltLightness, byte.MaxValue);
         }
 
         /// <summary>
@@ -439,7 +439,7 @@ namespace Chummer
         /// <param name="fltLightness">Lightness value, between 0.0 and 1.0.</param>
         /// <param name="chrAlpha">Alpha value.</param>
         /// <returns>A Color with RGBA values corresponding to the HSLA inputs.</returns>
-        public static Color FromHSLA(float fltHue, float fltSaturation, float fltLightness, byte chrAlpha)
+        public static Color FromHsla(float fltHue, float fltSaturation, float fltLightness, byte chrAlpha)
         {
             if (fltHue > 1.0f || fltHue < 0)
                 throw new ArgumentOutOfRangeException(nameof(fltHue));
@@ -501,9 +501,9 @@ namespace Chummer
         /// <param name="fltSaturation">Saturation value, between 0.0 and 1.0.</param>
         /// <param name="fltValue">Value/Brightness value, between 0.0 and 1.0.</param>
         /// <returns>A Color with RGB values corresponding to the HSV inputs.</returns>
-        public static Color FromHSV(float fltHue, float fltSaturation, float fltValue)
+        public static Color FromHsv(float fltHue, float fltSaturation, float fltValue)
         {
-            return FromHSVA(fltHue, fltSaturation, fltValue, byte.MaxValue);
+            return FromHsva(fltHue, fltSaturation, fltValue, byte.MaxValue);
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace Chummer
         /// <param name="fltValue">Value/Brightness value, between 0.0 and 1.0.</param>
         /// <param name="chrAlpha">Alpha value.</param>
         /// <returns>A Color with RGBA values corresponding to the HSVA inputs.</returns>
-        public static Color FromHSVA(float fltHue, float fltSaturation, float fltValue, byte chrAlpha)
+        public static Color FromHsva(float fltHue, float fltSaturation, float fltValue, byte chrAlpha)
         {
             if (fltHue > 1.0f || fltHue < 0)
                 throw new ArgumentOutOfRangeException(nameof(fltHue));
