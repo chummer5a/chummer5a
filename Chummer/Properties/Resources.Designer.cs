@@ -3084,6 +3084,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap locate {
+            get {
+                object obj = ResourceManager.GetObject("locate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap medal_gold_add {
             get {
                 object obj = ResourceManager.GetObject("medal_gold_add", resourceCulture);

@@ -37,27 +37,25 @@ namespace CrashHandler
             this.timerRefreshTextFile = new System.Windows.Forms.Timer(this.components);
             this.tabUserStory = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.lblIntroText = new System.Windows.Forms.Label();
-            this.llblContents = new System.Windows.Forms.LinkLabel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtIdSelectable = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.lblDesc = new System.Windows.Forms.Label();
+            this.txtIdSelectable = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.llblContents = new System.Windows.Forms.LinkLabel();
+            this.lblIntroText = new System.Windows.Forms.Label();
             this.yabUserStory = new System.Windows.Forms.TabPage();
             this.txtUserStory = new System.Windows.Forms.TextBox();
             this.cmdSubmitIssue = new System.Windows.Forms.Button();
             this.lblDescriptionWarning = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flpLeftSide = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.statusStrip1.SuspendLayout();
             this.tabUserStory.SuspendLayout();
             this.tabGeneral.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.yabUserStory.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.flpLeftSide.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -78,12 +76,13 @@ namespace CrashHandler
             // 
             // btnNo
             // 
-            this.btnNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnNo.AutoSize = true;
-            this.btnNo.Location = new System.Drawing.Point(215, 3);
+            this.btnNo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnNo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnNo.Location = new System.Drawing.Point(3, 3);
             this.btnNo.MaximumSize = new System.Drawing.Size(100, 35);
             this.btnNo.Name = "btnNo";
-            this.btnNo.Size = new System.Drawing.Size(100, 35);
+            this.btnNo.Size = new System.Drawing.Size(99, 35);
             this.btnNo.TabIndex = 4;
             this.btnNo.Text = "Close";
             this.btnNo.UseVisualStyleBackColor = true;
@@ -91,10 +90,10 @@ namespace CrashHandler
             // 
             // btnSend
             // 
-            this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSend.AutoSize = true;
+            this.btnSend.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnSend.Enabled = false;
-            this.btnSend.Location = new System.Drawing.Point(3, 3);
+            this.btnSend.Location = new System.Drawing.Point(214, 3);
             this.btnSend.MaximumSize = new System.Drawing.Size(100, 35);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(100, 35);
@@ -117,7 +116,7 @@ namespace CrashHandler
             this.tabUserStory.Location = new System.Drawing.Point(3, 3);
             this.tabUserStory.Name = "tabUserStory";
             this.tabUserStory.SelectedIndex = 0;
-            this.tabUserStory.Size = new System.Drawing.Size(600, 351);
+            this.tabUserStory.Size = new System.Drawing.Size(600, 346);
             this.tabUserStory.TabIndex = 11;
             // 
             // tabGeneral
@@ -127,25 +126,73 @@ namespace CrashHandler
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(592, 325);
+            this.tabGeneral.Size = new System.Drawing.Size(592, 320);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             // 
-            // lblIntroText
+            // tableLayoutPanel2
             // 
-            this.lblIntroText.AutoSize = true;
-            this.lblIntroText.Location = new System.Drawing.Point(5, 5);
-            this.lblIntroText.Margin = new System.Windows.Forms.Padding(5);
-            this.lblIntroText.Name = "lblIntroText";
-            this.lblIntroText.Size = new System.Drawing.Size(561, 117);
-            this.lblIntroText.TabIndex = 18;
-            this.lblIntroText.Text = resources.GetString("lblIntroText.Text");
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.lblDesc, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.txtIdSelectable, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.label3, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.llblContents, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.lblIntroText, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 5;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(586, 314);
+            this.tableLayoutPanel2.TabIndex = 21;
+            // 
+            // lblDesc
+            // 
+            this.lblDesc.AutoSize = true;
+            this.lblDesc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDesc.Location = new System.Drawing.Point(3, 214);
+            this.lblDesc.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDesc.Name = "lblDesc";
+            this.lblDesc.Size = new System.Drawing.Size(580, 94);
+            this.lblDesc.TabIndex = 16;
+            this.lblDesc.Text = "[DESC]";
+            // 
+            // txtIdSelectable
+            // 
+            this.txtIdSelectable.BackColor = System.Drawing.SystemColors.Control;
+            this.txtIdSelectable.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtIdSelectable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtIdSelectable.Location = new System.Drawing.Point(3, 189);
+            this.txtIdSelectable.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.txtIdSelectable.Name = "txtIdSelectable";
+            this.txtIdSelectable.ReadOnly = true;
+            this.txtIdSelectable.Size = new System.Drawing.Size(580, 13);
+            this.txtIdSelectable.TabIndex = 20;
+            this.txtIdSelectable.TabStop = false;
+            this.txtIdSelectable.Text = "[ID]";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(3, 160);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(63, 17);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "Details:";
             // 
             // llblContents
             // 
             this.llblContents.AutoSize = true;
-            this.llblContents.Location = new System.Drawing.Point(3, 130);
-            this.llblContents.Margin = new System.Windows.Forms.Padding(3);
+            this.llblContents.Location = new System.Drawing.Point(3, 135);
+            this.llblContents.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.llblContents.Name = "llblContents";
             this.llblContents.Size = new System.Drawing.Size(151, 13);
             this.llblContents.TabIndex = 19;
@@ -153,41 +200,16 @@ namespace CrashHandler
             this.llblContents.Text = "What does the report contain?";
             this.llblContents.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblContents_LinkClicked);
             // 
-            // label3
+            // lblIntroText
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(3, 149);
-            this.label3.Margin = new System.Windows.Forms.Padding(3);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(63, 17);
-            this.label3.TabIndex = 17;
-            this.label3.Text = "Details:";
-            // 
-            // txtIdSelectable
-            // 
-            this.txtIdSelectable.BackColor = System.Drawing.SystemColors.Control;
-            this.txtIdSelectable.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtIdSelectable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtIdSelectable.Location = new System.Drawing.Point(3, 172);
-            this.txtIdSelectable.Name = "txtIdSelectable";
-            this.txtIdSelectable.ReadOnly = true;
-            this.txtIdSelectable.Size = new System.Drawing.Size(574, 13);
-            this.txtIdSelectable.TabIndex = 20;
-            this.txtIdSelectable.TabStop = false;
-            this.txtIdSelectable.Text = "[ID]";
-            // 
-            // lblDesc
-            // 
-            this.lblDesc.AutoSize = true;
-            this.lblDesc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDesc.Location = new System.Drawing.Point(3, 191);
-            this.lblDesc.Margin = new System.Windows.Forms.Padding(3);
-            this.lblDesc.Name = "lblDesc";
-            this.lblDesc.Size = new System.Drawing.Size(574, 118);
-            this.lblDesc.TabIndex = 16;
-            this.lblDesc.Text = "[DESC]";
+            this.lblIntroText.AutoSize = true;
+            this.lblIntroText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblIntroText.Location = new System.Drawing.Point(3, 6);
+            this.lblIntroText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblIntroText.Name = "lblIntroText";
+            this.lblIntroText.Size = new System.Drawing.Size(580, 117);
+            this.lblIntroText.TabIndex = 18;
+            this.lblIntroText.Text = resources.GetString("lblIntroText.Text");
             // 
             // yabUserStory
             // 
@@ -214,9 +236,10 @@ namespace CrashHandler
             // 
             // cmdSubmitIssue
             // 
-            this.cmdSubmitIssue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdSubmitIssue.AutoSize = true;
-            this.cmdSubmitIssue.Location = new System.Drawing.Point(109, 3);
+            this.cmdSubmitIssue.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSubmitIssue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdSubmitIssue.Location = new System.Drawing.Point(108, 3);
             this.cmdSubmitIssue.MaximumSize = new System.Drawing.Size(100, 35);
             this.cmdSubmitIssue.Name = "cmdSubmitIssue";
             this.cmdSubmitIssue.Size = new System.Drawing.Size(100, 35);
@@ -227,77 +250,55 @@ namespace CrashHandler
             // 
             // lblDescriptionWarning
             // 
-            this.lblDescriptionWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblDescriptionWarning.AutoSize = true;
+            this.lblDescriptionWarning.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblDescriptionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescriptionWarning.Location = new System.Drawing.Point(3, 0);
+            this.lblDescriptionWarning.Location = new System.Drawing.Point(3, 358);
+            this.lblDescriptionWarning.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescriptionWarning.Name = "lblDescriptionWarning";
-            this.lblDescriptionWarning.Size = new System.Drawing.Size(221, 34);
+            this.lblDescriptionWarning.Size = new System.Drawing.Size(282, 34);
             this.lblDescriptionWarning.TabIndex = 11;
             this.lblDescriptionWarning.Text = "Please describe the error on the \r\nDescription Tab before submitting";
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.tabUserStory, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flpLeftSide, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tableLayoutPanel1.Controls.Add(this.lblDescriptionWarning, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 1, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 25);
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 398);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 13;
             // 
-            // flpLeftSide
+            // tableLayoutPanel3
             // 
-            this.flpLeftSide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.flpLeftSide.AutoSize = true;
-            this.flpLeftSide.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpLeftSide.Controls.Add(this.lblDescriptionWarning);
-            this.flpLeftSide.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
-            this.flpLeftSide.Location = new System.Drawing.Point(3, 361);
-            this.flpLeftSide.Name = "flpLeftSide";
-            this.flpLeftSide.Size = new System.Drawing.Size(227, 34);
-            this.flpLeftSide.TabIndex = 12;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.btnNo);
-            this.flowLayoutPanel1.Controls.Add(this.cmdSubmitIssue);
-            this.flowLayoutPanel1.Controls.Add(this.btnSend);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(288, 357);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(318, 41);
-            this.flowLayoutPanel1.TabIndex = 13;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.lblDesc, 0, 4);
-            this.tableLayoutPanel2.Controls.Add(this.txtIdSelectable, 0, 3);
-            this.tableLayoutPanel2.Controls.Add(this.label3, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.llblContents, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.lblIntroText, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 7);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 5;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(580, 312);
-            this.tableLayoutPanel2.TabIndex = 21;
+            this.tableLayoutPanel3.AutoSize = true;
+            this.tableLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel3.ColumnCount = 3;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanel3.Controls.Add(this.btnSend, 2, 0);
+            this.tableLayoutPanel3.Controls.Add(this.cmdSubmitIssue, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.btnNo, 0, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(288, 357);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(318, 41);
+            this.tableLayoutPanel3.TabIndex = 14;
             // 
             // frmCrashReporter
             // 
@@ -307,6 +308,7 @@ namespace CrashHandler
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmCrashReporter";
@@ -318,16 +320,14 @@ namespace CrashHandler
             this.statusStrip1.PerformLayout();
             this.tabUserStory.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.yabUserStory.ResumeLayout(false);
             this.yabUserStory.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.flpLeftSide.ResumeLayout(false);
-            this.flpLeftSide.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -352,9 +352,8 @@ namespace CrashHandler
 		private System.Windows.Forms.TextBox txtIdSelectable;
 		private System.Windows.Forms.Label lblDesc;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flpLeftSide;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
     }
 }
 
