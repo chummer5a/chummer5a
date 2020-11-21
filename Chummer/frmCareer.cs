@@ -90,7 +90,6 @@ namespace Chummer
                 cmsArmorMod,
                 cmsBioware,
                 cmsComplexForm,
-                cmsComplexFormPlugin,
                 cmsCritterPowers,
                 cmsCyberware,
                 cmsCyberwareGear,

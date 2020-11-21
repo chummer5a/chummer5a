@@ -178,7 +178,7 @@ namespace Chummer
             // 
             // mnuNewCritter
             // 
-            this.mnuNewCritter.Image = global::Chummer.Properties.Resources.bug_add;
+            this.mnuNewCritter.Image = global::Chummer.Properties.Resources.ladybird_add;
             this.mnuNewCritter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuNewCritter.Name = "mnuNewCritter";
             this.mnuNewCritter.Size = new System.Drawing.Size(195, 22);
@@ -549,7 +549,7 @@ namespace Chummer
             // 
             this.newWindowToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_add;
             this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
-            this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newWindowToolStripMenuItem.Tag = "Menu_Main_NewWindow";
             this.newWindowToolStripMenuItem.Text = "&New Window";
             this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
@@ -558,7 +558,7 @@ namespace Chummer
             // 
             this.closeAllToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_delete;
             this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeAllToolStripMenuItem.Tag = "Menu_Main_CloseAll";
             this.closeAllToolStripMenuItem.Text = "C&lose All";
             this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
@@ -765,7 +765,7 @@ namespace Chummer
             // 
             // tsSaveAs
             // 
-            this.tsSaveAs.Image = global::Chummer.Properties.Resources.disk;
+            this.tsSaveAs.Image = global::Chummer.Properties.Resources.disk_multiple;
             this.tsSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsSaveAs.MergeIndex = 4;
             this.tsSaveAs.Name = "tsSaveAs";
