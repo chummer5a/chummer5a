@@ -7,6 +7,7 @@ Application Fixes:
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
 - Added a new PDF Parameter option that is Adobe Acrobat-style, but always opens a new instance of the clicked file.
+- Linguistics (the adept power) no longer increases a character's native language limit by 1.
 
 Build 213
 Application Fixes:
