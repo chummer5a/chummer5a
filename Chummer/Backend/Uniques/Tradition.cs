@@ -85,8 +85,8 @@ namespace Chummer.Backend.Uniques
 
         public void ResetTradition()
         {
-            Bonus = null;
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId);
+            Bonus = null;
             Name = string.Empty;
             Extra = string.Empty;
             Source = string.Empty;
