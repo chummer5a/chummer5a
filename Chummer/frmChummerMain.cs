@@ -1521,9 +1521,7 @@ namespace Chummer
                 };
                 if (!strFileName.StartsWith(strAutosavesPath))
                 {
-                    string strNewAutosaveName = strFileName
-                        .SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
-                        .LastOrDefault();
+                    string strNewAutosaveName = Path.GetFileName(strFileName);
                     if (!string.IsNullOrEmpty(strNewAutosaveName))
                     {
                         strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
@@ -1545,7 +1543,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strOldAutosaveName))
                         {
                             strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
-                            if (File.Exists(strOldAutosaveName))
+                            if (File.Exists(strOldAutosaveName) && File.GetLastWriteTimeUtc(strOldAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
                             {
                                 blnLoadAutosave = true;
                                 objCharacter.FileName = strOldAutosaveName;
