@@ -1513,13 +1513,60 @@ namespace Chummer
             if(File.Exists(strFileName) && strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {
                 //Timekeeper.Start("loading");
-
+                bool blnLoadAutosave = false;
+                string strAutosavesPath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
                 objCharacter = new Character
                 {
                     FileName = strFileName
                 };
+                if (!strFileName.StartsWith(strAutosavesPath))
+                {
+                    string strNewAutosaveName = strFileName
+                        .SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
+                        .LastOrDefault();
+                    if (!string.IsNullOrEmpty(strNewAutosaveName))
+                    {
+                        strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
+                        if (File.Exists(strNewAutosaveName) && File.GetLastWriteTimeUtc(strNewAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                        {
+                            blnLoadAutosave = true;
+                            objCharacter.FileName = strNewAutosaveName;
+                        }
+                    }
+
+                    if (!blnLoadAutosave)
+                    {
+                        string strOldAutosaveName = objCharacter.CharacterName;
+                        foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                        {
+                            strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
+                        }
+
+                        if (!string.IsNullOrEmpty(strOldAutosaveName))
+                        {
+                            strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
+                            if (File.Exists(strOldAutosaveName))
+                            {
+                                blnLoadAutosave = true;
+                                objCharacter.FileName = strOldAutosaveName;
+                            }
+                        }
+                    }
+                }
                 if (blnShowErrors && _frmLoading?.IsDisposed != false)
                 {
+                    if (blnLoadAutosave && Program.MainForm.ShowMessageBox(
+                        string.Format(GlobalOptions.CultureInfo,
+                            LanguageManager.GetString("Message_AutosaveFound"),
+                            Path.GetFileName(strFileName),
+                            File.GetLastWriteTimeUtc(objCharacter.FileName).ToLocalTime(),
+                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    {
+                        blnLoadAutosave = false;
+                        objCharacter.FileName = strFileName;
+                    }
                     using (_frmLoading = new frmLoading { CharacterFile = objCharacter.FileName })
                     {
                         _frmLoading.Reset(35);
@@ -1554,6 +1601,9 @@ namespace Chummer
                 // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
                 if (blnClearFileName)
                     objCharacter.FileName = string.Empty;
+                // Restore original filename if we loaded from an autosave
+                if (blnLoadAutosave)
+                    objCharacter.FileName = strFileName;
             }
             else if(blnShowErrors)
             {
