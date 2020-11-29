@@ -91,8 +91,6 @@ namespace Chummer
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.tsbNewCharacter = new System.Windows.Forms.ToolStripButton();
             this.tsbOpen = new System.Windows.Forms.ToolStripButton();
-            this.tsbSave = new System.Windows.Forms.ToolStripButton();
-            this.tsbPrint = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tabForms = new System.Windows.Forms.TabControl();
@@ -632,9 +630,7 @@ namespace Chummer
             this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbNewCharacter,
-            this.tsbOpen,
-            this.tsbSave,
-            this.tsbPrint});
+            this.tsbOpen});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1264, 25);
@@ -664,26 +660,6 @@ namespace Chummer
             this.tsbOpen.Tag = "Menu_Main_Open";
             this.tsbOpen.Text = "Open";
             this.tsbOpen.Click += new System.EventHandler(this.OpenFile);
-            // 
-            // tsbSave
-            // 
-            this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbSave.Image = global::Chummer.Properties.Resources.disk;
-            this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbSave.Name = "tsbSave";
-            this.tsbSave.Size = new System.Drawing.Size(23, 22);
-            this.tsbSave.Text = "Save";
-            this.tsbSave.Visible = false;
-            // 
-            // tsbPrint
-            // 
-            this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
-            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbPrint.Name = "tsbPrint";
-            this.tsbPrint.Size = new System.Drawing.Size(23, 22);
-            this.tsbPrint.Text = "Print";
-            this.tsbPrint.Visible = false;
             // 
             // toolStripSeparator1
             // 
@@ -836,9 +812,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuChummerWiki;
         private System.Windows.Forms.ToolStripButton tsbNewCharacter;
         private System.Windows.Forms.ToolStripButton tsbOpen;
-        private System.Windows.Forms.ToolStripButton tsbPrint;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsUpdate;
-        private System.Windows.Forms.ToolStripButton tsbSave;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpRevisionHistory;
         private System.Windows.Forms.ToolStripMenuItem mnuNewCritter;
         private System.Windows.Forms.ToolStripSeparator mnuFileMRUSeparator;

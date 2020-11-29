@@ -2894,8 +2894,6 @@ namespace Chummer
             this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbSave.Image = global::Chummer.Properties.Resources.disk;
             this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbSave.MergeAction = System.Windows.Forms.MergeAction.Replace;
-            this.tsbSave.MergeIndex = 2;
             this.tsbSave.Name = "tsbSave";
             this.tsbSave.Size = new System.Drawing.Size(23, 22);
             this.tsbSave.Tag = "Menu_FileSave";
@@ -2907,8 +2905,6 @@ namespace Chummer
             this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
             this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbPrint.MergeAction = System.Windows.Forms.MergeAction.Replace;
-            this.tsbPrint.MergeIndex = 4;
             this.tsbPrint.Name = "tsbPrint";
             this.tsbPrint.Size = new System.Drawing.Size(23, 22);
             this.tsbPrint.Tag = "Menu_FilePrint";
@@ -2917,7 +2913,6 @@ namespace Chummer
             // 
             // tssSeparator
             // 
-            this.tssSeparator.MergeIndex = 5;
             this.tssSeparator.Name = "tssSeparator";
             this.tssSeparator.Size = new System.Drawing.Size(6, 25);
             // 
@@ -2926,7 +2921,6 @@ namespace Chummer
             this.tsbCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbCopy.Image = global::Chummer.Properties.Resources.page_copy;
             this.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbCopy.MergeIndex = 6;
             this.tsbCopy.Name = "tsbCopy";
             this.tsbCopy.Size = new System.Drawing.Size(23, 22);
             this.tsbCopy.Tag = "Menu_EditCopy";
@@ -2938,7 +2932,6 @@ namespace Chummer
             this.tsbPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbPaste.Image = global::Chummer.Properties.Resources.page_paste;
             this.tsbPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbPaste.MergeIndex = 7;
             this.tsbPaste.Name = "tsbPaste";
             this.tsbPaste.Size = new System.Drawing.Size(23, 22);
             this.tsbPaste.Tag = "Menu_EditPaste";
