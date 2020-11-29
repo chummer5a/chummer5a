@@ -7,6 +7,7 @@ Application Fixes:
 - Characters with all but one skill disabled in a skill group no longer have their only enabled skill's rating show up as their rating for that skill group.
 - Characters can now properly learn free spells in Career mode even if they do not have enough spare Karma to be able to learn said spells traditionally.
 - In Career mode, if the optional rule to not double positive quality karma costs is not set, the karma filters in the quality selection form now properly consider the doubled cost of qualities that are not set to not double their costs after character creation.
+- Upgrading cyberware that is a part of another piece of cyberware no longer causes the cyberware selector form to display an empty list.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
