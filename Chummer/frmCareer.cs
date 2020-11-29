@@ -3142,15 +3142,14 @@ namespace Chummer
                     if (objSpell.InternalId.IsEmptyGuid())
                         continue;
 
-                    if (CharacterObject.Karma < intSpellKarmaCost)
-                    {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        break;
-                    }
-
                     objSpell.FreeBonus = frmPickSpell.FreeBonus;
                     if (!objSpell.FreeBonus)
                     {
+                        if (CharacterObject.Karma < intSpellKarmaCost)
+                        {
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+                        }
                         if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , objSpell.CurrentDisplayName
                             , intSpellKarmaCost.ToString(GlobalOptions.CultureInfo))))
