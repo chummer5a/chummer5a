@@ -11772,8 +11772,6 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
-                    CharacterObject.GroupMember = chkJoinGroup.Checked;
                     CharacterObject.Karma -= intKarmaExpense;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -11818,8 +11816,6 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
-                    CharacterObject.GroupMember = chkJoinGroup.Checked;
                     CharacterObject.Karma -= intKarmaExpense;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -11827,6 +11823,9 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
             }
+
+            //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
+            CharacterObject.GroupMember = chkJoinGroup.Checked;
 
             if (!chkJoinGroup.Enabled)
             {
