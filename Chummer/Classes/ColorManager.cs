@@ -122,78 +122,78 @@ namespace Chummer
             }
         }
 
-        private static readonly ConcurrentDictionary<Color, Color> _dicLInvertedColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
-        /// Returns a version of a color that has its lightness inverted. Suitable for getting dark & light mode versions of colors.
+        /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
         /// </summary>
         /// <param name="objColor">Color whose lightness should be inverted.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values inverted.</returns>
-        private static Color GetLInvertedColor(Color objColor)
+        private static Color GenerateDarkModeColor(Color objColor)
         {
-            if (!_dicLInvertedColors.TryGetValue(objColor, out Color objLInvertedColor))
+            if (!s_DicDarkModeColors.TryGetValue(objColor, out Color objDarkModeColor))
             {
-                objLInvertedColor = InvertLightness(objColor);
-                _dicLInvertedColors.TryAdd(objColor, objLInvertedColor);
+                objDarkModeColor = GetDarkModeVersion(objColor);
+                s_DicDarkModeColors.TryAdd(objColor, objDarkModeColor);
             }
-            return objLInvertedColor;
+            return objDarkModeColor;
         }
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
         private static Color WindowTextLight => SystemColors.WindowText;
-        private static Color WindowTextDark => GetLInvertedColor(WindowTextLight);
+        private static Color WindowTextDark => GenerateDarkModeColor(WindowTextLight);
         public static Color Window => IsLightMode ? WindowLight : WindowDark;
         private static Color WindowLight => SystemColors.Window;
-        private static Color WindowDark => GetLInvertedColor(WindowLight);
+        private static Color WindowDark => GenerateDarkModeColor(WindowLight);
         public static Color InfoText => IsLightMode ? InfoTextLight : InfoTextDark;
         private static Color InfoTextLight => SystemColors.InfoText;
-        private static Color InfoTextDark => GetLInvertedColor(InfoTextLight);
+        private static Color InfoTextDark => GenerateDarkModeColor(InfoTextLight);
         public static Color Info => IsLightMode ? InfoLight : InfoDark;
         private static Color InfoLight => SystemColors.Info;
-        private static Color InfoDark => GetLInvertedColor(InfoLight);
+        private static Color InfoDark => GenerateDarkModeColor(InfoLight);
         public static Color GrayText => IsLightMode ? GrayTextLight : GrayTextDark;
         private static Color GrayTextLight => SystemColors.GrayText;
-        private static Color GrayTextDark => GetLInvertedColor(GrayTextLight);
+        private static Color GrayTextDark => GenerateDarkModeColor(GrayTextLight);
         public static Color HighlightText => IsLightMode ? HighlightTextLight : HighlightTextDark;
         private static Color HighlightTextLight => SystemColors.HighlightText;
-        private static Color HighlightTextDark => GetLInvertedColor(HighlightTextLight);
+        private static Color HighlightTextDark => GenerateDarkModeColor(HighlightTextLight);
         public static Color Highlight => IsLightMode ? HighlightLight : HighlightDark;
         private static Color HighlightLight => SystemColors.Highlight;
-        private static Color HighlightDark => GetLInvertedColor(HighlightLight);
+        private static Color HighlightDark => GenerateDarkModeColor(HighlightLight);
         public static Color ControlText => IsLightMode ? ControlTextLight : ControlTextDark;
         private static Color ControlTextLight => SystemColors.ControlText;
-        private static Color ControlTextDark => GetLInvertedColor(ControlTextLight);
+        private static Color ControlTextDark => GenerateDarkModeColor(ControlTextLight);
         public static Color ControlDarkest => IsLightMode ? ControlDarkestLight : ControlDarkestDark;
         private static Color ControlDarkestLight => SystemColors.ControlDarkDark;
-        private static Color ControlDarkestDark => GetLInvertedColor(ControlDarkestLight);
+        private static Color ControlDarkestDark => GenerateDarkModeColor(ControlDarkestLight);
         public static Color ControlDarker => IsLightMode ? ControlDarkerLight : ControlDarkerDark;
         private static Color ControlDarkerLight => SystemColors.ControlDark;
-        private static Color ControlDarkerDark => GetLInvertedColor(ControlDarkerLight);
+        private static Color ControlDarkerDark => GenerateDarkModeColor(ControlDarkerLight);
         public static Color Control => IsLightMode ? ControlLight : ControlDark;
         private static Color ControlLight => SystemColors.Control;
-        private static Color ControlDark => GetLInvertedColor(ControlLight);
+        private static Color ControlDark => GenerateDarkModeColor(ControlLight);
         public static Color ControlLighter => IsLightMode ? ControlLighterLight : ControlLighterDark;
         private static Color ControlLighterLight => SystemColors.ControlLight;
-        private static Color ControlLighterDark => GetLInvertedColor(ControlLight);
+        private static Color ControlLighterDark => GenerateDarkModeColor(ControlLight);
         public static Color ControlLightest => IsLightMode ? ControlLightestLight : ControlLightestDark;
         private static Color ControlLightestLight => SystemColors.ControlLightLight;
-        private static Color ControlLightestDark => GetLInvertedColor(ControlLightestLight);
+        private static Color ControlLightestDark => GenerateDarkModeColor(ControlLightestLight);
         public static Color ButtonFace => IsLightMode ? ButtonFaceLight : ButtonFaceDark;
         private static Color ButtonFaceLight => SystemColors.ButtonFace;
-        private static Color ButtonFaceDark => GetLInvertedColor(ButtonFaceLight);
+        private static Color ButtonFaceDark => GenerateDarkModeColor(ButtonFaceLight);
         public static Color ButtonShadow => IsLightMode ? ButtonShadowLight : ButtonShadowDark;
         private static Color ButtonShadowLight => SystemColors.ButtonShadow;
-        private static Color ButtonShadowDark => GetLInvertedColor(ButtonShadowLight);
+        private static Color ButtonShadowDark => GenerateDarkModeColor(ButtonShadowLight);
 
         public static Color SplitterColor => IsLightMode ? SplitterColorLight : SplitterColorDark;
         private static Color SplitterColorLight => SystemColors.InactiveCaption;
-        private static Color SplitterColorDark => GetLInvertedColor(SplitterColorLight);
+        private static Color SplitterColorDark => GenerateDarkModeColor(SplitterColorLight);
         public static Color HasNotesColor => IsLightMode ? HasNotesColorLight : HasNotesColorDark;
         private static Color HasNotesColorLight => Color.Chocolate;
         private static Color HasNotesColorDark => Color.Chocolate;
         public static Color GrayHasNotesColor => IsLightMode ? GrayHasNotesColorLight : GrayHasNotesColorDark;
         private static Color GrayHasNotesColorLight => Color.Tan;
-        private static Color GrayHasNotesColorDark => GetLInvertedColor(GrayHasNotesColorLight);
+        private static Color GrayHasNotesColorDark => GenerateDarkModeColor(GrayHasNotesColorLight);
         public static Color ErrorColor => Color.Red;
 
         public static void UpdateLightDarkMode(this Control objControl)
@@ -218,20 +218,23 @@ namespace Chummer
 
         #region Color Inversion Methods
 
-        private static Color InvertLightness(Color objColor)
+        private static Color GetDarkModeVersion(Color objColor)
         {
             // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
             float fltHue = objColor.GetHue() / 360.0f;
             float fltBrightness = objColor.GetBrightness();
             float fltLightness = fltBrightness * (1 - objColor.GetSaturation() / 2);
-            float fltSaturationHSL = fltLightness > 0 && fltLightness < 1
+            float fltSaturationHsl = fltLightness > 0 && fltLightness < 1
                 ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
                 : 0;
             float fltNewLightness = 1.0f - fltLightness;
             // Lighten dark colors a little (so that minimum lightness instead gets 0.1)
-            if (fltNewLightness < 0.5f)
-                fltNewLightness += 0.2f * (0.5f - fltNewLightness);
-            return FromHSLA(fltHue, fltSaturationHSL, fltNewLightness, objColor.A);
+            fltNewLightness += 0.1f * (1.0f - fltNewLightness) * (1.0f - fltNewLightness);
+            // Desaturate high saturation colors a little and also lighten them a bit
+            fltNewLightness += 0.1f * fltSaturationHsl * fltSaturationHsl;
+            fltNewLightness = Math.Min(fltNewLightness, 1.0f);
+            fltSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
+            return FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
         }
 
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
@@ -423,9 +426,9 @@ namespace Chummer
         /// <param name="fltSaturation">Saturation value, between 0.0 and 1.0.</param>
         /// <param name="fltLightness">Lightness value, between 0.0 and 1.0.</param>
         /// <returns>A Color with RGB values corresponding to the HSL inputs.</returns>
-        public static Color FromHSL(float fltHue, float fltSaturation, float fltLightness)
+        public static Color FromHsl(float fltHue, float fltSaturation, float fltLightness)
         {
-            return FromHSLA(fltHue, fltSaturation, fltLightness, byte.MaxValue);
+            return FromHsla(fltHue, fltSaturation, fltLightness, byte.MaxValue);
         }
 
         /// <summary>
@@ -436,7 +439,7 @@ namespace Chummer
         /// <param name="fltLightness">Lightness value, between 0.0 and 1.0.</param>
         /// <param name="chrAlpha">Alpha value.</param>
         /// <returns>A Color with RGBA values corresponding to the HSLA inputs.</returns>
-        public static Color FromHSLA(float fltHue, float fltSaturation, float fltLightness, byte chrAlpha)
+        public static Color FromHsla(float fltHue, float fltSaturation, float fltLightness, byte chrAlpha)
         {
             if (fltHue > 1.0f || fltHue < 0)
                 throw new ArgumentOutOfRangeException(nameof(fltHue));
@@ -498,9 +501,9 @@ namespace Chummer
         /// <param name="fltSaturation">Saturation value, between 0.0 and 1.0.</param>
         /// <param name="fltValue">Value/Brightness value, between 0.0 and 1.0.</param>
         /// <returns>A Color with RGB values corresponding to the HSV inputs.</returns>
-        public static Color FromHSV(float fltHue, float fltSaturation, float fltValue)
+        public static Color FromHsv(float fltHue, float fltSaturation, float fltValue)
         {
-            return FromHSVA(fltHue, fltSaturation, fltValue, byte.MaxValue);
+            return FromHsva(fltHue, fltSaturation, fltValue, byte.MaxValue);
         }
 
         /// <summary>
@@ -511,7 +514,7 @@ namespace Chummer
         /// <param name="fltValue">Value/Brightness value, between 0.0 and 1.0.</param>
         /// <param name="chrAlpha">Alpha value.</param>
         /// <returns>A Color with RGBA values corresponding to the HSVA inputs.</returns>
-        public static Color FromHSVA(float fltHue, float fltSaturation, float fltValue, byte chrAlpha)
+        public static Color FromHsva(float fltHue, float fltSaturation, float fltValue, byte chrAlpha)
         {
             if (fltHue > 1.0f || fltHue < 0)
                 throw new ArgumentOutOfRangeException(nameof(fltHue));

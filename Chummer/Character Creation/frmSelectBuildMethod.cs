@@ -220,6 +220,7 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SuspendLayout();
             nudSumtoTen.Visible = false;
             lblSumToX.Visible = false;
             string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
@@ -272,6 +273,7 @@ namespace Chummer
                 xmlSelectedGameplayOption?.TryGetInt32FieldQuickly("sumtoten", ref intSumToTenValue);
                 nudSumtoTen.Value = intSumToTenValue;
             }
+            ResumeLayout();
         }
 
         private void frmSelectBuildMethod_Load(object sender, EventArgs e)
@@ -281,6 +283,7 @@ namespace Chummer
 
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SuspendLayout();
             // Load the Priority information.
             string strSelectedGameplayOption = cboGamePlay.SelectedValue?.ToString();
             if (strSelectedGameplayOption != null && strSelectedGameplayOption.IndexOf('|') != -1)
@@ -319,6 +322,7 @@ namespace Chummer
                     nudMaxNuyen.Value = _decNuyenBP;
                 }
             }
+            ResumeLayout();
         }
         #endregion
     }

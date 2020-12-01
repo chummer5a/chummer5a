@@ -163,8 +163,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RtfPipe, Version=1.0.7388.1242, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RtfPipe.1.0.7388.1242\lib\net45\RtfPipe.dll</HintPath>
+    <Reference Include="RtfPipe, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5f6ab4ce530296d2, processorArchitecture=MSIL">
+      <HintPath>..\packages\RtfPipe.2.0.0\lib\net45\RtfPipe.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -2342,6 +2342,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\box_resize_actual.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\box_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\brain.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\brain_add.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\brain_edit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\brain_trainer.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\bread.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\breadcrumb.png" />
@@ -2546,6 +2548,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\cart_remove.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\car_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\car_delete.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\car_gear.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\car_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\car_taxi.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\cash_register_left.png" />
@@ -3759,6 +3762,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\flashdisk.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\flashdisk_logo.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\flashlight.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\flashlight_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\flashlight_shine.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\flask.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\flask_empty.png" />
@@ -3927,6 +3931,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\group_link.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\group_stroke.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\gun.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\gun_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\half_moon.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hamburger.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hammer.png" />
@@ -3942,6 +3947,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hand_property.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hardware_building_oem.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hard_hat_military.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hard_hat_military_add.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hard_hat_military_edit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hat.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hbox.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\hdividedbox.png" />
@@ -4119,6 +4126,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\labels_page.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\label_link.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\ladybird.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\ladybird_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\landmarks.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\languange.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\laptop.png" />
@@ -4772,6 +4780,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\print_tiles.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\private.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\processor.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\processor_add.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\processor_edit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\process_marked_headers.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\production_copyleft.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\profiles.png" />
@@ -5306,6 +5316,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\steering_wheel.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\steering_wheel_common.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\steering_wheel_racing.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\steering_wheel_racing_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\stethoscope.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\stethoscope_vintage.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\stickman.png" />
@@ -5337,6 +5348,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\switch.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\switch_windows.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\sword.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\sword_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\synchronize_ftp_password.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\synchronous_scrolling.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\system_monitor.png" />
@@ -5737,6 +5749,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_king.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_king_black.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_knight.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_knight_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_leprechaun.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_level_filtering.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_lisa.png" />
@@ -18483,8 +18496,8 @@
     <Content Include="lang\zh-cn_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\icons\Collapse.png" />
-    <None Include="Resources\icons\Expand.png" />
+    <Content Include="Resources\icons\Collapse.png" />
+    <Content Include="Resources\icons\Expand.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="livecustomdata\" />

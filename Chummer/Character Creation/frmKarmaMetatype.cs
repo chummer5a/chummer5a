@@ -139,13 +139,9 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-
+            SuspendLayout();
             PopulateMetavariants();
-        }
-
-        private void lstMetatypes_DoubleClick(object sender, EventArgs e)
-        {
-            MetatypeSelected();
+            ResumeLayout();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -157,8 +153,9 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-
+            SuspendLayout();
             RefreshSelectedMetavariant();
+            ResumeLayout();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -171,7 +168,9 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             PopulateMetatypes();
+            ResumeLayout();
         }
 
         private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)

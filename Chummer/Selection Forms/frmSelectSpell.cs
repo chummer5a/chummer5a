@@ -139,12 +139,6 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void treSpells_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -168,10 +162,9 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (lstSpells.SelectedIndex == -1)
+            if (lstSpells.SelectedIndex == -1 && lstSpells.Items.Count > 0)
             {
-                if (lstSpells.Items.Count > 0)
-                    lstSpells.SelectedIndex = 0;
+                lstSpells.SelectedIndex = 0;
             }
             if (e.KeyCode == Keys.Down)
             {
@@ -377,15 +370,12 @@ namespace Chummer
                 string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
                                         objXmlSpell.SelectSingleNode("name")?.Value ??
                                         LanguageManager.GetString("String_Unknown");
-                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0 && !string.IsNullOrEmpty(strSpellCategory))
                 {
-                    if (!string.IsNullOrEmpty(strSpellCategory))
+                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
+                    if (!string.IsNullOrEmpty(objFoundItem.Name))
                     {
-                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
-                        if (!string.IsNullOrEmpty(objFoundItem.Name))
-                        {
-                            strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
-                        }
+                        strDisplayName += strSpace + '[' + objFoundItem.Name + ']';
                     }
                 }
 

@@ -99,7 +99,6 @@ namespace Chummer
                 cmsArmorMod,
                 cmsBioware,
                 cmsComplexForm,
-                cmsComplexFormPlugin,
                 cmsCritterPowers,
                 cmsCyberware,
                 cmsCyberwareGear,
@@ -8774,7 +8773,10 @@ namespace Chummer
                     // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
                     int intQualityKarmaToSpellPoints = CharacterObjectOptions.KarmaSpell;
                     if (CharacterObjectOptions.KarmaSpell != 0)
-                            intQualityKarmaToSpellPoints = Math.Min(limit, CharacterObject.Qualities.Where(objQuality => objQuality.CanBuyWithSpellPoints).Sum(objQuality => objQuality.BP) * CharacterObjectOptions.KarmaQuality / CharacterObjectOptions.KarmaSpell);
+                        intQualityKarmaToSpellPoints = Math.Min(limit,
+                            CharacterObject.Qualities
+                                .Where(objQuality => objQuality.CanBuyWithSpellPoints && objQuality.ContributeToBP)
+                                .Sum(objQuality => objQuality.BP) * CharacterObjectOptions.KarmaQuality / CharacterObjectOptions.KarmaSpell);
                     spells += intQualityKarmaToSpellPoints;
                     // Add the karma paid for by spell points back into the available karma pool.
                     intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectOptions.KarmaSpell;

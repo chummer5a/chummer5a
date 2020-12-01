@@ -9442,6 +9442,14 @@
       <key>MessageTitle_OrphanedImprovements</key>
       <text>Orphaned Improvements Found</text>
     </string>
+    <string>
+      <key>Message_AutosaveFound</key>
+      <text>An autosave for the file {0} was found that was saved more recently ({1}) than the current file being loaded ({2}).\n\nDo you wish to load the autosave instead? If you do, the original {0} will not be altered until you manually save.</text>
+    </string>
+    <string>
+      <key>MessageTitle_AutosaveFound</key>
+      <text>Autosave Found</text>
+    </string>
     <!-- End Region -->
     <!-- Region HeroLab Importer -->
     <string>

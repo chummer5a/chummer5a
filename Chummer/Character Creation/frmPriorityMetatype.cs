@@ -260,6 +260,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 SumToTen();
@@ -267,11 +268,7 @@ namespace Chummer
             PopulateMetavariants();
             RefreshSelectedMetatype();
             PopulateTalents();
-        }
-
-        private void lstMetatypes_DoubleClick(object sender, EventArgs e)
-        {
-            MetatypeSelected();
+            ResumeLayout();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -281,6 +278,7 @@ namespace Chummer
 
         private void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SuspendLayout();
             cboSkill1.BeginUpdate();
             cboSkill2.BeginUpdate();
             cboSkill3.BeginUpdate();
@@ -473,18 +471,21 @@ namespace Chummer
             {
                 SumToTen();
             }
+            ResumeLayout();
         }
 
         private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             RefreshSelectedMetatype();
             PopulateTalents();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 SumToTen();
             }
+            ResumeLayout();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -497,17 +498,20 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             PopulateMetatypes();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 SumToTen();
             }
+            ResumeLayout();
         }
 
         private void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
                 ManagePriorityItems(cboHeritage);
@@ -520,12 +524,14 @@ namespace Chummer
             PopulateMetatypes();
             PopulateMetavariants();
             RefreshSelectedMetatype();
+            ResumeLayout();
         }
 
         private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
                 ManagePriorityItems(cboTalent);
@@ -535,12 +541,14 @@ namespace Chummer
                 SumToTen();
             }
             PopulateTalents();
+            ResumeLayout();
         }
 
         private void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
                 ManagePriorityItems(cboAttributes);
@@ -549,12 +557,14 @@ namespace Chummer
             {
                 SumToTen();
             }
+            ResumeLayout();
         }
 
         private void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
                 ManagePriorityItems(cboSkills);
@@ -563,12 +573,14 @@ namespace Chummer
             {
                 SumToTen();
             }
+            ResumeLayout();
         }
 
         private void cboResources_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
+            SuspendLayout();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
                 ManagePriorityItems(cboResources);
@@ -577,6 +589,7 @@ namespace Chummer
             {
                 SumToTen();
             }
+            ResumeLayout();
         }
         #endregion
 
@@ -1280,7 +1293,7 @@ namespace Chummer
             lblMetavariantKarmaLabel.Visible = !string.IsNullOrEmpty(lblMetavariantKarma.Text);
         }
 
-        void PopulateTalents()
+        private void PopulateTalents()
         {
             // Load the Priority information.
             List<ListItem> lstTalent = new List<ListItem>(5);
@@ -1430,7 +1443,7 @@ namespace Chummer
             cboTalents.EndUpdate();
         }
 
-        void PopulateMetavariants()
+        private void PopulateMetavariants()
         {
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
 
@@ -1550,7 +1563,7 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Metatypes.
         /// </summary>
-        void PopulateMetatypes()
+        private void PopulateMetatypes()
         {
             string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatypeCategory))

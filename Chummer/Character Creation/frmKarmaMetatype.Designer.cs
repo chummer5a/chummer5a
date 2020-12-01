@@ -46,6 +46,9 @@ namespace Chummer
             this.chkBloodSpirit = new Chummer.ColorableCheckBox(this.components);
             this.chkPossessionBased = new Chummer.ColorableCheckBox(this.components);
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdCancel = new System.Windows.Forms.Button();
+            this.cmdOK = new System.Windows.Forms.Button();
             this.lblForceLabel = new System.Windows.Forms.Label();
             this.lblINI = new System.Windows.Forms.Label();
             this.lblINILabel = new System.Windows.Forms.Label();
@@ -67,9 +70,6 @@ namespace Chummer
             this.lblQualitiesLabel = new System.Windows.Forms.Label();
             this.lblKarma = new System.Windows.Forms.Label();
             this.cboMetavariant = new Chummer.ElasticComboBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmdOK = new System.Windows.Forms.Button();
             this.tlpMetatypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.tlpBottom.SuspendLayout();
@@ -140,7 +140,7 @@ namespace Chummer
             this.lstMetatypes.Sorted = true;
             this.lstMetatypes.TabIndex = 35;
             this.lstMetatypes.SelectedIndexChanged += new System.EventHandler(this.lstMetatypes_SelectedIndexChanged);
-            this.lstMetatypes.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstMetatypes_DoubleClick);
+            this.lstMetatypes.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.cmdOK_Click);
             // 
             // cboCategory
             // 
@@ -292,6 +292,54 @@ namespace Chummer
             this.cboPossessionMethod.TabIndex = 65;
             this.cboPossessionMethod.TooltipText = "";
             this.cboPossessionMethod.Visible = false;
+            // 
+            // tlpButtons
+            // 
+            this.tlpButtons.AutoSize = true;
+            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpButtons.ColumnCount = 2;
+            this.tlpBottom.SetColumnSpan(this.tlpButtons, 3);
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
+            this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Right;
+            this.tlpButtons.Location = new System.Drawing.Point(321, 27);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpButtons.Name = "tlpButtons";
+            this.tlpButtons.RowCount = 1;
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.TabIndex = 72;
+            // 
+            // cmdCancel
+            // 
+            this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.TabIndex = 68;
+            this.cmdCancel.Tag = "String_Cancel";
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            // 
+            // cmdOK
+            // 
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Name = "cmdOK";
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.TabIndex = 67;
+            this.cmdOK.Tag = "String_OK";
+            this.cmdOK.Text = "OK";
+            this.cmdOK.UseVisualStyleBackColor = true;
+            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
             // lblForceLabel
             // 
@@ -542,54 +590,6 @@ namespace Chummer
             this.cboMetavariant.TabIndex = 59;
             this.cboMetavariant.TooltipText = "";
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
-            // 
-            // tlpButtons
-            // 
-            this.tlpButtons.AutoSize = true;
-            this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpButtons.ColumnCount = 2;
-            this.tlpBottom.SetColumnSpan(this.tlpButtons, 3);
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tlpButtons.Location = new System.Drawing.Point(321, 27);
-            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpButtons.Name = "tlpButtons";
-            this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
-            this.tlpButtons.TabIndex = 72;
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
-            this.cmdCancel.TabIndex = 68;
-            this.cmdCancel.Tag = "String_Cancel";
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // cmdOK
-            // 
-            this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
-            this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
-            this.cmdOK.TabIndex = 67;
-            this.cmdOK.Tag = "String_OK";
-            this.cmdOK.Text = "OK";
-            this.cmdOK.UseVisualStyleBackColor = true;
-            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
             // frmKarmaMetatype
             // 

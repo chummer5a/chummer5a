@@ -404,7 +404,7 @@ namespace ChummerHub.Client.UI
                     var myresultbody = myresult.Body;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
-                        if (myresultbody.CallSuccess == true)
+                        if (myresultbody?.CallSuccess == true)
                         {
                             StaticUtils.UserRoles = myresultbody.Roles.ToList();
                             if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Count > 0)
