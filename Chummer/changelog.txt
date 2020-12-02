@@ -11,6 +11,7 @@ Application Fixes:
 - Mastery qualities that are not purchased traditionally no longer deduct free spell points.
 - Chummer now properly registers attempts to join a technomancer network/tribe in Career mode.
 - Improvements that add gear without a rating no longer add that gear with a rating of 1.
+- Armor against special types of damage now properly work off of the highest total armor rating against that particular damage type instead of taking the highest generic armor rating and adding the highest special type armor bonus to it. Fixes #4253.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

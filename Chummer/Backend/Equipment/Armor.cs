@@ -149,9 +149,9 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
             {
                 if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
-                    setChangedProperties.Add(nameof(Character.ArmorRating));
+                    setChangedProperties.Add(nameof(Character.GetArmorRating));
                 else
-                    dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.ArmorRating) });
+                    dicChangedProperties.Add(_objCharacter, new HashSet<string> { nameof(Character.GetArmorRating) });
             }
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
@@ -845,7 +845,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Equipped)
                     {
-                        _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
+                        _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
                         _objCharacter?.RefreshEncumbrance();
                     }
                 }
@@ -868,7 +868,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating"))
                         {
-                            _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
+                            _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
                             _objCharacter?.RefreshEncumbrance();
                         }
                     }
@@ -1126,7 +1126,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    _objCharacter?.OnPropertyChanged(nameof(Character.ArmorRating));
+                    _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
                     _objCharacter?.RefreshEncumbrance();
                 }
             }
