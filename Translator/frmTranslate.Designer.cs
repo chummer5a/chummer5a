@@ -92,7 +92,7 @@ namespace Translator
             this.dgvSection.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvSection_CellMouseUp);
             this.dgvSection.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSection_CellValueChanged);
             this.dgvSection.Sorted += new System.EventHandler(this.dgvSection_Sorted);
-            this.dgvSection.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvSection_KeyDown);
+            this.dgvSection.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTranslate_KeyDown);
             // 
             // dgvTranslate
             // 
@@ -111,7 +111,7 @@ namespace Translator
             this.dgvTranslate.TabIndex = 14;
             this.dgvTranslate.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTranslate_CellValueChanged);
             this.dgvTranslate.Sorted += new System.EventHandler(this.dgvTranslate_Sorted);
-            this.dgvTranslate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTranslate_KeyDown);
+            this.dgvTranslate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTranslate_KeyDown);
             // 
             // key
             // 
@@ -233,7 +233,6 @@ namespace Translator
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(200, 20);
             this.txtSearch.TabIndex = 11;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_GotFocus);
             this.txtSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPressed);
             // 
             // btnSearch
