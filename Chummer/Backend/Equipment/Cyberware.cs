@@ -901,13 +901,18 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
                     {
                         if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts)) continue;
-                        Dictionary<string, int> dicToUse = null;
-                        if (objCheckCyberware.Location == "Left")
-                            dicToUse = dicNumLeftMountBlockers;
-                        else if (objCheckCyberware.Location == "Right")
-                            dicToUse = dicNumRightMountBlockers;
-                        else
-                            continue;
+                        Dictionary<string, int> dicToUse;
+                        switch (objCheckCyberware.Location)
+                        {
+                            case "Left":
+                                dicToUse = dicNumLeftMountBlockers;
+                                break;
+                            case "Right":
+                                dicToUse = dicNumRightMountBlockers;
+                                break;
+                            default:
+                                continue;
+                        }
                         foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
                             StringSplitOptions.RemoveEmptyEntries))
                         {

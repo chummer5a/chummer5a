@@ -12784,22 +12784,38 @@ namespace Chummer
                 // Open the Martial Arts XML file and locate the selected art.
                 XmlDocument objXmlMartialArtDocument = XmlManager.Load("martialarts.xml");
 
-                foreach (XmlNode objXmlArt in xmlMartialArts.SelectNodes("martialart"))
+                using (XmlNodeList xmlMartialArtsList = xmlMartialArts.SelectNodes("martialart"))
                 {
-                    MartialArt objArt = new MartialArt(CharacterObject);
-                    XmlNode objXmlArtNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlArt["name"].InnerText + "\"]");
-                    if (objXmlArtNode != null)
+                    if (xmlMartialArtsList?.Count > 0)
                     {
-                        objArt.Create(objXmlArtNode);
-                        CharacterObject.MartialArts.Add(objArt);
-
-                        // Check for Techniques.
-                        foreach (XmlNode xmlTechnique in objXmlArt.SelectNodes("techniques/technique"))
+                        foreach (XmlNode objXmlArt in xmlMartialArtsList)
                         {
-                            MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
-                            XmlNode xmlTechniqueNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + xmlTechnique["name"].InnerText + "\"]");
-                            objTechnique.Create(xmlTechniqueNode);
-                            objArt.Techniques.Add(objTechnique);
+                            MartialArt objArt = new MartialArt(CharacterObject);
+                            XmlNode objXmlArtNode = objXmlMartialArtDocument.SelectSingleNode(
+                                "/chummer/martialarts/martialart[(" + CharacterObjectOptions.BookXPath() +
+                                ") and name = \"" + objXmlArt["name"].InnerText + "\"]");
+                            if (objXmlArtNode != null)
+                            {
+                                objArt.Create(objXmlArtNode);
+                                CharacterObject.MartialArts.Add(objArt);
+
+                                // Check for Techniques.
+                                using (XmlNodeList xmlTechniquesList = objXmlArt.SelectNodes("techniques/technique"))
+                                {
+                                    if (xmlTechniquesList?.Count > 0)
+                                    {
+                                        foreach (XmlNode xmlTechnique in xmlTechniquesList)
+                                        {
+                                            MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
+                                            XmlNode xmlTechniqueNode = objXmlMartialArtDocument.SelectSingleNode(
+                                                "/chummer/techniques/technique[(" + CharacterObjectOptions.BookXPath() +
+                                                ") and name = \"" + xmlTechnique["name"].InnerText + "\"]");
+                                            objTechnique.Create(xmlTechniqueNode);
+                                            objArt.Techniques.Add(objTechnique);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -12826,17 +12842,25 @@ namespace Chummer
             {
                 // Open the Programs XML file and locate the selected program.
                 XmlDocument objXmlComplexFormDocument = XmlManager.Load("complexforms.xml");
-
-                foreach (XmlNode objXmlComplexForm in xmlComplexForms.SelectNodes("complexform"))
+                using (XmlNodeList xmlComplexFormsList = xmlComplexForms.SelectNodes("complexform"))
                 {
-                    XmlNode objXmlComplexFormNode =
-                        objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlComplexForm["name"].InnerText + "\"]");
-                    if (objXmlComplexFormNode != null)
+                    if (xmlComplexFormsList?.Count > 0)
                     {
-                        ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                        objComplexForm.Create(objXmlComplexFormNode);
+                        foreach (XmlNode objXmlComplexForm in xmlComplexFormsList)
+                        {
+                            XmlNode objXmlComplexFormNode =
+                                objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[(" +
+                                                                           CharacterObjectOptions.BookXPath() +
+                                                                           ") and name = \"" +
+                                                                           objXmlComplexForm["name"].InnerText + "\"]");
+                            if (objXmlComplexFormNode != null)
+                            {
+                                ComplexForm objComplexForm = new ComplexForm(CharacterObject);
+                                objComplexForm.Create(objXmlComplexFormNode);
 
-                        CharacterObject.ComplexForms.Add(objComplexForm);
+                                CharacterObject.ComplexForms.Add(objComplexForm);
+                            }
+                        }
                     }
                 }
             }
@@ -12847,16 +12871,23 @@ namespace Chummer
             {
                 // Open the Programs XML file and locate the selected program.
                 XmlDocument objXmlProgramDocument = XmlManager.Load("programs.xml");
-
-                foreach (XmlNode objXmlProgram in xmlPrograms.SelectNodes("program"))
+                using (XmlNodeList xmlProgramsList = xmlPrograms.SelectNodes("program"))
                 {
-                    XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/programs/program[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlProgram["name"].InnerText + "\"]");
-                    if (objXmlProgramNode != null)
+                    if (xmlProgramsList?.Count > 0)
                     {
-                        AIProgram objProgram = new AIProgram(CharacterObject);
-                        objProgram.Create(objXmlProgramNode);
+                        foreach (XmlNode objXmlProgram in xmlProgramsList)
+                        {
+                            XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode(
+                                "/chummer/programs/program[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" +
+                                objXmlProgram["name"].InnerText + "\"]");
+                            if (objXmlProgramNode != null)
+                            {
+                                AIProgram objProgram = new AIProgram(CharacterObject);
+                                objProgram.Create(objXmlProgramNode);
 
-                        CharacterObject.AIPrograms.Add(objProgram);
+                                CharacterObject.AIPrograms.Add(objProgram);
+                            }
+                        }
                     }
                 }
             }
@@ -12866,23 +12897,30 @@ namespace Chummer
             if (xmlSpells != null)
             {
                 XmlDocument objXmlSpellDocument = XmlManager.Load("spells.xml");
-
-                foreach (XmlNode objXmlSpell in xmlSpells.SelectNodes("spell"))
+                using (XmlNodeList xmlSpellsList = xmlSpells.SelectNodes("spell"))
                 {
-                    string strCategory = objXmlSpell["category"]?.InnerText;
-                    string strName = objXmlSpell["name"].InnerText;
-                    // Make sure the Spell has not already been added to the character.
-                    if (!CharacterObject.Spells.Any(x => x.Name == strName && x.Category == strCategory))
+                    if (xmlSpellsList?.Count > 0)
                     {
-                        XmlNode objXmlSpellNode = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + strName + "\"]");
+                        foreach (XmlNode objXmlSpell in xmlSpellsList)
+                        {
+                            string strCategory = objXmlSpell["category"]?.InnerText;
+                            string strName = objXmlSpell["name"].InnerText;
+                            // Make sure the Spell has not already been added to the character.
+                            if (!CharacterObject.Spells.Any(x => x.Name == strName && x.Category == strCategory))
+                            {
+                                XmlNode objXmlSpellNode = objXmlSpellDocument.SelectSingleNode(
+                                    "/chummer/spells/spell[(" +
+                                    CharacterObjectOptions.BookXPath() + ") and name = \"" + strName + "\"]");
 
-                        if (objXmlSpellNode == null)
-                            continue;
+                                if (objXmlSpellNode == null)
+                                    continue;
 
-                        Spell objSpell = new Spell(CharacterObject);
-                        string strForceValue = objXmlSpell.Attributes?["select"]?.InnerText ?? string.Empty;
-                        objSpell.Create(objXmlSpellNode, strForceValue);
-                        CharacterObject.Spells.Add(objSpell);
+                                Spell objSpell = new Spell(CharacterObject);
+                                string strForceValue = objXmlSpell.Attributes?["select"]?.InnerText ?? string.Empty;
+                                objSpell.Create(objXmlSpellNode, strForceValue);
+                                CharacterObject.Spells.Add(objSpell);
+                            }
+                        }
                     }
                 }
             }
@@ -12891,16 +12929,25 @@ namespace Chummer
             XmlNode xmlSpirits = objXmlKit["spirits"];
             if (xmlSpirits != null)
             {
-                foreach (XmlNode objXmlSpirit in xmlSpirits.SelectNodes("spirit"))
+                using (XmlNodeList xmlSpiritsList = xmlSpirits.SelectNodes("spirit"))
                 {
-                    Spirit objSpirit = new Spirit(CharacterObject)
+                    if (xmlSpiritsList?.Count > 0)
                     {
-                        EntityType = SpiritType.Spirit,
-                        Name = objXmlSpirit["name"].InnerText,
-                        Force = Convert.ToInt32(objXmlSpirit["force"].InnerText, GlobalOptions.InvariantCultureInfo),
-                        ServicesOwed = Convert.ToInt32(objXmlSpirit["services"].InnerText, GlobalOptions.InvariantCultureInfo)
-                    };
-                    CharacterObject.Spirits.Add(objSpirit);
+                        foreach (XmlNode objXmlSpirit in xmlSpiritsList)
+                        {
+                            Spirit objSpirit = new Spirit(CharacterObject)
+                            {
+                                EntityType = SpiritType.Spirit,
+                                Name = objXmlSpirit["name"].InnerText,
+                                Force =
+                                    Convert.ToInt32(objXmlSpirit["force"].InnerText,
+                                        GlobalOptions.InvariantCultureInfo),
+                                ServicesOwed = Convert.ToInt32(objXmlSpirit["services"].InnerText,
+                                    GlobalOptions.InvariantCultureInfo)
+                            };
+                            CharacterObject.Spirits.Add(objSpirit);
+                        }
+                    }
                 }
             }
 

@@ -851,6 +851,7 @@ namespace Chummer.Backend.Skills
             get => false;
             set
             {
+                // Dummy setter that is only set up so that Language skills can have a setter that is functional
             }
         }
 

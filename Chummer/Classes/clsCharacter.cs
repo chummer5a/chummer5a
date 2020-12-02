@@ -3788,6 +3788,7 @@ namespace Chummer
                                 foreach (InitiationGrade objInitiationGrade in InitiationGrades)
                                 {
                                     if (!objInitiationGrade.Technomancer
+                                        // (x + (n-1)) / n pattern is deliberate, integer division that rounds up instead of down
                                         || (objInitiationGrade.Grade + 1) / 2 > objCyberadeptImprovement.Value
                                         || Metamagics.Any(x => x.Grade == objInitiationGrade.Grade)
                                         || lstCyberadeptSweepGrades.All(x => x.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon
