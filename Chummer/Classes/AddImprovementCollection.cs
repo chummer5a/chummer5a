@@ -1756,7 +1756,7 @@ namespace Chummer.Classes
 
                 if (xmlGearDataNode == null)
                     throw new AbortedException();
-                int intRating = 1;
+                int intRating = 0;
                 string strTemp = string.Empty;
                 if (xmlGearNode.TryGetStringFieldQuickly("rating", ref strTemp))
                     intRating = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);

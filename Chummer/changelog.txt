@@ -10,6 +10,7 @@ Application Fixes:
 - Upgrading cyberware that is a part of another piece of cyberware no longer causes the cyberware selector form to display an empty list.
 - Mastery qualities that are not purchased traditionally no longer deduct free spell points.
 - Chummer now properly registers attempts to join a technomancer network/tribe in Career mode.
+- Improvements that add gear without a rating no longer add that gear with a rating of 1.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
