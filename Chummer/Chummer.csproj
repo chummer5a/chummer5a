@@ -1537,9 +1537,6 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="Backend\Attributes\Attribute.Core.cs" />
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Chummer_TemporaryKey.pfx" />
     <None Include="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
