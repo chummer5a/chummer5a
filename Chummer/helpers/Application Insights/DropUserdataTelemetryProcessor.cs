@@ -46,6 +46,11 @@ namespace Chummer
                 Next.Process(item);
                 return;
             }
+            if (item is PageViewTelemetry
+                    || item is PageViewPerformanceTelemetry)
+            {
+                return;
+            }
             if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
             {
                 if (item is ExceptionTelemetry exceptionTelemetry)

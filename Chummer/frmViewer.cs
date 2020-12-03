@@ -26,6 +26,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -644,7 +645,13 @@ namespace Chummer
                         }
                     }
                 }
-                catch (Exception)
+                catch (UnauthorizedAccessException)
+                {
+                }
+                catch (IOException)
+                {
+                }
+                catch (SecurityException)
                 {
                 }
 
@@ -684,7 +691,13 @@ namespace Chummer
                         }
                     }
                 }
-                catch (Exception)
+                catch (UnauthorizedAccessException)
+                {
+                }
+                catch (IOException)
+                {
+                }
+                catch (SecurityException)
                 {
                 }
             }

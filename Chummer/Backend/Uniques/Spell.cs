@@ -297,10 +297,18 @@ namespace Chummer
         public string Descriptors
         {
             get => _strDescriptors;
-            set => _strDescriptors = value;
+            set
+            {
+                if (_strDescriptors == value)
+                    return;
+                _strDescriptors = value;
+                HashDescriptors.Clear();
+                foreach (string strDescriptor in Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                    HashDescriptors.Add(strDescriptor);
+            }
         }
 
-        private HashSet<string> _hashDescriptors => new HashSet<string>(Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
+        public HashSet<string> HashDescriptors => new HashSet<string>(Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
 
         /// <summary>
         /// Translated Descriptors.
@@ -312,9 +320,9 @@ namespace Chummer
             StringBuilder objReturn = new StringBuilder();
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             bool blnExtendedFound = false;
-            if (_hashDescriptors.Count > 0)
+            if (HashDescriptors.Count > 0)
             {
-                foreach (string strDescriptor in _hashDescriptors)
+                foreach (string strDescriptor in HashDescriptors)
                 {
                     switch (strDescriptor.Trim())
                     {
@@ -924,27 +932,26 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SpellDescriptorDrain:
                     case Improvement.ImprovementType.SpellDescriptorDamage:
-                        if (_hashDescriptors.Count > 0)
+                        if (HashDescriptors.Count > 0)
                         {
-                            HashSet<string> _hashImp = new HashSet<string>(objImprovement.ImprovedName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
-                            bool allow = false;
-                            foreach (string hash in _hashImp)
+                            bool blnAllow = false;
+                            foreach (string strDescriptor in objImprovement.ImprovedName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                if (hash.StartsWith("NOT", StringComparison.Ordinal))
+                                if (strDescriptor.StartsWith("NOT", StringComparison.Ordinal))
                                 {
-                                    if (_hashDescriptors.Contains(hash.TrimStartOnce("NOT(").TrimEndOnce(')')))
+                                    if (HashDescriptors.Contains(strDescriptor.TrimStartOnce("NOT(").TrimEndOnce(')')))
                                     {
-                                        allow = false;
+                                        blnAllow = false;
                                         break;
                                     }
                                 }
                                 else
                                 {
-                                    allow = _hashDescriptors.Contains(hash);
+                                    blnAllow = HashDescriptors.Contains(strDescriptor);
                                 }
                             }
 
-                            if (allow)
+                            if (blnAllow)
                             {
                                 yield return objImprovement;
                                 if (blnExitAfterFirst)

@@ -85,8 +85,8 @@ namespace Chummer.Backend.Uniques
 
         public void ResetTradition()
         {
-            Bonus = null;
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId);
+            Bonus = null;
             Name = string.Empty;
             Extra = string.Empty;
             Source = string.Empty;
@@ -138,10 +138,10 @@ namespace Chummer.Backend.Uniques
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
             }
             */

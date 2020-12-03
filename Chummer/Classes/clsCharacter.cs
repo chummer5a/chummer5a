@@ -815,9 +815,9 @@ namespace Chummer
             if (blnDoEncumbranceRefresh)
             {
                 if (dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
-                    setChangedProperties.Add(nameof(ArmorRating));
+                    setChangedProperties.Add(nameof(GetArmorRating));
                 else
-                    dicChangedProperties.Add(this, new HashSet<string> { nameof(ArmorRating) });
+                    dicChangedProperties.Add(this, new HashSet<string> { nameof(GetArmorRating) });
             }
             foreach (INotifyMultiplePropertyChanged objToProcess in dicChangedProperties.Keys)
             {
@@ -1056,7 +1056,7 @@ namespace Chummer
                 {
                     Name = objXmlNaturalWeapon["name"].InnerText,
                     Category = LanguageManager.GetString("Tab_Critter"),
-                    WeaponType = "Melee",
+                    RangeType = "Melee",
                     Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"]?.InnerText, GlobalOptions.InvariantCultureInfo),
                     Damage = objXmlNaturalWeapon["damage"].InnerText,
                     AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
@@ -3805,6 +3805,7 @@ namespace Chummer
                                 foreach (InitiationGrade objInitiationGrade in InitiationGrades)
                                 {
                                     if (!objInitiationGrade.Technomancer
+                                        // (x + (n-1)) / n pattern is deliberate, integer division that rounds up instead of down
                                         || (objInitiationGrade.Grade + 1) / 2 > objCyberadeptImprovement.Value
                                         || Metamagics.Any(x => x.Grade == objInitiationGrade.Grade)
                                         || lstCyberadeptSweepGrades.All(x => x.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon
@@ -10323,98 +10324,135 @@ namespace Chummer
 
         #region Armor Properties
 
-        /// <summary>
-        /// The Character's highest Armor Rating.
-        /// </summary>
-        public int ArmorRating
+        public int GetArmorRating(Improvement.ImprovementType eDamageType = Improvement.ImprovementType.Armor)
         {
-            get
+            return GetArmorRatingWithImprovement(eDamageType, out int _);
+        }
+
+        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromArmorImprovements)
+        {
+            intFromArmorImprovements = 0;
+            List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
+            if (lstArmorsToConsider.Count == 0)
+                return 0;
+            decimal decBaseArmorImprovement = 0;
+            if (eDamageType != Improvement.ImprovementType.None)
             {
-                List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped && objArmor.Encumbrance).ToList();
-                if (lstArmorsToConsider.Count == 0)
-                    return 0;
-                Armor objHighestArmor = null;
-                int intHighest = 0;
-                int intHighestNoCustomStack = 0;
-                int intTotalClothing = 0;
-                // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                // This is used for Custom-Fit armour's stacking.
-                foreach (Armor objArmor in lstArmorsToConsider)
+                decBaseArmorImprovement += ImprovementManager.ValueOf(this, eDamageType);
+                if (eDamageType != Improvement.ImprovementType.Armor)
+                    decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
+            }
+            Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(objArmor => objArmor, objArmor => decBaseArmorImprovement);
+            foreach (Improvement objImprovement in Improvements)
+            {
+                if ((objImprovement.ImproveSource == Improvement.ImprovementSource.Armor
+                     || objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod)
+                    && (objImprovement.ImproveType == Improvement.ImprovementType.Armor
+                    || objImprovement.ImproveType == eDamageType)
+                    && objImprovement.Enabled)
                 {
-                    if ((objArmor.ArmorValue.StartsWith('+')
-                         || objArmor.ArmorValue.StartsWith('-'))
-                        && objArmor.Category != "Clothing")
-                        continue;
-                    int intArmorValue = objArmor.TotalArmor;
-                    int intCustomStackBonus = 0;
-                    string strArmorName = objArmor.Name;
-                    foreach (Armor objInnerArmor in lstArmorsToConsider)
+                    Armor objSourceArmor =
+                        lstArmorsToConsider.FirstOrDefault(x => x.InternalId == objImprovement.SourceName)
+                        ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
+                    foreach (Armor objArmor in lstArmorsToConsider)
                     {
-                        if (objInnerArmor == objArmor)
-                            continue;
-                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
-                            continue;
-                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                                  && objMod.Extra == strArmorName
-                                                                  && objMod.Equipped))
-                            intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
-                    }
-
-                    if (objArmor.Category == "Clothing")
-                        intTotalClothing += intArmorValue + intCustomStackBonus;
-                    else if (intArmorValue + intCustomStackBonus > intHighest)
-                    {
-                        intHighest = intArmorValue + intCustomStackBonus;
-                        intHighestNoCustomStack = intArmorValue;
-                        objHighestArmor = objArmor;
+                        if (objArmor != objSourceArmor)
+                            dicArmorImprovementValues[objArmor] -= objImprovement.Value;
                     }
                 }
+            }
 
-                int intArmor = intHighestNoCustomStack;
-
-                if (intTotalClothing > intHighest)
+            Armor objHighestArmor = null;
+            int intHighest = 0;
+            int intHighestNoCustomStack = 0;
+            int intTotalClothing = 0;
+            int intHighestClothingBonus = 0;
+            // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
+            // This is used for Custom-Fit armour's stacking.
+            foreach (Armor objArmor in lstArmorsToConsider)
+            {
+                if ((objArmor.ArmorValue.StartsWith('+')
+                     || objArmor.ArmorValue.StartsWith('-'))
+                    && objArmor.Category != "Clothing")
+                    continue;
+                int intArmorValue = objArmor.TotalArmor
+                                    + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor)
+                                                                      + dicArmorImprovementValues[objArmor]));
+                int intCustomStackBonus = 0;
+                string strArmorName = objArmor.Name;
+                foreach (Armor objInnerArmor in lstArmorsToConsider)
                 {
-                    objHighestArmor = null;
-                    intArmor = intTotalClothing;
+                    if (objInnerArmor == objArmor)
+                        continue;
+                    if (!objInnerArmor.ArmorOverrideValue.StartsWith('+') && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                        continue;
+                    if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                              && objMod.Extra == strArmorName
+                                                              && objMod.Equipped))
+                        intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
                 }
 
-                // Run through the list of Armor currently worn again and look at non-Clothing items that start with '+' since they stack with the highest Armor.
-                int intStacking = 0;
-                foreach (Armor objArmor in lstArmorsToConsider)
+                if (objArmor.Category == "Clothing")
                 {
-                    if (!objArmor.ArmorValue.StartsWith('+')
-                        && !objArmor.ArmorValue.StartsWith('-')
-                        && !objArmor.ArmorOverrideValue.StartsWith('+')
-                        && !objArmor.ArmorOverrideValue.StartsWith('-')
-                        || objArmor.Category == "Clothing"
-                        || objArmor == objHighestArmor)
-                        continue;
-                    bool blnDoAdd = true;
-                    bool blnCustomFit = false;
-                    if (objHighestArmor != null)
+                    int intSpecialArmor = intArmorValue - objArmor.TotalArmor;
+                    intTotalClothing += intArmorValue - intSpecialArmor + intCustomStackBonus;
+                    if (intSpecialArmor > intHighestClothingBonus)
+                        intHighestClothingBonus = intSpecialArmor;
+                }
+                else if (intArmorValue + intCustomStackBonus > intHighest)
+                {
+                    intHighest = intArmorValue + intCustomStackBonus;
+                    intFromArmorImprovements = intHighest - objArmor.TotalArmor;
+                    intHighestNoCustomStack = intArmorValue;
+                    objHighestArmor = objArmor;
+                }
+            }
+
+            int intArmor = intHighestNoCustomStack;
+
+            if (intTotalClothing + intHighestClothingBonus > intHighest)
+            {
+                objHighestArmor = null;
+                intArmor = intTotalClothing + intHighestClothingBonus;
+                intFromArmorImprovements = intHighestClothingBonus;
+            }
+
+            // Run through the list of Armor currently worn again and look at non-Clothing items that start with '+' since they stack with the highest Armor.
+            int intStacking = 0;
+            foreach (Armor objArmor in lstArmorsToConsider)
+            {
+                if (!objArmor.ArmorValue.StartsWith('+')
+                    && !objArmor.ArmorValue.StartsWith('-')
+                    && !objArmor.ArmorOverrideValue.StartsWith('+')
+                    && !objArmor.ArmorOverrideValue.StartsWith('-')
+                    || objArmor.Category == "Clothing"
+                    || objArmor == objHighestArmor)
+                    continue;
+                bool blnDoAdd = true;
+                bool blnCustomFit = false;
+                if (objHighestArmor != null)
+                {
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
                     {
-                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        if (objMod.Name == "Custom Fit (Stack)")
                         {
-                            if (objMod.Name == "Custom Fit (Stack)")
-                            {
-                                blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
-                                blnCustomFit = true;
-                                break;
-                            }
+                            blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
+                            blnCustomFit = true;
+                            break;
                         }
                     }
-
-                    if (blnDoAdd)
-                    {
-                        if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
-                            intStacking += objArmor.TotalArmor;
-                        else
-                            intStacking += objArmor.TotalOverrideArmor;
-                    }
                 }
 
-                return intArmor + intStacking;
+                if (blnDoAdd)
+                {
+                    if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
+                        intStacking += objArmor.TotalArmor;
+                    else
+                        intStacking += objArmor.TotalOverrideArmor;
+                }
             }
+
+            return intArmor + intStacking;
         }
 
         public int DamageResistancePool =>
@@ -10521,8 +10559,8 @@ namespace Chummer
         #endregion
         #region Indirect Soak
         public int SpellDefenseIndirectSoak =>
-            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + ArmorRating
-            + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance) + ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance)));
+            (IsAI ? (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0) : BOD.TotalValue) + GetArmorRating(Improvement.ImprovementType.SpellResistance)
+            + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this,Improvement.ImprovementType.DamageResistance)));
 
         public string DisplaySpellDefenseIndirectSoak => CurrentCounterspellingDice == 0
             ? SpellDefenseIndirectSoak.ToString(GlobalOptions.CultureInfo)
@@ -11088,12 +11126,26 @@ namespace Chummer
             }
         }
 
+        private int _intCachedTotalArmorRating = int.MinValue;
+        private int _intCachedTotalFireArmorRating = int.MinValue;
+        private int _intCachedTotalColdArmorRating = int.MinValue;
+        private int _intCachedTotalElectricityArmorRating = int.MinValue;
+        private int _intCachedTotalAcidArmorRating = int.MinValue;
+        private int _intCachedTotalFallingArmorRating = int.MinValue;
+
         /// <summary>
         /// The Character's total Armor Rating.
         /// </summary>
         [HubTag]
-        public int TotalArmorRating =>
-            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor)));
+        public int TotalArmorRating
+        {
+            get
+            {
+                if (_intCachedTotalArmorRating == int.MinValue)
+                    _intCachedTotalArmorRating = GetArmorRating();
+                return _intCachedTotalArmorRating;
+            }
+        }
 
         public string TotalArmorRatingToolTip
         {
@@ -11101,11 +11153,17 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 StringBuilder sbdToolTip = new StringBuilder(LanguageManager.GetString("Tip_Armor"))
-                    .Append(strSpace).Append('(').Append(ArmorRating.ToString(GlobalOptions.CultureInfo)).Append(')');
+                    .Append(strSpace).Append('(')
+                    .Append((GetArmorRatingWithImprovement(Improvement.ImprovementType.Armor, out int intFromHighestArmorImprovements)
+                             - decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor)))
+                             + intFromHighestArmorImprovements).ToString(GlobalOptions.CultureInfo))
+                    .Append(')');
                 foreach (Improvement objLoopImprovement in Improvements)
                 {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor &&
-                        objLoopImprovement.Enabled)
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.Armor
+                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.Armor
+                        && objLoopImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod
+                        && objLoopImprovement.Enabled)
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
                             .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -11119,32 +11177,67 @@ namespace Chummer
         /// <summary>
         /// The Character's total Armor Rating against Fire attacks.
         /// </summary>
-        public int TotalFireArmorRating =>
-            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FireArmor)));
+        public int TotalFireArmorRating
+        {
+            get
+            {
+                if (_intCachedTotalFireArmorRating == int.MinValue)
+                    _intCachedTotalFireArmorRating = GetArmorRating(Improvement.ImprovementType.FireArmor);
+                return _intCachedTotalFireArmorRating;
+            }
+        }
 
         /// <summary>
         /// The Character's total Armor Rating against Cold attacks.
         /// </summary>
-        public int TotalColdArmorRating =>
-            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ColdArmor)));
+        public int TotalColdArmorRating
+        {
+            get
+            {
+                if (_intCachedTotalColdArmorRating == int.MinValue)
+                    _intCachedTotalColdArmorRating = GetArmorRating(Improvement.ImprovementType.ColdArmor);
+                return _intCachedTotalColdArmorRating;
+            }
+        }
 
         /// <summary>
         /// The Character's total Armor Rating against Electricity attacks.
         /// </summary>
-        public int TotalElectricityArmorRating =>
-            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ElectricityArmor)));
+        public int TotalElectricityArmorRating
+        {
+            get
+            {
+                if (_intCachedTotalElectricityArmorRating == int.MinValue)
+                    _intCachedTotalElectricityArmorRating = GetArmorRating(Improvement.ImprovementType.ElectricityArmor);
+                return _intCachedTotalElectricityArmorRating;
+            }
+        }
 
         /// <summary>
         /// The Character's total Armor Rating against Acid attacks.
         /// </summary>
-        public int TotalAcidArmorRating =>
-            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AcidArmor)));
+        public int TotalAcidArmorRating
+        {
+            get
+            {
+                if (_intCachedTotalAcidArmorRating == int.MinValue)
+                    _intCachedTotalAcidArmorRating = GetArmorRating(Improvement.ImprovementType.AcidArmor);
+                return _intCachedTotalAcidArmorRating;
+            }
+        }
 
         /// <summary>
         /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
         /// </summary>
-        public int TotalFallingArmorRating =>
-            ArmorRating + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor) + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FallingArmor)));
+        public int TotalFallingArmorRating
+        {
+            get
+            {
+                if (_intCachedTotalFallingArmorRating == int.MinValue)
+                    _intCachedTotalFallingArmorRating = GetArmorRating(Improvement.ImprovementType.FallingArmor);
+                return _intCachedTotalFallingArmorRating;
+            }
+        }
 
         /// <summary>
         /// The Character's total bonus to Dodge Rating (to add on top of REA + INT).
@@ -15304,9 +15397,7 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DamageResistancePoolToolTip),
                         new DependencyGraphNode<string, Character>(nameof(DamageResistancePool),
-                            new DependencyGraphNode<string, Character>(nameof(TotalArmorRating),
-                                new DependencyGraphNode<string, Character>(nameof(ArmorRating))
-                            ),
+                            new DependencyGraphNode<string, Character>(nameof(TotalArmorRating)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
                             new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI)
                         )
@@ -15495,22 +15586,26 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(SpellDefenseManipulationPhysical))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(TotalArmorRatingToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(TotalArmorRating))
+                        new DependencyGraphNode<string, Character>(nameof(TotalArmorRating),
+                            new DependencyGraphNode<string, Character>(nameof(GetArmorRating),
+                                new DependencyGraphNode<string, Character>(nameof(GetArmorRatingWithImprovement))
+                            )
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(TotalFireArmorRating),
-                        new DependencyGraphNode<string, Character>(nameof(TotalArmorRating))
+                        new DependencyGraphNode<string, Character>(nameof(GetArmorRating))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(TotalColdArmorRating),
-                        new DependencyGraphNode<string, Character>(nameof(TotalArmorRating))
+                        new DependencyGraphNode<string, Character>(nameof(GetArmorRating))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(TotalElectricityArmorRating),
-                        new DependencyGraphNode<string, Character>(nameof(TotalArmorRating))
+                        new DependencyGraphNode<string, Character>(nameof(GetArmorRating))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(TotalAcidArmorRating),
-                        new DependencyGraphNode<string, Character>(nameof(TotalArmorRating))
+                        new DependencyGraphNode<string, Character>(nameof(GetArmorRating))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(TotalFallingArmorRating),
-                        new DependencyGraphNode<string, Character>(nameof(TotalArmorRating))
+                        new DependencyGraphNode<string, Character>(nameof(GetArmorRating))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayEssence),
                         new DependencyGraphNode<string, Character>(nameof(Essence),
@@ -15785,14 +15880,39 @@ namespace Chummer
                 _intCachedContactPoints = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(TrustFund)))
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))
             {
-                _intCachedTrustFund = int.MinValue;
+                _intCachedTotalArmorRating = int.MinValue;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalFireArmorRating)))
             {
-                _intCachedAmbidextrous = int.MinValue;
+                _intCachedTotalFireArmorRating = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalColdArmorRating)))
+            {
+                _intCachedTotalColdArmorRating = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalElectricityArmorRating)))
+            {
+                _intCachedTotalElectricityArmorRating = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalAcidArmorRating)))
+            {
+                _intCachedTotalAcidArmorRating = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalFallingArmorRating)))
+            {
+                _intCachedTotalFallingArmorRating = int.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(TrustFund)))
+            {
+                _intCachedTrustFund = int.MinValue;
             }
 
             if(lstNamesOfChangedProperties.Contains(nameof(RestrictedGear)))

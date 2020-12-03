@@ -117,6 +117,7 @@ namespace Chummer
 
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SuspendLayout();
             // Load the Priority information.
             CharacterOptions objSelectedGameplayOption = cboCharacterOption.SelectedValue as CharacterOptions;
             if (objSelectedGameplayOption != null)
@@ -162,6 +163,7 @@ namespace Chummer
 
             if (_blnLockBuildMethod)
                 cmdOK.Enabled = objSelectedGameplayOption?.BuildMethod == _eStartingBuildMethod;
+            ResumeLayout();
         }
         #endregion
     }

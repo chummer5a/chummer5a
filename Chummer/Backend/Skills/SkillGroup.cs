@@ -585,11 +585,11 @@ namespace Chummer.Backend.Skills
             get
             {
                 if (_objCharacter.Created && !CareerIncrease)
-                {
                     return LanguageManager.GetString("Label_SkillGroup_Broken");
-                }
-
-                return SkillList.Any(x => x.Enabled && x.TotalBaseRating > 0) ? SkillList.Where(x => x.Enabled).Min(x => x.TotalBaseRating).ToString(GlobalOptions.CultureInfo) : 0.ToString(GlobalOptions.CultureInfo);
+                List<Skill> lstEnabledSkills = SkillList.Where(x => x.Enabled).ToList();
+                return lstEnabledSkills.Count > 1
+                    ? lstEnabledSkills.Min(x => x.TotalBaseRating).ToString(GlobalOptions.CultureInfo)
+                    : 0.ToString(GlobalOptions.CultureInfo);
             }
         }
 

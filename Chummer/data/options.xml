@@ -51,6 +51,10 @@
       <value>/A "page={page}" "{localpath}"</value>
     </pdfargument>
     <pdfargument>
+      <name>Acrobat-style - New instance</name>
+      <value>/A /N "page={page}" "{localpath}"</value>
+    </pdfargument>
+    <pdfargument>
       <name>Unix-style</name>
       <value>-p {page} "{localpath}"</value>
     </pdfargument>

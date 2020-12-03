@@ -640,7 +640,7 @@ namespace Chummer.Backend.Skills
 
         public bool Leveled => Rating > 0;
 
-        public Color PreferredControlColor => Leveled && Enabled ? ColorManager.Control : ColorManager.ControlDarker;
+        public Color PreferredControlColor => Leveled && Enabled ? ColorManager.Control : ColorManager.ControlLighter;
 
         private int _intCachedCanHaveSpecs = -1;
 
@@ -852,6 +852,7 @@ namespace Chummer.Backend.Skills
             get => false;
             set
             {
+                // Dummy setter that is only set up so that Language skills can have a setter that is functional
             }
         }
 

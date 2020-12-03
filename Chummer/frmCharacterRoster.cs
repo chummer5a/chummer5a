@@ -39,9 +39,6 @@ namespace Chummer
     public partial class frmCharacterRoster : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        //private readonly ConcurrentDictionary<string, CharacterCache> _lstCharacterCache = new ConcurrentDictionary<string, CharacterCache>();
-
-        //public ConcurrentDictionary<string, CharacterCache> MyCharacterCacheDic { get { return _lstCharacterCache; } }
 
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
         private bool _blnSkipUpdate = true;
@@ -111,7 +108,7 @@ namespace Chummer
             SetMyEventHandlers(true);
         }
 
-        public void RefreshWatchListOnly(object sender, EventArgs e)
+        private void RefreshWatchListOnly(object sender, EventArgs e)
         {
             if(_blnSkipUpdate)
                 return;
@@ -159,18 +156,19 @@ namespace Chummer
                     if (objCharacterNode.Tag is CharacterCache objCache)
                     {
                         objCharacterNode.Text = objCache.CalculatedName();
-                        objCharacterNode.ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
-                            () => '<' + Application.ProductName + '>');
+                        StringBuilder sbdTooltip = new StringBuilder(objCache.FilePath.CheapReplace(
+                            Utils.GetStartupPath,
+                            () => '<' + Application.ProductName + '>'));
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             objCharacterNode.ForeColor = ColorManager.ErrorColor;
-                            objCharacterNode.ToolTipText += new StringBuilder()
-                                .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                            sbdTooltip.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
                                 .AppendLine(LanguageManager.GetString("String_Colon"))
-                                .Append(objCache.ErrorText).ToString();
+                                .Append(objCache.ErrorText);
                         }
                         else
                             objCharacterNode.ForeColor = ColorManager.WindowText;
+                        objCharacterNode.ToolTipText = sbdTooltip.ToString();
                     }
                 }
             }

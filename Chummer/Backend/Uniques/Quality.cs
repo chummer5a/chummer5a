@@ -263,7 +263,7 @@ namespace Chummer
                         if (objXmlNaturalWeapon["name"] != null)
                             objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
                         objWeapon.Category = LanguageManager.GetString("Tab_Critter");
-                        objWeapon.WeaponType = "Melee";
+                        objWeapon.RangeType = "Melee";
                         if (objXmlNaturalWeapon["reach"] != null)
                             objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText, GlobalOptions.InvariantCultureInfo);
                         if (objXmlNaturalWeapon["accuracy"] != null)
@@ -327,7 +327,7 @@ namespace Chummer
                 if (objXmlQuality.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) && !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strQualityNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
+                string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -341,7 +341,7 @@ namespace Chummer
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), strTranslatedNameOnPage, _objCharacter);
+                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else

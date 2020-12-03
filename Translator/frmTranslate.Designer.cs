@@ -28,11 +28,12 @@ namespace Translator
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTranslate));
             this.cboFile = new System.Windows.Forms.ComboBox();
             this.dgvSection = new System.Windows.Forms.DataGridView();
             this.dgvTranslate = new System.Windows.Forms.DataGridView();
@@ -50,25 +51,22 @@ namespace Translator
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.pbTranslateProgressBar = new System.Windows.Forms.ProgressBar();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlMain = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTranslate)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.tlpMain.SuspendLayout();
+            this.pnlMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboFile
             // 
-            this.cboFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFile.FormattingEnabled = true;
-            this.cboFile.Location = new System.Drawing.Point(3, 3);
+            this.cboFile.Location = new System.Drawing.Point(3, 4);
             this.cboFile.Name = "cboFile";
-            this.cboFile.Size = new System.Drawing.Size(305, 21);
+            this.cboFile.Size = new System.Drawing.Size(321, 21);
             this.cboFile.TabIndex = 8;
             this.cboFile.SelectedIndexChanged += new System.EventHandler(this.cboFile_SelectedIndexChanged);
             // 
@@ -91,7 +89,7 @@ namespace Translator
             this.dgvSection.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvSection_CellMouseUp);
             this.dgvSection.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSection_CellValueChanged);
             this.dgvSection.Sorted += new System.EventHandler(this.dgvSection_Sorted);
-            this.dgvSection.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvSection_KeyDown);
+            this.dgvSection.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTranslate_KeyDown);
             // 
             // dgvTranslate
             // 
@@ -110,14 +108,14 @@ namespace Translator
             this.dgvTranslate.TabIndex = 14;
             this.dgvTranslate.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTranslate_CellValueChanged);
             this.dgvTranslate.Sorted += new System.EventHandler(this.dgvTranslate_Sorted);
-            this.dgvTranslate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTranslate_KeyDown);
+            this.dgvTranslate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTranslate_KeyDown);
             // 
             // key
             // 
             this.key.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.key.DataPropertyName = "key";
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.key.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.key.DefaultCellStyle = dataGridViewCellStyle1;
             this.key.HeaderText = "Key";
             this.key.Name = "key";
             this.key.ReadOnly = true;
@@ -127,8 +125,8 @@ namespace Translator
             // 
             this.english.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.english.DataPropertyName = "english";
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.english.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.english.DefaultCellStyle = dataGridViewCellStyle2;
             this.english.HeaderText = "English";
             this.english.Name = "english";
             this.english.ReadOnly = true;
@@ -138,8 +136,8 @@ namespace Translator
             // 
             this.text.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.text.DataPropertyName = "text";
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.text.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.text.DefaultCellStyle = dataGridViewCellStyle3;
             this.text.HeaderText = "Text";
             this.text.Name = "text";
             this.text.Width = 400;
@@ -156,10 +154,10 @@ namespace Translator
             // chkOnlyTranslation
             // 
             this.chkOnlyTranslation.AutoSize = true;
-            this.chkOnlyTranslation.Location = new System.Drawing.Point(625, 4);
-            this.chkOnlyTranslation.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkOnlyTranslation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkOnlyTranslation.Location = new System.Drawing.Point(657, 3);
             this.chkOnlyTranslation.Name = "chkOnlyTranslation";
-            this.chkOnlyTranslation.Size = new System.Drawing.Size(199, 17);
+            this.chkOnlyTranslation.Size = new System.Drawing.Size(199, 23);
             this.chkOnlyTranslation.TabIndex = 10;
             this.chkOnlyTranslation.Text = "Only Show Text Needing Translation";
             this.chkOnlyTranslation.UseVisualStyleBackColor = true;
@@ -167,13 +165,12 @@ namespace Translator
             // 
             // cboSection
             // 
-            this.cboSection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSection.FormattingEnabled = true;
-            this.cboSection.Location = new System.Drawing.Point(314, 3);
+            this.cboSection.Location = new System.Drawing.Point(330, 4);
             this.cboSection.Name = "cboSection";
-            this.cboSection.Size = new System.Drawing.Size(305, 21);
+            this.cboSection.Size = new System.Drawing.Size(321, 21);
             this.cboSection.TabIndex = 9;
             this.cboSection.Visible = false;
             this.cboSection.SelectedIndexChanged += new System.EventHandler(this.cboSection_SelectedIndexChanged);
@@ -182,8 +179,8 @@ namespace Translator
             // 
             this.sectionEnglish.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.sectionEnglish.DataPropertyName = "english";
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.sectionEnglish.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.sectionEnglish.DefaultCellStyle = dataGridViewCellStyle4;
             this.sectionEnglish.HeaderText = "English";
             this.sectionEnglish.Name = "sectionEnglish";
             this.sectionEnglish.ReadOnly = true;
@@ -193,8 +190,8 @@ namespace Translator
             // 
             this.sectionText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.sectionText.DataPropertyName = "text";
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.sectionText.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.sectionText.DefaultCellStyle = dataGridViewCellStyle5;
             this.sectionText.HeaderText = "Text";
             this.sectionText.Name = "sectionText";
             this.sectionText.Width = 480;
@@ -225,22 +222,22 @@ namespace Translator
             // 
             // txtSearch
             // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(40, 4);
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(862, 4);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(200, 20);
+            this.txtSearch.Size = new System.Drawing.Size(321, 20);
             this.txtSearch.TabIndex = 11;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_GotFocus);
             this.txtSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPressed);
             // 
             // btnSearch
             // 
-            this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSearch.Location = new System.Drawing.Point(246, 3);
+            this.btnSearch.AutoSize = true;
+            this.btnSearch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnSearch.Location = new System.Drawing.Point(1189, 3);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(64, 23);
+            this.btnSearch.Size = new System.Drawing.Size(54, 23);
             this.btnSearch.TabIndex = 12;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -248,7 +245,7 @@ namespace Translator
             // 
             // pbTranslateProgressBar
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.pbTranslateProgressBar, 4);
+            this.tlpMain.SetColumnSpan(this.pbTranslateProgressBar, 5);
             this.pbTranslateProgressBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbTranslateProgressBar.Location = new System.Drawing.Point(3, 637);
             this.pbTranslateProgressBar.Name = "pbTranslateProgressBar";
@@ -256,62 +253,55 @@ namespace Translator
             this.pbTranslateProgressBar.Step = 1;
             this.pbTranslateProgressBar.TabIndex = 148;
             // 
-            // tableLayoutPanel1
+            // tlpMain
             // 
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.Controls.Add(this.pbTranslateProgressBar, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.cboFile, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkOnlyTranslation, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cboSection, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1246, 663);
-            this.tableLayoutPanel1.TabIndex = 149;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 5;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.Controls.Add(this.txtSearch, 3, 0);
+            this.tlpMain.Controls.Add(this.btnSearch, 4, 0);
+            this.tlpMain.Controls.Add(this.pbTranslateProgressBar, 0, 2);
+            this.tlpMain.Controls.Add(this.cboFile, 0, 0);
+            this.tlpMain.Controls.Add(this.chkOnlyTranslation, 2, 0);
+            this.tlpMain.Controls.Add(this.cboSection, 1, 0);
+            this.tlpMain.Controls.Add(this.pnlMain, 0, 1);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(1246, 663);
+            this.tlpMain.TabIndex = 149;
             // 
-            // flowLayoutPanel1
+            // pnlMain
             // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.btnSearch);
-            this.flowLayoutPanel1.Controls.Add(this.txtSearch);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(933, 0);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(313, 29);
-            this.flowLayoutPanel1.TabIndex = 149;
-            // 
-            // panel1
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.panel1, 4);
-            this.panel1.Controls.Add(this.dgvTranslate);
-            this.panel1.Controls.Add(this.dgvSection);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 29);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1246, 605);
-            this.panel1.TabIndex = 150;
+            this.pnlMain.AutoSize = true;
+            this.pnlMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.SetColumnSpan(this.pnlMain, 5);
+            this.pnlMain.Controls.Add(this.dgvTranslate);
+            this.pnlMain.Controls.Add(this.dgvSection);
+            this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMain.Location = new System.Drawing.Point(0, 29);
+            this.pnlMain.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlMain.Name = "pnlMain";
+            this.pnlMain.Size = new System.Drawing.Size(1246, 605);
+            this.pnlMain.TabIndex = 150;
             // 
             // frmTranslate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 681);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmTranslate";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Text = "frmTranslate";
@@ -320,12 +310,11 @@ namespace Translator
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmTranslate_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTranslate)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.panel1.ResumeLayout(false);
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
+            this.pnlMain.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -348,8 +337,7 @@ namespace Translator
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.ProgressBar pbTranslateProgressBar;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.Panel pnlMain;
     }
 }

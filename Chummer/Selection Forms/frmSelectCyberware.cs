@@ -938,24 +938,25 @@ namespace Chummer
             }
 
             string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
-            string strCategoryFilter = "(";
-            if (strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strCategoryFilter += "category = \"" + strCategory + '\"';
+            string strCategoryFilter = string.Empty;
+            if (strCategory != "Show All" && !Upgrading && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                strCategoryFilter = "category = \"" + strCategory + '\"';
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (ListItem objItem in cboCategory.Items)
                 {
                     string strItem = objItem.Value.ToString();
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"" + strItem + "\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strCategoryFilter += objCategoryFilter.ToString().TrimEndOnce(" or ");
+                    strCategoryFilter = sbdCategoryFilter.ToString().TrimEndOnce(" or ");
                 }
             }
-            strFilter += " and " + strCategoryFilter + " or category = \"None\")";
+            if (!string.IsNullOrEmpty(strCategoryFilter))
+                strFilter += " and (" + strCategoryFilter + " or category = \"None\")";
 
             if (ParentVehicle == null && _objCharacter.IsAI)
                 strFilter += " and (id = \"" + Cyberware.EssenceHoleGUID + "\" or id = \"" + Cyberware.EssenceAntiHoleGUID + "\" or mountsto)";
@@ -1434,7 +1435,7 @@ namespace Chummer
 
         private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDFFromControl(sender, e);
+            CommonFunctions.OpenPdfFromControl(sender, e);
         }
         #endregion
     }

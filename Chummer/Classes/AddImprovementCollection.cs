@@ -1756,7 +1756,7 @@ namespace Chummer.Classes
 
                 if (xmlGearDataNode == null)
                     throw new AbortedException();
-                int intRating = 1;
+                int intRating = 0;
                 string strTemp = string.Empty;
                 if (xmlGearNode.TryGetStringFieldQuickly("rating", ref strTemp))
                     intRating = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
@@ -1876,7 +1876,7 @@ namespace Chummer.Classes
             {
                 Name = bonusNode["name"]?.InnerText,
                 Category = LanguageManager.GetString("Tab_Critter"),
-                WeaponType = "Melee",
+                RangeType = "Melee",
                 Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText, GlobalOptions.InvariantCultureInfo),
                 Accuracy = bonusNode["accuracy"]?.InnerText,
                 Damage = bonusNode["damage"]?.InnerText,
@@ -3783,7 +3783,7 @@ namespace Chummer.Classes
             if (bonusNode.Attributes?["type"] != null)
             {
                 foreach (Weapon objWeapon in _objCharacter.Weapons.Where(weapon =>
-                    weapon.WeaponType == bonusNode.Attributes?["type"].InnerText))
+                    weapon.RangeType == bonusNode.Attributes?["type"].InnerText))
                 {
                     lstGeneralItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
                 }
@@ -5740,7 +5740,7 @@ namespace Chummer.Classes
                 string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
                 foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                 {
-                    if ((string.IsNullOrEmpty(strExclude) || objWeapon.WeaponType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
+                    if ((string.IsNullOrEmpty(strExclude) || objWeapon.RangeType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                     {
                         lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayNameShort(GlobalOptions.Language)));
                     }

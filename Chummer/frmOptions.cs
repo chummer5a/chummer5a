@@ -259,7 +259,7 @@ namespace Chummer
             if(string.IsNullOrEmpty(txtPDFLocation.Text))
                 return;
 
-            CommonFunctions.OpenPDF(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+            CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
         #endregion
 
@@ -519,7 +519,7 @@ namespace Chummer
                 }
             }
 
-            string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
+            string strOldSelected = cboDefaultCharacterOption.SelectedValue?.ToString();
 
             cboDefaultCharacterOption.BeginUpdate();
             cboDefaultCharacterOption.DataSource = null;

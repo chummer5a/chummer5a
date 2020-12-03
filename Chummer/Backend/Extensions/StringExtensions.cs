@@ -1134,6 +1134,42 @@ namespace Chummer
             return Guid.TryParse(strGuid, out Guid _);
         }
 
+        private static Dictionary<string, string> s_dicBadLigaturesMap = new Dictionary<string, string>
+        {
+            {"ﬀ", "ff"},
+            {"ﬃ", "ffi"},
+            {"ﬄ", "ffl"},
+            {"ﬁ", "fi"},
+            {"ﬂ", "fl"}
+        };
+
+        /// <summary>
+        /// Replace some of the bad ligatures that are present in Shadowrun sourcebooks with proper characters
+        /// </summary>
+        /// <param name="strInput">String to clean.</param>
+        /// <returns>Cleaned string with bad ligatures replaced with full latin characters</returns>
+        public static string CleanBadLigatures(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            string strReturn = strInput;
+            foreach (KeyValuePair<string, string> kvpBadLigature in s_dicBadLigaturesMap)
+                strReturn = strReturn.Replace(kvpBadLigature.Key, kvpBadLigature.Value);
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Replace some of the bad ligatures that are present in Shadowrun sourcebooks with proper characters
+        /// </summary>
+        /// <param name="sbdInput">StringBuilder to clean.</param>
+        public static void CleanBadLigatures(this StringBuilder sbdInput)
+        {
+            if (sbdInput == null)
+                throw new ArgumentNullException(nameof(sbdInput));
+            foreach (KeyValuePair<string, string> kvpBadLigature in s_dicBadLigaturesMap)
+                sbdInput.Replace(kvpBadLigature.Key, kvpBadLigature.Value);
+        }
+
         /// <summary>
         /// Word wraps the given text to fit within the specified width.
         /// </summary>

@@ -894,7 +894,7 @@ namespace Chummer
                 case ImprovementType.Armor:
                 {
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
-                        nameof(Character.TotalArmorRating));
+                        nameof(Character.GetArmorRating));
                 }
                     break;
                 case ImprovementType.FireArmor:

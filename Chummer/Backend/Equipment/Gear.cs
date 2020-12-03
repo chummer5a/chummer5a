@@ -63,6 +63,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strExtra = string.Empty;
         private string _strCanFormPersona = string.Empty;
+        private string _strAmmoForWeaponType = string.Empty;
         private bool _blnBonded;
         private bool _blnEquipped = true;
         private bool _blnWirelessOn;
@@ -189,7 +190,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
+                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -203,7 +204,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
+                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage, _objCharacter);
                     }
                 }
@@ -217,6 +218,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlGear.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlGear.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
+            objXmlGear.TryGetStringFieldQuickly("ammoforweapontype", ref _strAmmoForWeaponType);
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
@@ -301,58 +303,19 @@ namespace Chummer.Backend.Equipment
             string strSource = _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
             // If the Gear is Ammunition, ask the user to select a Weapon Category for it to be limited to.
-            if (_strCategory == "Ammunition" && (_strName.StartsWith("Ammo:", StringComparison.Ordinal)
-                                                 || _strName.StartsWith("Arrow:", StringComparison.Ordinal)
-                                                 || _strName.StartsWith("Bolt:", StringComparison.Ordinal)))
+            string strAmmoWeaponType = string.Empty;
+            bool blnDoExtra = false;
+            if (objXmlGear.TryGetStringFieldQuickly("ammoforweapontype", ref strAmmoWeaponType))
+                blnDoExtra = objXmlGear["ammoforweapontype"].Attributes?["noextra"]?.InnerText != bool.TrueString;
+            if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
             {
                 frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter)
                 {
-                    Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo")
+                    Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
+                    WeaponType = strAmmoWeaponType
                 };
                 if (!string.IsNullOrEmpty(_strForcedValue) && !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
                     frmPickWeaponCategory.OnlyCategory = _strForcedValue;
-
-                //should really go in a data file
-                if (_strName.StartsWith("Ammo:", StringComparison.Ordinal))
-                {
-                    if (_strName.StartsWith("Ammo: Assault Cannon", StringComparison.Ordinal)
-                        || _strName.StartsWith("Ammo: Gauss", StringComparison.Ordinal))
-                    {
-                        frmPickWeaponCategory.WeaponType = "cannon";
-                    }
-                    else if (_strName.StartsWith("Ammo: Taser Dart", StringComparison.Ordinal))
-                    {
-                        frmPickWeaponCategory.WeaponType = "taser";
-                    }
-                    else if (_strName.StartsWith("Ammo: Fuel Canister", StringComparison.Ordinal))
-                    {
-                        frmPickWeaponCategory.WeaponType = "flame";
-                    }
-                    else if (_strName.StartsWith("Ammo: Injection Dart", StringComparison.Ordinal))
-                    {
-                        frmPickWeaponCategory.WeaponType = "exotic";
-                    }
-                    else if (_strName.StartsWith("Ammo: DMSO Rounds", StringComparison.Ordinal))
-                    {
-                        frmPickWeaponCategory.WeaponType = "exotic";
-                    }
-                    else if (_strName.StartsWith("Ammo: Peak-Discharge", StringComparison.Ordinal))
-                    {
-                        frmPickWeaponCategory.WeaponType = "laser";
-                    }
-                    else
-                    {
-                        frmPickWeaponCategory.WeaponType = "gun";
-                    }
-                }
-                else if (_strName.StartsWith("Arrow:", StringComparison.Ordinal))
-                {
-                    frmPickWeaponCategory.WeaponType = "bow";
-                }
-                else if (_strName.StartsWith("Bolt:", StringComparison.Ordinal))
-                {
-                    frmPickWeaponCategory.WeaponType = "crossbow";
-                }
 
                 frmPickWeaponCategory.ShowDialog(Program.MainForm);
 
@@ -746,6 +709,7 @@ namespace Chummer.Backend.Equipment
             _strSource = objGear.Source;
             _strPage = objGear.Page;
             _strCanFormPersona = objGear.CanFormPersona;
+            _strAmmoForWeaponType = objGear.AmmoForWeaponType;
             _strExtra = objGear.Extra;
             _blnBonded = objGear.Bonded;
             _blnEquipped = objGear.Equipped;
@@ -834,6 +798,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("isflechetteammo", _blnIsFlechetteAmmo.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("ammoforweapontype", _strAmmoForWeaponType);
             objWriter.WriteElementString("canformpersona", _strCanFormPersona);
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("gearname", _strGearName);
@@ -943,6 +908,11 @@ namespace Chummer.Backend.Equipment
                 GetNode()?.TryGetBoolFieldQuickly("isflechetteammmo", ref _blnIsFlechetteAmmo);
                 if (_nodFlechetteWeaponBonus == null && _blnIsFlechetteAmmo)
                     _nodFlechetteWeaponBonus = GetNode()?["flechetteweaponbonus"];
+            }
+
+            if (!objNode.TryGetStringFieldQuickly("ammoforweapontype", ref _strAmmoForWeaponType))
+            {
+                GetNode()?.TryGetStringFieldQuickly("ammoforweapontype", ref _strAmmoForWeaponType);
             }
             bool blnNeedCommlinkLegacyShim = !objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
@@ -1715,6 +1685,12 @@ namespace Chummer.Backend.Equipment
         {
             get => _blnIsFlechetteAmmo;
             set => _blnIsFlechetteAmmo = value;
+        }
+
+        public string AmmoForWeaponType
+        {
+            get => _strAmmoForWeaponType;
+            set => _strAmmoForWeaponType = value;
         }
 
         /// <summary>

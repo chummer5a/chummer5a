@@ -155,7 +155,7 @@ namespace Chummer
                 {
                     Name = txtName.Text,
                     Category = LanguageManager.GetString("Tab_Critter"),
-                    WeaponType = "Melee",
+                    RangeType = "Melee",
                     Reach = decimal.ToInt32(nudReach.Value),
                     Damage = strDamage,
                     AP = strAP,

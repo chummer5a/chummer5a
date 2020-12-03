@@ -980,9 +980,7 @@
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
-      <bonus>
-        <nativelanguagelimit>1</nativelanguagelimit>
-      </bonus>
+      <bonus />
     </power>
     <power>
       <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>

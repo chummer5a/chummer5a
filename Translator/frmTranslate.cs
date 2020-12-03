@@ -72,16 +72,14 @@ namespace Translator
 
         private void RunQueuedWorkers(object sender, EventArgs e)
         {
-            if (_blnQueueSectionLoaderRun)
+            if (_blnQueueSectionLoaderRun && !_workerSectionLoader.IsBusy)
             {
-                if (!_workerSectionLoader.IsBusy)
-                    _workerSectionLoader.RunWorkerAsync();
+                _workerSectionLoader.RunWorkerAsync();
             }
 
-            if (_blnQueueStringsLoaderRun)
+            if (_blnQueueStringsLoaderRun && !_workerStringsLoader.IsBusy)
             {
-                if (!_workerStringsLoader.IsBusy)
-                    _workerStringsLoader.RunWorkerAsync();
+                _workerStringsLoader.RunWorkerAsync();
             }
         }
 
@@ -192,13 +190,13 @@ namespace Translator
 
         private void dgvSection_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if ((e.ColumnIndex == 4) && (e.RowIndex != -1))
+            if (e.ColumnIndex == 4 && e.RowIndex != -1)
                 dgvSection.EndEdit();
         }
 
         private void dgvSection_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (_blnLoading || (e.RowIndex < 0))
+            if (_blnLoading || e.RowIndex < 0)
                 return;
             DataGridViewRow item = dgvSection.Rows[e.RowIndex];
             bool flag = Convert.ToBoolean(item.Cells["Translated?"].Value);
@@ -209,7 +207,7 @@ namespace Translator
             string strSection = cboSection.Text;
             if (strSection == "[Show All Sections]")
                 strSection = "*";
-            string strBaseXPath = "/chummer/chummer[@file=\"" + cboFile.Text + "\"]/" + strSection + '/';
+            string strBaseXPath = "/chummer/chummer[@file=\"" + cboFile.Text + "\"]/" + strSection;
             if (cboFile.Text == "tips.xml")
             {
                 XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
@@ -245,7 +243,7 @@ namespace Translator
                                        _objDataDoc.SelectSingleNode(strBaseXPath + "/name[text()=\"" + strEnglish + "\"]/..");
                 if (xmlNodeLocal == null)
                 {
-                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "*[text()=\"" + strEnglish + "\"]");
+                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text()=\"" + strEnglish + "\"]");
                     if (xmlNodeLocal?.Attributes != null)
                     {
                         xmlNodeLocal.Attributes["translate"].InnerText = strTranslated;
@@ -322,18 +320,6 @@ namespace Translator
             item.DefaultCellStyle.BackColor = item.Cells["English"].Value.ToString() == item.Cells["Text"].Value.ToString() ? Color.Wheat : Color.Empty;
         }
 
-        private void dgvSection_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F3)
-            {
-                btnSearch.PerformClick();
-                return;
-            }
-
-            if ((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
-                txtSearch.Focus();
-        }
-
         private void dgvSection_Sorted(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in dgvSection.Rows)
@@ -344,7 +330,7 @@ namespace Translator
 
         private void dgvTranslate_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (_blnLoading || (e.RowIndex < 0))
+            if (_blnLoading || e.RowIndex < 0)
                 return;
             DataGridViewRow item = dgvTranslate.Rows[e.RowIndex];
             TranslatedIndicator(item);
@@ -378,18 +364,6 @@ namespace Translator
             Save(_objTranslationDoc, false);
         }
 
-        private void dgvTranslate_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F3)
-            {
-                btnSearch.PerformClick();
-                return;
-            }
-
-            if ((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
-                txtSearch.Focus();
-        }
-
         private void dgvTranslate_Sorted(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in dgvTranslate.Rows)
@@ -406,7 +380,7 @@ namespace Translator
                 return;
             }
 
-            if ((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
+            if (e.KeyCode == Keys.F && e.Modifiers == Keys.Control)
                 txtSearch.Focus();
         }
 
@@ -416,7 +390,7 @@ namespace Translator
             _objTranslationDoc.Load(Path.Combine(ApplicationPath, "lang", Code + ".xml"));
             _objDataDoc.Load(Path.Combine(ApplicationPath, "lang", Code + "_data.xml"));
             cboFile.Items.Add("Strings");
-            List<string> strs = new List<string>();
+            List<string> lstStrings = new List<string>();
             using (XmlNodeList xmlNodeList = _objDataDoc.SelectNodes("/chummer/chummer"))
             {
                 if (xmlNodeList?.Count > 0)
@@ -425,26 +399,21 @@ namespace Translator
                     {
                         string strFile = xmlNodeLocal.Attributes?["file"]?.InnerText;
                         if (!string.IsNullOrEmpty(strFile))
-                            strs.Add(strFile);
+                            lstStrings.Add(strFile);
                     }
                 }
             }
 
-            strs.Sort();
-            foreach (string str in strs)
+            lstStrings.Sort();
+            foreach (string str in lstStrings)
                 cboFile.Items.Add(str);
 
             Application.Idle += RunQueuedWorkers;
         }
 
-        private void txtSearch_GotFocus(object sender, EventArgs e)
-        {
-            //txtSearch.SelectAll();
-        }
-
         private void txtSearch_KeyPressed(object sender, KeyPressEventArgs e)
         {
-            if ((e.KeyChar == '\r') && !txtSearch.AcceptsReturn)
+            if (e.KeyChar == '\r' && !txtSearch.AcceptsReturn)
                 btnSearch.PerformClick();
         }
 
@@ -468,7 +437,6 @@ namespace Translator
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
             dataTable.Columns.Add("Translated?");
-            //XmlNodeList xmlNodeList = _objTranslationDoc.SelectNodes("/chummer/strings/string");
             XmlNodeList xmlNodeList = xmlDocument.SelectNodes("/chummer/strings/string");
             if (xmlNodeList != null)
             {
@@ -701,9 +669,9 @@ namespace Translator
                                         strDisadvantageAlt = xmlChildNode["altdisadvantage"]?.InnerText ?? string.Empty;
 
                                         blnTranslated =
-                                            (strName != strTranslated ||
-                                             xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString ||
-                                             strAdvantage != strAdvantageAlt || strDisadvantage != strDisadvantageAlt);
+                                            strName != strTranslated ||
+                                            xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString ||
+                                            strAdvantage != strAdvantageAlt || strDisadvantage != strDisadvantageAlt;
                                     }
                                 }
 
@@ -786,7 +754,7 @@ namespace Translator
 
         private void RefreshProgressBar(object sender, ProgressChangedEventArgs e)
         {
-            pbTranslateProgressBar.Value = (e.ProgressPercentage * pbTranslateProgressBar.Maximum) / 100;
+            pbTranslateProgressBar.Value = e.ProgressPercentage * pbTranslateProgressBar.Maximum / 100;
         }
 
         private void FinishLoadingSection(object sender, RunWorkerCompletedEventArgs e)
@@ -902,7 +870,7 @@ namespace Translator
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
         {
             string strPath = Path.Combine(ApplicationPath, "lang", Code + (blnData ? "_data.xml" : ".xml"));
-            XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = ("\t"), Indent = true};
+            XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = "\t", Indent = true};
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
                 if (xwWriter != null)

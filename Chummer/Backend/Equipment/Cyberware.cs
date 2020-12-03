@@ -518,7 +518,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
+                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -532,7 +532,7 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language),
+                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language),
                             strTranslatedNameOnPage, _objCharacter);
                     }
                 }
@@ -901,13 +901,18 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
                     {
                         if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts)) continue;
-                        Dictionary<string, int> dicToUse = null;
-                        if (objCheckCyberware.Location == "Left")
-                            dicToUse = dicNumLeftMountBlockers;
-                        else if (objCheckCyberware.Location == "Right")
-                            dicToUse = dicNumRightMountBlockers;
-                        else
-                            continue;
+                        Dictionary<string, int> dicToUse;
+                        switch (objCheckCyberware.Location)
+                        {
+                            case "Left":
+                                dicToUse = dicNumLeftMountBlockers;
+                                break;
+                            case "Right":
+                                dicToUse = dicNumRightMountBlockers;
+                                break;
+                            default:
+                                continue;
+                        }
                         foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
                             StringSplitOptions.RemoveEmptyEntries))
                         {

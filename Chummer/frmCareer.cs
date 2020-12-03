@@ -91,7 +91,6 @@ namespace Chummer
                 cmsArmorMod,
                 cmsBioware,
                 cmsComplexForm,
-                cmsComplexFormPlugin,
                 cmsCritterPowers,
                 cmsCyberware,
                 cmsCyberwareGear,
@@ -1331,27 +1330,28 @@ namespace Chummer
                             .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
                         chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
                             .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
-                            if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
+                        if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                         {
                             CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
                         }
-
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept &&
-                            !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                         {
-                            CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                            }
                         }
                     }
                     else
                     {
-                        if (!CharacterObject.RESEnabled) tabCharacterTabs.TabPages.Remove(tabInitiation);
-                        if (CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
+                        if (!CharacterObject.RESEnabled)
+                            tabCharacterTabs.TabPages.Remove(tabInitiation);
+
+                        if (CharacterObject.AttributeSection.Attributes != null)
                         {
                             CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAG);
-                        }
-
-                        if (CharacterObject.AttributeSection.Attributes.Any(att => att.Abbrev == "MAGAdept"))
-                        {
                             CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
                         }
                     }
@@ -1473,20 +1473,28 @@ namespace Chummer
                         if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                             tabCharacterTabs.TabPages.Insert(3, tabMagician);
                         cmdAddSpell.Enabled = true;
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept &&
-                            !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                         {
-                            CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                            }
                         }
                     }
                     else
                     {
                         tabCharacterTabs.TabPages.Remove(tabMagician);
                         cmdAddSpell.Enabled = false;
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute &&
-                            CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute)
                         {
-                            CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                            }
                         }
                     }
 
@@ -1502,10 +1510,14 @@ namespace Chummer
                         if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                             tabCharacterTabs.TabPages.Insert(3, tabMagician);
                         cmdAddSpell.Enabled = true;
-                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept &&
-                            !CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                        if (CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                         {
-                            CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAGAdept);
+                            CharacterAttrib objMAGAdept =
+                                CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                            if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                            {
+                                CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                            }
                         }
 
                         if (!tabCharacterTabs.TabPages.Contains(tabAdept))
@@ -1517,13 +1529,18 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabMagician);
                             cmdAddSpell.Enabled = false;
-                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute &&
-                                CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAGAdept))
+                            if (CharacterObjectOptions.MysAdeptSecondMAGAttribute)
                             {
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
+                                CharacterAttrib objMAGAdept =
+                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
+                                if (CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                                {
+                                    CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                                }
                             }
                         }
-                        else cmdAddSpell.Enabled = true;
+                        else
+                            cmdAddSpell.Enabled = true;
 
                         tabCharacterTabs.TabPages.Remove(tabAdept);
                     }
@@ -3364,15 +3381,14 @@ namespace Chummer
                     if (objSpell.InternalId.IsEmptyGuid())
                         continue;
 
-                    if (CharacterObject.Karma < intSpellKarmaCost)
-                    {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        break;
-                    }
-
                     objSpell.FreeBonus = frmPickSpell.FreeBonus;
                     if (!objSpell.FreeBonus)
                     {
+                        if (CharacterObject.Karma < intSpellKarmaCost)
+                        {
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            break;
+                        }
                         if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , objSpell.CurrentDisplayName
                             , intSpellKarmaCost.ToString(GlobalOptions.CultureInfo))))
@@ -10791,11 +10807,10 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
                 return;
-            HashSet<string> setAmmoPrefixStrings = new HashSet<string>(objWeapon.AmmoPrefixStrings);
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, setAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, string.Empty, objWeapon.WeaponType);
             }
             while (blnAddAgain);
         }
@@ -11989,8 +12004,6 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
-                    CharacterObject.GroupMember = chkJoinGroup.Checked;
                     CharacterObject.Karma -= intKarmaExpense;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -12035,8 +12048,6 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
-                    CharacterObject.GroupMember = chkJoinGroup.Checked;
                     CharacterObject.Karma -= intKarmaExpense;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -12044,6 +12055,9 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
             }
+
+            //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
+            CharacterObject.GroupMember = chkJoinGroup.Checked;
 
             if (!chkJoinGroup.Enabled)
             {
@@ -13502,7 +13516,7 @@ namespace Chummer
                 dpcWeaponDicePool.DicePool = objWeapon.DicePool;
                 dpcWeaponDicePool.CanBeRolled = true;
                 dpcWeaponDicePool.SetLabelToolTip(objWeapon.DicePoolTooltip);
-                if (objWeapon.WeaponType == "Ranged")
+                if (objWeapon.RangeType == "Ranged")
                 {
                     lblWeaponReachLabel.Visible = false;
                     lblWeaponReach.Visible = false;
@@ -13558,7 +13572,7 @@ namespace Chummer
                     tlpWeaponsRanges.Visible = false;
                 }
                 // Enable the fire button if the Weapon is Ranged.
-                if (objWeapon.WeaponType == "Ranged" || objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                 {
                     tlpWeaponsCareer.Visible = true;
                     lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalOptions.CultureInfo);
@@ -13571,7 +13585,7 @@ namespace Chummer
                     cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
-                    if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                         cmsAmmoSingleShot.Enabled = true;
 
                     cmsAmmoSingleShot.Text = cmsAmmoSingleShot.Enabled
@@ -14520,9 +14534,9 @@ namespace Chummer
         /// <param name="blnAmmoOnly">Whether or not only Ammunition should be shown in the window.</param>
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
-        /// <param name="lstForceItemPrefixes">Force the user to select an item that begins with one of the strings in this list.</param>
+        /// <param name="strForceAmmoForWeaponType">Force the user to select an item that would be an ammo for the weapon type.</param>
         /// <param name="blnFlechetteAmmoOnly">Whether or not to show only Flechette ammo.</param>
-        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null, bool blnFlechetteAmmoOnly = false)
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", string strForceAmmoForWeaponType = "", bool blnFlechetteAmmoOnly = false)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -14586,11 +14600,7 @@ namespace Chummer
                     }
 
                     frmPickGear.DefaultSearchText = strForceItemValue;
-                    if (lstForceItemPrefixes != null)
-                    {
-                        foreach (string strPrefix in lstForceItemPrefixes)
-                            frmPickGear.ForceItemPrefixStrings.Add(strPrefix);
-                    }
+                    frmPickGear.ForceItemAmmoForWeaponType = strForceAmmoForWeaponType;
 
                     if (blnAmmoOnly)
                     {
@@ -15378,7 +15388,7 @@ namespace Chummer
                 dpcVehicleWeaponDicePool.DicePool = objWeapon.DicePool;
                 dpcVehicleWeaponDicePool.CanBeRolled = true;
                 dpcVehicleWeaponDicePool.SetLabelToolTip(objWeapon.DicePoolTooltip);
-                if (objWeapon.WeaponType == "Ranged")
+                if (objWeapon.RangeType == "Ranged")
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
                     lblVehicleWeaponAmmo.Visible = true;
@@ -15423,7 +15433,7 @@ namespace Chummer
                     tlpVehiclesWeaponRanges.Visible = false;
                 }
 
-                if (objWeapon.WeaponType == "Ranged" || objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                 {
                     tlpVehiclesWeaponCareer.Visible = true;
                     lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalOptions.CultureInfo);
@@ -15444,7 +15454,7 @@ namespace Chummer
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
-                    if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                         cmsVehicleAmmoSingleShot.Enabled = true;
 
                     if (cmsVehicleAmmoSingleShot.Enabled)
@@ -17280,7 +17290,7 @@ namespace Chummer
 
         private void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDFFromControl(sender, e);
+            CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
         private void btnCreateCustomDrug_Click(object sender, EventArgs e)

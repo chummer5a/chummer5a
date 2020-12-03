@@ -117,15 +117,16 @@ namespace CrashHandler
 		        .Replace("\r", "%0D%0A")
 		        .Replace("\n", "%0D%0A");
 
-            string strBody = "### Environment\n";
-			strBody += $"Crash ID: {_dumper.Attributes["visible-crash-id"]}\n";
-			strBody += $"Chummer Version: {_dumper.Attributes["visible-version"]}\n";
-			strBody += $"Environment: {_dumper.Attributes["os-name"]}\n";
-			strBody += $"Runtime: {Environment.Version}\n";
-            strBody += $"Option upload logs set: {_dumper.Attributes["option-upload-logs-set"]}\n";
-            strBody += $"Installation ID: {_dumper.Attributes["installation-id"]}\n";
-            strBody += txtUserStory.Text;
-			strBody = System.Net.WebUtility.HtmlEncode(strBody);
+            StringBuilder sbdBody = new StringBuilder()
+                .AppendLine("### Environment")
+                .Append("Crash ID: ").AppendLine(_dumper.Attributes["visible-crash-id"])
+                .Append("Chummer Version: ").AppendLine(_dumper.Attributes["visible-version"])
+                .Append("Environment: ").AppendLine(_dumper.Attributes["os-name"])
+                .Append("Runtime: ").AppendLine(Environment.Version.ToString())
+                .Append("Option upload logs set: ").AppendLine(_dumper.Attributes["option-upload-logs-set"])
+                .Append("Installation ID: ").AppendLine(_dumper.Attributes["installation-id"])
+                .Append(txtUserStory.Text);
+			string strBody = System.Net.WebUtility.HtmlEncode(sbdBody.ToString());
 			strBody = strBody
 			    .Replace(" ", "%20")
 			    .Replace("#", "%23")
@@ -148,5 +149,5 @@ namespace CrashHandler
             }
 			return sbdHash.ToString();
 		}
-	}
+    }
 }

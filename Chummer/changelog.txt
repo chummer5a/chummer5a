@@ -1,6 +1,27 @@
-Build 214
+Future Build 214
+Application Fixes:
+- Characters with MAG atttributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
+- Dark mode's darkened backgrounds have been made slightly lighter (by up to 10%).
+- Fixed an issue where some sourcebooks would insert ligature characters into an item's notes that Chummer could not handle and would prevent the character from being saved and/or crash whenever the character was opened.
+- When loading a character from a save file, the program now automatically checks if there are any saves in the autosave folder that seem to match the currently loading save file's character and that have a later last write date and time than those of the currently loading save file. If it finds such an autosave, it now prompts the user of whether they want to load the autosave instead, though if they do, the old save file will not be altered until they manually save, just in case they realize that the autosave is not what they want after it has been loaded.
+- Characters with all but one skill disabled in a skill group no longer have their only enabled skill's rating show up as their rating for that skill group.
+- Characters can now properly learn free spells in Career mode even if they do not have enough spare Karma to be able to learn said spells traditionally.
+- In Career mode, if the optional rule to not double positive quality karma costs is not set, the karma filters in the quality selection form now properly consider the doubled cost of qualities that are not set to not double their costs after character creation.
+- Upgrading cyberware that is a part of another piece of cyberware no longer causes the cyberware selector form to display an empty list.
+- Mastery qualities that are not purchased traditionally no longer deduct free spell points.
+- Chummer now properly registers attempts to join a technomancer network/tribe in Career mode.
+- Improvements that add gear without a rating no longer add that gear with a rating of 1.
+- Armor against special types of damage now properly work off of the highest total armor rating against that particular damage type instead of taking the highest generic armor rating and adding the highest special type armor bonus to it. Fixes #4253.
+- Settings for which ammo types can be used for which weapon types have been unhardcoded. The `ammoforweapontype` tag in gear items now dictates if said gear item can be used as ammo for a certain type of weapon, with the attribute 'noextra="True"' intended to be set where the ammo can broadly serve in all weapons of that type instead of just one specific one. The "type" attribute in a weapon's category dictates its default weapon type, though it can be overriden with a "weapontype" node inside the weapon's definition.
+
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
+- Added a new PDF Parameter option that is Adobe Acrobat-style, but always opens a new instance of the clicked file.
+- Linguistics (the adept power) no longer increases a character's native language limit by 1.
+
+Changed/New Strings:
+- MessageTitle_AutosaveFound
+- Message_AutosaveFound
 
 Build 213
 Application Fixes:
