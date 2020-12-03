@@ -9765,7 +9765,7 @@ namespace Chummer
                 lblWeaponDicePool.Visible = true;
                 lblWeaponDicePool.Text = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
                 lblWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
-                if (objWeapon.WeaponType == "Ranged")
+                if (objWeapon.RangeType == "Ranged")
                 {
                     lblWeaponReachLabel.Visible = false;
                     lblWeaponReach.Visible = false;
@@ -11448,7 +11448,7 @@ namespace Chummer
                 lblVehicleWeaponDicePoolLabel.Visible = true;
                 lblVehicleWeaponDicePool.Text = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
                 lblVehicleWeaponDicePool.SetToolTip(objWeapon.DicePoolTooltip);
-                if (objWeapon.WeaponType == "Ranged")
+                if (objWeapon.RangeType == "Ranged")
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
                     lblVehicleWeaponAmmo.Visible = true;

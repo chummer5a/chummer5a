@@ -55,7 +55,7 @@ namespace Chummer.Backend.Equipment
         private string _strRC = string.Empty;
         private string _strAmmo = string.Empty;
         private string _strAmmoCategory = string.Empty;
-        private string _strAmmoName = string.Empty;
+        private string _strWeaponType = string.Empty;
         private int _intConceal;
         private List<Clip> _lstAmmo = new List<Clip>(1);
         //private int _intAmmoRemaining = 0;
@@ -283,7 +283,6 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objXmlWeapon["wirelessbonus"];
             objXmlWeapon.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
             objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
-            objXmlWeapon.TryGetStringFieldQuickly("ammoname", ref _strAmmoName);
             if (!objXmlWeapon.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots))
                 _intAmmoSlots = 1;
             objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
@@ -345,6 +344,12 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("page", ref _strPage);
 
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+
+            if (!objXmlWeapon.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
+                _strWeaponType = objXmlDocument
+                                     .SelectSingleNode("/chummer/categories/category[text() = \"" + Category +
+                                                       "\"]/@type")?.InnerText
+                                 ?? Category.ToLowerInvariant();
 
             // Populate the Range if it differs from the Weapon's Category.
             XmlNode objRangeNode = objXmlWeapon["range"];
@@ -567,7 +572,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammo", _strAmmo);
             objWriter.WriteElementString("cyberware", _blnCyberware.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
-            objWriter.WriteElementString("ammoname", _strAmmoName);
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("sizecategory", _strSizeCategory);
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
@@ -660,6 +664,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("weapontype", _strWeaponType);
             objWriter.WriteEndElement();
 
             if (!IncludedInWeapon)
@@ -759,7 +764,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ammo", ref _strAmmo);
             objNode.TryGetBoolFieldQuickly("cyberware", ref _blnCyberware);
             objNode.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
-            objNode.TryGetStringFieldQuickly("ammoname", ref _strAmmoName);
             if (!objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots))
                 _intAmmoSlots = 1;
             objNode.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
@@ -806,6 +810,11 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
+            if (!objNode.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
+                _strWeaponType = GetNode()?["weapontype"]?.InnerText
+                                 ?? XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/categories/category[text() = \""
+                                     + Category + "\"]/@type")?.InnerText
+                                 ?? Category.ToLowerInvariant();
 
             _nodWirelessBonus = objNode["wirelessbonus"];
             objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
@@ -1022,7 +1031,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("type", WeaponType);
+            objWriter.WriteElementString("type", RangeType);
             objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
             objWriter.WriteElementString("accuracy", GetAccuracy(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage", CalculatedDamage(objCulture, strLanguageToPrint));
@@ -1142,23 +1151,26 @@ namespace Chummer.Backend.Equipment
                 {
                     return 0;
                 }
-                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(AmmoPrefixStrings);
                 IList<Gear> lstGear = ParentVehicle == null ? _objCharacter.Gear : ParentVehicle.Gear;
-                if (Damage.Contains("(f)") && AmmoCategory != "Gear")
+                if (AmmoCategory == "Gear")
+                    return lstGear.DeepWhere(x => x.Children, x =>
+                        x.Quantity > 0
+                        && Name == x.Name
+                        && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)).Sum(x => x.Quantity);
+                if (Damage.Contains("(f)"))
                     return lstGear.DeepWhere(x => x.Children, x =>
                         x.Quantity > 0
                         && x.IsFlechetteAmmo
-                        && ((x.Category == "Ammunition" && x.Extra == AmmoCategory)
-                            || (!string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName)
-                            || (string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y, StringComparison.Ordinal)))
+                        && x.AmmoForWeaponType == WeaponType
+                        && (string.IsNullOrEmpty(x.Extra)
+                            || x.Extra == AmmoCategory
                             || (UseSkill == "Throwing Weapons" && Name == x.Name))).Sum(x => x.Quantity);
-                else
-                    return lstGear.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && ((x.Category == "Ammunition" && x.Extra == AmmoCategory)
-                            || (!string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName)
-                            || (string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y, StringComparison.Ordinal)))
-                            || (UseSkill == "Throwing Weapons" && Name == x.Name))).Sum(x => x.Quantity);
+                return lstGear.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0
+                    && x.AmmoForWeaponType == WeaponType
+                    && (string.IsNullOrEmpty(x.Extra)
+                        || x.Extra == AmmoCategory
+                        || (UseSkill == "Throwing Weapons" && Name == x.Name))).Sum(x => x.Quantity);
             }
         }
 
@@ -1394,25 +1406,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayAmmoCategory(string strLanguage)
         {
-            if (!string.IsNullOrWhiteSpace(AmmoName))
-                return DisplayAmmoName(strLanguage);
             // Get the translated name if applicable.
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoCategory;
 
             return XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.InnerText ?? AmmoCategory;
-        }
-
-        /// <summary>
-        /// Translated Ammo Category.
-        /// </summary>
-        public string DisplayAmmoName(string strLanguage)
-        {
-            // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return AmmoName;
-
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/gears/gear[name = " + AmmoName.CleanXPath() + "]/@translate")?.InnerText ?? AmmoName;
         }
 
         /// <summary>
@@ -1432,7 +1430,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Type of Weapon (either Melee or Ranged).
         /// </summary>
-        public string WeaponType
+        public string RangeType
         {
             get => _strType;
             set => _strType = value;
@@ -1523,78 +1521,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Category of Ammo the Weapon uses.
         /// </summary>
-        public string AmmoName => _strAmmoName;
-
-        /// <summary>
-        /// What names can gear begin with to count as ammunition for this weapon
-        /// </summary>
-        public IEnumerable<string> AmmoPrefixStrings
-        {
-            get
-            {
-                if (Spec == "Flare Launcher" && Name == "Micro Flare Launcher")
-                    yield return "Micro Flares";
-                else if (Name.Contains("Net Gun XL"))
-                    yield return "XL Net Gun";
-                else if (Name.Contains("Net Gun"))
-                    yield return "Net Gun";
-                else if (Name == "Pepper Punch Pen")
-                    yield return "Pepper Punch";
-                else if (Name == "Ares S-III Super Squirt")
-                    yield return "Ammo: DMSO Rounds";
-                else
-                {
-                    switch (AmmoCategory)
-                    {
-                        case "Grenade Launchers":
-                            yield return "Minigrenade:";
-                            break;
-                        case "Missile Launchers":
-                            yield return "Missile:";
-                            yield return "Rocket:";
-                            break;
-                        case "Mortar Launchers":
-                            yield return "Mortar Round:";
-                            break;
-                        case "Bows":
-                            yield return "Arrow:";
-                            break;
-                        case "Crossbows":
-                            if (Name.Contains("Harpoon"))
-                            {
-                                yield return "Harpoon";
-                                yield return "Bolt:";
-                            }
-                            else
-                                yield return "Bolt:";
-                            break;
-                        case "Flamethrowers":
-                            yield return "Ammo: Fuel";
-                            break;
-                        case "Gear":
-                        {
-                            string strGearName = Name;
-                            if (!string.IsNullOrEmpty(ParentID))
-                            {
-                                Gear objParent = _objCharacter.Gear.DeepFindById(ParentID) ??
-                                                 _objCharacter.Vehicles.FindVehicleGear(ParentID) ??
-                                                 _objCharacter.Weapons.FindWeaponGear(ParentID) ??
-                                                 _objCharacter.Armor.FindArmorGear(ParentID) ??
-                                                 _objCharacter.Cyberware.FindCyberwareGear(ParentID);
-                                if (objParent != null)
-                                    strGearName = objParent.Name;
-                            }
-
-                            yield return strGearName;
-                            break;
-                        }
-                        default:
-                            yield return "Ammo:";
-                            break;
-                    }
-                }
-            }
-        }
+        public string WeaponType => _strWeaponType;
 
         /// <summary>
         /// The number of rounds remaining in the Weapon.
@@ -2702,7 +2629,7 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
-        public bool AllowSingleShot => WeaponType == "Melee"
+        public bool AllowSingleShot => RangeType == "Melee"
                                        && Ammo != "0"
                                        || _blnAllowSingleShot
                                        && (AllowMode(LanguageManager.GetString("String_ModeSingleShot"))
@@ -3533,7 +3460,7 @@ namespace Chummer.Backend.Equipment
             {
                 decimal decReach = Reach;
                 decReach += WeaponAccessories.Sum(i => i.Reach);
-                if (WeaponType == "Melee")
+                if (RangeType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
                     decReach += _objCharacter.Improvements
@@ -5517,22 +5444,25 @@ namespace Chummer.Backend.Equipment
             else
             {
                 // Find all of the Ammo for the current Weapon that the character is carrying.
-                HashSet<string> setAmmoPrefixStringSet = new HashSet<string>(AmmoPrefixStrings);
-                // This is a standard Weapon, so consume traditional Ammunition.
-                if (!Damage.Contains("(f)") || AmmoCategory == "Gear")
+                if (AmmoCategory == "Gear")
                     lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
                         x.Quantity > 0
-                        && ((x.Category == "Ammunition" && x.Extra == AmmoCategory)
-                            || (!string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName)
-                            || (string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y, StringComparison.Ordinal)))
+                        && Name == x.Name
+                        && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)));
+                else if (Damage.Contains("(f)"))
+                    lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
+                        x.Quantity > 0
+                        && x.IsFlechetteAmmo
+                        && x.AmmoForWeaponType == WeaponType
+                        && (string.IsNullOrEmpty(x.Extra)
+                            || x.Extra == AmmoCategory
                             || (UseSkill == "Throwing Weapons" && Name == x.Name))));
                 else
                     lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
                         x.Quantity > 0
-                        && x.IsFlechetteAmmo
-                        && ((x.Category == "Ammunition" && x.Extra == AmmoCategory)
-                            || (!string.IsNullOrWhiteSpace(AmmoName) && x.Name == AmmoName)
-                            || (string.IsNullOrEmpty(x.Extra) && setAmmoPrefixStringSet.Any(y => x.Name.StartsWith(y, StringComparison.Ordinal)))
+                        && x.AmmoForWeaponType == WeaponType
+                        && (string.IsNullOrEmpty(x.Extra)
+                            || x.Extra == AmmoCategory
                             || (UseSkill == "Throwing Weapons" && Name == x.Name))));
                 // If the Weapon is allowed to use an External Source, put in an External Source item.
                 if (blnExternalSource)
@@ -5543,7 +5473,7 @@ namespace Chummer.Backend.Equipment
                 // Make sure the character has some form of Ammunition for this Weapon.
                 if (lstAmmo.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutOfAmmoType"), DisplayAmmoCategory(GlobalOptions.Language)),
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutOfAmmoType"), DisplayNameShort(GlobalOptions.Language)),
                         LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK,
                         MessageBoxIcon.Exclamation);
                     return;

@@ -984,7 +984,7 @@ namespace Chummer
                 {
                     Name = objXmlNaturalWeapon["name"].InnerText,
                     Category = LanguageManager.GetString("Tab_Critter"),
-                    WeaponType = "Melee",
+                    RangeType = "Melee",
                     Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"]?.InnerText, GlobalOptions.InvariantCultureInfo),
                     Damage = objXmlNaturalWeapon["damage"].InnerText,
                     AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",

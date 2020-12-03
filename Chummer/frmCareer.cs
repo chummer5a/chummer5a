@@ -10574,11 +10574,10 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
                 return;
-            HashSet<string> setAmmoPrefixStrings = new HashSet<string>(objWeapon.AmmoPrefixStrings);
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, objWeapon.AmmoName, setAmmoPrefixStrings);
+                blnAddAgain = PickGear(null, null, true, null, string.Empty, objWeapon.WeaponType);
             }
             while (blnAddAgain);
         }
@@ -13284,7 +13283,7 @@ namespace Chummer
                 dpcWeaponDicePool.DicePool = objWeapon.DicePool;
                 dpcWeaponDicePool.CanBeRolled = true;
                 dpcWeaponDicePool.SetLabelToolTip(objWeapon.DicePoolTooltip);
-                if (objWeapon.WeaponType == "Ranged")
+                if (objWeapon.RangeType == "Ranged")
                 {
                     lblWeaponReachLabel.Visible = false;
                     lblWeaponReach.Visible = false;
@@ -13340,7 +13339,7 @@ namespace Chummer
                     tlpWeaponsRanges.Visible = false;
                 }
                 // Enable the fire button if the Weapon is Ranged.
-                if (objWeapon.WeaponType == "Ranged" || objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                 {
                     tlpWeaponsCareer.Visible = true;
                     lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalOptions.CultureInfo);
@@ -13353,7 +13352,7 @@ namespace Chummer
                     cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
-                    if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                         cmsAmmoSingleShot.Enabled = true;
 
                     cmsAmmoSingleShot.Text = cmsAmmoSingleShot.Enabled
@@ -14302,9 +14301,9 @@ namespace Chummer
         /// <param name="blnAmmoOnly">Whether or not only Ammunition should be shown in the window.</param>
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
-        /// <param name="lstForceItemPrefixes">Force the user to select an item that begins with one of the strings in this list.</param>
+        /// <param name="strForceAmmoForWeaponType">Force the user to select an item that would be an ammo for the weapon type.</param>
         /// <param name="blnFlechetteAmmoOnly">Whether or not to show only Flechette ammo.</param>
-        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", IEnumerable<string> lstForceItemPrefixes = null, bool blnFlechetteAmmoOnly = false)
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", string strForceAmmoForWeaponType = "", bool blnFlechetteAmmoOnly = false)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -14368,11 +14367,7 @@ namespace Chummer
                     }
 
                     frmPickGear.DefaultSearchText = strForceItemValue;
-                    if (lstForceItemPrefixes != null)
-                    {
-                        foreach (string strPrefix in lstForceItemPrefixes)
-                            frmPickGear.ForceItemPrefixStrings.Add(strPrefix);
-                    }
+                    frmPickGear.ForceItemAmmoForWeaponType = strForceAmmoForWeaponType;
 
                     if (blnAmmoOnly)
                     {
@@ -15160,7 +15155,7 @@ namespace Chummer
                 dpcVehicleWeaponDicePool.DicePool = objWeapon.DicePool;
                 dpcVehicleWeaponDicePool.CanBeRolled = true;
                 dpcVehicleWeaponDicePool.SetLabelToolTip(objWeapon.DicePoolTooltip);
-                if (objWeapon.WeaponType == "Ranged")
+                if (objWeapon.RangeType == "Ranged")
                 {
                     lblVehicleWeaponAmmoLabel.Visible = true;
                     lblVehicleWeaponAmmo.Visible = true;
@@ -15205,7 +15200,7 @@ namespace Chummer
                     tlpVehiclesWeaponRanges.Visible = false;
                 }
 
-                if (objWeapon.WeaponType == "Ranged" || objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                 {
                     tlpVehiclesWeaponCareer.Visible = true;
                     lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalOptions.CultureInfo);
@@ -15226,7 +15221,7 @@ namespace Chummer
                         objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic"));
 
                     // Melee Weapons with Ammo are considered to be Single Shot.
-                    if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                    if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                         cmsVehicleAmmoSingleShot.Enabled = true;
 
                     if (cmsVehicleAmmoSingleShot.Enabled)

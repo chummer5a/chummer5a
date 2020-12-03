@@ -89,6 +89,34 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
+                                        <xs:element name="isflechetteammo" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="flechetteweaponbonus" minOccurs="0" maxOccurs="1">
+                                          <xs:complexType>
+                                            <xs:sequence>
+                                              <xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="damagereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="mode" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="modereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                            </xs:sequence>
+                                          </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="ammoforweapontype" minOccurs="0" maxOccurs="1">
+                                          <xs:complexType>
+                                            <xs:simpleContent>
+                                              <xs:extension base="xs:string">
+                                                <xs:attribute name="noextra" type="xs:string" use="optional" />
+                                              </xs:extension>
+                                            </xs:simpleContent>
+                                          </xs:complexType>
+                                        </xs:element>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
