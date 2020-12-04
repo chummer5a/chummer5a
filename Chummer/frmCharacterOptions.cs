@@ -68,13 +68,16 @@ namespace Chummer
                 lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule, LanguageManager.GetString("String_LifeModule")));
 
             cboBuildMethod.BeginUpdate();
-            cboBuildMethod.ValueMember = nameof(ListItem.Value);
-            cboBuildMethod.DisplayMember = nameof(ListItem.Name);
+            if (_blnLoading)
+            {
+                cboBuildMethod.ValueMember = nameof(ListItem.Value);
+                cboBuildMethod.DisplayMember = nameof(ListItem.Name);
+            }
             cboBuildMethod.DataSource = lstBuildMethods;
             cboBuildMethod.EndUpdate();
 
-            SetupDataBindings();
             PopulateOptions();
+            SetupDataBindings();
 
             foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
             {
@@ -636,10 +639,14 @@ namespace Chummer
         /// </summary>
         private void PopulateOptions()
         {
+            if (!_blnLoading)
+                SuspendLayout();
             PopulateSourcebookTreeView();
             PopulatePriorityTableList();
             PopulateLimbCountList();
             PopulateAllowedGrades();
+            if (!_blnLoading)
+                ResumeLayout();
         }
 
         private void PopulatePriorityTableList()
@@ -663,9 +670,11 @@ namespace Chummer
             string strOldSelected = cboPriorityTable.SelectedValue?.ToString();
 
             cboPriorityTable.BeginUpdate();
-            cboPriorityTable.DataSource = null;
-            cboPriorityTable.ValueMember = nameof(ListItem.Value);
-            cboPriorityTable.DisplayMember = nameof(ListItem.Name);
+            if (_blnLoading)
+            {
+                cboPriorityTable.ValueMember = nameof(ListItem.Value);
+                cboPriorityTable.DisplayMember = nameof(ListItem.Name);
+            }
             cboPriorityTable.DataSource = lstPriorityTables;
 
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -701,8 +710,11 @@ namespace Chummer
 
             _blnSkipLimbCountUpdate = true;
             cboLimbCount.BeginUpdate();
-            cboLimbCount.ValueMember = nameof(ListItem.Value);
-            cboLimbCount.DisplayMember = nameof(ListItem.Name);
+            if (_blnLoading)
+            {
+                cboLimbCount.ValueMember = nameof(ListItem.Value);
+                cboLimbCount.DisplayMember = nameof(ListItem.Name);
+            }
             cboLimbCount.DataSource = lstLimbCount;
 
             if (!string.IsNullOrEmpty(strOldSelected))
@@ -727,7 +739,6 @@ namespace Chummer
 
         private void PopulateAllowedGrades()
         {
-            flpAllowedCyberwareGrades.SuspendLayout();
             flpAllowedCyberwareGrades.Controls.Clear();
 
             List<ListItem> lstGrades = new List<ListItem>();
@@ -748,7 +759,7 @@ namespace Chummer
                             if (lstGrades.Any(x => strName.Contains(x.Name)))
                                 continue;
                             ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Name.Contains(strName));
-                            if (objExistingCoveredGrade != null)
+                            if (objExistingCoveredGrade.Value != null)
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(objXmlNode.InnerText, objXmlNode["translate"]?.InnerText ?? strName));
                         }
@@ -771,7 +782,7 @@ namespace Chummer
                             if (lstGrades.Any(x => strName.Contains(x.Name)))
                                 continue;
                             ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Name.Contains(strName));
-                            if (objExistingCoveredGrade != null)
+                            if (objExistingCoveredGrade.Value != null)
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(objXmlNode.InnerText, objXmlNode["translate"]?.InnerText ?? strName));
                         }
@@ -793,8 +804,6 @@ namespace Chummer
                 chkGrade.CheckedChanged += chkGrade_CheckedChanged;
                 flpAllowedCyberwareGrades.Controls.Add(chkGrade);
             }
-
-            flpAllowedCyberwareGrades.ResumeLayout();
         }
 
         private void SetToolTips()
@@ -904,7 +913,7 @@ namespace Chummer
             nudMetatypeCostsKarmaMultiplier.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.MetatypeCostsKarmaMultiplier));
             nudKarmaNuyenPer.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenPerBP));
             nudKarmaAttribute.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaAttribute));
-            nudKarmaSpecialization.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaQuality));
+            nudKarmaQuality.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaQuality));
             nudKarmaSpecialization.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpecialization));
             nudKarmaKnowledgeSpecialization.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaKnowledgeSpecialization));
             nudKarmaNewKnowledgeSkill.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewKnowledgeSkill));
@@ -964,9 +973,11 @@ namespace Chummer
             }
 
             cboSetting.BeginUpdate();
-            cboSetting.DataSource = null;
-            cboSetting.ValueMember = nameof(ListItem.Value);
-            cboSetting.DisplayMember = nameof(ListItem.Name);
+            if (_blnLoading)
+            {
+                cboSetting.ValueMember = nameof(ListItem.Value);
+                cboSetting.DisplayMember = nameof(ListItem.Name);
+            }
             cboSetting.DataSource = lstSettings;
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboSetting.SelectedValue = strOldSelected;

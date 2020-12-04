@@ -29,6 +29,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly bool _blnLockBuildMethod;
         private readonly CharacterBuildMethod _eStartingBuildMethod;
+        private bool _blnLoading = true;
 
         #region Control Events
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
@@ -43,7 +44,7 @@ namespace Chummer
             List<ListItem> lstGameplayOptions = new List<ListItem>(OptionsManager.LoadedCharacterOptions.Count);
             foreach (KeyValuePair<string, CharacterOptions> objLoopOptions in OptionsManager.LoadedCharacterOptions)
             {
-                lstGameplayOptions.Add(new ListItem(objLoopOptions, objLoopOptions.Value.DisplayName));
+                lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
             }
 
             cboCharacterOption.BeginUpdate();
@@ -90,12 +91,13 @@ namespace Chummer
             using (frmCharacterOptions frmOptions = new frmCharacterOptions(cboCharacterOption.SelectedValue as CharacterOptions))
                 frmOptions.ShowDialog(this);
 
+            SuspendLayout();
             // Populate the Gameplay Options list.
             object objOldSelected = cboCharacterOption.SelectedValue;
             List<ListItem> lstGameplayOptions = new List<ListItem>();
             foreach (KeyValuePair<string, CharacterOptions> objLoopOptions in OptionsManager.LoadedCharacterOptions)
             {
-                lstGameplayOptions.Add(new ListItem(objLoopOptions, objLoopOptions.Value.DisplayName));
+                lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
             }
 
             cboCharacterOption.BeginUpdate();
@@ -106,6 +108,7 @@ namespace Chummer
             if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                 cboCharacterOption.SelectedIndex = 0;
             cboCharacterOption.EndUpdate();
+            ResumeLayout();
 
             Cursor = Cursors.Default;
         }
@@ -113,11 +116,13 @@ namespace Chummer
         private void frmSelectBuildMethod_Load(object sender, EventArgs e)
         {
             cboGamePlay_SelectedIndexChanged(this, e);
+            _blnLoading = false;
         }
 
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SuspendLayout();
+            if (!_blnLoading)
+                SuspendLayout();
             // Load the Priority information.
             CharacterOptions objSelectedGameplayOption = cboCharacterOption.SelectedValue as CharacterOptions;
             if (objSelectedGameplayOption != null)
@@ -163,7 +168,8 @@ namespace Chummer
 
             if (_blnLockBuildMethod)
                 cmdOK.Enabled = objSelectedGameplayOption?.BuildMethod == _eStartingBuildMethod;
-            ResumeLayout();
+            if (!_blnLoading)
+                ResumeLayout();
         }
         #endregion
     }

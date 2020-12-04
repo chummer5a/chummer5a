@@ -186,7 +186,7 @@ namespace Chummer
         private string _strPriorityArray = "ABCDE";
         private string _strPriorityTable = "Standard";
         private int _intSumtoTen = 10;
-        private decimal _decNuyenMaximumBP = 50;
+        private decimal _decNuyenMaximumBP = 10;
         private int _intAvailability = 12;
 
         // Dictionary of names of custom data directories, with first value element being load order and second value element being whether or not it's enabled
@@ -311,12 +311,12 @@ namespace Chummer
             // Copy over via properties in order to trigger OnPropertyChanged as appropriate
             PropertyInfo[] aobjProperties = GetType().GetProperties();
             PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
-            foreach (PropertyInfo objProperty in GetType().GetProperties().Where(x => x.CanRead && x.CanWrite))
+            foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead))
             {
-                PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
-                if (objOtherProperty != null && objProperty.PropertyType.IsAssignableFrom(objOtherProperty.PropertyType))
+                PropertyInfo objProperty = aobjProperties.FirstOrDefault(x => x.Name == objOtherProperty.Name && x.CanWrite);
+                if (objProperty != null)
                 {
-                    objProperty.SetValue(aobjProperties, objOtherProperty.GetValue(objOtherProperty));
+                    objProperty.SetValue(this, objOtherProperty.GetValue(objOther, null), null);
                 }
             }
 
@@ -359,7 +359,7 @@ namespace Chummer
             foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
             {
                 PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
-                if (objOtherProperty == null || objProperty.GetValue(objProperty) != objOtherProperty.GetValue(objOtherProperty))
+                if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(objOther))
                 {
                     return false;
                 }
