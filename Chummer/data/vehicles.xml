@@ -10203,6 +10203,236 @@
         </gear>
       </gears>
     </vehicle>
+    <vehicle>
+      <id>be13725c-d5cd-4855-96f6-a07de090b58d</id>
+      <name>Eurocar Escape FüKomKW</name>
+      <source>SOTG</source>
+      <page>16</page>
+      <accel>3</accel>
+      <armor>12</armor>
+      <avail>10</avail>
+      <body>16</body>
+      <category>Trucks</category>
+      <cost>145000</cost>
+      <handling>3/4</handling>
+      <pilot>2</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name rating="2">Anti-Theft System</name>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Off-Road Suspension</name>
+        <name>Amenities (Low)</name>
+        <name>Multifuel Engine</name>
+        <name>Satellite Link</name>
+        <name>Winch (Basic)</name>
+        <name>Searchlight</name>
+        <name>Retrans Unit</name>
+        <name select="Command center with own Host">Special Equipment</name>
+        <name>Enhanced Image Screens</name>
+        <name>Increased Seating</name>
+      </mods>
+      <seats>10</seats>
+    </vehicle>
+    <vehicle>
+      <id>3385c5ce-0224-41be-bede-ef908f0af007</id>
+      <name>Eurocar Escape MzKW D</name>
+      <source>SOTG</source>
+      <page>16</page>
+      <accel>3</accel>
+      <armor>14</armor>
+      <avail>8</avail>
+      <body>18</body>
+      <category>Trucks</category>
+      <cost>165000</cost>
+      <handling>3/4</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name rating="2">Anti-Theft System</name>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Off-Road Suspension</name>
+        <name>Amenities (Low)</name>
+        <name>Multifuel Engine</name>
+        <name>Satellite Link</name>
+        <name>Winch (Basic)</name>
+        <name>Searchlight</name>
+        <name>Extreme Environment Modification</name>
+        <name rating="1">Life Support</name>
+        <name select="Firefighting Cannon">Special Equipment</name>
+        <name select="Dozer Blade">Special Equipment</name>
+        <name select="Water Jet Cutter">Special Equipment</name>
+        <name select="Rescue-Equipment">Special Equipment</name>
+        <name rating="6">Special Armor Modification (Fire)</name>
+      </mods>
+      <seats>6</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Krupp Munitions 3E Firefighting Cannon</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+    <vehicle>
+      <id>1af96573-ee09-4bc9-8598-75f62bccfebc</id>
+      <name>Eurocar Escape DeKW</name>
+      <source>SOTG</source>
+      <page>16</page>
+      <accel>2</accel>
+      <armor>14</armor>
+      <avail>14</avail>
+      <body>18</body>
+      <category>Trucks</category>
+      <cost>225000</cost>
+      <handling>3/4</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name rating="2">Anti-Theft System</name>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Off-Road Suspension</name>
+        <name>Amenities (Low)</name>
+        <name>Multifuel Engine</name>
+        <name>Satellite Link</name>
+        <name>Winch (Basic)</name>
+        <name>Searchlight</name>
+        <name rating="2">Life Support</name>
+        <name select="Firefighting Cannon">Special Equipment</name>
+        <name select="Dozer Blade">Special Equipment</name>
+        <name select="CBRN Equipment">Special Equipment</name>
+        <name rating="6">Special Armor Modification (Radiation)</name>
+        <name rating="6">Special Armor Modification (Chemical)</name>
+      </mods>
+      <seats>6</seats>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Krupp Munitions 3E Firefighting Cannon</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+    <vehicle>
+      <id>7d708ed4-02ce-4047-91bb-6bce6bee03aa</id>
+      <name>THW MzKW C</name>
+      <source>SOTG</source>
+      <page>16</page>
+      <accel>2</accel>
+      <armor>10</armor>
+      <avail>8</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>125000</cost>
+      <handling>5/5</handling>
+      <pilot>3</pilot>
+      <sensor>5</sensor>
+      <speed>4</speed>
+      <seats>5</seats>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>5</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name rating="2">Anti-Theft System</name>
+        <name>Off-Road Suspension</name>
+        <name>Amenities (Low)</name>
+        <name rating="1">Life Support</name>
+        <name>Multifuel Engine</name>
+        <name>Retrans Unit</name>
+        <name rating="6">Special Armor Modification (Radiation)</name>
+        <name rating="6">Special Armor Modification (Chemical)</name>
+        <name>Extra Entry/Exit Points</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
+    </vehicle>
+    <vehicle>
+      <id>143ec17c-1b87-4cb8-aea7-0a8af46f0f76</id>
+      <name>ZET Commando</name>
+      <source>SOTG</source>
+      <page>16</page>
+      <accel>3</accel>
+      <armor>14</armor>
+      <avail>12R</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>170000</cost>
+      <handling>3/4</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>4</speed>
+      <seats>5</seats>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name rating="2">Anti-Theft System</name>
+        <name>Off-Road Suspension</name>
+        <name>Amenities (Low)</name>
+        <name rating="1">Life Support</name>
+        <name>Multifuel Engine</name>
+        <name>Retrans Unit</name>
+        <name rating="6">Special Armor Modification (Radiation)</name>
+        <name rating="6">Special Armor Modification (Chemical)</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
+    </vehicle>
     <!-- End Region -->
     <!-- Region Krime Katalog -->
     <vehicle>

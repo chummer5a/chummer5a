@@ -1464,6 +1464,32 @@
       <costfor>10</costfor>
       <ammoforweapontype noextra="True">supermach</ammoforweapontype>
     </gear>
+    <gear>
+      <id>78babb62-e0f1-4561-9e2d-05b0b5fbb2ad</id>
+      <name>Ammo: Water</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>16</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>767ecc1c-1f47-4684-b36f-0bbe0868ceac</id>
+      <name>Ammo: Fire Extinguishant</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>16</page>
+      <avail>6R</avail>
+      <cost>500</cost>
+      <costfor>50</costfor>
+      <weaponbonus>
+        <damage>-1</damage>
+      </weaponbonus>
+      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
+    </gear>
     <!-- Region Kill Code-->
 
     <gear>
