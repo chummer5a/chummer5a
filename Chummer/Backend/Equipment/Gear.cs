@@ -2782,7 +2782,7 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Methods
-        public bool IsIdenticalToOtherGear(Gear objOtherGear)
+        public bool IsIdenticalToOtherGear(Gear objOtherGear, bool blnIgnoreSuperficials = false)
         {
             if (objOtherGear == null)
                 return false;
@@ -2790,10 +2790,11 @@ namespace Chummer.Backend.Equipment
                    && Category == objOtherGear.Category
                    && Rating == objOtherGear.Rating
                    && Extra == objOtherGear.Extra
-                   && GearName == objOtherGear.GearName
-                   && Notes == objOtherGear.Notes
+                   && (blnIgnoreSuperficials
+                       || (GearName == objOtherGear.GearName
+                           && Notes == objOtherGear.Notes))
                    && Children.DeepMatch(objOtherGear.Children, x => x.Children, (x, y) => x.Quantity == y.Quantity
-                                                                                           && x.IsIdenticalToOtherGear(y));
+                       && x.IsIdenticalToOtherGear(y, blnIgnoreSuperficials));
         }
 
         /// <summary>
