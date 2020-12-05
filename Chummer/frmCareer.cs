@@ -4785,7 +4785,7 @@ namespace Chummer
             do
             {
                 // Select the root Gear node then open the Select Gear window.
-                blnAddAgain = PickGear(objGear, objGear.Location, objGear.Category == "Ammunition", objGear, objGear.DisplayNameShort(GlobalOptions.Language));
+                blnAddAgain = PickGear(objGear.Parent as IHasChildren<Gear>, objGear.Location, objGear, objGear.DisplayNameShort(GlobalOptions.Language));
             } while (blnAddAgain);
         }
 
@@ -10577,7 +10577,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, true, null, string.Empty, objWeapon.WeaponType);
+                blnAddAgain = PickGear(null, null, null, string.Empty, objWeapon.WeaponType, objWeapon.Damage.EndsWith("(f)", StringComparison.Ordinal));
             }
             while (blnAddAgain);
         }
@@ -14298,12 +14298,11 @@ namespace Chummer
         /// </summary>
         /// <param name="iParent">Parent to which the gear should be added.</param>
         /// <param name="objLocation">Location to which the gear should be added.</param>
-        /// <param name="blnAmmoOnly">Whether or not only Ammunition should be shown in the window.</param>
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="strForceAmmoForWeaponType">Force the user to select an item that would be an ammo for the weapon type.</param>
         /// <param name="blnFlechetteAmmoOnly">Whether or not to show only Flechette ammo.</param>
-        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, bool blnAmmoOnly = false, Gear objStackGear = null, string strForceItemValue = "", string strForceAmmoForWeaponType = "", bool blnFlechetteAmmoOnly = false)
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, Gear objStackGear = null, string strForceItemValue = "", string strForceAmmoForWeaponType = "", bool blnFlechetteAmmoOnly = false)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -14321,22 +14320,20 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                string strCategories = string.Empty;
-                if (blnAmmoOnly)
-                    strCategories = "Ammunition";
-                else if (!blnNullParent)
+                StringBuilder sbdCategories = new StringBuilder();
+                if (!blnNullParent)
                 {
                     XmlNodeList xmlAddonCategoryList = objXmlGear?.SelectNodes("addoncategory");
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            strCategories += objXmlCategory.InnerText + ",";
+                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
                         // Remove the trailing comma.
-                        strCategories = strCategories.Substring(0, strCategories.Length - 1);
+                        sbdCategories.Length -= 1;
                     }
                 }
 
-                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories)
+                using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, sbdCategories.ToString())
                 {
                     ShowFlechetteAmmoOnly = blnFlechetteAmmoOnly
                 })
@@ -14355,7 +14352,7 @@ namespace Chummer
                                 return false;
                             }
 
-                            if (!string.IsNullOrEmpty(strCategories))
+                            if (sbdCategories.Length > 0)
                                 frmPickGear.ShowNegativeCapacityOnly = true;
                         }
 
@@ -14368,11 +14365,6 @@ namespace Chummer
 
                     frmPickGear.DefaultSearchText = strForceItemValue;
                     frmPickGear.ForceItemAmmoForWeaponType = strForceAmmoForWeaponType;
-
-                    if (blnAmmoOnly)
-                    {
-                        frmPickGear.SelectedGear = objSelectedGear?.SourceIDString;
-                    }
 
                     frmPickGear.ShowDialog(this);
 
@@ -14388,12 +14380,6 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     string strForceValue = string.Empty;
-                    if (blnAmmoOnly)
-                    {
-                        strForceValue = objSelectedGear?.Extra;
-                        strForceItemValue = string.Empty;
-                    }
-
                     if (!string.IsNullOrEmpty(strForceItemValue))
                         strForceValue = strForceItemValue;
                     Gear objGear = new Gear(CharacterObject);
@@ -14416,7 +14402,7 @@ namespace Chummer
                     decimal decCost;
                     if (objGear.Cost.Contains("Gear Cost"))
                     {
-                        string strCost = objGear.Cost.Replace("Gear Cost", objSelectedGear.CalculatedCost.ToString(GlobalOptions.InvariantCultureInfo));
+                        string strCost = objGear.Cost.Replace("Gear Cost", (objSelectedGear?.CalculatedCost ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                         decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : objGear.TotalCost;
                     }
@@ -14456,18 +14442,12 @@ namespace Chummer
 
                     // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                     // This is wrapped in a try statement since the character may not have a piece of Gear selected and has clicked the Buy Additional Ammo button for a Weapon.
-                    if (!blnNullParent)
+                    if (!blnNullParent && objStackWith == null && CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objGear.PluginCapacity < 0)
                     {
-                        if (objStackWith == null)
-                        {
-                            if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objGear.PluginCapacity < 0)
-                            {
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
-                                    LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                                return frmPickGear.AddAgain;
-                            }
-                        }
+                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
+                            LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return frmPickGear.AddAgain;
                     }
 
                     ExpenseUndo objUndo = new ExpenseUndo();
