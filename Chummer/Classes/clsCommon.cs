@@ -1019,7 +1019,7 @@ namespace Chummer
                 // each page should have its own text extraction strategy for it to work properly
                 // this way we don't need to check for previous page appearing in the current page
                 // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy());
+                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy()).CleanBadLigatures();
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                 lstStringFromPdf.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
@@ -1167,7 +1167,6 @@ namespace Chummer
                         }
                     }
                 }
-                sbdResultContent.CleanBadLigatures();
                 return sbdResultContent.ToString();
             }
             return string.Empty;

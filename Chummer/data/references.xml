@@ -819,7 +819,7 @@
 		</rule>
 		<rule>
 			<id>9681FA66-F70E-4999-A81C-12B5F3DE4EAE</id>
-			<name>Using Social Inﬂuence Skills</name>
+			<name>Using Social Influence Skills</name>
 			<source>SR5</source>
 			<page>139</page>
 		</rule>
@@ -2566,7 +2566,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>D1F1F42E-CAF7-4006-9378-1B44639243AF</id>
-			<name>Physical Damage Overﬂow</name>
+			<name>Physical Damage Overflow</name>
 			<source>SR5</source>
 			<page>209</page>
 		</rule>
@@ -3496,7 +3496,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>43559A82-DE25-494A-A70F-29C274B46B31</id>
-			<name>Camouﬂage</name>
+			<name>Camouflage</name>
 			<source>SR5</source>
 			<page>256</page>
 		</rule>

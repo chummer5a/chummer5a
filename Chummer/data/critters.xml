@@ -51419,7 +51419,7 @@
         <power select="Air">Engulf</power>
         <power>Fear</power>
         <power select="Normal Weapons">Immunity</power>
-        <power>Inﬂuence</power>
+        <power>Influence</power>
         <power>Materialization</power>
         <power select="Claws (DV (F+2)P AP –F)">Natural Weapon</power>
         <power select="Wings (DV (F+6)S AP -F)">Natural Weapon</power>
@@ -51942,7 +51942,7 @@
         <power>Confusion</power>
         <power>Fear</power>
         <power select="F">Hardened Mystic Armor</power>
-        <power>Inﬂuence</power>
+        <power>Influence</power>
         <power>Materialization</power>
         <power select="DV (F-1)S">Natural Weapon (Fist</power>
         <power>AP –Force)</power>

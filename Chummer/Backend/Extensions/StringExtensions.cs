@@ -1162,12 +1162,13 @@ namespace Chummer
         /// Replace some of the bad ligatures that are present in Shadowrun sourcebooks with proper characters
         /// </summary>
         /// <param name="sbdInput">StringBuilder to clean.</param>
-        public static void CleanBadLigatures(this StringBuilder sbdInput)
+        public static StringBuilder CleanBadLigatures(this StringBuilder sbdInput)
         {
             if (sbdInput == null)
                 throw new ArgumentNullException(nameof(sbdInput));
             foreach (KeyValuePair<string, string> kvpBadLigature in s_dicBadLigaturesMap)
                 sbdInput.Replace(kvpBadLigature.Key, kvpBadLigature.Value);
+            return sbdInput;
         }
 
         /// <summary>
