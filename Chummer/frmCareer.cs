@@ -10120,7 +10120,8 @@ namespace Chummer
 
         private void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
+            TreeNode nodSelected = treLifestyles.SelectedNode;
+            if (!(nodSelected?.Tag is Lifestyle objLifestyle))
                 return;
 
             string strGuid = objLifestyle.InternalId;
@@ -10170,8 +10171,10 @@ namespace Chummer
 
             objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
-            treLifestyles.SelectedNode.Text = objLifestyle.CurrentDisplayName;
-            treLifestyles.SelectedNode.Tag = objLifestyle;
+            nodSelected.Text = objLifestyle.CurrentDisplayName;
+            nodSelected.Tag = objLifestyle;
+            nodSelected.ForeColor = objLifestyle.PreferredColor;
+            nodSelected.ToolTipText = objLifestyle.Notes.WordWrap();
 
             string strSpace = LanguageManager.GetString("String_Space");
 
