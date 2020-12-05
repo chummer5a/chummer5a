@@ -41,7 +41,7 @@ namespace Chummer.UI.Charts
             {
                 Title = LanguageManager.GetString("String_KarmaRemaining"),
                 Values = ExpenseValues,
-                LineSmoothness = 1,
+                LineSmoothness = 0.1,
                 Stroke = Brushes.Blue,
                 Fill = _objKarmaFillBrush,
                 PointGeometrySize = 8
