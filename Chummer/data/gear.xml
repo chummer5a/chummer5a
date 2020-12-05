@@ -558,7 +558,7 @@
       <name>Ammo: DMSO Rounds</name>
       <category>Ammunition</category>
       <rating>0</rating>
-      <source>SR5G</source>
+      <source>SR5</source>
       <page>436</page>
       <avail>2R</avail>
       <addoncategory>Drugs</addoncategory>
@@ -566,7 +566,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>20</cost>
       <costfor>10</costfor>
-      <ammoforweapontype>squirtgun</ammoforweapontype>
+      <ammoforweapontype noextra="True">squirtgun</ammoforweapontype>
     </gear>
     <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
@@ -1462,7 +1462,7 @@
       <avail>16F</avail>
       <cost>20</cost>
       <costfor>10</costfor>
-      <ammoforweapontype>supermach</ammoforweapontype>
+      <ammoforweapontype noextra="True">supermach</ammoforweapontype>
     </gear>
     <!-- Region Kill Code-->
 

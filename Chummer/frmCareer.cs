@@ -10505,7 +10505,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickGear(null, null, null, string.Empty, objWeapon.WeaponType, objWeapon.Damage.EndsWith("(f)", StringComparison.Ordinal));
+                blnAddAgain = PickGear(null, null, null, string.Empty, objWeapon);
             }
             while (blnAddAgain);
         }
@@ -14217,9 +14217,8 @@ namespace Chummer
         /// <param name="objLocation">Location to which the gear should be added.</param>
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
-        /// <param name="strForceAmmoForWeaponType">Force the user to select an item that would be an ammo for the weapon type.</param>
-        /// <param name="blnFlechetteAmmoOnly">Whether or not to show only Flechette ammo.</param>
-        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, Gear objStackGear = null, string strForceItemValue = "", string strForceAmmoForWeaponType = "", bool blnFlechetteAmmoOnly = false)
+        /// <param name="objAmmoForWeapon">Gear is being bought as ammo for this weapon.</param>
+        private bool PickGear(IHasChildren<Gear> iParent, Location objLocation = null, Gear objStackGear = null, string strForceItemValue = "", Weapon objAmmoForWeapon = null)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -14252,7 +14251,7 @@ namespace Chummer
 
                 using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0, objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, sbdCategories.ToString())
                 {
-                    ShowFlechetteAmmoOnly = blnFlechetteAmmoOnly
+                    ShowFlechetteAmmoOnly = objAmmoForWeapon?.Damage.EndsWith("(f)", StringComparison.Ordinal) == true
                 })
                 {
                     if (!blnNullParent)
@@ -14281,7 +14280,7 @@ namespace Chummer
                     }
 
                     frmPickGear.DefaultSearchText = strForceItemValue;
-                    frmPickGear.ForceItemAmmoForWeaponType = strForceAmmoForWeaponType;
+                    frmPickGear.ForceItemAmmoForWeaponType = objAmmoForWeapon?.WeaponType ?? string.Empty;
 
                     frmPickGear.ShowDialog(this);
 
@@ -14296,9 +14295,9 @@ namespace Chummer
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
-                    string strForceValue = string.Empty;
-                    if (!string.IsNullOrEmpty(strForceItemValue))
-                        strForceValue = strForceItemValue;
+                    string strForceValue = strForceItemValue;
+                    if (string.IsNullOrEmpty(strForceValue))
+                        strForceValue = objAmmoForWeapon?.AmmoCategory;
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue);
 
