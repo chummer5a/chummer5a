@@ -28,6 +28,8 @@ nuget:
   account_feed: true
   project_feed: true
   disable_publish_on_pr: true
+cache:
+  - packages -> **\packages.config
 before_build:
 - ps: |
     $token = $env:api_token
