@@ -67,7 +67,8 @@ namespace Chummer.Properties
         {
             // Try again, but this time without the OAuthToken
             strOAuthToken = string.Empty;
-            strPerPageString = strPerPageString.Substring(1, strPerPageString.Length); // Escape the "&"
+            if (strPerPageString.Length > 0 && strPerPageString[0] == '&')
+                strPerPageString = strPerPageString.Substring(1, strPerPageString.Length); // Escape the "&"
             webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strPerPageString}") as HttpWebRequest;
             webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             webRequest.Accept = "application/json";
