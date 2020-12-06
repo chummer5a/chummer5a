@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <vehicles>
+    <vehicle>
+      <id>f8aa15ae-ae39-43dd-952c-909339538523</id>
+      <name>BÆR E-Sperber</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>2</avail>
+      <body>3</body>
+      <category>Bikes</category>
+      <cost>500</cost>
+      <handling>4/6</handling>
+      <pilot>-</pilot>
+      <sensor>-</sensor>
+      <speed>2</speed>
+      <seats>2</seats>
+    </vehicle>
+    <vehicle>
+      <id>a9ff84aa-a233-4295-8fb7-72f670af479e</id>
+      <name>Rattenbike</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>2</avail>
+      <body>4</body>
+      <category>Bikes</category>
+      <cost>1000</cost>
+      <handling>4/3</handling>
+      <pilot>-</pilot>
+      <sensor>-</sensor>
+      <speed>4</speed>
+      <seats>2</seats>
+    </vehicle>
+    <vehicle>
+      <id>fa0d777b-8ad0-4702-994d-2eca82492dce</id>
+      <name>E-Rikscha</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>0</armor>
+      <avail>2</avail>
+      <body>1</body>
+      <category>Bikes</category>
+      <cost>400</cost>
+      <handling>4/6</handling>
+      <pilot>-</pilot>
+      <sensor>-</sensor>
+      <speed>1</speed>
+      <seats>3</seats>
+    </vehicle>
+    <vehicle>
+      <id>37dd8da0-0aa8-4955-bd45-77c620b84f45</id>
+      <name>Tuk-Tuk</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>5</armor>
+      <avail>2</avail>
+      <body>3</body>
+      <category>Cars</category>
+      <cost>800</cost>
+      <handling>3/4</handling>
+      <pilot>-</pilot>
+      <sensor>-</sensor>
+      <speed>1</speed>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>f5dc54a2-9073-41bf-ae73-093197afbcfc</id>
+      <name>Dreckskarre</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>2</avail>
+      <body>8</body>
+      <category>Cars</category>
+      <cost>4000</cost>
+      <handling>3/4</handling>
+      <pilot>-</pilot>
+      <sensor>-</sensor>
+      <speed>3</speed>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>ee857f24-15ad-42f0-b842-d985423a9139</id>
+      <name>Bessere Dreckskarre</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>8</armor>
+      <avail>2</avail>
+      <body>10</body>
+      <category>Cars</category>
+      <cost>8000</cost>
+      <handling>3</handling>
+      <pilot>-</pilot>
+      <sensor>-</sensor>
+      <speed>4</speed>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>ba86d1fa-3e89-43de-87e1-e93d2f487cb2</id>
+      <name>Drecks-Van</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>12</armor>
+      <avail>2</avail>
+      <body>14</body>
+      <category>Trucks</category>
+      <cost>10000</cost>
+      <handling>3</handling>
+      <pilot>-</pilot>
+      <sensor>-</sensor>
+      <speed>3</speed>
+      <seats>2/8</seats>
+    </vehicle>
+    <vehicle>
+      <id>7bb9248f-263b-43fc-9515-4e1cb169e886</id>
+      <name>BÆR Schlachtkreuzer</name>
+      <page>2</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>15</armor>
+      <avail>6</avail>
+      <body>15</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>32000</cost>
+      <handling>4</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Multifuel Engine</name>
+        <name>Ram Plate</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>3414fbd2-bcc1-46b3-af28-9589ce8491a9</id>
+      <name>Junkdog</name>
+      <page>3</page>
+      <source>HTN-CB</source>
+      <accel>1</accel>
+      <armor>5</armor>
+      <avail>4</avail>
+      <body>4</body>
+      <category>Drones: Medium</category>
+      <cost>3500</cost>
+      <handling>3</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Built-In</size>
+          <visibility>Concealed</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Jaws</name>
+        </weapon>
+      </weapons>
+      <modslots>1</modslots>
+    </vehicle>
+    <vehicle>
+      <id>b7a3cf95-e9cc-4db4-adbf-f577cce1c02f</id>
+      <name>Kuznechik</name>
+      <page>3</page>
+      <source>HTN-CB</source>
+      <accel>2</accel>
+      <armor>6</armor>
+      <avail>6</avail>
+      <body>6</body>
+      <category>Drones: Medium</category>
+      <cost>3000</cost>
+      <handling>3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <modslots>6</modslots>
+    </vehicle>
+    <vehicle>
+      <id>7d07e848-04b4-4cfc-8ccd-f96ee17cc8ad</id>
+      <name>Ruhrmetall Selket</name>
+      <page>3</page>
+      <source>HTN-CB</source>
+      <accel>2(1)</accel>
+      <armor>20</armor>
+      <avail>18V</avail>
+      <body>18</body>
+      <category>Corpsec/Police/Military</category>
+      <cost>130000</cost>
+      <handling>3/5(4/3)</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>2(3)</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+     <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>RPK SMG</name>
+        </weapon>
+        <weapon>
+          <name>RPK SMG</name>
+        </weapon>
+        <weapon>
+          <name>ArmTech MGL-12</name>
+        </weapon>
+      </weapons>
+      <seats>5</seats>
+    </vehicle>
+  </vehicles>
+</chummer>
