@@ -1950,11 +1950,10 @@ namespace Chummer
 
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
         {
-            if (CharacterObject.ConvertCyberzombie())
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!CharacterObject.ConvertCyberzombie())
+                return;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
