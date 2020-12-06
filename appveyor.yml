@@ -14,8 +14,6 @@ assembly_info:
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
-hosts:
-  api.nuget.org: 93.184.221.200
 environment:
   SolutionDir: C:\projects\chummer\
   CHUMMER_OAUTH_TOKEN: 831e3c01126ca8da4661fe3d48a15c1c0bb2c5cb
