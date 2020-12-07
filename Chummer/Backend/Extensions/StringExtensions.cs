@@ -1260,7 +1260,7 @@ namespace Chummer
         public static string CleanXPath(this string strSearch)
         {
             if(string.IsNullOrEmpty(strSearch))
-                return null;
+                return "\"\"";
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
