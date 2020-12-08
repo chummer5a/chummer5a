@@ -771,8 +771,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode nodChild in nodChildren)
                 {
                     WeaponMount wm = new WeaponMount(_objCharacter, this);
-                    wm.Load(nodChild, blnCopy);
-                    WeaponMounts.Add(wm);
+                    if (wm.Load(nodChild, blnCopy))
+                        WeaponMounts.Add(wm);
                 }
             }
 

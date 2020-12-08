@@ -10376,8 +10376,7 @@ namespace Chummer
                     && objArmor.Category != "Clothing")
                     continue;
                 int intArmorValue = objArmor.TotalArmor
-                                    + decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor)
-                                                                      + dicArmorImprovementValues[objArmor]));
+                                    + decimal.ToInt32(decimal.Ceiling(dicArmorImprovementValues[objArmor]));
                 int intCustomStackBonus = 0;
                 string strArmorName = objArmor.Name;
                 foreach (Armor objInnerArmor in lstArmorsToConsider)

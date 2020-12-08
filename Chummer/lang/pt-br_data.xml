@@ -42156,8 +42156,8 @@
                         <translate>Magician: +2 dice for Illusion spells</translate>
                     </choice>
                     <choice>
-                        <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</name>
-                        <translate>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</translate>
+                        <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</name>
+                        <translate>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</translate>
                     </choice>
                 </choices>
             </mentor>
@@ -42900,7 +42900,7 @@
                 <name>Lion</name>
                 <translate>Lion</translate>
                 <altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
-                <altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
+                <altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot flee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
                 <altpage>129</altpage>
                 <choices>
                     <choice>
@@ -42975,7 +42975,7 @@
                 <id>19d69029-259a-4ed6-b66b-944b4ddbc172</id>
                 <name>Arcana</name>
                 <translate>Arcana</translate>
-                <altadvantage>All: Once per day, when making a decision or test inﬂuenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</altadvantage>
+                <altadvantage>All: Once per day, when making a decision or test influenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</altadvantage>
                 <altdisadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</altdisadvantage>
                 <altpage>95</altpage>
                 <choices>

@@ -41,7 +41,7 @@ namespace Chummer.UI.Charts
             {
                 Title = LanguageManager.GetString("String_KarmaRemaining"),
                 Values = ExpenseValues,
-                LineSmoothness = 1,
+                LineSmoothness = 0.1,
                 Stroke = Brushes.Blue,
                 Fill = _objKarmaFillBrush,
                 PointGeometrySize = 8
@@ -121,28 +121,27 @@ namespace Chummer.UI.Charts
             get => _blnNuyenMode;
             set
             {
-                if (_blnNuyenMode != value)
+                if (_blnNuyenMode == value)
+                    return;
+                _blnNuyenMode = value;
+                chtCartesian.SuspendLayout();
+                if (value)
                 {
-                    _blnNuyenMode = value;
-                    chtCartesian.SuspendLayout();
-                    if (value)
-                    {
-                        _objYAxis.Title = LanguageManager.GetString("Label_SummaryNuyen");
-                        _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Options.NuyenFormat ?? "#,0.##") + '¥', GlobalOptions.CultureInfo);
-                        _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
-                        _objMainSeries.Stroke = Brushes.Red;
-                        _objMainSeries.Fill = _objNuyenFillBrush;
-                    }
-                    else
-                    {
-                        _objYAxis.Title = LanguageManager.GetString("String_Karma");
-                        _objYAxis.LabelFormatter = val => val.ToString("#,0.##", GlobalOptions.CultureInfo);
-                        _objMainSeries.Title = LanguageManager.GetString("String_KarmaRemaining");
-                        _objMainSeries.Stroke = Brushes.Blue;
-                        _objMainSeries.Fill = _objKarmaFillBrush;
-                    }
-                    chtCartesian.ResumeLayout();
+                    _objYAxis.Title = LanguageManager.GetString("Label_SummaryNuyen");
+                    _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Options.NuyenFormat ?? "#,0.##") + '¥', GlobalOptions.CultureInfo);
+                    _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
+                    _objMainSeries.Stroke = Brushes.Red;
+                    _objMainSeries.Fill = _objNuyenFillBrush;
                 }
+                else
+                {
+                    _objYAxis.Title = LanguageManager.GetString("String_Karma");
+                    _objYAxis.LabelFormatter = val => val.ToString("#,0.##", GlobalOptions.CultureInfo);
+                    _objMainSeries.Title = LanguageManager.GetString("String_KarmaRemaining");
+                    _objMainSeries.Stroke = Brushes.Blue;
+                    _objMainSeries.Fill = _objKarmaFillBrush;
+                }
+                chtCartesian.ResumeLayout();
             }
         }
 

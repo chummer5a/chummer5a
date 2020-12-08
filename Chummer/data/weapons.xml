@@ -14857,6 +14857,28 @@
       <spec>Sniper Rifles</spec>
       <useskill>Longarms</useskill>
     </weapon>
+    <weapon>
+      <id>fe06691d-4f39-4ee8-a4e7-c8f9e5f9b6d6</id>
+      <name>Krupp Munitions 3E Firefighting Cannon</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>3</accuracy>
+      <reach>0</reach>
+      <damage>6S</damage>
+      <ap>2</ap>
+      <mode>FA</mode>
+      <rc>0</rc>
+      <ammo>250(belt)</ammo>
+      <avail>8</avail>
+      <cost>6500</cost>
+      <source>SOTG</source>
+      <page>16</page>
+      <range>Machine Pistols</range>
+	    <sizecategory>Heavy Machine Guns</sizecategory>
+      <useskill>Exotic Ranged Weapons</useskill>
+      <weapontype>firefighting cannons</weapontype>
+    </weapon>
     <!-- End Region -->
     <!-- Region Datapuls Verschlusssache (German) -->
     <weapon>

@@ -1134,13 +1134,16 @@ namespace Chummer
             return Guid.TryParse(strGuid, out Guid _);
         }
 
-        private static Dictionary<string, string> s_dicBadLigaturesMap = new Dictionary<string, string>
+        private static Dictionary<string, string> s_dicLigaturesMap = new Dictionary<string, string>
         {
             {"ﬀ", "ff"},
             {"ﬃ", "ffi"},
             {"ﬄ", "ffl"},
             {"ﬁ", "fi"},
-            {"ﬂ", "fl"}
+            {"ﬂ", "fl"},
+            // Some PDF fonts have this control character defined as the "fi" ligature for some reason.
+            // It's dumb and will cause XML errors, so it definitely has to be replaced/cleaned.
+            {'\u001f'.ToString(), "fi"}
         };
 
         /// <summary>
@@ -1148,13 +1151,13 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to clean.</param>
         /// <returns>Cleaned string with bad ligatures replaced with full latin characters</returns>
-        public static string CleanBadLigatures(this string strInput)
+        public static string CleanStylisticLigatures(this string strInput)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             string strReturn = strInput;
-            foreach (KeyValuePair<string, string> kvpBadLigature in s_dicBadLigaturesMap)
-                strReturn = strReturn.Replace(kvpBadLigature.Key, kvpBadLigature.Value);
+            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+                strReturn = strReturn.Replace(kvpLigature.Key, kvpLigature.Value);
             return strReturn;
         }
 
@@ -1162,12 +1165,13 @@ namespace Chummer
         /// Replace some of the bad ligatures that are present in Shadowrun sourcebooks with proper characters
         /// </summary>
         /// <param name="sbdInput">StringBuilder to clean.</param>
-        public static void CleanBadLigatures(this StringBuilder sbdInput)
+        public static StringBuilder CleanStylisticLigatures(this StringBuilder sbdInput)
         {
             if (sbdInput == null)
                 throw new ArgumentNullException(nameof(sbdInput));
-            foreach (KeyValuePair<string, string> kvpBadLigature in s_dicBadLigaturesMap)
-                sbdInput.Replace(kvpBadLigature.Key, kvpBadLigature.Value);
+            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+                sbdInput.Replace(kvpLigature.Key, kvpLigature.Value);
+            return sbdInput;
         }
 
         /// <summary>
@@ -1256,7 +1260,7 @@ namespace Chummer
         public static string CleanXPath(this string strSearch)
         {
             if(string.IsNullOrEmpty(strSearch))
-                return null;
+                return "\"\"";
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {

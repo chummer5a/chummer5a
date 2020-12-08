@@ -1809,7 +1809,7 @@
       <id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
       <name>Lion</name>
       <advantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
-      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fight to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t benefit the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
+      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fight to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot flee combat before your team members are safe. Further, whenever taking actions that don’t benefit the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
       <bonus>
         <selectskill limittoskill="Survival,Running,Tracking">
           <val>2</val>

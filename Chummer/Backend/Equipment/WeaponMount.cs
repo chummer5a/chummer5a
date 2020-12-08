@@ -193,14 +193,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the VehicleMod from the XmlNode.
+        /// Load the VehicleMod from the XmlNode, returning true if load was successful.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Indicates whether a new item will be created as a copy of this one.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public bool Load(XmlNode objNode, bool blnCopy = false)
         {
             if (objNode == null)
-                return;
+                return false;
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
@@ -209,7 +209,10 @@ namespace Chummer.Backend.Equipment
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                if (node != null)
+                    node.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                else if (string.IsNullOrEmpty(Name))
+                    return false; // No source ID, name, or node means this is probably a malformed weapon mount, stop it from loading
             }
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -285,6 +288,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+
+            return true;
         }
 
         /// <summary>

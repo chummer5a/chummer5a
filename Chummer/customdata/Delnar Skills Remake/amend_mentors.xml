@@ -80,7 +80,7 @@
         <specificskill xpathfilter="name = 'Con'" amendoperation="remove" />
       </bonus>
       <choices>
-        <choice xpathfilter="name = 'Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group'">
+        <choice xpathfilter="name = 'Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group'">
           <name>Adept: 1 free level of Improved Ability for a Social Active skill.</name>
           <bonus>
             <specificpower>
