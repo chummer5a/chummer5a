@@ -459,7 +459,9 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </None>
