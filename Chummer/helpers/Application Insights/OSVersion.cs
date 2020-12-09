@@ -100,6 +100,7 @@ namespace Chummer.helpers.Application_Insights
             {
                 Log.Error(e);
             }
+            return "unknown";
         }
     }
 }
