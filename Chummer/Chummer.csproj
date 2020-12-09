@@ -459,7 +459,7 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
-    <Content Include="Resources\app.manifest" />
+    <None Include="Resources\app.manifest" />
     <None Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </None>
