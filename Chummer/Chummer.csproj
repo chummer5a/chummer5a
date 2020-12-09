@@ -91,7 +91,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.8.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
@@ -381,6 +381,7 @@
     <Compile Include="helpers\Application Insights\CustomActivity.cs" />
     <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
     <Compile Include="helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
+    <Compile Include="helpers\Application Insights\OSVersion.cs" />
     <Compile Include="helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
     <Compile Include="helpers\Application Insights\UploadObjectAsMetric.cs" />
     <Compile Include="helpers\BufferedTableLayoutPanel.cs">
@@ -458,6 +459,7 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
+    <None Include="app.manifest" />
     <None Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </None>

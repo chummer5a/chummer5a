@@ -241,12 +241,14 @@ namespace Chummer
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting");
+                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting", dimension4Name:"OSVersion");
+                        string osversion = helpers.Application_Insights.OSVersion.GetOSInfo();
                         var metric = ChummerTelemetryClient.GetMetric(mi);
                         metric.TrackValue(1,
                             Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                             CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
-                            GlobalOptions.UseLoggingApplicationInsights.ToString());
+                            GlobalOptions.UseLoggingApplicationInsights.ToString(),
+                            osversion);
 
                         //Log a page view:
                         pvt = new PageViewTelemetry("frmChummerMain()")
