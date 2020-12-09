@@ -21,7 +21,7 @@ namespace Chummer.helpers.Application_Insights
                 Version vs = os.Version;
 
                 //Variable to hold our return value
-                string operatingSystem = "";
+                string operatingSystem = string.Empty;
 
                 if (os.Platform == PlatformID.Win32Windows)
                 {
@@ -80,12 +80,12 @@ namespace Chummer.helpers.Application_Insights
                 //Make sure we actually got something in our OS check
                 //We don't want to just return " Service Pack 2" or " 32-bit"
                 //That information is useless without the OS version.
-                if (operatingSystem != "")
+                if (!string.IsNullOrEmpty(operatingSystem))
                 {
                     //Got something.  Let's prepend "Windows" and get more info.
                     operatingSystem = "Windows " + operatingSystem;
                     //See if there's a service pack installed.
-                    if (os.ServicePack != "")
+                    if (!string.IsNullOrEmpty(os.ServicePack))
                     {
                         //Append it to the OS name.  i.e. "Windows XP Service Pack 3"
                         operatingSystem += " " + os.ServicePack;
