@@ -2504,7 +2504,7 @@ namespace Chummer
                         // Improvements.
                         objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
                         string strCharacterInnerXml = objXmlCharacter.InnerXml;
-                        bool removeImprovements = Utils.IsUnitTest;
+                        bool blnRemoveImprovements = Utils.IsUnitTest;
                         foreach (XmlNode objXmlImprovement in objXmlNodeList)
                         {
                             string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
@@ -2518,31 +2518,49 @@ namespace Chummer
                                 continue;
 
                             string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strLoopSourceName) && strLoopSourceName.IsGuid() &&
-                                objXmlImprovement["custom"]?.InnerText != bool.TrueString)
+                            if ((blnRemoveImprovements || showWarnings)
+                                && !string.IsNullOrEmpty(strLoopSourceName)
+                                && strLoopSourceName.IsGuid()
+                                && objXmlImprovement["custom"]?.InnerText != bool.TrueString)
                             {
                                 // Hacky way to make sure this character isn't loading in any orphaned improvements.
-                                // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                                if (strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal) ==
-                                    strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal))
+                                // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present:
+                                // once in the improvement and once in the parent that added it.
+                                int intFirstIdIndex =
+                                    strCharacterInnerXml.IndexOf(strLoopSourceName, StringComparison.Ordinal);
+                                int intLastIdIndex =
+                                    strCharacterInnerXml.LastIndexOf(strLoopSourceName, StringComparison.Ordinal);
+                                // Catch orphaned improvements that used to have the same source parent by making sure that at least one of
+                                // the IDs found is not an improvement's `<sourcename>` node's contents.
+                                // Spans are faster than substrings because they do not make allocations, so that is why they are used
+                                if (intFirstIdIndex >= 12
+                                    && strCharacterInnerXml.AsSpan(intFirstIdIndex - 12, 12)
+                                        .SequenceEqual("<sourcename>".AsSpan()))
                                 {
-                                    if (removeImprovements || showWarnings)
+                                    while (intLastIdIndex > intFirstIdIndex
+                                         && strCharacterInnerXml.AsSpan(intLastIdIndex - 12, 12)
+                                             .SequenceEqual("<sourcename>".AsSpan()))
                                     {
-                                        //Utils.BreakIfDebug();
-                                        if (removeImprovements || (Program.MainForm.ShowMessageBox(
-                                                                       LanguageManager.GetString(
-                                                                           "Message_OrphanedImprovements"),
-                                                                       LanguageManager.GetString(
-                                                                           "MessageTitle_OrphanedImprovements"),
-                                                                       MessageBoxButtons.YesNo,
-                                                                       MessageBoxIcon.Error) == DialogResult.Yes))
-                                        {
-                                            removeImprovements = true;
-                                            continue;
-                                        }
-
-                                        return false;
+                                        intLastIdIndex =
+                                            strCharacterInnerXml.LastIndexOf(strLoopSourceName, intLastIdIndex,
+                                                StringComparison.Ordinal);
                                     }
+                                }
+
+                                if (intFirstIdIndex == intLastIdIndex)
+                                {
+                                    //Utils.BreakIfDebug();
+                                    if (blnRemoveImprovements
+                                        || (Program.MainForm.ShowMessageBox(
+                                            LanguageManager.GetString("Message_OrphanedImprovements"),
+                                            LanguageManager.GetString("MessageTitle_OrphanedImprovements"),
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes))
+                                    {
+                                        blnRemoveImprovements = true;
+                                        continue;
+                                    }
+
+                                    return false;
                                 }
                             }
 
