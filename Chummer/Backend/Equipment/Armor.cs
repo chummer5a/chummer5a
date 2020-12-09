@@ -401,7 +401,19 @@ namespace Chummer.Backend.Equipment
                             objMod.IncludedInArmor = true;
                             objMod.ArmorCapacity = "[0]";
                             objMod.Cost = "0";
-                            objMod.MaximumRating = objMod.Rating;
+                            //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
+                            if (objXmlAttributes?["maxrating"] != null)
+                            {
+                                objMod.MaximumRating = Convert.ToInt32(objXmlAttributes?["maxrating"]?.InnerText,
+                                    GlobalOptions.InvariantCultureInfo);
+                                objMod.Rating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText,
+                                    GlobalOptions.InvariantCultureInfo);
+                            }
+                            else
+                            {
+                                objMod.MaximumRating = objMod.Rating;
+                            }
+
                             _lstArmorMods.Add(objMod);
                         }
                         else
@@ -416,8 +428,8 @@ namespace Chummer.Backend.Equipment
                                 IncludedInArmor = true,
                                 ArmorCapacity = "[0]",
                                 Cost = "0",
-                                Rating = 0,
-                                MaximumRating = 0,
+                                Rating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo),
+                                MaximumRating = Convert.ToInt32(objXmlAttributes?["maxrating"]?.InnerText, GlobalOptions.InvariantCultureInfo),
                                 Extra = strForceValue
                             };
                             _lstArmorMods.Add(objMod);

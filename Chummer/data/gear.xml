@@ -6021,7 +6021,20 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selectskill />
+        <selectskill limittoskill="First Aid,Hardware,Instruction,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic,Navigation,Performance" />
+      </bonus>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>7A1C4240-0F4F-46E1-90F8-CE4DA136E927</id>
+      <name>Skill Autosoft (Knowledge)</name>
+      <category>Autosofts</category>
+      <rating>6</rating>
+      <source>R5</source>
+      <page>127</page>
+      <avail>Rating * 2</avail>
+      <bonus>
+        <selectskill knowledgeskills="True" skillcategory="Academic,Language,Professional"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6034,7 +6047,7 @@
       <page>127</page>
       <avail>(Rating * 2)R</avail>
       <bonus>
-        <selectskill />
+        <selectskill limittoskill="Chemistry,Demolitions,Electronic Warfare,Lockpicking,Medicine"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>

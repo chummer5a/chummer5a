@@ -1323,7 +1323,7 @@
         </limitmodifier>
       </bonus>
       <mods>
-        <name rating="8">Fire Resistance</name>
+        <name maxrating="8" rating="8">Fire Resistance</name>
         <name>Restrictive</name>
       </mods>
       <wirelessbonus>

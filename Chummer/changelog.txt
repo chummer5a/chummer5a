@@ -9,11 +9,15 @@ Application Fixes:
 - In Career mode, if the optional rule to not double positive quality karma costs is not set, the karma filters in the quality selection form now properly consider the doubled cost of qualities that are not set to not double their costs after character creation.
 - Upgrading cyberware that is a part of another piece of cyberware no longer causes the cyberware selector form to display an empty list.
 - Mastery qualities that are not purchased traditionally no longer deduct free spell points.
+- Added support for maxrating on armor mods exceeding the rating of the base item. Supports Bunker Gear Fire Resistance 8
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
 - Added a new PDF Parameter option that is Adobe Acrobat-style, but always opens a new instance of the clicked file.
 - Linguistics (the adept power) no longer increases a character's native language limit by 1.
+- Amended Bunker Gear to properly get the rating 8
+- Limited Skill Autosofts to the skills listed in Rigger 5. 
+- Added Skill Autosoft (Knowledge) per Rigger 5.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
