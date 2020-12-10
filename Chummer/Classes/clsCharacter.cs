@@ -2534,12 +2534,10 @@ namespace Chummer
                                 // the IDs found is not an improvement's `<sourcename>` node's contents.
                                 // Spans are faster than substrings because they do not make allocations, so that is why they are used
                                 if (intFirstIdIndex >= 12
-                                    && strCharacterInnerXml.AsSpan(intFirstIdIndex - 12, 12)
-                                        .SequenceEqual("<sourcename>".AsSpan()))
+                                    && strCharacterInnerXml.AsSpan(intFirstIdIndex - 12, 12) == "<sourcename>".AsSpan())
                                 {
                                     while (intLastIdIndex > intFirstIdIndex
-                                         && strCharacterInnerXml.AsSpan(intLastIdIndex - 12, 12)
-                                             .SequenceEqual("<sourcename>".AsSpan()))
+                                         && strCharacterInnerXml.AsSpan(intLastIdIndex - 12, 12) == "<sourcename>".AsSpan())
                                     {
                                         intLastIdIndex =
                                             strCharacterInnerXml.LastIndexOf(strLoopSourceName, intLastIdIndex,
