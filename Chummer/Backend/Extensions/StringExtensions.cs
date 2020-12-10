@@ -340,7 +340,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.SplitNoAlloc(chrSeparator, eSplitOptions).ToArray();
+            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.SplitNoAlloc(strSeparator, eSplitOptions).ToArray();
+            return strInput.Split(new[] { strSeparator }, eSplitOptions);
         }
 
         /// <summary>
