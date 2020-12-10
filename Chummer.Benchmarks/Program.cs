@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
@@ -14,36 +15,55 @@ namespace Chummer.Benchmarks
         {
             // Benchmarks should not be run in a Debug configuration
             Utils.BreakIfDebug();
-            BenchmarkRunner.Run<Method1VsMethod2>();
+            BenchmarkRunner.Run<ForeachSplitComparison>();
         }
     }
 
     /// <summary>
     /// Replace with a more suitable name in practice. You can also benchmark as many methods as you like.
     /// </summary>
+    [MemoryDiagnoser]
     [SimpleJob(RuntimeMoniker.Net472, baseline: true)]
-    [RPlotExporter]
-    public class Method1VsMethod2
+    public class ForeachSplitComparison
     {
-        private const string strFirst = "lorem";
-        private const string strLast = "ipsum dolor sit amet";
+        private readonly string[] astrWords = {
+            "lorem", "ipsum", "dolor", "sit", "amet"
+        };
 
-        [Params(10000, 100000)]
+        private readonly string strLongWord;
+
+        [Params(100,1000,10000)]
+        // ReSharper disable once MemberCanBePrivate.Global
         public int N;
+
+        public ForeachSplitComparison()
+        {
+            Random objRandom = new Random(42);
+            StringBuilder sbdLongWord = new StringBuilder(600000);
+            foreach (string strWord in astrWords)
+                sbdLongWord.Append(strWord).Append(' ');
+            for (int iI = astrWords.Length; iI < 100000; ++iI)
+            {
+                sbdLongWord.Append(astrWords[objRandom.Next(0, astrWords.Length)]).Append(' ');
+            }
+            sbdLongWord.Length -= 1;
+            strLongWord = sbdLongWord.ToString();
+        }
 
         /// <summary>
         /// Replace with a more suitable name in practice.
         /// </summary>
         /// <returns>Doesn't matter for benchmarks, but makes sure that key code isn't optimized away.</returns>
-        [Benchmark]
-        public string Method1()
+        [Benchmark(Baseline = true)]
+        public bool ForeachSplit()
         {
-            string strLoop = string.Empty;
-            for (int iI = 0; iI < N; ++iI)
+            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            bool blnDummy = false;
+            foreach (string strWord in strBaseWord.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries))
             {
-                strLoop = strFirst + strLast.Substring(0, 5);
+                blnDummy = strWord.Length > 3;
             }
-            return strLoop;
+            return blnDummy;
         }
 
         /// <summary>
@@ -51,18 +71,47 @@ namespace Chummer.Benchmarks
         /// </summary>
         /// <returns>Doesn't matter for benchmarks, but makes sure that key code isn't optimized away.</returns>
         [Benchmark]
-        public string Method2()
+        public bool ForeachSplitNoAlloc()
         {
-            string strLoop = string.Empty;
-            for (int iI = 0; iI < N; ++iI)
+            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            bool blnDummy = false;
+            foreach (string strWord in strBaseWord.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries))
             {
-                char[] achrLoop = new char[strFirst.Length + 5];
-                Span<char> achrLoopSpan = achrLoop.AsSpan();
-                strFirst.AsSpan().CopyTo(achrLoop);
-                strLast.AsSpan(0, 5).CopyTo(achrLoopSpan.Slice(strFirst.Length));
-                strLoop = new string(achrLoop);
+                blnDummy = strWord.Length > 3;
             }
-            return strLoop;
+            return blnDummy;
+        }
+
+        /// <summary>
+        /// Replace with a more suitable name in practice.
+        /// </summary>
+        /// <returns>Doesn't matter for benchmarks, but makes sure that key code isn't optimized away.</returns>
+        [Benchmark]
+        public bool ForeachSplitString()
+        {
+            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            bool blnDummy = false;
+            foreach (string strWord in strBaseWord.Split(new[] { "rem " }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                blnDummy = strWord.Length > 3;
+            }
+            return blnDummy;
+        }
+
+        /// <summary>
+        /// Replace with a more suitable name in practice.
+        /// </summary>
+        /// <returns>Doesn't matter for benchmarks, but makes sure that key code isn't optimized away.</returns>
+        [Benchmark]
+        public bool ForeachSplitNoAllocString()
+        {
+            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            bool blnDummy = false;
+            foreach (string strWord in strBaseWord.SplitNoAlloc("rem ", StringSplitOptions.RemoveEmptyEntries))
+            {
+                blnDummy = strWord.Length > 3;
+            }
+            return blnDummy;
         }
     }
 }
