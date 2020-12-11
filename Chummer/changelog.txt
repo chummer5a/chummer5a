@@ -15,6 +15,8 @@ Application Fixes:
 - Settings for which ammo types can be used for which weapon types have been unhardcoded. The `ammoforweapontype` tag in gear items now dictates if said gear item can be used as ammo for a certain type of weapon, with the attribute 'noextra="True"' intended to be set where the ammo can broadly serve in all weapons of that type instead of just one specific one. The "type" attribute in a weapon's category dictates its default weapon type, though it can be overriden with a "weapontype" node inside the weapon's definition.
 - Lifestyle notes now properly show up after a new lifestyle is added.
 - If there are multiple orphaned improvements that used to have the same parent, these are now properly detected as orphaned improvements.
+- Characters no longer have extra special attributes burned when they buy new 'ware whose fractional part of its essence cost combined with the size of the character's existing essence hole would add up to more than one.
+- Upgrading 'ware no longer shifts a character's essence in the opposite direction to where it is supposed to (i.e. increasing character Essence if the new piece has a greater Essence cost than the old piece, decreasing character Essence if the new piece has a lesser Essence cost than the old piece).
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

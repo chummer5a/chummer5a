@@ -9024,6 +9024,16 @@ namespace Chummer
             }
         }
 
+        public void IncreaseEssenceHole(decimal decEssence, bool blnOverflowIntoHole = true)
+        {
+            IncreaseEssenceHole(decimal.ToInt32(decimal.Round(decEssence * 100, MidpointRounding.AwayFromZero)), blnOverflowIntoHole);
+        }
+
+        public void DecreaseEssenceHole(decimal decEssence, bool blnOverflowIntoHole = true)
+        {
+            DecreaseEssenceHole(decimal.ToInt32(decimal.Round(decEssence * 100, MidpointRounding.AwayFromZero)), blnOverflowIntoHole);
+        }
+
         public void IncreaseEssenceHole(int intCentiessence, bool blnOverflowIntoHole = true)
         {
             Cyberware objAntiHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);

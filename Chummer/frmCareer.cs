@@ -1627,7 +1627,7 @@ namespace Chummer
                                 Cyberware objParent = objCyberware.Parent;
                                 if (objParent != null) objParent.Children.Remove(objCyberware);
                                 else CharacterObject.Cyberware.Remove(objCyberware);
-                                CharacterObject.IncreaseEssenceHole((int) (objCyberware.CalculatedESS * 100));
+                                CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                             }
 
                             blnDoRefresh = true;
@@ -1681,7 +1681,7 @@ namespace Chummer
                                 Cyberware objParent = objCyberware.Parent;
                                 if (objParent != null) objParent.Children.Remove(objCyberware);
                                 else CharacterObject.Cyberware.Remove(objCyberware);
-                                CharacterObject.IncreaseEssenceHole((int) (objCyberware.CalculatedESS * 100));
+                                CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                             }
 
                             blnDoRefresh = true;
@@ -1728,7 +1728,7 @@ namespace Chummer
                             Cyberware objParent = objCyberware.Parent;
                             if (objParent != null) objParent.Children.Remove(objCyberware);
                             else CharacterObject.Cyberware.Remove(objCyberware);
-                            CharacterObject.IncreaseEssenceHole((int) (objCyberware.CalculatedESS * 100));
+                            CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                             blnDoRefresh = true;
                         }
 
@@ -1776,7 +1776,7 @@ namespace Chummer
                                 Cyberware objParent = objCyberware.Parent;
                                 if (objParent != null) objParent.Children.Remove(objCyberware);
                                 else CharacterObject.Cyberware.Remove(objCyberware);
-                                CharacterObject.IncreaseEssenceHole((int) (objCyberware.CalculatedESS * 100));
+                                CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                                 blnDoRefresh = true;
                             }
                         }
@@ -3249,7 +3249,7 @@ namespace Chummer
                     {
                         CharacterObject.Cyberware.Remove(objCyberware);
                         //Add essence hole.
-                        CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100));
+                        CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                     }
                 }
             }
@@ -7388,7 +7388,7 @@ namespace Chummer
                         objCyberware.Sell(frmSell.SellPercent);
                     }
 
-                    CharacterObject.IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100));
+                    CharacterObject.IncreaseEssenceHole(objCyberware.CalculatedESS);
                     break;
                 }
                 case ICanSell vendorTrash:
