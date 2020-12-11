@@ -2819,7 +2819,7 @@ namespace Chummer.Classes
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
 
             LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
-            objLimitModifier.Create(_strFriendlyName, decimal.ToInt32(decimal.Ceiling(decBonus)), strLimit, strCondition, false);
+            objLimitModifier.Create(_strFriendlyName, decBonus.StandardRound(), strLimit, strCondition, false);
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             Log.Info("Calling CreateImprovement");

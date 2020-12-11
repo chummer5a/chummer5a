@@ -594,7 +594,7 @@ namespace Chummer.Backend.Uniques
                 else
                     decDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
 
-                return decimal.ToInt32(decimal.Ceiling(decDrain));
+                return decDrain.StandardRound();
             }
         }
 

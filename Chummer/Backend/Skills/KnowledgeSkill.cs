@@ -252,18 +252,18 @@ namespace Chummer.Backend.Skills
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
                                             (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
                                              objImprovement.Enabled)
-                    .Select(objImprovement => decimal.ToInt32(decimal.Ceiling(objImprovement.Value))).Concat((-1).Yield()).Max();
+                    .Select(objImprovement => objImprovement.Value.StandardRound()).Concat((-1).Yield()).Max();
                 if (intMaxHardwire >= 0)
                 {
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
-                int intMaxSkillsoftRating = decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess)));
+                int intMaxSkillsoftRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess).StandardRound();
                 if (intMaxSkillsoftRating <= 0) return _intCachedCyberwareRating = 0;
                 int intMax = CharacterObject.Improvements
                     .Where(objSkillsoftImprovement => objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
                                                       objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                    .Select(objSkillsoftImprovement => decimal.ToInt32(decimal.Ceiling(objSkillsoftImprovement.Value))).Concat(0.Yield()).Max();
+                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value.StandardRound()).Concat(0.Yield()).Max();
 
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
 
@@ -386,7 +386,7 @@ namespace Chummer.Backend.Skills
                 decCost += decExtra;
                 decCost += decSpecCost + decExtraSpecCost; //Spec
 
-                return Math.Max(decimal.ToInt32(decimal.Ceiling(decCost)), 0);
+                return Math.Max(decCost.StandardRound(), 0);
             }
         }
 
@@ -444,14 +444,14 @@ namespace Chummer.Backend.Skills
                             objLoopImprovement.ImprovedName == SkillCategory) && objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum)
                         {
-                            intMinOverride = Math.Min(intMinOverride, decimal.ToInt32(decimal.Ceiling(objLoopImprovement.Value)));
+                            intMinOverride = Math.Min(intMinOverride, objLoopImprovement.Value.StandardRound());
                         }
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intValue = decimal.ToInt32(decimal.Ceiling(intValue * decMultiplier + decExtra));
+                    intValue = (intValue * decMultiplier + decExtra).StandardRound();
                 else
-                    intValue += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intValue += decExtra.StandardRound();
                 if (intMinOverride != int.MaxValue)
                 {
                     return Math.Max(intValue, intMinOverride);
@@ -494,9 +494,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intPointCost = decimal.ToInt32(decimal.Ceiling(intPointCost * decMultiplier + decExtra));
+                    intPointCost = (intPointCost * decMultiplier + decExtra).StandardRound();
                 else
-                    intPointCost += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intPointCost += decExtra.StandardRound();
 
                 return Math.Max(intPointCost, 0);
             }

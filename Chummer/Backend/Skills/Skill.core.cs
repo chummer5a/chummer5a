@@ -277,7 +277,7 @@ namespace Chummer.Backend.Skills
         protected int Bonus(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return decimal.ToInt32(decimal.Ceiling(RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value)));
+            return (RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value)).StandardRound();
         }
 
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExistAfterFirst = false)
@@ -396,9 +396,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    cost = decimal.ToInt32(decimal.Ceiling(cost * decMultiplier + decExtra));
+                    cost = (cost * decMultiplier + decExtra).StandardRound();
                 else
-                    cost += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    cost += decExtra.StandardRound();
 
                 return Math.Max(cost, 0);
             }
@@ -462,9 +462,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
-                    intSpecCost = decimal.ToInt32(decimal.Ceiling(intSpecCost * decSpecCostMultiplier + decExtraSpecCost));
+                    intSpecCost = (intSpecCost * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                 else
-                    intSpecCost += decimal.ToInt32(decimal.Ceiling(decExtraSpecCost)); //Spec
+                    intSpecCost += decExtraSpecCost.StandardRound(); //Spec
                 intCost += intSpecCost;
 
                 return Math.Max(0, intCost);
@@ -561,9 +561,9 @@ namespace Chummer.Backend.Skills
                 }
             }
             if (decMultiplier != 1.0m)
-                cost = decimal.ToInt32(decimal.Ceiling(cost * decMultiplier + decExtra));
+                cost = (cost * decMultiplier + decExtra).StandardRound();
             else
-                cost += decimal.ToInt32(decimal.Ceiling(decExtra));
+                cost += decExtra.StandardRound();
 
             if (cost < 0 && !CharacterObject.Options.CompensateSkillGroupKarmaDifference)
                 cost = 0;
@@ -657,9 +657,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    upgrade = decimal.ToInt32(decimal.Ceiling(upgrade * decMultiplier + decExtra));
+                    upgrade = (upgrade * decMultiplier + decExtra).StandardRound();
                 else
-                    upgrade += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    upgrade += decExtra.StandardRound();
 
                 int intMinCost = Math.Min(1, intOptionsCost);
                 if (upgrade < intMinCost && !CharacterObject.Options.CompensateSkillGroupKarmaDifference)
@@ -731,9 +731,9 @@ namespace Chummer.Backend.Skills
                             }
                         }
                         if (decSpecCostMultiplier != 1.0m)
-                            intPrice = decimal.ToInt32(decimal.Ceiling(intPrice * decSpecCostMultiplier + decExtraSpecCost));
+                            intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                         else
-                            intPrice += decimal.ToInt32(decimal.Ceiling(decExtraSpecCost)); //Spec
+                            intPrice += decExtraSpecCost.StandardRound(); //Spec
 
                         _intCachedCanAffordSpecialization = intPrice <= CharacterObject.Karma ? 1 : 0;
                     }
@@ -768,9 +768,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
-                    intPrice = decimal.ToInt32(decimal.Ceiling(intPrice * decSpecCostMultiplier + decExtraSpecCost));
+                    intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                 else
-                    intPrice += decimal.ToInt32(decimal.Ceiling(decExtraSpecCost)); //Spec
+                    intPrice += decExtraSpecCost.StandardRound(); //Spec
 
                 if (intPrice > CharacterObject.Karma)
                     return;
@@ -809,7 +809,7 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedFreeKarma = string.IsNullOrEmpty(Name)
                     ? 0
-                    : decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillLevel, false, Name)));
+                    : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillLevel, false, Name).StandardRound();
             }
         }
 
@@ -828,7 +828,7 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedFreeBase = string.IsNullOrEmpty(Name)
                     ? 0
-                    : decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillBase, false, Name)));
+                    : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillBase, false, Name).StandardRound();
             }
         }
 

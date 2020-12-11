@@ -3434,8 +3434,7 @@ namespace Chummer.Backend.Equipment
                 decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
 
                 if (_objCharacter != null && !_objCharacter.Options.DontRoundEssenceInternally)
-                    decReturn = decimal.Round(decReturn, _objCharacter.Options.EssenceDecimals,
-                        MidpointRounding.AwayFromZero);
+                    decReturn = decimal.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
                 decReturn += Children.Where(objChild => objChild.AddToParentESS).AsParallel()
                     .Sum(objChild => objChild.CalculatedESS);
                 return decReturn;

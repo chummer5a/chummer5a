@@ -406,7 +406,7 @@ namespace Chummer
                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
                 decReturn = Math.Max(decReturn,
                     _intKarmaMinimum + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
-                return decimal.ToInt32(decimal.Ceiling(decReturn));
+                return decReturn.StandardRound();
             }
         }
 
@@ -979,7 +979,7 @@ namespace Chummer
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.ContactForcedLoyalty && objImprovement.ImprovedName == UniqueId && objImprovement.Enabled)
                     {
-                        intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, decimal.ToInt32(decimal.Ceiling(objImprovement.Value)));
+                        intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value.StandardRound());
                     }
                 }
 

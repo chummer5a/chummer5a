@@ -290,7 +290,7 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedFreeBase = string.IsNullOrEmpty(Name)
                     ? 0
-                    : decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name)));
+                    : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name).StandardRound();
             }
         }
 
@@ -304,7 +304,7 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedFreeLevels = string.IsNullOrEmpty(Name)
                     ? 0
-                    : decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name)));
+                    : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name).StandardRound();
             }
         }
 
@@ -742,9 +742,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier + decExtra));
+                    intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
-                    intReturn += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intReturn += decExtra.StandardRound();
 
                 return Math.Max(intReturn, 0);
             }
@@ -794,9 +794,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier + decExtra));
+                    intCost = (intCost * decMultiplier + decExtra).StandardRound();
                 else
-                    intCost += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intCost += decExtra.StandardRound();
 
                 return Math.Max(intCost, 0);
             }
@@ -855,9 +855,9 @@ namespace Chummer.Backend.Skills
                 }
 
                 if (decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier + decExtra));
+                    intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
-                    intReturn += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intReturn += decExtra.StandardRound();
 
                 return Math.Max(intReturn, Math.Min(1, intOptionsCost));
             }

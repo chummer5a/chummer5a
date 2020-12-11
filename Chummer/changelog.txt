@@ -17,6 +17,7 @@ Application Fixes:
 - If there are multiple orphaned improvements that used to have the same parent, these are now properly detected as orphaned improvements.
 - Characters no longer have extra special attributes burned when they buy new 'ware whose fractional part of its essence cost combined with the size of the character's existing essence hole would add up to more than one.
 - Upgrading 'ware no longer shifts a character's essence in the opposite direction to where it is supposed to (i.e. increasing character Essence if the new piece has a greater Essence cost than the old piece, decreasing character Essence if the new piece has a lesser Essence cost than the old piece).
+- Negative fractional improvement values are now always rounded away from zero instead of always towards zero.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

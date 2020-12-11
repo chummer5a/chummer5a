@@ -123,7 +123,7 @@ namespace Chummer
 
             int intGlitchThreshold = chkVariableGlitch.Checked
                 ? intHitCount + 1
-                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+                : ((nudDice.Value + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -278,7 +278,7 @@ namespace Chummer
 
             int intGlitchThreshold = chkVariableGlitch.Checked
                 ? intHitCount + 1
-                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+                : ((nudDice.Value + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)

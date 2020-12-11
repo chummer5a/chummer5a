@@ -2006,7 +2006,7 @@ namespace Chummer.Backend.Equipment
             */
 
             // Factor in the character's Concealability modifiers.
-            intReturn += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability)));
+            intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability).StandardRound();
 
             string strReturn;
             if (intReturn >= 0)
@@ -2106,7 +2106,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                    intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
+                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR).StandardRound();
             }
 
             foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
@@ -2363,7 +2363,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal((double) objProcess) + decImprove));
+                            int intDamage = (Convert.ToDecimal((double) objProcess) + decImprove).StandardRound();
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
@@ -2431,7 +2431,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal((double)objProcess) + decImprove));
+                            int intDamage = (Convert.ToDecimal((double)objProcess) + decImprove).StandardRound();
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
@@ -2595,7 +2595,7 @@ namespace Chummer.Backend.Equipment
 
                         if (decAmmoBonusPercent != 1.0m)
                         {
-                            intAmmo = decimal.ToInt32(decimal.Ceiling(intAmmo * decAmmoBonusPercent));
+                            intAmmo = (intAmmo * decAmmoBonusPercent).StandardRound();
                         }
 
                         strThisAmmo = intAmmo.ToString(objCulture) + strAmmo.Substring(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('('));
@@ -3030,7 +3030,7 @@ namespace Chummer.Backend.Equipment
                     if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
                         _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                     {
-                        intImprove += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP)));
+                        intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP).StandardRound();
                     }
                 }
             }
@@ -3154,7 +3154,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                    intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
+                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR).StandardRound();
             }
 
             foreach (string strAttribute in AttributeSection.AttributeStrings)
@@ -3422,7 +3422,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
+                intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR).StandardRound();
 
             int intStrRC = (intUseSTR + 2) / 3;
 
@@ -3480,7 +3480,7 @@ namespace Chummer.Backend.Equipment
                             objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
                 }
 
-                return decimal.ToInt32(decimal.Ceiling(decReach));
+                return decReach.StandardRound();
             }
         }
 
@@ -3593,7 +3593,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                        intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)));
+                        intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR).StandardRound();
                 }
 
                 Func<string> funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalOptions.InvariantCultureInfo);
@@ -3671,7 +3671,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                intAccuracy += decimal.ToInt32(decimal.Ceiling(decImproveAccuracy));
+                intAccuracy += decImproveAccuracy.StandardRound();
 
                 string strSkill = UseSkill;
                 string strSpec = Spec;
@@ -3747,7 +3747,7 @@ namespace Chummer.Backend.Equipment
                     strSkill += LanguageManager.GetString("String_Space")
                                 + '(' + (!string.IsNullOrEmpty(strSpec) ? strSpec : UseSkillSpec) + ')';
                 }
-                intAccuracy += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, false, strSkill)));
+                intAccuracy += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, false, strSkill).StandardRound();
 
                 return intAccuracy;
             }
@@ -3954,8 +3954,8 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                 {
-                    intUseSTR += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
-                                                                 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR)));
+                    intUseSTR += (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
+                                  + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR)).StandardRound();
                 }
             }
 
@@ -3984,7 +3984,7 @@ namespace Chummer.Backend.Equipment
 
             object objProcess = CommonFunctions.EvaluateInvariantXPath(objRange.ToString(), out bool blnIsSuccess);
 
-            return blnIsSuccess ? decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier)) : -1;
+            return blnIsSuccess ? (Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * _decRangeMultiplier).StandardRound() : -1;
         }
 
         /// <summary>
@@ -4324,7 +4324,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                return intDicePool + decimal.ToInt32(decimal.Ceiling(decDicePoolModifier));
+                return intDicePool + decDicePoolModifier.StandardRound();
             }
         }
 
