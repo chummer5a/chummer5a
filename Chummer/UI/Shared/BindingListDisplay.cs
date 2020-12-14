@@ -172,7 +172,7 @@ namespace Chummer.UI.Shared
             {
                 for (int i = 0; i < _ablnRendered.Count; ++i)
                 {
-                    _ablnRendered[i] = _ablnRendered[i] && _lstDisplayIndex[i] == aintOldDisplayIndex[i];
+                    _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                 }
             }
         }

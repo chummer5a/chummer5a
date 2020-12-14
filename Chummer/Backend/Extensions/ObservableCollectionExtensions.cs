@@ -19,58 +19,96 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Chummer
 {
     public static class ObservableCollectionExtensions
     {
-        public static void Sort<T>(this ObservableCollection<T> lstCollection, int index, int count, IComparer<T> comparer)
+        /// <summary>
+        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
+        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="index">The starting index of the range to sort.</param>
+        /// <param name="length">The number of elements in the range to sort.</param>
+        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
+        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
+        /// interface implementation of each element.</param>
+        public static void Sort<T>(this ObservableCollection<T> lstCollection, int index, int length, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            if (index > lstCollection.Count)
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            if (length < 0)
+                throw new ArgumentOutOfRangeException(nameof(length));
+            if (index + length > lstCollection.Count)
+                throw new ArgumentException(nameof(length));
+            if (length == 0)
                 return;
-            if (lstCollection.Count < index + count)
-                count = lstCollection.Count - index;
-            List<T> lstSorted = new List<T>(lstCollection.Count);
-            for (int i = index; i < count; ++i)
+            T[] aobjSorted = new T[length];
+            Dictionary<T, int> dicOriginalIndeces = new Dictionary<T, int>(length);
+            for (int i = 0; i < length; ++i)
             {
-                lstSorted.Add(lstCollection[i]);
+                T objLoop = lstCollection[index + i];
+                aobjSorted[i] = objLoop;
+                dicOriginalIndeces.Add(objLoop, index + i);
             }
-            lstSorted.Sort(comparer);
-            for (int i = 0; i < lstSorted.Count; ++i)
-                lstCollection.Move(lstCollection.IndexOf(lstSorted[i]), index + i);
+            Array.Sort(aobjSorted, objComparer);
+            for (int i = 0; i < aobjSorted.Length; ++i)
+                lstCollection.Move(dicOriginalIndeces[aobjSorted[i]], index + i);
         }
 
-        public static void Sort<T>(this ObservableCollection<T> lstCollection, Comparison<T> comparison)
+        /// <summary>
+        /// Sorts the elements in a range of elements in an ObservableCollection using the specified System.Comparison`1.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="funcComparison">The System.Comparison`1 to use when comparing elements.</param>
+        public static void Sort<T>(this ObservableCollection<T> lstCollection, Comparison<T> funcComparison)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            T[] lstSorted = lstCollection.ToArray();
-            Array.Sort(lstSorted, comparison);
-            for (int i = 0; i < lstSorted.Length; ++i)
-                lstCollection.Move(lstCollection.IndexOf(lstSorted[i]), i);
+            if (funcComparison == null)
+                throw new ArgumentNullException(nameof(funcComparison));
+            T[] aobjSorted = new T[lstCollection.Count];
+            Dictionary<T, int> dicOriginalIndeces = new Dictionary<T, int>(lstCollection.Count);
+            for (int i = 0; i < lstCollection.Count; ++i)
+            {
+                T objLoop = lstCollection[i];
+                aobjSorted[i] = objLoop;
+                dicOriginalIndeces.Add(objLoop, i);
+            }
+            Array.Sort(aobjSorted, funcComparison);
+            for (int i = 0; i < aobjSorted.Length; ++i)
+                lstCollection.Move(dicOriginalIndeces[aobjSorted[i]], i);
         }
 
-        public static void Sort<T>(this ObservableCollection<T> lstCollection)
+        /// <summary>
+        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
+        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
+        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
+        /// interface implementation of each element.</param>
+        public static void Sort<T>(this ObservableCollection<T> lstCollection, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            T[] lstSorted = lstCollection.ToArray();
-            Array.Sort(lstSorted);
-            for (int i = 0; i < lstSorted.Length; ++i)
-                lstCollection.Move(lstCollection.IndexOf(lstSorted[i]), i);
-        }
-
-        public static void Sort<T>(this ObservableCollection<T> lstCollection, IComparer<T> comparer)
-        {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            T[] lstSorted = lstCollection.ToArray();
-            Array.Sort(lstSorted, comparer);
-            for (int i = 0; i < lstSorted.Length; ++i)
-                lstCollection.Move(lstCollection.IndexOf(lstSorted[i]), i);
+            T[] aobjSorted = new T[lstCollection.Count];
+            Dictionary<T, int> dicOriginalIndeces = new Dictionary<T, int>(lstCollection.Count);
+            for (int i = 0; i < lstCollection.Count; ++i)
+            {
+                T objLoop = lstCollection[i];
+                aobjSorted[i] = objLoop;
+                dicOriginalIndeces.Add(objLoop, i);
+            }
+            Array.Sort(aobjSorted, objComparer);
+            for (int i = 0; i < aobjSorted.Length; ++i)
+                lstCollection.Move(dicOriginalIndeces[aobjSorted[i]], i);
         }
     }
 }

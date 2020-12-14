@@ -16,23 +16,34 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
     public static class BitArrayExtensions
     {
-        public static int FirstMatching(this BitArray array, bool value, int skip = 0, int max = int.MaxValue)
+        /// <summary>
+        /// Get the first element in a BitArray that matches <paramref name="blnValue"/>.
+        /// </summary>
+        /// <param name="ablnArray">Array to search.</param>
+        /// <param name="blnValue">Value for which to look.</param>
+        /// <param name="intFrom">Index from which to start search (inclusive).</param>
+        /// <param name="intTo">Index at which to end search (exclusive).</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FirstMatching(this BitArray ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {
-            if (array == null)
-                return -1;
-            if (max > array.Count)
-                max = array.Count;
-            for (; skip < max; skip++)
+            if (ablnArray == null)
+                throw new ArgumentNullException(nameof(ablnArray));
+            if (intTo > ablnArray.Count)
+                intTo = ablnArray.Count;
+            for (; intFrom < intTo; ++intFrom)
             {
-                if (array[skip] == value) return skip;
+                if (ablnArray[intFrom] == blnValue)
+                    return intFrom;
             }
-
             return -1;
         }
     }

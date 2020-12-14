@@ -27,14 +27,38 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            int intTargetIndex = 0;
-            for (; intTargetIndex < lstCollection.Count; ++intTargetIndex)
+            // Binary search for the place where item should be inserted
+            int intIntervalStart = 0;
+            int intIntervalEnd = lstCollection.Count - 1;
+            int intTargetIndex = intIntervalEnd / 2;
+            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
                 int intCompareResult = lstCollection[intTargetIndex].CompareTo(objNewItem);
-                if (intCompareResult == 0 || (intCompareResult > 0) != blnReverse)
+                if (intCompareResult == 0)
                 {
+                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                    int intAdjuster = blnReverse ? -1 : 1;
+                    for (int i = intTargetIndex + intAdjuster; blnReverse ? i >= 0 : i < lstCollection.Count; i += intAdjuster)
+                    {
+                        if (lstCollection[i].CompareTo(objNewItem) == 0)
+                            intTargetIndex += intAdjuster;
+                        else
+                            break;
+                    }
                     break;
                 }
+                if (intIntervalStart == intIntervalEnd)
+                {
+                    if ((intCompareResult > 0) != blnReverse)
+                        intTargetIndex += 1;
+                    break;
+                }
+                if ((intCompareResult > 0) != blnReverse)
+                {
+                    intIntervalStart = intTargetIndex;
+                }
+                else
+                    intIntervalEnd = intTargetIndex;
             }
             lstCollection.Insert(intTargetIndex, objNewItem);
         }
@@ -45,14 +69,36 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            int intTargetIndex = 0;
-            for (; intTargetIndex < lstCollection.Count; ++intTargetIndex)
+            // Binary search for the place where item should be inserted
+            int intIntervalStart = 0;
+            int intIntervalEnd = lstCollection.Count - 1;
+            int intTargetIndex = intIntervalEnd / 2;
+            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
                 int intCompareResult = comparer.Compare(lstCollection[intTargetIndex], objNewItem);
-                if (intCompareResult == 0 || (intCompareResult > 0) != blnReverse)
+                if (intCompareResult == 0)
                 {
+                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                    int intAdjuster = blnReverse ? -1 : 1;
+                    for (int i = intTargetIndex + intAdjuster; blnReverse ? i >= 0 : i < lstCollection.Count; i += intAdjuster)
+                    {
+                        if (comparer.Compare(lstCollection[i], objNewItem) == 0)
+                            intTargetIndex += intAdjuster;
+                        else
+                            break;
+                    }
                     break;
                 }
+                if (intIntervalStart == intIntervalEnd)
+                {
+                    if ((intCompareResult > 0) != blnReverse)
+                        intTargetIndex += 1;
+                    break;
+                }
+                if ((intCompareResult > 0) != blnReverse)
+                    intIntervalStart = intTargetIndex;
+                else
+                    intIntervalEnd = intTargetIndex;
             }
             lstCollection.Insert(intTargetIndex, objNewItem);
         }

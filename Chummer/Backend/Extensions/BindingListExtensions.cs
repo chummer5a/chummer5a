@@ -26,10 +26,12 @@ namespace Chummer
     {
         internal static void MergeInto<T>(this BindingList<T> list, IEnumerable<T> items, Comparison<T> comparison, Action<T, T> funcMergeIfEquals = null)
         {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-            if (items == null) throw new ArgumentNullException(nameof(items));
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
-
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+            if (comparison == null)
+                throw new ArgumentNullException(nameof(comparison));
             foreach (T item in items)
             {
                 list.MergeInto(item, comparison, funcMergeIfEquals);
@@ -49,20 +51,37 @@ namespace Chummer
             //    list.Add(item);
             //    return;
             //}
-
-            int intCount = list.Count;
-            int intMergeIndex = intCount;
-            for (int i = 0; i < intCount; ++i)
+            // Binary search for the place where item should be merged in
+            int intIntervalStart = 0;
+            int intIntervalEnd = list.Count - 1;
+            int intMergeIndex = intIntervalEnd / 2;
+            for (; intIntervalStart <= intIntervalEnd; intMergeIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                T objLoopExistingItem = list[i];
+                T objLoopExistingItem = list[intMergeIndex];
                 int intCompareResult = comparison(objLoopExistingItem, objNewItem);
                 if (intCompareResult == 0)
                 {
+                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                    for (int i = intMergeIndex + 1; i < list.Count; ++i)
+                    {
+                        if (comparison(list[i], objNewItem) == 0)
+                            intMergeIndex += 1;
+                        else
+                            break;
+                    }
                     funcMergeIfEquals?.Invoke(objLoopExistingItem, objNewItem);
                     return;
                 }
-                if (intCompareResult > 0 && intMergeIndex == intCount)
-                    intMergeIndex = i;
+                if (intIntervalStart == intIntervalEnd)
+                {
+                    if (intCompareResult > 0)
+                        intMergeIndex += 1;
+                    break;
+                }
+                if (intCompareResult > 0)
+                    intIntervalStart = intMergeIndex;
+                else
+                    intIntervalEnd = intMergeIndex;
             }
 
             list.Insert(intMergeIndex, objNewItem);
