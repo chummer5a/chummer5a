@@ -48,16 +48,11 @@ namespace Chummer
             if (length == 0)
                 return;
             T[] aobjSorted = new T[length];
-            Dictionary<T, int> dicOriginalIndeces = new Dictionary<T, int>(length);
             for (int i = 0; i < length; ++i)
-            {
-                T objLoop = lstCollection[index + i];
-                aobjSorted[i] = objLoop;
-                dicOriginalIndeces.Add(objLoop, index + i);
-            }
+                aobjSorted[i] = lstCollection[index + i];
             Array.Sort(aobjSorted, objComparer);
             for (int i = 0; i < aobjSorted.Length; ++i)
-                lstCollection.Move(dicOriginalIndeces[aobjSorted[i]], index + i);
+                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), index + i);
         }
 
         /// <summary>
@@ -73,16 +68,11 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             T[] aobjSorted = new T[lstCollection.Count];
-            Dictionary<T, int> dicOriginalIndeces = new Dictionary<T, int>(lstCollection.Count);
             for (int i = 0; i < lstCollection.Count; ++i)
-            {
-                T objLoop = lstCollection[i];
-                aobjSorted[i] = objLoop;
-                dicOriginalIndeces.Add(objLoop, i);
-            }
+                aobjSorted[i] = lstCollection[i];
             Array.Sort(aobjSorted, funcComparison);
             for (int i = 0; i < aobjSorted.Length; ++i)
-                lstCollection.Move(dicOriginalIndeces[aobjSorted[i]], i);
+                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
         }
 
         /// <summary>
@@ -99,16 +89,11 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             T[] aobjSorted = new T[lstCollection.Count];
-            Dictionary<T, int> dicOriginalIndeces = new Dictionary<T, int>(lstCollection.Count);
             for (int i = 0; i < lstCollection.Count; ++i)
-            {
-                T objLoop = lstCollection[i];
-                aobjSorted[i] = objLoop;
-                dicOriginalIndeces.Add(objLoop, i);
-            }
+                aobjSorted[i] = lstCollection[i];
             Array.Sort(aobjSorted, objComparer);
             for (int i = 0; i < aobjSorted.Length; ++i)
-                lstCollection.Move(dicOriginalIndeces[aobjSorted[i]], i);
+                lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
         }
     }
 }

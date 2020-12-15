@@ -985,7 +985,7 @@ namespace Chummer.Backend.Skills
                 }
                 else if (Specializations[0].Free)
                 {
-                    Specializations.MergeInto(new SkillSpecialization(value), (x, y) =>
+                    Specializations.AddWithSort(new SkillSpecialization(value), (x, y) =>
                     {
                         if (x.Free == y.Free)
                         {

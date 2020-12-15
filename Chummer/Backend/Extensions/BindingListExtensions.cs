@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -24,85 +25,210 @@ namespace Chummer
 {
     public static class BindingListExtensions
     {
-        internal static void MergeInto<T>(this BindingList<T> list, IEnumerable<T> items, Comparison<T> comparison, Action<T, T> funcMergeIfEquals = null)
+        /// <summary>
+        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
+        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="index">The starting index of the range to sort.</param>
+        /// <param name="length">The number of elements in the range to sort.</param>
+        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
+        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
+        /// interface implementation of each element.</param>
+        public static void Sort<T>(this BindingList<T> lstCollection, int index, int length, IComparer<T> objComparer = null) where T : IComparable
         {
-            if (list == null)
-                throw new ArgumentNullException(nameof(list));
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-            if (comparison == null)
-                throw new ArgumentNullException(nameof(comparison));
-            foreach (T item in items)
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            if (length < 0)
+                throw new ArgumentOutOfRangeException(nameof(length));
+            if (index + length > lstCollection.Count)
+                throw new ArgumentException(nameof(length));
+            if (length == 0)
+                return;
+            T[] aobjSorted = new T[length];
+            for (int i = 0; i < length; ++i)
+                aobjSorted[i] = lstCollection[index + i];
+            Array.Sort(aobjSorted, objComparer);
+            bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
+            BitArray ablnItemChanged = blnOldRaiseListChangedEvents ? new BitArray(aobjSorted.Length) : null;
+            // We're going to disable events while we work with the list, then call them all at once at the end
+            lstCollection.RaiseListChangedEvents = false;
+            for (int i = 0; i < aobjSorted.Length; ++i)
             {
-                list.MergeInto(item, comparison, funcMergeIfEquals);
-            }
-        }
-
-        internal static void MergeInto<T>(this BindingList<T> list, T objNewItem, Comparison<T> comparison, Action<T,T> funcMergeIfEquals = null)
-        {
-            if (list == null)
-                throw new ArgumentNullException(nameof(list));
-            if (objNewItem == null)
-                throw new ArgumentNullException(nameof(objNewItem));
-            if (comparison == null)
-                throw new ArgumentNullException(nameof(comparison));
-            //if (list.Count == 0)
-            //{
-            //    list.Add(item);
-            //    return;
-            //}
-            // Binary search for the place where item should be merged in
-            int intIntervalStart = 0;
-            int intIntervalEnd = list.Count - 1;
-            int intMergeIndex = intIntervalEnd / 2;
-            for (; intIntervalStart <= intIntervalEnd; intMergeIndex = (intIntervalStart + intIntervalEnd) / 2)
-            {
-                T objLoopExistingItem = list[intMergeIndex];
-                int intCompareResult = comparison(objLoopExistingItem, objNewItem);
-                if (intCompareResult == 0)
+                int intOldIndex = lstCollection.IndexOf(aobjSorted[i]);
+                int intNewIndex = index + i;
+                if (intOldIndex == intNewIndex)
+                    continue;
+                if (intOldIndex > intNewIndex)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intMergeIndex + 1; i < list.Count; ++i)
+                    // Account for removal happening before removal
+                    intOldIndex -= 1;
+                    if (blnOldRaiseListChangedEvents)
                     {
-                        if (comparison(list[i], objNewItem) == 0)
-                            intMergeIndex += 1;
-                        else
-                            break;
+                        for (int j = intNewIndex; j <= intOldIndex; ++j)
+                            ablnItemChanged[j] = true;
                     }
-                    funcMergeIfEquals?.Invoke(objLoopExistingItem, objNewItem);
-                    return;
                 }
-                if (intIntervalStart == intIntervalEnd)
-                {
-                    if (intCompareResult > 0)
-                        intMergeIndex += 1;
-                    break;
-                }
-                if (intCompareResult > 0)
-                    intIntervalStart = intMergeIndex + 1;
                 else
-                    intIntervalEnd = intMergeIndex - 1;
-            }
-
-            list.Insert(intMergeIndex, objNewItem);
-        }
-
-        internal static void RemoveAll<T>(this BindingList<T> list, Predicate<T> predicate)
-        {
-            for (int i = list.Count - 1; i >= 0; --i)
-            {
-                if (predicate(list[i]))
                 {
-                    list.RemoveAt(i);
+                    // Account for removal happening before removal
+                    intNewIndex -= 1;
+                    if (blnOldRaiseListChangedEvents)
+                    {
+                        for (int j = intOldIndex; j <= intNewIndex; ++j)
+                            ablnItemChanged[j] = true;
+                    }
+                }
+                lstCollection.RemoveAt(intOldIndex);
+                lstCollection.Insert(intNewIndex, aobjSorted[i]);
+            }
+            lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+            if (!blnOldRaiseListChangedEvents)
+                return;
+            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+            if (ablnItemChanged.CountTrues() >= ablnItemChanged.Length / 2)
+                lstCollection.ResetBindings();
+            else
+            {
+                for (int i = 0; i < ablnItemChanged.Length; ++i)
+                {
+                    if (ablnItemChanged[i])
+                        lstCollection.ResetItem(i);
                 }
             }
         }
 
-        internal static void AddRange<T>(this BindingList<T> list, IEnumerable<T> range)
+        /// <summary>
+        /// Sorts the elements in a range of elements in an ObservableCollection using the specified System.Comparison`1.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="funcComparison">The System.Comparison`1 to use when comparing elements.</param>
+        public static void Sort<T>(this BindingList<T> lstCollection, Comparison<T> funcComparison)
         {
-            foreach (T item in range)
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (funcComparison == null)
+                throw new ArgumentNullException(nameof(funcComparison));
+            T[] aobjSorted = new T[lstCollection.Count];
+            for (int i = 0; i < lstCollection.Count; ++i)
+                aobjSorted[i] = lstCollection[i];
+            Array.Sort(aobjSorted, funcComparison);
+            bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
+            BitArray ablnItemChanged = blnOldRaiseListChangedEvents ? new BitArray(aobjSorted.Length) : null;
+            // We're going to disable events while we work with the list, then call them all at once at the end
+            lstCollection.RaiseListChangedEvents = false;
+            for (int i = 0; i < aobjSorted.Length; ++i)
             {
-                list.Add(item);
+                int intOldIndex = lstCollection.IndexOf(aobjSorted[i]);
+                int intNewIndex = i;
+                if (intOldIndex == intNewIndex)
+                    continue;
+                if (intOldIndex > intNewIndex)
+                {
+                    // Account for removal happening before removal
+                    intOldIndex -= 1;
+                    if (blnOldRaiseListChangedEvents)
+                    {
+                        for (int j = intNewIndex; j <= intOldIndex; ++j)
+                            ablnItemChanged[j] = true;
+                    }
+                }
+                else
+                {
+                    // Account for removal happening before removal
+                    intNewIndex -= 1;
+                    if (blnOldRaiseListChangedEvents)
+                    {
+                        for (int j = intOldIndex; j <= intNewIndex; ++j)
+                            ablnItemChanged[j] = true;
+                    }
+                }
+                lstCollection.RemoveAt(intOldIndex);
+                lstCollection.Insert(intNewIndex, aobjSorted[i]);
+            }
+            lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+            if (!blnOldRaiseListChangedEvents)
+                return;
+            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+            if (ablnItemChanged.CountTrues() >= ablnItemChanged.Length / 2)
+                lstCollection.ResetBindings();
+            else
+            {
+                for (int i = 0; i < ablnItemChanged.Length; ++i)
+                {
+                    if (ablnItemChanged[i])
+                        lstCollection.ResetItem(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
+        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
+        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
+        /// interface implementation of each element.</param>
+        public static void Sort<T>(this BindingList<T> lstCollection, IComparer<T> objComparer = null) where T : IComparable
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            T[] aobjSorted = new T[lstCollection.Count];
+            for (int i = 0; i < lstCollection.Count; ++i)
+                aobjSorted[i] = lstCollection[i];
+            Array.Sort(aobjSorted, objComparer);
+            bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
+            BitArray ablnItemChanged = blnOldRaiseListChangedEvents ? new BitArray(aobjSorted.Length) : null;
+            // We're going to disable events while we work with the list, then call them all at once at the end
+            lstCollection.RaiseListChangedEvents = false;
+            for (int i = 0; i < aobjSorted.Length; ++i)
+            {
+                int intOldIndex = lstCollection.IndexOf(aobjSorted[i]);
+                int intNewIndex = i;
+                if (intOldIndex == intNewIndex)
+                    continue;
+                if (intOldIndex > intNewIndex)
+                {
+                    // Account for removal happening before removal
+                    intOldIndex -= 1;
+                    if (blnOldRaiseListChangedEvents)
+                    {
+                        for (int j = intNewIndex; j <= intOldIndex; ++j)
+                            ablnItemChanged[j] = true;
+                    }
+                }
+                else
+                {
+                    // Account for removal happening before removal
+                    intNewIndex -= 1;
+                    if (blnOldRaiseListChangedEvents)
+                    {
+                        for (int j = intOldIndex; j <= intNewIndex; ++j)
+                            ablnItemChanged[j] = true;
+                    }
+                }
+                lstCollection.RemoveAt(intOldIndex);
+                lstCollection.Insert(intNewIndex, aobjSorted[i]);
+            }
+            lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+            if (!blnOldRaiseListChangedEvents)
+                return;
+            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+            if (ablnItemChanged.CountTrues() >= ablnItemChanged.Length / 2)
+                lstCollection.ResetBindings();
+            else
+            {
+                for (int i = 0; i < ablnItemChanged.Length; ++i)
+                {
+                    if (ablnItemChanged[i])
+                        lstCollection.ResetItem(i);
+                }
             }
         }
     }

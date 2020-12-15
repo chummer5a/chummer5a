@@ -46,5 +46,35 @@ namespace Chummer
             }
             return -1;
         }
+
+        /// <summary>
+        /// Count the number of bits set in a BitArray using special bit twiddling.
+        /// Adapted from https://stackoverflow.com/questions/5063178/counting-bits-set-in-a-net-bitarray-class
+        /// and http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel.
+        /// </summary>
+        /// <param name="ablnToCount"></param>
+        /// <returns></returns>
+        public static int CountTrues(this BitArray ablnToCount)
+        {
+            // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
+            int[] aintToCountMask = new int[(ablnToCount.Count >> 5) + 1];
+            ablnToCount.CopyTo(aintToCountMask, 0);
+            // Fix for not truncated bits in last integer that may have been set to true with SetAll()
+            aintToCountMask[aintToCountMask.Length - 1] &= ~(-1 << (ablnToCount.Count % 32));
+            int intReturn = 0;
+            for (int i = 0; i < aintToCountMask.Length; i++)
+            {
+                int intLoopBlock = aintToCountMask[i];
+                // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
+                unchecked
+                {
+                    intLoopBlock -= ((intLoopBlock >> 1) & 0x55555555);
+                    intLoopBlock = (intLoopBlock & 0x33333333) + ((intLoopBlock >> 2) & 0x33333333);
+                    intLoopBlock = ((intLoopBlock + (intLoopBlock >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+                }
+                intReturn += intLoopBlock;
+            }
+            return intReturn;
+        }
     }
 }
