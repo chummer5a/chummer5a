@@ -325,11 +325,11 @@ namespace Chummer.Backend.Skills
                         LanguageManager.GetString("String_ExpenseSkillGroup"), CurrentDisplayName,
                         Rating, Rating + 1, LanguageManager.GetString("String_Space"));
 
-                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
-                objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                objEntry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                objExpense.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
 
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 CharacterObject.Karma -= intPrice;
             }

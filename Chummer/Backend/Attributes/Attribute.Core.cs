@@ -1230,11 +1230,11 @@ namespace Chummer.Backend.Attributes
                     string strUpgradetext = string.Format(GlobalOptions.CultureInfo, "{1}{0}{2}{0}{3}{0}->{0}{4}",
                         LanguageManager.GetString("String_Space"), LanguageManager.GetString("String_ExpenseAttribute"), Abbrev, intValue, intValue + 1);
 
-                    ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
-                    objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                    objEntry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                    objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                    objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
 
-                    _objCharacter.ExpenseEntries.AddWithSort(objEntry);
+                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
 
                     _objCharacter.Karma -= intPrice;
                 }

@@ -686,11 +686,11 @@ namespace Chummer.Backend.Skills
                         intTotalBaseRating + 1,
                         LanguageManager.GetString("String_Space"));
 
-                ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
-                entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
-                entry.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, InternalId);
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                objExpense.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, InternalId);
 
-                CharacterObject.ExpenseEntries.AddWithSort(entry);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 CharacterObject.Karma -= price;
             }
@@ -783,11 +783,11 @@ namespace Chummer.Backend.Skills
                         strName,
                         LanguageManager.GetString("String_Space"));
 
-                ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
-                entry.Create(intPrice * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
-                entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(intPrice * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 
-                CharacterObject.ExpenseEntries.AddWithSort(entry);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 CharacterObject.Karma -= intPrice;
             }
