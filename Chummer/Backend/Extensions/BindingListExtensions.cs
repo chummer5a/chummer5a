@@ -79,9 +79,9 @@ namespace Chummer
                     break;
                 }
                 if (intCompareResult > 0)
-                    intIntervalStart = intMergeIndex;
+                    intIntervalStart = intMergeIndex + 1;
                 else
-                    intIntervalEnd = intMergeIndex;
+                    intIntervalEnd = intMergeIndex - 1;
             }
 
             list.Insert(intMergeIndex, objNewItem);

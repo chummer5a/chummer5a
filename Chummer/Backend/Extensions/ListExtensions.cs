@@ -55,10 +55,10 @@ namespace Chummer
                 }
                 if ((intCompareResult > 0) != blnReverse)
                 {
-                    intIntervalStart = intTargetIndex;
+                    intIntervalStart = intTargetIndex + 1;
                 }
                 else
-                    intIntervalEnd = intTargetIndex;
+                    intIntervalEnd = intTargetIndex - 1;
             }
             lstCollection.Insert(intTargetIndex, objNewItem);
         }
@@ -96,9 +96,9 @@ namespace Chummer
                     break;
                 }
                 if ((intCompareResult > 0) != blnReverse)
-                    intIntervalStart = intTargetIndex;
+                    intIntervalStart = intTargetIndex + 1;
                 else
-                    intIntervalEnd = intTargetIndex;
+                    intIntervalEnd = intTargetIndex - 1;
             }
             lstCollection.Insert(intTargetIndex, objNewItem);
         }
