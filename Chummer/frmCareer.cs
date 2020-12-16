@@ -15503,44 +15503,43 @@ namespace Chummer
             {
                 if (objExpense.Type == ExpenseType.Karma)
                 {
-                    if (objExpense.Amount != 0 || chkShowFreeKarma.Checked)
+                    if (objExpense.Amount == 0 && !chkShowFreeKarma.Checked)
+                        continue;
+                    ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
                     {
-                        ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
-                        {
-                            Text = objExpense.Amount.ToString("#,0.##", GlobalOptions.CultureInfo)
-                        };
-                        ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
-                        {
-                            Text = objExpense.DisplayReason(GlobalOptions.Language)
-                        };
-                        ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
-                        {
-                            Text = objExpense.InternalId
-                        };
+                        Text = objExpense.Amount.ToString("#,0.##", GlobalOptions.CultureInfo)
+                    };
+                    ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
+                    {
+                        Text = objExpense.DisplayReason(GlobalOptions.Language)
+                    };
+                    ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                    {
+                        Text = objExpense.InternalId
+                    };
 
-                        ListViewItem objItem = new ListViewItem
-                        {
-                            Text = objExpense.Date.ToString(GlobalOptions.CustomDateTimeFormats
-                                       ? GlobalOptions.CustomDateFormat
-                                         + ' ' + GlobalOptions.CustomTimeFormat
-                                       : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
-                                         + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
-                        };
-                        objItem.SubItems.Add(objAmountItem);
-                        objItem.SubItems.Add(objReasonItem);
-                        objItem.SubItems.Add(objInternalIdItem);
+                    ListViewItem objItem = new ListViewItem
+                    {
+                        Text = objExpense.Date.ToString(GlobalOptions.CustomDateTimeFormats
+                            ? GlobalOptions.CustomDateFormat
+                              + ' ' + GlobalOptions.CustomTimeFormat
+                            : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
+                              + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
+                    };
+                    objItem.SubItems.Add(objAmountItem);
+                    objItem.SubItems.Add(objReasonItem);
+                    objItem.SubItems.Add(objInternalIdItem);
 
-                        lstKarma.Items.Insert(0, objItem);
-                        if (objExpense.Undo != null)
-                            lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
+                    lstKarma.Items.Add(objItem);
+                    if (objExpense.Undo != null)
+                        lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
 
-                        if (objExpense.Amount != 0)
-                        {
-                            if (objExpense.Date > KarmaLast)
-                                KarmaLast = objExpense.Date;
-                            decKarmaValue += objExpense.Amount;
-                            chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
-                        }
+                    if (objExpense.Amount != 0)
+                    {
+                        if (objExpense.Date > KarmaLast)
+                            KarmaLast = objExpense.Date;
+                        decKarmaValue += objExpense.Amount;
+                        chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
                     }
                 }
                 else if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
@@ -15570,7 +15569,7 @@ namespace Chummer
                     objItem.SubItems.Add(objReasonItem);
                     objItem.SubItems.Add(objInternalIdItem);
 
-                    lstNuyen.Items.Insert(0, objItem);
+                    lstNuyen.Items.Add(objItem);
                     if (objExpense.Undo != null)
                         lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
                     if (objExpense.Amount != 0)

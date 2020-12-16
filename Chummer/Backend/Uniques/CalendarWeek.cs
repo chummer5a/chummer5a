@@ -281,9 +281,9 @@ namespace Chummer
                 int intReturn = Year.CompareTo(objWeek.Year);
                 if (intReturn == 0)
                     intReturn = Week.CompareTo(objWeek.Week);
-                return intReturn;
+                return -intReturn;
             }
-            return string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
+            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
         }
 
         /// <summary>
