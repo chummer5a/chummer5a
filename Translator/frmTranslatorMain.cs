@@ -61,16 +61,14 @@ namespace Translator
 
         private void RunQueuedWorkers(object sender, EventArgs e)
         {
-            if (_blnQueueDataProcessorRun)
+            if (_blnQueueDataProcessorRun && !_workerDataProcessor.IsBusy)
             {
-                if (!_workerDataProcessor.IsBusy)
-                    _workerDataProcessor.RunWorkerAsync();
+                _workerDataProcessor.RunWorkerAsync();
             }
 
-            if (_blnQueueStringsProcessorRun)
+            if (_blnQueueStringsProcessorRun && !_workerStringsProcessor.IsBusy)
             {
-                if (!_workerStringsProcessor.IsBusy)
-                    _workerStringsProcessor.RunWorkerAsync();
+                _workerStringsProcessor.RunWorkerAsync();
             }
         }
 
@@ -835,7 +833,7 @@ namespace Translator
                 xmlRootArmorFileNode.AppendChild(xmlArmorNodesParent);
             }
 
-            XPathNavigator xmlDataArmorNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("armors");
+            XPathNavigator xmlDataArmorNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("armors");
             if (xmlDataArmorNodeList != null)
             {
                 foreach (XPathNavigator xmlDataArmorNode in xmlDataArmorNodeList.Select("armor"))
@@ -924,15 +922,11 @@ namespace Translator
                     if (xmlDataArmorNodeList?.SelectSingleNode("armor[id = \"" + xmlArmorNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlArmorNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlArmorNodesParent.RemoveChild(xmlArmorNode);
-                        }
+                        xmlArmorNodesParent.RemoveChild(xmlArmorNode);
 #endif
                     }
                 }
@@ -947,7 +941,7 @@ namespace Translator
                 xmlRootArmorFileNode.AppendChild(xmlArmorModNodesParent);
             }
 
-            XPathNavigator xmlDataArmorModNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("mods");
+            XPathNavigator xmlDataArmorModNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("mods");
             if (xmlDataArmorModNodeList != null)
             {
                 foreach (XPathNavigator xmlDataArmorModNode in xmlDataArmorModNodeList.Select("mod"))
@@ -1036,15 +1030,11 @@ namespace Translator
                     if (xmlDataArmorModNodeList?.SelectSingleNode("mod[id = \"" + xmlArmorModNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlArmorModNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlArmorModNodesParent.RemoveChild(xmlArmorModNode);
-                        }
+                        xmlArmorModNodesParent.RemoveChild(xmlArmorModNode);
 #endif
                     }
                 }
@@ -1131,7 +1121,7 @@ namespace Translator
                 xmlRootBiowareFileNode.AppendChild(xmlBiowareNodesParent);
             }
 
-            XPathNavigator xmlDataBiowareNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("biowares");
+            XPathNavigator xmlDataBiowareNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("biowares");
             if (xmlDataBiowareNodeList != null)
             {
                 foreach (XPathNavigator xmlDataBiowareNode in xmlDataBiowareNodeList.Select("bioware"))
@@ -1220,15 +1210,11 @@ namespace Translator
                     if (xmlDataBiowareNodeList?.SelectSingleNode("bioware[id = \"" + xmlBiowareNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlBiowareNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlBiowareNodesParent.RemoveChild(xmlBiowareNode);
-                        }
+                        xmlBiowareNodesParent.RemoveChild(xmlBiowareNode);
 #endif
                     }
                 }
@@ -1243,7 +1229,7 @@ namespace Translator
                 xmlRootBiowareFileNode.AppendChild(xmlGradeNodesParent);
             }
 
-            XPathNavigator xmlDataGradeNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("grades");
+            XPathNavigator xmlDataGradeNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("grades");
             if (xmlDataGradeNodeList != null)
             {
                 foreach (XPathNavigator xmlDataGradeNode in xmlDataGradeNodeList.Select("grade"))
@@ -1332,15 +1318,11 @@ namespace Translator
                     if (xmlDataGradeNodeList?.SelectSingleNode("grade[id = \"" + xmlGradeNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlGradeNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlGradeNodesParent.RemoveChild(xmlGradeNode);
-                        }
+                        xmlGradeNodesParent.RemoveChild(xmlGradeNode);
 #endif
                     }
                 }
@@ -1463,15 +1445,11 @@ namespace Translator
                             if (xmlDataBookNodeList?.SelectSingleNode("book[id = \"" + xmlBookNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlBookNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlBookNodesParent.RemoveChild(xmlBookNode);
-                                }
+                                xmlBookNodesParent.RemoveChild(xmlBookNode);
 #endif
                             }
                         }
@@ -1603,15 +1581,11 @@ namespace Translator
                             if (xmlDataComplexFormNodeList?.SelectSingleNode("complexform[id = \"" + xmlComplexFormNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlComplexFormNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlComplexFormNodesParent.RemoveChild(xmlComplexFormNode);
-                                }
+                                xmlComplexFormNodesParent.RemoveChild(xmlComplexFormNode);
 #endif
                             }
                         }
@@ -2123,15 +2097,11 @@ namespace Translator
                             if (xmlDataPowerNodeList?.SelectSingleNode("power[id = \"" + xmlPowerNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                        {
-                            XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
-                            xmlExistsAttribute.Value = "False";
-                            xmlPowerNode.Attributes?.Append(xmlExistsAttribute);
-                        }
+                                XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                                xmlExistsAttribute.Value = "False";
+                                xmlPowerNode.Attributes?.Append(xmlExistsAttribute);
 #else
-                                {
-                                    xmlPowerNodesParent.RemoveChild(xmlPowerNode);
-                                }
+                                xmlPowerNodesParent.RemoveChild(xmlPowerNode);
 #endif
                             }
                         }
@@ -2313,15 +2283,11 @@ namespace Translator
                             if (xmlDataMetatypeNodeList?.SelectSingleNode("metatype[id = \"" + xmlMetatypeNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlMetatypeNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlMetatypeNodesParent.RemoveChild(xmlMetatypeNode);
-                                }
+                                xmlMetatypeNodesParent.RemoveChild(xmlMetatypeNode);
 #endif
                             }
                         }
@@ -2410,7 +2376,7 @@ namespace Translator
                 xmlRootCyberwareFileNode.AppendChild(xmlCyberwareNodesParent);
             }
 
-            XPathNavigator xmlDataCyberwareNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("cyberwares");
+            XPathNavigator xmlDataCyberwareNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("cyberwares");
             if (xmlDataCyberwareNodeList != null)
             {
                 foreach (XPathNavigator xmlDataCyberwareNode in xmlDataCyberwareNodeList.Select("cyberware"))
@@ -2499,15 +2465,11 @@ namespace Translator
                     if (xmlDataCyberwareNodeList?.SelectSingleNode("cyberware[id = \"" + xmlCyberwareNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlCyberwareNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlCyberwareNodesParent.RemoveChild(xmlCyberwareNode);
-                        }
+                        xmlCyberwareNodesParent.RemoveChild(xmlCyberwareNode);
 #endif
                     }
                 }
@@ -2522,7 +2484,7 @@ namespace Translator
                 xmlRootCyberwareFileNode.AppendChild(xmlGradeNodesParent);
             }
 
-            XPathNavigator xmlDataGradeNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("grades");
+            XPathNavigator xmlDataGradeNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("grades");
             if (xmlDataGradeNodeList != null)
             {
                 foreach (XPathNavigator xmlDataGradeNode in xmlDataGradeNodeList.Select("grade"))
@@ -2611,15 +2573,11 @@ namespace Translator
                     if (xmlDataGradeNodeList?.SelectSingleNode("grade[id = \"" + xmlGradeNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlGradeNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlGradeNodesParent.RemoveChild(xmlGradeNode);
-                        }
+                        xmlGradeNodesParent.RemoveChild(xmlGradeNode);
 #endif
                     }
                 }
@@ -2807,15 +2765,11 @@ namespace Translator
                             if (xmlDataDrugComponentNodeList?.SelectSingleNode("drugcomponent[id = \"" + xmlDrugComponentNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlDrugComponentNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlDrugComponentNodesParent.RemoveChild(xmlDrugComponentNode);
-                                }
+                                xmlDrugComponentNodesParent.RemoveChild(xmlDrugComponentNode);
 #endif
                             }
                         }
@@ -2949,15 +2903,11 @@ namespace Translator
                             if (xmlDataEchoNodeList?.SelectSingleNode("echo[id = \"" + xmlEchoNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlEchoNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlEchoNodesParent.RemoveChild(xmlEchoNode);
-                                }
+                                xmlEchoNodesParent.RemoveChild(xmlEchoNode);
 #endif
                             }
                         }
@@ -3073,15 +3023,11 @@ namespace Translator
                             if (xmlDataGameplayOptionNodeList?.SelectSingleNode("gameplayoption[id = \"" + xmlGameplayOptionNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlGameplayOptionNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlGameplayOptionNodesParent.RemoveChild(xmlGameplayOptionNode);
-                                }
+                                xmlGameplayOptionNodesParent.RemoveChild(xmlGameplayOptionNode);
 #endif
                             }
                         }
@@ -3263,15 +3209,11 @@ namespace Translator
                             if (xmlDataGearNodeList?.SelectSingleNode("gear[id = " + xmlGearNode["id"]?.InnerText.CleanXPath() + "]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlGearNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlGearNodesParent.RemoveChild(xmlGearNode);
-                                }
+                                xmlGearNodesParent.RemoveChild(xmlGearNode);
 #endif
                             }
                         }
@@ -3403,15 +3345,11 @@ namespace Translator
                             if (xmlDataImprovementNodeList?.SelectSingleNode("improvement[id = \"" + xmlImprovementNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlImprovementNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlImprovementNodesParent.RemoveChild(xmlImprovementNode);
-                                }
+                                xmlImprovementNodesParent.RemoveChild(xmlImprovementNode);
 #endif
                             }
                         }
@@ -3572,7 +3510,7 @@ namespace Translator
                 xmlRootLifestyleFileNode.AppendChild(xmlLifestyleNodesParent);
             }
 
-            XPathNavigator xmlDataLifestyleNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("lifestyles");
+            XPathNavigator xmlDataLifestyleNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("lifestyles");
             if (xmlDataLifestyleNodeList != null)
             {
                 foreach (XPathNavigator xmlDataLifestyleNode in xmlDataLifestyleNodeList.Select("lifestyle"))
@@ -3661,15 +3599,11 @@ namespace Translator
                     if (xmlDataLifestyleNodeList?.SelectSingleNode("lifestyle[id = \"" + xmlLifestyleNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlLifestyleNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlLifestyleNodesParent.RemoveChild(xmlLifestyleNode);
-                        }
+                        xmlLifestyleNodesParent.RemoveChild(xmlLifestyleNode);
 #endif
                     }
                 }
@@ -3684,7 +3618,7 @@ namespace Translator
                 xmlRootLifestyleFileNode.AppendChild(xmlQualityNodesParent);
             }
 
-            XPathNavigator xmlDataQualityNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("qualities");
+            XPathNavigator xmlDataQualityNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("qualities");
             if (xmlDataQualityNodeList != null)
             {
                 foreach (XPathNavigator xmlDataQualityNode in xmlDataQualityNodeList.Select("quality"))
@@ -3773,15 +3707,11 @@ namespace Translator
                     if (xmlDataQualityNodeList?.SelectSingleNode("quality[id = \"" + xmlQualityNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlQualityNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlQualityNodesParent.RemoveChild(xmlQualityNode);
-                        }
+                        xmlQualityNodesParent.RemoveChild(xmlQualityNode);
 #endif
                     }
                 }
@@ -3952,15 +3882,11 @@ namespace Translator
                             if (xmlDataMartialArtNodeList?.SelectSingleNode("martialart[id = \"" + xmlMartialArtNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlMartialArtNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlMartialArtNodesParent.RemoveChild(xmlMartialArtNode);
-                                }
+                                xmlMartialArtNodesParent.RemoveChild(xmlMartialArtNode);
 #endif
                             }
                         }
@@ -4070,15 +3996,11 @@ namespace Translator
                             if (xmlDataTechniqueNodeList?.SelectSingleNode("technique[id = \"" + xmlTechniqueNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlTechniqueNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlTechniqueNodesParent.RemoveChild(xmlTechniqueNode);
-                                }
+                                xmlTechniqueNodesParent.RemoveChild(xmlTechniqueNode);
 #endif
                             }
                         }
@@ -4298,15 +4220,11 @@ namespace Translator
                             if (xmlDataMentorNodeList?.SelectSingleNode("mentor[id = \"" + xmlMentorNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlMentorNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlMentorNodesParent.RemoveChild(xmlMentorNode);
-                                }
+                                xmlMentorNodesParent.RemoveChild(xmlMentorNode);
 #endif
                             }
                         }
@@ -4440,15 +4358,11 @@ namespace Translator
                             if (xmlDataMetamagicNodeList?.SelectSingleNode("metamagic[id = \"" + xmlMetamagicNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlMetamagicNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlMetamagicNodesParent.RemoveChild(xmlMetamagicNode);
-                                }
+                                xmlMetamagicNodesParent.RemoveChild(xmlMetamagicNode);
 #endif
                             }
                         }
@@ -4558,15 +4472,11 @@ namespace Translator
                             if (xmlDataArtNodeList?.SelectSingleNode("art[id = \"" + xmlArtNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlArtNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlArtNodesParent.RemoveChild(xmlArtNode);
-                                }
+                                xmlArtNodesParent.RemoveChild(xmlArtNode);
 #endif
                             }
                         }
@@ -4751,15 +4661,11 @@ namespace Translator
                             if (xmlDataMetatypeNodeList?.SelectSingleNode("metatype[id = \"" + xmlMetatypeNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlMetatypeNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlMetatypeNodesParent.RemoveChild(xmlMetatypeNode);
-                                }
+                                xmlMetatypeNodesParent.RemoveChild(xmlMetatypeNode);
 #endif
                             }
                         }
@@ -4907,15 +4813,11 @@ namespace Translator
                     if (xmlDataLimbCountsNodeList?.SelectSingleNode("limb[name = " + xmlLimbOptionNode["name"]?.InnerText.CleanXPath() + "]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlLimbOptionNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlLimbCountNodesParent.RemoveChild(xmlLimbOptionNode);
-                        }
+                        xmlLimbCountNodesParent.RemoveChild(xmlLimbOptionNode);
 #endif
                     }
                 }
@@ -4989,15 +4891,11 @@ namespace Translator
                     if (xmlDataPDFArgumentsNodeList?.SelectSingleNode("pdfargument[name = " + xmlPDFArgumentNode["name"]?.InnerText.CleanXPath() + "]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlPDFArgumentNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlPDFArgumentNodesParent.RemoveChild(xmlPDFArgumentNode);
-                        }
+                        xmlPDFArgumentNodesParent.RemoveChild(xmlPDFArgumentNode);
 #endif
                     }
                 }
@@ -5084,7 +4982,7 @@ namespace Translator
                 xmlRootParagonFileNode.AppendChild(xmlParagonNodesParent);
             }
 
-            XPathNavigator xmlDataParagonNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("mentors");
+            XPathNavigator xmlDataParagonNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("mentors");
             if (xmlDataParagonNodeList != null)
             {
                 foreach (XPathNavigator xmlDataParagonNode in xmlDataParagonNodeList.Select("mentor"))
@@ -5251,15 +5149,11 @@ namespace Translator
                     if (xmlDataParagonNodeList?.SelectSingleNode("mentor[id = \"" + xmlParagonNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlParagonNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlParagonNodesParent.RemoveChild(xmlParagonNode);
-                        }
+                        xmlParagonNodesParent.RemoveChild(xmlParagonNode);
 #endif
                     }
                 }
@@ -5399,15 +5293,11 @@ namespace Translator
                             if (xmlDataPowerNodeList?.SelectSingleNode("power[id = \"" + xmlPowerNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlPowerNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlPowerNodesParent.RemoveChild(xmlPowerNode);
-                                }
+                                xmlPowerNodesParent.RemoveChild(xmlPowerNode);
 #endif
                             }
                         }
@@ -5517,15 +5407,11 @@ namespace Translator
                             if (xmlDataEnhancementNodeList?.SelectSingleNode("enhancement[id = \"" + xmlEnhancementNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlEnhancementNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlEnhancementNodesParent.RemoveChild(xmlEnhancementNode);
-                                }
+                                xmlEnhancementNodesParent.RemoveChild(xmlEnhancementNode);
 #endif
                             }
                         }
@@ -5692,15 +5578,11 @@ namespace Translator
                             if (xmlDataPriorityNodeList?.SelectSingleNode("priority[id = \"" + xmlPriorityNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlPriorityNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlPriorityNodesParent.RemoveChild(xmlPriorityNode);
-                                }
+                                xmlPriorityNodesParent.RemoveChild(xmlPriorityNode);
 #endif
                             }
                         }
@@ -5898,15 +5780,11 @@ namespace Translator
                             if (xmlDataProgramNodeList?.SelectSingleNode("program[id = \"" + xmlProgramNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlProgramNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlProgramNodesParent.RemoveChild(xmlProgramNode);
-                                }
+                                xmlProgramNodesParent.RemoveChild(xmlProgramNode);
 #endif
                             }
                         }
@@ -6018,15 +5896,11 @@ namespace Translator
                             if (xmlDataRangeNodeList?.SelectSingleNode("range[name = " + xmlRangeNode["name"]?.InnerText.CleanXPath() + "]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlRangeNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlRangeNodesParent.RemoveChild(xmlRangeNode);
-                                }
+                                xmlRangeNodesParent.RemoveChild(xmlRangeNode);
 #endif
                             }
                         }
@@ -6208,15 +6082,11 @@ namespace Translator
                             if (xmlDataQualityNodeList?.SelectSingleNode("quality[id = \"" + xmlQualityNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlQualityNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlQualityNodesParent.RemoveChild(xmlQualityNode);
-                                }
+                                xmlQualityNodesParent.RemoveChild(xmlQualityNode);
 #endif
                             }
                         }
@@ -6309,7 +6179,7 @@ namespace Translator
                 xmlRootSkillFileNode.AppendChild(xmlSkillGroupNodesParent);
             }
 
-            XPathNavigator xmlDataSkillGroupNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("skillgroups");
+            XPathNavigator xmlDataSkillGroupNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("skillgroups");
             if (xmlDataSkillGroupNodeList != null)
             {
                 foreach (XPathNavigator xmlDataSkillGroupNode in xmlDataSkillGroupNodeList.Select("name"))
@@ -6350,7 +6220,7 @@ namespace Translator
                 xmlRootSkillFileNode.AppendChild(xmlSkillNodesParent);
             }
 
-            XPathNavigator xmlDataSkillNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("skills");
+            XPathNavigator xmlDataSkillNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("skills");
             if (xmlDataSkillNodeList != null)
             {
                 foreach (XPathNavigator xmlDataSkillNode in xmlDataSkillNodeList.Select("skill"))
@@ -6465,15 +6335,11 @@ namespace Translator
                     if (xmlDataSkillNode == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlSkillNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlSkillNodesParent.RemoveChild(xmlSkillNode);
-                        }
+                        xmlSkillNodesParent.RemoveChild(xmlSkillNode);
 #endif
                     }
                     else
@@ -6493,15 +6359,11 @@ namespace Translator
                             if (xmlDataSkillNodeSpecsParent == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlSkillNodeSpecsParent.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlSkillNode.RemoveChild(xmlSkillNodeSpecsParent);
-                                }
+                                xmlSkillNode.RemoveChild(xmlSkillNodeSpecsParent);
 #endif
                             }
                             else
@@ -6513,7 +6375,6 @@ namespace Translator
                                     if (xmlDataSkillNodeSpecsParent.SelectSingleNode("spec[text() = \"" + xmlSpecNode.InnerText + "\"]") == null)
                                     {
 #if !DELETE
-                                    {
                                         XmlAttribute xmlExistsAttribute = xmlSpecNode.Attributes["exists"];
                                         if (xmlExistsAttribute == null)
                                         {
@@ -6523,11 +6384,8 @@ namespace Translator
                                         }
                                         else
                                             xmlExistsAttribute.Value = "False";
-                                    }
 #else
-                                        {
-                                            xmlSkillNodeSpecsParent.RemoveChild(xmlSpecNode);
-                                        }
+                                        xmlSkillNodeSpecsParent.RemoveChild(xmlSpecNode);
 #endif
                                     }
                                 }
@@ -6643,15 +6501,11 @@ namespace Translator
                     if (xmlDataKnowledgeSkillNode == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlKnowledgeSkillNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlKnowledgeSkillNodesParent.RemoveChild(xmlKnowledgeSkillNode);
-                        }
+                        xmlKnowledgeSkillNodesParent.RemoveChild(xmlKnowledgeSkillNode);
 #endif
                     }
                     else
@@ -6671,15 +6525,11 @@ namespace Translator
                             if (xmlDataSkillNodeSpecsParent == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlSkillNodeSpecsParent.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlKnowledgeSkillNode.RemoveChild(xmlSkillNodeSpecsParent);
-                                }
+                                xmlKnowledgeSkillNode.RemoveChild(xmlSkillNodeSpecsParent);
 #endif
                             }
                             else
@@ -6691,7 +6541,6 @@ namespace Translator
                                     if (xmlDataSkillNodeSpecsParent.SelectSingleNode("spec[text() = \"" + xmlSpecNode.InnerText + "\"]") == null)
                                     {
 #if !DELETE
-                                    {
                                         XmlAttribute xmlExistsAttribute = xmlSpecNode.Attributes["exists"];
                                         if (xmlExistsAttribute == null)
                                         {
@@ -6701,11 +6550,8 @@ namespace Translator
                                         }
                                         else
                                             xmlExistsAttribute.Value = "False";
-                                    }
 #else
-                                        {
-                                            xmlSkillNodeSpecsParent.RemoveChild(xmlSpecNode);
-                                        }
+                                        xmlSkillNodeSpecsParent.RemoveChild(xmlSpecNode);
 #endif
                                     }
                                 }
@@ -6889,15 +6735,11 @@ namespace Translator
                             if (xmlDataSpellNodeList?.SelectSingleNode("spell[id = \"" + xmlSpellNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlSpellNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlSpellNodesParent.RemoveChild(xmlSpellNode);
-                                }
+                                xmlSpellNodesParent.RemoveChild(xmlSpellNode);
 #endif
                             }
                         }
@@ -7019,15 +6861,11 @@ namespace Translator
                             if (xmlDataPowerNodeList?.SelectSingleNode("power[name = " + xmlPowerNode["name"]?.InnerText.CleanXPath() + "]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlPowerNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlPowerNodesParent.RemoveChild(xmlPowerNode);
-                                }
+                                xmlPowerNodesParent.RemoveChild(xmlPowerNode);
 #endif
                             }
                         }
@@ -7161,15 +6999,11 @@ namespace Translator
                             if (xmlDataTraditionNodeList?.SelectSingleNode("tradition[id = \"" + xmlTraditionNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlTraditionNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlTraditionNodesParent.RemoveChild(xmlTraditionNode);
-                                }
+                                xmlTraditionNodesParent.RemoveChild(xmlTraditionNode);
 #endif
                             }
                         }
@@ -7279,15 +7113,11 @@ namespace Translator
                             if (xmlDataSpiritNodeList?.SelectSingleNode("spirit[id = \"" + xmlSpiritNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlSpiritNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlSpiritNodesParent.RemoveChild(xmlSpiritNode);
-                                }
+                                xmlSpiritNodesParent.RemoveChild(xmlSpiritNode);
 #endif
                             }
                         }
@@ -7403,15 +7233,11 @@ namespace Translator
                             if (xmlDataTipNodeList?.SelectSingleNode("tip[id = \"" + xmlTipNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlTipNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlTipNodesParent.RemoveChild(xmlTipNode);
-                                }
+                                xmlTipNodesParent.RemoveChild(xmlTipNode);
 #endif
                             }
                         }
@@ -7541,15 +7367,11 @@ namespace Translator
                     if (xmlDataTraditionNodeList?.SelectSingleNode("tradition[id = \"" + xmlTraditionNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlTraditionNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlTraditionNodesParent.RemoveChild(xmlTraditionNode);
-                        }
+                        xmlTraditionNodesParent.RemoveChild(xmlTraditionNode);
 #endif
                     }
                 }
@@ -7564,7 +7386,7 @@ namespace Translator
                 xmlRootTraditionFileNode.AppendChild(xmlSpiritNodesParent);
             }
 
-            XPathNavigator xmlDataSpiritNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("spirits");
+            XPathNavigator xmlDataSpiritNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("spirits");
             if (xmlDataSpiritNodeList != null)
             {
                 foreach (XPathNavigator xmlDataSpiritNode in xmlDataSpiritNodeList.Select("spirit"))
@@ -7653,15 +7475,11 @@ namespace Translator
                     if (xmlDataSpiritNodeList?.SelectSingleNode("spirit[id = \"" + xmlSpiritNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlSpiritNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlSpiritNodesParent.RemoveChild(xmlSpiritNode);
-                        }
+                        xmlSpiritNodesParent.RemoveChild(xmlSpiritNode);
 #endif
                     }
                 }
@@ -7676,7 +7494,7 @@ namespace Translator
                 xmlRootTraditionFileNode.AppendChild(xmlDrainAttributeNodesParent);
             }
 
-            XPathNavigator xmlDataDrainAttributeNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("drainattributes");
+            XPathNavigator xmlDataDrainAttributeNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("drainattributes");
             if (xmlDataDrainAttributeNodeList != null)
             {
                 foreach (XPathNavigator xmlDataDrainAttributeNode in xmlDataDrainAttributeNodeList.Select("drainattribute"))
@@ -7747,15 +7565,11 @@ namespace Translator
                     if (xmlDataDrainAttributeNodeList?.SelectSingleNode("drainattribute[id = \"" + xmlDrainAttributeNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlDrainAttributeNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlDrainAttributeNodesParent.RemoveChild(xmlDrainAttributeNode);
-                        }
+                        xmlDrainAttributeNodesParent.RemoveChild(xmlDrainAttributeNode);
 #endif
                     }
                 }
@@ -7843,7 +7657,7 @@ namespace Translator
                 xmlRootVehicleFileNode.AppendChild(xmlModCategoryNodesParent);
             }
 
-            XPathNavigator xmlDataModCategoryNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("modcategories");
+            XPathNavigator xmlDataModCategoryNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("modcategories");
             if (xmlDataModCategoryNodeList != null)
             {
                 foreach (XPathNavigator xmlDataCategoryNode in xmlDataModCategoryNodeList.Select("category"))
@@ -7884,7 +7698,7 @@ namespace Translator
                 xmlRootVehicleFileNode.AppendChild(xmlVehicleNodesParent);
             }
 
-            XPathNavigator xmlDataVehicleNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("vehicles");
+            XPathNavigator xmlDataVehicleNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("vehicles");
             if (xmlDataVehicleNodeList != null)
             {
                 foreach (XPathNavigator xmlDataVehicleNode in xmlDataVehicleNodeList.Select("vehicle"))
@@ -7973,15 +7787,11 @@ namespace Translator
                     if (xmlDataVehicleNodeList?.SelectSingleNode("vehicle[id = \"" + xmlVehicleNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlVehicleNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlVehicleNodesParent.RemoveChild(xmlVehicleNode);
-                        }
+                        xmlVehicleNodesParent.RemoveChild(xmlVehicleNode);
 #endif
                     }
                 }
@@ -8085,15 +7895,11 @@ namespace Translator
                     if (xmlDataVehicleModNodeList?.SelectSingleNode("mod[id = \"" + xmlVehicleModNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlVehicleModNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlVehicleModNodesParent.RemoveChild(xmlVehicleModNode);
-                        }
+                        xmlVehicleModNodesParent.RemoveChild(xmlVehicleModNode);
 #endif
                     }
                 }
@@ -8197,15 +8003,11 @@ namespace Translator
                     if (xmlDataWeaponMountNodeList?.SelectSingleNode("weaponmount[id = \"" + xmlWeaponMountNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlWeaponMountNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlWeaponMountNodesParent.RemoveChild(xmlWeaponMountNode);
-                        }
+                        xmlWeaponMountNodesParent.RemoveChild(xmlWeaponMountNode);
 #endif
                     }
                 }
@@ -8309,15 +8111,11 @@ namespace Translator
                     if (xmlDataWeaponMountModNodeList?.SelectSingleNode("mod[id = \"" + xmlWeaponMountModNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlWeaponMountModNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlWeaponMountModNodesParent.RemoveChild(xmlWeaponMountModNode);
-                        }
+                        xmlWeaponMountModNodesParent.RemoveChild(xmlWeaponMountModNode);
 #endif
                     }
                 }
@@ -8505,15 +8303,11 @@ namespace Translator
                             if (xmlDataMetatypeNodeList?.SelectSingleNode("metatype[id = \"" + xmlMetatypeNode["id"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
-                            {
                                 XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                                 xmlExistsAttribute.Value = "False";
                                 xmlMetatypeNode.Attributes?.Append(xmlExistsAttribute);
-                            }
 #else
-                                {
-                                    xmlMetatypeNodesParent.RemoveChild(xmlMetatypeNode);
-                                }
+                                xmlMetatypeNodesParent.RemoveChild(xmlMetatypeNode);
 #endif
                             }
                         }
@@ -8602,7 +8396,7 @@ namespace Translator
                 xmlRootWeaponFileNode.AppendChild(xmlWeaponNodesParent);
             }
 
-            XPathNavigator xmlDataWeaponNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("weapons");
+            XPathNavigator xmlDataWeaponNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("weapons");
             if (xmlDataWeaponNodeList != null)
             {
                 foreach (XPathNavigator xmlDataWeaponNode in xmlDataWeaponNodeList.Select("weapon"))
@@ -8691,15 +8485,11 @@ namespace Translator
                     if (xmlDataWeaponNodeList?.SelectSingleNode("weapon[id = \"" + xmlWeaponNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlWeaponNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlWeaponNodesParent.RemoveChild(xmlWeaponNode);
-                        }
+                        xmlWeaponNodesParent.RemoveChild(xmlWeaponNode);
 #endif
                     }
                 }
@@ -8714,7 +8504,7 @@ namespace Translator
                 xmlRootWeaponFileNode.AppendChild(xmlAccessoryNodesParent);
             }
 
-            XPathNavigator xmlDataAccessoryNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("accessories");
+            XPathNavigator xmlDataAccessoryNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("accessories");
             if (xmlDataAccessoryNodeList != null)
             {
                 foreach (XPathNavigator xmlDataAccessoryNode in xmlDataAccessoryNodeList.Select("accessory"))
@@ -8803,15 +8593,11 @@ namespace Translator
                     if (xmlDataAccessoryNodeList?.SelectSingleNode("accessory[id = \"" + xmlAccessoryNode["id"]?.InnerText + "\"]") == null)
                     {
 #if !DELETE
-                    {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlAccessoryNode.Attributes?.Append(xmlExistsAttribute);
-                    }
 #else
-                        {
-                            xmlAccessoryNodesParent.RemoveChild(xmlAccessoryNode);
-                        }
+                        xmlAccessoryNodesParent.RemoveChild(xmlAccessoryNode);
 #endif
                     }
                 }
@@ -8929,15 +8715,11 @@ namespace Translator
                                 if (xmlDataSubItemsList.SelectSingleNode(strSubItem + "[name = " + xmlSubItem["name"]?.InnerText.CleanXPath() + "]") == null)
                                 {
 #if !DELETE
-                                    {
-                                        XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
-                                        xmlExistsAttribute.Value = "False";
-                                        xmlSubItem.Attributes?.Append(xmlExistsAttribute);
-                                    }
+                                    XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                                    xmlExistsAttribute.Value = "False";
+                                    xmlSubItem.Attributes?.Append(xmlExistsAttribute);
 #else
-                                    {
-                                        xmlSubItemsParent.RemoveChild(xmlSubItem);
-                                    }
+                                    xmlSubItemsParent.RemoveChild(xmlSubItem);
 #endif
                                 }
                             }
@@ -8948,15 +8730,11 @@ namespace Translator
             else if (xmlSubItemsParent != null && blnRemoveTranslationIfSourceNotFound)
             {
 #if !DELETE
-                        {
-                            XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
-                            xmlExistsAttribute.Value = "False";
-                            xmlSubItem.Attributes?.Append(xmlExistsAttribute);
-                        }
+                XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                xmlExistsAttribute.Value = "False";
+                xmlSubItem.Attributes?.Append(xmlExistsAttribute);
 #else
-                {
-                    xmlItemNode.RemoveChild(xmlSubItemsParent);
-                }
+                xmlItemNode.RemoveChild(xmlSubItemsParent);
 #endif
             }
         }

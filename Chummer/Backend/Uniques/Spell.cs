@@ -822,9 +822,9 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell's dicepool.
-                intReturn += decimal.ToInt32(decimal.Ceiling(RelevantImprovements(x =>
+                intReturn += RelevantImprovements(x =>
                     x.ImproveType == Improvement.ImprovementType.SpellCategory
-                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value)));
+                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value).StandardRound();
 
                 return intReturn;
             }

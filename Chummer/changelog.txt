@@ -9,6 +9,15 @@ Application Fixes:
 - In Career mode, if the optional rule to not double positive quality karma costs is not set, the karma filters in the quality selection form now properly consider the doubled cost of qualities that are not set to not double their costs after character creation.
 - Upgrading cyberware that is a part of another piece of cyberware no longer causes the cyberware selector form to display an empty list.
 - Mastery qualities that are not purchased traditionally no longer deduct free spell points.
+- Chummer now properly registers attempts to join a technomancer network/tribe in Career mode.
+- Improvements that add gear without a rating no longer add that gear with a rating of 1.
+- Armor against special types of damage now properly work off of the highest total armor rating against that particular damage type instead of taking the highest generic armor rating and adding the highest special type armor bonus to it. Fixes #4253.
+- Settings for which ammo types can be used for which weapon types have been unhardcoded. The `ammoforweapontype` tag in gear items now dictates if said gear item can be used as ammo for a certain type of weapon, with the attribute 'noextra="True"' intended to be set where the ammo can broadly serve in all weapons of that type instead of just one specific one. The "type" attribute in a weapon's category dictates its default weapon type, though it can be overriden with a "weapontype" node inside the weapon's definition.
+- Lifestyle notes now properly show up after a new lifestyle is added.
+- If there are multiple orphaned improvements that used to have the same parent, these are now properly detected as orphaned improvements.
+- Characters no longer have extra special attributes burned when they buy new 'ware whose fractional part of its essence cost combined with the size of the character's existing essence hole would add up to more than one.
+- Upgrading 'ware no longer shifts a character's essence in the opposite direction to where it is supposed to (i.e. increasing character Essence if the new piece has a greater Essence cost than the old piece, decreasing character Essence if the new piece has a lesser Essence cost than the old piece).
+- Negative fractional improvement values are now always rounded away from zero instead of always towards zero.
 - Added support for maxrating on armor mods exceeding the rating of the base item. Supports Bunker Gear Fire Resistance 8
 
 Data Changes:

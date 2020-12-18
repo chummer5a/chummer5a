@@ -517,9 +517,9 @@ namespace Chummer
         public string DefaultSearchText { get; set; }
 
         /// <summary>
-        /// What prefixes is our gear allowed to have
+        /// What weapon type is our gear allowed to have
         /// </summary>
-        public List<string> ForceItemPrefixStrings { get; } = new List<string>();
+        public string ForceItemAmmoForWeaponType { get; set; }
         #endregion
 
         #region Methods
@@ -998,8 +998,8 @@ namespace Chummer
                 sbdFilter.Append(" and isflechetteammo = 'True'");
             if (_objGearParent == null)
                 sbdFilter.Append(" and not(requireparent)");
-            foreach (string strPrefix in ForceItemPrefixStrings)
-                sbdFilter.Append(" and starts-with(name,\"" + strPrefix + "\")");
+            if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
+                sbdFilter.Append(" and ammoforweapontype = \"" + ForceItemAmmoForWeaponType + "\"");
 
             sbdFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 

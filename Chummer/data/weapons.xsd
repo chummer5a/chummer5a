@@ -95,7 +95,6 @@
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="ammocategory" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ammoname" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="ammoslots" type="xs:integer" minOccurs="0" maxOccurs="1" />
                     <xs:element name="cyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="doubledcostaccessorymounts" minOccurs="0" maxOccurs="1">
@@ -152,6 +151,7 @@
                     </xs:element>
                     <xs:element name="useskill" minOccurs="0" maxOccurs="1" />
                     <xs:element name="useskillspec" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="weapontype" type="xs:string" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

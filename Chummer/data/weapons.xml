@@ -50,7 +50,7 @@
     <category blackmarket="Weapons" type="gun">Micro-Drone Weapons</category>
     <category blackmarket="Weapons" type="cannon" gunneryspec="Ballistic">Assault Cannons</category>
     <category blackmarket="Weapons" type="flame" gunneryspec="Energy">Flamethrowers</category>
-    <category blackmarket="Weapons" type="laser" gunneryspec="Energy">Laser Weapons</category>
+    <category blackmarket="Weapons" type="energy" gunneryspec="Energy">Laser Weapons</category>
     <category blackmarket="Weapons" type="glauncher" gunneryspec="Artillery">Grenade Launchers</category>
     <category blackmarket="Weapons" type="mlauncher" gunneryspec="Rocket">Missile Launchers</category>
   </categories>
@@ -1738,6 +1738,7 @@
       <page>22</page>
       <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <range>Harpoon Gun</range>
+      <weapontype>harpoongun</weapontype>
     </weapon>
     <weapon>
       <id>437c30e5-580a-401a-8097-e9fab0dc2b57</id>
@@ -1757,6 +1758,7 @@
       <source>RG</source>
       <page>23</page>
       <range>Shuriken</range>
+      <weapontype>slingshot</weapontype>
     </weapon>
     <weapon>
       <id>db213a06-0430-4711-81a3-5790d5152ba3</id>
@@ -1853,6 +1855,7 @@
       <page>22</page>
       <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <range>Harpoon Gun</range>
+      <weapontype>harpoongun</weapontype>
     </weapon>
     <weapon>
       <id>a47e8191-869a-456e-b376-ed04ba7a59f0</id>
@@ -2218,6 +2221,7 @@
       <range>Tasers</range>
       <sizecategory>Tasers</sizecategory>
       <spec>Flare Launcher</spec>
+      <weapontype>flaregun</weapontype>
     </weapon>
     <weapon>
       <id>dd4a69d9-6861-41de-9557-83617a3fa904</id>
@@ -5820,6 +5824,7 @@
       <range>Light Pistols</range>
       <sizecategory>Assault Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>squirtgun</weapontype>
     </weapon>
     <weapon>
       <id>e85d55b3-06f1-48e0-bbe1-14b833ac4181</id>
@@ -5844,10 +5849,10 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
-      <ammoname>Ammo: Peak-Discharge Energy Units</ammoname>
       <range>Shotguns (flechette)</range>
       <sizecategory>Assault Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>energy</weapontype>
     </weapon>
     <weapon>
       <id>92b11d6e-8dbb-448a-95a9-e72d11527fe5</id>
@@ -5912,10 +5917,10 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
-      <ammoname>Ammo: Gyrojet</ammoname>
       <range>Heavy Pistols</range>
       <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>gyrojet</weapontype>
     </weapon>
     <weapon>
       <id>c884cf55-9a96-459d-a764-f223e1853149</id>
@@ -6078,6 +6083,7 @@
       <page>28</page>
       <range>Light Pistols</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>netgun</weapontype>
     </weapon>
     <weapon>
       <id>a4dda50f-fec2-4142-bc19-49bcc3a13516</id>
@@ -6098,6 +6104,7 @@
       <page>28</page>
       <range>Light Pistols</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>netgunxl</weapontype>
     </weapon>
     <weapon>
       <id>a130db89-380f-49f8-b9f4-6cfd66cbc4fe</id>
@@ -7182,7 +7189,6 @@
       <cost>350</cost>
       <source>RG</source>
       <page>53</page>
-      <ammoname>Bola: Standard</ammoname>
       <range>Heavy Pistols</range>
       <required>
         <weapondetails>
@@ -7191,6 +7197,7 @@
       </required>
       <useskill>Exotic Ranged Weapon</useskill>
       <useskillspec>Bola</useskillspec>
+      <weapontype>bola</weapontype>
     </weapon>
     <weapon>
       <id>7d711605-e6a9-42f9-846b-95ef80e8c575</id>
@@ -9208,6 +9215,7 @@
       <source>CA</source>
       <page>134</page>
       <spec>Pepper Punch Pen</spec>
+      <weapontype>pepperpunch</weapontype>
     </weapon>
     <weapon>
       <id>06cc6008-2aa1-4d39-8a5c-884136d82fee</id>
@@ -12783,7 +12791,7 @@
         <mount>Barrel</mount>
         <mount>Top</mount>
       </accessorymounts>
-      <ammoname>Ammo: Injection Darts</ammoname>
+      <weapontype>dartgun</weapontype>
       <range>Holdouts</range>
       <spec>Semi-Automatics</spec>
     </weapon>
@@ -14050,9 +14058,9 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <ammoname>Ammo: Peak-Discharge Energy Units</ammoname>
       <range>Heavy Pistols</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>energy</weapontype>
     </weapon>
     <weapon>
       <id>823ffbe6-b8a9-43f6-91e1-ba3e312ce577</id>
@@ -14312,7 +14320,7 @@
         <mount>Side</mount>
         <mount>Internal</mount>
       </accessorymounts>
-      <ammoname>Ammo: Renraku/Ingram Supermach</ammoname>
+      <weapontype>supermach</weapontype>
     </weapon>
     <weapon>
       <id>79599718-2154-45ad-ba32-bbb65c0a5bf4</id>
@@ -14848,6 +14856,28 @@
       <range>Sniper Rifles</range>
       <spec>Sniper Rifles</spec>
       <useskill>Longarms</useskill>
+    </weapon>
+    <weapon>
+      <id>fe06691d-4f39-4ee8-a4e7-c8f9e5f9b6d6</id>
+      <name>Krupp Munitions 3E Firefighting Cannon</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>3</accuracy>
+      <reach>0</reach>
+      <damage>6S</damage>
+      <ap>2</ap>
+      <mode>FA</mode>
+      <rc>0</rc>
+      <ammo>250(belt)</ammo>
+      <avail>8</avail>
+      <cost>6500</cost>
+      <source>SOTG</source>
+      <page>16</page>
+      <range>Machine Pistols</range>
+	    <sizecategory>Heavy Machine Guns</sizecategory>
+      <useskill>Exotic Ranged Weapons</useskill>
+      <weapontype>firefighting cannons</weapontype>
     </weapon>
     <!-- End Region -->
     <!-- Region Datapuls Verschlusssache (German) -->

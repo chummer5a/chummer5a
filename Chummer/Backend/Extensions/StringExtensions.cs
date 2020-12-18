@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -63,8 +62,8 @@ namespace Chummer
             // intHead already set to the index of the first instance, for loop's initializer can be left empty
             for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
             {
-                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace));
-                sbdReturn.Append(strNewValue);
+                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace))
+                    .Append(strNewValue);
                 intEndPositionOfLastReplace = intHead + strOldValue.Length;
             }
             sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace));
@@ -191,79 +190,8 @@ namespace Chummer
         /// <returns>New string with <paramref name="strSubstringToDelete"/> removed</returns>
         public static string FastEscape(this string strInput, string strSubstringToDelete, StringComparison eComparison = StringComparison.Ordinal)
         {
-            if (strSubstringToDelete == null)
-                return strInput;
-            int intToDeleteLength = strSubstringToDelete.Length;
-            if (intToDeleteLength == 0)
-                return strInput;
-            if (intToDeleteLength == 1)
-                return strInput.FastEscape(strSubstringToDelete[0]);
-            if (strInput == null)
-                return string.Empty;
-            int intLength = strInput.Length;
-            if (intLength < intToDeleteLength)
-                return strInput;
-
-            // Quickly exit if no instance of the substring is found
-            int intCurrentEnd = strInput.IndexOf(strSubstringToDelete, 0, eComparison);
-            if (intCurrentEnd == -1)
-                return strInput;
-
-            if (intLength > GlobalOptions.MaxStackLimit)
-            {
-                // Create CharArray in which we will store the new string
-                char[] achrNewChars = new char[intLength];
-                // Logic is to read the input string into the CharArray up to the next instance of the substring, then jump over the substring's length and repeat until no more substrings are found
-                int intCurrentLength = 0;
-                int intCurrentReadPosition = 0;
-                do
-                {
-                    for (; intCurrentReadPosition < intCurrentEnd; ++intCurrentReadPosition)
-                    {
-                        achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
-                    }
-
-                    intCurrentReadPosition += intToDeleteLength;
-                    intCurrentEnd = strInput.IndexOf(strSubstringToDelete, intCurrentReadPosition, eComparison);
-                } while (intCurrentEnd != -1);
-
-                // Copy the remainder of the string once there are no more needles to remove
-                for (; intCurrentReadPosition < intLength; ++intCurrentReadPosition)
-                {
-                    achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
-                }
-
-                // Create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrentLength);
-            }
-            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
-            unsafe
-            {
-                // Create CharArray in which we will store the new string
-                char* achrNewChars = stackalloc char[intLength];
-                // Logic is to read the input string into the CharArray up to the next instance of the substring, then jump over the substring's length and repeat until no more substrings are found
-                int intCurrentLength = 0;
-                int intCurrentReadPosition = 0;
-                do
-                {
-                    for (; intCurrentReadPosition < intCurrentEnd; ++intCurrentReadPosition)
-                    {
-                        achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
-                    }
-
-                    intCurrentReadPosition += intToDeleteLength;
-                    intCurrentEnd = strInput.IndexOf(strSubstringToDelete, intCurrentReadPosition, eComparison);
-                } while (intCurrentEnd != -1);
-
-                // Copy the remainder of the string once there are no more needles to remove
-                for (; intCurrentReadPosition < intLength; ++intCurrentReadPosition)
-                {
-                    achrNewChars[intCurrentLength++] = strInput[intCurrentReadPosition];
-                }
-
-                // Create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrentLength);
-            }
+            // It's actually faster to just run Replace(), albeit with our special comparison override, than to make our own fancy function
+            return strInput.Replace(strSubstringToDelete, string.Empty, eComparison);
         }
 
         /// <summary>
@@ -340,7 +268,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.SplitNoAlloc(chrSeparator, eSplitOptions).ToArray();
+            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
         }
 
         /// <summary>
@@ -355,7 +283,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.SplitNoAlloc(strSeparator, eSplitOptions).ToArray();
+            return strInput.Split(new[] { strSeparator }, eSplitOptions);
         }
 
         /// <summary>
@@ -994,7 +922,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
@@ -1021,7 +949,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -1134,13 +1062,16 @@ namespace Chummer
             return Guid.TryParse(strGuid, out Guid _);
         }
 
-        private static Dictionary<string, string> s_dicBadLigaturesMap = new Dictionary<string, string>
+        private static Dictionary<string, string> s_dicLigaturesMap = new Dictionary<string, string>
         {
             {"ﬀ", "ff"},
             {"ﬃ", "ffi"},
             {"ﬄ", "ffl"},
             {"ﬁ", "fi"},
-            {"ﬂ", "fl"}
+            {"ﬂ", "fl"},
+            // Some PDF fonts have this control character defined as the "fi" ligature for some reason.
+            // It's dumb and will cause XML errors, so it definitely has to be replaced/cleaned.
+            {'\u001f'.ToString(), "fi"}
         };
 
         /// <summary>
@@ -1148,13 +1079,13 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to clean.</param>
         /// <returns>Cleaned string with bad ligatures replaced with full latin characters</returns>
-        public static string CleanBadLigatures(this string strInput)
+        public static string CleanStylisticLigatures(this string strInput)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             string strReturn = strInput;
-            foreach (KeyValuePair<string, string> kvpBadLigature in s_dicBadLigaturesMap)
-                strReturn = strReturn.Replace(kvpBadLigature.Key, kvpBadLigature.Value);
+            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+                strReturn = strReturn.Replace(kvpLigature.Key, kvpLigature.Value);
             return strReturn;
         }
 
@@ -1162,12 +1093,13 @@ namespace Chummer
         /// Replace some of the bad ligatures that are present in Shadowrun sourcebooks with proper characters
         /// </summary>
         /// <param name="sbdInput">StringBuilder to clean.</param>
-        public static void CleanBadLigatures(this StringBuilder sbdInput)
+        public static StringBuilder CleanStylisticLigatures(this StringBuilder sbdInput)
         {
             if (sbdInput == null)
                 throw new ArgumentNullException(nameof(sbdInput));
-            foreach (KeyValuePair<string, string> kvpBadLigature in s_dicBadLigaturesMap)
-                sbdInput.Replace(kvpBadLigature.Key, kvpBadLigature.Value);
+            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+                sbdInput.Replace(kvpLigature.Key, kvpLigature.Value);
+            return sbdInput;
         }
 
         /// <summary>
@@ -1256,7 +1188,7 @@ namespace Chummer
         public static string CleanXPath(this string strSearch)
         {
             if(string.IsNullOrEmpty(strSearch))
-                return null;
+                return "\"\"";
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {

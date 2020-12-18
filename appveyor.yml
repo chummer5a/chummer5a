@@ -14,8 +14,6 @@ assembly_info:
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
-hosts:
-  api.nuget.org: 93.184.221.200
 environment:
   SolutionDir: C:\projects\chummer\
   CHUMMER_OAUTH_TOKEN: 831e3c01126ca8da4661fe3d48a15c1c0bb2c5cb
@@ -25,9 +23,9 @@ environment:
 install:
 - ps: ''
 nuget:
-  account_feed: true
-  project_feed: true
   disable_publish_on_pr: true
+cache:
+  - packages -> **\packages.config
 before_build:
 - ps: |
     $token = $env:api_token
@@ -37,6 +35,7 @@ before_build:
     }
     $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
     $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
+    $exitBuild = $false
     if ($history.builds.Count -eq 2)
     {
         $CurrentCommitID = $history.builds[0].commitId
@@ -46,39 +45,47 @@ before_build:
         if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
         {
             Write-host "Current Commit ID is the same as previous, exiting build."
-            Exit-AppVeyorBuild
+            $exitBuild = $true
         }
     }
-    nuget restore
-    & 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
-    Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
-    Write-Host "Environment Variable: $env:OldMinorVersion"
-    $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
-    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))',  [System.Text.RegularExpressions.RegexOptions]::MultiLine)
-    $content = [IO.File]::ReadAllText($assemblyFile)
-    $version = $null
-    $match = $regex.Match($content)
-    if($match.Success) {
-    $version = $match.groups[3].value
-    }
-    $Major = $version.Split('.')[0]
-    $Minor = $version.Split('.')[1]
-    if ($Minor -ne $($env:OldMinorVersion))
+    # Needs to be in this format, otherwise Exit-AppVeyorBuild won't work. That command has to be the final one executed in the script
+    if ($exitBuild)
     {
-      Write-Host "Current Minor: $Minor"
-      Write-Host "Old Minor: $($env:OldMinorVersion))"
-      Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
-      $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
-      $BuildNumber = '{ nextBuildNumber: 1; }'
-      $Format = '{ versionFormat: $Major.$Minor.1; }'
-      # get project with last build details
-      Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber
-      Invoke-RestMethod -Method Put -Uri "$apiUrl/settings" -Headers $headers -Body $BuildNumber
-      Update-AppveyorBuild -Version "$Major.$Minor.1"
+        Exit-AppVeyorBuild
     }
     else
     {
-      Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
+        nuget restore
+        & 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
+        Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
+        Write-Host "Environment Variable: $env:OldMinorVersion"
+        $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
+        $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))',  [System.Text.RegularExpressions.RegexOptions]::MultiLine)
+        $content = [IO.File]::ReadAllText($assemblyFile)
+        $version = $null
+        $match = $regex.Match($content)
+        if($match.Success) {
+        $version = $match.groups[3].value
+        }
+        $Major = $version.Split('.')[0]
+        $Minor = $version.Split('.')[1]
+        if ($Minor -ne $($env:OldMinorVersion))
+        {
+          Write-Host "Current Minor: $Minor"
+          Write-Host "Old Minor: $($env:OldMinorVersion))"
+          Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
+          $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
+          $BuildNumber = '{ nextBuildNumber: 1; }'
+          $Format = '{ versionFormat: $Major.$Minor.1; }'
+          # get project with last build details
+          Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber
+          Invoke-RestMethod -Method Put -Uri "$apiUrl/settings" -Headers $headers -Body $BuildNumber
+          Update-AppveyorBuild -Version "$Major.$Minor.1"
+        }
+        else
+        {
+          Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
+        }
     }
 build:
   project: Chummer.sln

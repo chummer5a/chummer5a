@@ -514,7 +514,7 @@ namespace Chummer
                 }
 
                 // Include any Improvements to Threading.
-                intReturn += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading")));
+                intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading").StandardRound();
 
                 return intReturn;
             }

@@ -253,7 +253,7 @@ namespace Chummer
                         intReturn = Amount.CompareTo(objEntry.Amount);
                     if (intReturn == 0)
                         intReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
-                    return intReturn;
+                    return -intReturn;
                 }
 
                 int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, objEntry._objCharacter?.FileName ?? string.Empty, StringComparison.Ordinal);
@@ -271,7 +271,7 @@ namespace Chummer
                     intBackupReturn = Amount.CompareTo(objEntry.Amount);
                 if (intBackupReturn == 0)
                     intBackupReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
-                return intBackupReturn;
+                return -intBackupReturn;
             }
             return 1;
         }

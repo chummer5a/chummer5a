@@ -229,7 +229,7 @@ namespace Chummer
                     }
                     decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
                 }
-                return decimal.ToInt32(decimal.Ceiling(decCost));
+                return decCost.StandardRound();
             }
         }
 

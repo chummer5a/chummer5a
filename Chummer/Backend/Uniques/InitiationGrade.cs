@@ -228,7 +228,7 @@ namespace Chummer
                         ? objOptions.KarmaRESInitiationSchoolingPercent
                         : objOptions.KarmaMAGInitiationSchoolingPercent;
 
-                return decimal.ToInt32(decimal.Ceiling(decCost * decMultiplier));
+                return (decCost * decMultiplier).StandardRound();
             }
         }
 

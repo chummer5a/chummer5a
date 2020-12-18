@@ -19,7 +19,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -48,36 +47,5 @@ namespace Chummer
                 true);
             InitializeComponent();
         }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams eParams = base.CreateParams;
-                eParams.ExStyle |= NativeMethods.WS_EX_COMPOSITED;
-                return eParams;
-            }
-        }
-
-        public void BeginUpdate()
-        {
-            NativeMethods.SendMessage(Handle, NativeMethods.WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
-        }
-
-        public void EndUpdate()
-        {
-            NativeMethods.SendMessage(Handle, NativeMethods.WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
-            Parent.Invalidate(true);
-        }
-    }
-
-
-    public static class NativeMethods
-    {
-        public static readonly int WM_SETREDRAW = 0x000B; //uint WM_SETREDRAW
-        public static readonly int WS_EX_COMPOSITED = 0x02000000;
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam); //UInt32 Msg
     }
 }

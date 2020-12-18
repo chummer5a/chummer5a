@@ -2948,7 +2948,7 @@
     </string>
     <string>
       <key>Message_OutOfAmmoType</key>
-      <text>You do not have any {0} Ammunition remaining!</text>
+      <text>You do not have any Ammunition for {0} remaining!</text>
     </string>
     <string>
       <key>MessageTitle_OutOfAmmo</key>

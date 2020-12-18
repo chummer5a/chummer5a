@@ -118,6 +118,7 @@
       <avail>12F</avail>
       <cost>45</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>39042c0a-4b22-4762-8d56-623033860178</id>
@@ -132,6 +133,7 @@
       <weaponbonus>
         <ap>-2</ap>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>0198f16e-8bb2-4618-ab2a-f010abe0a1c6</id>
@@ -147,6 +149,7 @@
         <ap>-5</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>adef0fa4-67b7-41e1-b534-f15308c9c8c1</id>
@@ -161,6 +164,7 @@
       <weaponbonus>
         <ap>+2</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>60b7ad79-55b7-4803-8d1f-9145218eaf5b</id>
@@ -176,6 +180,7 @@
         <ap>+4</ap>
         <damage>-4</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>b286a62d-c7cb-472a-bea8-0f41a300bb9c</id>
@@ -187,6 +192,7 @@
       <avail>10F</avail>
       <cost>150</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>c429fc81-d11b-434b-b98b-5fbdda9db905</id>
@@ -201,6 +207,7 @@
       <weaponbonus>
         <damage>-1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>75ccb148-e774-429c-b854-a27816439626</id>
@@ -254,6 +261,7 @@
       <weaponbonus>
         <ap>-4</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0bf4113c-dedb-411d-8981-7b6af169f056</id>
@@ -265,6 +273,7 @@
       <avail>12F</avail>
       <cost>400</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>cannon</ammoforweapontype>
     </gear>
     <gear>
       <id>1315cecd-1c13-4d69-9828-a3ea535675da</id>
@@ -280,6 +289,7 @@
         <ap>-1</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>95bff6e2-d788-407b-9069-093250f89fcb</id>
@@ -300,6 +310,7 @@
       <flechetteweaponbonus>
         <damagetype>P(f)</damagetype>
       </flechetteweaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0dbcca24-c152-47c5-bae2-8feadff22321</id>
@@ -320,6 +331,7 @@
         <damage>-2</damage>
         <damagetype>S(e)</damagetype>
       </flechetteweaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0c8d16cb-6e96-4d95-8454-104a36091cf9</id>
@@ -335,6 +347,7 @@
         <ap>1</ap>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>f486f414-ee2c-46db-92ea-c682861d8fe0</id>
@@ -350,6 +363,7 @@
         <ap>2</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>638c81a2-328b-4e22-8fb0-ee37c5e2f6c9</id>
@@ -364,6 +378,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>75</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>dartgun</ammoforweapontype>
     </gear>
     <gear>
       <id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
@@ -380,6 +395,7 @@
         <damagereplace>7P</damagereplace>
         <modereplace>SS</modereplace>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>d27dfc89-095d-440c-ad1c-c7f888df2824</id>
@@ -390,6 +406,7 @@
       <page>22</page>
       <avail>0</avail>
       <cost>0</cost>
+      <ammoforweapontype>energy</ammoforweapontype>
     </gear>
     <gear>
       <id>b2a0b340-c793-4322-8422-8b03d18a6fae</id>
@@ -401,6 +418,7 @@
       <avail>2R</avail>
       <cost>20</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>d9f69780-93eb-41ff-9a9c-893f8c52794e</id>
@@ -417,6 +435,7 @@
         <damage>-2</damage>
         <damagetype>S(e)</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>e0d7aea7-52ac-4670-bac3-b13ce144257c</id>
@@ -428,6 +447,7 @@
       <avail>6R</avail>
       <cost>60</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>8afe5065-5815-4a98-b047-2a7fed85db55</id>
@@ -439,6 +459,7 @@
       <avail>3</avail>
       <cost>50</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>taser</ammoforweapontype>
     </gear>
     <gear>
       <id>96eb3f57-26e0-40c5-8dac-62cf8a0bc52f</id>
@@ -454,6 +475,7 @@
         <ap>-1</ap>
         <damage>2</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>ecc8aafc-f8a3-408b-9b47-6f85a473de13</id>
@@ -469,6 +491,7 @@
         <ap>4</ap>
         <damage>-1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>506dd9c6-ea57-4ae2-8887-81ce93e5a7b2</id>
@@ -484,6 +507,7 @@
         <ap>+2</ap>
         <damage>-2</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>f29f0642-65a5-4461-bca1-396907dbf82e</id>
@@ -495,6 +519,7 @@
       <avail>8R</avail>
       <cost>150</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>4b844ac3-20e8-4982-8711-20579b5295a8</id>
@@ -506,6 +531,7 @@
       <avail>8R</avail>
       <cost>150</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>4257a39e-41eb-45ee-976e-41c3c0bf960c</id>
@@ -525,13 +551,14 @@
         <damage>-4</damage>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
       <name>Ammo: DMSO Rounds</name>
       <category>Ammunition</category>
       <rating>0</rating>
-      <source>SR5G</source>
+      <source>SR5</source>
       <page>436</page>
       <avail>2R</avail>
       <addoncategory>Drugs</addoncategory>
@@ -539,6 +566,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>20</cost>
       <costfor>10</costfor>
+      <ammoforweapontype noextra="True">squirtgun</ammoforweapontype>
     </gear>
     <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
@@ -550,6 +578,7 @@
       <avail>Rating</avail>
       <cost>Rating * 2</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>775d2fed-57ab-4e63-b2e4-638ccf4a21d0</id>
@@ -561,6 +590,7 @@
       <avail>(Rating + 2)R</avail>
       <cost>Rating * 20</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>c3c2fa27-36a7-4296-aadd-627078e6e052</id>
@@ -572,6 +602,7 @@
       <avail>2</avail>
       <cost>5</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>7d697849-0a11-4a38-8f07-2e5becf8efe0</id>
@@ -583,6 +614,7 @@
       <avail>8R</avail>
       <cost>50</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>d9bf2003-1911-4e65-b6a1-8babb761dd85</id>
@@ -621,6 +653,7 @@
       <weaponbonus>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>d09f3ebd-28fb-4375-ad0f-49fd1b521c12</id>
@@ -637,6 +670,7 @@
         <ap>-1</ap>
         <damage>2</damage>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>8fb09c1d-f890-444b-bb2b-cf1a5e6825b8</id>
@@ -653,6 +687,7 @@
         <damage>1</damage>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>f245f0d0-22ba-4367-97ee-6762df9137bc</id>
@@ -667,6 +702,7 @@
       <weaponbonus>
         <accuracy>-1</accuracy>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>1cdea5f7-df85-4ebe-bc32-f8dbfa27dad3</id>
@@ -683,6 +719,7 @@
         <damage>-2</damage>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>4ddbecdf-fc04-4b1d-851b-63d5e9e57dbb</id>
@@ -698,6 +735,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>258049dc-6f94-4d41-be97-cadeba20ff36</id>
@@ -713,6 +751,7 @@
         <ap>-5</ap>
         <damagereplace>12S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>9517a1df-5e00-46e5-92f7-4669b8b72380</id>
@@ -727,6 +766,7 @@
       <weaponbonus>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>945c0c98-9996-44ca-bc70-013389434d25</id>
@@ -743,6 +783,7 @@
         <ap>-1</ap>
         <damage>2</damage>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>7057d386-6398-4e7f-8f14-1f74bddc7dba</id>
@@ -759,6 +800,7 @@
         <damage>1</damage>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>5acb7b20-ffe5-49fa-8ff7-372a59999fb6</id>
@@ -773,6 +815,7 @@
       <weaponbonus>
         <accuracy>-1</accuracy>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>8939b519-657a-4081-920f-3a4021eb6704</id>
@@ -789,6 +832,7 @@
         <damage>-2</damage>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>aa378f89-8f73-4f05-b920-fe7e35b7b3bd</id>
@@ -804,6 +848,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
@@ -819,6 +864,7 @@
         <ap>-5</ap>
         <damagereplace>12S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>c1df71d5-845b-46c9-ab8d-9166c5cbac70</id>
@@ -855,6 +901,7 @@
       <addweapon>Harpoon</addweapon>
       <cost>125</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>harpoongun</ammoforweapontype>
     </gear>
     <gear>
       <id>42404ae5-f203-4780-a575-a644d6443d20</id>
@@ -894,6 +941,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>netgun</ammoforweapontype>
     </gear>
     <gear>
       <id>5200ce56-c541-4a7a-8db2-ed4385f0d94f</id>
@@ -909,6 +957,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>netgunxl</ammoforweapontype>
     </gear>
     <gear>
       <id>608324BB-E4CE-40B7-AC76-FF3F67B2C8E0</id>
@@ -920,6 +969,7 @@
       <avail>16F</avail>
       <cost>40</cost>
       <costfor>4</costfor>
+      <ammoforweapontype>flame</ammoforweapontype>
     </gear>
     <gear>
       <id>8C9AE7B4-EF1F-4983-9008-795D3592B417</id>
@@ -934,6 +984,7 @@
       <weaponbonus>
         <ap>-1</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>911BB20E-E325-4399-8F7A-82FDCE13AE51</id>
@@ -949,6 +1000,7 @@
         <ap>-5</ap>
         <damage>-2S(e)</damage>
       </weaponbonus>
+      <ammoforweapontype>gyrojet</ammoforweapontype>
     </gear>
     <gear>
       <id>FE737992-B03B-484C-8F5C-B3BD554B9381</id>
@@ -960,6 +1012,7 @@
       <avail>18F</avail>
       <cost>400</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>cannon</ammoforweapontype>
     </gear>
     <gear>
       <id>784dfff3-7c0e-4166-8687-e3012ef3b434</id>
@@ -971,6 +1024,7 @@
       <avail>9</avail>
       <cost>350</cost>
       <costfor>4</costfor>
+      <ammoforweapontype>netgun</ammoforweapontype>
     </gear>
     <gear>
       <id>6ac1a45c-d8cc-42fd-9306-63ec3f4618e2</id>
@@ -982,6 +1036,7 @@
       <avail>9</avail>
       <cost>400</cost>
       <costfor>2</costfor>
+      <ammoforweapontype>netgunxl</ammoforweapontype>
     </gear>
     <gear>
       <id>48c4b8ed-80cd-4744-83b8-06842fd917aa</id>
@@ -1006,6 +1061,7 @@
       <addweapon>Bola</addweapon>
       <cost>75</cost>
       <costfor>1</costfor>
+      <ammoforweapontype noextra="True">bola</ammoforweapontype>
     </gear>
     <gear>
       <id>f7b819d7-9f6a-446e-b916-82b5973883d6</id>
@@ -1018,6 +1074,7 @@
       <addweapon>Monofilament Bola</addweapon>
       <cost>4000</cost>
       <costfor>1</costfor>
+      <ammoforweapontype noextra="True">bola</ammoforweapontype>
     </gear>
     <gear>
       <id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
@@ -1110,6 +1167,7 @@
       <avail>6R</avail>
       <addweapon>Minigrenade: Flash-Bang</addweapon>
       <cost>100</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>7c00891f-6554-497d-9726-058d7c4a598e</id>
@@ -1121,6 +1179,7 @@
       <avail>4</avail>
       <addweapon>Minigrenade: Flash-Pak</addweapon>
       <cost>125</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>8e1583bf-4cc5-4498-a800-36cb61d3fb27</id>
@@ -1132,6 +1191,7 @@
       <avail>11F</avail>
       <addweapon>Minigrenade: Fragmentation</addweapon>
       <cost>100</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>daecdfc8-15d5-4864-9e20-13e4a0dca88e</id>
@@ -1143,6 +1203,7 @@
       <avail>11F</avail>
       <addweapon>Minigrenade: High Explosive</addweapon>
       <cost>100</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>74284124-57a0-479b-9ab1-3433bdb9e3b7</id>
@@ -1157,6 +1218,7 @@
       <addoncategory>Custom</addoncategory>
       <addweapon>Minigrenade: Gas</addweapon>
       <cost>40</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>b6381691-1a96-4299-b9df-129ffee64c45</id>
@@ -1168,6 +1230,7 @@
       <avail>4R</avail>
       <addweapon>Minigrenade: Smoke</addweapon>
       <cost>40</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>e2252b3c-1bae-496e-adbb-f1c3d6e0b32b</id>
@@ -1179,6 +1242,7 @@
       <avail>6R</avail>
       <addweapon>Minigrenade: Thermal Smoke</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
@@ -1315,6 +1379,7 @@
       <avail>18F</avail>
       <addweapon>Rocket: Anti-Vehicle</addweapon>
       <cost>2800</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>4c5be084-c975-42d2-962c-dc2add203b6b</id>
@@ -1337,6 +1402,7 @@
       <avail>18F</avail>
       <addweapon>Rocket: High Explosive</addweapon>
       <cost>2100</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>413366b8-0ef5-4998-bfce-9ba29db761a9</id>
@@ -1348,6 +1414,7 @@
       <avail>12F</avail>
       <addweapon>Rocket: Incendiary</addweapon>
       <cost>1900</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>a42b7377-5a2e-456d-b729-8783873465f0</id>
@@ -1359,6 +1426,7 @@
       <avail>18F</avail>
       <addweapon>Missile: Anti-Vehicle</addweapon>
       <cost>2800</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>bb40694a-59de-4fb8-9cee-697f37377a55</id>
@@ -1370,6 +1438,7 @@
       <avail>12F</avail>
       <addweapon>Missile: Fragmentation</addweapon>
       <cost>2000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>838a308e-a638-433e-b5bc-54222fb645c9</id>
@@ -1381,6 +1450,7 @@
       <avail>18F</avail>
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
@@ -1392,6 +1462,33 @@
       <avail>16F</avail>
       <cost>20</cost>
       <costfor>10</costfor>
+      <ammoforweapontype noextra="True">supermach</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>78babb62-e0f1-4561-9e2d-05b0b5fbb2ad</id>
+      <name>Ammo: Water</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>16</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>767ecc1c-1f47-4684-b36f-0bbe0868ceac</id>
+      <name>Ammo: Fire Extinguishant</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>16</page>
+      <avail>6R</avail>
+      <cost>500</cost>
+      <costfor>50</costfor>
+      <weaponbonus>
+        <damage>-1</damage>
+      </weaponbonus>
+      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
     </gear>
     <!-- Region Kill Code-->
 
@@ -1408,6 +1505,7 @@
       <weaponbonus>
         <damagetype>(M)</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
@@ -1422,6 +1520,7 @@
       <weaponbonus>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
@@ -1436,6 +1535,7 @@
       <weaponbonus>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
@@ -1451,6 +1551,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
@@ -1469,6 +1570,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
@@ -1487,6 +1589,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
@@ -1502,6 +1605,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
@@ -1520,6 +1624,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
@@ -1540,6 +1645,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
@@ -1550,6 +1656,7 @@
       <page>52</page>
       <avail>6R</avail>
       <cost>25</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
@@ -1560,6 +1667,7 @@
       <page>52</page>
       <avail>8R</avail>
       <cost>75</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
@@ -1570,6 +1678,7 @@
       <page>52</page>
       <avail>10R</avail>
       <cost>200</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
@@ -1580,6 +1689,7 @@
       <page>52</page>
       <avail>12R</avail>
       <cost>400</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
@@ -1637,6 +1747,7 @@
       <avail>3R</avail>
       <cost>75</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>6ffa3fc7-e390-43b5-b27e-3d01baecec92</id>
@@ -1651,6 +1762,7 @@
       <weaponbonus>
         <ap>-2</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>959b02ff-b3b3-4027-8ada-799f31a7a323</id>
@@ -1666,6 +1778,7 @@
         <damage>2</damage>
         <ap>-3</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>97febd7d-6385-472e-87af-29313f9224ae</id>
@@ -1677,6 +1790,7 @@
       <avail>6R</avail>
       <cost>125</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>c18eed96-2697-4b95-9be7-be9313504a2f</id>
@@ -1692,6 +1806,7 @@
         <damage>-3</damage>
         <ap>-3</ap>
       </weaponbonus>
+      <ammoforweapontype>cannon</ammoforweapontype>
     </gear>
     <gear>
       <id>17136c4b-af3b-44a4-b5cf-2eedf7e9d217</id>
@@ -1707,6 +1822,7 @@
         <damagetype>(S)</damagetype>
         <ap>+1</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>f2300388-1d51-41bf-b333-fae00776a375</id>
@@ -8588,6 +8704,7 @@
       <page>449</page>
       <avail>0</avail>
       <cost>25</cost>
+      <ammoforweapontype>flaregun</ammoforweapontype>
     </gear>
     <gear>
       <id>2bb6956f-c00e-452c-ab99-6b4613d7bb3e</id>
@@ -12258,6 +12375,7 @@
       <page>410</page>
       <avail>0</avail>
       <cost>5</cost>
+      <ammoforweapontype noextra="True">pepperpunch</ammoforweapontype>
     </gear>
     <gear>
       <id>189c3bb8-357b-412a-afc4-ce931ea8871d</id>
@@ -17615,6 +17733,7 @@
       <avail>12F</avail>
       <addweapon>Missile: Anti-Vehicle (2050)</addweapon>
       <cost>2000+(Rating * 500)</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>d27371aa-248d-4a04-b78e-4eccaddd3f9d</id>
@@ -17626,6 +17745,7 @@
       <avail>12F</avail>
       <addweapon>Missile: Anti-Personnel (2050)</addweapon>
       <cost>1000+(Rating * 500)</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>25177977-8f28-4966-ba61-63627bed8af7</id>
@@ -17637,6 +17757,7 @@
       <avail>12F</avail>
       <addweapon>Missile: High Explosive (2050)</addweapon>
       <cost>1500+(Rating * 500)</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <!-- Rocket -->
     <gear>
@@ -17649,6 +17770,7 @@
       <avail>8F</avail>
       <addweapon>Rocket: High Explosive (2050)</addweapon>
       <cost>1500</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>370767a9-5c8d-4ee3-ad2a-78b30b5f53fc</id>
@@ -17660,6 +17782,7 @@
       <avail>8F</avail>
       <addweapon>Rocket: Anti-Vehicle (2050)</addweapon>
       <cost>2000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>c9405bce-6ad0-42d5-9b35-6ce4c892b2ff</id>
@@ -17671,6 +17794,7 @@
       <avail>8F</avail>
       <addweapon>Rocket: Anti-Personnel (2050)</addweapon>
       <cost>1000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <!-- Grenade -->
     <gear>
@@ -17705,6 +17829,7 @@
       <avail>8F</avail>
       <addweapon>Minigrenade: Smoke (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>c89bfb86-ac08-4020-92e4-6ef84209b165</id>
@@ -17738,6 +17863,7 @@
       <avail>4F</avail>
       <addweapon>Minigrenade: Offensive (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>e014dc28-a2e0-466e-9a38-4aa5cde8d556</id>
@@ -17771,6 +17897,7 @@
       <avail>4F</avail>
       <addweapon>Minigrenade: Defensive (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>eb395ddc-d8d2-4dbc-8dad-089221a1db5a</id>
@@ -17806,6 +17933,7 @@
       <avail>8F</avail>
       <addweapon>Minigrenade: Shock (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>adc950ba-cfda-4bc7-aa05-71671ffdc5cf</id>
@@ -17840,6 +17968,7 @@
       <avail>6R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>taser</ammoforweapontype>
     </gear>
     <gear>
       <id>998586de-fd3f-4589-af53-676767f1b1b5</id>
@@ -17851,6 +17980,7 @@
       <avail>10F</avail>
       <cost>450</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>cannon</ammoforweapontype>
     </gear>
     <gear>
       <id>83bf8f55-47a6-4780-9223-7b14eddcd5e9</id>
@@ -17864,6 +17994,7 @@
       <addoncategory>Toxins</addoncategory>
       <cost>200</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>dartgun</ammoforweapontype>
     </gear>
     <gear>
       <id>186d9840-4a40-4b80-ba8f-58377a06e180</id>
@@ -17879,6 +18010,7 @@
         <ap>1</ap>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>86fc55db-c032-47d5-a981-9a7bc3a85ee4</id>
@@ -17895,6 +18027,7 @@
         <damage>2</damage>
         <damagetype>P(f)</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0003acf4-25ff-470e-990c-6ea8c056f5b2</id>
@@ -17910,6 +18043,7 @@
         <ap>-1</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>9c241ebd-fabf-4fc4-a3f7-15653af3082a</id>
@@ -17924,6 +18058,7 @@
       <weaponbonus>
         <ap>-4</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <!-- Wapon Gear -->
     <gear>
@@ -19517,6 +19652,7 @@
       <avail>16F</avail>
       <addweapon>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</addweapon>
       <cost>400</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <!-- End Region -->
     <!-- Region Kill Code -->

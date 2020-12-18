@@ -901,13 +901,18 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
                     {
                         if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts)) continue;
-                        Dictionary<string, int> dicToUse = null;
-                        if (objCheckCyberware.Location == "Left")
-                            dicToUse = dicNumLeftMountBlockers;
-                        else if (objCheckCyberware.Location == "Right")
-                            dicToUse = dicNumRightMountBlockers;
-                        else
-                            continue;
+                        Dictionary<string, int> dicToUse;
+                        switch (objCheckCyberware.Location)
+                        {
+                            case "Left":
+                                dicToUse = dicNumLeftMountBlockers;
+                                break;
+                            case "Right":
+                                dicToUse = dicNumRightMountBlockers;
+                                break;
+                            default:
+                                continue;
+                        }
                         foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
                             StringSplitOptions.RemoveEmptyEntries))
                         {
@@ -3429,8 +3434,7 @@ namespace Chummer.Backend.Equipment
                 decReturn = decReturn * decESSMultiplier * decTotalESSMultiplier;
 
                 if (_objCharacter != null && !_objCharacter.Options.DontRoundEssenceInternally)
-                    decReturn = decimal.Round(decReturn, _objCharacter.Options.EssenceDecimals,
-                        MidpointRounding.AwayFromZero);
+                    decReturn = decimal.Round(decReturn, _objCharacter.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
                 decReturn += Children.Where(objChild => objChild.AddToParentESS).AsParallel()
                     .Sum(objChild => objChild.CalculatedESS);
                 return decReturn;
@@ -5165,6 +5169,11 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
+                if (_objCharacter.Created && lstCyberwareCollection == _objCharacter.Cyberware)
+                {
+                    _objCharacter.DecreaseEssenceHole(CalculatedESS, SourceID == EssenceAntiHoleGUID);
+                }
+
                 lstCyberwareCollection?.Add(this);
 
                 foreach (Weapon objWeapon in lstWeapons)
@@ -5177,12 +5186,6 @@ namespace Chummer.Backend.Equipment
                 {
                     lstVehicleCollection?.Add(objLoopVehicle);
                 }
-
-                if (_objCharacter.Created && objVehicle == null && _objParent == null)
-                {
-                    _objCharacter.DecreaseEssenceHole((int)(CalculatedESS * 100),
-                        SourceID == EssenceAntiHoleGUID);
-                }
             }
 
             return true;
@@ -5190,59 +5193,56 @@ namespace Chummer.Backend.Equipment
 
         public void Upgrade(Grade objGrade, int intRating, decimal refundPercentage, bool blnFree)
         {
-            decimal saleCost = TotalCost * refundPercentage;
-            int oldRating = Rating;
-            decimal oldEssence = CalculatedESS;
-            Grade oldGrade = Grade;
+            decimal decSaleCost = TotalCost * refundPercentage;
+            decimal decOldEssence = CalculatedESS;
+            int intOldRating = Rating;
+            Grade objOldGrade = Grade;
 
             Rating = intRating;
             Grade = objGrade;
-            decimal newCost = TotalCost - saleCost;
-            if (blnFree)
-            {
-                newCost = 0;
-            }
-            if (newCost > _objCharacter.Nuyen)
+            decimal decNewCost = blnFree ? 0 : TotalCost - decSaleCost;
+            if (decNewCost > _objCharacter.Nuyen)
             {
                 Program.MainForm.ShowMessageBox(
                     LanguageManager.GetString("Message_NotEnoughNuyen"),
                     LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                Rating = oldRating;
-                Grade = oldGrade;
+                Rating = intOldRating;
+                Grade = objOldGrade;
                 return;
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            StringBuilder expenseBuilder = new StringBuilder();
-            expenseBuilder.Append(LanguageManager.GetString("String_ExpenseUpgradedCyberware")).Append(strSpace).Append(CurrentDisplayNameShort);
-            if (oldGrade != Grade || oldRating != intRating)
+            StringBuilder sbdExpense = new StringBuilder();
+            sbdExpense.Append(LanguageManager.GetString("String_ExpenseUpgradedCyberware"))
+                .Append(strSpace).Append(CurrentDisplayNameShort);
+            if (objOldGrade != Grade || intOldRating != intRating)
             {
-                expenseBuilder.Append('(').Append(LanguageManager.GetString("String_Grade"))
-                    .Append(strSpace).Append(Grade.CurrentDisplayName).Append(strSpace).Append("->").Append(oldGrade.CurrentDisplayName)
-                    .Append(strSpace).Append(LanguageManager.GetString(RatingLabel)).Append(oldRating.ToString(GlobalOptions.CultureInfo))
+                sbdExpense.Append('(').Append(LanguageManager.GetString("String_Grade"))
+                    .Append(strSpace).Append(objOldGrade.CurrentDisplayName).Append(strSpace).Append("->").Append(Grade.CurrentDisplayName)
+                    .Append(strSpace).Append(LanguageManager.GetString(RatingLabel)).Append(intOldRating.ToString(GlobalOptions.CultureInfo))
                     .Append(strSpace).Append("->").Append(strSpace).Append(Rating.ToString(GlobalOptions.CultureInfo)).Append(')');
             }
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(newCost * -1, expenseBuilder.ToString(), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(-decNewCost, sbdExpense.ToString(), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-            _objCharacter.Nuyen -= newCost;
+            _objCharacter.Nuyen -= decNewCost;
 
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
             objExpense.Undo = objUndo;
-            decimal decEssDelta = oldEssence - CalculatedESS;
+            decimal decEssDelta = CalculatedESS - decOldEssence;
             if (decEssDelta > 0)
             {
                 //The new Essence cost is greater than the old one.
-                _objCharacter.IncreaseEssenceHole((int) (decEssDelta * 100));
+                _objCharacter.IncreaseEssenceHole(decEssDelta);
             }
             else if (decEssDelta < 0)
             {
-                _objCharacter.DecreaseEssenceHole((int)(decEssDelta * 100)*-1);
+                _objCharacter.DecreaseEssenceHole(-decEssDelta);
             }
         }
 

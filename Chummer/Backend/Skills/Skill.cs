@@ -851,6 +851,7 @@ namespace Chummer.Backend.Skills
             get => false;
             set
             {
+                // Dummy setter that is only set up so that Language skills can have a setter that is functional
             }
         }
 
@@ -984,7 +985,7 @@ namespace Chummer.Backend.Skills
                 }
                 else if (Specializations[0].Free)
                 {
-                    Specializations.MergeInto(new SkillSpecialization(value), (x, y) =>
+                    Specializations.AddWithSort(new SkillSpecialization(value), (x, y) =>
                     {
                         if (x.Free == y.Free)
                         {
@@ -1240,9 +1241,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
-                    intPrice = decimal.ToInt32(decimal.Ceiling(intPrice * decSpecCostMultiplier + decExtraSpecCost));
+                    intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                 else
-                    intPrice += decimal.ToInt32(decimal.Ceiling(decExtraSpecCost)); //Spec
+                    intPrice += decExtraSpecCost.StandardRound(); //Spec
                 return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_AddSpecialization"), intPrice);
             }
         }
@@ -1425,10 +1426,10 @@ namespace Chummer.Backend.Skills
                         if (objThisAsExoticSkill != null)
                         {
                             if (objImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
-                                intMaxHardwire = Math.Max(intMaxHardwire, decimal.ToInt32(decimal.Ceiling(objImprovement.Value)));
+                                intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                         }
                         else if (objImprovement.ImprovedName == Name)
-                            intMaxHardwire = Math.Max(intMaxHardwire, decimal.ToInt32(decimal.Ceiling(objImprovement.Value)));
+                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                     }
                 }
                 if (intMaxHardwire >= 0)
@@ -1436,7 +1437,7 @@ namespace Chummer.Backend.Skills
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
-                int intMaxActivesoftRating = decimal.ToInt32(decimal.Ceiling(Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess))));
+                int intMaxActivesoftRating = Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess)).StandardRound();
                 if (intMaxActivesoftRating > 0)
                 {
                     int intMax = 0;
@@ -1448,10 +1449,10 @@ namespace Chummer.Backend.Skills
                             if (objThisAsExoticSkill != null)
                             {
                                 if (objSkillsoftImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
-                                    intMaxHardwire = Math.Max(intMaxHardwire, decimal.ToInt32(decimal.Ceiling(objSkillsoftImprovement.Value)));
+                                    intMaxHardwire = Math.Max(intMaxHardwire, objSkillsoftImprovement.Value.StandardRound());
                             }
                             else if (objSkillsoftImprovement.ImprovedName == Name)
-                                intMax = Math.Max(intMax, decimal.ToInt32(decimal.Ceiling(objSkillsoftImprovement.Value)));
+                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
                         }
                     }
                     return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);

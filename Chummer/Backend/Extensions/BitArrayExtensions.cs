@@ -16,24 +16,65 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
     public static class BitArrayExtensions
     {
-        public static int FirstMatching(this BitArray array, bool value, int skip = 0, int max = int.MaxValue)
+        /// <summary>
+        /// Get the first element in a BitArray that matches <paramref name="blnValue"/>.
+        /// </summary>
+        /// <param name="ablnArray">Array to search.</param>
+        /// <param name="blnValue">Value for which to look.</param>
+        /// <param name="intFrom">Index from which to start search (inclusive).</param>
+        /// <param name="intTo">Index at which to end search (exclusive).</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FirstMatching(this BitArray ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {
-            if (array == null)
-                return -1;
-            if (max > array.Count)
-                max = array.Count;
-            for (; skip < max; skip++)
+            if (ablnArray == null)
+                throw new ArgumentNullException(nameof(ablnArray));
+            if (intTo > ablnArray.Count)
+                intTo = ablnArray.Count;
+            for (; intFrom < intTo; ++intFrom)
             {
-                if (array[skip] == value) return skip;
+                if (ablnArray[intFrom] == blnValue)
+                    return intFrom;
             }
-
             return -1;
+        }
+
+        /// <summary>
+        /// Count the number of bits set in a BitArray using special bit twiddling.
+        /// Adapted from https://stackoverflow.com/questions/5063178/counting-bits-set-in-a-net-bitarray-class
+        /// and http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel.
+        /// </summary>
+        /// <param name="ablnToCount"></param>
+        /// <returns></returns>
+        public static int CountTrues(this BitArray ablnToCount)
+        {
+            // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
+            int[] aintToCountMask = new int[(ablnToCount.Count >> 5) + 1];
+            ablnToCount.CopyTo(aintToCountMask, 0);
+            // Fix for not truncated bits in last integer that may have been set to true with SetAll()
+            aintToCountMask[aintToCountMask.Length - 1] &= ~(-1 << (ablnToCount.Count % 32));
+            int intReturn = 0;
+            for (int i = 0; i < aintToCountMask.Length; i++)
+            {
+                int intLoopBlock = aintToCountMask[i];
+                // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
+                unchecked
+                {
+                    intLoopBlock -= ((intLoopBlock >> 1) & 0x55555555);
+                    intLoopBlock = (intLoopBlock & 0x33333333) + ((intLoopBlock >> 2) & 0x33333333);
+                    intLoopBlock = ((intLoopBlock + (intLoopBlock >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+                }
+                intReturn += intLoopBlock;
+            }
+            return intReturn;
         }
     }
 }

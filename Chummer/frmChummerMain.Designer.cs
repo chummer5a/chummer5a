@@ -471,7 +471,7 @@ namespace Chummer
             // 
             this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die;
             this.mnuToolsDiceRoller.Name = "mnuToolsDiceRoller";
-            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsDiceRoller.Tag = "Menu_Main_DiceRoller";
             this.mnuToolsDiceRoller.Text = "&Dice Roller";
             this.mnuToolsDiceRoller.Click += new System.EventHandler(this.mnuToolsDiceRoller_Click);
@@ -479,13 +479,13 @@ namespace Chummer
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Image = global::Chummer.Properties.Resources.cog_edit;
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.optionsToolStripMenuItem.Tag = "Menu_Main_Options";
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
@@ -494,7 +494,7 @@ namespace Chummer
             // 
             this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.database_refresh;
             this.mnuToolsUpdate.Name = "mnuToolsUpdate";
-            this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsUpdate.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsUpdate.Tag = "Menu_Main_Update";
             this.mnuToolsUpdate.Text = "Check for Updates";
             this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
@@ -503,7 +503,7 @@ namespace Chummer
             // 
             this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
             this.mnuRestart.Name = "mnuRestart";
-            this.mnuRestart.Size = new System.Drawing.Size(171, 22);
+            this.mnuRestart.Size = new System.Drawing.Size(180, 22);
             this.mnuRestart.Tag = "Button_Update_RestartChummer";
             this.mnuRestart.Text = "Restart Chummer";
             this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
@@ -511,13 +511,13 @@ namespace Chummer
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuToolsTranslator
             // 
             this.mnuToolsTranslator.Image = global::Chummer.Properties.Resources.locate;
             this.mnuToolsTranslator.Name = "mnuToolsTranslator";
-            this.mnuToolsTranslator.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsTranslator.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
@@ -526,7 +526,7 @@ namespace Chummer
             // 
             this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.HeroLab_16;
             this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
-            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(180, 22);
             this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
             this.mnuHeroLabImporter.Text = "Hero Lab Importer";
             this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
