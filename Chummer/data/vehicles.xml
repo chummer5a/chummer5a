@@ -4200,10 +4200,15 @@
         <weaponmount>
           <control>Remote</control>
           <flexibility>Fixed</flexibility>
-          <size>Small</size>
+          <size>Built-In</size>
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Micro-Torpedo Launcher</name>
+        </weapon>
+      </weapons>
     </vehicle>
     <vehicle>
       <id>75b5192e-6d57-4ca3-b288-c733c1272cef</id>

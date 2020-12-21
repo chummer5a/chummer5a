@@ -27,6 +27,7 @@ Data Changes:
 - Amended Bunker Gear to properly get the rating 8
 - Limited Skill Autosofts to the skills listed in Rigger 5. 
 - Added Skill Autosoft (Knowledge) per Rigger 5.
+- Added previously missing entries for the Proteus Krake's micro-torpedos and micro-torpedo launcher. Existing saves containing a Proteus Krake will have its previously buggy weapon mount entry replaced with a functional one that properly includes the micro-torpedo launcher.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
