@@ -4916,7 +4916,6 @@ namespace Chummer
 
             _intMAGAdept = 0;
             _intMAGMagician = 0;
-            _objTradition.UnbindTradition();
 
             _lstLinkedCharacters.Clear();
             _intMainMugshotIndex = -1;

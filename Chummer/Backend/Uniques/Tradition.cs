@@ -78,11 +78,6 @@ namespace Chummer.Backend.Uniques
             return base.ToString();
         }
 
-        public void UnbindTradition()
-        {
-            _objCharacter.PropertyChanged -= RefreshDrainExpression;
-        }
-
         public void ResetTradition()
         {
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId);
