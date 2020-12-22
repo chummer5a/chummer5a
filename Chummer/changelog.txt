@@ -1,6 +1,6 @@
 Future Build 214
 Application Fixes:
-- Characters with MAG atttributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
+- Characters with MAG attributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
 - Dark mode's darkened backgrounds have been made slightly lighter (by up to 10%).
 - Fixed an issue where some sourcebooks would insert ligature characters into an item's notes that Chummer could not handle and would prevent the character from being saved and/or crash whenever the character was opened.
 - When loading a character from a save file, the program now automatically checks if there are any saves in the autosave folder that seem to match the currently loading save file's character and that have a later last write date and time than those of the currently loading save file. If it finds such an autosave, it now prompts the user of whether they want to load the autosave instead, though if they do, the old save file will not be altered until they manually save, just in case they realize that the autosave is not what they want after it has been loaded.
@@ -25,7 +25,7 @@ Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
 - Added a new PDF Parameter option that is Adobe Acrobat-style, but always opens a new instance of the clicked file.
 - Linguistics (the adept power) no longer increases a character's native language limit by 1.
-- Amended Bunker Gear to properly get the rating 8
+- Amended Bunker Gear to properly get rating 8 Fire Resistance instead of rating 6.
 - Limited Skill Autosofts to the skills listed in Rigger 5. 
 - Added Skill Autosoft (Knowledge) per Rigger 5.
 - Added previously missing entries for the Proteus Krake's micro-torpedos and micro-torpedo launcher. Existing saves containing a Proteus Krake will have its previously buggy weapon mount entry replaced with a functional one that properly includes the micro-torpedo launcher.
