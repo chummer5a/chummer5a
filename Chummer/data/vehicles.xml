@@ -6362,6 +6362,7 @@
           <rating>3</rating>
           <maxrating>6</maxrating>
         </gear>
+        <gear rating="3" select="Sword">[Weapon] Targeting Autosoft</gear>
       </gears>
       <mods>
         <name>Drone Arm</name>

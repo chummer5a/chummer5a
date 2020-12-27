@@ -27,6 +27,9 @@ Data Changes:
 - Amended Bunker Gear to properly get the rating 8
 - Limited Skill Autosofts to the skills listed in Rigger 5. 
 - Added Skill Autosoft (Knowledge) per Rigger 5.
+- Fixed Orks Have Natural Weapon Tusks customdata to provide Tusks instead of Horns.
+- Fixed Ares Duelist not getting targeting autosoft
+- Fixed Climate Adaptation and Proboscis metagenic qualities not having the correct flag. Closes #4278
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
