@@ -1868,6 +1868,30 @@
       <cost>125</cost>
       <addweapon>Grenade: Krime Stinger</addweapon>
     </gear>
+    <gear>
+      <id>5768d347-cd1e-454c-b5f7-012266c185a4</id>
+      <name>Micro-Torpedo: Chemical</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>18F</avail>
+      <addweapon>Micro-Torpedo: Chemical</addweapon>
+      <cost>3000</cost>
+      <ammoforweapontype noextra="True">microtorpedo</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>0e1ec849-e332-4683-aabb-a94e46512c22</id>
+      <name>Micro-Torpedo: Explosive</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>18F</avail>
+      <addweapon>Micro-Torpedo: Explosive</addweapon>
+      <cost>2500</cost>
+      <ammoforweapontype noextra="True">microtorpedo</ammoforweapontype>
+    </gear>
     <!-- End Region -->
     <!-- End Region -->
     <!-- Region Explosives -->

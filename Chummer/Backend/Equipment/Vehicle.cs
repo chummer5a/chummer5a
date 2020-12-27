@@ -767,12 +767,122 @@ namespace Chummer.Backend.Equipment
 
             if (strNodeInnerXml.Contains("<weaponmounts>"))
             {
+                bool blnKrakePassDone = false;
                 XmlNodeList nodChildren = objNode.SelectNodes("weaponmounts/weaponmount");
                 foreach (XmlNode nodChild in nodChildren)
                 {
                     WeaponMount wm = new WeaponMount(_objCharacter, this);
                     if (wm.Load(nodChild, blnCopy))
                         WeaponMounts.Add(wm);
+                    else
+                    {
+                        // Compatibility sweep for malformed weapon mount on Proteus Krake
+                        Guid guidDummy = Guid.Empty;
+                        if (Name.StartsWith("Proteus Krake")
+                            && !blnKrakePassDone
+                            && _objCharacter.LastSavedVersion < new Version(5, 213, 28)
+                            && (!nodChild.TryGetGuidFieldQuickly("sourceid", ref guidDummy) || guidDummy == Guid.Empty))
+                        {
+                            blnKrakePassDone = true;
+                            // If there are any Weapon Mounts that come with the Vehicle, add them.
+                            XmlNode xmlVehicleDataNode = GetNode();
+                            if (xmlVehicleDataNode != null)
+                            {
+                                XmlNode xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weaponmounts"];
+                                if (xmlDataNodesForMissingKrakeStuff != null)
+                                {
+                                    foreach (XmlNode objXmlVehicleMod in xmlDataNodesForMissingKrakeStuff.SelectNodes("weaponmount"))
+                                    {
+                                        WeaponMount objWeaponMount = new WeaponMount(_objCharacter, this);
+                                        objWeaponMount.CreateByName(objXmlVehicleMod);
+                                        objWeaponMount.IncludedInVehicle = true;
+                                        WeaponMounts.Add(objWeaponMount);
+                                    }
+                                }
+
+                                xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weapons"];
+                                if (xmlDataNodesForMissingKrakeStuff != null)
+                                {
+                                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+
+                                    foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
+                                    {
+                                        bool blnAttached = false;
+                                        Weapon objWeapon = new Weapon(_objCharacter);
+
+                                        List<Weapon> objSubWeapons = new List<Weapon>(1);
+                                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                                        objWeapon.ParentVehicle = this;
+                                        objWeapon.Create(objXmlWeaponNode, objSubWeapons);
+                                        objWeapon.ParentID = InternalId;
+                                        objWeapon.Cost = "0";
+
+                                        // Find the first free Weapon Mount in the Vehicle.
+                                        foreach (WeaponMount objWeaponMount in WeaponMounts)
+                                        {
+                                            if (objWeaponMount.Weapons.Count != 0)
+                                                continue;
+                                            if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
+                                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
+                                                !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
+                                                continue;
+                                            objWeaponMount.Weapons.Add(objWeapon);
+                                            blnAttached = true;
+                                            foreach (Weapon objSubWeapon in objSubWeapons)
+                                                objWeaponMount.Weapons.Add(objSubWeapon);
+                                            break;
+                                        }
+
+                                        // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
+                                        if (!blnAttached)
+                                        {
+                                            foreach (VehicleMod objMod in _lstVehicleMods)
+                                            {
+                                                if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) && objMod.Weapons.Count == 0)
+                                                {
+                                                    objMod.Weapons.Add(objWeapon);
+                                                    foreach (Weapon objSubWeapon in objSubWeapons)
+                                                        objMod.Weapons.Add(objSubWeapon);
+                                                    break;
+                                                }
+                                            }
+                                            if (!blnAttached)
+                                            {
+                                                foreach (VehicleMod objMod in _lstVehicleMods)
+                                                {
+                                                    if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
+                                                    {
+                                                        objMod.Weapons.Add(objWeapon);
+                                                        foreach (Weapon objSubWeapon in objSubWeapons)
+                                                            objMod.Weapons.Add(objSubWeapon);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // Look for Weapon Accessories.
+                                        XmlNode xmlAccessories = objXmlWeapon["accessories"];
+                                        if (xmlAccessories != null)
+                                        {
+                                            foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
+                                            {
+                                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                                WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
+                                                string strMount = "Internal";
+                                                objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
+                                                string strExtraMount = "None";
+                                                objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
+                                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0);
+                                                objMod.Cost = "0";
+                                                objWeapon.WeaponAccessories.Add(objMod);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
