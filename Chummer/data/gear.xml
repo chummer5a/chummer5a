@@ -12461,6 +12461,16 @@
       <avail>16R</avail>
       <cost>5000</cost>
     </gear>
+    <gear>
+      <id>4235dd3f-1865-4f7b-b2e5-e43fdcbd94de</id>
+      <name>KEV</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>SRM8</source>
+      <page>0</page>
+      <avail>10</avail>
+      <cost>20</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Drugs -->
     <gear>

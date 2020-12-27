@@ -272,5 +272,10 @@
       <name>Krime Katalog</name>
       <code>KK</code>
     </book>
+    <book>
+      <id>2ca3c7ce-3cdb-4bf2-b430-32ecef09fda1</id>
+      <name>Shadowrun Missions Season 8</name>
+      <code>SRM8</code>
+    </book>
   </books>
 </chummer>

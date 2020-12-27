@@ -32,6 +32,7 @@ Data Changes:
 - Fixed Ares Duelist not getting targeting autosoft
 - Fixed Climate Adaptation and Proboscis metagenic qualities not having the correct flag. Closes #4278
 - Added previously missing entries for the Proteus Krake's micro-torpedos and micro-torpedo launcher. Existing saves containing a Proteus Krake will have its previously buggy weapon mount entry replaced with a functional one that properly includes the micro-torpedo launcher.
+- Added KEV toxin from Shadowrun Missions Season 8. Added SRM8 book.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
