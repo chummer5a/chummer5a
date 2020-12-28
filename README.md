@@ -35,8 +35,9 @@ Please take a look at our [contributing](https://github.com/chummer5a/chummer5a/
 ## History
 
 This project is a continuation of work on the original Chummer projects for Shadowrun 4th and 5th editions, developed by Keith Rudolph and Adam Schmidt. Due to the closure of code.google.com, github repositories of their code have been created as a marker of their work. Please note, Chummer 4 is considered abandonware and is not maintained by the chummer5a team, and exists solely for historical purposes.
-Chummer 4, Keith Rudolph: https://github.com/chummer5a/chummer
-Chummer 5, Keith Rudolph and Adam Schmidt: https://github.com/chummer5a/chummer5
+
+* Chummer 4, Keith Rudolph: https://github.com/chummer5a/chummer
+* Chummer 5, Keith Rudolph and Adam Schmidt: https://github.com/chummer5a/chummer5
 
 ## Sponsors
 
