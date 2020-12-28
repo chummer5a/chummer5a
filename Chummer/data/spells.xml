@@ -3185,10 +3185,8 @@
           <spell>Attune Animal</spell>
         </allof>
         <oneof>
-          <group>
-            <quality>Adept</quality>
-            <quality>Mystic Adept</quality>
-          </group>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
     </spell>
