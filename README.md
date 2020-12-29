@@ -17,7 +17,7 @@ Chummer is a character creation and management application for the tabletop RPG 
 | --- | --- |
 | Windows 8.1+ | 4.7.1+ |
 
-## Installation
+## Installation - Windows
 
 Chummer uses a single tree release strategy with two release channels; **Milestone** and **Nightly**.
 
@@ -27,6 +27,10 @@ Chummer uses a single tree release strategy with two release channels; **Milesto
 1. Download the archive for your preferred update channel [Milestone](https://github.com/chummer5a/chummer5a/releases/latest) or [Nightly](https://github.com/chummer5a/chummer5a/releases) (Select the latest Nightly tag)
 2. Extract to preferred folder location. If upgrading, you can extract over the top of an existing folder path.
 3. Run Chummer5.exe.
+
+## Installation - Linux and OSX
+
+As Chummer is a WinForms application, support for other operating systems is limited. For Linux and Mac OSX, it is possible to run Chummer through Wine on these operating systems. See the [wiki](https://github.com/chummer5a/chummer5a/wiki#installation) for further details.
 
 ## Contributing
 
