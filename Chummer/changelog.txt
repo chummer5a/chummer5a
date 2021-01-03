@@ -1,5 +1,7 @@
 Future Build 214
 Application Fixes:
+- Added a check for xml files storing invalid characters that prevents the file from being saved or loaded. As test issues have been constrained to issues with the notes, it's assumed that this is mostly coming from ingesting PDF documents. If the issue is found, prompt the user whether they want to load with unsafe settings, as this has a small chance of causing application instability. 
+- Added safeguard to notes save method to prevent them from storing said invalid characters. 
 - Characters with MAG attributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
 - Dark mode's darkened backgrounds have been made slightly lighter (by up to 10%).
 - Fixed an issue where some sourcebooks would insert ligature characters into an item's notes that Chummer could not handle and would prevent the character from being saved and/or crash whenever the character was opened.
@@ -38,6 +40,8 @@ Data Changes:
 Changed/New Strings:
 - MessageTitle_AutosaveFound
 - Message_AutosaveFound
+- Message_InvalidTextFound
+- Message_InvalidTextFound_Title
 
 Build 213
 Application Fixes:

@@ -1452,7 +1452,7 @@ namespace Chummer
                     // <concept />
                     objWriter.WriteElementString("concept", _strConcept);
                     // <notes />
-                    objWriter.WriteElementString("notes", _strNotes);
+                    objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
                     // <alias />
                     objWriter.WriteElementString("alias", _strAlias);
                     // <playername />
@@ -2016,7 +2016,7 @@ namespace Chummer
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
-                    catch (XmlException)
+                    catch (XmlException ex)
                     {
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
@@ -2077,26 +2077,54 @@ namespace Chummer
 
                         if (!File.Exists(_strFileName))
                             return false;
-                        try
+                        bool errorCaught = false;
+                        XmlReaderSettings objSettings = GlobalOptions.SafeXmlReaderSettings;
+                        do
                         {
-                            using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                    objXmlDocument.Load(objXmlReader);
-                        }
-                        catch (XmlException ex)
-                        {
-                            if (showWarnings)
+                            try
                             {
-                                 Program.MainForm.ShowMessageBox(
-                                    string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString("Message_FailedLoad"), ex.Message),
-                                    string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString("MessageTitle_FailedLoad"), ex.Message),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(sr, objSettings))
+                                    objXmlDocument.Load(objXmlReader);
+                                errorCaught = false;
                             }
+                            catch (XmlException ex)
+                            {
+                                if (System.Text.RegularExpressions.Regex.IsMatch(ex.Message, GlobalOptions.InvalidXmlCharacterRegex))
+                                {
+                                    /*If we found a known control character that's preventing the character from
+                                    being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
+                                    If yes, restart the load, explicitly ignoring invalid characters.*/
 
-                            return false;
-                        }
+                                    if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidTextFound"),
+                                                                        LanguageManager.GetString("Message_InvalidTextFound_Title"),
+                                                                        MessageBoxButtons.YesNo) == DialogResult.No)
+                                    {
+                                        IsLoading = false;
+                                        return false;
+                                    }
+                                    else
+                                    {
+                                        objSettings = GlobalOptions.UnSafeXmlReaderSettings;
+                                        errorCaught = true;
+                                    }
+                                }
+                                else
+                                {
+                                    if (showWarnings)
+                                    {
+                                        Program.MainForm.ShowMessageBox(
+                                           string.Format(GlobalOptions.CultureInfo,
+                                               LanguageManager.GetString("Message_FailedLoad"), ex.Message),
+                                           string.Format(GlobalOptions.CultureInfo,
+                                               LanguageManager.GetString("MessageTitle_FailedLoad"), ex.Message),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+
+                                    return false;
+                                }
+                            }
+                        } while (errorCaught);
 
                         //Timekeeper.Finish("load_xml");
                     }

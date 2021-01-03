@@ -596,7 +596,7 @@ namespace Chummer.Backend.Equipment
                 objWeapon.Save(objWriter);
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
@@ -1888,7 +1888,7 @@ namespace Chummer.Backend.Equipment
                             // If the bonus is determined by the existing seat number, evaluate the expression.
                             object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                             if (blnIsSuccess)
-                                intTotalBonusSeats += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                                intTotalBonusSeats += Convert.ToInt32(Math.Round((double)objProcess, 0,MidpointRounding.AwayFromZero), GlobalOptions.InvariantCultureInfo);
                         }
                     }
 
@@ -1903,7 +1903,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing seat number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusSeats += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                                    intTotalBonusSeats += Convert.ToInt32(Math.Round((double)objProcess, 0, MidpointRounding.AwayFromZero), GlobalOptions.InvariantCultureInfo);
                             }
                         }
                     }
