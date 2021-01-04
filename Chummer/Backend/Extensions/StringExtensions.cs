@@ -86,7 +86,7 @@ namespace Chummer
             if (intLength > GlobalOptions.MaxStackLimit)
             {
                 char[] achrNewChars = new char[intLength];
-                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
                 {
@@ -102,7 +102,7 @@ namespace Chummer
             unsafe
             {
                 char* achrNewChars = stackalloc char[intLength];
-                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
                 {
@@ -135,7 +135,7 @@ namespace Chummer
             if (intLength > GlobalOptions.MaxStackLimit)
             {
                 char[] achrNewChars = new char[intLength];
-                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
+                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
                 {
@@ -159,7 +159,7 @@ namespace Chummer
             unsafe
             {
                 char* achrNewChars = stackalloc char[intLength];
-                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
+                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
                 {
