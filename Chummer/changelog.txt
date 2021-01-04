@@ -38,6 +38,7 @@ Data Changes:
 - Added previously missing entries for the Proteus Krake's micro-torpedos and micro-torpedo launcher. Existing saves containing a Proteus Krake will have its previously buggy weapon mount entry replaced with a functional one that properly includes the micro-torpedo launcher.
 - Added KEV toxin from Shadowrun Missions Season 8. Added SRM8 book.
 - Removed the Advanced Ritual Casting requirement from Attune Item and Empower rituals. Closes #4277
+- Corrected a few mentor spirit bonus texts that did not have spaces after colons.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
