@@ -280,6 +280,7 @@ namespace Chummer
                 tabWeapons.Columns.Add("Ammo");
                 tabWeapons.Columns.Add("Mode");
                 tabWeapons.Columns.Add("Reach");
+                tabWeapons.Columns.Add("Concealability");
                 tabWeapons.Columns.Add("Accessories");
                 tabWeapons.Columns.Add("Avail");
                 tabWeapons.Columns["Avail"].DataType = typeof(AvailabilityValue);
@@ -288,6 +289,8 @@ namespace Chummer
                 tabWeapons.Columns.Add("Cost");
                 tabWeapons.Columns["Cost"].DataType = typeof(NuyenString);
 
+                bool blnAnyRanged = false;
+                bool blnAnyMelee = false;
                 XmlNode xmlParentWeaponDataNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + ParentWeapon?.SourceIDString + "\"]");
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
@@ -334,7 +337,10 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Create(objXmlWeapon, null, true, false, true);
                     objWeapon.Parent = ParentWeapon;
-
+                    if (objWeapon.RangeType == "Ranged")
+                        blnAnyRanged = true;
+                    else
+                        blnAnyMelee = true;
                     string strID = objWeapon.SourceIDString;
                     string strWeaponName = objWeapon.CurrentDisplayName;
                     string strDice = objWeapon.DicePool.ToString(GlobalOptions.CultureInfo);
@@ -347,6 +353,7 @@ namespace Chummer
                     string strAmmo = objWeapon.DisplayAmmo;
                     string strMode = objWeapon.DisplayMode;
                     string strReach = objWeapon.TotalReach.ToString(GlobalOptions.CultureInfo);
+                    string strConceal = objWeapon.DisplayConcealability;
                     StringBuilder sbdAccessories = new StringBuilder();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
@@ -358,34 +365,33 @@ namespace Chummer
                     SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
                     NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
-                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, sbdAccessories.ToString(), objAvail, strSource, strCost);
+                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC, strAmmo, strMode, strReach, strConceal, sbdAccessories.ToString(), objAvail, strSource, strCost);
                 }
 
                 DataSet set = new DataSet("weapons");
                 set.Tables.Add(tabWeapons);
-                string strSelectedCategory = cboCategory.SelectedValue?.ToString();
-                if (string.IsNullOrEmpty(strSelectedCategory)
-                    || strSelectedCategory == "Show All"
-                    || !(strSelectedCategory == "Blades"
-                         || strSelectedCategory == "Clubs"
-                         || strSelectedCategory == "Improvised Weapons"
-                         || strSelectedCategory == "Exotic Melee Weapons"
-                         || strSelectedCategory == "Unarmed"))
+                if (blnAnyRanged)
                 {
-                    //dgvWeapons.Columns[5].Visible = true;
                     dgvWeapons.Columns[6].Visible = true;
                     dgvWeapons.Columns[7].Visible = true;
                     dgvWeapons.Columns[8].Visible = true;
                 }
                 else
                 {
-                    //dgvWeapons.Columns[5].Visible = false;
                     dgvWeapons.Columns[6].Visible = false;
                     dgvWeapons.Columns[7].Visible = false;
                     dgvWeapons.Columns[8].Visible = false;
                 }
+                if (blnAnyMelee)
+                {
+                    dgvWeapons.Columns[9].Visible = true;
+                }
+                else
+                {
+                    dgvWeapons.Columns[9].Visible = false;
+                }
                 dgvWeapons.Columns[0].Visible = false;
-                dgvWeapons.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
+                dgvWeapons.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
                 dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 dgvWeapons.DataSource = set;
                 dgvWeapons.DataMember = "weapons";
