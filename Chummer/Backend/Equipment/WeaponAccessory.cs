@@ -780,7 +780,7 @@ namespace Chummer.Backend.Equipment
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strConceal, out bool blnIsSuccess);
                         if (blnIsSuccess)
-                            intReturn = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                            intReturn = ((double)objProcess).StandardRound();
                     }
                     catch (OverflowException) { }
                     catch (InvalidCastException) { }
@@ -1196,7 +1196,7 @@ namespace Chummer.Backend.Equipment
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strAmmoBonus, out bool blnIsSuccess);
                         if (blnIsSuccess)
-                            intReturn = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                            intReturn = ((double)objProcess).StandardRound();
                     }
                     catch (OverflowException) { }
                     catch (InvalidCastException) { }

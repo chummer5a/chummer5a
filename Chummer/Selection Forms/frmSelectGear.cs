@@ -867,7 +867,7 @@ namespace Chummer
 
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out blnIsSuccess);
-                    intRating = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double) objProcess)) : 0;
+                    intRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
                 else if (!int.TryParse(strExpression, out intRating))
                     intRating = 0;
@@ -903,7 +903,7 @@ namespace Chummer
 
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out blnIsSuccess);
-                            intMinimumRating = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                            intMinimumRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                         }
                         else if (!int.TryParse(strExpression, out intMinimumRating))
                             intMinimumRating = 0;
