@@ -10464,10 +10464,13 @@ namespace Chummer
                     Armor objSourceArmor =
                         lstArmorsToConsider.FirstOrDefault(x => x.InternalId == objImprovement.SourceName)
                         ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
-                    foreach (Armor objArmor in lstArmorsToConsider)
+                    if (objSourceArmor != null)
                     {
-                        if (objArmor != objSourceArmor)
-                            dicArmorImprovementValues[objArmor] -= objImprovement.Value;
+                        foreach (Armor objArmor in lstArmorsToConsider)
+                        {
+                            if (objArmor != objSourceArmor)
+                                dicArmorImprovementValues[objArmor] -= objImprovement.Value;
+                        }
                     }
                 }
             }
