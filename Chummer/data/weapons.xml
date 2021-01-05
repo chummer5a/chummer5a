@@ -6036,6 +6036,7 @@
       <range>Heavy Pistols</range>
       <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>dartgun</weapontype>
     </weapon>
     <weapon>
       <id>8432b006-0496-4930-b966-25ab56feb7e2</id>
@@ -6063,6 +6064,7 @@
       <range>Sporting Rifles</range>
       <sizecategory>Sporting Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>dartgun</weapontype>
     </weapon>
     <weapon>
       <id>61555ac9-9925-4252-bc25-92c948eb9dfd</id>
