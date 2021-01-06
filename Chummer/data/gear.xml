@@ -3136,8 +3136,26 @@
       <required>
         <geardetails>
           <OR>
-            <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
+          </OR>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>e89a1f81-d2f8-499e-9ebc-8e7230a0e4e8</id>
+      <name>[Custom Cyberdeck] Firewall</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating*Rating)*500</cost>
+      <modfirewall>{Rating}</modfirewall>
+      <required>
+        <geardetails>
+          <OR>
+            <name>Fuchi Cyber-N</name>
           </OR>
         </geardetails>
       </required>
