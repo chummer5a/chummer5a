@@ -22,7 +22,8 @@ Application Fixes:
 - Negative fractional improvement values are now always rounded away from zero instead of always towards zero.
 - Added support for maxrating on armor mods exceeding the rating of the base item. Supports Bunker Gear Fire Resistance 8
 - Reapplying improvements no longer causes drain/fading-related labels to stop reflecting changes in attributes.
-- Fixed the Increased Seating mod not correctly rounding up when used on vehicles with 1 Seat. 
+- Fixed the Increased Seating mod not correctly rounding up when used on vehicles with 1 Seat.
+- Notes copied in from PDFs are less likely to have line breaks in weird places, like after commas or semicolons.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
@@ -38,6 +39,7 @@ Data Changes:
 - Added KEV toxin from Shadowrun Missions Season 8. Added SRM8 book.
 - Removed the Advanced Ritual Casting requirement from Attune Item and Empower rituals. Closes #4277
 - Added separate [Custom Cyberdeck] Firewall gear item for Fuchi Cyber-N.
+- Corrected a few mentor spirit bonus texts that did not have spaces after colons.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

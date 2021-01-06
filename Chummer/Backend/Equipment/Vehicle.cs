@@ -1888,7 +1888,7 @@ namespace Chummer.Backend.Equipment
                             // If the bonus is determined by the existing seat number, evaluate the expression.
                             object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                             if (blnIsSuccess)
-                                intTotalBonusSeats += Convert.ToInt32(Math.Round((double)objProcess, 0,MidpointRounding.AwayFromZero), GlobalOptions.InvariantCultureInfo);
+                                intTotalBonusSeats += ((double)objProcess).StandardRound();
                         }
                     }
 
@@ -1903,7 +1903,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing seat number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusSeats += Convert.ToInt32(Math.Round((double)objProcess, 0, MidpointRounding.AwayFromZero), GlobalOptions.InvariantCultureInfo);
+                                    intTotalBonusSeats += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -3489,7 +3489,7 @@ namespace Chummer.Backend.Equipment
                 }
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
             if (!int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn))

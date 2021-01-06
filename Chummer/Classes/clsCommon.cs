@@ -820,7 +820,7 @@ namespace Chummer
             {
                 object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intValue = Convert.ToInt32(Math.Ceiling((double)objProcess), GlobalOptions.InvariantCultureInfo);
+                    intValue = ((double)objProcess).StandardRound();
             }
             catch (OverflowException) { } // Result is text and not a double
             catch (InvalidCastException) { }
@@ -1019,10 +1019,10 @@ namespace Chummer
                 // each page should have its own text extraction strategy for it to work properly
                 // this way we don't need to check for previous page appearing in the current page
                 // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy()).CleanStylisticLigatures();
+                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy()).CleanStylisticLigatures().FastEscape('\r').NormalizeWhiteSpace();
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPdf.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)));
+                lstStringFromPdf.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)));
 
                 for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
                 {
@@ -1154,16 +1154,29 @@ namespace Chummer
                     if (strContentString.Length > 0)
                     {
                         char chrLastChar = strContentString[strContentString.Length - 1];
-                        if (char.IsPunctuation(chrLastChar))
+                        switch (chrLastChar)
                         {
-                            if (chrLastChar == '-')
+                            case '-':
                                 sbdResultContent.Append(strContentString.Substring(0, strContentString.Length - 1));
-                            else
+                                break;
+                            // Line ending with a sentence-ending punctuation = line is end of paragraph.
+                            // Not fantastic, has plenty of false positives, but simple text extraction strategy cannot
+                            // record when a new line starts with a slight indent compared to the previous line (it's a
+                            // graphical indent in PDFs, not an actual tab character).
+                            case '.':
+                            case '?':
+                            case '!':
+                            case ':':
+                            case '。':
+                            case '？':
+                            case '！':
+                            case '：':
+                            case '…':
                                 sbdResultContent.AppendLine(strContentString);
-                        }
-                        else
-                        {
-                            sbdResultContent.Append(strContentString).Append(' ');
+                                break;
+                            default:
+                                sbdResultContent.Append(strContentString).Append(' ');
+                                break;
                         }
                     }
                 }

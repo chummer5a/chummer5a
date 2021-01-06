@@ -693,7 +693,7 @@ namespace Chummer.Backend.Attributes
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intMinValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                    intMinValue = ((double)objProcess).StandardRound();
             }
             catch (XPathException) { intMinValue = 1; }
             catch (OverflowException) { intMinValue = 1; }
@@ -703,7 +703,7 @@ namespace Chummer.Backend.Attributes
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intMaxValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                    intMaxValue = ((double)objProcess).StandardRound();
             }
             catch (XPathException) { intMaxValue = 1; }
             catch (OverflowException) { intMaxValue = 1; }
@@ -713,7 +713,7 @@ namespace Chummer.Backend.Attributes
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
                     out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAugValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                    intAugValue = ((double)objProcess).StandardRound();
             }
             catch (XPathException) { intAugValue = 1; }
             catch (OverflowException) { intAugValue = 1; }

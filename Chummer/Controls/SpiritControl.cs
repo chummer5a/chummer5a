@@ -716,7 +716,7 @@ namespace Chummer
             {
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                    intValue = ((double)objProcess).StandardRound();
             }
             catch (OverflowException) { } // Result is text and not a double
             catch (InvalidCastException) { } // Result is text and not a double

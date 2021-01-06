@@ -404,7 +404,7 @@
     <mentor>
       <id>0242ba67-f93b-44e1-a1ad-b0d6f9051525</id>
       <name>Sea</name>
-      <advantage>All:+2 dice for Swimming Tests.</advantage>
+      <advantage>All: +2 dice for Swimming Tests.</advantage>
       <disadvantage>You must make a Charisma + Willpower (3) Test to give away something you own or be charitable in some way.</disadvantage>
       <bonus>
         <specificskill>
@@ -595,7 +595,7 @@
           </bonus>
         </choice>
         <choice set="2">
-          <name>Magician:+2 dice for Combat spells</name>
+          <name>Magician: +2 dice for Combat spells</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -635,7 +635,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician:+2 dice for Combat spells</name>
+          <name>Magician: +2 dice for Combat spells</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -1740,7 +1740,7 @@
     <mentor>
       <id>924e0d72-a83a-44c2-90ba-24455c389207</id>
       <name>Spider</name>
-      <advantage>All:+2 dice to Computer skill tests</advantage>
+      <advantage>All: +2 dice to Computer skill tests</advantage>
       <disadvantage>Followers of Spider are already paranoid about people having any misconceptions about them being insect shamans. They will keep such details from casual conversation. Followers of Spider also have taken advantage of the Matrix more than more traditional shamans in creating connections. This makes followers more agoraphobic as they avoid uncontrolled social situations and unfamiliar environments. They receive a –1 dice pool modifier to Magic tests while out in the open (this includes very large indoor rooms such as auditoriums, theaters, and stadiums). The penalty doubles if there is a large crowd of people to deal with.</disadvantage>
       <bonus>
         <specificskill>

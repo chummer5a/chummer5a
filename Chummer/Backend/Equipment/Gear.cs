@@ -1530,7 +1530,7 @@ namespace Chummer.Backend.Equipment
 
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double) objProcess)) : 0;
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
             int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn);

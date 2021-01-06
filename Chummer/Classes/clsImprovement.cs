@@ -3052,7 +3052,7 @@ namespace Chummer
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn, out bool blnIsSuccess);
-                int intValue = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
 
                 //Log.Exit("ValueToInt");
                 return intValue;
