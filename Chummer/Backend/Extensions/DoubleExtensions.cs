@@ -31,7 +31,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int StandardRound(this double dblToRound)
         {
-            return Convert.ToInt32(Math.Round(dblToRound, MidpointRounding.AwayFromZero));
+            return Convert.ToInt32(dblToRound >= 0 ? Math.Ceiling(dblToRound) : Math.Floor(dblToRound));
         }
     }
 }
