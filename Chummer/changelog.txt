@@ -26,6 +26,7 @@ Application Fixes:
 - Notes copied in from PDFs are less likely to have line breaks in weird places, like after commas or semicolons.
 - Critter definitions where inherent critter power, inherent gear, and/or natural weapon stats are based on the critter's force no longer cause Chummer to crash.
 - Gear that is added to an armor mod now properly has its parent set to said armor mod, fixing various issues like being unable to delete gear added to an armor mod.
+- The Export screen's preview window no longer displays a preview of the Base64 strings used to store raw image data for mugshots, which should speed up the function considerably.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

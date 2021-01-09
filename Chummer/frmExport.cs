@@ -21,6 +21,7 @@
  using System.ComponentModel;
  using System.IO;
  using System.Text;
+ using System.Text.RegularExpressions;
  using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
@@ -32,7 +33,7 @@ namespace Chummer
     public partial class frmExport : Form
     {
         private readonly XmlDocument _objCharacterXML;
-        private readonly ConcurrentDictionary<string, string> _dicCache = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, Tuple<string, string>> _dicCache = new ConcurrentDictionary<string, Tuple<string, string>>();
         private readonly BackgroundWorker _workerJsonLoader = new BackgroundWorker();
         private readonly BackgroundWorker _workerXmlLoader = new BackgroundWorker();
         private bool _blnSelected;
@@ -114,9 +115,9 @@ namespace Chummer
             UseWaitCursor = true;
             cmdOK.Enabled = false;
             txtText.Text = LanguageManager.GetString("String_Generating_Data");
-            if (_dicCache.TryGetValue(_strXslt, out string strBoxText))
+            if (_dicCache.TryGetValue(_strXslt, out Tuple<string, string> tstrBoxText))
             {
-                txtText.Text = strBoxText;
+                txtText.Text = tstrBoxText.Item2;
                 cmdOK.Enabled = true;
                 UseWaitCursor = false;
             }
@@ -179,7 +180,11 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
-            File.WriteAllText(strSaveFile, txtText.Text); // Change this to a proper path.
+            File.WriteAllText(strSaveFile, // Change this to a proper path.
+                _dicCache.TryGetValue(_strXslt, out Tuple<string, string> tstrBoxText)
+                    ? tstrBoxText.Item1
+                    : txtText.Text,
+                Encoding.UTF8);
 
             DialogResult = DialogResult.OK;
         }
@@ -199,8 +204,7 @@ namespace Chummer
             using (MemoryStream objStream = new MemoryStream())
             {
                 using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
-                    if (objWriter != null)
-                        objXSLTransform.Transform(_objCharacterXML, null, objWriter);
+                    objXSLTransform.Transform(_objCharacterXML, null, objWriter);
                 if (e.Cancel)
                     return;
                 objStream.Position = 0;
@@ -225,8 +229,11 @@ namespace Chummer
                 return;
             }
             string strText = e.Result.ToString();
-            _dicCache.AddOrUpdate(_strXslt, x => strText, (a, b) => strText);
-            txtText.Text = strText;
+            string strDisplayText = strText;
+            // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massie enough to slow down the program
+            Regex.Replace(strDisplayText, @"<mugshots>([^(\[...\])])*<\/mugshots>", "<mugshots>[...]</mugshots>", RegexOptions.Compiled);
+            _dicCache.AddOrUpdate(_strXslt, x => new Tuple<string, string>(strText, strDisplayText), (a, b) => new Tuple<string, string>(strText, strDisplayText));
+            txtText.Text = strDisplayText;
             cmdOK.Enabled = true;
             UseWaitCursor = false;
         }
@@ -240,11 +247,16 @@ namespace Chummer
             SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json") + '|' + LanguageManager.GetString("DialogFilter_All");
             SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs");
             SaveFileDialog1.ShowDialog();
-
-            if (string.IsNullOrWhiteSpace(SaveFileDialog1.FileName))
+            string strSaveFile = SaveFileDialog1.FileName;
+            
+            if (string.IsNullOrWhiteSpace(strSaveFile))
                 return;
 
-            File.WriteAllText(SaveFileDialog1.FileName, txtText.Text, Encoding.UTF8);
+            File.WriteAllText(strSaveFile, // Change this to a proper path.
+                _dicCache.TryGetValue(_strXslt, out Tuple<string, string> tstrBoxText)
+                    ? tstrBoxText.Item1
+                    : txtText.Text,
+                Encoding.UTF8);
 
             DialogResult = DialogResult.OK;
         }
