@@ -10008,6 +10008,7 @@ namespace Chummer
 
                 IsRefreshing = false;
                 flpArmor.ResumeLayout();
+                return;
             }
 
             if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
