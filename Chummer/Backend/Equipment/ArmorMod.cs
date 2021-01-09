@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -27,7 +28,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
-using Chummer.Classes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -74,6 +74,41 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Armor Mod.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            _lstGear.CollectionChanged += GearOnCollectionChanged;
+        }
+
+        private void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Gear objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        objNewItem.ChangeEquippedStatus(Equipped);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        objOldItem.ChangeEquippedStatus(false);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        objOldItem.ChangeEquippedStatus(false);
+                    }
+                    foreach (Gear objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        objNewItem.ChangeEquippedStatus(Equipped);
+                    }
+                    break;
+            }
         }
 
         /// Create a Armor Modification from an XmlNode.

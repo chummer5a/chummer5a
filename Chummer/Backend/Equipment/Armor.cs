@@ -168,7 +168,25 @@ namespace Chummer.Backend.Equipment
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    foreach (Gear objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        objNewItem.ChangeEquippedStatus(Equipped);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        objOldItem.ChangeEquippedStatus(false);
+                    }
+                    break;
                 case NotifyCollectionChangedAction.Replace:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        objOldItem.ChangeEquippedStatus(false);
+                    }
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;

@@ -3475,7 +3475,8 @@ namespace Chummer
         {
             if (selectedObject is ICanRemove iRemovable)
             {
-                if (!iRemovable.Remove(CharacterObjectOptions.ConfirmDelete)) return;
+                if (!iRemovable.Remove(CharacterObjectOptions.ConfirmDelete))
+                    return;
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
