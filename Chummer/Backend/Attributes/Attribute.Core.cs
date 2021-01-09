@@ -701,14 +701,14 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
         /// </summary>
-        /// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
-        /// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
-        /// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
-        public void AssignLimits(string strMin, string strMax, string strAug)
+        /// <param name="intMin">Metatype's minimum value for the CharacterAttribute.</param>
+        /// <param name="intMax">Metatype's maximum value for the CharacterAttribute.</param>
+        /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
+        public void AssignLimits(int intMin, int intMax, int intAug)
         {
-            MetatypeMinimum = Convert.ToInt32(strMin, GlobalOptions.InvariantCultureInfo);
-            MetatypeMaximum = Convert.ToInt32(strMax, GlobalOptions.InvariantCultureInfo);
-            MetatypeAugmentedMaximum = Convert.ToInt32(strAug, GlobalOptions.InvariantCultureInfo);
+            MetatypeMinimum = intMin;
+            MetatypeMaximum = intMax;
+            MetatypeAugmentedMaximum = intAug;
         }
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0

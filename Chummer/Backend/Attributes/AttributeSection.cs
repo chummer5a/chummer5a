@@ -261,61 +261,61 @@ namespace Chummer.Backend.Attributes
                 }
 
                 _objCharacter.BOD.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["bodmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["bodmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["bodaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["bodmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["bodmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["bodaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.AGI.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["agimin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["agimax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["agiaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["agimin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["agimax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["agiaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.REA.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["reamin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["reamax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["reaaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["reamin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["reamax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["reaaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.STR.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["strmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["strmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["straug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["strmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["strmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["straug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.CHA.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["chamin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["chamax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["chaaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["chamin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["chamax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["chaaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.INT.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["intmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["intmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["intaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["intmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["intmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["intaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.LOG.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["logmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["logmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["logaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["logmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["logmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["logaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.WIL.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["wilmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["wilmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["wilaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["wilmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["wilmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["wilaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.MAG.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["magmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.RES.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["resmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["resmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["resaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["resmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["resaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.EDG.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["edgmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["edgmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["edgaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["edgmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["edgmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["edgaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.DEP.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["depmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["depmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["depaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["depmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["depaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.MAGAdept.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["magmin"]?.InnerText, intValue, intMinModifier),
-                    CommonFunctions.ExpressionToString(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
-                    CommonFunctions.ExpressionToString(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
+                    CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier),
+                    CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
+                    CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
                 _objCharacter.ESS.AssignLimits(
-                    CommonFunctions.ExpressionToString(charNode["essmin"]?.InnerText, intValue, 0),
-                    CommonFunctions.ExpressionToString(charNode["essmax"]?.InnerText, intValue, 0),
-                    CommonFunctions.ExpressionToString(charNode["essaug"]?.InnerText, intValue, 0));
+                    CommonFunctions.ExpressionToInt(charNode["essmin"]?.InnerText, intValue),
+                    CommonFunctions.ExpressionToInt(charNode["essmax"]?.InnerText, intValue),
+                    CommonFunctions.ExpressionToInt(charNode["essaug"]?.InnerText, intValue));
 
                 _objCharacter.BOD.Base = Math.Min(intOldBODBase, _objCharacter.BOD.PriorityMaximum);
                 _objCharacter.BOD.Karma = Math.Min(intOldBODKarma, _objCharacter.BOD.KarmaMaximum);
@@ -721,7 +721,7 @@ namespace Chummer.Backend.Attributes
 
             objNewAttribute.Base = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value, GlobalOptions.InvariantCultureInfo);
             objNewAttribute.Karma = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value, GlobalOptions.InvariantCultureInfo);
-            objNewAttribute.AssignLimits(intMinValue.ToString(GlobalOptions.InvariantCultureInfo), intMaxValue.ToString(GlobalOptions.InvariantCultureInfo), intAugValue.ToString(GlobalOptions.InvariantCultureInfo));
+            objNewAttribute.AssignLimits(intMinValue, intMaxValue, intAugValue);
             return objNewAttribute;
         }
 

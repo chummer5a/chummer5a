@@ -967,7 +967,7 @@ namespace Chummer
                     XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + objXmlPower.InnerText + "\"]");
                     CritterPower objPower = new CritterPower(this);
                     string strForcedValue = objXmlPower.Attributes["select"]?.InnerText ?? string.Empty;
-                    int intRating = Convert.ToInt32(objXmlPower.Attributes["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                    int intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
                     objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                     objPower.CountTowardsLimit = false;
@@ -985,8 +985,8 @@ namespace Chummer
                     Name = objXmlNaturalWeapon["name"].InnerText,
                     Category = LanguageManager.GetString("Tab_Critter"),
                     RangeType = "Melee",
-                    Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"]?.InnerText, GlobalOptions.InvariantCultureInfo),
-                    Damage = objXmlNaturalWeapon["damage"].InnerText,
+                    Reach = CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText, intForce, 0, 0),
+                    Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "0S",
                     AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
                     Mode = "0",
                     RC = "0",
@@ -1007,7 +1007,8 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strRating))
                 {
-                    ImprovementManager.CreateImprovement(this, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo));
+                    ImprovementManager.CreateImprovement(this, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty,
+                        CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
                     ImprovementManager.Commit(this);
                 }
                 string strSkill = xmlSkill.InnerText;
@@ -1024,7 +1025,8 @@ namespace Chummer
                 string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerText;
                 if (!string.IsNullOrEmpty(strRating))
                 {
-                    ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillGroupLevel, string.Empty, strRating == "F" ? intForce : Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo));
+                    ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillGroupLevel, string.Empty,
+                        CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
                     ImprovementManager.Commit(this);
                 }
             }
@@ -1056,7 +1058,7 @@ namespace Chummer
                         }
 
                         ImprovementManager.CreateImprovement(this, xmlSkill.InnerText, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillLevel, string.Empty,
-                            strRating == "F" ? intForce : Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo));
+                            CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
                         ImprovementManager.Commit(this);
                     }
                 }
@@ -1089,8 +1091,8 @@ namespace Chummer
                 XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode("chummer/cyberwares/cyberware[name = \"" + node.InnerText + "\"]");
                 var objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
-                int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-
+                int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
+                
                 objWare.Create(objXmlCyberwareNode,
                     GetGradeList(Improvement.ImprovementSource.Cyberware, true)
                         .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
@@ -1107,8 +1109,8 @@ namespace Chummer
                 XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode("chummer/biowares/bioware[name = \"" + node.InnerText + "\"]");
                 var objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
-                int intRating = Convert.ToInt32(node.Attributes["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-
+                int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
+                
                 objWare.Create(objXmlCyberwareNode,
                     GetGradeList(Improvement.ImprovementSource.Cyberware, true)
                         .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
@@ -1166,10 +1168,10 @@ namespace Chummer
 
                 int intRating = 1;
                 if (xmlGear["rating"] != null)
-                    intRating = Convert.ToInt32(xmlGear["rating"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    intRating = CommonFunctions.ExpressionToInt(xmlGear["rating"].InnerText, intForce, 0, 0);
                 decimal decQty = 1.0m;
                 if (xmlGear["quantity"] != null)
-                    decQty = Convert.ToDecimal(xmlGear["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
+                    decQty = CommonFunctions.ExpressionToDecimal(xmlGear["quantity"].InnerText, intForce);
                 string strForceValue = xmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
 
                 Gear objGear = new Gear(this);
@@ -1206,12 +1208,12 @@ namespace Chummer
             // Sprites can never have Physical Attributes
             if (DEPEnabled || strSelectedMetatypeCategory?.EndsWith("Sprite", StringComparison.Ordinal) == true || strSelectedMetatypeCategory?.EndsWith("Sprites", StringComparison.Ordinal) == true)
             {
-                BOD.AssignLimits("0", "0", "0");
-                AGI.AssignLimits("0", "0", "0");
-                REA.AssignLimits("0", "0", "0");
-                STR.AssignLimits("0", "0", "0");
-                MAG.AssignLimits("0", "0", "0");
-                MAGAdept.AssignLimits("0", "0", "0");
+                BOD.AssignLimits(0, 0, 0);
+                AGI.AssignLimits(0, 0, 0);
+                REA.AssignLimits(0, 0, 0);
+                STR.AssignLimits(0, 0, 0);
+                MAG.AssignLimits(0, 0, 0);
+                MAGAdept.AssignLimits(0, 0, 0);
             }
 
 

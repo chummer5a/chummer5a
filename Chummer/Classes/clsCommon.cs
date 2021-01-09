@@ -808,8 +808,9 @@ namespace Chummer
         /// <param name="strIn">Expression to convert.</param>
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
+        /// <param name="intMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
         /// <returns></returns>
-        public static int ExpressionToInt(string strIn, int intForce, int intOffset)
+        public static int ExpressionToInt(string strIn, int intForce = 0, int intOffset = 0, int intMinValueFromForce = 1)
         {
             if (string.IsNullOrWhiteSpace(strIn))
                 return intOffset;
@@ -828,8 +829,8 @@ namespace Chummer
             intValue += intOffset;
             if (intForce > 0)
             {
-                if (intValue < 1)
-                    return 1;
+                if (intValue < intMinValueFromForce)
+                    return intMinValueFromForce;
             }
             else if (intValue < 0)
                 return 0;
@@ -841,11 +842,34 @@ namespace Chummer
         /// </summary>
         /// <param name="strIn">Expression to convert.</param>
         /// <param name="intForce">Force value to use.</param>
-        /// <param name="intOffset">Dice offset.</param>
+        /// <param name="decOffset">Dice offset.</param>
+        /// <param name="decMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
         /// <returns></returns>
-        public static string ExpressionToString(string strIn, int intForce, int intOffset)
+        public static decimal ExpressionToDecimal(string strIn, int intForce = 0, decimal decOffset = 0, decimal decMinValueFromForce = 1.0m)
         {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
+            if (string.IsNullOrWhiteSpace(strIn))
+                return decOffset;
+            decimal decValue = 1;
+            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                object objProcess = EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decValue = Convert.ToDecimal((double)objProcess);
+            }
+            catch (OverflowException) { } // Result is text and not a double
+            catch (InvalidCastException) { }
+
+            decValue += decOffset;
+            if (intForce > 0)
+            {
+                if (decValue < decMinValueFromForce)
+                    return decMinValueFromForce;
+            }
+            else if (decValue < 0)
+                return 0;
+            return decValue;
         }
 
         #region PDF Functions
