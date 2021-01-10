@@ -288,7 +288,7 @@ namespace Chummer
                     if (chkHideOverAvailLimit.Checked)
                     {
                         int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
-                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum), intAvailModifier))
+                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt, intAvailModifier))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -300,7 +300,7 @@ namespace Chummer
                         decCostMultiplier *= _decCostMultiplier;
                         if (chkBlackMarketDiscount.Checked)
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -711,8 +711,8 @@ namespace Chummer
             // Extract the Avail and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
-            int intRating = decimal.ToInt32(nudRating.Value);
-            AvailabilityValue objTotalAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlCyberware.SelectSingleNode("avail")?.Value, _intAvailModifier);
+            int intRating = nudRating.ValueAsInt;
+            AvailabilityValue objTotalAvail = new AvailabilityValue(nudRating.ValueAsInt, objXmlCyberware.SelectSingleNode("avail")?.Value, _intAvailModifier);
             lblAvailLabel.Visible = true;
             lblAvail.Text = objTotalAvail.ToString();
 
@@ -1242,7 +1242,7 @@ namespace Chummer
                     if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
                         string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strCapacity = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
+                        strCapacity = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)];
                     }
 
                     decimal decCapacity = 0;
@@ -1285,12 +1285,12 @@ namespace Chummer
             _sStrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
-            SelectedRating = decimal.ToInt32(nudRating.Value);
+            SelectedRating = nudRating.ValueAsInt;
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
             Markup = nudMarkup.Value;
 
             if (nudESSDiscount.Visible)
-                SelectedESSDiscount = decimal.ToInt32(nudESSDiscount.Value);
+                SelectedESSDiscount = nudESSDiscount.ValueAsInt;
 
             DialogResult = DialogResult.OK;
         }

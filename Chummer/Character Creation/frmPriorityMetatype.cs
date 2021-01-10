@@ -655,7 +655,7 @@ namespace Chummer
                         strSelectedMetavariant = "Human";
                     XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
                     strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
-                    int intForce = nudForce.Visible ? decimal.ToInt32(nudForce.Value) : 0;
+                    int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
 
                     if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
                         || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)

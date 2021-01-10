@@ -249,7 +249,7 @@ namespace Chummer
                 return;
             }
 
-            CreateCritter(strSpiritName, decimal.ToInt32(nudForce.Value));
+            CreateCritter(strSpiritName, nudForce.ValueAsInt);
         }
 
         private void imgLink_Click(object sender, EventArgs e)

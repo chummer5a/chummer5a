@@ -63,7 +63,7 @@ namespace Chummer
         /// <summary>
         /// Dice roll result.
         /// </summary>
-        public int Result => decimal.ToInt32(nudDiceResult.Value);
+        public int Result => nudDiceResult.ValueAsInt;
         #endregion
     }
 }

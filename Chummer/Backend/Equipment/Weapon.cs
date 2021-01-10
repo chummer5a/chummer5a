@@ -5585,7 +5585,7 @@ namespace Chummer.Backend.Equipment
                     objSelectedAmmo = objExternalSource;
                 }
 
-                AmmoRemaining = decimal.ToInt32(decQty);
+                AmmoRemaining = decQty.ToInt32();
                 AmmoLoaded = objSelectedAmmo.InternalId;
             }
         }

@@ -203,7 +203,7 @@ namespace Chummer
 
                     int intForce = 0;
                     if (nudForce.Visible)
-                        intForce = decimal.ToInt32(nudForce.Value);
+                        intForce = nudForce.ValueAsInt;
 
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                     if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())

@@ -194,7 +194,7 @@ namespace Chummer
             _characterOptions.IncreasedImprovedAbilityMultiplier = chkIncreasedImprovedAbilityModifier.Checked;
             _characterOptions.AllowFreeGrids = chkAllowFreeGrids.Checked;
             _characterOptions.AllowTechnomancerSchooling = chkAllowTechnomancerSchooling.Checked;
-            _characterOptions.CyberlimbAttributeBonusCap = decimal.ToInt32(nudCyberlimbAttributeBonusCap.Value);
+            _characterOptions.CyberlimbAttributeBonusCap = nudCyberlimbAttributeBonusCap.ValueAsInt;
             _characterOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
 
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
@@ -222,16 +222,16 @@ namespace Chummer
 
             try
             {
-                _characterOptions.FreeContactsMultiplier = decimal.ToInt32(nudContactMultiplier.Value);
-                _characterOptions.EssenceDecimals = decimal.ToInt32(nudEssenceDecimals.Value);
-                _characterOptions.DroneArmorMultiplier = decimal.ToInt32(nudDroneArmorMultiplier.Value);
-                _characterOptions.FreeKnowledgeMultiplier = decimal.ToInt32(nudKnowledgeMultiplier.Value);
-                _characterOptions.MetatypeCostsKarmaMultiplier = decimal.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
-                _characterOptions.NuyenPerBP = decimal.ToInt32(nudKarmaNuyenPer.Value);
+                _characterOptions.FreeContactsMultiplier = nudContactMultiplier.ValueAsInt;
+                _characterOptions.EssenceDecimals = nudEssenceDecimals.ValueAsInt;
+                _characterOptions.DroneArmorMultiplier = nudDroneArmorMultiplier.ValueAsInt;
+                _characterOptions.FreeKnowledgeMultiplier = nudKnowledgeMultiplier.ValueAsInt;
+                _characterOptions.MetatypeCostsKarmaMultiplier = nudMetatypeCostsKarmaMultiplier.ValueAsInt;
+                _characterOptions.NuyenPerBP = nudKarmaNuyenPer.ValueAsInt;
 
                 StringBuilder objNuyenFormat = new StringBuilder("#,0");
-                int intNuyenDecimalPlacesMaximum = decimal.ToInt32(nudNuyenDecimalsMaximum.Value);
-                int intNuyenDecimalPlacesMinimum = decimal.ToInt32(nudNuyenDecimalsMinimum.Value);
+                int intNuyenDecimalPlacesMaximum = nudNuyenDecimalsMaximum.ValueAsInt;
+                int intNuyenDecimalPlacesMinimum = nudNuyenDecimalsMinimum.ValueAsInt;
                 if (intNuyenDecimalPlacesMaximum > 0)
                 {
                     objNuyenFormat.Append(".");
@@ -244,50 +244,50 @@ namespace Chummer
                 _characterOptions.NuyenFormat = objNuyenFormat.ToString();
 
                 // Karma options.
-                _characterOptions.KarmaAttribute = decimal.ToInt32(nudKarmaAttribute.Value);
-                _characterOptions.KarmaQuality = decimal.ToInt32(nudKarmaQuality.Value);
-                _characterOptions.KarmaSpecialization = decimal.ToInt32(nudKarmaSpecialization.Value);
-                _characterOptions.KarmaKnowledgeSpecialization = decimal.ToInt32(nudKarmaKnowledgeSpecialization.Value);
-                _characterOptions.KarmaNewKnowledgeSkill = decimal.ToInt32(nudKarmaNewKnowledgeSkill.Value);
-                _characterOptions.KarmaNewActiveSkill = decimal.ToInt32(nudKarmaNewActiveSkill.Value);
-                _characterOptions.KarmaNewSkillGroup = decimal.ToInt32(nudKarmaNewSkillGroup.Value);
-                _characterOptions.KarmaImproveKnowledgeSkill = decimal.ToInt32(nudKarmaImproveKnowledgeSkill.Value);
-                _characterOptions.KarmaImproveActiveSkill = decimal.ToInt32(nudKarmaImproveActiveSkill.Value);
-                _characterOptions.KarmaImproveSkillGroup = decimal.ToInt32(nudKarmaImproveSkillGroup.Value);
-                _characterOptions.KarmaSpell = decimal.ToInt32(nudKarmaSpell.Value);
-                _characterOptions.KarmaNewComplexForm = decimal.ToInt32(nudKarmaNewComplexForm.Value);
-                _characterOptions.KarmaNewAIProgram = decimal.ToInt32(nudKarmaNewAIProgram.Value);
-                _characterOptions.KarmaNewAIAdvancedProgram = decimal.ToInt32(nudKarmaNewAIAdvancedProgram.Value);
-                _characterOptions.KarmaMetamagic = decimal.ToInt32(nudKarmaMetamagic.Value);
-                _characterOptions.KarmaNuyenPer = decimal.ToInt32(nudKarmaNuyenPer.Value);
-                _characterOptions.KarmaContact = decimal.ToInt32(nudKarmaContact.Value);
-                _characterOptions.KarmaEnemy = decimal.ToInt32(nudKarmaEnemy.Value);
-                _characterOptions.KarmaCarryover = decimal.ToInt32(nudKarmaCarryover.Value);
-                _characterOptions.KarmaSpirit = decimal.ToInt32(nudKarmaSpirit.Value);
-                _characterOptions.KarmaTechnique = decimal.ToInt32(nudKarmaTechnique.Value);
-                _characterOptions.KarmaInitiation = decimal.ToInt32(nudKarmaInitiation.Value);
-                _characterOptions.KarmaInitiationFlat = decimal.ToInt32(nudKarmaInitiationFlat.Value);
-                _characterOptions.KarmaJoinGroup = decimal.ToInt32(nudKarmaJoinGroup.Value);
-                _characterOptions.KarmaLeaveGroup = decimal.ToInt32(nudKarmaLeaveGroup.Value);
-                _characterOptions.KarmaMysticAdeptPowerPoint = (int) nudKarmaMysticAdeptPowerPoint.Value;
+                _characterOptions.KarmaAttribute = nudKarmaAttribute.ValueAsInt;
+                _characterOptions.KarmaQuality = nudKarmaQuality.ValueAsInt;
+                _characterOptions.KarmaSpecialization = nudKarmaSpecialization.ValueAsInt;
+                _characterOptions.KarmaKnowledgeSpecialization = nudKarmaKnowledgeSpecialization.ValueAsInt;
+                _characterOptions.KarmaNewKnowledgeSkill = nudKarmaNewKnowledgeSkill.ValueAsInt;
+                _characterOptions.KarmaNewActiveSkill = nudKarmaNewActiveSkill.ValueAsInt;
+                _characterOptions.KarmaNewSkillGroup = nudKarmaNewSkillGroup.ValueAsInt;
+                _characterOptions.KarmaImproveKnowledgeSkill = nudKarmaImproveKnowledgeSkill.ValueAsInt;
+                _characterOptions.KarmaImproveActiveSkill = nudKarmaImproveActiveSkill.ValueAsInt;
+                _characterOptions.KarmaImproveSkillGroup = nudKarmaImproveSkillGroup.ValueAsInt;
+                _characterOptions.KarmaSpell = nudKarmaSpell.ValueAsInt;
+                _characterOptions.KarmaNewComplexForm = nudKarmaNewComplexForm.ValueAsInt;
+                _characterOptions.KarmaNewAIProgram = nudKarmaNewAIProgram.ValueAsInt;
+                _characterOptions.KarmaNewAIAdvancedProgram = nudKarmaNewAIAdvancedProgram.ValueAsInt;
+                _characterOptions.KarmaMetamagic = nudKarmaMetamagic.ValueAsInt;
+                _characterOptions.KarmaNuyenPer = nudKarmaNuyenPer.ValueAsInt;
+                _characterOptions.KarmaContact = nudKarmaContact.ValueAsInt;
+                _characterOptions.KarmaEnemy = nudKarmaEnemy.ValueAsInt;
+                _characterOptions.KarmaCarryover = nudKarmaCarryover.ValueAsInt;
+                _characterOptions.KarmaSpirit = nudKarmaSpirit.ValueAsInt;
+                _characterOptions.KarmaTechnique = nudKarmaTechnique.ValueAsInt;
+                _characterOptions.KarmaInitiation = nudKarmaInitiation.ValueAsInt;
+                _characterOptions.KarmaInitiationFlat = nudKarmaInitiationFlat.ValueAsInt;
+                _characterOptions.KarmaJoinGroup = nudKarmaJoinGroup.ValueAsInt;
+                _characterOptions.KarmaLeaveGroup = nudKarmaLeaveGroup.ValueAsInt;
+                _characterOptions.KarmaMysticAdeptPowerPoint = nudKarmaMysticAdeptPowerPoint.ValueAsInt;
 
                 // Focus costs
-                _characterOptions.KarmaAlchemicalFocus = decimal.ToInt32(nudKarmaAlchemicalFocus.Value);
-                _characterOptions.KarmaBanishingFocus = decimal.ToInt32(nudKarmaBanishingFocus.Value);
-                _characterOptions.KarmaBindingFocus = decimal.ToInt32(nudKarmaBindingFocus.Value);
-                _characterOptions.KarmaCenteringFocus = decimal.ToInt32(nudKarmaCenteringFocus.Value);
-                _characterOptions.KarmaCounterspellingFocus = decimal.ToInt32(nudKarmaCounterspellingFocus.Value);
-                _characterOptions.KarmaDisenchantingFocus = decimal.ToInt32(nudKarmaDisenchantingFocus.Value);
-                _characterOptions.KarmaFlexibleSignatureFocus = decimal.ToInt32(nudKarmaFlexibleSignatureFocus.Value);
-                _characterOptions.KarmaMaskingFocus = decimal.ToInt32(nudKarmaMaskingFocus.Value);
-                _characterOptions.KarmaPowerFocus = decimal.ToInt32(nudKarmaPowerFocus.Value);
-                _characterOptions.KarmaQiFocus = decimal.ToInt32(nudKarmaQiFocus.Value);
-                _characterOptions.KarmaRitualSpellcastingFocus = decimal.ToInt32(nudKarmaRitualSpellcastingFocus.Value);
-                _characterOptions.KarmaSpellcastingFocus = decimal.ToInt32(nudKarmaSpellcastingFocus.Value);
-                _characterOptions.KarmaSpellShapingFocus = decimal.ToInt32(nudKarmaSpellShapingFocus.Value);
-                _characterOptions.KarmaSummoningFocus = decimal.ToInt32(nudKarmaSummoningFocus.Value);
-                _characterOptions.KarmaSustainingFocus = decimal.ToInt32(nudKarmaSustainingFocus.Value);
-                _characterOptions.KarmaWeaponFocus = decimal.ToInt32(nudKarmaWeaponFocus.Value);
+                _characterOptions.KarmaAlchemicalFocus = nudKarmaAlchemicalFocus.ValueAsInt;
+                _characterOptions.KarmaBanishingFocus = nudKarmaBanishingFocus.ValueAsInt;
+                _characterOptions.KarmaBindingFocus = nudKarmaBindingFocus.ValueAsInt;
+                _characterOptions.KarmaCenteringFocus = nudKarmaCenteringFocus.ValueAsInt;
+                _characterOptions.KarmaCounterspellingFocus = nudKarmaCounterspellingFocus.ValueAsInt;
+                _characterOptions.KarmaDisenchantingFocus = nudKarmaDisenchantingFocus.ValueAsInt;
+                _characterOptions.KarmaFlexibleSignatureFocus = nudKarmaFlexibleSignatureFocus.ValueAsInt;
+                _characterOptions.KarmaMaskingFocus = nudKarmaMaskingFocus.ValueAsInt;
+                _characterOptions.KarmaPowerFocus = nudKarmaPowerFocus.ValueAsInt;
+                _characterOptions.KarmaQiFocus = nudKarmaQiFocus.ValueAsInt;
+                _characterOptions.KarmaRitualSpellcastingFocus = nudKarmaRitualSpellcastingFocus.ValueAsInt;
+                _characterOptions.KarmaSpellcastingFocus = nudKarmaSpellcastingFocus.ValueAsInt;
+                _characterOptions.KarmaSpellShapingFocus = nudKarmaSpellShapingFocus.ValueAsInt;
+                _characterOptions.KarmaSummoningFocus = nudKarmaSummoningFocus.ValueAsInt;
+                _characterOptions.KarmaSustainingFocus = nudKarmaSustainingFocus.ValueAsInt;
+                _characterOptions.KarmaWeaponFocus = nudKarmaWeaponFocus.ValueAsInt;
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -510,7 +510,7 @@ namespace Chummer
             if(_blnSkipRefresh || _blnLoading)
                 return;
 
-            int intOffset = decimal.ToInt32(nudPDFOffset.Value);
+            int intOffset = nudPDFOffset.ValueAsInt;
             string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString();
             SourcebookInfo objFoundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strTag);
 
@@ -868,7 +868,7 @@ namespace Chummer
             GlobalOptions.DefaultCharacterSheet = cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue;
             GlobalOptions.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.PrintToFileFirst = chkPrintToFileFirst.Checked;
-            GlobalOptions.EmulatedBrowserVersion = decimal.ToInt32(nudBrowserVersion.Value);
+            GlobalOptions.EmulatedBrowserVersion = nudBrowserVersion.ValueAsInt;
             GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
             GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
@@ -886,7 +886,7 @@ namespace Chummer
             GlobalOptions.CustomDateFormat = txtDateFormat.Text;
             GlobalOptions.CustomTimeFormat = txtTimeFormat.Text;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Enabled;
-            GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;
+            GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? nudMugshotCompressionQuality.ValueAsInt : int.MaxValue;
         }
 
         /// <summary>
@@ -930,9 +930,9 @@ namespace Chummer
                     objRegistry.SetValue("usecustomdatetime", chkCustomDateTimeFormats.Checked.ToString(GlobalOptions.InvariantCultureInfo));
                     objRegistry.SetValue("customdateformat", txtDateFormat.Text);
                     objRegistry.SetValue("customtimeformat", txtTimeFormat.Text);
-                    objRegistry.SetValue("savedimagequality", nudMugshotCompressionQuality.Enabled
-                        ? decimal.ToInt32(nudMugshotCompressionQuality.Value).ToString(GlobalOptions.InvariantCultureInfo)
-                        : int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    objRegistry.SetValue("savedimagequality", (nudMugshotCompressionQuality.Enabled
+                        ? nudMugshotCompressionQuality.ValueAsInt
+                        : int.MaxValue).ToString(GlobalOptions.InvariantCultureInfo));
 
                     //Save the Plugins-Dictionary
                     string jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalOptions.PluginsEnabledDic);

@@ -173,8 +173,8 @@ namespace Chummer
                     _objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
                     break;
             }
-            _objCharacter.NuyenMaximumBP = decimal.ToInt32(nudMaxNuyen.Value);
-            _objCharacter.SumtoTen = decimal.ToInt32(nudSumtoTen.Value);
+            _objCharacter.NuyenMaximumBP = nudMaxNuyen.ValueAsInt;
+            _objCharacter.SumtoTen = nudSumtoTen.ValueAsInt;
 
             string strPriorityArray = string.Empty;
             if (strSelectedGameplayOption.IndexOf('|') != -1)
@@ -204,11 +204,11 @@ namespace Chummer
             }
 
             _objCharacter.PriorityArray = strPriorityArray;
-            _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
+            _objCharacter.BuildKarma = nudKarma.ValueAsInt;
             _objCharacter.GameplayOption = strSelectedGameplayOption;
             _objCharacter.GameplayOptionQualityLimit = _intQualityLimits;
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
-            _objCharacter.MaximumAvailability = decimal.ToInt32(nudMaxAvail.Value);
+            _objCharacter.MaximumAvailability = nudMaxAvail.ValueAsInt;
             DialogResult = DialogResult.OK;
         }
 

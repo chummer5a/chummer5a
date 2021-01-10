@@ -162,7 +162,7 @@ namespace Chummer
                     nudRating.Maximum = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
                     if (chkHideOverAvailLimit.Checked)
                     {
-                        while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -173,7 +173,7 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(xmlArmor.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -521,7 +521,7 @@ namespace Chummer
                 s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]/category")?.InnerText;
                 _strSelectedArmor = strSelectedId;
                 _decMarkup = nudMarkup.Value;
-                _intRating = decimal.ToInt32(nudRating.Value);
+                _intRating = nudRating.ValueAsInt;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
                 DialogResult = DialogResult.OK;
@@ -540,7 +540,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
 
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
-                _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
+                _objSelectedArmor.Rating = nudRating.ValueAsInt;
 
                 lblSource.Text =     _objSelectedArmor.SourceDetail.ToString();
                 lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);

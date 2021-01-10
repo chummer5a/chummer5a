@@ -434,8 +434,8 @@ namespace Chummer
                 if (xmlVehicleMod != null)
                 {
                     SelectedMod = strSelectedId;
-                    SelectedRating = decimal.ToInt32(nudRating.Value);
-                    _intMarkup = decimal.ToInt32(nudMarkup.Value);
+                    SelectedRating = nudRating.ValueAsInt;
+                    _intMarkup = nudMarkup.ValueAsInt;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                     s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
                     DialogResult = DialogResult.OK;
@@ -548,7 +548,7 @@ namespace Chummer
                 {
                     if (chkHideOverAvailLimit.Checked)
                     {
-                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -559,7 +559,7 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(xmlVehicleMod.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlVehicleMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -574,7 +574,7 @@ namespace Chummer
                 if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strSlots.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
+                    strSlots = strValues[nudRating.ValueAsInt - 1];
                 }
                 int.TryParse(strSlots, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intExtraSlots);
                 strSlots = ReplaceStrings(strSlots, intExtraSlots);
@@ -620,7 +620,7 @@ namespace Chummer
                     }
                     else if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        int intRating = decimal.ToInt32(nudRating.Value) - 1;
+                        int intRating = nudRating.ValueAsInt - 1;
                         strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
                         string[] strValues = strCost.Split(',', StringSplitOptions.RemoveEmptyEntries);
                         if (intRating < 0 || intRating > strValues.Length)

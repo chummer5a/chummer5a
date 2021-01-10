@@ -2016,7 +2016,7 @@ namespace Chummer
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
 
-                intClones = decimal.ToInt32(frmPickNumber.SelectedValue);
+                intClones = frmPickNumber.SelectedValue.ToInt32();
             }
 
             if (intClones <= 0)
@@ -3754,7 +3754,7 @@ namespace Chummer
         {
             if (CharacterObject.Mugshots.Count <= 0)
                 return;
-            RemoveMugshot(decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            RemoveMugshot(nudMugshotIndex.ValueAsInt - 1);
 
             lblNumMugshots.Text = LanguageManager.GetString("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalOptions.CultureInfo);
             nudMugshotIndex.Maximum -= 1;
@@ -3762,12 +3762,12 @@ namespace Chummer
                 nudMugshotIndex.Value = nudMugshotIndex.Maximum;
             else
             {
-                if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+                if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                     chkIsMainMugshot.Checked = true;
                 else if (chkIsMainMugshot.Checked)
                     chkIsMainMugshot.Checked = false;
 
-                UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+                UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
             }
 
             IsDirty = true;
@@ -3791,23 +3791,23 @@ namespace Chummer
                     nudMugshotIndex.Value = nudMugshotIndex.Minimum;
             }
 
-            if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                 chkIsMainMugshot.Checked = true;
             else if (chkIsMainMugshot.Checked)
                 chkIsMainMugshot.Checked = false;
 
-            UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
         }
 
         private void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
         {
             bool blnStatusChanged = false;
-            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != decimal.ToInt32(nudMugshotIndex.Value) - 1)
+            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != nudMugshotIndex.ValueAsInt - 1)
             {
-                CharacterObject.MainMugshotIndex = decimal.ToInt32(nudMugshotIndex.Value) - 1;
+                CharacterObject.MainMugshotIndex = nudMugshotIndex.ValueAsInt - 1;
                 blnStatusChanged = true;
             }
-            else if (!chkIsMainMugshot.Checked && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            else if (!chkIsMainMugshot.Checked && nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
             {
                 CharacterObject.MainMugshotIndex = -1;
                 blnStatusChanged = true;
@@ -4007,7 +4007,7 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma += decimal.ToInt32(frmNewExpense.Amount);
+                CharacterObject.Karma += frmNewExpense.Amount.ToInt32();
 
                 if (frmNewExpense.KarmaNuyenExchange)
                 {
@@ -4061,7 +4061,7 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma += decimal.ToInt32(frmNewExpense.Amount) * -1;
+                CharacterObject.Karma -= frmNewExpense.Amount.ToInt32();
 
                 if (frmNewExpense.KarmaNuyenExchange)
                 {
@@ -4120,8 +4120,8 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = -decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
-                    objExpense.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP).ToInt32();
+                    objExpense.Create(-intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
@@ -4130,7 +4130,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    CharacterObject.Karma += intAmount;
+                    CharacterObject.Karma -= intAmount;
                 }
             }
 
@@ -4175,7 +4175,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
+                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP).ToInt32();
                     objExpense.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
@@ -5937,7 +5937,7 @@ namespace Chummer
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
 
-                intKarmaCost = decimal.ToInt32(frmPickNumber.SelectedValue);
+                intKarmaCost = frmPickNumber.SelectedValue.ToInt32();
             }
 
             // Make sure the character has enough Karma to improve the CharacterAttribute.
@@ -7970,7 +7970,7 @@ namespace Chummer
 
             }
             // Refund the Karma amount and remove the Expense Entry.
-            CharacterObject.Karma -= decimal.ToInt32(objExpense.Amount);
+            CharacterObject.Karma -= objExpense.Amount.ToInt32();
             CharacterObject.ExpenseEntries.Remove(objExpense);
 
             IsLoading = false;
@@ -11842,7 +11842,7 @@ namespace Chummer
             }
 
             // If this is a manual entry, let the player modify the amount.
-            int intOldAmount = decimal.ToInt32(objExpense.Amount);
+            int intOldAmount = objExpense.Amount.ToInt32();
             bool blnAllowEdit = false;
             if (objExpense.Undo != null)
             {
@@ -11867,7 +11867,7 @@ namespace Chummer
                     return;
 
                 // If this is a manual entry, update the character's Karma total.
-                int intNewAmount = decimal.ToInt32(frmEditExpense.Amount);
+                int intNewAmount = frmEditExpense.Amount.ToInt32();
                 if (blnAllowEdit && intOldAmount != intNewAmount)
                 {
                     objExpense.Amount = intNewAmount;

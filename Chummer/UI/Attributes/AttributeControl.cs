@@ -34,8 +34,8 @@ namespace Chummer.UI.Attributes
         public delegate void ValueChangedHandler(object sender, EventArgs e);
         public event ValueChangedHandler ValueChanged;
         private readonly CharacterAttrib _objAttribute;
-        private decimal _oldBase;
-        private decimal _oldKarma;
+        private int _oldBase;
+        private int _oldKarma;
         private readonly Character _objCharacter;
         private readonly BindingSource _dataSource;
 
@@ -243,12 +243,13 @@ namespace Chummer.UI.Attributes
         private void nudBase_ValueChanged(object sender, EventArgs e)
         {
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            decimal d = ((NumericUpDownEx)sender).Value;
-            if (d == _oldBase) return;
+            int intValue = ((NumericUpDownEx)sender).ValueAsInt;
+            if (intValue == _oldBase)
+                return;
             if (!CanBeMetatypeMax(
                 Math.Max(
-                    decimal.ToInt32(nudKarma.Value) + attrib.FreeBase + attrib.RawMinimum +
-                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + decimal.ToInt32(d)))
+                    nudKarma.ValueAsInt + attrib.FreeBase + attrib.RawMinimum +
+                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + intValue))
             {
                 decimal newValue = Math.Max(nudBase.Value - 1, 0);
                 if (newValue > nudBase.Maximum)
@@ -263,18 +264,19 @@ namespace Chummer.UI.Attributes
                 return;
             }
             ValueChanged?.Invoke(this, e);
-            _oldBase = d;
+            _oldBase = intValue;
         }
 
         private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            decimal d = ((NumericUpDownEx)sender).Value;
-            if (d == _oldKarma) return;
+            int intValue = ((NumericUpDownEx)sender).ValueAsInt;
+            if (intValue == _oldKarma)
+                return;
             if (!CanBeMetatypeMax(
                 Math.Max(
-                    decimal.ToInt32(nudBase.Value) + attrib.FreeBase + attrib.RawMinimum +
-                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + decimal.ToInt32(d)))
+                    nudBase.ValueAsInt + attrib.FreeBase + attrib.RawMinimum +
+                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + intValue))
             {
                 // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
                 if (_oldKarma > attrib.KarmaMaximum)
@@ -299,7 +301,7 @@ namespace Chummer.UI.Attributes
                 return;
             }
             ValueChanged?.Invoke(this, e);
-            _oldKarma = d;
+            _oldKarma = intValue;
         }
 
         /// <summary>

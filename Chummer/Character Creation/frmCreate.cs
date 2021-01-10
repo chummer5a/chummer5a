@@ -3184,7 +3184,7 @@ namespace Chummer
         {
             if (CharacterObject.Mugshots.Count <= 0)
                 return;
-            RemoveMugshot(decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            RemoveMugshot(nudMugshotIndex.ValueAsInt - 1);
 
             lblNumMugshots.Text = LanguageManager.GetString("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalOptions.CultureInfo);
             nudMugshotIndex.Maximum -= 1;
@@ -3192,12 +3192,12 @@ namespace Chummer
                 nudMugshotIndex.Value = nudMugshotIndex.Maximum;
             else
             {
-                if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+                if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                     chkIsMainMugshot.Checked = true;
                 else if (chkIsMainMugshot.Checked)
                     chkIsMainMugshot.Checked = false;
 
-                UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+                UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
             }
 
             IsDirty = true;
@@ -3220,23 +3220,23 @@ namespace Chummer
                     nudMugshotIndex.Value = nudMugshotIndex.Minimum;
             }
 
-            if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                 chkIsMainMugshot.Checked = true;
             else if (chkIsMainMugshot.Checked)
                 chkIsMainMugshot.Checked = false;
 
-            UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
         }
 
         private void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
         {
             bool blnStatusChanged = false;
-            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != decimal.ToInt32(nudMugshotIndex.Value) - 1)
+            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != nudMugshotIndex.ValueAsInt - 1)
             {
-                CharacterObject.MainMugshotIndex = decimal.ToInt32(nudMugshotIndex.Value) - 1;
+                CharacterObject.MainMugshotIndex = nudMugshotIndex.ValueAsInt - 1;
                 blnStatusChanged = true;
             }
-            else if (!chkIsMainMugshot.Checked && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            else if (!chkIsMainMugshot.Checked && nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
             {
                 CharacterObject.MainMugshotIndex = -1;
                 blnStatusChanged = true;
@@ -6524,7 +6524,7 @@ namespace Chummer
                 case Cyberware objCyberware:
                 {
                     // Update the selected Cyberware Rating.
-                    objCyberware.Rating = decimal.ToInt32(nudCyberwareRating.Value);
+                    objCyberware.Rating = nudCyberwareRating.ValueAsInt;
 
                     // See if a Bonus node exists.
                     if (objCyberware.Bonus != null && objCyberware.Bonus.InnerXml.Contains("Rating") || objCyberware.PairBonus != null && objCyberware.PairBonus.InnerXml.Contains("Rating") || objCyberware.WirelessOn && objCyberware.WirelessBonus != null && objCyberware.WirelessBonus.InnerXml.Contains("Rating"))
@@ -6579,7 +6579,7 @@ namespace Chummer
                     // Find the selected piece of Gear.
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
-                        if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudCyberwareRating.Value)))
+                        if (!objGear.RefreshSingleFocusRating(treFoci, nudCyberwareRating.ValueAsInt))
                         {
                             IsRefreshing = true;
                             nudCyberwareRating.Value = objGear.Rating;
@@ -6588,7 +6588,7 @@ namespace Chummer
                         }
                     }
                     else
-                        objGear.Rating = decimal.ToInt32(nudCyberwareRating.Value);
+                        objGear.Rating = nudCyberwareRating.ValueAsInt;
 
                     // See if a Bonus node exists.
                     if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
@@ -6902,7 +6902,7 @@ namespace Chummer
             if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
-            objLifestyle.Increments = decimal.ToInt32(nudLifestyleMonths.Value);
+            objLifestyle.Increments = nudLifestyleMonths.ValueAsInt;
 
             IsRefreshing = false;
 
@@ -6932,7 +6932,7 @@ namespace Chummer
 
             if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
             {
-                if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudGearRating.Value)))
+                if (!objGear.RefreshSingleFocusRating(treFoci, nudGearRating.ValueAsInt))
                 {
                     IsRefreshing = true;
                     nudGearRating.Value = objGear.Rating;
@@ -6941,7 +6941,7 @@ namespace Chummer
                 }
             }
             else
-                objGear.Rating = decimal.ToInt32(nudGearRating.Value);
+                objGear.Rating = nudGearRating.ValueAsInt;
             if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
             {
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
@@ -7571,14 +7571,14 @@ namespace Chummer
             switch (treVehicles.SelectedNode?.Tag)
             {
                 case VehicleMod objMod:
-                    objMod.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                    objMod.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objMod.CurrentDisplayName;
                     break;
                 case Gear objGear:
                 {
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
-                        if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudVehicleRating.Value)))
+                        if (!objGear.RefreshSingleFocusRating(treFoci, nudVehicleRating.ValueAsInt))
                         {
                             IsRefreshing = true;
                             nudVehicleRating.Value = objGear.Rating;
@@ -7587,16 +7587,16 @@ namespace Chummer
                         }
                     }
                     else
-                        objGear.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                        objGear.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objGear.CurrentDisplayName;
                     break;
                 }
                 case WeaponAccessory objAccessory:
-                    objAccessory.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                    objAccessory.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objAccessory.CurrentDisplayName;
                     break;
                 case Cyberware objCyberware:
-                    objCyberware.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                    objCyberware.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objCyberware.CurrentDisplayName;
                     break;
                 default:
@@ -7850,7 +7850,7 @@ namespace Chummer
                 // Locate the selected ArmorMod.
                 case ArmorMod objMod:
                 {
-                    objMod.Rating = decimal.ToInt32(nudArmorRating.Value);
+                    objMod.Rating = nudArmorRating.ValueAsInt;
                     treArmor.SelectedNode.Text = objMod.CurrentDisplayName;
 
                     // See if a Bonus node exists.
@@ -7870,7 +7870,7 @@ namespace Chummer
                 {
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
-                        if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudArmorRating.Value)))
+                        if (!objGear.RefreshSingleFocusRating(treFoci, nudArmorRating.ValueAsInt))
                         {
                             IsRefreshing = true;
                             nudArmorRating.Value = objGear.Rating;
@@ -7879,7 +7879,7 @@ namespace Chummer
                         }
                     }
                     else
-                        objGear.Rating = decimal.ToInt32(nudArmorRating.Value);
+                        objGear.Rating = nudArmorRating.ValueAsInt;
                     treArmor.SelectedNode.Text = objGear.CurrentDisplayName;
 
                     // See if a Bonus node exists.
@@ -7899,7 +7899,7 @@ namespace Chummer
                     break;
                 }
                 case Armor objArmor:
-                    objArmor.Rating = decimal.ToInt32(nudArmorRating.Value);
+                    objArmor.Rating = nudArmorRating.ValueAsInt;
                     treArmor.SelectedNode.Text = objArmor.CurrentDisplayName;
                     break;
             }
@@ -8688,7 +8688,7 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Resources/Nuyen.
-            int intNuyenBP = decimal.ToInt32(CharacterObject.NuyenBP);
+            int intNuyenBP = CharacterObject.NuyenBP.StandardRound();
 
             intKarmaPointsRemain -= intNuyenBP;
 
@@ -8733,8 +8733,8 @@ namespace Chummer
                     intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectOptions.KarmaSpell;
                 }
 
-                int intLimitMod = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
-                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells));
+                int intLimitMod = (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
+                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
                 int intLimitModTouchOnly = 0;
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
                 {
@@ -8770,7 +8770,7 @@ namespace Chummer
 
                 if (nudMysticAdeptMAGMagician.Value > 0)
                 {
-                    int intPPBought = decimal.ToInt32(nudMysticAdeptMAGMagician.Value);
+                    int intPPBought = nudMysticAdeptMAGMagician.ValueAsInt;
                     if (CharacterObjectOptions.PrioritySpellsAsAdeptPowers)
                     {
                         spells += Math.Min(limit, intPPBought);
@@ -11942,7 +11942,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
-                int intRestrictedAllowed = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount));
+                int intRestrictedAllowed = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount).StandardRound();
                 int intRestrictedCount = 0;
                 string strAvailItems = string.Empty;
                 string strExConItems = string.Empty;
@@ -12139,7 +12139,7 @@ namespace Chummer
                 // Check if the character has more than the permitted amount of native languages.
                 int intLanguages = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
 
-                int intLanguageLimit = 1 + decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit));
+                int intLanguageLimit = 1 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit).StandardRound();
 
                 if (intLanguages != intLanguageLimit)
                 {

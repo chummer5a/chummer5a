@@ -16,7 +16,6 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Chummer
@@ -32,6 +31,17 @@ namespace Chummer
         internal static int StandardRound(this decimal decToRound)
         {
             return decimal.ToInt32(decToRound >= 0 ? decimal.Ceiling(decToRound) : decimal.Floor(decToRound));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for applying ToInt32 conversion to a decimal (rounds towards zero).
+        /// </summary>
+        /// <param name="decIn">Decimal to convert.</param>
+        /// <returns>Rounded integer.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int ToInt32(this decimal decIn)
+        {
+            return decimal.ToInt32(decIn);
         }
     }
 }

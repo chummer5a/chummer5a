@@ -7824,7 +7824,7 @@ namespace Chummer
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
                     if(objEntry.Type == ExpenseType.Karma && (objEntry.Amount > 0 || objEntry.ForceCareerVisible) && !objEntry.Refund)
-                        intKarma += decimal.ToInt32(objEntry.Amount);
+                        intKarma += objEntry.Amount.StandardRound();
                 }
 
                 return _intCachedCareerKarma = intKarma;
@@ -9962,7 +9962,7 @@ namespace Chummer
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery).StandardRound();
                 if(Improvements.Any(x =>
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
-                    intReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                    intReturn += Essence().ToInt32();
                 return intReturn;
             }
         }
@@ -9986,7 +9986,7 @@ namespace Chummer
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery).StandardRound();
                     if(Improvements.Any(x =>
                        x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
-                        intAIReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                        intAIReturn += Essence().ToInt32();
                     return intAIReturn;
                 }
 
@@ -9994,7 +9994,7 @@ namespace Chummer
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery).StandardRound();
                 if(Improvements.Any(x =>
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
-                    intReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                    intReturn += Essence().ToInt32();
                 return intReturn;
             }
         }
@@ -14537,19 +14537,19 @@ namespace Chummer
                             {
                                 case "RES":
                                     intOldRESCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                                 case "DEP":
                                     intOldDEPCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                                 case "MAG":
                                     intOldMAGCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                                 case "MAGAdept":
                                     intOldMAGAdeptCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                             }
                         }
@@ -14680,10 +14680,10 @@ namespace Chummer
                             if(UseMysticAdeptPPs)
                             {
                                 // First burn away PPs gained during chargen...
-                                decimal decPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
-                                MysticAdeptPowerPoints -= decimal.ToInt32(decPPBurn);
+                                int intChargenPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
+                                MysticAdeptPowerPoints -= intChargenPPBurn;
                                 // ... now burn away PPs gained from initiations.
-                                decPPBurn = Math.Min(intMAGMinimumReductionDelta - decPPBurn,
+                                decimal decPPBurn = Math.Min(intMAGMinimumReductionDelta - intChargenPPBurn,
                                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
                                 // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                                 if(decPPBurn != 0)
@@ -18522,7 +18522,7 @@ namespace Chummer
                 // Add any Power Point Improvements to MAG.
                 decMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
 
-                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < decimal.ToInt32(decimal.Floor(decMAG / 2));
+                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < (decMAG / 2).ToInt32();
             }
         }
 
@@ -18604,7 +18604,7 @@ namespace Chummer
             }
 
             // The character gains 10 + ((Threshold - Hits) * 10)BP worth of Negative Qualities.
-            int intThreshold = 3 + decimal.ToInt32(decimal.Floor(Essence() - ESS.MetatypeMaximum));
+            int intThreshold = 3 + (Essence() - ESS.MetatypeMaximum).ToInt32();
             int intResult = 10;
             if (intWILResult < intThreshold)
             {

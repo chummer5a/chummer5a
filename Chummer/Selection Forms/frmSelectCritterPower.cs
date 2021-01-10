@@ -383,7 +383,7 @@ namespace Chummer
                 return;
 
             if (nudCritterPowerRating.Visible)
-                _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
+                _intSelectedRating = nudCritterPowerRating.ValueAsInt;
 
             s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = strSelectedPower;

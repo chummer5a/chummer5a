@@ -620,9 +620,9 @@ namespace Chummer
                 if (chkModifier.Visible && chkModifier.Checked)
                 {
                     if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
-                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * nudNumberOfEffects.ValueAsInt);
                     else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
-                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
+                        intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * nudNumberOfEffects.ValueAsInt);
                     else
                         intDV += Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo);
                 }
@@ -634,9 +634,9 @@ namespace Chummer
                     if (chkModifier.Visible && chkModifier.Checked)
                     {
                         if (chkModifier == chkModifier3 && cboCategory.SelectedValue.ToString() == "Combat")
-                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * nudNumberOfEffects.ValueAsInt);
                         else if (chkModifier == chkModifier6 && cboCategory.SelectedValue.ToString() == "Manipulation")
-                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * decimal.ToInt32(nudNumberOfEffects.Value));
+                            intDV += (Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo) * nudNumberOfEffects.ValueAsInt);
                         else
                             intDV += Convert.ToInt32(chkModifier.Tag.ToString(), GlobalOptions.InvariantCultureInfo);
                     }

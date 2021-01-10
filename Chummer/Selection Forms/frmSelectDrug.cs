@@ -207,7 +207,7 @@ namespace Chummer
                     if (chkHideOverAvailLimit.Checked)
                     {
                         int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
-                        while (nudRating.Maximum > intMinRating && !xmlDrug.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum), intAvailModifier))
+                        while (nudRating.Maximum > intMinRating && !xmlDrug.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt, intAvailModifier))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -218,7 +218,7 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + nudMarkup.Value / 100.0m;
                         if (chkBlackMarketDiscount.Checked)
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !xmlDrug.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !xmlDrug.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -518,7 +518,7 @@ namespace Chummer
             // Extract the Avail and Cost values from the Drug info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
-            int intRating = decimal.ToInt32(nudRating.Value);
+            int intRating = nudRating.ValueAsInt;
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = objXmlDrug.SelectSingleNode("avail")?.Value;
@@ -805,7 +805,7 @@ namespace Chummer
 
             _sStrSelectGrade = SelectedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
             SelectedDrug = strSelectedId;
-            SelectedRating = decimal.ToInt32(nudRating.Value);
+            SelectedRating = nudRating.ValueAsInt;
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
             Markup = nudMarkup.Value;
 

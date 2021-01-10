@@ -494,6 +494,84 @@ namespace Chummer
         }
         #endregion
 
+        #region Integer Value Stuff
+        private int _intValue;
+        private int _intMinimum;
+        private int _intMaximum;
+
+        /// <summary>
+        /// Cached expression of Value as an integer
+        /// </summary>
+        public int ValueAsInt
+        {
+            get => _intValue;
+            set => Value = value;
+        }
+
+        /// <summary>
+        /// The value of the spin box.
+        /// </summary>
+        public new decimal Value
+        {
+            get => base.Value;
+            set
+            {
+                if (value == base.Value)
+                    return;
+                _intValue = value.ToInt32();
+                base.Value = value;
+            }
+        }
+
+        /// <summary>
+        /// Cached expression of Minimum as an integer
+        /// </summary>
+        public int MinimumAsInt
+        {
+            get => _intMinimum;
+            set => Minimum = value;
+        }
+
+        /// <summary>
+        /// The minimum allowed value of the spin box.
+        /// </summary>
+        public new decimal Minimum
+        {
+            get => base.Minimum;
+            set
+            {
+                if (value == base.Minimum)
+                    return;
+                _intMinimum = value.ToInt32();
+                base.Minimum = value;
+            }
+        }
+
+        /// <summary>
+        /// Cached expression of Minimum as an integer
+        /// </summary>
+        public int MaximumAsInt
+        {
+            get => _intMaximum;
+            set => Maximum = value;
+        }
+
+        /// <summary>
+        /// The maximum allowed value of the spin box.
+        /// </summary>
+        public new decimal Maximum
+        {
+            get => base.Maximum;
+            set
+            {
+                if (value == base.Maximum)
+                    return;
+                _intMaximum = value.ToInt32();
+                base.Maximum = value;
+            }
+        }
+        #endregion
+
 
         #region UpDownButtons visibility management
 

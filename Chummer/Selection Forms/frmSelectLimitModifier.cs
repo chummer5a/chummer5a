@@ -70,7 +70,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strLimitType))
                 {
                     _strReturnName = txtName.Text;
-                    _intBonus = decimal.ToInt32(nudBonus.Value);
+                    _intBonus = nudBonus.ValueAsInt;
                     _strCondition = txtCondition.Text;
                     _strLimitType = cboLimit.SelectedValue?.ToString();
                     DialogResult = DialogResult.OK;
