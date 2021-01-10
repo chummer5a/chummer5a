@@ -228,8 +228,8 @@ namespace Chummer
                 ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
                 : 0;
             float fltNewLightness = 1.0f - fltLightness;
-            // Lighten dark colors a little (so that minimum lightness instead gets 0.1)
-            fltNewLightness += 0.1f * (1.0f - fltNewLightness) * (1.0f - fltNewLightness);
+            // Lighten dark colors a little (so that minimum lightness instead gets 0.2)
+            fltNewLightness += 0.2f * (1.0f - fltNewLightness) * (1.0f - fltNewLightness);
             // Desaturate high saturation colors a little and also lighten them a bit
             fltNewLightness += 0.1f * fltSaturationHsl * fltSaturationHsl;
             fltNewLightness = Math.Min(fltNewLightness, 1.0f);
