@@ -168,7 +168,25 @@ namespace Chummer.Backend.Equipment
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    foreach (Gear objNewItem in e.NewItems)
+                    {
+                        objNewItem.Parent = this;
+                        objNewItem.ChangeEquippedStatus(Equipped);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        objOldItem.ChangeEquippedStatus(false);
+                    }
+                    break;
                 case NotifyCollectionChangedAction.Replace:
+                    foreach (Gear objOldItem in e.OldItems)
+                    {
+                        objOldItem.Parent = null;
+                        objOldItem.ChangeEquippedStatus(false);
+                    }
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
@@ -401,7 +419,19 @@ namespace Chummer.Backend.Equipment
                             objMod.IncludedInArmor = true;
                             objMod.ArmorCapacity = "[0]";
                             objMod.Cost = "0";
-                            objMod.MaximumRating = objMod.Rating;
+                            //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
+                            if (objXmlAttributes?["maxrating"] != null)
+                            {
+                                objMod.MaximumRating = Convert.ToInt32(objXmlAttributes?["maxrating"]?.InnerText,
+                                    GlobalOptions.InvariantCultureInfo);
+                                objMod.Rating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText,
+                                    GlobalOptions.InvariantCultureInfo);
+                            }
+                            else
+                            {
+                                objMod.MaximumRating = objMod.Rating;
+                            }
+
                             _lstArmorMods.Add(objMod);
                         }
                         else
@@ -416,8 +446,8 @@ namespace Chummer.Backend.Equipment
                                 IncludedInArmor = true,
                                 ArmorCapacity = "[0]",
                                 Cost = "0",
-                                Rating = 0,
-                                MaximumRating = 0,
+                                Rating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo),
+                                MaximumRating = Convert.ToInt32(objXmlAttributes?["maxrating"]?.InnerText, GlobalOptions.InvariantCultureInfo),
                                 Extra = strForceValue
                             };
                             _lstArmorMods.Add(objMod);
@@ -530,7 +560,7 @@ namespace Chummer.Backend.Equipment
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D", GlobalOptions.InvariantCultureInfo));

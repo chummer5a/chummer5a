@@ -1,6 +1,8 @@
 Future Build 214
 Application Fixes:
-- Characters with MAG atttributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
+- Added a check for xml files storing invalid characters that prevents the file from being saved or loaded. As test issues have been constrained to issues with the notes, it's assumed that this is mostly coming from ingesting PDF documents. If the issue is found, prompt the user whether they want to load with unsafe settings, as this has a small chance of causing application instability. 
+- Added safeguard to notes save method to prevent them from storing said invalid characters. 
+- Characters with MAG attributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
 - Dark mode's darkened backgrounds have been made slightly lighter (by up to 10%).
 - Fixed an issue where some sourcebooks would insert ligature characters into an item's notes that Chummer could not handle and would prevent the character from being saved and/or crash whenever the character was opened.
 - When loading a character from a save file, the program now automatically checks if there are any saves in the autosave folder that seem to match the currently loading save file's character and that have a later last write date and time than those of the currently loading save file. If it finds such an autosave, it now prompts the user of whether they want to load the autosave instead, though if they do, the old save file will not be altered until they manually save, just in case they realize that the autosave is not what they want after it has been loaded.
@@ -14,15 +16,39 @@ Application Fixes:
 - Armor against special types of damage now properly work off of the highest total armor rating against that particular damage type instead of taking the highest generic armor rating and adding the highest special type armor bonus to it. Fixes #4253.
 - Settings for which ammo types can be used for which weapon types have been unhardcoded. The `ammoforweapontype` tag in gear items now dictates if said gear item can be used as ammo for a certain type of weapon, with the attribute 'noextra="True"' intended to be set where the ammo can broadly serve in all weapons of that type instead of just one specific one. The "type" attribute in a weapon's category dictates its default weapon type, though it can be overriden with a "weapontype" node inside the weapon's definition.
 - Lifestyle notes now properly show up after a new lifestyle is added.
+- If there are multiple orphaned improvements that used to have the same parent, these are now properly detected as orphaned improvements.
+- Characters no longer have extra special attributes burned when they buy new 'ware whose fractional part of its essence cost combined with the size of the character's existing essence hole would add up to more than one.
+- Upgrading 'ware no longer shifts a character's essence in the opposite direction to where it is supposed to (i.e. increasing character Essence if the new piece has a greater Essence cost than the old piece, decreasing character Essence if the new piece has a lesser Essence cost than the old piece).
+- Negative fractional improvement values are now always rounded away from zero instead of always towards zero.
+- Added support for maxrating on armor mods exceeding the rating of the base item. Supports Bunker Gear Fire Resistance 8
+- Reapplying improvements no longer causes drain/fading-related labels to stop reflecting changes in attributes.
+- Fixed the Increased Seating mod not correctly rounding up when used on vehicles with 1 Seat.
+- Notes copied in from PDFs are less likely to have line breaks in weird places, like after commas or semicolons.
+- Critter definitions where inherent critter power, inherent gear, and/or natural weapon stats are based on the critter's force no longer cause Chummer to crash.
+- Gear that is added to an armor mod now properly has its parent set to said armor mod, fixing various issues like being unable to delete gear added to an armor mod.
+- The Export screen's preview window no longer displays a preview of the Base64 strings used to store raw image data for mugshots, which should speed up the function considerably.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
 - Added a new PDF Parameter option that is Adobe Acrobat-style, but always opens a new instance of the clicked file.
 - Linguistics (the adept power) no longer increases a character's native language limit by 1.
+- Amended Bunker Gear to properly get rating 8 Fire Resistance instead of rating 6.
+- Limited Skill Autosofts to the skills listed in Rigger 5. 
+- Added Skill Autosoft (Knowledge) per Rigger 5.
+- Fixed Orks Have Natural Weapon Tusks customdata to provide Tusks instead of Horns.
+- Fixed Ares Duelist not getting targeting autosoft
+- Fixed Climate Adaptation and Proboscis metagenic qualities not having the correct flag. Closes #4278
+- Added previously missing entries for the Proteus Krake's micro-torpedos and micro-torpedo launcher. Existing saves containing a Proteus Krake will have its previously buggy weapon mount entry replaced with a functional one that properly includes the micro-torpedo launcher.
+- Added KEV toxin from Shadowrun Missions Season 8. Added SRM8 book.
+- Removed the Advanced Ritual Casting requirement from Attune Item and Empower rituals. Closes #4277
+- Added separate [Custom Cyberdeck] Firewall gear item for Fuchi Cyber-N.
+- Corrected a few mentor spirit bonus texts that did not have spaces after colons.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
 - Message_AutosaveFound
+- Message_InvalidTextFound
+- Message_InvalidTextFound_Title
 
 Build 213
 Application Fixes:

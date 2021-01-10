@@ -23,36 +23,147 @@ namespace Chummer
 {
     public static class ListExtensions
     {
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, bool blnReverse = false) where T : IComparable
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Action<T, T> funcOverrideIfEquals = null) where T : IComparable
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            int intTargetIndex = 0;
-            for (; intTargetIndex < lstCollection.Count; ++intTargetIndex)
+            // Binary search for the place where item should be inserted
+            int intIntervalStart = 0;
+            int intIntervalEnd = lstCollection.Count - 1;
+            int intTargetIndex = intIntervalEnd / 2;
+            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                int intCompareResult = lstCollection[intTargetIndex].CompareTo(objNewItem);
-                if (intCompareResult == 0 || (intCompareResult > 0) != blnReverse)
+                T objLoopExistingItem = lstCollection[intTargetIndex];
+                int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
+                if (intCompareResult == 0)
                 {
+                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                    for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
+                    {
+                        T objInnerLoopExistingItem = lstCollection[i];
+                        if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
+                        {
+                            ++intTargetIndex;
+                            objLoopExistingItem = objInnerLoopExistingItem;
+                        }
+                        else
+                            break;
+                    }
+                    if (funcOverrideIfEquals != null)
+                    {
+                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                        return;
+                    }
                     break;
                 }
+                if (intIntervalStart == intIntervalEnd)
+                {
+                    if (intCompareResult > 0)
+                        intTargetIndex += 1;
+                    break;
+                }
+                if (intCompareResult > 0)
+                    intIntervalStart = intTargetIndex + 1;
+                else
+                    intIntervalEnd = intTargetIndex - 1;
             }
             lstCollection.Insert(intTargetIndex, objNewItem);
         }
 
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer, bool blnReverse = false)
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            int intTargetIndex = 0;
-            for (; intTargetIndex < lstCollection.Count; ++intTargetIndex)
+            // Binary search for the place where item should be inserted
+            int intIntervalStart = 0;
+            int intIntervalEnd = lstCollection.Count - 1;
+            int intTargetIndex = intIntervalEnd / 2;
+            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                int intCompareResult = comparer.Compare(lstCollection[intTargetIndex], objNewItem);
-                if (intCompareResult == 0 || (intCompareResult > 0) != blnReverse)
+                T objLoopExistingItem = lstCollection[intTargetIndex];
+                int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
+                if (intCompareResult == 0)
                 {
+                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                    for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
+                    {
+                        T objInnerLoopExistingItem = lstCollection[i];
+                        if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
+                        {
+                            ++intTargetIndex;
+                            objLoopExistingItem = objInnerLoopExistingItem;
+                        }
+                        else
+                            break;
+                    }
+                    if (funcOverrideIfEquals != null)
+                    {
+                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                        return;
+                    }
                     break;
                 }
+                if (intIntervalStart == intIntervalEnd)
+                {
+                    if (intCompareResult > 0)
+                        intTargetIndex += 1;
+                    break;
+                }
+                if (intCompareResult > 0)
+                    intIntervalStart = intTargetIndex + 1;
+                else
+                    intIntervalEnd = intTargetIndex - 1;
+            }
+            lstCollection.Insert(intTargetIndex, objNewItem);
+        }
+
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (funcComparison == null)
+                throw new ArgumentNullException(nameof(funcComparison));
+            // Binary search for the place where item should be inserted
+            int intIntervalStart = 0;
+            int intIntervalEnd = lstCollection.Count - 1;
+            int intTargetIndex = intIntervalEnd / 2;
+            for (; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            {
+                T objLoopExistingItem = lstCollection[intTargetIndex];
+                int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
+                if (intCompareResult == 0)
+                {
+                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                    for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
+                    {
+                        T objInnerLoopExistingItem = lstCollection[i];
+                        if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
+                        {
+                            ++intTargetIndex;
+                            objLoopExistingItem = objInnerLoopExistingItem;
+                        }
+                        else
+                            break;
+                    }
+                    if (funcOverrideIfEquals != null)
+                    {
+                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                        return;
+                    }
+                    break;
+                }
+                if (intIntervalStart == intIntervalEnd)
+                {
+                    if (intCompareResult > 0)
+                        intTargetIndex += 1;
+                    break;
+                }
+                if (intCompareResult > 0)
+                    intIntervalStart = intTargetIndex + 1;
+                else
+                    intIntervalEnd = intTargetIndex - 1;
             }
             lstCollection.Insert(intTargetIndex, objNewItem);
         }
@@ -67,7 +178,17 @@ namespace Chummer
                 lstCollection.Add(objItem);
         }
 
-        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, bool blnReverse = false)
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Action<T, T> funcOverrideIfEquals = null) where T : IComparable
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (lstToAdd == null)
+                throw new ArgumentNullException(nameof(lstToAdd));
+            foreach (T objItem in lstToAdd)
+                AddWithSort(lstCollection, objItem, funcOverrideIfEquals);
+        }
+
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
@@ -76,7 +197,19 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             foreach (T objItem in lstToAdd)
-                AddWithSort(lstCollection, objItem, comparer, blnReverse);
+                AddWithSort(lstCollection, objItem, comparer, funcOverrideIfEquals);
+        }
+
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (lstToAdd == null)
+                throw new ArgumentNullException(nameof(lstToAdd));
+            if (funcComparison == null)
+                throw new ArgumentNullException(nameof(funcComparison));
+            foreach (T objItem in lstToAdd)
+                AddWithSort(lstCollection, objItem, funcComparison, funcOverrideIfEquals);
         }
 
         public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count)
@@ -95,6 +228,21 @@ namespace Chummer
                 throw new ArgumentException(nameof(count));
             for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
                 lstCollection.RemoveAt(i);
+        }
+
+        public static void RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate)
+        {
+            if (lstCollection == null)
+                throw new ArgumentNullException(nameof(lstCollection));
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+            for (int i = lstCollection.Count - 1; i >= 0; --i)
+            {
+                if (predicate(lstCollection[i]))
+                {
+                    lstCollection.RemoveAt(i);
+                }
+            }
         }
     }
 }

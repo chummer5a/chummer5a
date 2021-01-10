@@ -184,7 +184,7 @@ namespace Chummer
                 }
             }
 
-            return decimal.ToInt32(decimal.Ceiling(Rating * decKarmaMultiplier + decExtraKarmaCost));
+            return (Rating * decKarmaMultiplier + decExtraKarmaCost).StandardRound();
         }
 
         #endregion

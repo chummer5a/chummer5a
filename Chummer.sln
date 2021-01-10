@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePlugin", "Plugins\Sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonJungleLC", "Plugins\NeonJungleLC\NeonJungleLC.csproj", "{D35849C0-F0D0-4D69-A467-4E069C10D51D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer.Benchmarks", "Chummer.Benchmarks\Chummer.Benchmarks.csproj", "{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,14 @@ Global
 		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Release|x86.ActiveCfg = Release|Any CPU
 		{D35849C0-F0D0-4D69-A467-4E069C10D51D}.Release|x86.Build.0 = Release|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Debug|x86.Build.0 = Debug|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release|x86.ActiveCfg = Release|Any CPU
+		{CC9FD36D-6035-4F9B-B4A7-B3421C9C5302}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

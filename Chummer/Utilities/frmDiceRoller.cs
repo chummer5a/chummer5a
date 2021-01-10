@@ -123,7 +123,7 @@ namespace Chummer
 
             int intGlitchThreshold = chkVariableGlitch.Checked
                 ? intHitCount + 1
-                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+                : ((nudDice.Value + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -137,8 +137,8 @@ namespace Chummer
                         && (decimal.ToInt32(nudDice.Value) & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
-                    LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
+                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
+                    LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
                 if ((cboMethod.SelectedValue.ToString() == "Standard"
                      || cboMethod.SelectedValue.ToString() == "Large")
                     && intBubbleDieResult <= intGlitchMin)
@@ -278,7 +278,7 @@ namespace Chummer
 
             int intGlitchThreshold = chkVariableGlitch.Checked
                 ? intHitCount + 1
-                : decimal.ToInt32(decimal.Ceiling((nudDice.Value + 1.0m) / 2.0m));
+                : ((nudDice.Value + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
             if (intGlitchThreshold < 1)
@@ -292,8 +292,8 @@ namespace Chummer
                         && (decimal.ToInt32(nudDice.Value) & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), string.Format(GlobalOptions.CultureInfo,
-                    LanguageManager.GetString("String_BubbleDie") + strSpace + "({0})", intBubbleDieResult)));
+                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
+                    LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
                 if ((cboMethod.SelectedValue.ToString() == "Standard"
                      || cboMethod.SelectedValue.ToString() == "Large")
                     && intBubbleDieResult <= intGlitchMin)

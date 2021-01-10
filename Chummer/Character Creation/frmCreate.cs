@@ -8902,8 +8902,8 @@ namespace Chummer
                     intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectOptions.KarmaSpell;
                 }
 
-                int intLimitMod = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
-                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells));
+                int intLimitMod = (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
+                                  + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
                 int intLimitModTouchOnly = 0;
                 foreach (Improvement imp in CharacterObject.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FreeSpellsATT && i.Enabled))
                 {
@@ -10177,6 +10177,7 @@ namespace Chummer
 
                 IsRefreshing = false;
                 flpArmor.ResumeLayout();
+                return;
             }
 
             if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
@@ -12110,7 +12111,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
-                int intRestrictedAllowed = decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount));
+                int intRestrictedAllowed = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.RestrictedItemCount).StandardRound();
                 int intRestrictedCount = 0;
                 string strAvailItems = string.Empty;
                 string strExConItems = string.Empty;
@@ -12307,7 +12308,7 @@ namespace Chummer
                 // Check if the character has more than the permitted amount of native languages.
                 int intLanguages = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
 
-                int intLanguageLimit = 1 + decimal.ToInt32(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit));
+                int intLanguageLimit = 1 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit).StandardRound();
 
                 if (intLanguages != intLanguageLimit)
                 {
@@ -13517,7 +13518,7 @@ namespace Chummer
                     decMultiplier -= CharacterObjectOptions.KarmaMAGInitiationOrdealPercent;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent;
-                intAmount = decimal.ToInt32(decimal.Ceiling((CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation) * decMultiplier));
+                intAmount = ((CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectOptions.KarmaInitiation) * decMultiplier).StandardRound();
 
                 strInitTip = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveInitiateGrade")
                     , (CharacterObject.InitiateGrade + 1).ToString(GlobalOptions.CultureInfo)
@@ -13531,7 +13532,7 @@ namespace Chummer
                     decMultiplier -= CharacterObjectOptions.KarmaRESInitiationOrdealPercent;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= CharacterObjectOptions.KarmaRESInitiationSchoolingPercent;
-                intAmount = decimal.ToInt32(decimal.Ceiling((CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation) * decMultiplier));
+                intAmount = ((CharacterObjectOptions.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation) * decMultiplier).StandardRound();
 
                 strInitTip = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_ImproveSubmersionGrade")
                     , (CharacterObject.SubmersionGrade + 1).ToString(GlobalOptions.CultureInfo)

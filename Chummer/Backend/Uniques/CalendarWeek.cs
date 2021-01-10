@@ -61,7 +61,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("year", _intYear.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("week", _intWeek.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
 
@@ -281,9 +281,9 @@ namespace Chummer
                 int intReturn = Year.CompareTo(objWeek.Year);
                 if (intReturn == 0)
                     intReturn = Week.CompareTo(objWeek.Week);
-                return intReturn;
+                return -intReturn;
             }
-            return string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
+            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
         }
 
         /// <summary>

@@ -596,7 +596,7 @@ namespace Chummer.Backend.Equipment
                 objWeapon.Save(objWriter);
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
@@ -767,12 +767,122 @@ namespace Chummer.Backend.Equipment
 
             if (strNodeInnerXml.Contains("<weaponmounts>"))
             {
+                bool blnKrakePassDone = false;
                 XmlNodeList nodChildren = objNode.SelectNodes("weaponmounts/weaponmount");
                 foreach (XmlNode nodChild in nodChildren)
                 {
                     WeaponMount wm = new WeaponMount(_objCharacter, this);
                     if (wm.Load(nodChild, blnCopy))
                         WeaponMounts.Add(wm);
+                    else
+                    {
+                        // Compatibility sweep for malformed weapon mount on Proteus Krake
+                        Guid guidDummy = Guid.Empty;
+                        if (Name.StartsWith("Proteus Krake")
+                            && !blnKrakePassDone
+                            && _objCharacter.LastSavedVersion < new Version(5, 213, 28)
+                            && (!nodChild.TryGetGuidFieldQuickly("sourceid", ref guidDummy) || guidDummy == Guid.Empty))
+                        {
+                            blnKrakePassDone = true;
+                            // If there are any Weapon Mounts that come with the Vehicle, add them.
+                            XmlNode xmlVehicleDataNode = GetNode();
+                            if (xmlVehicleDataNode != null)
+                            {
+                                XmlNode xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weaponmounts"];
+                                if (xmlDataNodesForMissingKrakeStuff != null)
+                                {
+                                    foreach (XmlNode objXmlVehicleMod in xmlDataNodesForMissingKrakeStuff.SelectNodes("weaponmount"))
+                                    {
+                                        WeaponMount objWeaponMount = new WeaponMount(_objCharacter, this);
+                                        objWeaponMount.CreateByName(objXmlVehicleMod);
+                                        objWeaponMount.IncludedInVehicle = true;
+                                        WeaponMounts.Add(objWeaponMount);
+                                    }
+                                }
+
+                                xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weapons"];
+                                if (xmlDataNodesForMissingKrakeStuff != null)
+                                {
+                                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+
+                                    foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
+                                    {
+                                        bool blnAttached = false;
+                                        Weapon objWeapon = new Weapon(_objCharacter);
+
+                                        List<Weapon> objSubWeapons = new List<Weapon>(1);
+                                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                                        objWeapon.ParentVehicle = this;
+                                        objWeapon.Create(objXmlWeaponNode, objSubWeapons);
+                                        objWeapon.ParentID = InternalId;
+                                        objWeapon.Cost = "0";
+
+                                        // Find the first free Weapon Mount in the Vehicle.
+                                        foreach (WeaponMount objWeaponMount in WeaponMounts)
+                                        {
+                                            if (objWeaponMount.Weapons.Count != 0)
+                                                continue;
+                                            if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
+                                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
+                                                !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
+                                                continue;
+                                            objWeaponMount.Weapons.Add(objWeapon);
+                                            blnAttached = true;
+                                            foreach (Weapon objSubWeapon in objSubWeapons)
+                                                objWeaponMount.Weapons.Add(objSubWeapon);
+                                            break;
+                                        }
+
+                                        // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
+                                        if (!blnAttached)
+                                        {
+                                            foreach (VehicleMod objMod in _lstVehicleMods)
+                                            {
+                                                if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) && objMod.Weapons.Count == 0)
+                                                {
+                                                    objMod.Weapons.Add(objWeapon);
+                                                    foreach (Weapon objSubWeapon in objSubWeapons)
+                                                        objMod.Weapons.Add(objSubWeapon);
+                                                    break;
+                                                }
+                                            }
+                                            if (!blnAttached)
+                                            {
+                                                foreach (VehicleMod objMod in _lstVehicleMods)
+                                                {
+                                                    if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
+                                                    {
+                                                        objMod.Weapons.Add(objWeapon);
+                                                        foreach (Weapon objSubWeapon in objSubWeapons)
+                                                            objMod.Weapons.Add(objSubWeapon);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // Look for Weapon Accessories.
+                                        XmlNode xmlAccessories = objXmlWeapon["accessories"];
+                                        if (xmlAccessories != null)
+                                        {
+                                            foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
+                                            {
+                                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                                WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
+                                                string strMount = "Internal";
+                                                objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
+                                                string strExtraMount = "None";
+                                                objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
+                                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0);
+                                                objMod.Cost = "0";
+                                                objWeapon.WeaponAccessories.Add(objMod);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -1778,7 +1888,7 @@ namespace Chummer.Backend.Equipment
                             // If the bonus is determined by the existing seat number, evaluate the expression.
                             object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                             if (blnIsSuccess)
-                                intTotalBonusSeats += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                                intTotalBonusSeats += ((double)objProcess).StandardRound();
                         }
                     }
 
@@ -1793,7 +1903,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing seat number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusSeats += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                                    intTotalBonusSeats += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -1898,7 +2008,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusSpeed += ((double)objProcess).StandardRound();
                             }
                         }
                         strSpeed = objMod.Bonus["offroadspeed"]?.InnerText;
@@ -1910,7 +2020,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusOffroadSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusOffroadSpeed += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -1925,7 +2035,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusSpeed += ((double)objProcess).StandardRound();
                             }
                         }
                         strSpeed = objMod.WirelessBonus["offroadspeed"]?.InnerText;
@@ -1937,7 +2047,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing speed number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusOffroadSpeed += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusOffroadSpeed += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -2050,7 +2160,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Accel", intTotalAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusAccel += ((double)objProcess).StandardRound();
                             }
                         }
                         strAccel = objMod.Bonus["offroadaccel"]?.InnerText;
@@ -2062,7 +2172,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadAccel", intBaseOffroadAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusOffroadAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusOffroadAccel += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -2077,7 +2187,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Accel", intTotalAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusAccel += ((double)objProcess).StandardRound();
                             }
                         }
                         strAccel = objMod.WirelessBonus["offroadaccel"]?.InnerText;
@@ -2089,7 +2199,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAccel.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadAccel", intBaseOffroadAccel.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusOffroadAccel += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusOffroadAccel += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -2130,7 +2240,7 @@ namespace Chummer.Backend.Equipment
                             // If the cost is determined by the Rating, evaluate the expression.
                             object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                             if (blnIsSuccess)
-                                intBody += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                                intBody += ((double)objProcess).StandardRound();
                         }
                         else
                         {
@@ -2148,7 +2258,7 @@ namespace Chummer.Backend.Equipment
                                 // If the cost is determined by the Rating, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strBodyElement.Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intBody += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                                    intBody += ((double)objProcess).StandardRound();
                             }
                             else
                             {
@@ -2257,7 +2367,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Handling", intBaseHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusHandling += ((double)objProcess).StandardRound();
                             }
                         }
                         strHandling = objMod.Bonus["offroadhandling"]?.InnerText;
@@ -2269,7 +2379,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadHandling", intBaseOffroadHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusOffroadHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusOffroadHandling += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -2284,7 +2394,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("Handling", intBaseHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusHandling += ((double)objProcess).StandardRound();
                             }
                         }
                         strHandling = objMod.WirelessBonus["offroadhandling"]?.InnerText;
@@ -2296,7 +2406,7 @@ namespace Chummer.Backend.Equipment
                                 // If the bonus is determined by the existing accel number, evaluate the expression.
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strHandling.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalOptions.InvariantCultureInfo)).Replace("OffroadHandling", intBaseOffroadHandling.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                                 if (blnIsSuccess)
-                                    intTotalBonusOffroadHandling += Convert.ToInt32(objProcess, GlobalOptions.CultureInfo);
+                                    intTotalBonusOffroadHandling += ((double)objProcess).StandardRound();
                             }
                         }
                     }
@@ -3375,7 +3485,7 @@ namespace Chummer.Backend.Equipment
                 _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                return blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
             if (!int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn))

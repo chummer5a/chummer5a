@@ -163,13 +163,13 @@ namespace Chummer.Backend.Skills
         {
             List<Skill> lstExistingSkills = GetSkillList(skills, strName, true).ToList();
 
-            Skills.MergeInto(lstExistingSkills, CompareSkills, (objExistSkill, objNewSkill) =>
+            Skills.AddRangeWithSort(lstExistingSkills, CompareSkills, (objExistSkill, objNewSkill) =>
             {
                 if (objNewSkill.Base > objExistSkill.Base)
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
             });
             foreach (Skill objSkill in lstExistingSkills)
             {
@@ -238,13 +238,13 @@ namespace Chummer.Backend.Skills
                             Karma = skill.Karma
                         };
                         kno.Specializations.AddRange(skill.Specializations);
-                        KnowledgeSkills.MergeInto(kno, (x, y) => string.Compare(x.Type, y.Type, StringComparison.Ordinal) == 0 ? CompareSkills(x, y) : (string.Compare(x.Type, y.Type, StringComparison.Ordinal) == -1 ? -1 : 1), (objExistSkill, objNewSkill) =>
+                        KnowledgeSkills.AddWithSort(kno, (x, y) => string.Compare(x.Type, y.Type, StringComparison.Ordinal) == 0 ? CompareSkills(x, y) : (string.Compare(x.Type, y.Type, StringComparison.Ordinal) == -1 ? -1 : 1), (objExistSkill, objNewSkill) =>
                         {
                             if (objNewSkill.Base > objExistSkill.Base)
                                 objExistSkill.Base = objNewSkill.Base;
                             if (objNewSkill.Karma > objExistSkill.Karma)
                                 objExistSkill.Karma = objNewSkill.Karma;
-                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
+                            objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
                         });
                     }
                 }
@@ -331,14 +331,14 @@ namespace Chummer.Backend.Skills
                         {
                             string strName = objSkill.DictionaryKey;
                             bool blnDoAddToDictionary = true;
-                            _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+                            _lstSkills.AddWithSort(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                             {
                                 blnDoAddToDictionary = false;
                                 if (objNewSkill.Base > objExistSkill.Base)
                                     objExistSkill.Base = objNewSkill.Base;
                                 if (objNewSkill.Karma > objExistSkill.Karma)
                                     objExistSkill.Karma = objNewSkill.Karma;
-                                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations,
+                                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
                                     (x, y) => x.Free == y.Free
                                         ? string.Compare(x.CurrentDisplayName,
                                             y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
@@ -623,14 +623,14 @@ namespace Chummer.Backend.Skills
                 {
                     string strName = objSkill.DictionaryKey;
                     bool blnDoAddToDictionary = true;
-                    _lstSkills.MergeInto(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+                    _lstSkills.AddWithSort(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                     {
                         blnDoAddToDictionary = false;
                         if (objNewSkill.Base > objExistSkill.Base)
                             objExistSkill.Base = objNewSkill.Base;
                         if (objNewSkill.Karma > objExistSkill.Karma)
                             objExistSkill.Karma = objNewSkill.Karma;
-                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations,
+                        objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
                             (x, y) => x.Free == y.Free
                                 ? string.Compare(x.CurrentDisplayName,
                                     y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
@@ -1017,12 +1017,12 @@ namespace Chummer.Backend.Skills
 
                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        _intCachedKnowledgePoints = blnIsSuccess ? Convert.ToInt32(Math.Ceiling((double)objProcess)) : 0;
+                        _intCachedKnowledgePoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                     }
                     else
-                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int _intCachedKnowledgePoints);
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intCachedKnowledgePoints);
 
-                    _intCachedKnowledgePoints += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills)));
+                    _intCachedKnowledgePoints += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills).StandardRound();
                 }
 
                 return _intCachedKnowledgePoints;

@@ -361,7 +361,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("firemodereplace", _strFireModeReplace);
             objWriter.WriteElementString("ap", _strAP);
             objWriter.WriteElementString("apreplace", _strAPReplace);
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("singleshot", _intSingleShot.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("shortburst", _intShortBurst.ToString(GlobalOptions.InvariantCultureInfo));
@@ -780,7 +780,7 @@ namespace Chummer.Backend.Equipment
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strConceal, out bool blnIsSuccess);
                         if (blnIsSuccess)
-                            intReturn = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                            intReturn = ((double)objProcess).StandardRound();
                     }
                     catch (OverflowException) { }
                     catch (InvalidCastException) { }
@@ -991,7 +991,7 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAvail += ((double)objProcess).StandardRound();
             }
 
             if (blnCheckChildren)
@@ -1196,7 +1196,7 @@ namespace Chummer.Backend.Equipment
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strAmmoBonus, out bool blnIsSuccess);
                         if (blnIsSuccess)
-                            intReturn = Convert.ToInt32(Math.Ceiling((double)objProcess));
+                            intReturn = ((double)objProcess).StandardRound();
                     }
                     catch (OverflowException) { }
                     catch (InvalidCastException) { }

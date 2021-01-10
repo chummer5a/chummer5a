@@ -102,7 +102,7 @@ namespace Chummer
             objWriter.WriteElementString("group", _blnGroup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
 
@@ -228,7 +228,7 @@ namespace Chummer
                         ? objOptions.KarmaRESInitiationSchoolingPercent
                         : objOptions.KarmaMAGInitiationSchoolingPercent;
 
-                return decimal.ToInt32(decimal.Ceiling(decCost * decMultiplier));
+                return (decCost * decMultiplier).StandardRound();
             }
         }
 

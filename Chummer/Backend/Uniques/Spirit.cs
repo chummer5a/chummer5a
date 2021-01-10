@@ -110,7 +110,7 @@ namespace Chummer
             objWriter.WriteElementString("type", _eEntityType.ToString());
             objWriter.WriteElementString("file", _strFileName);
             objWriter.WriteElementString("relative", _strRelativeName);
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             SaveMugshots(objWriter);
             objWriter.WriteEndElement();
 
@@ -192,7 +192,7 @@ namespace Chummer
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-                        int intValue = Math.Max(blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : _intForce, 1);
+                        int intValue = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
                         objWriter.WriteElementString(strAttribute, intValue.ToString(objCulture));
 
                         dicAttributes[strAttribute] = intValue;

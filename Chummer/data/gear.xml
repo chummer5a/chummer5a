@@ -1868,6 +1868,30 @@
       <cost>125</cost>
       <addweapon>Grenade: Krime Stinger</addweapon>
     </gear>
+    <gear>
+      <id>5768d347-cd1e-454c-b5f7-012266c185a4</id>
+      <name>Micro-Torpedo: Chemical</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>18F</avail>
+      <addweapon>Micro-Torpedo: Chemical</addweapon>
+      <cost>3000</cost>
+      <ammoforweapontype noextra="True">microtorpedo</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>0e1ec849-e332-4683-aabb-a94e46512c22</id>
+      <name>Micro-Torpedo: Explosive</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>18F</avail>
+      <addweapon>Micro-Torpedo: Explosive</addweapon>
+      <cost>2500</cost>
+      <ammoforweapontype noextra="True">microtorpedo</ammoforweapontype>
+    </gear>
     <!-- End Region -->
     <!-- End Region -->
     <!-- Region Explosives -->
@@ -3112,8 +3136,26 @@
       <required>
         <geardetails>
           <OR>
-            <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
+          </OR>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>e89a1f81-d2f8-499e-9ebc-8e7230a0e4e8</id>
+      <name>[Custom Cyberdeck] Firewall</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating*Rating)*500</cost>
+      <modfirewall>{Rating}</modfirewall>
+      <required>
+        <geardetails>
+          <OR>
+            <name>Fuchi Cyber-N</name>
           </OR>
         </geardetails>
       </required>
@@ -6137,7 +6179,20 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selectskill />
+        <selectskill limittoskill="First Aid,Hardware,Instruction,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic,Navigation,Performance" />
+      </bonus>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>7A1C4240-0F4F-46E1-90F8-CE4DA136E927</id>
+      <name>Skill Autosoft (Knowledge)</name>
+      <category>Autosofts</category>
+      <rating>6</rating>
+      <source>R5</source>
+      <page>127</page>
+      <avail>Rating * 2</avail>
+      <bonus>
+        <selectskill knowledgeskills="True" skillcategory="Academic,Language,Professional"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6150,7 +6205,7 @@
       <page>127</page>
       <avail>(Rating * 2)R</avail>
       <bonus>
-        <selectskill />
+        <selectskill limittoskill="Chemistry,Demolitions,Electronic Warfare,Lockpicking,Medicine"/>
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -12423,6 +12478,16 @@
       <page>21</page>
       <avail>16R</avail>
       <cost>5000</cost>
+    </gear>
+    <gear>
+      <id>4235dd3f-1865-4f7b-b2e5-e43fdcbd94de</id>
+      <name>KEV</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>SRM8</source>
+      <page>0</page>
+      <avail>10</avail>
+      <cost>20</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Drugs -->

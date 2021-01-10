@@ -237,7 +237,7 @@ namespace Chummer.Backend.Attributes
 
                 if (Abbrev == "ESS")
                 {
-                    intReturn += decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.EssenceMax)));
+                    intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.EssenceMax).StandardRound();
                 }
                 return intReturn;
             }
@@ -298,7 +298,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int TotalBase => Math.Max(Base + FreeBase + RawMinimum, TotalMinimum);
 
-        public int FreeBase => decimal.ToInt32(decimal.Ceiling(Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum)));
+        public int FreeBase => Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum).StandardRound();
 
         /// <summary>
         /// Current karma value of the CharacterAttribute.
@@ -362,7 +362,7 @@ namespace Chummer.Backend.Attributes
                 }
             }
 
-            int intMaxLossFromEssence = blnUseEssenceAtSpecialStart ? decimal.ToInt32(decimal.Ceiling(CharacterObject.EssenceAtSpecialStart)) - CharacterObject.ESS.MetatypeMaximum : 0;
+            int intMaxLossFromEssence = blnUseEssenceAtSpecialStart ? CharacterObject.EssenceAtSpecialStart.StandardRound() - CharacterObject.ESS.MetatypeMaximum : 0;
             int intTotalMinimum = intRawMinimum + Math.Max(intMinimumLossFromEssence, intMaxLossFromEssence);
             int intTotalMaximum = intRawMaximum + Math.Max(intMaximumLossFromEssence, intMaxLossFromEssence);
 
@@ -389,12 +389,12 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
         /// </summary>
-        public int AttributeModifiers => decimal.ToInt32(decimal.Ceiling(ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev)));
+        public int AttributeModifiers => ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev).StandardRound();
 
         /// <summary>
         /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
         /// </summary>
-        public int AttributeValueModifiers => decimal.ToInt32(decimal.Ceiling(ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base")));
+        public int AttributeValueModifiers => ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base").StandardRound();
 
         /// <summary>
         /// Whether or not the CharacterAttribute has any modifiers from Improvements.
@@ -708,14 +708,14 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
         /// </summary>
-        /// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
-        /// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
-        /// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
-        public void AssignLimits(string strMin, string strMax, string strAug)
+        /// <param name="intMin">Metatype's minimum value for the CharacterAttribute.</param>
+        /// <param name="intMax">Metatype's maximum value for the CharacterAttribute.</param>
+        /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
+        public void AssignLimits(int intMin, int intMax, int intAug)
         {
-            MetatypeMinimum = Convert.ToInt32(strMin, GlobalOptions.InvariantCultureInfo);
-            MetatypeMaximum = Convert.ToInt32(strMax, GlobalOptions.InvariantCultureInfo);
-            MetatypeAugmentedMaximum = Convert.ToInt32(strAug, GlobalOptions.InvariantCultureInfo);
+            MetatypeMinimum = intMin;
+            MetatypeMaximum = intMax;
+            MetatypeAugmentedMaximum = intAug;
         }
 
         public string UpgradeToolTip => UpgradeKarmaCost < 0
@@ -919,9 +919,9 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier + decExtra));
+                    intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
-                    intReturn += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intReturn += decExtra.StandardRound();
 
                 return Math.Max(intReturn, 0);
             }
@@ -977,9 +977,9 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intUpgradeCost = decimal.ToInt32(decimal.Ceiling(intUpgradeCost * decMultiplier + decExtra));
+                    intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
                 else
-                    intUpgradeCost += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intUpgradeCost += decExtra.StandardRound();
 
                 return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
             }
@@ -1027,9 +1027,9 @@ namespace Chummer.Backend.Attributes
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier + decExtra));
+                    intCost = (intCost * decMultiplier + decExtra).StandardRound();
                 else
-                    intCost += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intCost += decExtra.StandardRound();
 
                 return Math.Max(intCost, 0);
             }
@@ -1289,11 +1289,11 @@ namespace Chummer.Backend.Attributes
                     string strUpgradetext = string.Format(GlobalOptions.CultureInfo, "{1}{0}{2}{0}{3}{0}->{0}{4}",
                         LanguageManager.GetString("String_Space"), LanguageManager.GetString("String_ExpenseAttribute"), Abbrev, intValue, intValue + 1);
 
-                    ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
-                    objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                    objEntry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                    objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                    objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
 
-                    _objCharacter.ExpenseEntries.AddWithSort(objEntry);
+                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
 
                     _objCharacter.Karma -= intPrice;
                 }

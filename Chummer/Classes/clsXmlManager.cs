@@ -430,7 +430,8 @@ namespace Chummer
             {
                 xmlDoc.Save(memStream);
                 memStream.Position = 0;
-                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.SafeXmlReaderSettings))
+                //TODO: Should probably be using GlobalOptions.SafeXmlReaderSettings here but it has some issues.
+                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.UnSafeXmlReaderSettings))
                     return new XPathDocument(objXmlReader).CreateNavigator();
             }
         }

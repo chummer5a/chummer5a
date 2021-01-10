@@ -6036,6 +6036,7 @@
       <range>Heavy Pistols</range>
       <sizecategory>Heavy Pistols</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>dartgun</weapontype>
     </weapon>
     <weapon>
       <id>8432b006-0496-4930-b966-25ab56feb7e2</id>
@@ -6063,6 +6064,7 @@
       <range>Sporting Rifles</range>
       <sizecategory>Sporting Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>dartgun</weapontype>
     </weapon>
     <weapon>
       <id>61555ac9-9925-4252-bc25-92c948eb9dfd</id>
@@ -14943,6 +14945,62 @@
       <source>R5</source>
       <page>139</page>
       <hide />
+    </weapon>
+    <weapon>
+      <id>c4497d3a-4be7-4cda-b827-765bf880d2a2</id>
+      <name>Micro-Torpedo Launcher</name>
+      <category>Missile Launchers</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>3</accuracy> <!-- No accuracy statted, so using the Proteus Krake's Sensor rating -->
+      <reach>0</reach>
+      <damage>Missile</damage>
+      <ap>-</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>3(ml)</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>R5</source>
+      <page>136</page>
+      <hide />
+      <requireammo>microtorpedo</requireammo>
+    </weapon>
+    <weapon>
+      <id>160389be-8ded-48d5-be10-2f201446cc29</id>
+      <name>Micro-Torpedo: Chemical</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>6P (6m Radius)</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>18F</avail>
+      <cost>3000</cost>
+      <source>R5</source>
+      <page>136</page>
+    </weapon>
+    <weapon>
+      <id>232b682d-9cd3-44eb-8fd4-b841d0d8651b</id>
+      <name>Micro-Torpedo: Explosive</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>18P (-6/m)</damage>
+      <ap>-4/-10</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>18F</avail>
+      <cost>2500</cost>
+      <source>R5</source>
+      <page>136</page>
     </weapon>
     <!-- End Region -->
 

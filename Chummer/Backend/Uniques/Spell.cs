@@ -150,7 +150,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -449,7 +449,7 @@ namespace Chummer
 
                     if (blnIsSuccess && strDV != "Special")
                     {
-                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+                        int intDV = ((double)xprResult).StandardRound();
 
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
@@ -822,9 +822,9 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell's dicepool.
-                intReturn += decimal.ToInt32(decimal.Ceiling(RelevantImprovements(x =>
+                intReturn += RelevantImprovements(x =>
                     x.ImproveType == Improvement.ImprovementType.SpellCategory
-                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value)));
+                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool).Sum(x => x.Value).StandardRound();
 
                 return intReturn;
             }

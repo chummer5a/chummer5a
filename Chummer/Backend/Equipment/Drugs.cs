@@ -593,12 +593,12 @@ namespace Chummer.Backend.Equipment
                 decDuration += Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.ActiveDrugEffect.Duration) +
                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDuration);
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDurationMultiplier) == 0)
-                    return _intCachedDuration = decimal.ToInt32(decimal.Ceiling(decDuration));
+                    return _intCachedDuration = decDuration.StandardRound();
                 decimal decMultiplier = 1;
                 decMultiplier = _objCharacter.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DrugDurationMultiplier && objImprovement.Enabled)
                     .Aggregate(decMultiplier, (current, objImprovement) => current - (1m - objImprovement.Value / 100m));
-                return _intCachedDuration = decimal.ToInt32(decimal.Ceiling(decDuration * (1.0m - decMultiplier)));
+                return _intCachedDuration = (decDuration * (1.0m - decMultiplier)).StandardRound();
             }
         }
 

@@ -362,7 +362,7 @@ namespace Chummer
                     strMinRating = ReplaceStrings(strMinRating);
                     object objTempProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
                     if (blnTempIsSuccess)
-                        intMinRating = Convert.ToInt32(objTempProcess, GlobalOptions.InvariantCultureInfo);
+                        intMinRating = ((double)objTempProcess).StandardRound();
                 }
 
                 string strRating = objXmlMod.SelectSingleNode("rating")?.Value;
@@ -490,7 +490,7 @@ namespace Chummer
                     strMinRating = ReplaceStrings(strMinRating);
                     object objTempProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
                     if (blnTempIsSuccess)
-                        intMinRating = Convert.ToInt32(objTempProcess, GlobalOptions.InvariantCultureInfo);
+                        intMinRating = ((double)objTempProcess).StandardRound();
                 }
                 lblRatingLabel.Visible = true;
                 string strRating = xmlVehicleMod.SelectSingleNode("rating")?.Value;
@@ -579,7 +579,7 @@ namespace Chummer
                 int.TryParse(strSlots, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intExtraSlots);
                 strSlots = ReplaceStrings(strSlots, intExtraSlots);
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strSlots, out bool blnIsSuccess);
-                lblSlots.Text = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo) : strSlots;
+                lblSlots.Text = blnIsSuccess ? ((double)objProcess).StandardRound().ToString(GlobalOptions.CultureInfo) : strSlots;
                 lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
 
                 int.TryParse(lblSlots.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out intExtraSlots);

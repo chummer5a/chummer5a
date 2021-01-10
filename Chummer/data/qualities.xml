@@ -5008,6 +5008,7 @@
       <name>Climate Adaptation (Arctic)</name>
       <karma>4</karma>
       <category>Positive</category>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6403,6 +6404,7 @@
       <name>Proboscis</name>
       <karma>5</karma>
       <category>Positive</category>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>

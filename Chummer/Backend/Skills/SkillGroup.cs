@@ -290,7 +290,7 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedFreeBase = string.IsNullOrEmpty(Name)
                     ? 0
-                    : decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name)));
+                    : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name).StandardRound();
             }
         }
 
@@ -304,7 +304,7 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedFreeLevels = string.IsNullOrEmpty(Name)
                     ? 0
-                    : decimal.ToInt32(decimal.Ceiling(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name)));
+                    : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name).StandardRound();
             }
         }
 
@@ -325,11 +325,11 @@ namespace Chummer.Backend.Skills
                         LanguageManager.GetString("String_ExpenseSkillGroup"), CurrentDisplayName,
                         Rating, Rating + 1, LanguageManager.GetString("String_Space"));
 
-                ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
-                objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                objEntry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                objExpense.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
 
-                CharacterObject.ExpenseEntries.AddWithSort(objEntry);
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 CharacterObject.Karma -= intPrice;
             }
@@ -362,7 +362,8 @@ namespace Chummer.Backend.Skills
 
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.MergeInto(objNewGroup, (l, r) => string.Compare(l.CurrentDisplayName, r.CurrentDisplayName, StringComparison.Ordinal),
+            objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup,
+                (l, r) => string.Compare(l.CurrentDisplayName, r.CurrentDisplayName, StringComparison.Ordinal),
                 (l, r) =>
                 {
                     foreach (Skill x in r.SkillList)
@@ -768,9 +769,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier + decExtra));
+                    intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
-                    intReturn += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intReturn += decExtra.StandardRound();
 
                 return Math.Max(intReturn, 0);
             }
@@ -820,9 +821,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decMultiplier != 1.0m)
-                    intCost = decimal.ToInt32(decimal.Ceiling(intCost * decMultiplier + decExtra));
+                    intCost = (intCost * decMultiplier + decExtra).StandardRound();
                 else
-                    intCost += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intCost += decExtra.StandardRound();
 
                 return Math.Max(intCost, 0);
             }
@@ -881,9 +882,9 @@ namespace Chummer.Backend.Skills
                 }
 
                 if (decMultiplier != 1.0m)
-                    intReturn = decimal.ToInt32(decimal.Ceiling(intReturn * decMultiplier + decExtra));
+                    intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
-                    intReturn += decimal.ToInt32(decimal.Ceiling(decExtra));
+                    intReturn += decExtra.StandardRound();
 
                 return Math.Max(intReturn, Math.Min(1, intOptionsCost));
             }

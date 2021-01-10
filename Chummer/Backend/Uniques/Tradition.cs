@@ -78,11 +78,6 @@ namespace Chummer.Backend.Uniques
             return base.ToString();
         }
 
-        public void UnbindTradition()
-        {
-            _objCharacter.PropertyChanged -= RefreshDrainExpression;
-        }
-
         public void ResetTradition()
         {
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId);
@@ -595,7 +590,7 @@ namespace Chummer.Backend.Uniques
                 else
                     decDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
 
-                return decimal.ToInt32(decimal.Ceiling(decDrain));
+                return decDrain.StandardRound();
             }
         }
 

@@ -2819,7 +2819,7 @@ namespace Chummer.Classes
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
 
             LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
-            objLimitModifier.Create(_strFriendlyName, decimal.ToInt32(decimal.Ceiling(decBonus)), strLimit, strCondition, false);
+            objLimitModifier.Create(_strFriendlyName, decBonus.StandardRound(), strLimit, strCondition, false);
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             Log.Info("Calling CreateImprovement");
@@ -5814,7 +5814,7 @@ namespace Chummer.Classes
                 strCount = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCount);
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strCount, out bool blnIsSuccess);
-                powerCount = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+                powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
             }
 
             for (int i = 0; i < powerCount; i++)

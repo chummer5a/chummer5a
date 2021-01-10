@@ -497,81 +497,129 @@ namespace Chummer
                     // Set Metatype information.
                     if (strCritterName == "Ally Spirit")
                     {
-                        objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["bodmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["bodaug"]?.InnerText, intForce, 0));
-                        objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["agimax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["agiaug"]?.InnerText, intForce, 0));
-                        objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["reamax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["reaaug"]?.InnerText, intForce, 0));
-                        objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["strmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["straug"]?.InnerText, intForce, 0));
-                        objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["chamax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["chaaug"]?.InnerText, intForce, 0));
-                        objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["intmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["intaug"]?.InnerText, intForce, 0));
-                        objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["logmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["logaug"]?.InnerText, intForce, 0));
-                        objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["wilmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["wilaug"]?.InnerText, intForce, 0));
-                        objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["magmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["magaug"]?.InnerText, intForce, 0));
-                        objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["resaug"]?.InnerText, intForce, 0));
-                        objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["edgaug"]?.InnerText, intForce, 0));
-                        objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["essaug"]?.InnerText, intForce, 0));
+                        objCharacter.BOD.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.AGI.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["agiaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.REA.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["reaaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.STR.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["straug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.CHA.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["chaaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.INT.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["intaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.LOG.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["logaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.WIL.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.MAG.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["magaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.RES.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["resaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.EDG.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgaug"]?.InnerText, intForce, 0, 0));
+                        objCharacter.ESS.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"]?.InnerText, intForce, 0, 0));
                     }
                     else
                     {
                         int intMinModifier = -3;
-                        objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["bodmin"]?.InnerText, intForce, 3));
-                        objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["agimin"]?.InnerText, intForce, 3));
-                        objCharacter.REA.AssignLimits(ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["reamin"]?.InnerText, intForce, 3));
-                        objCharacter.STR.AssignLimits(ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["strmin"]?.InnerText, intForce, 3));
-                        objCharacter.CHA.AssignLimits(ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["chamin"]?.InnerText, intForce, 3));
-                        objCharacter.INT.AssignLimits(ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["intmin"]?.InnerText, intForce, 3));
-                        objCharacter.LOG.AssignLimits(ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["logmin"]?.InnerText, intForce, 3));
-                        objCharacter.WIL.AssignLimits(ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["wilmin"]?.InnerText, intForce, 3));
-                        objCharacter.MAG.AssignLimits(ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["magmin"]?.InnerText, intForce, 3));
-                        objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["resmin"]?.InnerText, intForce, 3));
-                        objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 3),
-                            ExpressionToString(objXmlMetatype["edgmin"]?.InnerText, intForce, 3));
-                        objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"]?.InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"]?.InnerText, intForce, 0),
-                            ExpressionToString(objXmlMetatype["essaug"]?.InnerText, intForce, 0));
+                        objCharacter.BOD.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.AGI.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.REA.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.STR.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.CHA.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.INT.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.LOG.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.WIL.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.MAG.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.RES.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.EDG.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, intMinModifier, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 3, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 3, 0));
+                        objCharacter.ESS.AssignLimits(
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"]?.InnerText, intForce, 0, 0));
                     }
 
                     // If we're working with a Critter, set the Attributes to their default values.
-                    objCharacter.BOD.MetatypeMinimum = ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 0);
-                    objCharacter.AGI.MetatypeMinimum = ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 0);
-                    objCharacter.REA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 0);
-                    objCharacter.STR.MetatypeMinimum = ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 0);
-                    objCharacter.CHA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 0);
-                    objCharacter.INT.MetatypeMinimum = ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 0);
-                    objCharacter.LOG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 0);
-                    objCharacter.WIL.MetatypeMinimum = ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 0);
-                    objCharacter.MAG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 0);
-                    objCharacter.RES.MetatypeMinimum = ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 0);
-                    objCharacter.EDG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 0);
-                    objCharacter.ESS.MetatypeMinimum = ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0);
+                    objCharacter.BOD.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.AGI.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.REA.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.STR.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.CHA.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.INT.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.LOG.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.WIL.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.MAG.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.RES.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.EDG.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 0, 0);
+                    objCharacter.ESS.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0, 0);
 
                     // Sprites can never have Physical Attributes.
                     if (objXmlMetatype["category"].InnerText.EndsWith("Sprite", StringComparison.Ordinal))
                     {
-                        objCharacter.BOD.AssignLimits("0", "0", "0");
-                        objCharacter.AGI.AssignLimits("0", "0", "0");
-                        objCharacter.REA.AssignLimits("0", "0", "0");
-                        objCharacter.STR.AssignLimits("0", "0", "0");
+                        objCharacter.BOD.AssignLimits(0, 0, 0);
+                        objCharacter.AGI.AssignLimits(0, 0, 0);
+                        objCharacter.REA.AssignLimits(0, 0, 0);
+                        objCharacter.STR.AssignLimits(0, 0, 0);
                     }
 
                     objCharacter.Metatype = strCritterName;
@@ -613,7 +661,7 @@ namespace Chummer
                         XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
                         CritterPower objPower = new CritterPower(objCharacter);
                         string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                        int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                        int intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes?["rating"]?.InnerText, intForce, 0, 0);
 
                         objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                         objCharacter.CritterPowers.Add(objPower);
@@ -662,51 +710,6 @@ namespace Chummer
 
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
-        }
-
-        /// <summary>
-        /// Convert Force, 1D6, or 2D6 into a usable value.
-        /// </summary>
-        /// <param name="strIn">Expression to convert.</param>
-        /// <param name="intForce">Force value to use.</param>
-        /// <param name="intOffset">Dice offset.</param>
-        /// <returns></returns>
-        public static int ExpressionToInt(string strIn, int intForce, int intOffset)
-        {
-            if (string.IsNullOrEmpty(strIn))
-                return 0;
-            int intValue = 0;
-            string strForce = intForce.ToString(GlobalOptions.InvariantCultureInfo);
-            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
-            try
-            {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce).Replace("2D6", strForce), out bool blnIsSuccess);
-                if (blnIsSuccess)
-                    intValue = Convert.ToInt32(Math.Ceiling((double)objProcess));
-            }
-            catch (OverflowException) { } // Result is text and not a double
-            catch (InvalidCastException) { } // Result is text and not a double
-            intValue += intOffset;
-            if (intForce > 0)
-            {
-                if (intValue < 1)
-                    return 1;
-            }
-            else if (intValue < 0)
-                return 0;
-            return intValue;
-        }
-
-        /// <summary>
-        /// Convert Force, 1D6, or 2D6 into a usable value.
-        /// </summary>
-        /// <param name="strIn">Expression to convert.</param>
-        /// <param name="intForce">Force value to use.</param>
-        /// <param name="intOffset">Dice offset.</param>
-        /// <returns></returns>
-        public static string ExpressionToString(string strIn, int intForce, int intOffset)
-        {
-            return ExpressionToInt(strIn, intForce, intOffset).ToString(GlobalOptions.InvariantCultureInfo);
         }
         #endregion
     }

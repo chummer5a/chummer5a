@@ -23,6 +23,14 @@
   <strings>
     <!-- Region Meta Strings -->
     <string>
+      <key>Message_InvalidTextFound_Title</key>
+      <text>XML Exception: Invalid characters found</text>
+    </string>
+    <string>
+      <key>Message_InvalidTextFound</key>
+      <text>Invalid characters found in XML. It should be safe to load this character, but you may wish to make a backup copy of this file before saving it. Would you like to continue loading the character?</text>
+    </string>
+    <string>
       <key>Message_Insufficient_Permissions_Warning</key>
       <text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
     </string>

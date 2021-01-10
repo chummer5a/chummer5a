@@ -2979,9 +2979,6 @@
         <selecttext />
       </bonus>
       <required>
-        <allof>
-          <metamagicart>Advanced Ritual Casting</metamagicart>
-        </allof>
         <oneof>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
@@ -3188,11 +3185,8 @@
           <spell>Attune Animal</spell>
         </allof>
         <oneof>
-          <group>
-            <quality>Adept</quality>
-            <quality>Mystic Adept</quality>
-          </group>
-          <metamagicart>Advanced Ritual Casting</metamagicart>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
     </spell>

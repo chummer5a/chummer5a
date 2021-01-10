@@ -94,7 +94,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("requiresflymovement", RequiresFlyMovement.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("name", _strName);
             if (!CharacterObject.Created)
             {
@@ -986,7 +986,7 @@ namespace Chummer.Backend.Skills
                 }
                 else if (Specializations[0].Free)
                 {
-                    Specializations.MergeInto(new SkillSpecialization(CharacterObject, value), (x, y) =>
+                    Specializations.AddWithSort(new SkillSpecialization(CharacterObject, value), (x, y) =>
                     {
                         if (x.Free == y.Free)
                         {
@@ -1242,9 +1242,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
                 if (decSpecCostMultiplier != 1.0m)
-                    intPrice = decimal.ToInt32(decimal.Ceiling(intPrice * decSpecCostMultiplier + decExtraSpecCost));
+                    intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                 else
-                    intPrice += decimal.ToInt32(decimal.Ceiling(decExtraSpecCost)); //Spec
+                    intPrice += decExtraSpecCost.StandardRound(); //Spec
                 return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_AddSpecialization"), intPrice);
             }
         }
@@ -1427,10 +1427,10 @@ namespace Chummer.Backend.Skills
                         if (objThisAsExoticSkill != null)
                         {
                             if (objImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
-                                intMaxHardwire = Math.Max(intMaxHardwire, decimal.ToInt32(decimal.Ceiling(objImprovement.Value)));
+                                intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                         }
                         else if (objImprovement.ImprovedName == Name)
-                            intMaxHardwire = Math.Max(intMaxHardwire, decimal.ToInt32(decimal.Ceiling(objImprovement.Value)));
+                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                     }
                 }
                 if (intMaxHardwire >= 0)
@@ -1438,7 +1438,7 @@ namespace Chummer.Backend.Skills
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
-                int intMaxActivesoftRating = decimal.ToInt32(decimal.Ceiling(Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess))));
+                int intMaxActivesoftRating = Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess)).StandardRound();
                 if (intMaxActivesoftRating > 0)
                 {
                     int intMax = 0;
@@ -1450,10 +1450,10 @@ namespace Chummer.Backend.Skills
                             if (objThisAsExoticSkill != null)
                             {
                                 if (objSkillsoftImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
-                                    intMaxHardwire = Math.Max(intMaxHardwire, decimal.ToInt32(decimal.Ceiling(objSkillsoftImprovement.Value)));
+                                    intMaxHardwire = Math.Max(intMaxHardwire, objSkillsoftImprovement.Value.StandardRound());
                             }
                             else if (objSkillsoftImprovement.ImprovedName == Name)
-                                intMax = Math.Max(intMax, decimal.ToInt32(decimal.Ceiling(objSkillsoftImprovement.Value)));
+                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
                         }
                     }
                     return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
