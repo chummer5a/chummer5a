@@ -449,7 +449,7 @@ namespace Chummer
 
                     if (blnIsSuccess && strDV != "Special")
                     {
-                        int intDV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+                        int intDV = ((double)xprResult).StandardRound();
 
                         // Drain cannot be lower than 2.
                         if (intDV < 2)

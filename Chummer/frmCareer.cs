@@ -2242,7 +2242,7 @@ namespace Chummer
                         if (objPower.Bonus != null)
                         {
                             ImprovementManager.ForcedValue = objPower.Extra;
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, Convert.ToInt32(objPower.TotalRating),
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, objPower.TotalRating,
                                 objPower.DisplayNameShort(GlobalOptions.Language));
                         }
                     }
@@ -5265,7 +5265,7 @@ namespace Chummer
                     if (!blnFreeCost)
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                        XPathNavigator xpnDiscountNode = xpnSelectedQuality?.SelectSingleNode("costdiscount");
+                        XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNode("costdiscount");
                         if (xpnDiscountNode != null && xpnDiscountNode.RequirementsMet(CharacterObject))
                         {
                             int intTemp = 0;
@@ -5741,7 +5741,7 @@ namespace Chummer
             TreeNode nodSelectedImprovement = treImprovements.SelectedNode;
             switch (nodSelectedImprovement?.Tag)
             {
-                case Improvement objImprovement when !CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement")):
+                case Improvement _ when !CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement")):
                     return;
                 // Remove the Improvement from the character.
                 case Improvement objImprovement:
@@ -5751,7 +5751,7 @@ namespace Chummer
                     break;
                 case string strSelectedId when strSelectedId == "Node_SelectedImprovements":
                     return;
-                case string strSelectedId when !CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup")):
+                case string _ when !CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup")):
                     return;
                 case string strSelectedId:
                 {

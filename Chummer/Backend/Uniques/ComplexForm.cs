@@ -332,7 +332,7 @@ namespace Chummer
 
                     if (blnIsSuccess && strFV != "Special")
                     {
-                        int intFV = Convert.ToInt32(Math.Floor(Convert.ToDouble(xprResult.ToString(), GlobalOptions.InvariantCultureInfo)));
+                        int intFV = ((double)xprResult).StandardRound();
 
                         // Fading cannot be lower than 2.
                         if (intFV < 2)

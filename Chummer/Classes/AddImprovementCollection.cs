@@ -5821,7 +5821,7 @@ namespace Chummer.Classes
                 }
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCountString.ToString(), out bool blnIsSuccess);
-                powerCount = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+                powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
             }
 
             for (int i = 0; i < powerCount; i++)

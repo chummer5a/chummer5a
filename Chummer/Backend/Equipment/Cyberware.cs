@@ -2583,7 +2583,7 @@ namespace Chummer.Backend.Equipment
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
                     if (blnIsSuccess)
-                        intReturn = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                        intReturn = ((double)objProcess).StandardRound();
                 }
 
                 return intReturn;
@@ -2625,7 +2625,7 @@ namespace Chummer.Backend.Equipment
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
                     if (blnIsSuccess)
-                        intReturn = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                        intReturn = ((double)objProcess).StandardRound();
                 }
 
                 return intReturn;
@@ -3079,7 +3079,7 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAvail += ((double)objProcess).StandardRound();
             }
 
             if (blnCheckChildren)

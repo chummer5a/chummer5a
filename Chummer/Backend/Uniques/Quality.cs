@@ -886,9 +886,9 @@ namespace Chummer
             {
                 if (_intCachedSuppressed != -1)
                     return _intCachedSuppressed == 1;
-                _intCachedSuppressed = Convert.ToInt32(_objCharacter.Improvements.Count(imp =>
+                _intCachedSuppressed = _objCharacter.Improvements.Count(imp =>
                     imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled));
+                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled);
                 if (_intCachedSuppressed > 0)
                 {
                     ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>

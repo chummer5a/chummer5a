@@ -186,7 +186,7 @@ namespace Chummer
                             .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
-                        intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+                        intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     }
                     nudRating.Minimum = intMinRating;
 
@@ -201,7 +201,7 @@ namespace Chummer
                             .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
-                        intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+                        intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     }
                     nudRating.Maximum = intMaxRating;
                     if (chkHideOverAvailLimit.Checked)
@@ -560,7 +560,7 @@ namespace Chummer
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out bool blnIsSuccess);
                 if (blnIsSuccess)
                 {
-                    int intAvail = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) + _intAvailModifier;
+                    int intAvail = ((double)objProcess).StandardRound() + _intAvailModifier;
                     // Avail cannot go below 0.
                     if (intAvail < 0)
                         intAvail = 0;
@@ -695,9 +695,9 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating) || !string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                 {
                     var objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
-                    intMinRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+                    intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
-                    intMaxRating = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 1;
+                    intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     if (intMaxRating < intMinRating)
                         continue;
                 }

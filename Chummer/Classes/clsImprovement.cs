@@ -3788,10 +3788,10 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade += decimal.ToInt32(objImprovement.Value);
+                        objCharacter.InitiateGrade += objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade += decimal.ToInt32(objImprovement.Value);
+                        objCharacter.SubmersionGrade += objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -4059,10 +4059,10 @@ namespace Chummer
                         }
                         break;
                     case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade -= decimal.ToInt32(objImprovement.Value);
+                        objCharacter.InitiateGrade -= objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade -= decimal.ToInt32(objImprovement.Value);
+                        objCharacter.SubmersionGrade -= objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -4431,10 +4431,10 @@ namespace Chummer
                             objCharacter.Contacts.Remove(NewContact);
                         break;
                     case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade -= decimal.ToInt32(objImprovement.Value);
+                        objCharacter.InitiateGrade -= objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade -= decimal.ToInt32(objImprovement.Value);
+                        objCharacter.SubmersionGrade -= objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);

@@ -510,7 +510,7 @@ namespace Chummer
                         if (blnShowMessage)
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine, strSpace, strAttributes, intNodeVal);
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);
-                        return (blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 0) >= intNodeVal;
+                        return (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal;
                     }
                 case "careerkarma":
                     {
@@ -1362,7 +1362,7 @@ namespace Chummer
             int intAvail = intAvailModifier;
             object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
             if (blnIsSuccess)
-                intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                intAvail += ((double)objProcess).StandardRound();
             return intAvail <= objCharacter.MaximumAvailability;
         }
         /// <summary>

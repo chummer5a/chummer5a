@@ -18272,7 +18272,7 @@ namespace Chummer
 
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualitiesTotal -=
-                        decimal.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality);
+                        (ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality).StandardRound();
 
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)

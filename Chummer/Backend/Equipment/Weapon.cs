@@ -3184,7 +3184,7 @@ namespace Chummer.Backend.Equipment
                 sbdAP.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAP = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAP = ((double)objProcess).StandardRound();
                 else
                     return strLanguage == GlobalOptions.DefaultLanguage ? strAP : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
@@ -3633,7 +3633,7 @@ namespace Chummer.Backend.Equipment
                 sbdAccuracy.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdAccuracy.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAccuracy = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAccuracy = ((double)objProcess).StandardRound();
 
                 int intBonusAccuracyFromAccessories = 0;
                 int intBonusAccuracyFromNonStackingAccessories = 0;
@@ -4688,7 +4688,7 @@ namespace Chummer.Backend.Equipment
                 objAvail.Replace("/", " div ");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAvail += ((double)objProcess).StandardRound();
             }
 
             if (blnCheckUnderbarrels)
