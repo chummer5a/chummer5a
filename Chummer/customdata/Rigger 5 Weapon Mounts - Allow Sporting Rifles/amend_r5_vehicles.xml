@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Rigger 5 Weapon Mounts - Allow Sporting Rifles
+     R5 excludes Sporting Rifles from the list of accessible weapon mounts. This customdata adds that weapon category to the Standard and Heavy weapon mounts. -->
+<chummer>
+  <mods>
+    <!--Heavy Weapon Mount (R5)-->
+    <mod>
+      <id>4eecb2ee-ad33-4bc2-b8b3-d35e0df40836</id>
+      <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Sporting Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponmountcategories>
+    </mod>
+    <!--Standard Weapon Mount (R5)-->
+    <mod>
+      <id>86741661-11c2-4781-b365-b02dbb9fd7c0</id>
+      <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Sporting Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
+    </mod>
+  </mods>
+</chummer>
