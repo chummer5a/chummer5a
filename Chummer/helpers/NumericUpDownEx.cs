@@ -518,7 +518,7 @@ namespace Chummer
             {
                 if (value == base.Value)
                     return;
-                _intValue = value.ToInt32();
+                _intValue =  Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
                 base.Value = value;
             }
         }
@@ -542,7 +542,7 @@ namespace Chummer
             {
                 if (value == base.Minimum)
                     return;
-                _intMinimum = value.ToInt32();
+                _intMinimum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
                 base.Minimum = value;
             }
         }
@@ -566,7 +566,7 @@ namespace Chummer
             {
                 if (value == base.Maximum)
                     return;
-                _intMaximum = value.ToInt32();
+                _intMaximum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
                 base.Maximum = value;
             }
         }
