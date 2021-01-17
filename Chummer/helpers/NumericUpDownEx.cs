@@ -442,6 +442,7 @@ namespace Chummer
             }
             else
             {
+                Value = Math.Max(Value - Incre, Minimum);
                 try
                 {
                     base.DownButton();
@@ -468,6 +469,7 @@ namespace Chummer
             }
             else
             {
+                Value = Math.Min(Value + Increment, Maximum);
                 try
                 {
                     base.UpButton();
