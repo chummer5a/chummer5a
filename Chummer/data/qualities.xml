@@ -185,6 +185,7 @@
       <required>
         <oneof>
           <power>Adept Spell</power>
+          <quality>Barehanded Adept</quality>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>

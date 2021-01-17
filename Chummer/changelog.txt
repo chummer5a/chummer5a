@@ -44,6 +44,7 @@ Data Changes:
 - Added separate [Custom Cyberdeck] Firewall gear item for Fuchi Cyber-N.
 - Corrected a few mentor spirit bonus texts that did not have spaces after colons.
 - Added customdata to allow the weapon mounts from Rigger 5 to mount Sporting Rifles. Closes #4287
+- Added Barehanded Adept to quality whitelist for Focused Concentration. Closes #4293
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
