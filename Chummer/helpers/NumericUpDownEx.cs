@@ -442,7 +442,7 @@ namespace Chummer
             }
             else
             {
-                Value = Math.Max(Value - Incre, Minimum);
+                Value = Math.Max(Value - Increment, Minimum);
                 try
                 {
                     base.DownButton();
