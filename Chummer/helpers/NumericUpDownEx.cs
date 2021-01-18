@@ -499,6 +499,12 @@ namespace Chummer
         private int _intMinimum;
         private int _intMaximum;
 
+        protected override void OnValueChanged(EventArgs e)
+        {
+            base.OnValueChanged(e);
+            _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
+        }
+
         /// <summary>
         /// Cached expression of Value as an integer
         /// </summary>
@@ -514,21 +520,6 @@ namespace Chummer
                 return _intValue;
             }
             set => Value = value;
-        }
-
-        /// <summary>
-        /// The value of the spin box.
-        /// </summary>
-        public new decimal Value
-        {
-            get => base.Value;
-            set
-            {
-                if (value == base.Value)
-                    return;
-                _intValue =  Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
-                base.Value = value;
-            }
         }
 
         /// <summary>
