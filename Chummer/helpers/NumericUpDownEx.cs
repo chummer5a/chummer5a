@@ -442,7 +442,6 @@ namespace Chummer
             }
             else
             {
-                Value = Math.Max(Value - Increment, Minimum);
                 try
                 {
                     base.DownButton();
@@ -469,7 +468,6 @@ namespace Chummer
             }
             else
             {
-                Value = Math.Min(Value + Increment, Maximum);
                 try
                 {
                     base.UpButton();
@@ -506,7 +504,15 @@ namespace Chummer
         /// </summary>
         public int ValueAsInt
         {
-            get => _intValue;
+            get
+            {
+                //TODO: Ugly bodge is ugly and slow. Race conditions causing _intValue to not be updated when an update to the control is called?
+                if (_intValue != Value)
+                {
+                    _intValue = (int)Value;
+                }
+                return _intValue;
+            }
             set => Value = value;
         }
 
