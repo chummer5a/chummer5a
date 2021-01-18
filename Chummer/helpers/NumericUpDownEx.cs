@@ -498,11 +498,13 @@ namespace Chummer
         private int _intValue;
         private int _intMinimum;
         private int _intMaximum;
+        private object _objIntValueLock;
 
         protected override void OnValueChanged(EventArgs e)
         {
+            lock (_objIntValueLock) // Lock ensures synchronicity
+                _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
             base.OnValueChanged(e);
-            _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
         }
 
         /// <summary>
@@ -512,12 +514,8 @@ namespace Chummer
         {
             get
             {
-                //TODO: Ugly bodge is ugly and slow. Race conditions causing _intValue to not be updated when an update to the control is called?
-                if (_intValue != Value)
-                {
-                    _intValue = (int)Value;
-                }
-                return _intValue;
+                lock (_objIntValueLock) // Lock ensures synchronicity
+                    return _intValue;
             }
             set => Value = value;
         }
