@@ -498,7 +498,7 @@ namespace Chummer
         private int _intValue;
         private int _intMinimum;
         private int _intMaximum;
-        private object _objIntValueLock;
+        private readonly object _objIntValueLock = new object();
 
         protected override void OnValueChanged(EventArgs e)
         {
