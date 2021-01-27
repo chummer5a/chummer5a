@@ -84,13 +84,16 @@
             </tr>
             <xsl:call-template name="Expenses">
               <xsl:with-param name="type" select="'Karma'"/>
-              <xsl:with-param name="sfx" select="'&#160;&#160;'"/>
+              <xsl:with-param name="sfx" select="'&#160;'"/>
             </xsl:call-template>
             <tr>
               <td><xsl:value-of select="$lang.RemainingAvailable"/></td>
               <td/>
-              <td style="text-decoration: overline">
-                <xsl:value-of select="karma"/>
+              <td style="text-align:center;white-space: nowrap;text-decoration: overline;">
+                <xsl:call-template name="fnx-pad-l">
+                  <xsl:with-param name="string" select="karma"/>
+                  <xsl:with-param name="length" select="3"/>
+                </xsl:call-template>
               </td>
               <td/>
               <td/>
