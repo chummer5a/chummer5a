@@ -45,6 +45,7 @@ Data Changes:
 - Corrected a few mentor spirit bonus texts that did not have spaces after colons.
 - Added customdata to allow the weapon mounts from Rigger 5 to mount Sporting Rifles. Closes #4287
 - Added Barehanded Adept to quality whitelist for Focused Concentration. Closes #4293
+- Fixed incorrect liner categories for the Ares Victory line. Closes #4299
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

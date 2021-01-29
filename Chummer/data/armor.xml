@@ -975,7 +975,7 @@
       <avail>7</avail>
       <cost>900</cost>
       <selectmodsfromcategory>
-        <category>Globetrotter Jacket Liners</category>
+        <category>Globetrotter Vest Liners</category>
       </selectmodsfromcategory>
       <wirelessbonus>
         <specificskill>
@@ -995,7 +995,7 @@
       <avail>6</avail>
       <cost>600</cost>
       <selectmodsfromcategory>
-        <category>Globetrotter Jacket Liners</category>
+        <category>Globetrotter Clothing Liners</category>
       </selectmodsfromcategory>
       <mods>
         <name>Gear Access</name>
