@@ -510,6 +510,9 @@ namespace Chummer
         /// <summary>
         /// Cached expression of Value as an integer
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Browsable(false)]
         public int ValueAsInt
         {
             get
@@ -523,6 +526,9 @@ namespace Chummer
         /// <summary>
         /// Cached expression of Minimum as an integer
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Browsable(false)]
         public int MinimumAsInt
         {
             get => _intMinimum;
@@ -547,6 +553,9 @@ namespace Chummer
         /// <summary>
         /// Cached expression of Minimum as an integer
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Browsable(false)]
         public int MaximumAsInt
         {
             get => _intMaximum;
