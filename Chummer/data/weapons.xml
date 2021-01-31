@@ -7091,6 +7091,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
       <id>e9bea546-f35d-4ecc-9d15-8b30df9bdb28</id>
@@ -7121,6 +7122,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
       <id>5df8388e-9ca9-4455-9ac0-3d83ffd77d0d</id>
@@ -7173,6 +7175,7 @@
         </OR>
       </required>
       <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
       <id>c166caeb-aaa8-4e13-b76d-ae9e567f7dcd</id>
@@ -10245,6 +10248,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
       <id>2f4724d3-4644-411c-998c-b0a12461e508</id>
@@ -11562,6 +11566,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
       <id>028d08a4-456a-4a4d-9aef-c74ff4a2c97e</id>
@@ -11812,6 +11817,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
       <id>e7511e33-16d3-4a2a-9057-9c29144b2059</id>

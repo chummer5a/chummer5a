@@ -46,6 +46,7 @@ Data Changes:
 - Added customdata to allow the weapon mounts from Rigger 5 to mount Sporting Rifles. Closes #4287
 - Added Barehanded Adept to quality whitelist for Focused Concentration. Closes #4293
 - Fixed incorrect liner categories for the Ares Victory line. Closes #4299
+- Fixed incorrect weapon types for underbarrel grenade launchers that prevent them from being reloaded properly. Closes #4297
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
