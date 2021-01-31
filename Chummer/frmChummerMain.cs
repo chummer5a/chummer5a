@@ -1403,6 +1403,7 @@ namespace Chummer
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
+                Character[] lstCharacters = null;
                 //Timekeeper.Start("load_sum");
                 using (new CursorWait(this))
                 {
@@ -1422,7 +1423,7 @@ namespace Chummer
                         {
                             _frmLoading.Reset(35 * lstFilesToOpen.Count);
                             _frmLoading.Show();
-                            Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                            lstCharacters = new Character[lstFilesToOpen.Count];
                             object lstCharactersLock = new object();
                             // Hacky, but necessary because innards of Parallel.For would end up invoking
                             // a UI function that would wait for Parallel.For to finish, causing the program
@@ -1436,10 +1437,11 @@ namespace Chummer
                                         lstCharacters[i] = objLoopCharacter;
                                 });
                             });
-                            Program.MainForm.OpenCharacterList(lstCharacters);
                         }
                     }
                 }
+
+                Program.MainForm.OpenCharacterList(lstCharacters);
             }
 
             Application.DoEvents();
@@ -1519,40 +1521,40 @@ namespace Chummer
                 {
                     FileName = strFileName
                 };
-                if (!strFileName.StartsWith(strAutosavesPath))
+                if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                 {
-                    string strNewAutosaveName = Path.GetFileName(strFileName);
-                    if (!string.IsNullOrEmpty(strNewAutosaveName))
+                    if (!strFileName.StartsWith(strAutosavesPath))
                     {
-                        strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
-                        if (File.Exists(strNewAutosaveName) && File.GetLastWriteTimeUtc(strNewAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                        string strNewAutosaveName = Path.GetFileName(strFileName);
+                        if (!string.IsNullOrEmpty(strNewAutosaveName))
                         {
-                            blnLoadAutosave = true;
-                            objCharacter.FileName = strNewAutosaveName;
-                        }
-                    }
-
-                    if (!blnLoadAutosave)
-                    {
-                        string strOldAutosaveName = objCharacter.CharacterName;
-                        foreach (var invalidChar in Path.GetInvalidFileNameChars())
-                        {
-                            strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
-                        }
-
-                        if (!string.IsNullOrEmpty(strOldAutosaveName))
-                        {
-                            strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
-                            if (File.Exists(strOldAutosaveName) && File.GetLastWriteTimeUtc(strOldAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                            strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
+                            if (File.Exists(strNewAutosaveName) && File.GetLastWriteTimeUtc(strNewAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
                             {
                                 blnLoadAutosave = true;
-                                objCharacter.FileName = strOldAutosaveName;
+                                objCharacter.FileName = strNewAutosaveName;
+                            }
+                        }
+
+                        if (!blnLoadAutosave && !string.IsNullOrEmpty(strNewName))
+                        {
+                            string strOldAutosaveName = strNewName;
+                            foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                            {
+                                strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
+                            }
+
+                            if (!string.IsNullOrEmpty(strOldAutosaveName))
+                            {
+                                strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
+                                if (File.Exists(strOldAutosaveName) && File.GetLastWriteTimeUtc(strOldAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                                {
+                                    blnLoadAutosave = true;
+                                    objCharacter.FileName = strOldAutosaveName;
+                                }
                             }
                         }
                     }
-                }
-                if (blnShowErrors && _frmLoading?.IsDisposed != false)
-                {
                     if (blnLoadAutosave && Program.MainForm.ShowMessageBox(
                         string.Format(GlobalOptions.CultureInfo,
                             LanguageManager.GetString("Message_AutosaveFound"),
@@ -1565,6 +1567,9 @@ namespace Chummer
                         blnLoadAutosave = false;
                         objCharacter.FileName = strFileName;
                     }
+                }
+                if (blnShowErrors && _frmLoading?.IsDisposed != false)
+                {
                     using (_frmLoading = new frmLoading { CharacterFile = objCharacter.FileName })
                     {
                         _frmLoading.Reset(35);
