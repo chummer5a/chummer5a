@@ -10441,12 +10441,10 @@ namespace Chummer
             return GetArmorRatingWithImprovement(eDamageType, out int _);
         }
 
-        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromArmorImprovements)
+        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromEquippedArmorImprovements)
         {
-            intFromArmorImprovements = 0;
+            intFromEquippedArmorImprovements = 0;
             List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
-            if (lstArmorsToConsider.Count == 0)
-                return 0;
             decimal decBaseArmorImprovement = 0;
             if (eDamageType != Improvement.ImprovementType.None)
             {
@@ -10454,6 +10452,9 @@ namespace Chummer
                 if (eDamageType != Improvement.ImprovementType.Armor)
                     decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
             }
+            if (lstArmorsToConsider.Count == 0)
+                return decBaseArmorImprovement.StandardRound();
+            decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
             Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(objArmor => objArmor, objArmor => decBaseArmorImprovement);
             foreach (Improvement objImprovement in Improvements)
             {
@@ -10468,6 +10469,7 @@ namespace Chummer
                         ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
                     if (objSourceArmor != null)
                     {
+                        decGeneralArmorImprovementValue -= objImprovement.Value;
                         foreach (Armor objArmor in lstArmorsToConsider)
                         {
                             if (objArmor != objSourceArmor)
@@ -10490,7 +10492,6 @@ namespace Chummer
                      || objArmor.ArmorValue.StartsWith('-'))
                     && objArmor.Category != "Clothing")
                     continue;
-                int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
                 int intCustomStackBonus = 0;
                 string strArmorName = objArmor.Name;
                 foreach (Armor objInnerArmor in lstArmorsToConsider)
@@ -10507,27 +10508,31 @@ namespace Chummer
 
                 if (objArmor.Category == "Clothing")
                 {
-                    int intSpecialArmor = intArmorValue - objArmor.TotalArmor;
-                    intTotalClothing += intArmorValue - intSpecialArmor + intCustomStackBonus;
+                    int intSpecialArmor = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
+                    intTotalClothing += objArmor.TotalArmor + intCustomStackBonus;
                     if (intSpecialArmor > intHighestClothingBonus)
                         intHighestClothingBonus = intSpecialArmor;
                 }
-                else if (intArmorValue + intCustomStackBonus > intHighest)
+                else
                 {
-                    intHighest = intArmorValue + intCustomStackBonus;
-                    intFromArmorImprovements = intHighest - objArmor.TotalArmor;
-                    intHighestNoCustomStack = intArmorValue;
-                    objHighestArmor = objArmor;
+                    int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
+                    if (intArmorValue + intCustomStackBonus > intHighest)
+                    {
+                        intHighest = intArmorValue + intCustomStackBonus;
+                        intFromEquippedArmorImprovements = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
+                        intHighestNoCustomStack = intArmorValue;
+                        objHighestArmor = objArmor;
+                    }
                 }
             }
 
             int intArmor = intHighestNoCustomStack;
-
-            if (intTotalClothing + intHighestClothingBonus > intHighest)
+            int intHighestClothing = intTotalClothing + intHighestClothingBonus + decGeneralArmorImprovementValue.StandardRound();
+            if (intHighestClothing > intHighest)
             {
                 objHighestArmor = null;
-                intArmor = intTotalClothing + intHighestClothingBonus;
-                intFromArmorImprovements = intHighestClothingBonus;
+                intArmor = intHighestClothing;
+                intFromEquippedArmorImprovements = intHighestClothingBonus;
             }
 
             // Run through the list of Armor currently worn again and look at non-Clothing items that start with '+' since they stack with the highest Armor.
