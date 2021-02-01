@@ -689,7 +689,7 @@ namespace Chummer
                         lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
                         lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
                         lblCMStun.Visible = true; // Needed for some weird reason
-                        lblCMStun.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+                        lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
                         lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
                         lblESSMax.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEssence));
