@@ -1022,41 +1022,42 @@ namespace Chummer.Plugins
 
         public void CustomInitialize(frmChummerMain mainControl)
         {
-            Log.Info("CustomInitialize for Plugin ChummerHub.Client entered.");
-            MainForm = mainControl;
-            if (string.IsNullOrEmpty(Settings.Default.TempDownloadPath))
-            {
-                Settings.Default.TempDownloadPath = Path.GetTempPath();
-            }
-
-            //check global mutex
-            BlnHasDuplicate = false;
-            try
-            {
-                BlnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
-            }
-            catch (AbandonedMutexException ex)
-            {
-                Log.Error(ex);
-                Utils.BreakIfDebug();
-                BlnHasDuplicate = true;
-            }
-            if (PipeManager == null)
-            {
-                PipeManager = new NamedPipeManager();
-                Log.Info("blnHasDuplicate = " + BlnHasDuplicate.ToString(CultureInfo.InvariantCulture));
-                // If there is more than 1 instance running, do not let the application start a receiving server.
-                if (BlnHasDuplicate)
+            
+                Log.Info("CustomInitialize for Plugin ChummerHub.Client entered.");
+                MainForm = mainControl;
+                if (string.IsNullOrEmpty(Settings.Default.TempDownloadPath))
                 {
-                    Log.Info("More than one instance, not starting NamedPipe-Server...");
-                    throw new ApplicationException("More than one instance is running.");
+                    Settings.Default.TempDownloadPath = Path.GetTempPath();
                 }
 
-                Log.Info("Only one instance, starting NamedPipe-Server...");
-                PipeManager.StartServer();
-                PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
-            }
+                //check global mutex
+                BlnHasDuplicate = false;
+                try
+                {
+                    BlnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+                }
+                catch (AbandonedMutexException ex)
+                {
+                    Log.Error(ex);
+                    Utils.BreakIfDebug();
+                    BlnHasDuplicate = true;
+                }
+                if (PipeManager == null)
+                {
+                    PipeManager = new NamedPipeManager();
+                    Log.Info("blnHasDuplicate = " + BlnHasDuplicate.ToString(CultureInfo.InvariantCulture));
+                    // If there is more than 1 instance running, do not let the application start a receiving server.
+                    if (BlnHasDuplicate)
+                    {
+                        Log.Info("More than one instance, not starting NamedPipe-Server...");
+                        throw new ApplicationException("More than one instance is running.");
+                    }
 
+                    Log.Info("Only one instance, starting NamedPipe-Server...");
+                    PipeManager.StartServer();
+                    PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                }
+            
 
         }
 

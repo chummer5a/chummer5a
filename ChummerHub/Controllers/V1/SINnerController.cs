@@ -99,6 +99,7 @@ namespace ChummerHub.Controllers.V1
 
                 var chummerFile = await _context.SINners
                     .Include(a => a.MyGroup)
+                    .Include(a => a.SINnerMetaData.Visibility)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights).Where(a => a.Id == sinnerid).FirstOrDefaultAsync();
                 if (chummerFile == null)
                 {
@@ -125,7 +126,7 @@ namespace ChummerHub.Controllers.V1
                 }
                 if (!oktoDownload)
                 {
-                    throw new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + sinnerid.ToString());
+                    throw new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + sinnerid.ToString() + " (Codepoint 2).");
                 }
 
                 //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache), chummerFile.Id.ToString() + ".chum5z");
@@ -226,6 +227,7 @@ namespace ChummerHub.Controllers.V1
                 if (!string.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 var sin = await _context.SINners
+                    .Include(a => a.SINnerMetaData.Visibility)
                     .Include(a => a.SINnerMetaData.Visibility.UserRights)
                     .Include(a => a.MyGroup)
                     .Include(b => b.MyGroup.MySettings)
@@ -238,10 +240,12 @@ namespace ChummerHub.Controllers.V1
                 }
                 bool oktoDownload = sin.SINnerMetaData.Visibility.IsPublic
                                     || (sin.MyGroup != null && sin.MyGroup.IsPublic)
-                                    || (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => user.Email.Equals(a.EMail, StringComparison.OrdinalIgnoreCase)));
+                                    || (user != null
+                                        && sin.SINnerMetaData.Visibility.UserRights.Any(a => user.Email.Equals(a.EMail, StringComparison.OrdinalIgnoreCase))
+                                    || sin.SINnerMetaData.Visibility.UserRights.Count == 0);
                 if (!oktoDownload)
                 {
-                    var e = new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + id);
+                    var e = new ArgumentException("User " + user?.UserName + " or public is not allowed to download " + id + " (Codepoint 1).");
                     res = new ResultSinnerGetSINById(e);
                     return BadRequest(res);
                 }
@@ -252,7 +256,10 @@ namespace ChummerHub.Controllers.V1
                     return Ok(res);
 
 
-                if (user != null && sin.SINnerMetaData.Visibility.UserRights.Any(a => user.NormalizedEmail.Equals(a.EMail, StringComparison.OrdinalIgnoreCase)))
+                if (user != null
+                    && (sin.SINnerMetaData.Visibility.UserRights.Any(a => user.NormalizedEmail.Equals(a.EMail, StringComparison.OrdinalIgnoreCase))
+                        || (sin.SINnerMetaData.Visibility.UserRights.Count == 0))
+                    )
                     return Ok(res);
 
                 var e1 = new NoUserRightException("SINner is not viewable for public or groupmembers.");
@@ -654,7 +661,6 @@ namespace ChummerHub.Controllers.V1
                     {
                         sinner.SINnerMetaData.Visibility.Id = Guid.NewGuid();
                     }
-                    sinner.SINnerMetaData.Id = Guid.NewGuid();
                     foreach (var tag in sinner.SINnerMetaData.Tags)
                     {
                         if (tag == null)
@@ -880,7 +886,7 @@ namespace ChummerHub.Controllers.V1
                     {
                         foreach (var entry in ex.Entries)
                         {
-                            if (entry.Entity is SINner || entry.Entity is Tag)
+                            if (entry.Entity is SINner || entry.Entity is Tag || entry.Entity is SINnerMetaData)
                             {
                                 try
                                 {
@@ -895,7 +901,7 @@ namespace ChummerHub.Controllers.V1
                             else
                             {
                                 var e = new NotSupportedException(
-                                    "Don't know how to handle concurrency conflicts for "
+                                    "(Codepoint 4) Don't know how to handle concurrency conflicts for "
                                     + entry.Metadata.Name);
                                 res = new ResultSinnerPostSIN(e);
                                 return BadRequest(res);
@@ -907,7 +913,7 @@ namespace ChummerHub.Controllers.V1
                         res = new ResultSinnerPostSIN(ex);
                         foreach (var entry in ex.Entries)
                         {
-                            if (entry.Entity is SINner || entry.Entity is Tag)
+                            if (entry.Entity is SINner || entry.Entity is Tag || entry.Entity is SINnerMetaData)
                             {
                                 try
                                 {
@@ -922,7 +928,7 @@ namespace ChummerHub.Controllers.V1
                             else
                             {
                                 var e = new NotSupportedException(
-                                    "Don't know how to handle concurrency conflicts for "
+                                    "(Codepoing 5) Don't know how to handle concurrency conflicts for "
                                     + entry.Metadata.Name);
                                 res = new ResultSinnerPostSIN(e);
                                 return BadRequest(res);
