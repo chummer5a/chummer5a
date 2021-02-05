@@ -1976,13 +1976,12 @@ namespace Chummer
         {
             clbPlugins.Items.Clear();
             if (Program.PluginLoader.MyPlugins.Count == 0) return;
-            using (new CursorWait(this))
+            using (new CursorWait(clbPlugins, true))
             {
                 foreach (var plugin in Program.PluginLoader.MyPlugins)
                 {
                     try
                     {
-                        plugin.CustomInitialize(Program.MainForm);
                         if (GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out var check))
                         {
                             clbPlugins.Items.Add(plugin, check);
@@ -2007,22 +2006,36 @@ namespace Chummer
 
         private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
         {
-            UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin)?.GetOptionsControl();
-            if (pluginControl != null)
+            using (new CursorWait(clbPlugins, true))
             {
-                panelPluginOption.Controls.Clear();
-                panelPluginOption.Controls.Add(pluginControl);
+                UserControl pluginControl = (clbPlugins.SelectedItem as Plugins.IPlugin)?.GetOptionsControl();
+                if (pluginControl != null)
+                {
+                    panelPluginOption.Controls.Clear();
+                    panelPluginOption.Controls.Add(pluginControl);
+                }
             }
         }
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            using (new CursorWait(this))
+            using (new CursorWait(clbPlugins, true))
             {
                 var plugin = clbPlugins.Items[e.Index];
                 if (GlobalOptions.PluginsEnabledDic.ContainsKey(plugin.ToString()))
                     GlobalOptions.PluginsEnabledDic.Remove(plugin.ToString());
                 GlobalOptions.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
+                if (e.NewValue == CheckState.Checked)
+                {
+                    var plugseq = from a in Program.PluginLoader.MyPlugins where a.ToString() == plugin.ToString() select a;
+                    foreach(var plug in plugseq)
+                    {
+                        using (new CursorWait(Program.MainForm, true))
+                        {
+                            plug.CustomInitialize(Program.MainForm);
+                        }
+                    }
+                }
                 OptionsChanged(sender, e);
             }
         }
