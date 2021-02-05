@@ -112,20 +112,28 @@ namespace Chummer
                 _objControlTopParent.DoThreadSafe(() =>
                 {
                     _objControlTopParent.Cursor = _objOldCursorTopParent;
-                    if (_objControl?.IsDisposed != false)
+                    
+                });
+            }
+
+            if (_objControl?.IsDisposed != false)
+            {
+                _objControl.DoThreadSafe(() =>
+                {
+                    if (_blnTopMostWaitCursor)
                     {
-                        if (_blnTopMostWaitCursor)
-                        {
-                            _blnTopMostWaitCursor = false;
-                            Application.UseWaitCursor = _blnOldUseWaitCursor;
-                        }
+                        _blnTopMostWaitCursor = false;
+                        Application.UseWaitCursor = _blnOldUseWaitCursor;
                     }
-                    else
-                    {
-                        _objControl.Cursor = _objOldCursor;
-                        if (_blnControlIsForm)
-                            _objControl.ResumeLayout();
-                    }
+                });
+            }
+            else
+            {
+                _objControl.DoThreadSafe(() =>
+                {
+                    _objControl.Cursor = _objOldCursor;
+                    if (_blnControlIsForm)
+                        _objControl.ResumeLayout();
                 });
             }
 
