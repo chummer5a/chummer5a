@@ -1179,18 +1179,22 @@ namespace Chummer.Plugins
                     else
                         return objCharacter;
                 }
-                MainForm.DoThreadSafe(() =>
+                using (new CursorWait(MainForm))
                 {
-                    if (MainForm.OpenCharacterForms.Any(a => a.CharacterObject == objCharacter))
+                    MainForm.DoThreadSafe(() =>
                     {
-                        MainForm.SwitchToOpenCharacter(objCharacter, false);
-                    }
-                    else
-                    {
-                        MainForm.OpenCharacter(objCharacter, false);
-                    }
-                    MainForm.BringToFront();
-                });
+                        if (MainForm.OpenCharacterForms.Any(a => a.CharacterObject == objCharacter))
+                        {
+                            MainForm.SwitchToOpenCharacter(objCharacter, false);
+                        }
+                        else
+                        {
+                            MainForm.OpenCharacter(objCharacter, false);
+                        }
+
+                        MainForm.BringToFront();
+                    });
+                }
                 return objCharacter;
             }
         }

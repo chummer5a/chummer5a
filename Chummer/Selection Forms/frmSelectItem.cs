@@ -239,6 +239,7 @@ namespace Chummer
                     }
                 }
             }
+            lstItems.Sort();
 
             // Populate the lists.
             cboAmmo.BeginUpdate();

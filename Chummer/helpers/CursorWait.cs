@@ -19,7 +19,9 @@
 
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -28,6 +30,7 @@ namespace Chummer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static bool _blnTopMostWaitCursor;
+        private static ConcurrentDictionary<Control, CursorWait> _dicWaitingControls = new ConcurrentDictionary<Control, CursorWait>();
         private readonly bool _blnOldUseWaitCursor;
         private readonly bool _blnControlIsForm;
         private readonly Control _objControl;
@@ -39,10 +42,17 @@ namespace Chummer
 
         public CursorWait(Control objControl = null, bool blnAppStarting = false)
         {
+            if (objControl != null && _dicWaitingControls.ContainsKey(objControl))
+            {
+                _blnDisposed = true;
+                return;
+            }
             try
             {
                 start.Start();
                 Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance.ToString() + "\".");
+                if (objControl != null)
+                    _dicWaitingControls.TryAdd(objControl, this);
                 _objControl = objControl;
                 if (_objControl?.IsDisposed != false)
                 {
@@ -137,6 +147,8 @@ namespace Chummer
                 });
             }
 
+            if (_objControl != null)
+                _dicWaitingControls.TryRemove(_objControl, out CursorWait _);
             _blnDisposed = true;
         }
     }

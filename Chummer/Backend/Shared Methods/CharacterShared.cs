@@ -6082,23 +6082,18 @@ namespace Chummer
                 // Convert the image to a string using Base64.
                 _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
-                Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
-                if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                using (Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
                 {
-                    _objCharacter.Mugshots.Add(bmpMugshot);
-                }
-                else
-                {
-                    try
+                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                     {
-                        Bitmap bmpConvertedMugshot = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                        _objCharacter.Mugshots.Add(bmpConvertedMugshot);
+                        _objCharacter.Mugshots.Add(bmpMugshot.Clone() as Bitmap); // Clone makes sure file handle is closed
                     }
-                    finally
+                    else
                     {
-                        bmpMugshot.Dispose();
+                        _objCharacter.Mugshots.Add(bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
                     }
                 }
+
                 if (_objCharacter.MainMugshotIndex == -1)
                     _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
             }
