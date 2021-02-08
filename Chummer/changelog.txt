@@ -28,6 +28,8 @@ Application Fixes:
 - Gear that is added to an armor mod now properly has its parent set to said armor mod, fixing various issues like being unable to delete gear added to an armor mod.
 - The Export screen's preview window no longer displays a preview of the Base64 strings used to store raw image data for mugshots, which should speed up the function considerably.
 - The English names of a character's skills are now also exposed upon exporting said character.
+- Custom improvements for adding echoes and metamagics to a character have been added.
+- The Source label in the weapon mount creation screen is now properly clickable.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

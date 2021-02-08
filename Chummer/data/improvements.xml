@@ -818,5 +818,25 @@
       <xml><![CDATA[<category>{category}</category><val>{val}</val><percent>{percent}</percent>]]></xml>
       <page>Increases the sprinting speed of a character for a particular category of movement. Positive numbers increase the number of meters sprinted per hit. Negative numbers decrease the number of meters sprinted per hit. Category can be Ground, Swim, or Fly for sprinting speed on land, in water, and in the air respectively. Value increases sprinted meters per hit by a fixed amount. Percent increases the sprinted meters per hit by a percentage amount. Fields may be left at 0 if you do not want to affect sprinting speed in that particular way.</page>
     </improvement>
+    <improvement>
+      <name>Add Metamagic</name>
+      <id>addmetamagic</id>
+      <internal>addmetamagic</internal>
+      <fields>
+        <field>SelectMetamagic</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free metamagic to the character. Any metamagic can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
+    <improvement>
+      <name>Add Echo</name>
+      <id>addecho</id>
+      <internal>addecho</internal>
+      <fields>
+        <field>SelectEcho</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free echo to the character. Any echo can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
   </improvements>
 </chummer>
