@@ -4,6 +4,7 @@
   <xsl:import href="xz.language.xslt"/>
 
   <xsl:import href="Notes set.xslt"/>
+  <xsl:import href="Shadowrun 5 set CSS.xslt"/>
 
   <!-- Set global variables -->
   <xsl:variable name="ProduceNotes" select="true()"/>
