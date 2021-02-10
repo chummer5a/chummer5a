@@ -25,6 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -69,6 +70,7 @@ namespace ChummerHub
             AppSettings = ConfigurationManager.AppSettings;
             if (_gdrive == null)
                 _gdrive = new DriveHandler(logger, configuration);
+           
         }
 
         public IConfiguration Configuration { get; }
@@ -169,11 +171,14 @@ namespace ChummerHub
               .AddDefaultTokenProviders()
               .AddSignInManager();
 
-            // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
-            services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            //// Add application services.
+            //services.AddTransient<IEmailSender, EmailSender>();
+
+            ////services.AddSingleton<IEmailSender, EmailSender>();
+            //services.Configure<AuthMessageSenderOptions>(Configuration);
 
 
 
