@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Character notes -->
-<!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.fnxTests.xslt"/>
@@ -36,7 +35,7 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <xsl:call-template name="Shadowrun5CSS" />
+        <xsl:call-template name="Chummer5CSS" />
 <!-- ** Override default style type definitions ** -->
         <style type="text/css">
           * {

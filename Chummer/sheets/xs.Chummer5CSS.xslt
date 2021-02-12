@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Character contacts -->
-<!-- Version -500 -->
+<!-- CSS stylesheet definitions -->
+
+<!-- These are the common CSS type definitions for the Chummer5a character sheets.
+     They are not used by all the character sheets, just ones that have multiple
+     common definitions such as Notes and the Shadowrun 5* sheets.
+
+     To create a language specific version:
+     1) this member should be copied to the appropriate language sub-folder and changes made.
+     2) The character sheet XSL stylesheets that import these definitions have to be
+        modified, changing the xsl:import statement:
+          from href="../xs.Chummer5CSS.xslt" to href="xs.Chummer5CSS.xslt"
+        (FYI: this tells the processor to import the member from the language sub-folder
+         instead of the parent directory - indicated by the ../ before the member name)
+
+     Changes made to these definitions should also be made to the language specific versions.
+     (Note: currently these are German and Portuguese character sheets.)
+-->
+
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-  <xsl:template name="Shadowrun5CSS">
+  <xsl:template name="Chummer5CSS">
     <style type="text/css">
-        * {
+      * {
         font-family: segoe, tahoma, 'trebuchet ms', arial;
         font-size: 8.25pt;
         margin: 0;
@@ -36,7 +52,7 @@
         text-transform: uppercase;
         }
         .indent {
-        padding-left: 1em;
+        padding-left: 2mm;
         }
         .notesrow {
         text-align: justify;
@@ -75,7 +91,7 @@
         object-fit: scale-down;
         image-rendering: optimizeQuality;
         }
-        }
+      }
     </style>
     <!--[if IE]
         <style type="text/css">
