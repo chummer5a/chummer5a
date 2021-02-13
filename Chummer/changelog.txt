@@ -30,6 +30,7 @@ Application Fixes:
 - The English names of a character's skills are now also exposed upon exporting said character.
 - Custom improvements for adding echoes and metamagics to a character have been added.
 - The Source label in the weapon mount creation screen is now properly clickable.
+- Vehicle mod costs, availabilities, and slot capacity requirements can now use their parent vehicles' Armor, Sensor, and Pilot ratings.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
@@ -51,6 +52,7 @@ Data Changes:
 - Fixed incorrect liner categories for the Ares Victory line. Closes #4299
 - Fixed incorrect weapon types for underbarrel grenade launchers that prevent them from being reloaded properly. Closes #4297
 - Helmets in the custom ruleset "Helmets Are Mods, SWAT and MilSpec Are FBA" now properly have capacities for gear instead of negative armor capacities.
+- Rigger 5.0 attribute increase drone mods now properly consume slot points based on the increase instead of on the total rating. The first level of an attribute increase (the first three for armor) are not also properly free.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

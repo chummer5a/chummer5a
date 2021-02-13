@@ -13214,7 +13214,7 @@
       <cost>Body * Rating * 200</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
-      <slots>Rating</slots>
+      <slots>(Rating - Handling - 1) * number(Rating - Handling - 1 >= 0)</slots>
       <bonus>
         <handling>Rating</handling>
         <offroadhandling>Rating</offroadhandling>
@@ -13237,7 +13237,7 @@
       <cost>Body * Rating * 400</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
-      <slots>Rating</slots>
+      <slots>(Rating - Speed - 1) * number(Rating - Speed - 1 >= 0)</slots>
       <bonus>
         <offroadspeed>Rating</offroadspeed>
         <speed>Rating</speed>
@@ -13260,7 +13260,7 @@
       <cost>Body * Rating * 200</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
-      <slots>Rating</slots>
+      <slots>(Rating - Acceleration - 1) * number(Rating - Acceleration - 1 >= 0)</slots>
       <bonus>
         <accel>Rating</accel>
         <offroadaccel>Rating</offroadaccel>
@@ -13283,7 +13283,7 @@
       <cost>Rating * Body * 200</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
-      <slots>Rating</slots>
+      <slots>(Rating - Armor - 3) * number(Rating - Armor - 3 >= 0)</slots>
       <bonus>
         <armor>Rating</armor>
       </bonus>
@@ -13305,7 +13305,7 @@
       <cost>Rating * 1000</cost>
       <rating>8</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
-      <slots>Rating</slots>
+      <slots>(Rating - Sensor - 1) * number(Rating - Sensor - 1 >= 0)</slots>
       <bonus>
         <sensor>Rating</sensor>
       </bonus>
