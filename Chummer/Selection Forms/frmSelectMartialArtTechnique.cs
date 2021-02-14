@@ -178,8 +178,9 @@ namespace Chummer
         /// </summary>
         private void RefreshTechniquesList()
         {
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')' + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");
 
             List<ListItem> lstTechniqueItems = new List<ListItem>();

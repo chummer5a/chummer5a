@@ -59,7 +59,7 @@ namespace Chummer
             while ((strLine = objReader.ReadLine()) != null)
             {
                 // Trim away the newlines and empty spaces at the beginning and end of lines
-                strLine = strLine.Trim('\n').Trim('\r').Trim();
+                strLine = strLine.Trim('\n', '\r', ' ').Trim();
 
                 // Check if this line contains a method name. This is kind of hacky, as it relies on every improvement method using "(XmlNode bonusNode)" as its argument
                 if (strLine.StartsWith("public void ") && strLine.EndsWith("(XmlNode bonusNode)"))

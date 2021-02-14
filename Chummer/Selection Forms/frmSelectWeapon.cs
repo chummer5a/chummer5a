@@ -628,34 +628,34 @@ namespace Chummer
         private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + '\"';
+                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 if (_hashLimitToCategories != null && _hashLimitToCategories.Count > 0)
                 {
                     foreach (string strLoopCategory in _hashLimitToCategories)
                     {
-                        objCategoryFilter.Append("category = \"" + strLoopCategory + "\" or ");
+                        sbdCategoryFilter.Append("category = \"" + strLoopCategory + "\" or ");
                     }
-
-                    objCategoryFilter.Length -= 4;
+                    sbdCategoryFilter.Length -= 4;
                 }
                 else
                 {
-                    objCategoryFilter.Append("category != \"Cyberware\" and category != \"Gear\"");
+                    sbdCategoryFilter.Append("category != \"Cyberware\" and category != \"Gear\"");
                 }
 
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter + ')';
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + strFilter + ']');
+            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + sbdFilter.ToString() + ']');
             BuildWeaponList(objXmlWeaponList);
         }
 

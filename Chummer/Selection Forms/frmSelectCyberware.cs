@@ -937,13 +937,13 @@ namespace Chummer
                 return null;
             }
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
-            string strCategoryFilter = string.Empty;
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() +')');
+            StringBuilder sbdCategoryFilter;
             if (strCategory != "Show All" && !Upgrading && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strCategoryFilter = "category = \"" + strCategory + '\"';
+                sbdCategoryFilter = new StringBuilder("category = \"" + strCategory + "\" or category = \"None\"");
             else
             {
-                StringBuilder sbdCategoryFilter = new StringBuilder();
+                sbdCategoryFilter = new StringBuilder();
                 foreach (ListItem objItem in cboCategory.Items)
                 {
                     string strItem = objItem.Value.ToString();
@@ -952,32 +952,35 @@ namespace Chummer
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
-                    strCategoryFilter = sbdCategoryFilter.ToString().TrimEndOnce(" or ");
+                    sbdCategoryFilter.Append("category = \"None\"");
                 }
             }
-            if (!string.IsNullOrEmpty(strCategoryFilter))
-                strFilter += " and (" + strCategoryFilter + " or category = \"None\")";
+            if (sbdCategoryFilter.Length > 0)
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
 
             if (ParentVehicle == null && _objCharacter.IsAI)
-                strFilter += " and (id = \"" + Cyberware.EssenceHoleGUID + "\" or id = \"" + Cyberware.EssenceAntiHoleGUID + "\" or mountsto)";
+                sbdFilter.Append(" and (id = \"")
+                    .Append(Cyberware.EssenceHoleGUID + "\" or id = \"")
+                    .Append(Cyberware.EssenceAntiHoleGUID + "\" or mountsto)");
             else if (_objParentNode != null)
-                strFilter += " and (requireparent or contains(capacity, \"[\")) and not(mountsto)";
+                sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
             else
-                strFilter += " and not(requireparent)";
+                sbdFilter.Append(" and not(requireparent)");
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceIDString == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                strFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + objCurrentGrade.Name + "\")";
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"")
+                    .Append(objCurrentGrade.Name).Append("\")");
                 if (objCurrentGrade.SecondHand)
-                    strFilter += " and not(nosecondhand)";
+                    sbdFilter.Append(" and not(nosecondhand)");
             }
-
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             XPathNodeIterator node = null;
             try
             {
-                node = _xmlBaseCyberwareDataNode.Select(_strNodeXPath + '[' + strFilter + ']');
+                node = _xmlBaseCyberwareDataNode.Select(_strNodeXPath + '[' + sbdFilter.ToString() + ']');
             }
             catch (XPathException e)
             {
