@@ -1182,6 +1182,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Normalizes line endings to always be that of Environment.NewLine.
+        /// </summary>
+        /// <param name="strInput">String to normalize.</param>
+        /// <returns></returns>
+        public static string NormalizeLineEndings(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            return rgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
+        }
+
+        /// <summary>
         /// Clean an XPath string.
         /// </summary>
         /// <param name="strSearch">String to clean.</param>
@@ -1214,15 +1226,12 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
-            return strToClean
+            string strReturn = strToClean
                 .Replace("&", "&amp;")
                 .Replace("&amp;amp;", "&amp;")
                 .Replace("<", "&lt;")
-                .Replace(">", "&gt;")
-                .Replace("\n\r", "<br />")
-                .Replace("\r\n", "<br />")
-                .Replace("\n", "<br />")
-                .Replace("\r", "<br />");
+                .Replace(">", "&gt;");
+            return rgxLineEndingsExpression.Replace(strReturn, "<br />");
         }
 
         /// <summary>
@@ -1240,7 +1249,7 @@ namespace Chummer
             {
                 if (!rtbRtfManipulator.IsHandleCreated)
                     rtbRtfManipulator.CreateControl();
-                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput);
+                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput.NormalizeWhiteSpace());
                 return rtbRtfManipulator.Rtf;
             }
         }
@@ -1268,13 +1277,13 @@ namespace Chummer
                     }
                     catch (ArgumentException)
                     {
-                        return strInput;
+                        return strInput.NormalizeWhiteSpace();
                     }
 
-                    return rtbRtfManipulator.Text;
+                    return rtbRtfManipulator.Text.NormalizeWhiteSpace();
                 }
             }
-            return strInput;
+            return strInput.NormalizeWhiteSpace();
         }
 
         public static string RtfToHtml(this string strInput)
@@ -1329,7 +1338,8 @@ namespace Chummer
 
         private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
+        private static readonly Regex rgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private static readonly object rtbRtfManipulatorLock = new object();
         private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
     }

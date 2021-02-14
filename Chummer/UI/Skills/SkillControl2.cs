@@ -500,12 +500,11 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmItemNotes = new frmNotes { Notes = _objSkill.Notes })
+            using (frmNotes frmItemNotes = new frmNotes(_objSkill.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-
                 _objSkill.Notes = frmItemNotes.Notes;
             }
         }

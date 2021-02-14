@@ -36,7 +36,7 @@ namespace Chummer
         private string _strNotes;
 
         #region Control Events
-        public frmNotes()
+        public frmNotes(string strOldNotes)
 		{
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -55,12 +55,20 @@ namespace Chummer
             Width = _intWidth;
 			Height = _intHeight;
             _blnLoading = false;
+            txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
         }
 
 		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
 		{
-            _strNotes = txtNotes.Text;
-            DialogResult = DialogResult.OK;
+            if (_strNotes == txtNotes.Text)
+            {
+                DialogResult = DialogResult.Cancel;
+            }
+            else
+            {
+                _strNotes = txtNotes.Text;
+                DialogResult = DialogResult.OK;
+            }
 		}
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
@@ -91,19 +99,8 @@ namespace Chummer
         /// <summary>
         /// Notes.
         /// </summary>
-        public string Notes
-        {
-            get => _strNotes;
-            set
-            {
-                string strNewValue = value.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
-                if (_strNotes != strNewValue)
-                {
-                    _strNotes = strNewValue;
-                    txtNotes.Text = strNewValue;
-                }
-            }
-        }
+        public string Notes => _strNotes;
+
         #endregion
     }
 }

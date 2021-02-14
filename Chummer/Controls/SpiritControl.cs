@@ -274,17 +274,12 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            string strOldValue = _objSpirit.Notes;
-            using (frmNotes frmSpritNotes = new frmNotes { Notes = strOldValue })
+            using (frmNotes frmSpritNotes = new frmNotes(_objSpirit.Notes))
             {
                 frmSpritNotes.ShowDialog(this);
                 if (frmSpritNotes.DialogResult != DialogResult.OK)
                     return;
-                frmSpritNotes.ShowDialog(this);
-
                 _objSpirit.Notes = frmSpritNotes.Notes;
-                if (strOldValue == _objSpirit.Notes)
-                    return;
             }
 
             string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");

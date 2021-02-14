@@ -277,7 +277,7 @@ namespace Chummer
                 new StringBuilder("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:")
                     .Append(webViewer.Height.ToString(GlobalOptions.InvariantCultureInfo))
                     .Append(";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">")
-                    .Append(strText.Replace(Environment.NewLine, "<br />").Replace("\n", "<br />").FastEscape('\r'))
+                    .Append(strText.CleanForHTML())
                     .Append("</body></html>").ToString();
         }
 

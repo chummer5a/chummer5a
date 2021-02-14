@@ -242,23 +242,17 @@ namespace Chummer
         {
             if (objNotes == null)
                 return;
-            string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes{ Notes = strOldValue })
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-
                 objNotes.Notes = frmItemNotes.Notes;
-                if (objNotes.Notes != strOldValue)
+                IsDirty = true;
+                if (treNode != null)
                 {
-                    IsDirty = true;
-
-                    if (treNode != null)
-                    {
-                        treNode.ForeColor = objNotes.PreferredColor;
-                        treNode.ToolTipText = objNotes.Notes.WordWrap();
-                    }
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap();
                 }
             }
         }

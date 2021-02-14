@@ -5501,18 +5501,13 @@ namespace Chummer
 
             if (objWeek == null)
                 return;
-            string strOldValue = objWeek.Notes;
-            using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+            using (frmNotes frmItemNotes = new frmNotes(objWeek.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-
                 objWeek.Notes = frmItemNotes.Notes;
-                if (objWeek.Notes != strOldValue)
-                {
-                    IsDirty = true;
-                }
+                IsDirty = true;
             }
         }
 

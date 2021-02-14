@@ -4842,21 +4842,16 @@ namespace Chummer
             {
                 case Gear objGear:
                 {
-                    string strOldValue = objGear.Notes;
-                    using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+                    using (frmNotes frmItemNotes = new frmNotes(objGear.Notes))
                     {
                         frmItemNotes.ShowDialog(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
                             return;
-
                         objGear.Notes = frmItemNotes.Notes;
-                        if (objGear.Notes != strOldValue)
-                        {
-                            IsDirty = true;
+                        IsDirty = true;
 
-                            treVehicles.SelectedNode.ForeColor = objGear.PreferredColor;
-                            treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
-                        }
+                        treVehicles.SelectedNode.ForeColor = objGear.PreferredColor;
+                        treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
                     }
 
                     break;
