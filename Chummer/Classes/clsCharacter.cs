@@ -16250,7 +16250,7 @@ namespace Chummer
                                             while ((strLine = await objReader.ReadLineAsync()) != null)
                                             {
                                                 // Trim away the newlines and empty spaces at the beginning and end of lines
-                                                strLine = strLine.Trim('\n', '\r').Trim();
+                                                strLine = strLine.Trim('\n', '\r', ' ').Trim();
 
                                                 lstTextStatBlockLines.Add(strLine);
                                             }

@@ -18,7 +18,8 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
  using System.Xml.XPath;
  using Chummer.Backend.Equipment;
@@ -414,27 +415,30 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
 
             // Populate the Mods list.
-            string[] strAllowed = AllowedCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            string strMount = string.Empty;
-            for (int i = 0; i < strAllowed.Length; i++)
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
+            StringBuilder sbdCategoryFilter = new StringBuilder("(");
+            foreach (string strCategory in AllowedCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
-                if (!string.IsNullOrEmpty(strAllowed[i]))
-                    strMount += "category = \"" + strAllowed[i] + '\"';
-                if (i < strAllowed.Length - 1 || !ExcludeGeneralCategory)
-                {
-                    strMount += " or ";
-                }
+                if (!string.IsNullOrEmpty(strCategory))
+                    sbdCategoryFilter.Append("category = \"" + strCategory + "\" or ");
             }
+
             if (!ExcludeGeneralCategory)
             {
-                strMount += "category = \"General\"";
+                sbdCategoryFilter.Append("category = \"General\")");
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString());
             }
-            strMount += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            else if (sbdCategoryFilter.Length > 0)
+            {
+                sbdCategoryFilter.Length -= 4;
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(")");
+            }
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             int intOverLimit = 0;
             XPathNodeIterator objXmlModList =
-                _xmlBaseDataNode.Select("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() +
-                                        ")]");
+                _xmlBaseDataNode.Select("/chummer/mods/mod[" + sbdFilter.ToString() + ']');
             if (objXmlModList.Count > 0)
             {
                 foreach (XPathNavigator objXmlMod in objXmlModList)

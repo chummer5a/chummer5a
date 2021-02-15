@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
@@ -655,19 +656,19 @@ namespace Chummer
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return null;
-            string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                strFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + objCurrentGrade.Name + "\")";
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"").Append(objCurrentGrade.Name).Append("\")");
                 if (objCurrentGrade.SecondHand)
-                    strFilter += " and not(nosecondhand)";
+                    sbdFilter.Append(" and not(nosecondhand)");
             }
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-
-            return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + strFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
+            return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter.ToString() + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
         private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)

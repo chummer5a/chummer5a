@@ -240,10 +240,9 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
-
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             // Populate the Complex Form list.
             List<ListItem> lstComplexFormItems = new List<ListItem>();
             foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select("complexform[" + strFilter + ']'))

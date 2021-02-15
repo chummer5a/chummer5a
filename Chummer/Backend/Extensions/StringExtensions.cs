@@ -1185,12 +1185,15 @@ namespace Chummer
         /// Normalizes line endings to always be that of Environment.NewLine.
         /// </summary>
         /// <param name="strInput">String to normalize.</param>
+        /// <param name="blnEscaped">If the line endings in the string are defined in an escaped fashion (e.g. as "\\n"), set to true.</param>
         /// <returns></returns>
-        public static string NormalizeLineEndings(this string strInput)
+        public static string NormalizeLineEndings(this string strInput, bool blnEscaped = false)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            return rgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
+            return blnEscaped
+                ? rgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
+                : rgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
         }
 
         /// <summary>
@@ -1339,6 +1342,8 @@ namespace Chummer
         private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private static readonly Regex rgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex rgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private static readonly object rtbRtfManipulatorLock = new object();
         private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
