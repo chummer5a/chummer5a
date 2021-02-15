@@ -4750,11 +4750,11 @@
     </string>
     <string>
       <key>Checkbox_NetworkSubmersion</key>
-      <text>Group Submersion (-{0})</text>
+      <text>Group Submersion (-{0}) (KC 106)</text>
     </string>
     <string>
       <key>Checkbox_SubmersionTask</key>
-      <text>Submersion Task (-{0})</text>
+      <text>Submersion Task (-{0}) (DT 164)</text>
     </string>
     <string>
       <key>Checkbox_JoinedGroup</key>
