@@ -79,7 +79,7 @@ namespace Chummer
                                         if (s_DictionaryEnglishStrings.ContainsKey(strKey))
                                             Utils.BreakIfDebug();
                                         else
-                                            s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
+                                            s_DictionaryEnglishStrings.Add(strKey, strText.NormalizeLineEndings(true));
                                     }
                                 }
                             }
@@ -995,9 +995,9 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                                     {
                                         if (TranslatedStrings.ContainsKey(strKey))
-                                            TranslatedStrings[strKey] = strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine);
+                                            TranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
                                         else
-                                            TranslatedStrings.Add(strKey, strText.Replace("\\n\\r", Environment.NewLine).Replace("\\n", Environment.NewLine));
+                                            TranslatedStrings.Add(strKey, strText.NormalizeLineEndings(true));
                                     }
                                 }
                             }

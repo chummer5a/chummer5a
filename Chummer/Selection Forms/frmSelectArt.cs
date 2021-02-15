@@ -164,7 +164,10 @@ namespace Chummer
                 return;
 
             List<ListItem> lstArts = new List<ListItem>();
-            foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + '[' + _strXPathFilter + CommonFunctions.GenerateSearchXPath(txtSearch.Text) + ']'))
+            string strFilter = _strXPathFilter;
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
             {
                 string strId = objXmlMetamagic.SelectSingleNode("id")?.Value;
                 if (!string.IsNullOrEmpty(strId))

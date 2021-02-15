@@ -113,34 +113,18 @@ namespace Chummer
                         else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
                         {
                             string strKey = Path.GetFileName(strEntryFullName);
-                            Bitmap bmpMugshot = new Bitmap(entry.Open(), true);
-                            if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                            using (Bitmap bmpMugshot = new Bitmap(entry.Open(), true))
                             {
+                                Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
+                                    ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
+                                    : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                 if (_dicImages.ContainsKey(strKey))
                                 {
                                     _dicImages[strKey].Dispose();
-                                    _dicImages[strKey] = bmpMugshot;
+                                    _dicImages[strKey] = bmpNewMugshot;
                                 }
                                 else
-                                    _dicImages.Add(strKey, bmpMugshot);
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    Bitmap bmpMugshotCorrected = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                    if (_dicImages.ContainsKey(strKey))
-                                    {
-                                        _dicImages[strKey].Dispose();
-                                        _dicImages[strKey] = bmpMugshotCorrected;
-                                    }
-                                    else
-                                        _dicImages.Add(strKey, bmpMugshotCorrected);
-                                }
-                                finally
-                                {
-                                    bmpMugshot.Dispose();
-                                }
+                                    _dicImages.Add(strKey, bmpNewMugshot);
                             }
                         }
                     }
@@ -448,18 +432,17 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (!Disposing && !picMugshot.Disposing && !picMugshot.IsDisposed)
+            if (Disposing || picMugshot.Disposing || picMugshot.IsDisposed)
+                return;
+            try
             {
-                try
-                {
-                    picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                        ? PictureBoxSizeMode.CenterImage
-                        : PictureBoxSizeMode.Zoom;
-                }
-                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
-                {
-                    picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
-                }
+                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                    ? PictureBoxSizeMode.CenterImage
+                    : PictureBoxSizeMode.Zoom;
+            }
+            catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+            {
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
             }
         }
         #endregion
@@ -467,69 +450,66 @@ namespace Chummer
         private async void DoImport()
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if (objSelectedNode != null && objSelectedNode.Level > 0)
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+                return;
+            int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalOptions.InvariantCultureInfo);
+            if (intIndex < 0 || intIndex >= _lstCharacterCache.Count)
+                return;
+            string strFile = _lstCharacterCache[intIndex]?.FilePath;
+            string strCharacterId = _lstCharacterCache[intIndex]?.CharacterId;
+            if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
+                return;
+            string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+            if (!File.Exists(strFilePath)
+                && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalOptions.InvariantCultureInfo);
-                if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
+                using (new CursorWait(this))
+                using (frmOptions frmOptions = new frmOptions())
+                    frmOptions.ShowDialog(this);
+            }
+
+            using (new CursorWait(this))
+            {
+                cmdImport.Enabled = false;
+                cmdSelectFile.Enabled = false;
+                Character objCharacter = new Character();
+                string settingsPath = Path.Combine(Application.StartupPath, "settings");
+                string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
+
+                if (settingsFiles.Length > 1)
                 {
-                    string strFile = _lstCharacterCache[intIndex]?.FilePath;
-                    string strCharacterId = _lstCharacterCache[intIndex]?.CharacterId;
-                    if (!string.IsNullOrEmpty(strFile) && !string.IsNullOrEmpty(strCharacterId))
+                    using (frmSelectSetting frmPickSetting = new frmSelectSetting())
                     {
-                        string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-                        if (!File.Exists(strFilePath)
-                            && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            using (new CursorWait(this))
-                                using (frmOptions frmOptions = new frmOptions())
-                                    frmOptions.ShowDialog(this);
-                        }
+                        frmPickSetting.ShowDialog(this);
 
-                        using (new CursorWait(this))
-                        {
-                            cmdImport.Enabled = false;
-                            cmdSelectFile.Enabled = false;
-                            Character objCharacter = new Character();
-                            string settingsPath = Path.Combine(Application.StartupPath, "settings");
-                            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
+                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                            return;
 
-                            if (settingsFiles.Length > 1)
-                            {
-                                using (frmSelectSetting frmPickSetting = new frmSelectSetting())
-                                {
-                                    frmPickSetting.ShowDialog(this);
-
-                                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                                        return;
-
-                                    objCharacter.SettingsFile = frmPickSetting.SettingsFile;
-                                }
-                            }
-                            else
-                            {
-                                string strSettingsFile = settingsFiles[0];
-                                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
-                            }
-
-                            Program.MainForm.OpenCharacters.Add(objCharacter);
-                            //Timekeeper.Start("load_file");
-                            bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
-                            //Timekeeper.Finish("load_file");
-                            if (!blnLoaded)
-                            {
-                                Program.MainForm.OpenCharacters.Remove(objCharacter);
-                                cmdImport.Enabled = true;
-                                cmdSelectFile.Enabled = true;
-                                return;
-                            }
-
-                            Program.MainForm.OpenCharacter(objCharacter);
-                        }
-
-                        Close();
+                        objCharacter.SettingsFile = frmPickSetting.SettingsFile;
                     }
                 }
+                else
+                {
+                    string strSettingsFile = settingsFiles[0];
+                    objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+                }
+
+                Program.MainForm.OpenCharacters.Add(objCharacter);
+                //Timekeeper.Start("load_file");
+                bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
+                //Timekeeper.Finish("load_file");
+                if (!blnLoaded)
+                {
+                    Program.MainForm.OpenCharacters.Remove(objCharacter);
+                    cmdImport.Enabled = true;
+                    cmdSelectFile.Enabled = true;
+                    return;
+                }
+
+                Program.MainForm.OpenCharacter(objCharacter);
             }
+
+            Close();
         }
     }
 }

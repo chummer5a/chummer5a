@@ -965,27 +965,29 @@ namespace Chummer
                 sbdFilter.Append(" and category = \"" + strCategory + '\"');
             else if (_setAllowedCategories.Count > 0)
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    sbdFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
             if (_setAllowedNames.Count > 0)
             {
-                StringBuilder objNameFilter = new StringBuilder();
-                foreach (var strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
+                StringBuilder sbdNameFilter = new StringBuilder();
+                foreach (string strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
                 {
-                    objNameFilter.Append("name = \"" + strItem + "\" or ");
+                    sbdNameFilter.Append("name = \"").Append(strItem).Append("\" or ");
                 }
-                if (objNameFilter.Length > 0)
+                if (sbdNameFilter.Length > 0)
                 {
-                    sbdFilter.Append(" and (" + objNameFilter.ToString().TrimEndOnce(" or ") + ')');
+                    sbdNameFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdNameFilter.ToString()).Append(')');
                 }
             }
             if (ShowArmorCapacityOnly)
@@ -999,9 +1001,9 @@ namespace Chummer
             if (_objGearParent == null)
                 sbdFilter.Append(" and not(requireparent)");
             if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
-                sbdFilter.Append(" and ammoforweapontype = \"" + ForceItemAmmoForWeaponType + "\"");
-
-            sbdFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ammoforweapontype = \"").Append(ForceItemAmmoForWeaponType).Append("\"");
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }

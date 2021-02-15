@@ -165,7 +165,7 @@ namespace Chummer
         /// </summary>
         private void BuildMetamagicList()
         {
-            string strFilter = _objCharacter.Options.BookXPath();
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
             if (_objCharacter.MAGEnabled)
             {
@@ -173,13 +173,13 @@ namespace Chummer
                 if (blnIsMagician != _objCharacter.AdeptEnabled)
                 {
                     if (blnIsMagician)
-                        strFilter = "magician = 'True' and (" + strFilter + ')';
+                        strFilter += "and magician = \"" + bool.TrueString + '\"';
                     else
-                        strFilter = "adept = 'True' and (" + strFilter + ')';
+                        strFilter += "and adept = '" + bool.TrueString + '\"';
                 }
             }
-
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             List<ListItem> lstMetamagics = new List<ListItem>();
             using (XmlNodeList objXmlMetamagicList = _objXmlDocument.SelectNodes(_strRootXPath + '[' + strFilter + ']'))
                 if (objXmlMetamagicList?.Count > 0)

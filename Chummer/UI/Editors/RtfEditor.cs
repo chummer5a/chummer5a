@@ -155,7 +155,7 @@ namespace Chummer.UI.Editors
                 if (value.IsRtf())
                     rtbContent.Rtf = value;
                 else
-                    rtbContent.Text = value;
+                    rtbContent.Text = value.NormalizeWhiteSpace();
             }
         }
 

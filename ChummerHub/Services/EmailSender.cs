@@ -10,26 +10,23 @@ using System.Threading.Tasks;
 
 namespace ChummerHub.Services
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmailSender'
     public class EmailSender : IEmailSender
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmailSender'
     {
         private readonly ILogger _logger;
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.EmailSender(IOptions<AuthMessageSenderOptions>, ILogger<EmailSender>)'
         public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor, ILogger<EmailSender> logger)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.EmailSender(IOptions<AuthMessageSenderOptions>, ILogger<EmailSender>)'
-        {
+       {
             Options = optionsAccessor.Value;
+            
             _logger = logger;
+            if (String.IsNullOrEmpty(Options.SendGridKey))
+                Options.SendGridKey = "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";
+            if (String.IsNullOrEmpty(Options.SendGridUser))
+                Options.SendGridUser = "ArchonMegalon";
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.Options'
         public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.Options'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.SendEmailAsync(string, string, string)'
         public Task SendEmailAsync(string email, string subject, string message)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.SendEmailAsync(string, string, string)'
         {
             _logger.LogInformation("SendMailAsync\tTo: " + email
                     + Environment.NewLine + "\tSubject: " + subject
@@ -37,10 +34,12 @@ namespace ChummerHub.Services
             return Execute(Options.SendGridKey, subject, message, email);
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.Execute(string, string, string, string)'
         public Task Execute(string apiKey, string subject, string message, string email)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'EmailSender.Execute(string, string, string, string)'
         {
+            if (String.IsNullOrEmpty(apiKey))
+            {
+                throw new ArgumentNullException("EmailSender.cs: apiKey is null!");
+            }
             var httpClientHandler = new HttpClientHandler()
             {
                 Proxy = WebRequest.GetSystemWebProxy(),// new WebProxy("http://localhost:8888"),
@@ -51,9 +50,7 @@ namespace ChummerHub.Services
             httpClientHandler.DefaultProxyCredentials = CredentialCache.DefaultCredentials;
             httpClientHandler.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
             httpClientHandler.PreAuthenticate = true;
-#pragma warning disable CS0618 // 'SslProtocols.Ssl3' is obsolete: 'This value has been deprecated.  It is no longer supported. http://go.microsoft.com/fwlink/?linkid=14202'
             httpClientHandler.SslProtocols = System.Security.Authentication.SslProtocols.Ssl3 | System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls;
-#pragma warning restore CS0618 // 'SslProtocols.Ssl3' is obsolete: 'This value has been deprecated.  It is no longer supported. http://go.microsoft.com/fwlink/?linkid=14202'
             httpClientHandler.ServerCertificateCustomValidationCallback = (message2, cert, chain, errors) => { return true; };
             var httpClient = new HttpClient(httpClientHandler);
 

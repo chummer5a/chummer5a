@@ -90,16 +90,16 @@ namespace Chummer
             List<ListItem> lstAccessories = new List<ListItem>();
 
             // Populate the Accessory list.
-            StringBuilder sbdMount = new StringBuilder("(contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
-            foreach (var strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
+            StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+            foreach (string strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
-                sbdMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
+                sbdFilter.Append(" or contains(mount, \"").Append(strAllowedMount).Append("\")");
             }
-
-            sbdMount.Append(')').Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+            sbdFilter.Append(')');
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             int intOverLimit = 0;
-            foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(string.Format(GlobalOptions.InvariantCultureInfo, "accessories/accessory[({0}) and ({1})]",
-                sbdMount, _objCharacter.Options.BookXPath())))
+            foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[" + sbdFilter.ToString() + "]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId))

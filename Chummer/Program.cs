@@ -210,9 +210,17 @@ namespace Chummer
                     {
                         foreach (var rule in LogManager.Configuration.LoggingRules.ToList())
                         {
+#if DEBUG
+                            //enable logging to EventLog when Debugging
+                            if (rule.Levels.Count == 0 && (rule.RuleName == "ELChummer"))
+                                rule.EnableLoggingForLevels(LogLevel.Trace, LogLevel.Fatal);
+#endif
+
                             //only change the loglevel, if it's off - otherwise it has been changed manually
                             if (rule.Levels.Count == 0)
                                 rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
+
+
                         }
                     }
 

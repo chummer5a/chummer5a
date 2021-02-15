@@ -16250,7 +16250,7 @@ namespace Chummer
                                             while ((strLine = await objReader.ReadLineAsync()) != null)
                                             {
                                                 // Trim away the newlines and empty spaces at the beginning and end of lines
-                                                strLine = strLine.Trim('\n', '\r').Trim();
+                                                strLine = strLine.Trim('\n', '\r', ' ').Trim();
 
                                                 lstTextStatBlockLines.Add(strLine);
                                             }
@@ -16259,34 +16259,18 @@ namespace Chummer
                                 }
                                 else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
                                 {
-                                    Bitmap bmpMugshot = new Bitmap(entry.Open(), true);
-                                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                                    using (Bitmap bmpMugshot = new Bitmap(entry.Open(), true))
                                     {
+                                        Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
+                                            ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
+                                            : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                         if (dicImages.ContainsKey(strKey))
                                         {
                                             dicImages[strKey].Dispose();
-                                            dicImages[strKey] = bmpMugshot;
+                                            dicImages[strKey] = bmpNewMugshot;
                                         }
                                         else
-                                            dicImages.Add(strKey, bmpMugshot);
-                                    }
-                                    else
-                                    {
-                                        try
-                                        {
-                                            Bitmap bmpMugshotCorrected = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                            if (dicImages.ContainsKey(strKey))
-                                            {
-                                                dicImages[strKey].Dispose();
-                                                dicImages[strKey] = bmpMugshotCorrected;
-                                            }
-                                            else
-                                                dicImages.Add(strKey, bmpMugshotCorrected);
-                                        }
-                                        finally
-                                        {
-                                            bmpMugshot.Dispose();
-                                        }
+                                            dicImages.Add(strKey, bmpNewMugshot);
                                     }
                                 }
                             }

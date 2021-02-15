@@ -153,23 +153,21 @@ namespace Chummer
             {
                 foreach(TreeNode objCharacterNode in objTypeNode.Nodes)
                 {
-                    if (objCharacterNode.Tag is CharacterCache objCache)
+                    if (!(objCharacterNode.Tag is CharacterCache objCache))
+                        continue;
+                    objCharacterNode.Text = objCache.CalculatedName();
+                    StringBuilder sbdTooltip = new StringBuilder(objCache.FilePath);
+                    sbdTooltip.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
+                    if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
-                        objCharacterNode.Text = objCache.CalculatedName();
-                        StringBuilder sbdTooltip = new StringBuilder(objCache.FilePath.CheapReplace(
-                            Utils.GetStartupPath,
-                            () => '<' + Application.ProductName + '>'));
-                        if (!string.IsNullOrEmpty(objCache.ErrorText))
-                        {
-                            objCharacterNode.ForeColor = ColorManager.ErrorColor;
-                            sbdTooltip.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
-                                .AppendLine(LanguageManager.GetString("String_Colon"))
-                                .Append(objCache.ErrorText);
-                        }
-                        else
-                            objCharacterNode.ForeColor = ColorManager.WindowText;
-                        objCharacterNode.ToolTipText = sbdTooltip.ToString();
+                        objCharacterNode.ForeColor = ColorManager.ErrorColor;
+                        sbdTooltip.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
+                            .AppendLine(LanguageManager.GetString("String_Colon"))
+                            .Append(objCache.ErrorText);
                     }
+                    else
+                        objCharacterNode.ForeColor = ColorManager.WindowText;
+                    objCharacterNode.ToolTipText = sbdTooltip.ToString();
                 }
             }
         }
@@ -632,6 +630,7 @@ namespace Chummer
                 }
             }
         }
+
         private void treCharacterList_OnDefaultKeyDown(object sender, KeyEventArgs e)
         {
             TreeNode t = treCharacterList.SelectedNode;

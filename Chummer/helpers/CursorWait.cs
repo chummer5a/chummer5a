@@ -17,66 +17,95 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using NLog;
 using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public class CursorWait : IDisposable
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static bool _blnTopMostWaitCursor;
+        private static ConcurrentDictionary<Control, CursorWait> _dicWaitingControls = new ConcurrentDictionary<Control, CursorWait>();
         private readonly bool _blnOldUseWaitCursor;
         private readonly bool _blnControlIsForm;
         private readonly Control _objControl;
         private readonly Cursor _objOldCursor;
         private readonly Form _objControlTopParent;
         private readonly Cursor _objOldCursorTopParent;
+        private readonly Stopwatch start = new Stopwatch();
+        private readonly Guid instance = Guid.NewGuid();
+
         public CursorWait(Control objControl = null, bool blnAppStarting = false)
         {
-            // Wait
-            _objControl = objControl;
-            if (_objControl?.IsDisposed != false)
+            if (objControl != null && _dicWaitingControls.ContainsKey(objControl))
             {
-                if (!_blnTopMostWaitCursor)
-                {
-                    _blnTopMostWaitCursor = true;
-                    _blnOldUseWaitCursor = Application.UseWaitCursor;
-                    Application.UseWaitCursor = true;
-                }
+                _blnDisposed = true;
+                return;
             }
-            else
+            try
             {
-                if (objControl is Form frmControl)
-                    _blnControlIsForm = true;
-                else
-                    frmControl = null;
-                Cursor objNewCursor = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-                if (objNewCursor != Cursors.AppStarting && (!_blnControlIsForm || frmControl?.IsMdiChild == true))
+                start.Start();
+                Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance.ToString() + "\".");
+                if (objControl != null)
+                    _dicWaitingControls.TryAdd(objControl, this);
+                _objControl = objControl;
+                if (_objControl?.IsDisposed != false)
                 {
-                    if (_objControl is UserControl objUserControl)
+                    if (!_blnTopMostWaitCursor)
                     {
-                        _objControlTopParent = objUserControl.ParentForm;
+                        _blnTopMostWaitCursor = true;
+                        _blnOldUseWaitCursor = Application.UseWaitCursor;
+                        Application.UseWaitCursor = true;
                     }
+                }
+                else
+                {
+                    if (objControl is Form frmControl)
+                        _blnControlIsForm = true;
                     else
+                        frmControl = null;
+                    Cursor objNewCursor = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
+                    if (objNewCursor != Cursors.AppStarting && (!_blnControlIsForm || frmControl?.IsMdiChild == true))
                     {
-                        for (Control objLoop = _objControl.Parent; objLoop != null; objLoop = objLoop.Parent)
+                        if (_objControl is UserControl objUserControl)
                         {
-                            if (objLoop is Form objLoopForm)
+                            _objControlTopParent = objUserControl.ParentForm;
+                        }
+                        else
+                        {
+                            for (Control objLoop = _objControl.Parent; objLoop != null; objLoop = objLoop.Parent)
                             {
-                                _objControlTopParent = objLoopForm;
-                                break;
+                                if (objLoop is Form objLoopForm)
+                                {
+                                    _objControlTopParent = objLoopForm;
+                                    break;
+                                }
                             }
                         }
+
+                        _objOldCursorTopParent = _objControlTopParent?.Cursor ?? Cursors.Default;
                     }
 
-                    _objOldCursorTopParent = _objControlTopParent?.Cursor ?? Cursors.Default;
+                    _objOldCursor = _objControl.Cursor;
+                    _objControl.DoThreadSafe(() => _objControl.Cursor = objNewCursor);
+                    _objControlTopParent.DoThreadSafe(() =>
+                    {
+                        _objControlTopParent.Cursor = objNewCursor;
+                        if (_blnControlIsForm)
+                            _objControl.SuspendLayout();
+                    });
+                    
                 }
-
-                _objOldCursor = _objControl.Cursor;
-                _objControl.DoThreadSafe(() => _objControl.Cursor = objNewCursor);
-                _objControlTopParent.DoThreadSafe(() => _objControlTopParent.Cursor = objNewCursor);
-                if (_blnControlIsForm)
-                    _objControl.SuspendLayout();
+            }
+            catch(Exception e)
+            {
+                Log.WarnException("Exception while creating CursorWait-Object for \"" + objControl + "\":"
+                    + Environment.NewLine + e.ToString(), e);
             }
         }
 
@@ -84,26 +113,42 @@ namespace Chummer
 
         public void Dispose()
         {
+            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + instance.ToString() + "\" after " + start.ElapsedMilliseconds + "ms.");
             if (_blnDisposed)
                 return;
 
             if (_objControlTopParent?.IsDisposed == false)
-                _objControlTopParent.DoThreadSafe(() => _objControlTopParent.Cursor = _objOldCursorTopParent);
+            {
+                _objControlTopParent.DoThreadSafe(() =>
+                {
+                    _objControlTopParent.Cursor = _objOldCursorTopParent;
+                    
+                });
+            }
+
             if (_objControl?.IsDisposed != false)
             {
-                if (_blnTopMostWaitCursor)
+                _objControl.DoThreadSafe(() =>
                 {
-                    _blnTopMostWaitCursor = false;
-                    Application.UseWaitCursor = _blnOldUseWaitCursor;
-                }
+                    if (_blnTopMostWaitCursor)
+                    {
+                        _blnTopMostWaitCursor = false;
+                        Application.UseWaitCursor = _blnOldUseWaitCursor;
+                    }
+                });
             }
             else
             {
-                _objControl.DoThreadSafe(() => _objControl.Cursor = _objOldCursor);
-                if (_blnControlIsForm)
-                    _objControl.ResumeLayout();
+                _objControl.DoThreadSafe(() =>
+                {
+                    _objControl.Cursor = _objOldCursor;
+                    if (_blnControlIsForm)
+                        _objControl.ResumeLayout();
+                });
             }
 
+            if (_objControl != null)
+                _dicWaitingControls.TryRemove(_objControl, out CursorWait _);
             _blnDisposed = true;
         }
     }

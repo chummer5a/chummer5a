@@ -213,10 +213,11 @@ namespace Chummer
         {
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (ShowQualities)
-                strFilter += " and isquality = \"" + bool.TrueString + "\"";
+                strFilter += " and isquality = \"" + bool.TrueString + '\"';
             else
                 strFilter += " and not(isquality = \"" + bool.TrueString + "\")";
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
             XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + "]");
 

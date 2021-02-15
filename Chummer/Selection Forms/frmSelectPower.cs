@@ -203,7 +203,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 StringBuilder sbdFilter = new StringBuilder();
@@ -211,11 +211,13 @@ namespace Chummer
                     sbdFilter.Append("name = \"").Append(strPower.Trim()).Append("\" or ");
                 if (sbdFilter.Length > 0)
                 {
-                    strFilter += " and (" + sbdFilter.ToString().TrimEndOnce(" or ") + ')';
+                    sbdFilter.Length -= 4;
+                    strFilter += " and (" + sbdFilter.ToString() + ')';
                 }
             }
 
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
             List<ListItem> lstPower = new List<ListItem>();
             foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))

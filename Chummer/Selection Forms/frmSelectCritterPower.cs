@@ -305,37 +305,38 @@ namespace Chummer
                 }
             }
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
-                strFilter += " and (contains(category,\"" + strCategory + "\"))";
+                sbdFilter.Append(" and (contains(category,\"").Append(strCategory).Append("\"))");
             }
             else
             {
                 bool blnHasToxic = false;
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
                     {
-                        objCategoryFilter.Append("(contains(category,\"" + strItem + "\")) or ");
+                        sbdCategoryFilter.Append("(contains(category,\"" + strItem + "\")) or ");
                         if (strItem == "Toxic Critter Powers")
                         {
-                            objCategoryFilter.Append("toxic = \"True\" or ");
+                            sbdCategoryFilter.Append("toxic = \"True\" or ");
                             blnHasToxic = true;
                         }
                     }
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
                 if (!blnHasToxic)
-                    strFilter += " and (not(toxic) or toxic != \"True\")";
+                    sbdFilter.Append(" and (not(toxic) or toxic != \"True\")");
             }
-
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-            foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + strFilter + "]"))
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+            foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter.ToString() + "]"))
             {
                 string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;

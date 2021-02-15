@@ -2038,9 +2038,8 @@ namespace Chummer
                         lstClones[i] = objLoopCharacter;
                     }
                 });
+                Program.MainForm.OpenCharacterList(lstClones, false);
             }
-
-            Program.MainForm.OpenCharacterList(lstClones, false);
         }
 
         private void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
@@ -2755,10 +2754,11 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                Character objOpenCharacter;
                 using (new CursorWait(this))
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
+                {
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                }
             }
         }
 
@@ -2910,10 +2910,11 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                Character objOpenCharacter;
                 using (new CursorWait(this))
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
+                {
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                }
             }
         }
 
@@ -5500,18 +5501,13 @@ namespace Chummer
 
             if (objWeek == null)
                 return;
-            string strOldValue = objWeek.Notes;
-            using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+            using (frmNotes frmItemNotes = new frmNotes(objWeek.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-
                 objWeek.Notes = frmItemNotes.Notes;
-                if (objWeek.Notes != strOldValue)
-                {
-                    IsDirty = true;
-                }
+                IsDirty = true;
             }
         }
 
