@@ -409,9 +409,7 @@ namespace ChummerHub
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
         {
             //app.UseSession();
             app.UseCors(options => options.AllowAnyOrigin());
@@ -419,7 +417,7 @@ namespace ChummerHub
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+                //app.UseDatabaseErrorPage();
 
             }
             else

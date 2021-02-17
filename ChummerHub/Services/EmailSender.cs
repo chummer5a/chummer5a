@@ -1,3 +1,6 @@
+
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,10 +21,22 @@ namespace ChummerHub.Services
             Options = optionsAccessor.Value;
             
             _logger = logger;
-            if (String.IsNullOrEmpty(Options.SendGridKey))
-                Options.SendGridKey = "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";
-            if (String.IsNullOrEmpty(Options.SendGridUser))
-                Options.SendGridUser = "ArchonMegalon";
+            try
+            {
+                string secretName = $"SendGridKey";
+                string keyVaultUrl = "https://sinnersvault.vault.azure.net/";
+                var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+                KeyVaultSecret keySecret = client.GetSecret(secretName);
+                Options.SendGridKey = keySecret.Value;
+                KeyVaultSecret userSecret = client.GetSecret($"SendGridUser");
+                Options.SendGridUser = userSecret.Value;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                throw;
+            }
+
         }
 
         public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
