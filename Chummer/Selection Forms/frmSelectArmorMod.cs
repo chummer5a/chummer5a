@@ -416,19 +416,13 @@ namespace Chummer
 
             // Populate the Mods list.
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
-            StringBuilder sbdCategoryFilter = new StringBuilder("(");
+            StringBuilder sbdCategoryFilter = new StringBuilder(ExcludeGeneralCategory ? string.Empty : "category = \"General\" or ");
             foreach (string strCategory in AllowedCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 if (!string.IsNullOrEmpty(strCategory))
                     sbdCategoryFilter.Append("category = \"" + strCategory + "\" or ");
             }
-
-            if (!ExcludeGeneralCategory)
-            {
-                sbdCategoryFilter.Append("category = \"General\")");
-                sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString());
-            }
-            else if (sbdCategoryFilter.Length > 0)
+            if (sbdCategoryFilter.Length > 0)
             {
                 sbdCategoryFilter.Length -= 4;
                 sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(")");
