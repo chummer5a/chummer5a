@@ -392,13 +392,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Normalizes whitespace for a given textblock, removing extra spaces and trimming the string in the process.
+        /// Normalizes whitespace for a given textblock, removing extra spaces and trimming the string.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
-        /// <param name="chrWhiteSpace">Whitespace character to use when replacing chars.</param>
-        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to char::IsWhiteSpace.</param>
-        /// <returns>New string with any chars that return true from <paramref name="funcIsWhiteSpace"/> replaced with <paramref name="chrWhiteSpace"/> and any excess whitespace removed.</returns>
-        public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ', Func<char, bool> funcIsWhiteSpace = null)
+        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to char::IsWhiteSpace && !char::IsControl.</param>
+        /// <returns>New string with any chars that return true from <paramref name="funcIsWhiteSpace"/> replaced with the first whitespace in a sequence and any excess whitespace removed.</returns>
+        public static string NormalizeWhiteSpace(this string strInput, Func<char, bool> funcIsWhiteSpace = null)
         {
             if (strInput == null)
                 return string.Empty;
@@ -406,64 +405,75 @@ namespace Chummer
             if (intLength == 0)
                 return strInput;
             if (funcIsWhiteSpace == null)
-                funcIsWhiteSpace = char.IsWhiteSpace;
+                funcIsWhiteSpace = (x) => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalOptions.MaxStackLimit)
             {
                 char[] achrNewChars = new char[intLength];
                 // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                 int intCurrent = 0;
-                // Start as true so that whitespace at the first character is trimmed as well
-                bool blnLastCharWasWhiteSpace = true;
+                int intLoopWhitespaceCount = 0;
+                bool blnTrimMode = true;
+                char chrLastAddedCharacter = ' ';
                 for (int i = 0; i < intLength; ++i)
                 {
                     char chrLoop = strInput[i];
-                    // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
+                    // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
                     if (funcIsWhiteSpace(chrLoop))
                     {
-                        if (!blnLastCharWasWhiteSpace)
-                            achrNewChars[intCurrent++] = chrWhiteSpace;
-                        blnLastCharWasWhiteSpace = true;
+                        intLoopWhitespaceCount += 1;
+                        if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
+                        {
+                            achrNewChars[intCurrent++] = chrLoop;
+                            chrLastAddedCharacter = chrLoop;
+                        }
                     }
                     else
                     {
+                        intLoopWhitespaceCount = 0;
+                        blnTrimMode = false;
                         achrNewChars[intCurrent++] = chrLoop;
-                        blnLastCharWasWhiteSpace = false;
+                        chrLastAddedCharacter = chrLoop;
                     }
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                 // If the last char is whitespace, we don't copy that, either.
-                return new string(achrNewChars, 0, blnLastCharWasWhiteSpace ? intCurrent - 1 : intCurrent);
+                return new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
                 // Create CharArray in which we will store the new string
                 char* achrNewChars = stackalloc char[intLength];
-                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                 int intCurrent = 0;
-                // Start as true so that whitespace at the first character is trimmed as well
-                bool blnLastCharWasWhiteSpace = true;
+                int intLoopWhitespaceCount = 0;
+                bool blnTrimMode = true;
+                char chrLastAddedCharacter = ' ';
                 for (int i = 0; i < intLength; ++i)
                 {
                     char chrLoop = strInput[i];
-                    // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
+                    // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
                     if (funcIsWhiteSpace(chrLoop))
                     {
-                        if (!blnLastCharWasWhiteSpace)
-                            achrNewChars[intCurrent++] = chrWhiteSpace;
-                        blnLastCharWasWhiteSpace = true;
+                        intLoopWhitespaceCount += 1;
+                        if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
+                        {
+                            achrNewChars[intCurrent++] = chrLoop;
+                            chrLastAddedCharacter = chrLoop;
+                        }
                     }
                     else
                     {
+                        intLoopWhitespaceCount = 0;
+                        blnTrimMode = false;
                         achrNewChars[intCurrent++] = chrLoop;
-                        blnLastCharWasWhiteSpace = false;
+                        chrLastAddedCharacter = chrLoop;
                     }
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                 // If the last char is whitespace, we don't copy that, either.
-                return new string(achrNewChars, 0, blnLastCharWasWhiteSpace ? intCurrent - 1 : intCurrent);
+                return new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
             }
         }
 
