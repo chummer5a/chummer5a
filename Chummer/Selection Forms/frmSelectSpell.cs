@@ -78,6 +78,7 @@ namespace Chummer
                 limit.Add(improvement.ImprovedName);
             }
 
+            string strFilterPrefix = "spells/spell[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
             foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.Select("categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
@@ -87,18 +88,20 @@ namespace Chummer
                         (x.ImproveType == Improvement.ImprovementType.AllowSpellRange ||
                          x.ImproveType == Improvement.ImprovementType.LimitSpellRange) && x.Enabled))
                     {
-                        if (_xmlBaseSpellDataNode
-                                .Select(
-                                    "spells/spell[category = \"" + strCategory + "\" and range = \"" + improvement.ImprovedName + "\"]")
-                                .Count > 0)
+                        if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\" and range = \"" + improvement.ImprovedName + "\"]")
+                                != null)
                         {
                             limit.Add(strCategory);
                         }
                     }
 
-                    if (limit.Count != 0 && !limit.Contains(strCategory)) continue;
-                    if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory) continue;
+                    if (limit.Count != 0 && !limit.Contains(strCategory))
+                        continue;
+                    if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory)
+                        continue;
                 }
+                if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\"]") != null)
+                    continue;
 
                 _lstCategory.Add(new ListItem(strCategory,
                     objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));

@@ -88,14 +88,20 @@ namespace Chummer
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
 
             // Populate the Armor Category list.
+            string strFilterPrefix = "/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             if (objXmlCategoryList != null)
+            {
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
                     string strInnerText = objXmlCategory.InnerText;
-                    _lstCategory.Add(new ListItem(strInnerText,
-                        objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
+                    {
+                        _lstCategory.Add(new ListItem(strInnerText,
+                            objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    }
                 }
+            }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)

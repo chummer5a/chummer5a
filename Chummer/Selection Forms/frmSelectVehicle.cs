@@ -83,10 +83,15 @@ namespace Chummer
             }
 
             // Populate the Vehicle Category list.
+            string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
+                {
+                    _lstCategory.Add(new ListItem(strInnerText,
+                        objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
