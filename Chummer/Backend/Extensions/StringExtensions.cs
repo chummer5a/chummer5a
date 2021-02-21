@@ -1151,7 +1151,7 @@ namespace Chummer
 
                         // Trim whitespace following break
                         intCurrentPosition += intLengthToRead;
-                        while (intCurrentPosition < intEndOfLinePosition && char.IsWhiteSpace(strText[intCurrentPosition]))
+                        while (intCurrentPosition < intEndOfLinePosition && char.IsWhiteSpace(strText[intCurrentPosition]) && !char.IsControl(strText[intCurrentPosition]))
                             intCurrentPosition += 1;
                     }
                     while (intEndOfLinePosition > intCurrentPosition);
@@ -1180,7 +1180,12 @@ namespace Chummer
             for (int i = intMax; i >= 0; --i)
             {
                 char chrLoop = strText[intPosition + i];
-                if (char.IsWhiteSpace(chrLoop))
+                if (!char.IsControl(chrLoop)
+                    && chrLoop != '\u00A0' // Non-breaking spaces should not break lines
+                    && chrLoop != '\u202F' // Non-breaking spaces should not break lines
+                    && chrLoop != '\uFEFF' // Non-breaking spaces should not break lines
+                    && (char.IsWhiteSpace(chrLoop)
+                        || chrLoop == '\u00AD')) // Soft hyphens allow breakage
                 {
                     // Return length of text before whitespace
                     return i + 1;
