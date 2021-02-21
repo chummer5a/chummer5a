@@ -5012,7 +5012,8 @@
       <category>Shotguns</category>
       <type>Ranged</type>
       <conceal>6</conceal>
-      <accuracy>5</accuracy>
+      <!-- Accuracy is 5 but because of Trigger Removal must be 4 -->
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
       <ap>-1</ap>
@@ -11331,7 +11332,8 @@
       <category>Machine Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <accuracy>5</accuracy>
+      <!-- Accuracy is 5 but because of Trigger Removal must be 4 -->
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-</ap>
@@ -11498,7 +11500,8 @@
       <category>Submachine Guns</category>
       <type>Ranged</type>
       <conceal>2</conceal>
-      <accuracy>7</accuracy>
+      <!-- Accuracy is 7 but because of Trigger Removal must be 6 -->
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
       <ap>0</ap>
@@ -11929,7 +11932,8 @@
       <category>Sniper Rifles</category>
       <type>Ranged</type>
       <conceal>8</conceal>
-      <accuracy>8</accuracy>
+      <!-- Ammo is 8 but because of Trigger Removal must be 7 -->
+      <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>13P</damage>
       <ap>-4</ap>

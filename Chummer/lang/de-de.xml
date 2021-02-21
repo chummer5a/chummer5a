@@ -5471,7 +5471,7 @@
         </string>
         <string>
             <key>Checkbox_Option_AlternateMetatypeAttributeKarma</key>
-            <text>Die gesteigerten Werte von Metamenschen kosten in der Bauphase Punkte</text>
+            <text>Karma Kosten für Attribute mit (NEUE STUFE - (METATYP MINIMUM - 1)) * 5 Karma berechnen.</text>
         </string>
         <string>
             <key>Checkbox_Transgenic</key>
