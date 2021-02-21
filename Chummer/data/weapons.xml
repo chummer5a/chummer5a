@@ -11333,7 +11333,7 @@
       <type>Ranged</type>
       <conceal>0</conceal>
       <!-- Accuracy is 5 but because of Trigger Removal must be 4 -->
-      <accuracy>5</accuracy>
+      <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
       <ap>-</ap>
