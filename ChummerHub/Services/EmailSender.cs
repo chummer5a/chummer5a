@@ -21,22 +21,10 @@ namespace ChummerHub.Services
             Options = optionsAccessor.Value;
             
             _logger = logger;
-            try
-            {
-                string secretName = $"SendGridKey";
-                string keyVaultUrl = "https://sinnersvault.vault.azure.net/";
-                var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-                KeyVaultSecret keySecret = client.GetSecret(secretName);
-                Options.SendGridKey = keySecret.Value;
-                KeyVaultSecret userSecret = client.GetSecret($"SendGridUser");
-                Options.SendGridUser = userSecret.Value;
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.Message);
-                throw;
-            }
-
+            var keys = new KeyVault(_logger);
+            Options.SendGridKey = keys.GetSecret($"SendGridKey");
+            Options.SendGridUser = keys.GetSecret($"SendGridUser");
+            
         }
 
         public AuthMessageSenderOptions Options { get; } //set only via Secret Manager

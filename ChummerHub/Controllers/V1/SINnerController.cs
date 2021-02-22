@@ -417,6 +417,7 @@ namespace ChummerHub.Controllers.V1
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     Microsoft.ApplicationInsights.DataContracts.EventTelemetry telemetry = new Microsoft.ApplicationInsights.DataContracts.EventTelemetry("PutStoreXmlInCloud");
                     telemetry.Properties.Add("User", user?.Email);
+                    telemetry.Properties.Add("LastChange", sin?.LastChange.ToString());
                     telemetry.Properties.Add("SINnerId", sin.Id.ToString());
                     telemetry.Properties.Add("FileName", uploadedFile.FileName);
                     telemetry.Metrics.Add("FileSize", uploadedFile.Length);
@@ -428,6 +429,7 @@ namespace ChummerHub.Controllers.V1
                 }
                 try
                 {
+                    dbsinner.LastChange = sin.LastChange;
                     int x = await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException e)
@@ -1188,7 +1190,7 @@ namespace ChummerHub.Controllers.V1
             string normEmail = user?.NormalizedEmail;
             string userName = user?.UserName;
             var ur = _context.UserRights.Where(a => a.SINnerId == id).ToList();
-            if (ur.Any(a =>( (!string.IsNullOrEmpty(a.EMail)
+            if (ur.Any(a => ((!string.IsNullOrEmpty(a.EMail)
                               && a.EMail.ToUpperInvariant() == normEmail)
                              || a.EMail == null)
                             && a.CanEdit))
@@ -1209,6 +1211,26 @@ namespace ChummerHub.Controllers.V1
                         return dbsinner;
                 }
             }
+            if (!allincludes && (dbsinner.SINnerMetaData?.Visibility?.UserRights == null))
+            {
+                dbsinner = await _context.SINners
+                    .Include(a => a.SINnerMetaData)
+                    .Include(a => a.SINnerMetaData.Visibility)
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                    //.Include(a => a.MyExtendedAttributes)
+                    .Include(a => a.MyGroup).Where(a => a.Id == id).FirstOrDefaultAsync();
+                var ur2 = _context.UserRights.Where(a => a.SINnerId == id).ToList();
+                if (ur2.Any(a => ((!string.IsNullOrEmpty(a.EMail)
+                                  && a.EMail.ToUpperInvariant() == normEmail)
+                                 || a.EMail == null)
+                                && a.CanEdit))
+                {
+                    return dbsinner;
+                }
+                if (ur2.Count == 0)
+                    return dbsinner;
+            }
+            
             throw new NoUserRightException(userName, dbsinner.Id);
         }
 

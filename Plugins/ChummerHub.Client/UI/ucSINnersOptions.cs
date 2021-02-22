@@ -141,7 +141,7 @@ namespace ChummerHub.Client.UI
             var sinnerurl = client.BaseUri.ToString();
             Settings.Default.SINnerUrls.Clear();
             Settings.Default.Save();
-            Settings.Default.SINnerUrls.Add("https://chummer.azurewebsites.net/");
+            Settings.Default.SINnerUrls.Add("https://chummer-stable.azurewebsites.net/");
             Settings.Default.SINnerUrls.Add("https://chummer-beta.azurewebsites.net/");
             Settings.Default.Save();
             cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;

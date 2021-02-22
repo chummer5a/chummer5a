@@ -141,7 +141,7 @@ namespace ChummerHub.Client.UI
             this.cbSINnerUrl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSINnerUrl.FormattingEnabled = true;
             this.cbSINnerUrl.Items.AddRange(new object[] {
-            "https://chummer.azurewebsites.net/",
+            "https://chummer-stable.azurewebsites.net/",
             "https://localhost:5001/",
             "https://chummer-beta.azurewebsites.net/"});
             this.cbSINnerUrl.Location = new System.Drawing.Point(32, 3);
