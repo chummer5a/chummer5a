@@ -100,7 +100,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory)
                         continue;
                 }
-                if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\"]") != null)
+                if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\"]") == null)
                     continue;
 
                 _lstCategory.Add(new ListItem(strCategory,
