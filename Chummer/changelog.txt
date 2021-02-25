@@ -34,6 +34,7 @@ Application Fixes:
 - Special whitespace characters necessary for certain languages, e.g. non-breaking spaces in French or zero-width spaces in hyphenated English, are no longer automatically converted to standard, single-width spaces in characters' notes.
 - Armor, Vehicle, Vehicle Mod, Weapon, and Spell selection screens no longer show categories that have no selectable items (usually if the character does not have the necessary books enabled).
 - Adding Gear directly to locations now works properly.
+- Restricted Gear for weapons and/or vehicles that are added by other items no longer counts both the source item and the weapon/vehicle itself as two separate items.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

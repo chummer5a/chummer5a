@@ -5358,7 +5358,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
         public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
         {
-            if (!IncludedInWeapon)
+            if (!IncludedInWeapon && string.IsNullOrEmpty(ParentID))
             {
                 AvailabilityValue objTotalAvail = TotalAvailTuple();
                 if (!objTotalAvail.AddToParent)
