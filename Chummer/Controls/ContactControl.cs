@@ -46,12 +46,6 @@ namespace Chummer
             if (objContact == null)
                 throw new ArgumentNullException(nameof(objContact));
             InitializeComponent();
-            //We don't actually pay for contacts in play so everyone is free
-            //Don't present a useless field
-            if (objContact.CharacterObject.Created)
-            {
-                chkFree.Visible = false;
-            }
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -74,7 +68,7 @@ namespace Chummer
 
             if (_objContact.EntityType == ContactType.Enemy)
             {
-                imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                imgLink?.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
                         ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
                         : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
 
@@ -85,7 +79,7 @@ namespace Chummer
             }
             else
             {
-                imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                imgLink?.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
                         ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
                         : LanguageManager.GetString("Tip_Contact_LinkContact"));
 
@@ -215,7 +209,7 @@ namespace Chummer
                 tsContactOpen.Visible = false;
                 tsRemoveCharacter.Visible = false;
             }
-            cmsContact.Show(imgLink, imgLink.Left - 490, imgLink.Top);
+            cmsContact.Show(imgLink, imgLink.Left - cmsContact.PreferredSize.Width, imgLink.Top);
         }
 
         private async void tsContactOpen_Click(object sender, EventArgs e)
@@ -276,7 +270,7 @@ namespace Chummer
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
                 _objContact.FileName = openFileDialog.FileName;
-                imgLink.SetToolTip(_objContact.EntityType == ContactType.Enemy
+                imgLink?.SetToolTip(_objContact.EntityType == ContactType.Enemy
                     ? LanguageManager.GetString("Tip_Enemy_OpenFile")
                     : LanguageManager.GetString("Tip_Contact_OpenFile"));
             }
@@ -297,7 +291,7 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                imgLink.SetToolTip(_objContact.EntityType == ContactType.Enemy
+                imgLink?.SetToolTip(_objContact.EntityType == ContactType.Enemy
                         ? LanguageManager.GetString("Tip_Enemy_LinkFile")
                         : LanguageManager.GetString("Tip_Contact_LinkFile"));
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
@@ -353,8 +347,29 @@ namespace Chummer
             {
                 cmdExpand.Image = value ? Resources.Collapse : Resources.Expand;
                 if (value && tlpStatBlock == null)
-                    CreateStatBlock(); // Create statblock only on the first expansion to save on handles and load times
-                tlpStatBlock.Visible = value;
+                {
+                    // Create second row and statblock only on the first expansion to save on handles and load times
+                    CreateSecondRow();
+                    CreateStatBlock();
+                }
+                using (new CursorWait(this))
+                {
+                    SuspendLayout();
+                    lblConnection.Visible = value;
+                    lblLoyalty.Visible = value;
+                    nudConnection.Visible = value;
+                    nudLoyalty.Visible = value;
+                    chkGroup.Visible = value;
+                    //We don't actually pay for contacts in play so everyone is free
+                    //Don't present a useless field
+                    if (_objContact?.CharacterObject.Created == false)
+                        chkFree.Visible = value;
+                    chkBlackmail.Visible = value;
+                    chkFamily.Visible = value;
+                    imgLink.Visible = value;
+                    tlpStatBlock.Visible = value;
+                    ResumeLayout();
+                }
             }
         }
 
@@ -419,20 +434,7 @@ namespace Chummer
 
         private void DoDataBindings()
         {
-            chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
-            chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
-            chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
-            chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
-            chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
-            chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-            chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
-            chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
             lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
-            nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
-            nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
-            nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
-            nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
-            nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
             txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
             cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
@@ -441,6 +443,164 @@ namespace Chummer
 
             // Properties controllable by the character themselves
             txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+        }
+
+        private Label lblConnection;
+        private Label lblLoyalty;
+        private NumericUpDownEx nudConnection;
+        private NumericUpDownEx nudLoyalty;
+        private ColorableCheckBox chkGroup;
+        private ColorableCheckBox chkFree;
+        private ColorableCheckBox chkBlackmail;
+        private ColorableCheckBox chkFamily;
+        private PictureBox imgLink;
+
+        private void CreateSecondRow()
+        {
+            using (new CursorWait(this))
+            {
+                lblConnection = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Name = "lblConnection",
+                    Tag = "Label_Contact_Connection",
+                    Text = "Connection:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                nudConnection = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                    AutoSize = true,
+                    Maximum = new decimal(new[] { 12, 0, 0, 0 }),
+                    Minimum = new decimal(new[] { 1, 0, 0, 0 }),
+                    Name = "nudConnection",
+                    Value = new decimal(new[] { 1, 0, 0, 0 })
+                };
+                lblLoyalty = new Label
+                {
+                    Anchor = AnchorStyles.Right,
+                    AutoSize = true,
+                    Name = "lblLoyalty",
+                    Tag = "Label_Contact_Loyalty",
+                    Text = "Loyalty:",
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                nudLoyalty = new NumericUpDownEx
+                {
+                    Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                    AutoSize = true,
+                    Maximum = new decimal(new[] { 6, 0, 0, 0 }),
+                    Minimum = new decimal(new[] { 1, 0, 0, 0 }),
+                    Name = "nudLoyalty",
+                    Value = new decimal(new[] { 1, 0, 0, 0 })
+                };
+                chkFree = new ColorableCheckBox(components)
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    DefaultColorScheme = true,
+                    Name = "chkFree",
+                    Tag = "Checkbox_Contact_Free",
+                    Text = "Free",
+                    UseVisualStyleBackColor = true
+                };
+                chkGroup = new ColorableCheckBox(components)
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    DefaultColorScheme = true,
+                    Name = "chkGroup",
+                    Tag = "Checkbox_Contact_Group",
+                    Text = "Group",
+                    UseVisualStyleBackColor = true
+                };
+                chkBlackmail = new ColorableCheckBox(components)
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    DefaultColorScheme = true,
+                    Name = "chkBlackmail",
+                    Tag = "Checkbox_Contact_Blackmail",
+                    Text = "Blackmail",
+                    UseVisualStyleBackColor = true
+                };
+                chkFamily = new ColorableCheckBox(components)
+                {
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    DefaultColorScheme = true,
+                    Name = "chkFamily",
+                    Tag = "Checkbox_Contact_Family",
+                    Text = "Family",
+                    UseVisualStyleBackColor = true
+                };
+                imgLink = new PictureBox
+                {
+                    Cursor = Cursors.Hand,
+                    Dock = DockStyle.Fill,
+                    Image = Resources.link,
+                    Margin = new Padding(3, 0, 3, 0),
+                    Size = new Size(16, 26),
+                    Name = "imgLink",
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    TabStop = false
+                };
+                nudConnection.ValueChanged += nudConnection_ValueChanged;
+                nudLoyalty.ValueChanged += nudLoyalty_ValueChanged;
+                chkFree.CheckedChanged += chkFree_CheckedChanged;
+                chkGroup.CheckedChanged += chkGroup_CheckedChanged;
+                chkBlackmail.CheckedChanged += chkBlackmail_CheckedChanged;
+                chkFamily.CheckedChanged += chkFamily_CheckedChanged;
+                imgLink.Click += imgLink_Click;
+                if (_objContact != null)
+                {
+                    chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
+                    chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
+                    chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
+                    chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
+                    //We don't actually pay for contacts in play so everyone is free
+                    //Don't present a useless field
+                    chkFree.DoOneWayDataBinding("Visible", _objContact.CharacterObject, nameof(_objContact.CharacterObject.Created));
+                    chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
+                    chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
+                    chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
+                    nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
+                    nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
+                    nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
+                    nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
+                    if (_objContact.EntityType == ContactType.Enemy)
+                    {
+                        imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                            ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
+                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
+                    }
+                    else
+                    {
+                        imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                            ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
+                            : LanguageManager.GetString("Tip_Contact_LinkContact"));
+                    }
+                }
+                tlpMain.SetColumnSpan(lblConnection, 2);
+                tlpMain.SetColumnSpan(chkFamily, 3);
+
+                SuspendLayout();
+                tlpMain.SuspendLayout();
+                tlpMain.Controls.Add(lblConnection, 0, 2);
+                tlpMain.Controls.Add(nudConnection, 2, 2);
+                tlpMain.Controls.Add(lblLoyalty, 3, 2);
+                tlpMain.Controls.Add(nudLoyalty, 4, 2);
+                tlpMain.Controls.Add(chkFree, 6, 2);
+                tlpMain.Controls.Add(chkGroup, 7, 2);
+                tlpMain.Controls.Add(chkBlackmail, 8, 2);
+                tlpMain.Controls.Add(chkFamily, 9, 2);
+                tlpMain.Controls.Add(imgLink, 12, 2);
+                tlpMain.ResumeLayout();
+                ResumeLayout();
+            }
         }
 
         private BufferedTableLayoutPanel tlpStatBlock;
@@ -608,7 +768,7 @@ namespace Chummer
                 SuspendLayout();
                 tlpMain.SuspendLayout();
                 tlpMain.SetColumnSpan(tlpStatBlock, 13);
-                tlpMain.Controls.Add(tlpStatBlock, 0, 2);
+                tlpMain.Controls.Add(tlpStatBlock, 0, 3);
                 tlpMain.ResumeLayout();
                 ResumeLayout();
             }
