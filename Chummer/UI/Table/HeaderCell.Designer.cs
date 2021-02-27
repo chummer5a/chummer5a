@@ -16,7 +16,6 @@ namespace Chummer.UI.Table
             if (disposing)
             {
                 components?.Dispose();
-                _objGraphics?.Dispose();
             }
             base.Dispose(disposing);
         }

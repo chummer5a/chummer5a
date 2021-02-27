@@ -40,7 +40,6 @@ namespace Chummer.UI.Skills
         private readonly Font _fntNormalName;
         private readonly Font _fntItalicName;
         private CharacterAttrib _objAttributeActive;
-        private readonly Graphics _objGraphics;
         private readonly Button cmdDelete;
         private readonly ButtonWithToolTip btnCareerIncrease;
         private readonly Label lblCareerRating;
@@ -56,7 +55,6 @@ namespace Chummer.UI.Skills
         {
             if (objSkill == null)
                 return;
-            _objGraphics = CreateGraphics();
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
@@ -109,13 +107,17 @@ namespace Chummer.UI.Skills
                 tlpRight.Controls.Add(cmdDelete, 4, 0);
             }
 
+            int intMinimumSize;
+            using (Graphics g = CreateGraphics())
+                intMinimumSize = (int)(25 * g.DpiX / 96.0f);
+
             if (objSkill.CharacterObject.Created)
             {
                 lblCareerRating = new Label
                 {
                     Anchor = AnchorStyles.Right,
                     AutoSize = true,
-                    MinimumSize = new Size((int) (25 * _objGraphics.DpiX / 96.0f), 0),
+                    MinimumSize = new Size(intMinimumSize, 0),
                     Name = "lblCareerRating",
                     Text = "00",
                     TextAlign = ContentAlignment.MiddleRight
@@ -577,10 +579,13 @@ namespace Chummer.UI.Skills
 
         private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            pnlAttributes.MinimumSize = new Size((int)(40 * _objGraphics.DpiX / 96.0f), 0);
-            if (lblCareerRating != null)
-                lblCareerRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
-            lblModifiedRating.MinimumSize = new Size((int)(50 * _objGraphics.DpiX / 96.0f), 0);
+            using (Graphics g = CreateGraphics())
+            {
+                pnlAttributes.MinimumSize = new Size((int) (40 * g.DpiX / 96.0f), 0);
+                if (lblCareerRating != null)
+                    lblCareerRating.MinimumSize = new Size((int) (25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int) (50 * g.DpiX / 96.0f), 0);
+            }
         }
     }
 }

@@ -3907,7 +3907,6 @@ namespace Chummer
             this.nudMysticAdeptMAGMagician.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudMysticAdeptMAGMagician.AutoSize = true;
             this.nudMysticAdeptMAGMagician.Location = new System.Drawing.Point(168, 204);
-            this.nudMysticAdeptMAGMagician.MinimumSize = new System.Drawing.Size(41, 0);
             this.nudMysticAdeptMAGMagician.Name = "nudMysticAdeptMAGMagician";
             this.nudMysticAdeptMAGMagician.Size = new System.Drawing.Size(41, 20);
             this.nudMysticAdeptMAGMagician.TabIndex = 60;

@@ -16,7 +16,6 @@ namespace Chummer.UI.Skills
             if (disposing)
             {
                 components?.Dispose();
-                _objGraphics?.Dispose();
                 UnbindKnowledgeSkillControl();
             }
             base.Dispose(disposing);

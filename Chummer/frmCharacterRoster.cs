@@ -42,11 +42,9 @@ namespace Chummer
 
         private readonly FileSystemWatcher watcherCharacterRosterFolder;
         private bool _blnSkipUpdate = true;
-        private readonly Graphics _objGraphics;
 
         public frmCharacterRoster()
         {
-            _objGraphics = CreateGraphics();
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -882,8 +880,12 @@ namespace Chummer
         {
             int intToolStripWidth = 180;
             int intToolStripHeight = 22;
-            intToolStripWidth = (int)(intToolStripWidth * _objGraphics.DpiX / 96.0f);
-            intToolStripHeight = (int)(intToolStripHeight * _objGraphics.DpiY / 96.0f);
+            using (Graphics g = CreateGraphics())
+            {
+                intToolStripWidth = (int) (intToolStripWidth * g.DpiX / 96.0f);
+                intToolStripHeight = (int) (intToolStripHeight * g.DpiY / 96.0f);
+            }
+
             // 
             // tsToggleFav
             //

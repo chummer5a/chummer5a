@@ -29,7 +29,6 @@ namespace Chummer.UI.Skills
     public partial class SkillGroupControl : UserControl
     {
         private readonly SkillGroup _skillGroup;
-        private readonly Graphics _objGraphics;
 
         private readonly NumericUpDownEx nudSkill;
         private readonly NumericUpDownEx nudKarma;
@@ -40,7 +39,6 @@ namespace Chummer.UI.Skills
         {
             if (skillGroup == null)
                 return;
-            _objGraphics = CreateGraphics();
             _skillGroup = skillGroup;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -52,6 +50,10 @@ namespace Chummer.UI.Skills
             lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
             lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
 
+            int intMinimumSize;
+            using (Graphics g = CreateGraphics())
+                intMinimumSize = (int)(25 * g.DpiX / 96.0f);
+
             // Creating these controls outside of the designer saves on handles
             if (skillGroup.CharacterObject.Created)
             {
@@ -60,7 +62,7 @@ namespace Chummer.UI.Skills
                     Anchor = AnchorStyles.Right,
                     AutoSize = true,
                     Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
-                    MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0),
+                    MinimumSize = new Size(intMinimumSize, 0),
                     Name = "lblGroupRating",
                     TextAlign = ContentAlignment.MiddleRight
                 };
@@ -214,8 +216,10 @@ namespace Chummer.UI.Skills
 
         private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            if (lblGroupRating != null)
-                lblGroupRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
+            if (lblGroupRating == null)
+                return;
+            using (Graphics g = CreateGraphics())
+                lblGroupRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
         }
     }
 }
