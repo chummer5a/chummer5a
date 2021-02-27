@@ -31,6 +31,7 @@ Application Fixes:
 - Custom improvements for adding echoes and metamagics to a character have been added.
 - The Source label in the weapon mount creation screen is now properly clickable.
 - Vehicle mod costs, availabilities, and slot capacity requirements can now use their parent vehicles' Armor, Sensor, and Pilot ratings.
+- Fixed Fettering not being properly allowed for Magicians. 
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

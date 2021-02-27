@@ -64,7 +64,7 @@ namespace Chummer
             nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
             nudServices.DoDatabinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
             nudForce.DoDatabinding("Value", _objSpirit, nameof(Spirit.Force));
-            chkFettered.DoOneWayDataBinding("Enabled",_objSpirit.CharacterObject, nameof(Character.AllowSpriteFettering));
+            chkFettered.DoOneWayDataBinding("Enabled",_objSpirit, nameof(Spirit.AllowFettering));
             chkFettered.DoDatabinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
