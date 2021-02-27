@@ -33,6 +33,7 @@ namespace Chummer
     {
         private readonly Contact _objContact;
         private bool _blnLoading = true;
+        private bool _blnStatBlockIsLoaded = false;
         //private readonly int _intLowHeight = 25;
         //private readonly int _intFullHeight = 156;
 
@@ -103,7 +104,7 @@ namespace Chummer
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Connection"));
         }
 
@@ -111,7 +112,7 @@ namespace Chummer
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
         }
 
@@ -124,7 +125,7 @@ namespace Chummer
 
         private void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
@@ -154,43 +155,43 @@ namespace Chummer
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
         private void cboGender_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
         }
 
         private void cboAge_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
         }
 
         private void cboPersonalLife_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
         }
 
         private void cboType_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
         }
 
         private void cboPreferredPayment_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
         }
 
         private void cboHobbiesVice_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
         }
 
@@ -317,19 +318,19 @@ namespace Chummer
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
         }
 
         private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
         }
 
         private void chkFamily_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
         #endregion
@@ -346,11 +347,12 @@ namespace Chummer
             set
             {
                 cmdExpand.Image = value ? Resources.Collapse : Resources.Expand;
-                if (value && tlpStatBlock == null)
+                if (value && (tlpStatBlock == null || !_blnStatBlockIsLoaded))
                 {
                     // Create second row and statblock only on the first expansion to save on handles and load times
                     CreateSecondRow();
                     CreateStatBlock();
+                    _blnStatBlockIsLoaded = true;
                 }
                 using (new CursorWait(this))
                 {
