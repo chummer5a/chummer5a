@@ -51,6 +51,9 @@ namespace Chummer
             this.chkBlackmail = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpComboBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
+            this.lblContactLocationLabel = new System.Windows.Forms.Label();
+            this.lblContactNameLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).BeginInit();
             this.cmsContact.SuspendLayout();
@@ -64,7 +67,7 @@ namespace Chummer
             // 
             this.nudConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudConnection.AutoSize = true;
-            this.nudConnection.Location = new System.Drawing.Point(73, 33);
+            this.nudConnection.Location = new System.Drawing.Point(73, 49);
             this.nudConnection.Maximum = new decimal(new int[] {
             12,
             0,
@@ -76,7 +79,7 @@ namespace Chummer
             0,
             0});
             this.nudConnection.Name = "nudConnection";
-            this.nudConnection.Size = new System.Drawing.Size(63, 20);
+            this.nudConnection.Size = new System.Drawing.Size(153, 20);
             this.nudConnection.TabIndex = 3;
             this.nudConnection.Value = new decimal(new int[] {
             1,
@@ -89,7 +92,7 @@ namespace Chummer
             // 
             this.nudLoyalty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudLoyalty.AutoSize = true;
-            this.nudLoyalty.Location = new System.Drawing.Point(191, 33);
+            this.nudLoyalty.Location = new System.Drawing.Point(281, 49);
             this.nudLoyalty.Maximum = new decimal(new int[] {
             6,
             0,
@@ -101,7 +104,7 @@ namespace Chummer
             0,
             0});
             this.nudLoyalty.Name = "nudLoyalty";
-            this.nudLoyalty.Size = new System.Drawing.Size(63, 20);
+            this.nudLoyalty.Size = new System.Drawing.Size(153, 20);
             this.nudLoyalty.TabIndex = 4;
             this.nudLoyalty.Value = new decimal(new int[] {
             1,
@@ -112,11 +115,11 @@ namespace Chummer
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdDelete.Location = new System.Drawing.Point(526, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(706, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Padding = new System.Windows.Forms.Padding(1);
             this.cmdDelete.Size = new System.Drawing.Size(24, 24);
@@ -165,9 +168,9 @@ namespace Chummer
             // 
             this.cboContactRole.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboContactRole.FormattingEnabled = true;
-            this.cboContactRole.Location = new System.Drawing.Point(285, 4);
+            this.cboContactRole.Location = new System.Drawing.Point(405, 22);
             this.cboContactRole.Name = "cboContactRole";
-            this.cboContactRole.Size = new System.Drawing.Size(136, 21);
+            this.cboContactRole.Size = new System.Drawing.Size(196, 21);
             this.cboContactRole.TabIndex = 2;
             this.cboContactRole.TooltipText = "";
             this.cboContactRole.TextChanged += new System.EventHandler(this.cboContactRole_TextChanged);
@@ -175,24 +178,23 @@ namespace Chummer
             // txtContactName
             // 
             this.txtContactName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtContactName.Location = new System.Drawing.Point(3, 5);
+            this.txtContactName.Location = new System.Drawing.Point(3, 22);
             this.txtContactName.Name = "txtContactName";
-            this.txtContactName.Size = new System.Drawing.Size(135, 20);
+            this.txtContactName.Size = new System.Drawing.Size(195, 20);
             this.txtContactName.TabIndex = 0;
             this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
             // txtContactLocation
             // 
             this.txtContactLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtContactLocation.Location = new System.Drawing.Point(144, 5);
+            this.txtContactLocation.Location = new System.Drawing.Point(204, 22);
             this.txtContactLocation.Name = "txtContactLocation";
-            this.txtContactLocation.Size = new System.Drawing.Size(135, 20);
+            this.txtContactLocation.Size = new System.Drawing.Size(195, 20);
             this.txtContactLocation.TabIndex = 1;
             this.txtContactLocation.TextChanged += new System.EventHandler(this.txtContactLocation_TextChanged);
             // 
             // cmdExpand
             // 
-            this.cmdExpand.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdExpand.AutoSize = true;
             this.cmdExpand.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdExpand.Image = global::Chummer.Properties.Resources.Expand;
@@ -209,7 +211,7 @@ namespace Chummer
             this.imgNotes.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(282, 30);
+            this.imgNotes.Location = new System.Drawing.Point(462, 46);
             this.imgNotes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.imgNotes.Name = "imgNotes";
             this.imgNotes.Size = new System.Drawing.Size(16, 26);
@@ -223,7 +225,7 @@ namespace Chummer
             this.imgLink.Cursor = System.Windows.Forms.Cursors.Hand;
             this.imgLink.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(260, 30);
+            this.imgLink.Location = new System.Drawing.Point(440, 46);
             this.imgLink.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.imgLink.Name = "imgLink";
             this.imgLink.Size = new System.Drawing.Size(16, 26);
@@ -237,7 +239,7 @@ namespace Chummer
             this.chkGroup.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkGroup.AutoSize = true;
             this.chkGroup.DefaultColorScheme = true;
-            this.chkGroup.Location = new System.Drawing.Point(357, 34);
+            this.chkGroup.Location = new System.Drawing.Point(537, 50);
             this.chkGroup.Name = "chkGroup";
             this.chkGroup.Size = new System.Drawing.Size(55, 17);
             this.chkGroup.TabIndex = 12;
@@ -251,7 +253,7 @@ namespace Chummer
             this.chkFree.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFree.AutoSize = true;
             this.chkFree.DefaultColorScheme = true;
-            this.chkFree.Location = new System.Drawing.Point(304, 34);
+            this.chkFree.Location = new System.Drawing.Point(484, 50);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(47, 17);
             this.chkFree.TabIndex = 13;
@@ -265,11 +267,11 @@ namespace Chummer
             this.lblQuickStats.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblQuickStats, 2);
             this.lblQuickStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblQuickStats.Location = new System.Drawing.Point(456, 6);
+            this.lblQuickStats.Location = new System.Drawing.Point(636, 6);
             this.lblQuickStats.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblQuickStats.MinimumSize = new System.Drawing.Size(36, 0);
             this.lblQuickStats.Name = "lblQuickStats";
-            this.lblQuickStats.Size = new System.Drawing.Size(64, 18);
+            this.lblQuickStats.Size = new System.Drawing.Size(64, 34);
             this.lblQuickStats.TabIndex = 14;
             this.lblQuickStats.Text = "(00/0)";
             this.lblQuickStats.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -279,7 +281,7 @@ namespace Chummer
             this.lblConnection.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblConnection.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblConnection, 2);
-            this.lblConnection.Location = new System.Drawing.Point(3, 36);
+            this.lblConnection.Location = new System.Drawing.Point(3, 52);
             this.lblConnection.Name = "lblConnection";
             this.lblConnection.Size = new System.Drawing.Size(64, 13);
             this.lblConnection.TabIndex = 18;
@@ -291,7 +293,7 @@ namespace Chummer
             // 
             this.lblLoyalty.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblLoyalty.AutoSize = true;
-            this.lblLoyalty.Location = new System.Drawing.Point(142, 36);
+            this.lblLoyalty.Location = new System.Drawing.Point(232, 52);
             this.lblLoyalty.Name = "lblLoyalty";
             this.lblLoyalty.Size = new System.Drawing.Size(43, 13);
             this.lblLoyalty.TabIndex = 19;
@@ -305,7 +307,7 @@ namespace Chummer
             this.chkFamily.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkFamily, 2);
             this.chkFamily.DefaultColorScheme = true;
-            this.chkFamily.Location = new System.Drawing.Point(495, 34);
+            this.chkFamily.Location = new System.Drawing.Point(675, 50);
             this.chkFamily.Name = "chkFamily";
             this.chkFamily.Size = new System.Drawing.Size(55, 17);
             this.chkFamily.TabIndex = 17;
@@ -320,7 +322,7 @@ namespace Chummer
             this.chkBlackmail.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkBlackmail, 2);
             this.chkBlackmail.DefaultColorScheme = true;
-            this.chkBlackmail.Location = new System.Drawing.Point(418, 34);
+            this.chkBlackmail.Location = new System.Drawing.Point(598, 50);
             this.chkBlackmail.Name = "chkBlackmail";
             this.chkBlackmail.Size = new System.Drawing.Size(71, 17);
             this.chkBlackmail.TabIndex = 16;
@@ -368,7 +370,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(553, 170);
+            this.tlpMain.Size = new System.Drawing.Size(733, 72);
             this.tlpMain.TabIndex = 35;
             // 
             // tlpComboBoxes
@@ -378,19 +380,59 @@ namespace Chummer
             this.tlpComboBoxes.ColumnCount = 3;
             this.tlpMain.SetColumnSpan(this.tlpComboBoxes, 9);
             this.tlpComboBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpComboBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpComboBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpComboBoxes.Controls.Add(this.txtContactName, 0, 0);
-            this.tlpComboBoxes.Controls.Add(this.txtContactLocation, 1, 0);
-            this.tlpComboBoxes.Controls.Add(this.cboContactRole, 2, 0);
+            this.tlpComboBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpComboBoxes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpComboBoxes.Controls.Add(this.lblContactArchtypeLabel, 2, 0);
+            this.tlpComboBoxes.Controls.Add(this.lblContactLocationLabel, 1, 0);
+            this.tlpComboBoxes.Controls.Add(this.lblContactNameLabel, 0, 0);
+            this.tlpComboBoxes.Controls.Add(this.txtContactName, 0, 1);
+            this.tlpComboBoxes.Controls.Add(this.txtContactLocation, 1, 1);
+            this.tlpComboBoxes.Controls.Add(this.cboContactRole, 2, 1);
             this.tlpComboBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpComboBoxes.Location = new System.Drawing.Point(29, 0);
             this.tlpComboBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.tlpComboBoxes.Name = "tlpComboBoxes";
-            this.tlpComboBoxes.RowCount = 1;
+            this.tlpComboBoxes.RowCount = 2;
+            this.tlpComboBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpComboBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpComboBoxes.Size = new System.Drawing.Size(424, 30);
+            this.tlpComboBoxes.Size = new System.Drawing.Size(604, 46);
             this.tlpComboBoxes.TabIndex = 35;
+            // 
+            // lblContactArchtypeLabel
+            // 
+            this.lblContactArchtypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblContactArchtypeLabel.AutoSize = true;
+            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(405, 3);
+            this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
+            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
+            this.lblContactArchtypeLabel.TabIndex = 45;
+            this.lblContactArchtypeLabel.Tag = "Label_Archetype";
+            this.lblContactArchtypeLabel.Text = "Archtype:";
+            // 
+            // lblContactLocationLabel
+            // 
+            this.lblContactLocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblContactLocationLabel.AutoSize = true;
+            this.lblContactLocationLabel.Location = new System.Drawing.Point(204, 3);
+            this.lblContactLocationLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblContactLocationLabel.Name = "lblContactLocationLabel";
+            this.lblContactLocationLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblContactLocationLabel.TabIndex = 44;
+            this.lblContactLocationLabel.Tag = "Label_Location";
+            this.lblContactLocationLabel.Text = "Location:";
+            // 
+            // lblContactNameLabel
+            // 
+            this.lblContactNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblContactNameLabel.AutoSize = true;
+            this.lblContactNameLabel.Location = new System.Drawing.Point(3, 3);
+            this.lblContactNameLabel.Margin = new System.Windows.Forms.Padding(3);
+            this.lblContactNameLabel.Name = "lblContactNameLabel";
+            this.lblContactNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblContactNameLabel.TabIndex = 43;
+            this.lblContactNameLabel.Tag = "Label_Name";
+            this.lblContactNameLabel.Text = "Name:";
             // 
             // ContactControl
             // 
@@ -402,7 +444,7 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(480, 0);
             this.Name = "ContactControl";
-            this.Size = new System.Drawing.Size(553, 170);
+            this.Size = new System.Drawing.Size(733, 72);
             this.Load += new System.EventHandler(this.ContactControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).EndInit();
@@ -442,5 +484,8 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpComboBoxes;
         private Chummer.ColorableCheckBox chkBlackmail;
         private Chummer.ColorableCheckBox chkFamily;
+        private System.Windows.Forms.Label lblContactNameLabel;
+        private System.Windows.Forms.Label lblContactLocationLabel;
+        private System.Windows.Forms.Label lblContactArchtypeLabel;
     }
 }
