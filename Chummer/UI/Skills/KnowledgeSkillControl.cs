@@ -32,7 +32,6 @@ namespace Chummer.UI.Skills
         private bool _blnUpdatingName = true;
         private readonly KnowledgeSkill _skill;
         private readonly Timer _tmrNameChangeTimer;
-        private readonly Graphics _objGraphics;
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudSkill;
         private readonly Label lblRating;
@@ -47,7 +46,6 @@ namespace Chummer.UI.Skills
         {
             if (skill == null)
                 return;
-            _objGraphics = CreateGraphics();
             _skill = skill;
             _tmrNameChangeTimer = new Timer { Interval = 1000 };
             _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
@@ -87,13 +85,17 @@ namespace Chummer.UI.Skills
             cboName.EndUpdate();
             _blnUpdatingName = false;
 
+            int intMinimumSize;
+            using (Graphics g = CreateGraphics())
+                intMinimumSize = (int) (25 * g.DpiX / 96.0f);
+
             if (_skill.CharacterObject.Created)
             {
                 lblRating = new Label
                 {
                     Anchor = AnchorStyles.Right,
                     AutoSize = true,
-                    MinimumSize = new Size((int) (25 * _objGraphics.DpiX / 96.0f), 0),
+                    MinimumSize = new Size(intMinimumSize, 0),
                     Name = "lblRating",
                     Text = "00",
                     TextAlign = ContentAlignment.MiddleCenter
@@ -452,9 +454,12 @@ namespace Chummer.UI.Skills
 
         private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            if (lblRating != null)
-                lblRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
-            lblModifiedRating.MinimumSize = new Size((int)(50 * _objGraphics.DpiX / 96.0f), 0);
+            using (Graphics g = CreateGraphics())
+            {
+                if (lblRating != null)
+                    lblRating.MinimumSize = new Size((int) (25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int) (50 * g.DpiX / 96.0f), 0);
+            }
         }
 
         // Hacky solution to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update

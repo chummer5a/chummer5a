@@ -2919,14 +2919,13 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(CharacterObject);
                     objWeapon.Create(objXmlWeapon, lstWeapons);
                     objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-                    //objWeapon.Location = objLocation;
-                    objLocation?.Children.Add(objWeapon);
-
                     if (frmPickWeapon.FreeCost)
                     {
                         objWeapon.Cost = "0";
                     }
 
+                    //objWeapon.Location = objLocation;
+                    objLocation?.Children.Add(objWeapon);
                     CharacterObject.Weapons.Add(objWeapon);
 
                     foreach (Weapon objExtraWeapon in lstWeapons)
@@ -3072,7 +3071,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -3939,7 +3938,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddArmor(treArmor.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddArmor(treArmor.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -3966,13 +3965,13 @@ namespace Chummer
                     objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
                     if (objArmor.InternalId.IsEmptyGuid())
                         return frmPickArmor.AddAgain;
-                    //objArmor.Location = objLocation;
-                    objLocation?.Children.Add(objArmor);
                     if (frmPickArmor.FreeCost)
                     {
                         objArmor.Cost = "0";
                     }
 
+                    //objArmor.Location = objLocation;
+                    objLocation?.Children.Add(objArmor);
                     CharacterObject.Armor.Add(objArmor);
 
                     foreach (Weapon objWeapon in lstWeapons)
@@ -6774,8 +6773,7 @@ namespace Chummer
 
         private void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treLifestyles.SelectedNode;
-            if (!(nodSelected?.Tag is Lifestyle objLifestyle))
+            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
             string strGuid = objLifestyle.InternalId;
@@ -6816,10 +6814,6 @@ namespace Chummer
 
             objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
-            nodSelected.Text = objLifestyle.CurrentDisplayName;
-            nodSelected.Tag = objLifestyle;
-            nodSelected.ForeColor = objLifestyle.PreferredColor;
-            nodSelected.ToolTipText = objLifestyle.Notes.WordWrap();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -10833,31 +10827,26 @@ namespace Chummer
                     ObservableCollection<Gear> destinationGear =
                         blnNullParent ? CharacterObject.Gear : objSelectedGear.Children;
                     bool blnMatchFound = false;
-                    // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition")
+                    foreach (Gear objExistingGear in destinationGear)
                     {
-                        foreach (Gear objVehicleGear in destinationGear)
+                        if (objExistingGear.Location == objLocation
+                            && objGear.IsIdenticalToOtherGear(objExistingGear, true)
+                            && Program.MainForm.ShowMessageBox(this,
+                                LanguageManager.GetString("Message_MergeIdentical"),
+                                LanguageManager.GetString("MessageTitle_MergeIdentical"),
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
-                                objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                                objVehicleGear.Children.SequenceEqual(objGear.Children)
-                                && Program.MainForm.ShowMessageBox(this,
-                                    LanguageManager.GetString("Message_MergeIdentical"),
-                                    LanguageManager.GetString("MessageTitle_MergeIdentical"),
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            {
-                                // A match was found, so increase the quantity instead.
-                                objVehicleGear.Quantity += objGear.Quantity;
-                                blnMatchFound = true;
-                                break;
-                            }
+                            // A match was found, so increase the quantity instead.
+                            objExistingGear.Quantity += objGear.Quantity;
+                            blnMatchFound = true;
+                            break;
                         }
                     }
 
                     if (!blnMatchFound)
                     {
-                        destinationGear.Add(objGear);
                         objLocation?.Children.Add(objGear);
+                        destinationGear.Add(objGear);
                     }
 
                     IsCharacterUpdateRequested = true;

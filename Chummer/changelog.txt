@@ -31,6 +31,10 @@ Application Fixes:
 - Custom improvements for adding echoes and metamagics to a character have been added.
 - The Source label in the weapon mount creation screen is now properly clickable.
 - Vehicle mod costs, availabilities, and slot capacity requirements can now use their parent vehicles' Armor, Sensor, and Pilot ratings.
+- Special whitespace characters necessary for certain languages, e.g. non-breaking spaces in French or zero-width spaces in hyphenated English, are no longer automatically converted to standard, single-width spaces in characters' notes.
+- Armor, Vehicle, Vehicle Mod, Weapon, and Spell selection screens no longer show categories that have no selectable items (usually if the character does not have the necessary books enabled).
+- Adding Gear directly to locations now works properly.
+- Restricted Gear for weapons and/or vehicles that are added by other items no longer counts both the source item and the weapon/vehicle itself as two separate items.
 - Fixed Fettering not being properly allowed for Magicians. 
 
 Data Changes:
@@ -54,6 +58,7 @@ Data Changes:
 - Fixed incorrect weapon types for underbarrel grenade launchers that prevent them from being reloaded properly. Closes #4297
 - Helmets in the custom ruleset "Helmets Are Mods, SWAT and MilSpec Are FBA" now properly have capacities for gear instead of negative armor capacities.
 - Rigger 5.0 attribute increase drone mods now properly consume slot points based on the increase instead of on the total rating. The first level of an attribute increase (the first three for armor) are not also properly free.
+- Weapons that come with Trigger Removal as default no longer get an extra +1 Accuracy compared to their printed statblocks.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

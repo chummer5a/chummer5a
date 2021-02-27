@@ -4664,18 +4664,24 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            HashSet<TreeNode> setOldParentNodes = new HashSet<TreeNode>();
                             foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objOldParent = null;
                                 TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
                                 if (objNode != null)
                                 {
-                                    objOldParent = objNode.Parent;
+                                    setOldParentNodes.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
+                            }
+                            foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 AddToTree(objLifestyle);
-                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                    objOldParent.Remove();
+                            }
+                            foreach (TreeNode nodOldParent in setOldParentNodes)
+                            {
+                                if (nodOldParent.Level == 0 && nodOldParent.Nodes.Count == 0)
+                                    nodOldParent.Remove();
                             }
                             break;
                         }

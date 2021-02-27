@@ -330,7 +330,7 @@ namespace ChummerHub.Client.Backend
             {
                 var assembly = Assembly.GetAssembly(typeof(frmChummerMain));
                 Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0
-                    ? "https://chummer.azurewebsites.net"
+                    ? "https://chummer-stable.azurewebsites.net"
                     : "https://chummer-beta.azurewebsites.net";
                 Settings.Default.Save();
                 if (Debugger.IsAttached)

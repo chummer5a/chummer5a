@@ -3519,9 +3519,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = treGear.SelectedNode?.Tag is Location objLocation
-                    ? PickGear(null, objLocation)
-                    : PickGear(null);
+                blnAddAgain = PickGear(null, treGear.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -3593,8 +3591,8 @@ namespace Chummer
 
                 objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
 
-                objVehicle.Location = objLocation;
-
+                //objVehicle.Location = objLocation;
+                objLocation?.Children.Add(objVehicle);
                 CharacterObject.Vehicles.Add(objVehicle);
 
                 IsCharacterUpdateRequested = true;
@@ -3610,7 +3608,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -6165,7 +6163,6 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 objArmor.Create(objXmlArmor, frmPickArmor.Rating, lstWeapons);
                 objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
-                objArmor.Location = objLocation;
 
                 if (objArmor.InternalId.IsEmptyGuid())
                     return frmPickArmor.AddAgain;
@@ -6207,6 +6204,8 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
 
+                // objArmor.Location = objLocation;
+                objLocation?.Children.Add(objArmor);
                 CharacterObject.Armor.Add(objArmor);
 
                 foreach (Weapon objWeapon in lstWeapons)
@@ -10116,8 +10115,7 @@ namespace Chummer
 
         private void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treLifestyles.SelectedNode;
-            if (!(nodSelected?.Tag is Lifestyle objLifestyle))
+            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
             string strGuid = objLifestyle.InternalId;
@@ -10167,10 +10165,6 @@ namespace Chummer
 
             objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
-            nodSelected.Text = objLifestyle.CurrentDisplayName;
-            nodSelected.Tag = objLifestyle;
-            nodSelected.ForeColor = objLifestyle.PreferredColor;
-            nodSelected.ToolTipText = objLifestyle.Notes.WordWrap();
 
             string strSpace = LanguageManager.GetString("String_Space");
 
@@ -14327,7 +14321,9 @@ namespace Chummer
                     // See if the character already has the item on them if they chose to stack.
                     if (frmPickGear.Stack)
                     {
-                        objStackWith = objStackGear ?? CharacterObject.Gear.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
+                        objStackWith = objStackGear
+                                       ?? CharacterObject.Gear.FirstOrDefault(x => x.Location == objLocation
+                                           && objGear.IsIdenticalToOtherGear(x));
                     }
 
                     if (objStackWith != null)
@@ -14402,6 +14398,7 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 
+                        objLocation?.Children.Add(objGear);
                         if (!blnNullParent)
                         {
                             objSelectedGear.Children.Add(objGear);
@@ -14410,8 +14407,6 @@ namespace Chummer
                         {
                             CharacterObject.Gear.Add(objGear);
                         }
-
-                        objLocation?.Children.Add(objGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -16853,7 +16848,8 @@ namespace Chummer
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is Location objLocation)) return;
+            if (!(treGear.SelectedNode?.Tag is Location objLocation))
+                return;
             bool blnAddAgain;
             do
             {
@@ -16867,7 +16863,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -16877,7 +16873,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickWeapon(treWeapons.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = PickWeapon(treWeapons.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }

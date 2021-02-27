@@ -87,10 +87,14 @@ namespace Chummer
             string[] strValues = _strLimitToCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             // Populate the Category list.
+            string strFilterPrefix = (VehicleMountMods
+                ? "weaponmountmods/mod[("
+                : "mods/mod[(") + _objCharacter.Options.BookXPath() + ") and category = \"";
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("modcategories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if (string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == strInnerText))
+                if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == strInnerText))
+                    && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
                 {
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
                 }

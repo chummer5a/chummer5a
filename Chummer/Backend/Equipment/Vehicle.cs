@@ -3104,24 +3104,28 @@ namespace Chummer.Backend.Equipment
         /// <param name="strOutCyberwareGrade"></param>
         public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, string strCyberwareGrade, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem, out string strOutCyberwareGrade)
         {
-            AvailabilityValue objTotalAvail = TotalAvailTuple();
-            if (!objTotalAvail.AddToParent)
+            if (string.IsNullOrEmpty(ParentID))
             {
-                int intAvailInt = objTotalAvail.Value;
-                if (intAvailInt > _objCharacter.MaximumAvailability)
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
                 {
-                    if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                    int intAvailInt = objTotalAvail.Value;
+                    if (intAvailInt > _objCharacter.MaximumAvailability)
                     {
-                        blnRestrictedGearUsed = true;
-                        strRestrictedItem = CurrentDisplayName;
-                    }
-                    else
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = CurrentDisplayName;
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
                     }
                 }
             }
+
             foreach (VehicleMod objChild in Mods)
             {
                 objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem, out strCyberwareGrade);

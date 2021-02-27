@@ -87,6 +87,7 @@ namespace Chummer
 
             // Populate the Weapon Category list.
             // Populate the Category list.
+            string strFilterPrefix = "/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
             using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
             {
                 if (xmlCategoryList != null)
@@ -94,7 +95,8 @@ namespace Chummer
                     foreach (XmlNode objXmlCategory in xmlCategoryList)
                     {
                         string strInnerText = objXmlCategory.InnerText;
-                        if (_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
+                        if ((_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
+                            && BuildWeaponList(_objXmlDocument.SelectNodes(strFilterPrefix + strInnerText + "\"]"), true))
                             _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
                 }
@@ -264,10 +266,10 @@ namespace Chummer
             _blnSkipUpdate = false;
         }
 
-        private void BuildWeaponList(XmlNodeList objNodeList)
+        private bool BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false)
         {
             SuspendLayout();
-            if (tabControl.SelectedIndex == 1)
+            if (tabControl.SelectedIndex == 1 && !blnForCategories)
             {
                 DataTable tabWeapons = new DataTable("weapons");
                 tabWeapons.Columns.Add("WeaponGuid");
@@ -439,34 +441,40 @@ namespace Chummer
                         continue;
                     }
 
-                    if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                    if (blnForCategories)
+                        return true;
+                    else
                     {
-                        ++intOverLimit;
-                        continue;
-                    }
-                    if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
-                    {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                        if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
-                            decCostMultiplier *= 0.9m;
-                        if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
-                            (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
-                        {
-                            string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                            if (astrParentDoubledCostModificationSlots.Contains(strMount) || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
-                            {
-                                decCostMultiplier *= 2;
-                            }
-                        }
-                        if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                        if (chkHideOverAvailLimit.Checked && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                         {
                             ++intOverLimit;
                             continue;
                         }
+                        if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                        {
+                            decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                            if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
+                                decCostMultiplier *= 0.9m;
+                            if (!string.IsNullOrEmpty(ParentWeapon?.DoubledCostModificationSlots) &&
+                                (!string.IsNullOrEmpty(strMount) || !string.IsNullOrEmpty(strExtraMount)))
+                            {
+                                string[] astrParentDoubledCostModificationSlots = ParentWeapon.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                                if (astrParentDoubledCostModificationSlots.Contains(strMount) || astrParentDoubledCostModificationSlots.Contains(strExtraMount))
+                                {
+                                    decCostMultiplier *= 2;
+                                }
+                            }
+                            if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                            {
+                                ++intOverLimit;
+                                continue;
+                            }
+                        }
                     }
                     lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
-
+                if (blnForCategories)
+                    return false;
                 lstWeapons.Sort(CompareListItems.CompareNames);
                 if (intOverLimit > 0)
                 {
@@ -489,6 +497,7 @@ namespace Chummer
                 lstWeapon.EndUpdate();
             }
             ResumeLayout();
+            return true;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
