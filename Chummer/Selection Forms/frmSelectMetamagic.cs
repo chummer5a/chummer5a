@@ -175,7 +175,7 @@ namespace Chummer
                     if (blnIsMagician)
                         strFilter += "and magician = \"" + bool.TrueString + '\"';
                     else
-                        strFilter += "and adept = '" + bool.TrueString + '\"';
+                        strFilter += "and adept = \"" + bool.TrueString + '\"';
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
