@@ -1747,6 +1747,8 @@ namespace Chummer
                 string strSelectedNode = (treQualities.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
                 // Create the root nodes.
+                foreach (Quality objQuality in _objCharacter.Qualities)
+                    objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                 treQualities.Nodes.Clear();
 
                 // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
@@ -1799,6 +1801,7 @@ namespace Chummer
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
+                                        objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                         if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
@@ -1826,6 +1829,7 @@ namespace Chummer
                                         if (objNode.Parent != null)
                                             lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
+                                        objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                     }
                                     else
                                     {
@@ -1854,7 +1858,7 @@ namespace Chummer
 
             void AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality,treQualities);
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality, treQualities);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode = null;
@@ -1921,6 +1925,36 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
+                    objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
+                }
+            }
+
+            void AddedQualityOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == nameof(Quality.Suppressed))
+                {
+                    Quality objQuality = sender as Quality;
+                    if (objQuality == null)
+                        return;
+                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                    if (objNode == null)
+                        return;
+                    Font objOldFont = objNode.NodeFont;
+                    //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
+                    objNode.NodeFont = new Font(treQualities.Font,
+                        objQuality.Suppressed ? FontStyle.Strikeout : FontStyle.Regular);
+                    // Dispose the old font if it's not null so that we don't leak memory
+                    objOldFont?.Dispose();
+                }
+                else if (e.PropertyName == nameof(Quality.Notes))
+                {
+                    Quality objQuality = sender as Quality;
+                    if (objQuality == null)
+                        return;
+                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                    if (objNode == null)
+                        return;
+                    objNode.ToolTipText = objQuality.Notes.WordWrap();
                 }
             }
         }
