@@ -1011,7 +1011,7 @@ namespace Chummer.Backend.Skills
                 return ((ExoticSkill)this).Specific == strSpecialization;
             }
             return Specializations.Any(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
-                   && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
+                   && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
         }
 
         public SkillSpecialization GetSpecialization(string strSpecialization)
@@ -1157,7 +1157,7 @@ namespace Chummer.Backend.Skills
                     objSpecialization = Specializations.FirstOrDefault(y =>
                         y.Name == objSwapSkillAttribute.Exclude && !CharacterObject.Improvements.Any(objImprovement =>
                             objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
-                            objImprovement.UniqueName == y.Name && string.IsNullOrEmpty(objImprovement.Condition) &&
+                            objImprovement.ImprovedName == y.Name && string.IsNullOrEmpty(objImprovement.Condition) &&
                             objImprovement.Enabled));
                     if (objSpecialization != null)
                     {
@@ -1348,7 +1348,7 @@ namespace Chummer.Backend.Skills
             int intPool = PoolOtherAttribute(strAttribute);
             if ((IsExoticSkill || string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x =>
                      x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
-                     x.UniqueName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)) &&
+                     x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)) &&
                  !CharacterObject.Improvements.Any(i =>
                      i.ImproveType == Improvement.ImprovementType.Skill && !string.IsNullOrEmpty(i.Condition)))
             {
@@ -1369,7 +1369,7 @@ namespace Chummer.Backend.Skills
                 return 0;
             SkillSpecialization objTargetSpecialization = string.IsNullOrEmpty(strSpecialization)
                 ? Specializations.FirstOrDefault(y => CharacterObject.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.DisableSpecializationEffects
-                                                                                            || x.UniqueName != Name
+                                                                                            || x.ImprovedName != Name
                                                                                             || !string.IsNullOrEmpty(x.Condition)
                                                                                             || !x.Enabled))
                 : GetSpecialization(strSpecialization);

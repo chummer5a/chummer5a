@@ -18,6 +18,7 @@
  */
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
 
 namespace Chummer.Backend.Skills
@@ -87,7 +88,11 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("specbonus", SpecializationBonus.ToString(objCulture));
+            int intSpecializationBonus = !Parent.CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
+                && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
+                ? 0
+                : SpecializationBonus;
+            objWriter.WriteElementString("specbonus", intSpecializationBonus.ToString(objCulture));
             objWriter.WriteEndElement();
         }
 
