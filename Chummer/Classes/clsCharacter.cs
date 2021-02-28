@@ -2348,13 +2348,13 @@ namespace Chummer
                         xmlCharacterNavigator.TryGetStringFieldQuickly("weight", ref _strWeight);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("skin", ref _strSkin);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("hair", ref _strHair);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("description", ref _strDescription);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("background", ref _strBackground);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("concept", ref _strConcept);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("notes", ref _strNotes);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("description", ref _strDescription);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("background", ref _strBackground);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("concept", ref _strConcept);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("alias", ref _strAlias);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("playername", ref _strPlayerName);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("gamenotes", ref _strGameNotes);
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                             _strPrimaryArm = "Right";
 
@@ -2507,7 +2507,7 @@ namespace Chummer
                             _decEssenceAtSpecialStart = decimal.MinValue;
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("groupname", ref _strGroupName);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("groupnotes", ref _strGroupNotes);
                         //end load_char_misc
                     }
 
@@ -7228,8 +7228,16 @@ namespace Chummer
             {
                 if(_strDescription != value)
                 {
-                    _strDescription = value;
-                    OnPropertyChanged();
+                    string strOldText = _strDescription.RtfToPlainText();
+                    string strOldHtml = _strDescription.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strDescription = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7244,8 +7252,16 @@ namespace Chummer
             {
                 if(_strBackground != value)
                 {
-                    _strBackground = value;
-                    OnPropertyChanged();
+                    string strOldText = _strBackground.RtfToPlainText();
+                    string strOldHtml = _strBackground.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strBackground = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7260,8 +7276,16 @@ namespace Chummer
             {
                 if(_strConcept != value)
                 {
-                    _strConcept = value;
-                    OnPropertyChanged();
+                    string strOldText = _strConcept.RtfToPlainText();
+                    string strOldHtml = _strConcept.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strConcept = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7276,8 +7300,16 @@ namespace Chummer
             {
                 if(_strNotes != value)
                 {
-                    _strNotes = value;
-                    OnPropertyChanged();
+                    string strOldText = _strNotes.RtfToPlainText();
+                    string strOldHtml = _strNotes.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strNotes = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7292,8 +7324,16 @@ namespace Chummer
             {
                 if(_strGameNotes != value)
                 {
-                    _strGameNotes = value;
-                    OnPropertyChanged();
+                    string strOldText = _strGameNotes.RtfToPlainText();
+                    string strOldHtml = _strGameNotes.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strGameNotes = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }

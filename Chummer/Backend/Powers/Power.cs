@@ -154,8 +154,8 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
             _intRating = intRating;
-            if (!objNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
             {
                 objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
@@ -268,7 +268,7 @@ namespace Chummer
             objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             Bonus = objNode["bonus"];
             if (objNode["adeptway"] != null)
             {
@@ -282,7 +282,7 @@ namespace Chummer
                     if (int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
                     {
                         Create(objXmlPower, intTemp, null, false);
-                        objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                        objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
                     }
                 }
             }

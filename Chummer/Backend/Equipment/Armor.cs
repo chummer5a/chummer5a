@@ -224,8 +224,8 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlArmorNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
-            if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlArmorNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArmorNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -635,7 +635,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("damage", ref _intDamage);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);

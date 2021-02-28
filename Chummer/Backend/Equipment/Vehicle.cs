@@ -208,10 +208,8 @@ namespace Chummer.Backend.Equipment
             objXmlVehicle.TryGetInt32FieldQuickly("electromagneticmodslots", ref _intAddElectromagneticModSlots);
             objXmlVehicle.TryGetInt32FieldQuickly("cosmeticmodslots", ref _intAddCosmeticModSlots);
             objXmlVehicle.TryGetStringFieldQuickly("avail", ref _strAvail);
-            if (!objXmlVehicle.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlVehicle.TryGetStringFieldQuickly("notes", ref _strNotes);
-
-
+            if (!objXmlVehicle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlVehicle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {

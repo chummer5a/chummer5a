@@ -246,8 +246,8 @@ namespace Chummer.Backend.Skills
             if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 objLoadingSkill.Id = guiTemp;
 
-            if (!xmlSkillNode.TryGetStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
-                xmlSkillNode.TryGetStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
+            if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
+                xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
 
             if (!objLoadingSkill.IsNativeLanguage)
             {

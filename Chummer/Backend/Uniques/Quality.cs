@@ -195,8 +195,8 @@ namespace Chummer
                 //Shim for customdata files that have the old name for the metagenic flag.
                 objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenic);
             }
-            if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlQuality.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlQuality.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
             _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
             _eQualitySource = objQualitySource;
@@ -460,7 +460,7 @@ namespace Chummer
             _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? GetNode()?["firstlevelbonus"];
             _nodDiscounts = objNode["costdiscount"]?.CreateNavigator();
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (_eQualityType == QualityType.LifeModule)
             {

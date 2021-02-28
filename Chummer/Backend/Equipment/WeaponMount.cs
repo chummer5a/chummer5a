@@ -93,8 +93,8 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strAllowedWeaponCategories);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
-            if (!objXmlMod.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMod.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMod.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
             objXmlMod.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!string.IsNullOrEmpty(_strCost))
@@ -283,7 +283,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);

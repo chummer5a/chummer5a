@@ -78,8 +78,8 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             _intRating = intRating;
             _nodBonus = objXmlPowerNode.SelectSingleNode("bonus");
-            if (!objXmlPowerNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlPowerNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlPowerNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlPowerNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             if (_nodBonus != null)
             {
@@ -192,7 +192,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("counttowardslimit", ref _blnCountTowardsLimit);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             _nodBonus = objNode["bonus"];
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
         }
 

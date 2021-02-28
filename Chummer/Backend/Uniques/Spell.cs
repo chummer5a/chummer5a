@@ -99,8 +99,8 @@ namespace Chummer
                     _strExtra = ImprovementManager.SelectedValue;
                 }
             }
-            if (!objXmlSpellNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlSpellNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlSpellNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlSpellNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors);
             objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -204,7 +204,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

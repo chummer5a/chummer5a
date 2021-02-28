@@ -153,7 +153,7 @@ namespace Chummer.UI.Editors
             set
             {
                 if (value.IsRtf())
-                    rtbContent.Rtf = value;
+                    rtbContent.Rtf = string.IsNullOrWhiteSpace(value.RtfToPlainText()) ? string.Empty : value;
                 else
                     rtbContent.Text = value.NormalizeWhiteSpace();
             }

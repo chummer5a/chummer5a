@@ -78,8 +78,8 @@ namespace Chummer
             xmlMentor.TryGetStringFieldQuickly("name", ref _strName);
             xmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
             xmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
-            if (!xmlMentor.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                xmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                xmlMentor.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             if (!xmlMentor.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for xmlnode", xmlMentor });
@@ -87,13 +87,13 @@ namespace Chummer
             }
 
             // Build the list of advantages gained through the Mentor Spirit.
-            if (!xmlMentor.TryGetStringFieldQuickly("altadvantage", ref _strAdvantage))
+            if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altadvantage", ref _strAdvantage))
             {
-                xmlMentor.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
+                xmlMentor.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
             }
-            if (!xmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref _strDisadvantage))
+            if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref _strDisadvantage))
             {
-                xmlMentor.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
+                xmlMentor.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
             }
 
             _nodBonus = xmlMentor["bonus"];
@@ -249,13 +249,13 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
-            objNode.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
+            objNode.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
+            objNode.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
             objNode.TryGetBoolFieldQuickly("mentormask", ref _blnMentorMask);
             _nodBonus = objNode["bonus"];
             _nodChoice1 = objNode["choice1"];
             _nodChoice2 = objNode["choice2"];
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

@@ -68,8 +68,8 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-            if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
@@ -145,7 +145,7 @@ namespace Chummer
                 _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

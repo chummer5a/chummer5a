@@ -545,7 +545,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("customgroup", ref _strCustomGroup);
             objNode.TryGetBoolFieldQuickly("addtorating", ref _blnAddToRating);
             objNode.TryGetBoolFieldQuickly("enabled", ref _blnEnabled);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
 
             Log.Trace("Load exit");

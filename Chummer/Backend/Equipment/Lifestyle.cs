@@ -161,8 +161,8 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyle.TryGetDecFieldQuickly("costforcomforts", ref _decCostForComforts);
             objXmlLifestyle.TryGetDecFieldQuickly("costforsecurity", ref _decCostForSecurity);
             objXmlLifestyle.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
-            if (!objXmlLifestyle.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlLifestyle.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlLifestyle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlLifestyle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             string strTemp = string.Empty;
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
@@ -444,7 +444,7 @@ namespace Chummer.Backend.Equipment
                         _lstFreeGrids.Add(objQuality);
                     }
 
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("type", ref strTemp))

@@ -178,8 +178,8 @@ namespace Chummer.Backend.Equipment
             if (_strMaxRating == "0")
                 _strMaxRating = string.Empty;
             objXmlGear.TryGetStringFieldQuickly("minrating", ref _strMinRating);
-            if (!objXmlGear.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlGear.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlGear.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlGear.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {

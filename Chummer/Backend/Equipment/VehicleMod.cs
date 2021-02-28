@@ -153,8 +153,8 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
             _intRating = intRating;
             _blnDowngrade = objXmlMod?["downgrade"] != null;
-            if (!objXmlMod.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMod.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMod.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -429,7 +429,7 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);

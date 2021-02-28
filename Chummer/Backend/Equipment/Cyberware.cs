@@ -506,8 +506,8 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
             objXmlCyberware.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
-            if (!objXmlCyberware.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlCyberware.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlCyberware.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlCyberware.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
