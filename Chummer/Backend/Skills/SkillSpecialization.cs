@@ -88,7 +88,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
-            int intSpecializationBonus = !Parent.CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
+            int intSpecializationBonus = Parent.CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
                 && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? 0
                 : SpecializationBonus;
