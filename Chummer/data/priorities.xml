@@ -4606,7 +4606,14 @@
           <qualities>
             <quality>Apprentice</quality>
           </qualities>
+          <skillgroupchoices>
+            <skillgroup>Conjuring</skillgroup>
+            <skillgroup>Sorcery</skillgroup>
+          </skillgroupchoices>
           <magic>5</magic>
+          <skillgroupqty>1</skillgroupqty>
+          <skillgroupval>4</skillgroupval>
+          <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
             <oneof>
               <metatype>A.I.</metatype>
@@ -4762,7 +4769,14 @@
           <qualities>
             <quality>Apprentice</quality>
           </qualities>
+          <skillgroupchoices>
+            <skillgroup>Conjuring</skillgroup>
+            <skillgroup>Sorcery</skillgroup>
+          </skillgroupchoices>
           <magic>3</magic>
+          <skillgroupqty>1</skillgroupqty>
+          <skillgroupval>2</skillgroupval>
+          <skillgrouptype>grouped</skillgrouptype>
           <forbidden>
             <oneof>
               <metatype>A.I.</metatype>

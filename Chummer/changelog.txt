@@ -61,6 +61,7 @@ Data Changes:
 - Helmets in the custom ruleset "Helmets Are Mods, SWAT and MilSpec Are FBA" now properly have capacities for gear instead of negative armor capacities.
 - Rigger 5.0 attribute increase drone mods now properly consume slot points based on the increase instead of on the total rating. The first level of an attribute increase (the first three for armor) are not also properly free.
 - Weapons that come with Trigger Removal as default no longer get an extra +1 Accuracy compared to their printed statblocks.
+- In Priority-based creation, Apprentices now get the same skill group extras that Aspected Magicians get, though they cannot choose the Enchanting skill group because those skills are forbidden for Apprentices. Fixes #4313.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
