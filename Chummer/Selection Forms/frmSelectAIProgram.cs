@@ -349,9 +349,9 @@ namespace Chummer
             lstPrograms.Sort(CompareListItems.CompareNames);
             lstAIPrograms.BeginUpdate();
             lstAIPrograms.DataSource = null;
+            lstAIPrograms.DataSource = lstPrograms;
             lstAIPrograms.ValueMember = nameof(ListItem.Value);
             lstAIPrograms.DisplayMember = nameof(ListItem.Name);
-            lstAIPrograms.DataSource = lstPrograms;
             lstAIPrograms.EndUpdate();
         }
 

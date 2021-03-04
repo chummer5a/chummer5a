@@ -1281,9 +1281,9 @@ namespace Chummer
 
             cboUseLoggingApplicationInsights.BeginUpdate();
             cboUseLoggingApplicationInsights.DataSource = null;
+            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
             cboUseLoggingApplicationInsights.ValueMember = nameof(ListItem.Value);
             cboUseLoggingApplicationInsights.DisplayMember = nameof(ListItem.Name);
-            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
 
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
@@ -1304,9 +1304,9 @@ namespace Chummer
 
             cboColorMode.BeginUpdate();
             cboColorMode.DataSource = null;
+            cboColorMode.DataSource = lstColorModes;
             cboColorMode.ValueMember = nameof(ListItem.Value);
             cboColorMode.DisplayMember = nameof(ListItem.Name);
-            cboColorMode.DataSource = lstColorModes;
 
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboColorMode.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);

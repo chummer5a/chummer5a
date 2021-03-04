@@ -106,9 +106,9 @@ namespace Chummer.UI.Powers
 
             cboDisplayFilter.BeginUpdate();
             cboDisplayFilter.DataSource = null;
+            cboDisplayFilter.DataSource = _dropDownList;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
-            cboDisplayFilter.DataSource = _dropDownList;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
             cboDisplayFilter.EndUpdate();

@@ -62,10 +62,9 @@ namespace Chummer.UI.Skills
             cmdDelete.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowDelete));
 
             cboType.BeginUpdate();
-            cboType.DataSource = null;
+            cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
             cboType.DoDatabinding("SelectedValue", _skill, nameof(KnowledgeSkill.Type));
             cboType.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.AllowTypeChange));
             cboType.EndUpdate();
@@ -76,10 +75,9 @@ namespace Chummer.UI.Skills
 
             cboName.BeginUpdate();
             cboName.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowNameChange));
-            cboName.DataSource = null;
+            cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills;
             cboName.DisplayMember = nameof(ListItem.Name);
             cboName.ValueMember = nameof(ListItem.Value);
-            cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills;
             cboName.SelectedIndex = -1;
             cboName.Text = _skill.WriteableName;
             cboName.EndUpdate();
@@ -233,10 +231,9 @@ namespace Chummer.UI.Skills
                 chkNativeLanguage.DoDatabinding("Checked", _skill, nameof(Skill.IsNativeLanguage));
 
                 cboSpec.BeginUpdate();
-                cboSpec.DataSource = null;
+                cboSpec.DataSource = _skill.CGLSpecializations;
                 cboSpec.DisplayMember = nameof(ListItem.Name);
                 cboSpec.ValueMember = nameof(ListItem.Value);
-                cboSpec.DataSource = _skill.CGLSpecializations;
                 cboSpec.SelectedIndex = -1;
                 cboSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
                 cboSpec.DoDatabinding("Text", _skill, nameof(Skill.Specialization));
@@ -289,9 +286,9 @@ namespace Chummer.UI.Skills
                         string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
                         cboSpec.BeginUpdate();
                         cboSpec.DataSource = null;
+                        cboSpec.DataSource = _skill.CGLSpecializations;
                         cboSpec.DisplayMember = nameof(ListItem.Name);
                         cboSpec.ValueMember = nameof(ListItem.Value);
-                        cboSpec.DataSource = _skill.CGLSpecializations;
                         cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
                         if (string.IsNullOrEmpty(strOldSpec))
                             cboSpec.SelectedIndex = -1;

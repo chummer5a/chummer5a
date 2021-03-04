@@ -79,9 +79,9 @@ namespace Chummer
             // Populate the lists.
             cboAmmo.BeginUpdate();
             cboAmmo.DataSource = null;
+            cboAmmo.DataSource = lstAmmo;
             cboAmmo.ValueMember = nameof(ListItem.Value);
             cboAmmo.DisplayMember = nameof(ListItem.Name);
-            cboAmmo.DataSource = lstAmmo;
             cboAmmo.EndUpdate();
 
             cboType.BeginUpdate();

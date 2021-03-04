@@ -430,9 +430,9 @@ namespace Chummer
 
             cboSpiritName.BeginUpdate();
             cboSpiritName.DataSource = null;
+            cboSpiritName.DataSource = lstCritters;
             cboSpiritName.DisplayMember = nameof(ListItem.Name);
             cboSpiritName.ValueMember = nameof(ListItem.Value);
-            cboSpiritName.DataSource = lstCritters;
 
             // Set the control back to its original value.
             cboSpiritName.SelectedValue = strCurrentValue;

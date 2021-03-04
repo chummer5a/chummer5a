@@ -180,9 +180,9 @@ namespace Chummer
 
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
+            lstResults.DataSource = _lstResults;
             lstResults.ValueMember = nameof(ListItem.Value);
             lstResults.DisplayMember = nameof(ListItem.Name);
-            lstResults.DataSource = _lstResults;
             lstResults.EndUpdate();
         }
 
@@ -337,9 +337,9 @@ namespace Chummer
 
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
+            lstResults.DataSource = _lstResults;
             lstResults.ValueMember = nameof(ListItem.Value);
             lstResults.DisplayMember = nameof(ListItem.Name);
-            lstResults.DataSource = _lstResults;
             lstResults.EndUpdate();
         }
         #endregion

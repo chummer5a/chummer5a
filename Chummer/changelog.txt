@@ -38,6 +38,7 @@ Application Fixes:
 - Fixed Fettering not being properly allowed for Magicians.
 - Items and improvements that disable specialization bonuses for a skill, e.g. Loss of Confidence, now properly disable them.
 - The dice roller now properly shows updated results after rerolling misses. Fixes #4305.
+- Dropdown boxes in non-English languages now properly display their localized texts and sort by them instead of showing and sorting by English values. Fixes #4319.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.

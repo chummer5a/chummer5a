@@ -1429,9 +1429,9 @@ namespace Chummer
             int intOldDataSourceSize = cboTalents.Items.Count;
             cboTalents.BeginUpdate();
             cboTalents.DataSource = null;
+            cboTalents.DataSource = lstTalent;
             cboTalents.ValueMember = nameof(ListItem.Value);
             cboTalents.DisplayMember = nameof(ListItem.Name);
-            cboTalents.DataSource = lstTalent;
             if (intOldDataSourceSize == cboTalents.Items.Count)
             {
                 bool blnOldLoading = _blnLoading;

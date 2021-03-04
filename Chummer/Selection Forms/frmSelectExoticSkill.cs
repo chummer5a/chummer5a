@@ -150,9 +150,9 @@ namespace Chummer
             string strOldSelectedValue = cboSkillSpecialisations.SelectedValue?.ToString() ?? string.Empty;
             cboSkillSpecialisations.BeginUpdate();
             cboSkillSpecialisations.DataSource = null;
+            cboSkillSpecialisations.DataSource = lstSkillSpecializations;
             cboSkillSpecialisations.ValueMember = nameof(ListItem.Value);
             cboSkillSpecialisations.DisplayMember = nameof(ListItem.Name);
-            cboSkillSpecialisations.DataSource = lstSkillSpecializations;
             if (!string.IsNullOrEmpty(strOldSelectedValue))
                 cboSkillSpecialisations.SelectedValue = strOldSelectedValue;
             if (cboSkillSpecialisations.SelectedIndex == -1)

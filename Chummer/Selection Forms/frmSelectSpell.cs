@@ -116,9 +116,9 @@ namespace Chummer
 
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
+            cboCategory.DataSource = _lstCategory;
             cboCategory.ValueMember = nameof(ListItem.Value);
             cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory)) cboCategory.SelectedIndex = 0;
             else cboCategory.SelectedValue = s_StrSelectCategory;

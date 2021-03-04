@@ -1185,9 +1185,9 @@ namespace Chummer
                 _blnLoading = true;
                 lstCyberware.BeginUpdate();
                 lstCyberware.DataSource = null;
+                lstCyberware.DataSource = lstCyberwares;
                 lstCyberware.ValueMember = nameof(ListItem.Value);
                 lstCyberware.DisplayMember = nameof(ListItem.Name);
-                lstCyberware.DataSource = lstCyberwares;
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstCyberware.SelectedValue = strOldSelected;

@@ -11905,10 +11905,10 @@ namespace Chummer
                 lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
             }
             cboCyberwareGrade.BeginUpdate();
-            //cboCyberwareGrade.DataSource = null;
+            cboCyberwareGrade.DataSource = null;
+            cboCyberwareGrade.DataSource = lstCyberwareGrades;
             cboCyberwareGrade.ValueMember = nameof(ListItem.Value);
             cboCyberwareGrade.DisplayMember = nameof(ListItem.Name);
-            cboCyberwareGrade.DataSource = lstCyberwareGrades;
             cboCyberwareGrade.EndUpdate();
         }
 

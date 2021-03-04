@@ -13050,9 +13050,9 @@ namespace Chummer
 
                     cboCyberwareOverclocker.BeginUpdate();
                     cboCyberwareOverclocker.DataSource = null;
+                    cboCyberwareOverclocker.DataSource = lstOverclocker;
                     cboCyberwareOverclocker.DisplayMember = nameof(ListItem.Name);
                     cboCyberwareOverclocker.ValueMember = nameof(ListItem.Value);
-                    cboCyberwareOverclocker.DataSource = lstOverclocker;
                     cboCyberwareOverclocker.SelectedValue = objGear.Overclocked;
                     if (cboCyberwareOverclocker.SelectedIndex == -1)
                         cboCyberwareOverclocker.SelectedIndex = 0;
@@ -13332,9 +13332,9 @@ namespace Chummer
                     objWeapon.ActiveAmmoSlot = intCurrentSlot;
                     cboWeaponAmmo.BeginUpdate();
                     cboWeaponAmmo.DataSource = null;
+                    cboWeaponAmmo.DataSource = lstAmmo;
                     cboWeaponAmmo.ValueMember = nameof(ListItem.Value);
                     cboWeaponAmmo.DisplayMember = nameof(ListItem.Name);
-                    cboWeaponAmmo.DataSource = lstAmmo;
                     cboWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString(GlobalOptions.InvariantCultureInfo);
                     if (cboWeaponAmmo.SelectedIndex == -1)
                         cboWeaponAmmo.SelectedIndex = 0;
@@ -13931,9 +13931,9 @@ namespace Chummer
 
                     cboGearOverclocker.BeginUpdate();
                     cboGearOverclocker.DataSource = null;
+                    cboGearOverclocker.DataSource = lstOverclocker;
                     cboGearOverclocker.DisplayMember = nameof(ListItem.Name);
                     cboGearOverclocker.ValueMember = nameof(ListItem.Value);
-                    cboGearOverclocker.DataSource = lstOverclocker;
                     cboGearOverclocker.SelectedValue = objGear.Overclocked;
                     if (cboGearOverclocker.SelectedIndex == -1)
                         cboGearOverclocker.SelectedIndex = 0;
@@ -15177,9 +15177,9 @@ namespace Chummer
                     objWeapon.ActiveAmmoSlot = intCurrentSlot;
                     cboVehicleWeaponAmmo.BeginUpdate();
                     cboVehicleWeaponAmmo.DataSource = null;
+                    cboVehicleWeaponAmmo.DataSource = lstAmmo;
                     cboVehicleWeaponAmmo.ValueMember = nameof(ListItem.Value);
                     cboVehicleWeaponAmmo.DisplayMember = nameof(ListItem.Name);
-                    cboVehicleWeaponAmmo.DataSource = lstAmmo;
                     cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString(GlobalOptions.InvariantCultureInfo);
                     if (cboVehicleWeaponAmmo.SelectedIndex == -1)
                         cboVehicleWeaponAmmo.SelectedIndex = 0;

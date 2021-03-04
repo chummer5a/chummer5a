@@ -96,16 +96,16 @@ namespace Chummer
                     }
 
                     cboChoice1.Visible = true;
+                    cboChoice1.DataSource = lstChoice1;
                     cboChoice1.ValueMember = nameof(ListItem.Value);
                     cboChoice1.DisplayMember = nameof(ListItem.Name);
-                    cboChoice1.DataSource = lstChoice1;
 
                     if (lstChoice2.Count > 0)
                     {
                         cboChoice2.Visible = true;
+                        cboChoice2.DataSource = lstChoice2;
                         cboChoice2.ValueMember = nameof(ListItem.Value);
                         cboChoice2.DisplayMember = nameof(ListItem.Name);
-                        cboChoice2.DataSource = lstChoice2;
                     }
                     else
                     {

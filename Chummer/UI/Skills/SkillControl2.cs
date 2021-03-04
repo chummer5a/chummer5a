@@ -205,9 +205,9 @@ namespace Chummer.UI.Skills
                 cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
                 cboSelectAttribute.BeginUpdate();
                 cboSelectAttribute.DataSource = null;
+                cboSelectAttribute.DataSource = lstAttributeItems;
                 cboSelectAttribute.DisplayMember = nameof(ListItem.Name);
                 cboSelectAttribute.ValueMember = nameof(ListItem.Value);
-                cboSelectAttribute.DataSource = lstAttributeItems;
                 cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
                 cboSelectAttribute.EndUpdate();
                 cboSelectAttribute.UpdateLightDarkMode();
@@ -283,9 +283,9 @@ namespace Chummer.UI.Skills
                     };
                     cboSpec.BeginUpdate();
                     cboSpec.DataSource = null;
+                    cboSpec.DataSource = objSkill.CGLSpecializations;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataSource = objSkill.CGLSpecializations;
                     cboSpec.SelectedIndex = -1;
                     cboSpec.DoDatabinding("Text", objSkill, nameof(Skill.Specialization));
                     cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
@@ -353,9 +353,9 @@ namespace Chummer.UI.Skills
                         string strOldSpec = cboSpec.Text;
                         cboSpec.BeginUpdate();
                         cboSpec.DataSource = null;
+                        cboSpec.DataSource = _objSkill.CGLSpecializations;
                         cboSpec.DisplayMember = nameof(ListItem.Name);
                         cboSpec.ValueMember = nameof(ListItem.Value);
-                        cboSpec.DataSource = _objSkill.CGLSpecializations;
                         if (string.IsNullOrEmpty(strOldSpec))
                             cboSpec.SelectedIndex = -1;
                         else
