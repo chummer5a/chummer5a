@@ -37,6 +37,7 @@ Application Fixes:
 - Restricted Gear for weapons and/or vehicles that are added by other items no longer counts both the source item and the weapon/vehicle itself as two separate items.
 - Fixed Fettering not being properly allowed for Magicians.
 - Items and improvements that disable specialization bonuses for a skill, e.g. Loss of Confidence, now properly disable them.
+- The dice roller now properly shows updated results after rerolling misses. Fixes #4305.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
