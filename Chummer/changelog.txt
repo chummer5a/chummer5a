@@ -64,6 +64,9 @@ Data Changes:
 - Weapons that come with Trigger Removal as default no longer get an extra +1 Accuracy compared to their printed statblocks.
 - In Priority-based creation, Apprentices now get the same skill group extras that Aspected Magicians get, though they cannot choose the Enchanting skill group because those skills are forbidden for Apprentices. Fixes #4313.
 - Rigger 5.0 Standard and Heavy vehicle mounts can now equip sniper rifles that have sporting rifle ranges. Fixes #4289.
+- Fixed incorrect stats for Krime Trollbow Horns.
+- Fixed incorrect specializations for various Carbines from Street Lethal.
+- Removed Hardened Rolling Blades weapon, as No Future says that Rolling Blades are only available in Bladed form.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

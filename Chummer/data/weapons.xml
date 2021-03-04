@@ -12718,20 +12718,21 @@
     <weapon>
       <id>a77f68e5-d05c-4591-a8f7-2cb8c3bfaa14</id>
       <name>Krime Trollbow Horns</name>
-      <category>Bows</category>
-      <type>Ranged</type>
-      <conceal>0</conceal>
-      <accuracy>4</accuracy>
-      <reach>2</reach>
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>+8</conceal>
+      <accuracy>3</accuracy>
+      <reach>1</reach>
       <damage>(STR+1)P</damage>
-      <ap>-5</ap>
+      <ap>-1</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>9R</avail>
-      <cost>900</cost>
+      <avail>0R</avail>
+      <cost>0</cost>
       <source>SL</source>
       <page>24</page>
+      <useskill>Blades</useskill>
       <hide />
     </weapon>
     <weapon>
@@ -13409,7 +13410,6 @@
         <mount>Under</mount>
         <mount>Top</mount>
       </accessorymounts>
-      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>463372d1-b005-4d09-90eb-ceced9ebccea</id>
@@ -13454,7 +13454,6 @@
         <mount>Under</mount>
         <mount>Top</mount>
       </accessorymounts>
-      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>63f03317-e192-4354-a504-106dc6b78004</id>
@@ -14456,7 +14455,6 @@
       <cost>600</cost>
       <source>NF</source>
       <page>171</page>
-      <spec>Hardened Yo-Yo</spec>
       <useskill>Exotic Melee Weapon</useskill>
     </weapon>
     <weapon>
@@ -14476,7 +14474,6 @@
       <cost>600</cost>
       <source>NF</source>
       <page>171</page>
-      <spec>Bladed Yo-Yo</spec>
       <useskill>Exotic Melee Weapon</useskill>
     </weapon>
     <weapon>
@@ -14496,7 +14493,6 @@
       <cost>12000</cost>
       <source>NF</source>
       <page>171</page>
-      <spec>Monofilament Yo-Yo</spec>
       <useskill>Exotic Melee Weapon</useskill>
     </weapon>
     <weapon>
@@ -14516,7 +14512,6 @@
       <cost>600</cost>
       <source>NF</source>
       <page>171</page>
-      <spec>Hardened Rolling Blades</spec>
       <useskill>Exotic Melee Weapon</useskill>
     </weapon>
     <weapon>
@@ -14532,27 +14527,26 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>8</avail>
+      <avail>12R</avail>
       <cost>600</cost>
       <source>NF</source>
       <page>171</page>
-      <spec>Hardened Rolling Blades</spec>
       <useskill>Exotic Melee Weapon</useskill>
     </weapon>
     <weapon>
-      <id>64efe703-1381-464a-b9ea-26c85b1837e3</id>
-      <name>Hardened Rolling Blades</name>
+      <id>a83ce374-cb7b-45e2-b937-dff5520bd5ae</id>
+      <name>Rolling Blades</name>
       <category>Exotic Melee Weapons</category>
       <type>Melee</type>
       <conceal>-4</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>(STR+2)P</damage>
-      <ap>0</ap>
+      <ap>-1</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>8</avail>
+      <avail>12R</avail>
       <cost>600</cost>
       <source>NF</source>
       <page>171</page>
@@ -14576,43 +14570,24 @@
       <source>NF</source>
       <page>172</page>
     </weapon>
-    <weapon>
-      <id>9e04a42b-6e65-4a3f-b8ff-b91efefb1f5c</id>
-      <name>Pitchfork</name>
-      <category>Clubs</category>
-      <type>Melee</type>
-      <conceal>0</conceal>
-      <accuracy>3</accuracy>
-      <reach>3</reach>
-      <damage>(STR+2)P</damage>
-      <ap>-1</ap>
-      <mode>0</mode>
-      <rc>0</rc>
-      <ammo>0</ammo>
-      <avail>4</avail>
-      <cost>25</cost>
-      <source>NF</source>
-      <page>172</page>
-    </weapon>
-    <weapon>
-      <id>a83ce374-cb7b-45e2-b937-dff5520bd5ae</id>
-      <name>Rolling Blades</name>
-      <category>Exotic Melee Weapons</category>
-      <type>Melee</type>
-      <conceal>-4</conceal>
-      <accuracy>4</accuracy>
-      <reach>0</reach>
-      <damage>(STR+2)P</damage>
-      <ap>-1</ap>
-      <mode>0</mode>
-      <rc>0</rc>
-      <ammo>0</ammo>
-      <avail>12R</avail>
-      <cost>600</cost>
-      <source>NF</source>
-      <page>171</page>
-      <useskill>Exotic Melee Weapon</useskill>
-    </weapon>
+	<weapon>
+	  <id>9e04a42b-6e65-4a3f-b8ff-b91efefb1f5c</id>
+	  <name>Pitchfork</name>
+	  <category>Clubs</category>
+	  <type>Melee</type>
+	  <conceal>0</conceal>
+	  <accuracy>3</accuracy>
+	  <reach>3</reach>
+	  <damage>(STR+2)P</damage>
+	  <ap>-1</ap>
+	  <mode>0</mode>
+	  <rc>0</rc>
+	  <ammo>0</ammo>
+	  <avail>4</avail>
+	  <cost>25</cost>
+	  <source>NF</source>
+	  <page>172</page>
+	</weapon>
     <weapon>
       <id>c5861520-b344-45b3-8497-ec1b935ef531</id>
       <name>Grenade: Molotov Cocktail</name>
@@ -14921,7 +14896,7 @@
     <weapon>
       <id>e1b2576c-9f61-4257-913b-667ea53a4864</id>
       <name>Melee Bite</name>
-      <category>Blades</category>
+      <category>Unarmed</category>
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>3</accuracy>
@@ -14940,7 +14915,7 @@
     <weapon>
       <id>4260c424-10ab-4530-b6e1-6e1e5bb267ad</id>
       <name>Jaws</name>
-      <category>Blades</category>
+      <category>Unarmed</category>
       <type>Melee</type>
       <conceal>0</conceal>
       <accuracy>3</accuracy>
@@ -15013,7 +14988,6 @@
       <page>136</page>
     </weapon>
     <!-- End Region -->
-
     <!-- Region Kill Code -->
     <weapon>
       <id>d0434d89-c035-4793-ba10-3ae13b815b52</id>
