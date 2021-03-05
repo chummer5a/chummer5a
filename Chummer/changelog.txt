@@ -64,7 +64,7 @@ Data Changes:
 - Rigger 5.0 attribute increase drone mods now properly consume slot points based on the increase instead of on the total rating. The first level of an attribute increase (the first three for armor) are not also properly free.
 - Weapons that come with Trigger Removal as default no longer get an extra +1 Accuracy compared to their printed statblocks.
 - In Priority-based creation, Apprentices now get the same skill group extras that Aspected Magicians get, though they cannot choose the Enchanting skill group because those skills are forbidden for Apprentices. Fixes #4313.
-- Rigger 5.0 Standard and Heavy vehicle mounts can now equip sniper rifles that have sporting rifle ranges. Fixes #4289.
+- The customdata for letting Rigger 5.0 Standard and Heavy vehicle mounts to sporting rifles now works for proper Rigger 5.0-style weapon mounts as well. Fixes #4289.
 - Fixed incorrect stats for Krime Trollbow Horns.
 - Fixed incorrect specializations for various Carbines from Street Lethal.
 - Removed Hardened Rolling Blades weapon, as No Future says that Rolling Blades are only available in Bladed form.

@@ -6,12 +6,24 @@
     <!--Heavy Weapon Mount (R5)-->
     <mod>
       <id>4eecb2ee-ad33-4bc2-b8b3-d35e0df40836</id>
-      <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Sporting Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponmountcategories>
+      <weaponmountcategories amendoperation="append">,Sporting Rifles</weaponmountcategories>
     </mod>
     <!--Standard Weapon Mount (R5)-->
     <mod>
       <id>86741661-11c2-4781-b365-b02dbb9fd7c0</id>
-      <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Sporting Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
+      <weaponmountcategories amendoperation="append">,Sporting Rifles</weaponmountcategories>
     </mod>
   </mods>
+  <weaponmounts>
+    <!--Standard Weapon Mount (R5)-->
+    <weaponmount>
+      <id>4e9da56b-622c-439f-9718-98ac3a792351</id>
+      <weaponcategories amendoperation="append">,Sporting Rifles</weaponcategories>
+    </weaponmount>
+    <!--Heavy Weapon Mount (R5)-->
+    <mod>
+      <id>73f6f721-9732-4773-8ce6-0e3f5222a49f</id>
+      <weaponcategories amendoperation="append">,Sporting Rifles</weaponcategories>
+    </mod>
+  </weaponmounts>
 </chummer>
