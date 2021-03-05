@@ -68,6 +68,7 @@ Data Changes:
 - Fixed incorrect stats for Krime Trollbow Horns.
 - Fixed incorrect specializations for various Carbines from Street Lethal.
 - Removed Hardened Rolling Blades weapon, as No Future says that Rolling Blades are only available in Bladed form.
+- Carbines is now one of the recommended specializations for the Automatics skill.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
