@@ -39,6 +39,7 @@ Application Fixes:
 - Items and improvements that disable specialization bonuses for a skill, e.g. Loss of Confidence, now properly disable them.
 - The dice roller now properly shows updated results after rerolling misses. Fixes #4305.
 - Dropdown boxes in non-English languages now properly display their localized texts and sort by them instead of showing and sorting by English values. Fixes #4319.
+- Fixed an issue in the amend system where if multiple parent nodes were being modified at once with the option to add a node if it is not found, having that node present in only one parent would prevent it from being added to all the parents that were missing it. Fixes a bug that was mentioned off-handedly in #4310.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
