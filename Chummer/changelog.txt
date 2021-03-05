@@ -69,6 +69,7 @@ Data Changes:
 - Fixed incorrect specializations for various Carbines from Street Lethal.
 - Removed Hardened Rolling Blades weapon, as No Future says that Rolling Blades are only available in Bladed form.
 - Carbines is now one of the recommended specializations for the Automatics skill.
+- Added customdata that removes Automatics as a skill, placing Machine Pistols into the Pistols skill and all other Automatics weapons into the Longarms skill. Heavy Weapons replaces Automatics in the Firearms skill group. Implements #4310.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound
