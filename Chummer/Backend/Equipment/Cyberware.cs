@@ -5238,11 +5238,11 @@ namespace Chummer.Backend.Equipment
             if (decEssDelta > 0)
             {
                 //The new Essence cost is greater than the old one.
-                _objCharacter.IncreaseEssenceHole(decEssDelta);
+                _objCharacter.DecreaseEssenceHole(decEssDelta);
             }
             else if (decEssDelta < 0)
             {
-                _objCharacter.DecreaseEssenceHole(-decEssDelta);
+                _objCharacter.IncreaseEssenceHole(-decEssDelta);
             }
         }
 
