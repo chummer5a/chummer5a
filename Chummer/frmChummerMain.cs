@@ -719,11 +719,18 @@ namespace Chummer
             }
         }
 
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuOptions_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
                 using (frmOptions frmOptions = new frmOptions())
                     frmOptions.ShowDialog(this);
+        }
+
+        private void mnuCharacterOptions_Click(object sender, EventArgs e)
+        {
+            using (new CursorWait(this))
+                using (frmCharacterOptions frmCharacterOptions = new frmCharacterOptions())
+                    frmCharacterOptions.ShowDialog(this);
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)

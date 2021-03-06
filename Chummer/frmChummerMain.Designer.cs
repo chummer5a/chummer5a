@@ -490,7 +490,7 @@ namespace Chummer
             this.mnuOptions.Size = new System.Drawing.Size(180, 22);
             this.mnuOptions.Tag = "Menu_Main_Options";
             this.mnuOptions.Text = "&Global Options";
-            this.mnuOptions.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            this.mnuOptions.Click += new System.EventHandler(this.mnuOptions_Click);
             // 
             // mnuCharacterOptions
             // 
@@ -499,6 +499,7 @@ namespace Chummer
             this.mnuCharacterOptions.Size = new System.Drawing.Size(180, 22);
             this.mnuCharacterOptions.Tag = "Menu_Main_Character_Options";
             this.mnuCharacterOptions.Text = "&Character Options";
+            this.mnuCharacterOptions.Click += new System.EventHandler(this.mnuCharacterOptions_Click);
             // 
             // mnuToolsUpdate
             // 
