@@ -1368,11 +1368,19 @@
     </string>
     <string>
       <key>Menu_Main_Options</key>
-      <text>&amp;Options</text>
+      <text>&amp;Global Options</text>
+    </string>
+    <string>
+      <key>Menu_Main_Character_Options</key>
+      <text>&amp;Character Options</text>
     </string>
     <string>
       <key>Menu_Main_Update</key>
-      <text>Check for Updates</text>
+      <text>Check for &amp;Updates</text>
+    </string>
+    <string>
+      <key>Menu_Main_Restart</key>
+      <text>&amp;Restart Chummer</text>
     </string>
     <string>
       <key>Menu_Main_NewWindow</key>
@@ -1384,11 +1392,11 @@
     </string>
     <string>
       <key>Menu_Main_ChummerWiki</key>
-      <text>Chummer Wiki</text>
+      <text>Chummer &amp;Wiki</text>
     </string>
     <string>
       <key>Menu_Main_ChummerDiscord</key>
-      <text>Chummer Discord</text>
+      <text>Chummer &amp;Discord</text>
     </string>
     <string>
       <key>Menu_Main_RevisionHistory</key>
@@ -1396,7 +1404,7 @@
     </string>
     <string>
       <key>Menu_Main_DumpshockThread</key>
-      <text>&amp;Dumpshock Thread</text>
+      <text>D&amp;umpshock Thread</text>
     </string>
     <string>
       <key>Menu_Main_About</key>
@@ -1404,11 +1412,11 @@
     </string>
     <string>
       <key>Menu_Main_Translator</key>
-      <text>Translator</text>
+      <text>&amp;Translator</text>
     </string>
     <string>
       <key>Menu_Main_HeroLabImporter</key>
-      <text>Hero Lab Importer</text>
+      <text>&amp;Hero Lab Importer</text>
     </string>
     <string>
       <key>String_MetatypeLoadError</key>
@@ -6817,7 +6825,7 @@
     <!-- Region Options Window -->
     <string>
       <key>Title_Options</key>
-      <text>Options</text>
+      <text>Global Options</text>
     </string>
     <string>
       <key>Label_Options_SettingsFile</key>

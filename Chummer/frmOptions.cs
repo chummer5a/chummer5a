@@ -18,7 +18,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
@@ -38,7 +37,6 @@ namespace Chummer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // List of custom data directories on the character, in load order. If the character has a directory name for which we have no info, Item1 will be null
-        private readonly List<Tuple<object, bool>> _lstCharacterCustomDataDirectoryInfos = new List<Tuple<object, bool>>();
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
         private bool _blnSkipRefresh;
         private bool _blnDirty;
@@ -279,7 +277,7 @@ namespace Chummer
             }
 
             PopulatePDFParameters();
-            PopulateCustomDataDirectoryTreeView();
+            PopulateCustomDataDirectoryListBox();
             PopulateApplicationInsightsOptions();
             PopulateColorModes();
         }
@@ -325,54 +323,50 @@ namespace Chummer
             lstGlobalSourcebookInfos.EndUpdate();
         }
 
-        private void PopulateCustomDataDirectoryTreeView()
+        private void PopulateCustomDataDirectoryListBox()
         {
-            object objOldSelected = treCustomDataDirectories.SelectedNode?.Tag;
-            if(_lstCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
+            ListItem objOldSelected = lsbCustomDataDirectories.SelectedIndex != -1 ? (ListItem)lsbCustomDataDirectories.SelectedItem : ListItem.Blank;
+            string strNameFormat = "{0}" + LanguageManager.GetString("String_Space", _strSelectedLanguage) + "<{1}>";
+            lsbCustomDataDirectories.BeginUpdate();
+            if (_setCustomDataDirectoryInfos.Count != lsbCustomDataDirectories.Items.Count)
             {
-                treCustomDataDirectories.Nodes.Clear();
-
-                foreach (Tuple<object, bool> objCustomDataDirectory in _lstCharacterCustomDataDirectoryInfos)
+                lsbCustomDataDirectories.Items.Clear();
+                
+                foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
                 {
-                    TreeNode objNode = new TreeNode
-                    {
-                        Tag = objCustomDataDirectory.Item1,
-                        Checked = objCustomDataDirectory.Item2
-                    };
-                    if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
-                    {
-                        objNode.Text = objInfo.Name;
-                    }
-                    else
-                    {
-                        objNode.Text = objCustomDataDirectory.Item1.ToString();
-                        objNode.ForeColor = SystemColors.GrayText;
-                    }
-                    treCustomDataDirectories.Nodes.Add(objNode);
+                    ListItem objItem = new ListItem(objCustomDataDirectory,
+                        string.Format(_objSelectedCultureInfo, strNameFormat, objCustomDataDirectory.Name,
+                            objCustomDataDirectory.Path));
+                    lsbCustomDataDirectories.Items.Add(objItem);
                 }
             }
             else
             {
-                for(int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
+                HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
+                for (int iI = lsbCustomDataDirectories.Items.Count; iI >= 0; --iI)
                 {
-                    TreeNode objNode = treCustomDataDirectories.Nodes[i];
-                    Tuple<object, bool> objCustomDataDirectory = _lstCharacterCustomDataDirectoryInfos[i];
-                    objNode.Tag = objCustomDataDirectory.Item1;
-                    objNode.Checked = objCustomDataDirectory.Item2;
-                    if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
-                    {
-                        objNode.Text = objInfo.Name;
-                    }
+                    ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
+                    CustomDataDirectoryInfo objExistingInfo = objExistingItem.Value as CustomDataDirectoryInfo;
+                    if (objExistingInfo == null || !_setCustomDataDirectoryInfos.Contains(objExistingInfo))
+                        lsbCustomDataDirectories.Items.RemoveAt(iI);
                     else
-                    {
-                        objNode.Text = objCustomDataDirectory.Item1.ToString();
-                        objNode.ForeColor = SystemColors.GrayText;
-                    }
+                        setListedInfos.Add(objExistingInfo);
+                }
+                foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos.Where(x => !setListedInfos.Contains(x)))
+                {
+                    ListItem objItem = new ListItem(objCustomDataDirectory,
+                        string.Format(_objSelectedCultureInfo, strNameFormat, objCustomDataDirectory.Name,
+                            objCustomDataDirectory.Path));
+                    lsbCustomDataDirectories.Items.Add(objItem);
                 }
             }
-
-            if(objOldSelected != null)
-                treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
+            if (_blnLoading)
+            {
+                lsbCustomDataDirectories.DisplayMember = nameof(ListItem.Name);
+                lsbCustomDataDirectories.ValueMember = nameof(ListItem.Value);
+            }
+            lsbCustomDataDirectories.EndUpdate();
+            lsbCustomDataDirectories.SelectedItem = objOldSelected;
         }
 
         /// <summary>
@@ -381,7 +375,7 @@ namespace Chummer
         private void PopulateOptions()
         {
             RefreshGlobalSourcebookInfosListView();
-            PopulateCustomDataDirectoryTreeView();
+            PopulateCustomDataDirectoryListBox();
 
             chkAutomaticUpdate.Checked = GlobalOptions.AutomaticUpdate;
             chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
@@ -389,6 +383,7 @@ namespace Chummer
             chkUseLogging.Checked = GlobalOptions.UseLogging;
             cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
             PopulateApplicationInsightsOptions();
+            PopulateColorModes();
 
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
             chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
@@ -503,12 +498,12 @@ namespace Chummer
 
             int intIndex = 0;
 
-            foreach (CharacterOptions objLoopCharacterOptions in OptionsManager.LoadedCharacterOptions.Values)
+            foreach (KeyValuePair<string, CharacterOptions> kvpLoopCharacterOptions in OptionsManager.LoadedCharacterOptions)
             {
-                string strId = objLoopCharacterOptions.Name;
+                string strId = kvpLoopCharacterOptions.Key;
                 if (!string.IsNullOrEmpty(strId))
                 {
-                    string strName = strId;
+                    string strName = kvpLoopCharacterOptions.Value.Name;
                     if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
                         strName = LanguageManager.GetString(strName.TrimStartOnce('{').TrimEndOnce('}'), _strSelectedLanguage);
                     lstCharacterOptions.Add(new ListItem(strId, strName));
@@ -523,9 +518,9 @@ namespace Chummer
 
             cboDefaultCharacterOption.BeginUpdate();
             cboDefaultCharacterOption.DataSource = null;
+            cboDefaultCharacterOption.DataSource = lstCharacterOptions;
             cboDefaultCharacterOption.ValueMember = nameof(ListItem.Value);
             cboDefaultCharacterOption.DisplayMember = nameof(ListItem.Name);
-            cboDefaultCharacterOption.DataSource = lstCharacterOptions;
             cboDefaultCharacterOption.SelectedIndex = intIndex;
 
             if(!string.IsNullOrEmpty(strOldSelected))
@@ -550,9 +545,9 @@ namespace Chummer
 
             cboMugshotCompression.BeginUpdate();
             cboMugshotCompression.DataSource = null;
+            cboMugshotCompression.DataSource = lstMugshotCompressionOptions;
             cboMugshotCompression.ValueMember = nameof(ListItem.Value);
             cboMugshotCompression.DisplayMember = nameof(ListItem.Name);
-            cboMugshotCompression.DataSource = lstMugshotCompressionOptions;
 
             if (!string.IsNullOrEmpty(strOldSelected))
             {
@@ -592,9 +587,9 @@ namespace Chummer
 
             cboPDFParameters.BeginUpdate();
             cboPDFParameters.DataSource = null;
+            cboPDFParameters.DataSource = lstPdfParameters;
             cboPDFParameters.ValueMember = nameof(ListItem.Value);
             cboPDFParameters.DisplayMember = nameof(ListItem.Name);
-            cboPDFParameters.DataSource = lstPdfParameters;
             cboPDFParameters.SelectedIndex = intIndex;
 
             if(!string.IsNullOrEmpty(strOldSelected))
@@ -619,9 +614,9 @@ namespace Chummer
 
             cboUseLoggingApplicationInsights.BeginUpdate();
             cboUseLoggingApplicationInsights.DataSource = null;
+            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
             cboUseLoggingApplicationInsights.ValueMember = nameof(ListItem.Value);
             cboUseLoggingApplicationInsights.DisplayMember = nameof(ListItem.Name);
-            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
 
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
@@ -642,9 +637,9 @@ namespace Chummer
 
             cboColorMode.BeginUpdate();
             cboColorMode.DataSource = null;
+            cboColorMode.DataSource = lstColorModes;
             cboColorMode.ValueMember = nameof(ListItem.Value);
             cboColorMode.DisplayMember = nameof(ListItem.Name);
-            cboColorMode.DataSource = lstColorModes;
 
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboColorMode.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);
@@ -697,9 +692,9 @@ namespace Chummer
 
             cboLanguage.BeginUpdate();
             cboLanguage.DataSource = null;
+            cboLanguage.DataSource = lstLanguages;
             cboLanguage.ValueMember = nameof(ListItem.Value);
             cboLanguage.DisplayMember = nameof(ListItem.Name);
-            cboLanguage.DataSource = lstLanguages;
             cboLanguage.EndUpdate();
         }
 
@@ -707,9 +702,9 @@ namespace Chummer
         {
             cboSheetLanguage.BeginUpdate();
             cboSheetLanguage.DataSource = null;
+            cboSheetLanguage.DataSource = GetSheetLanguageList();
             cboSheetLanguage.ValueMember = nameof(ListItem.Value);
             cboSheetLanguage.DisplayMember = nameof(ListItem.Name);
-            cboSheetLanguage.DataSource = GetSheetLanguageList();
             cboSheetLanguage.EndUpdate();
         }
 
@@ -821,9 +816,9 @@ namespace Chummer
 
             cboXSLT.BeginUpdate();
             cboXSLT.DataSource = null;
+            cboXSLT.DataSource = lstFiles;
             cboXSLT.ValueMember = nameof(ListItem.Value);
             cboXSLT.DisplayMember = nameof(ListItem.Name);
-            cboXSLT.DataSource = lstFiles;
 
             if(!string.IsNullOrEmpty(strOldSelected))
             {
@@ -1003,7 +998,7 @@ namespace Chummer
                     else
                     {
                         _setCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
-                        PopulateCustomDataDirectoryTreeView();
+                        PopulateCustomDataDirectoryListBox();
                     }
                 }
             }
@@ -1011,22 +1006,23 @@ namespace Chummer
 
         private void cmdRemoveCustomDirectory_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelectedCustomDataDirectory = treCustomDataDirectories.SelectedNode;
-            CustomDataDirectoryInfo objInfoToRemove = nodSelectedCustomDataDirectory?.Tag as CustomDataDirectoryInfo;
+            if (lsbCustomDataDirectories.SelectedIndex == -1)
+                return;
+            ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
+            CustomDataDirectoryInfo objInfoToRemove = objSelected.Value as CustomDataDirectoryInfo;
             if (objInfoToRemove == null || !_setCustomDataDirectoryInfos.Contains(objInfoToRemove))
                 return;
-            if(nodSelectedCustomDataDirectory.Checked)
-                OptionsChanged(sender, e);
+            OptionsChanged(sender, e);
             _setCustomDataDirectoryInfos.Remove(objInfoToRemove);
-            PopulateCustomDataDirectoryTreeView();
+            PopulateCustomDataDirectoryListBox();
         }
 
         private void cmdRenameCustomDataDirectory_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelectedInfo = treCustomDataDirectories.SelectedNode;
-            if (nodSelectedInfo == null)
+            if (lsbCustomDataDirectories.SelectedIndex == -1)
                 return;
-            CustomDataDirectoryInfo objInfoToRename = nodSelectedInfo.Tag as CustomDataDirectoryInfo;
+            ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
+            CustomDataDirectoryInfo objInfoToRename = objSelected.Value as CustomDataDirectoryInfo;
             if (objInfoToRename == null)
                 return;
             using (frmSelectText frmSelectCustomDirectoryName = new frmSelectText
@@ -1046,14 +1042,7 @@ namespace Chummer
                     CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.Path);
                     _setCustomDataDirectoryInfos.Remove(objInfoToRename);
                     _setCustomDataDirectoryInfos.Add(objNewInfo);
-                    int intItemIndex =  _lstCharacterCustomDataDirectoryInfos.FindIndex(x => objInfoToRename.Equals(x.Item1));
-                    if (intItemIndex >= 0)
-                    {
-                        bool blnEnabled = _lstCharacterCustomDataDirectoryInfos[intItemIndex].Item2;
-                        _lstCharacterCustomDataDirectoryInfos.RemoveAt(intItemIndex);
-                        _lstCharacterCustomDataDirectoryInfos.Insert(intItemIndex, new Tuple<object, bool>(objNewInfo, blnEnabled));
-                    }
-                    PopulateCustomDataDirectoryTreeView();
+                    PopulateCustomDataDirectoryListBox();
                 }
             }
         }

@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOptions));
             this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
@@ -51,7 +52,6 @@ namespace Chummer
             this.chkLiveCustomData = new System.Windows.Forms.CheckBox();
             this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
             this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
-            this.chkLifeModule = new System.Windows.Forms.CheckBox();
             this.chkAutomaticUpdate = new System.Windows.Forms.CheckBox();
             this.chkConfirmKarmaExpense = new System.Windows.Forms.CheckBox();
             this.chkConfirmDelete = new System.Windows.Forms.CheckBox();
@@ -108,15 +108,19 @@ namespace Chummer
             this.chkHideMasterIndex = new System.Windows.Forms.CheckBox();
             this.chkHideCharacterRoster = new System.Windows.Forms.CheckBox();
             this.chkLiveUpdateCleanCharacterFiles = new System.Windows.Forms.CheckBox();
+            this.chkLifeModule = new System.Windows.Forms.CheckBox();
+            this.tlpColorMode = new System.Windows.Forms.TableLayoutPanel();
+            this.lblColorMode = new System.Windows.Forms.Label();
+            this.cboColorMode = new System.Windows.Forms.ComboBox();
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.tabCustomDataDirectories = new System.Windows.Forms.TabPage();
             this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
             this.cmdAddCustomDirectory = new System.Windows.Forms.Button();
-            this.treCustomDataDirectories = new System.Windows.Forms.TreeView();
             this.cmdRenameCustomDataDirectory = new System.Windows.Forms.Button();
             this.cmdRemoveCustomDirectory = new System.Windows.Forms.Button();
+            this.lsbCustomDataDirectories = new System.Windows.Forms.ListBox();
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
@@ -127,9 +131,6 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpColorMode = new System.Windows.Forms.TableLayoutPanel();
-            this.lblColorMode = new System.Windows.Forms.Label();
-            this.cboColorMode = new System.Windows.Forms.ComboBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -154,6 +155,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMugshotCompressionQuality)).BeginInit();
             this.flpBrowserVersion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).BeginInit();
+            this.tlpColorMode.SuspendLayout();
             this.gpbEditSourcebookInfo.SuspendLayout();
             this.tabCustomDataDirectories.SuspendLayout();
             this.tlpOptionalRules.SuspendLayout();
@@ -162,7 +164,6 @@ namespace Chummer
             this.tlpPlugins.SuspendLayout();
             this.grpAvailablePlugins.SuspendLayout();
             this.flpOKCancel.SuspendLayout();
-            this.tlpColorMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -539,20 +540,6 @@ namespace Chummer
             this.chkStartupFullscreen.Text = "Start Chummer in fullscreen";
             this.chkStartupFullscreen.UseVisualStyleBackColor = true;
             this.chkStartupFullscreen.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkLifeModule
-            // 
-            this.chkLifeModule.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkLifeModule.AutoSize = true;
-            this.tlpGlobalOptions.SetColumnSpan(this.chkLifeModule, 2);
-            this.chkLifeModule.Location = new System.Drawing.Point(3, 334);
-            this.chkLifeModule.Name = "chkLifeModule";
-            this.chkLifeModule.Size = new System.Drawing.Size(117, 17);
-            this.chkLifeModule.TabIndex = 22;
-            this.chkLifeModule.Tag = "Checkbox_Options_UseLifeModule";
-            this.chkLifeModule.Text = "Life modules visible";
-            this.chkLifeModule.UseVisualStyleBackColor = true;
-            this.chkLifeModule.CheckedChanged += new System.EventHandler(this.chkLifeModules_CheckedChanged);
             // 
             // chkAutomaticUpdate
             // 
@@ -1343,6 +1330,60 @@ namespace Chummer
             this.chkLiveUpdateCleanCharacterFiles.UseVisualStyleBackColor = true;
             this.chkLiveUpdateCleanCharacterFiles.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
+            // chkLifeModule
+            // 
+            this.chkLifeModule.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkLifeModule.AutoSize = true;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkLifeModule, 2);
+            this.chkLifeModule.Location = new System.Drawing.Point(3, 334);
+            this.chkLifeModule.Name = "chkLifeModule";
+            this.chkLifeModule.Size = new System.Drawing.Size(117, 17);
+            this.chkLifeModule.TabIndex = 22;
+            this.chkLifeModule.Tag = "Checkbox_Options_UseLifeModule";
+            this.chkLifeModule.Text = "Life modules visible";
+            this.chkLifeModule.UseVisualStyleBackColor = true;
+            this.chkLifeModule.CheckedChanged += new System.EventHandler(this.chkLifeModules_CheckedChanged);
+            // 
+            // tlpColorMode
+            // 
+            this.tlpColorMode.AutoSize = true;
+            this.tlpColorMode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpColorMode.ColumnCount = 2;
+            this.tlpGlobalOptions.SetColumnSpan(this.tlpColorMode, 2);
+            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpColorMode.Controls.Add(this.lblColorMode, 0, 0);
+            this.tlpColorMode.Controls.Add(this.cboColorMode, 1, 0);
+            this.tlpColorMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpColorMode.Location = new System.Drawing.Point(0, 131);
+            this.tlpColorMode.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpColorMode.Name = "tlpColorMode";
+            this.tlpColorMode.RowCount = 1;
+            this.tlpColorMode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpColorMode.Size = new System.Drawing.Size(450, 27);
+            this.tlpColorMode.TabIndex = 78;
+            // 
+            // lblColorMode
+            // 
+            this.lblColorMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblColorMode.AutoSize = true;
+            this.lblColorMode.Location = new System.Drawing.Point(3, 7);
+            this.lblColorMode.Name = "lblColorMode";
+            this.lblColorMode.Size = new System.Drawing.Size(64, 13);
+            this.lblColorMode.TabIndex = 0;
+            this.lblColorMode.Text = "Color Mode:";
+            // 
+            // cboColorMode
+            // 
+            this.cboColorMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboColorMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboColorMode.FormattingEnabled = true;
+            this.cboColorMode.Location = new System.Drawing.Point(73, 3);
+            this.cboColorMode.Name = "cboColorMode";
+            this.cboColorMode.Size = new System.Drawing.Size(374, 21);
+            this.cboColorMode.TabIndex = 1;
+            this.cboColorMode.SelectedIndexChanged += new System.EventHandler(this.cboColorMode_SelectedIndexChanged);
+            // 
             // gpbEditSourcebookInfo
             // 
             this.gpbEditSourcebookInfo.AutoSize = true;
@@ -1393,9 +1434,9 @@ namespace Chummer
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
             this.tlpOptionalRules.Controls.Add(this.cmdAddCustomDirectory, 1, 0);
-            this.tlpOptionalRules.Controls.Add(this.treCustomDataDirectories, 0, 1);
             this.tlpOptionalRules.Controls.Add(this.cmdRenameCustomDataDirectory, 2, 0);
             this.tlpOptionalRules.Controls.Add(this.cmdRemoveCustomDirectory, 3, 0);
+            this.tlpOptionalRules.Controls.Add(this.lsbCustomDataDirectories, 0, 1);
             this.tlpOptionalRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOptionalRules.Location = new System.Drawing.Point(9, 9);
             this.tlpOptionalRules.Name = "tlpOptionalRules";
@@ -1432,18 +1473,6 @@ namespace Chummer
             this.cmdAddCustomDirectory.UseVisualStyleBackColor = true;
             this.cmdAddCustomDirectory.Click += new System.EventHandler(this.cmdAddCustomDirectory_Click);
             // 
-            // treCustomDataDirectories
-            // 
-            this.tlpOptionalRules.SetColumnSpan(this.treCustomDataDirectories, 4);
-            this.treCustomDataDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treCustomDataDirectories.Location = new System.Drawing.Point(3, 32);
-            this.treCustomDataDirectories.Name = "treCustomDataDirectories";
-            this.treCustomDataDirectories.ShowLines = false;
-            this.treCustomDataDirectories.ShowPlusMinus = false;
-            this.treCustomDataDirectories.ShowRootLines = false;
-            this.treCustomDataDirectories.Size = new System.Drawing.Size(1208, 549);
-            this.treCustomDataDirectories.TabIndex = 40;
-            // 
             // cmdRenameCustomDataDirectory
             // 
             this.cmdRenameCustomDataDirectory.AutoSize = true;
@@ -1471,6 +1500,16 @@ namespace Chummer
             this.cmdRemoveCustomDirectory.Text = "Remove Directory";
             this.cmdRemoveCustomDirectory.UseVisualStyleBackColor = true;
             this.cmdRemoveCustomDirectory.Click += new System.EventHandler(this.cmdRemoveCustomDirectory_Click);
+            // 
+            // lsbCustomDataDirectories
+            // 
+            this.tlpOptionalRules.SetColumnSpan(this.lsbCustomDataDirectories, 4);
+            this.lsbCustomDataDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsbCustomDataDirectories.FormattingEnabled = true;
+            this.lsbCustomDataDirectories.Location = new System.Drawing.Point(3, 32);
+            this.lsbCustomDataDirectories.Name = "lsbCustomDataDirectories";
+            this.lsbCustomDataDirectories.Size = new System.Drawing.Size(1208, 549);
+            this.lsbCustomDataDirectories.TabIndex = 42;
             // 
             // tabGitHubIssues
             // 
@@ -1614,46 +1653,6 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // tlpColorMode
-            // 
-            this.tlpColorMode.AutoSize = true;
-            this.tlpColorMode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpColorMode.ColumnCount = 2;
-            this.tlpGlobalOptions.SetColumnSpan(this.tlpColorMode, 2);
-            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpColorMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpColorMode.Controls.Add(this.lblColorMode, 0, 0);
-            this.tlpColorMode.Controls.Add(this.cboColorMode, 1, 0);
-            this.tlpColorMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpColorMode.Location = new System.Drawing.Point(0, 131);
-            this.tlpColorMode.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpColorMode.Name = "tlpColorMode";
-            this.tlpColorMode.RowCount = 1;
-            this.tlpColorMode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpColorMode.Size = new System.Drawing.Size(450, 27);
-            this.tlpColorMode.TabIndex = 78;
-            // 
-            // lblColorMode
-            // 
-            this.lblColorMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblColorMode.AutoSize = true;
-            this.lblColorMode.Location = new System.Drawing.Point(3, 7);
-            this.lblColorMode.Name = "lblColorMode";
-            this.lblColorMode.Size = new System.Drawing.Size(64, 13);
-            this.lblColorMode.TabIndex = 0;
-            this.lblColorMode.Text = "Color Mode:";
-            // 
-            // cboColorMode
-            // 
-            this.cboColorMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboColorMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboColorMode.FormattingEnabled = true;
-            this.cboColorMode.Location = new System.Drawing.Point(73, 3);
-            this.cboColorMode.Name = "cboColorMode";
-            this.cboColorMode.Size = new System.Drawing.Size(374, 21);
-            this.cboColorMode.TabIndex = 1;
-            this.cboColorMode.SelectedIndexChanged += new System.EventHandler(this.cboColorMode_SelectedIndexChanged);
-            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1663,6 +1662,7 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tlpOptions);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(48, 50);
             this.Name = "frmOptions";
@@ -1714,6 +1714,8 @@ namespace Chummer
             this.flpBrowserVersion.ResumeLayout(false);
             this.flpBrowserVersion.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudBrowserVersion)).EndInit();
+            this.tlpColorMode.ResumeLayout(false);
+            this.tlpColorMode.PerformLayout();
             this.gpbEditSourcebookInfo.ResumeLayout(false);
             this.tabCustomDataDirectories.ResumeLayout(false);
             this.tabCustomDataDirectories.PerformLayout();
@@ -1728,8 +1730,6 @@ namespace Chummer
             this.grpAvailablePlugins.ResumeLayout(false);
             this.flpOKCancel.ResumeLayout(false);
             this.flpOKCancel.PerformLayout();
-            this.tlpColorMode.ResumeLayout(false);
-            this.tlpColorMode.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1804,7 +1804,6 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpOptionalRules;
         private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
         private System.Windows.Forms.Button cmdAddCustomDirectory;
-        private System.Windows.Forms.TreeView treCustomDataDirectories;
         private System.Windows.Forms.Button cmdRenameCustomDataDirectory;
         private System.Windows.Forms.Button cmdRemoveCustomDirectory;
         private System.Windows.Forms.TabPage tabGitHubIssues;
@@ -1838,5 +1837,6 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpColorMode;
         private System.Windows.Forms.Label lblColorMode;
         private System.Windows.Forms.ComboBox cboColorMode;
+        private System.Windows.Forms.ListBox lsbCustomDataDirectories;
     }
 }

@@ -29,6 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCharacterOptions));
             this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cboSetting = new Chummer.ElasticComboBox();
             this.tabOptions = new System.Windows.Forms.TabControl();
@@ -586,6 +587,16 @@ namespace Chummer
             this.nudMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudMaxAvail.AutoSize = true;
             this.nudMaxAvail.Location = new System.Drawing.Point(400, 3);
+            this.nudMaxAvail.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxAvail.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMaxAvail.Name = "nudMaxAvail";
             this.nudMaxAvail.Size = new System.Drawing.Size(41, 20);
             this.nudMaxAvail.TabIndex = 26;
@@ -681,6 +692,16 @@ namespace Chummer
             this.nudSumToTen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudSumToTen.AutoSize = true;
             this.nudSumToTen.Location = new System.Drawing.Point(105, 83);
+            this.nudSumToTen.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudSumToTen.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudSumToTen.Name = "nudSumToTen";
             this.nudSumToTen.Size = new System.Drawing.Size(41, 20);
             this.nudSumToTen.TabIndex = 5;
@@ -721,6 +742,11 @@ namespace Chummer
             0,
             0,
             0});
+            this.nudMaxNuyenKarma.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMaxNuyenKarma.Name = "nudMaxNuyenKarma";
             this.nudMaxNuyenKarma.Size = new System.Drawing.Size(59, 20);
             this.nudMaxNuyenKarma.TabIndex = 25;
@@ -731,12 +757,14 @@ namespace Chummer
             this.flpAllowedCyberwareGrades.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpBasicOptionsCreateSettings.SetColumnSpan(this.flpAllowedCyberwareGrades, 2);
             this.flpAllowedCyberwareGrades.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpAllowedCyberwareGrades.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpAllowedCyberwareGrades.Location = new System.Drawing.Point(288, 158);
             this.flpAllowedCyberwareGrades.Margin = new System.Windows.Forms.Padding(0);
             this.flpAllowedCyberwareGrades.Name = "flpAllowedCyberwareGrades";
             this.tlpBasicOptionsCreateSettings.SetRowSpan(this.flpAllowedCyberwareGrades, 3);
             this.flpAllowedCyberwareGrades.Size = new System.Drawing.Size(174, 52);
             this.flpAllowedCyberwareGrades.TabIndex = 29;
+            this.flpAllowedCyberwareGrades.WrapContents = false;
             // 
             // lblKnowledgePoints
             // 
@@ -809,6 +837,11 @@ namespace Chummer
             0,
             0,
             0});
+            this.nudQualityKarmaLimit.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudQualityKarmaLimit.Name = "nudQualityKarmaLimit";
             this.nudQualityKarmaLimit.Size = new System.Drawing.Size(59, 20);
             this.nudQualityKarmaLimit.TabIndex = 31;
@@ -833,6 +866,11 @@ namespace Chummer
             this.nudStartingKarma.Location = new System.Drawing.Point(105, 109);
             this.nudStartingKarma.Maximum = new decimal(new int[] {
             1000000,
+            0,
+            0,
+            0});
+            this.nudStartingKarma.Minimum = new decimal(new int[] {
+            0,
             0,
             0,
             0});
@@ -1209,6 +1247,11 @@ namespace Chummer
             this.nudCyberlimbAttributeBonusCap.AutoSize = true;
             this.nudCyberlimbAttributeBonusCap.Enabled = false;
             this.nudCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(262, 3);
+            this.nudCyberlimbAttributeBonusCap.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.nudCyberlimbAttributeBonusCap.Minimum = new decimal(new int[] {
             1,
             0,
@@ -1423,6 +1466,11 @@ namespace Chummer
             0,
             0,
             0});
+            this.nudNuyenDecimalsMinimum.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudNuyenDecimalsMinimum.Name = "nudNuyenDecimalsMinimum";
             this.nudNuyenDecimalsMinimum.Size = new System.Drawing.Size(35, 20);
             this.nudNuyenDecimalsMinimum.TabIndex = 33;
@@ -1434,6 +1482,11 @@ namespace Chummer
             this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(267, 29);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
+            0,
+            0,
+            0});
+            this.nudNuyenDecimalsMaximum.Minimum = new decimal(new int[] {
+            0,
             0,
             0,
             0});
@@ -1648,6 +1701,16 @@ namespace Chummer
             this.nudKarmaSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpecialization.AutoSize = true;
             this.nudKarmaSpecialization.Location = new System.Drawing.Point(184, 3);
+            this.nudKarmaSpecialization.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSpecialization.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaSpecialization.Name = "nudKarmaSpecialization";
             this.nudKarmaSpecialization.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaSpecialization.TabIndex = 1;
@@ -1670,6 +1733,16 @@ namespace Chummer
             this.nudKarmaKnowledgeSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaKnowledgeSpecialization.AutoSize = true;
             this.nudKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(184, 29);
+            this.nudKarmaKnowledgeSpecialization.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaKnowledgeSpecialization.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaKnowledgeSpecialization.Name = "nudKarmaKnowledgeSpecialization";
             this.nudKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaKnowledgeSpecialization.TabIndex = 120;
@@ -1692,6 +1765,16 @@ namespace Chummer
             this.nudKarmaNewKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewKnowledgeSkill.AutoSize = true;
             this.nudKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(184, 55);
+            this.nudKarmaNewKnowledgeSkill.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewKnowledgeSkill.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaNewKnowledgeSkill.Name = "nudKarmaNewKnowledgeSkill";
             this.nudKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaNewKnowledgeSkill.TabIndex = 3;
@@ -1714,6 +1797,16 @@ namespace Chummer
             this.nudKarmaLeaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaLeaveGroup.AutoSize = true;
             this.nudKarmaLeaveGroup.Location = new System.Drawing.Point(523, 29);
+            this.nudKarmaLeaveGroup.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaLeaveGroup.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaLeaveGroup.Name = "nudKarmaLeaveGroup";
             this.nudKarmaLeaveGroup.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaLeaveGroup.TabIndex = 59;
@@ -1736,6 +1829,16 @@ namespace Chummer
             this.nudKarmaNewActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewActiveSkill.AutoSize = true;
             this.nudKarmaNewActiveSkill.Location = new System.Drawing.Point(184, 81);
+            this.nudKarmaNewActiveSkill.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewActiveSkill.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaNewActiveSkill.Name = "nudKarmaNewActiveSkill";
             this.nudKarmaNewActiveSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaNewActiveSkill.TabIndex = 5;
@@ -1758,6 +1861,16 @@ namespace Chummer
             this.nudKarmaNewSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewSkillGroup.AutoSize = true;
             this.nudKarmaNewSkillGroup.Location = new System.Drawing.Point(184, 107);
+            this.nudKarmaNewSkillGroup.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewSkillGroup.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaNewSkillGroup.Name = "nudKarmaNewSkillGroup";
             this.nudKarmaNewSkillGroup.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaNewSkillGroup.TabIndex = 7;
@@ -1780,6 +1893,16 @@ namespace Chummer
             this.nudKarmaImproveKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaImproveKnowledgeSkill.AutoSize = true;
             this.nudKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(184, 133);
+            this.nudKarmaImproveKnowledgeSkill.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaImproveKnowledgeSkill.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaImproveKnowledgeSkill.Name = "nudKarmaImproveKnowledgeSkill";
             this.nudKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaImproveKnowledgeSkill.TabIndex = 9;
@@ -1815,6 +1938,16 @@ namespace Chummer
             this.nudKarmaImproveActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaImproveActiveSkill.AutoSize = true;
             this.nudKarmaImproveActiveSkill.Location = new System.Drawing.Point(184, 159);
+            this.nudKarmaImproveActiveSkill.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaImproveActiveSkill.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaImproveActiveSkill.Name = "nudKarmaImproveActiveSkill";
             this.nudKarmaImproveActiveSkill.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaImproveActiveSkill.TabIndex = 12;
@@ -1850,6 +1983,16 @@ namespace Chummer
             this.nudKarmaImproveSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaImproveSkillGroup.AutoSize = true;
             this.nudKarmaImproveSkillGroup.Location = new System.Drawing.Point(184, 185);
+            this.nudKarmaImproveSkillGroup.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaImproveSkillGroup.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaImproveSkillGroup.Name = "nudKarmaImproveSkillGroup";
             this.nudKarmaImproveSkillGroup.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaImproveSkillGroup.TabIndex = 15;
@@ -1885,6 +2028,16 @@ namespace Chummer
             this.nudKarmaAttribute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaAttribute.AutoSize = true;
             this.nudKarmaAttribute.Location = new System.Drawing.Point(184, 211);
+            this.nudKarmaAttribute.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaAttribute.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaAttribute.Name = "nudKarmaAttribute";
             this.nudKarmaAttribute.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaAttribute.TabIndex = 18;
@@ -1920,6 +2073,16 @@ namespace Chummer
             this.nudKarmaAlchemicalFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaAlchemicalFocus.AutoSize = true;
             this.nudKarmaAlchemicalFocus.Location = new System.Drawing.Point(838, 3);
+            this.nudKarmaAlchemicalFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaAlchemicalFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaAlchemicalFocus.Name = "nudKarmaAlchemicalFocus";
             this.nudKarmaAlchemicalFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaAlchemicalFocus.TabIndex = 61;
@@ -1955,6 +2118,16 @@ namespace Chummer
             this.nudKarmaBanishingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaBanishingFocus.AutoSize = true;
             this.nudKarmaBanishingFocus.Location = new System.Drawing.Point(838, 29);
+            this.nudKarmaBanishingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaBanishingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaBanishingFocus.Name = "nudKarmaBanishingFocus";
             this.nudKarmaBanishingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaBanishingFocus.TabIndex = 64;
@@ -1977,6 +2150,16 @@ namespace Chummer
             this.nudKarmaBindingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaBindingFocus.AutoSize = true;
             this.nudKarmaBindingFocus.Location = new System.Drawing.Point(838, 55);
+            this.nudKarmaBindingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaBindingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaBindingFocus.Name = "nudKarmaBindingFocus";
             this.nudKarmaBindingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaBindingFocus.TabIndex = 67;
@@ -2012,6 +2195,16 @@ namespace Chummer
             this.nudKarmaCenteringFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaCenteringFocus.AutoSize = true;
             this.nudKarmaCenteringFocus.Location = new System.Drawing.Point(838, 81);
+            this.nudKarmaCenteringFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaCenteringFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaCenteringFocus.Name = "nudKarmaCenteringFocus";
             this.nudKarmaCenteringFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaCenteringFocus.TabIndex = 70;
@@ -2060,6 +2253,16 @@ namespace Chummer
             this.nudKarmaCounterspellingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaCounterspellingFocus.AutoSize = true;
             this.nudKarmaCounterspellingFocus.Location = new System.Drawing.Point(838, 107);
+            this.nudKarmaCounterspellingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaCounterspellingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaCounterspellingFocus.Name = "nudKarmaCounterspellingFocus";
             this.nudKarmaCounterspellingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaCounterspellingFocus.TabIndex = 73;
@@ -2095,6 +2298,16 @@ namespace Chummer
             this.nudKarmaDisenchantingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaDisenchantingFocus.AutoSize = true;
             this.nudKarmaDisenchantingFocus.Location = new System.Drawing.Point(838, 133);
+            this.nudKarmaDisenchantingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaDisenchantingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaDisenchantingFocus.Name = "nudKarmaDisenchantingFocus";
             this.nudKarmaDisenchantingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaDisenchantingFocus.TabIndex = 82;
@@ -2130,6 +2343,16 @@ namespace Chummer
             this.nudKarmaFlexibleSignatureFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaFlexibleSignatureFocus.AutoSize = true;
             this.nudKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(838, 159);
+            this.nudKarmaFlexibleSignatureFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaFlexibleSignatureFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaFlexibleSignatureFocus.Name = "nudKarmaFlexibleSignatureFocus";
             this.nudKarmaFlexibleSignatureFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaFlexibleSignatureFocus.TabIndex = 114;
@@ -2165,6 +2388,16 @@ namespace Chummer
             this.nudKarmaMaskingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaMaskingFocus.AutoSize = true;
             this.nudKarmaMaskingFocus.Location = new System.Drawing.Point(838, 185);
+            this.nudKarmaMaskingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaMaskingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaMaskingFocus.Name = "nudKarmaMaskingFocus";
             this.nudKarmaMaskingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaMaskingFocus.TabIndex = 85;
@@ -2200,6 +2433,16 @@ namespace Chummer
             this.nudKarmaPowerFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaPowerFocus.AutoSize = true;
             this.nudKarmaPowerFocus.Location = new System.Drawing.Point(838, 211);
+            this.nudKarmaPowerFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaPowerFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaPowerFocus.Name = "nudKarmaPowerFocus";
             this.nudKarmaPowerFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaPowerFocus.TabIndex = 88;
@@ -2235,6 +2478,16 @@ namespace Chummer
             this.nudKarmaQiFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaQiFocus.AutoSize = true;
             this.nudKarmaQiFocus.Location = new System.Drawing.Point(838, 237);
+            this.nudKarmaQiFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaQiFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaQiFocus.Name = "nudKarmaQiFocus";
             this.nudKarmaQiFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaQiFocus.TabIndex = 91;
@@ -2270,6 +2523,16 @@ namespace Chummer
             this.nudKarmaRitualSpellcastingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaRitualSpellcastingFocus.AutoSize = true;
             this.nudKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(838, 263);
+            this.nudKarmaRitualSpellcastingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaRitualSpellcastingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaRitualSpellcastingFocus.Name = "nudKarmaRitualSpellcastingFocus";
             this.nudKarmaRitualSpellcastingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaRitualSpellcastingFocus.TabIndex = 117;
@@ -2305,6 +2568,16 @@ namespace Chummer
             this.nudKarmaSpellcastingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpellcastingFocus.AutoSize = true;
             this.nudKarmaSpellcastingFocus.Location = new System.Drawing.Point(838, 289);
+            this.nudKarmaSpellcastingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSpellcastingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaSpellcastingFocus.Name = "nudKarmaSpellcastingFocus";
             this.nudKarmaSpellcastingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaSpellcastingFocus.TabIndex = 94;
@@ -2340,6 +2613,16 @@ namespace Chummer
             this.nudKarmaSpell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpell.AutoSize = true;
             this.nudKarmaSpell.Location = new System.Drawing.Point(523, 55);
+            this.nudKarmaSpell.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSpell.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaSpell.Name = "nudKarmaSpell";
             this.nudKarmaSpell.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaSpell.TabIndex = 24;
@@ -2362,6 +2645,16 @@ namespace Chummer
             this.nudKarmaContact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaContact.AutoSize = true;
             this.nudKarmaContact.Location = new System.Drawing.Point(184, 263);
+            this.nudKarmaContact.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaContact.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaContact.Name = "nudKarmaContact";
             this.nudKarmaContact.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaContact.TabIndex = 45;
@@ -2397,6 +2690,16 @@ namespace Chummer
             this.nudKarmaEnemy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaEnemy.AutoSize = true;
             this.nudKarmaEnemy.Location = new System.Drawing.Point(184, 289);
+            this.nudKarmaEnemy.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaEnemy.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaEnemy.Name = "nudKarmaEnemy";
             this.nudKarmaEnemy.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaEnemy.TabIndex = 48;
@@ -2432,6 +2735,16 @@ namespace Chummer
             this.nudKarmaSpirit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpirit.AutoSize = true;
             this.nudKarmaSpirit.Location = new System.Drawing.Point(523, 81);
+            this.nudKarmaSpirit.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSpirit.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaSpirit.Name = "nudKarmaSpirit";
             this.nudKarmaSpirit.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaSpirit.TabIndex = 37;
@@ -2468,6 +2781,16 @@ namespace Chummer
             this.nudKarmaNewComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewComplexForm.AutoSize = true;
             this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(523, 133);
+            this.nudKarmaNewComplexForm.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewComplexForm.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
             this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaNewComplexForm.TabIndex = 26;
@@ -2490,6 +2813,16 @@ namespace Chummer
             this.nudKarmaMysticAdeptPowerPoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaMysticAdeptPowerPoint.AutoSize = true;
             this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(523, 107);
+            this.nudKarmaMysticAdeptPowerPoint.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaMysticAdeptPowerPoint.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
             this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
@@ -2514,6 +2847,11 @@ namespace Chummer
             this.nudKarmaNuyenPer.Location = new System.Drawing.Point(184, 315);
             this.nudKarmaNuyenPer.Maximum = new decimal(new int[] {
             9999,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPer.Minimum = new decimal(new int[] {
+            0,
             0,
             0,
             0});
@@ -2552,6 +2890,16 @@ namespace Chummer
             this.nudKarmaJoinGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaJoinGroup.AutoSize = true;
             this.nudKarmaJoinGroup.Location = new System.Drawing.Point(523, 3);
+            this.nudKarmaJoinGroup.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaJoinGroup.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaJoinGroup.Name = "nudKarmaJoinGroup";
             this.nudKarmaJoinGroup.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaJoinGroup.TabIndex = 57;
@@ -2574,6 +2922,16 @@ namespace Chummer
             this.nudKarmaNewAIProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewAIProgram.AutoSize = true;
             this.nudKarmaNewAIProgram.Location = new System.Drawing.Point(523, 159);
+            this.nudKarmaNewAIProgram.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIProgram.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaNewAIProgram.Name = "nudKarmaNewAIProgram";
             this.nudKarmaNewAIProgram.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaNewAIProgram.TabIndex = 111;
@@ -2596,6 +2954,16 @@ namespace Chummer
             this.nudKarmaNewAIAdvancedProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewAIAdvancedProgram.AutoSize = true;
             this.nudKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(523, 185);
+            this.nudKarmaNewAIAdvancedProgram.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIAdvancedProgram.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaNewAIAdvancedProgram.Name = "nudKarmaNewAIAdvancedProgram";
             this.nudKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaNewAIAdvancedProgram.TabIndex = 112;
@@ -2618,6 +2986,16 @@ namespace Chummer
             this.nudKarmaMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaMetamagic.AutoSize = true;
             this.nudKarmaMetamagic.Location = new System.Drawing.Point(523, 237);
+            this.nudKarmaMetamagic.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaMetamagic.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
             this.nudKarmaMetamagic.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaMetamagic.TabIndex = 58;
@@ -2640,6 +3018,16 @@ namespace Chummer
             this.nudKarmaTechnique.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaTechnique.AutoSize = true;
             this.nudKarmaTechnique.Location = new System.Drawing.Point(523, 263);
+            this.nudKarmaTechnique.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaTechnique.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaTechnique.Name = "nudKarmaTechnique";
             this.nudKarmaTechnique.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaTechnique.TabIndex = 40;
@@ -2688,6 +3076,16 @@ namespace Chummer
             this.nudKarmaInitiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaInitiation.AutoSize = true;
             this.nudKarmaInitiation.Location = new System.Drawing.Point(523, 211);
+            this.nudKarmaInitiation.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaInitiation.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaInitiation.Name = "nudKarmaInitiation";
             this.nudKarmaInitiation.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaInitiation.TabIndex = 55;
@@ -2710,6 +3108,16 @@ namespace Chummer
             this.nudKarmaInitiationFlat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaInitiationFlat.AutoSize = true;
             this.nudKarmaInitiationFlat.Location = new System.Drawing.Point(659, 211);
+            this.nudKarmaInitiationFlat.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaInitiationFlat.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaInitiationFlat.Name = "nudKarmaInitiationFlat";
             this.nudKarmaInitiationFlat.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaInitiationFlat.TabIndex = 121;
@@ -2732,6 +3140,16 @@ namespace Chummer
             this.nudKarmaCarryover.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaCarryover.AutoSize = true;
             this.nudKarmaCarryover.Location = new System.Drawing.Point(184, 237);
+            this.nudKarmaCarryover.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaCarryover.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaCarryover.Name = "nudKarmaCarryover";
             this.nudKarmaCarryover.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaCarryover.TabIndex = 51;
@@ -2767,6 +3185,16 @@ namespace Chummer
             this.nudKarmaQuality.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaQuality.AutoSize = true;
             this.nudKarmaQuality.Location = new System.Drawing.Point(184, 341);
+            this.nudKarmaQuality.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaQuality.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaQuality.Name = "nudKarmaQuality";
             this.nudKarmaQuality.Size = new System.Drawing.Size(47, 20);
             this.nudKarmaQuality.TabIndex = 21;
@@ -2802,6 +3230,16 @@ namespace Chummer
             this.nudKarmaSummoningFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSummoningFocus.AutoSize = true;
             this.nudKarmaSummoningFocus.Location = new System.Drawing.Point(838, 341);
+            this.nudKarmaSummoningFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSummoningFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaSummoningFocus.Name = "nudKarmaSummoningFocus";
             this.nudKarmaSummoningFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaSummoningFocus.TabIndex = 97;
@@ -2837,6 +3275,16 @@ namespace Chummer
             this.nudKarmaSpellShapingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpellShapingFocus.AutoSize = true;
             this.nudKarmaSpellShapingFocus.Location = new System.Drawing.Point(838, 315);
+            this.nudKarmaSpellShapingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSpellShapingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaSpellShapingFocus.Name = "nudKarmaSpellShapingFocus";
             this.nudKarmaSpellShapingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaSpellShapingFocus.TabIndex = 103;
@@ -2911,6 +3359,16 @@ namespace Chummer
             this.nudKarmaSustainingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSustainingFocus.AutoSize = true;
             this.nudKarmaSustainingFocus.Location = new System.Drawing.Point(838, 367);
+            this.nudKarmaSustainingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSustainingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaSustainingFocus.Name = "nudKarmaSustainingFocus";
             this.nudKarmaSustainingFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaSustainingFocus.TabIndex = 100;
@@ -2920,6 +3378,16 @@ namespace Chummer
             this.nudKarmaWeaponFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaWeaponFocus.AutoSize = true;
             this.nudKarmaWeaponFocus.Location = new System.Drawing.Point(838, 393);
+            this.nudKarmaWeaponFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaWeaponFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudKarmaWeaponFocus.Name = "nudKarmaWeaponFocus";
             this.nudKarmaWeaponFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaWeaponFocus.TabIndex = 106;
@@ -3837,6 +4305,7 @@ namespace Chummer
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tlpOptions);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
             this.Name = "frmCharacterOptions";
             this.Padding = new System.Windows.Forms.Padding(9);

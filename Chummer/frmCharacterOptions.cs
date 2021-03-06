@@ -41,6 +41,7 @@ namespace Chummer
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
+        private bool _blnIsLayoutSuspended = true;
         private readonly HashSet<string> _setPermanentSourcebooks = new HashSet<string>();
 
         #region Form Events
@@ -51,7 +52,6 @@ namespace Chummer
             _objReferenceCharacterOptions = objExistingOptions ?? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
             _objCharacterOptions = new CharacterOptions(_objReferenceCharacterOptions);
         }
-
 
         private void frmCharacterOptions_Load(object sender, EventArgs e)
         {
@@ -68,12 +68,13 @@ namespace Chummer
                 lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule, LanguageManager.GetString("String_LifeModule")));
 
             cboBuildMethod.BeginUpdate();
+            cboBuildMethod.DataSource = null;
+            cboBuildMethod.DataSource = lstBuildMethods;
             if (_blnLoading)
             {
                 cboBuildMethod.ValueMember = nameof(ListItem.Value);
                 cboBuildMethod.DisplayMember = nameof(ListItem.Name);
             }
-            cboBuildMethod.DataSource = lstBuildMethods;
             cboBuildMethod.EndUpdate();
 
             PopulateOptions();
@@ -99,18 +100,21 @@ namespace Chummer
             }
             PopulateCustomDataDirectoryTreeView();
 
+            IsDirty = false;
+            cmdSaveAs.Enabled = false;
+            cmdSave.Enabled = false;
+
             _blnLoading = false;
+            _blnIsLayoutSuspended = false;
         }
         #endregion
 
         #region Control Events
         private void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            using (frmOptions frmOptions = new frmOptions("tabCustomDataDirectories"))
-                frmOptions.ShowDialog(this);
-            Cursor = objOldCursor;
+            using (new CursorWait(this))
+                using (frmOptions frmOptions = new frmOptions("tabCustomDataDirectories"))
+                    frmOptions.ShowDialog(this);
         }
 
         private void cmdRename_Click(object sender, EventArgs e)
@@ -127,24 +131,35 @@ namespace Chummer
                 _objCharacterOptions.Name = frmSelectName.SelectedValue;
             }
 
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            SuspendLayout();
-            if (cboSetting.SelectedItem != null)
+            using (new CursorWait(this))
             {
-                ListItem objCurrentListItem = (ListItem)cboSetting.SelectedItem;
-                ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objCharacterOptions.DisplayName);
-                _blnLoading = true;
-                SuspendLayout();
-                cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
-                cboSetting.SelectedItem = objNewListItem;
-                ResumeLayout();
-                _blnLoading = false;
+                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = true;
+                    SuspendLayout();
+                }
+
+                if (cboSetting.SelectedItem != null)
+                {
+                    ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
+                    ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objCharacterOptions.DisplayName);
+                    _blnLoading = true;
+                    cboSetting.BeginUpdate();
+                    cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
+                    cboSetting.SelectedItem = objNewListItem;
+                    cboSetting.EndUpdate();
+                    _blnLoading = false;
+                }
+
+                _blnWasRenamed = true;
+                IsDirty = true;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = false;
+                    ResumeLayout();
+                }
             }
-            _blnWasRenamed = true;
-            IsDirty = true;
-            ResumeLayout();
-            Cursor = objOldCursor;
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -167,20 +182,33 @@ namespace Chummer
                 return;
             }
 
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            OptionsManager.LoadedCharacterOptions.Remove(_objReferenceCharacterOptions.FileName);
-            KeyValuePair<string, CharacterOptions> kvpReplacementOption = OptionsManager.LoadedCharacterOptions.First(x => x.Value.BuiltInOption
-                                                                                                                           && x.Value.BuildMethod == _objReferenceCharacterOptions.BuildMethod);
-            foreach (Character objCharacter in Program.MainForm.OpenCharacters.Where(x => x.CharacterOptionsKey == _objReferenceCharacterOptions.FileName))
-                objCharacter.CharacterOptionsKey = kvpReplacementOption.Key;
-            SuspendLayout();
-            _objReferenceCharacterOptions = kvpReplacementOption.Value;
-            _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
-            IsDirty = false;
-            PopulateSettingsList();
-            ResumeLayout();
-            Cursor = objOldCursor;
+            using (new CursorWait(this))
+            {
+                OptionsManager.LoadedCharacterOptions.Remove(_objReferenceCharacterOptions.FileName);
+                KeyValuePair<string, CharacterOptions> kvpReplacementOption =
+                    OptionsManager.LoadedCharacterOptions.First(x => x.Value.BuiltInOption
+                                                                     && x.Value.BuildMethod ==
+                                                                     _objReferenceCharacterOptions.BuildMethod);
+                foreach (Character objCharacter in Program.MainForm.OpenCharacters.Where(x =>
+                    x.CharacterOptionsKey == _objReferenceCharacterOptions.FileName))
+                    objCharacter.CharacterOptionsKey = kvpReplacementOption.Key;
+                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = true;
+                    SuspendLayout();
+                }
+
+                _objReferenceCharacterOptions = kvpReplacementOption.Value;
+                _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
+                IsDirty = false;
+                PopulateSettingsList();
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = false;
+                    ResumeLayout();
+                }
+            }
         }
 
         private void cmdSaveAs_Click(object sender, EventArgs e)
@@ -212,38 +240,58 @@ namespace Chummer
                 }
             } while (string.IsNullOrEmpty(strSelectedName));
 
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            if (_objCharacterOptions.Save(strSelectedName))
+            using (new CursorWait(this))
             {
-                SuspendLayout();
+                if (!_objCharacterOptions.Save(strSelectedName))
+                    return;
+                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = true;
+                    SuspendLayout();
+                }
+
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
                 objNewCharacterOptions.CopyValues(_objCharacterOptions);
-                OptionsManager.LoadedCharacterOptions.Add(Path.Combine(Utils.GetStartupPath, "settings", objNewCharacterOptions.FileName), objNewCharacterOptions);
+                OptionsManager.LoadedCharacterOptions.Add(
+                    Path.Combine(Utils.GetStartupPath, "settings", objNewCharacterOptions.FileName),
+                    objNewCharacterOptions);
                 _objReferenceCharacterOptions = objNewCharacterOptions;
                 cmdSaveAs.Enabled = false;
                 cmdSave.Enabled = false;
                 IsDirty = false;
                 PopulateSettingsList();
-                ResumeLayout();
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = false;
+                    ResumeLayout();
+                }
             }
-            Cursor = objOldCursor;
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            if (_objCharacterOptions.Save())
+            using (new CursorWait(this))
             {
-                SuspendLayout();
+                if (!_objCharacterOptions.Save())
+                    return;
+                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = true;
+                    SuspendLayout();
+                }
+
                 _objReferenceCharacterOptions.CopyValues(_objCharacterOptions);
                 cmdSaveAs.Enabled = false;
                 cmdSave.Enabled = false;
                 IsDirty = false;
-                ResumeLayout();
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = false;
+                    ResumeLayout();
+                }
             }
-            Cursor = objOldCursor;
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -263,24 +311,36 @@ namespace Chummer
                     return;
             }
 
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            _blnLoading = true;
-            SuspendLayout();
-            if (_blnWasRenamed && cboSetting.SelectedItem != null)
+            using (new CursorWait(this))
             {
-                ListItem objCurrentListItem = (ListItem)cboSetting.SelectedItem;
-                ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
-                cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
-                cboSetting.SelectedItem = objNewListItem;
+                _blnLoading = true;
+                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = true;
+                    SuspendLayout();
+                }
+
+                if (_blnWasRenamed && cboSetting.SelectedItem != null)
+                {
+                    ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
+                    ListItem objNewListItem =
+                        new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                    cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
+                    cboSetting.SelectedItem = objNewListItem;
+                }
+
+                _objReferenceCharacterOptions = objNewOption;
+                _objCharacterOptions.CopyValues(objNewOption);
+                PopulateOptions();
+                _blnLoading = false;
+                IsDirty = false;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = false;
+                    ResumeLayout();
+                }
             }
-            _objReferenceCharacterOptions = objNewOption;
-            _objCharacterOptions.CopyValues(objNewOption);
-            PopulateOptions();
-            _blnLoading = false;
-            IsDirty = false;
-            ResumeLayout();
-            Cursor = objOldCursor;
         }
 
         private void cmdRestoreDefaults_Click(object sender, EventArgs e)
@@ -291,24 +351,36 @@ namespace Chummer
                 LanguageManager.GetString("MessageTitle_Options_RestoreDefaults"),
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
-
-            Cursor objOldCursor = Cursor;
-            Cursor = Cursors.WaitCursor;
-            _blnLoading = true;
-            SuspendLayout();
-            if (_blnWasRenamed && cboSetting.SelectedItem != null)
+            
+            using (new CursorWait(this))
             {
-                ListItem objCurrentListItem = (ListItem)cboSetting.SelectedItem;
-                ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
-                cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
-                cboSetting.SelectedItem = objNewListItem;
+                _blnLoading = true;
+                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = true;
+                    SuspendLayout();
+                }
+
+                if (_blnWasRenamed && cboSetting.SelectedItem != null)
+                {
+                    ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
+                    ListItem objNewListItem =
+                        new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                    cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
+                    cboSetting.SelectedItem = objNewListItem;
+                }
+
+                _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
+                PopulateOptions();
+                _blnLoading = false;
+                IsDirty = false;
+                if (blnDoResumeLayout)
+                {
+                    _blnIsLayoutSuspended = false;
+                    ResumeLayout();
+                }
             }
-            _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
-            PopulateOptions();
-            _blnLoading = false;
-            IsDirty = false;
-            ResumeLayout();
-            Cursor = objOldCursor;
         }
 
         private void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
@@ -639,14 +711,21 @@ namespace Chummer
         /// </summary>
         private void PopulateOptions()
         {
-            if (!_blnLoading)
+            bool blnDoResumeLayout = !_blnIsLayoutSuspended;
+            if (blnDoResumeLayout)
+            {
+                _blnIsLayoutSuspended = true;
                 SuspendLayout();
+            }
             PopulateSourcebookTreeView();
             PopulatePriorityTableList();
             PopulateLimbCountList();
             PopulateAllowedGrades();
-            if (!_blnLoading)
+            if (blnDoResumeLayout)
+            {
+                _blnIsLayoutSuspended = false;
                 ResumeLayout();
+            }
         }
 
         private void PopulatePriorityTableList()
@@ -670,12 +749,13 @@ namespace Chummer
             string strOldSelected = cboPriorityTable.SelectedValue?.ToString();
 
             cboPriorityTable.BeginUpdate();
+            cboPriorityTable.DataSource = null;
+            cboPriorityTable.DataSource = lstPriorityTables;
             if (_blnLoading)
             {
                 cboPriorityTable.ValueMember = nameof(ListItem.Value);
                 cboPriorityTable.DisplayMember = nameof(ListItem.Name);
             }
-            cboPriorityTable.DataSource = lstPriorityTables;
 
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboPriorityTable.SelectedValue = strOldSelected;
@@ -706,35 +786,27 @@ namespace Chummer
                 }
             }
 
-            string strOldSelected = cboLimbCount.SelectedValue?.ToString();
+            string strLimbSlot = _objCharacterOptions.LimbCount.ToString(GlobalOptions.InvariantCultureInfo);
+            if (!string.IsNullOrEmpty(_objCharacterOptions.ExcludeLimbSlot))
+                strLimbSlot += '<' + _objCharacterOptions.ExcludeLimbSlot;
 
             _blnSkipLimbCountUpdate = true;
             cboLimbCount.BeginUpdate();
+            cboLimbCount.DataSource = null;
+            cboLimbCount.DataSource = lstLimbCount;
             if (_blnLoading)
             {
                 cboLimbCount.ValueMember = nameof(ListItem.Value);
                 cboLimbCount.DisplayMember = nameof(ListItem.Name);
             }
-            cboLimbCount.DataSource = lstLimbCount;
 
-            if (!string.IsNullOrEmpty(strOldSelected))
-            {
-                cboLimbCount.SelectedValue = strOldSelected;
-                if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
-                {
-                    string strLimbSlot = _objCharacterOptions.LimbCount.ToString(GlobalOptions.InvariantCultureInfo);
-                    if (!string.IsNullOrEmpty(_objCharacterOptions.ExcludeLimbSlot))
-                        strLimbSlot += '<' + _objCharacterOptions.ExcludeLimbSlot;
-                    cboLimbCount.SelectedValue = strLimbSlot;
-                }
-                if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
-                    cboLimbCount.SelectedIndex = 0;
-            }
+            if (!string.IsNullOrEmpty(strLimbSlot))
+                cboLimbCount.SelectedValue = strLimbSlot;
+            if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
+                cboLimbCount.SelectedIndex = 0;
 
             cboLimbCount.EndUpdate();
             _blnSkipLimbCountUpdate = false;
-            if (cboLimbCount.SelectedValue.ToString() != strOldSelected)
-                cboLimbCount_SelectedIndexChanged(this, EventArgs.Empty);
         }
 
         private void PopulateAllowedGrades()
@@ -756,12 +828,12 @@ namespace Chummer
                             string strBook = objXmlNode["source"]?.InnerText;
                             if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
-                            if (lstGrades.Any(x => strName.Contains(x.Name)))
+                            if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
                                 continue;
-                            ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Name.Contains(strName));
+                            ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
                             if (objExistingCoveredGrade.Value != null)
                                 lstGrades.Remove(objExistingCoveredGrade);
-                            lstGrades.Add(new ListItem(objXmlNode.InnerText, objXmlNode["translate"]?.InnerText ?? strName));
+                            lstGrades.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
@@ -779,12 +851,12 @@ namespace Chummer
                             string strBook = objXmlNode["source"]?.InnerText;
                             if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
-                            if (lstGrades.Any(x => strName.Contains(x.Name)))
+                            if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
                                 continue;
-                            ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Name.Contains(strName));
+                            ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
                             if (objExistingCoveredGrade.Value != null)
                                 lstGrades.Remove(objExistingCoveredGrade);
-                            lstGrades.Add(new ListItem(objXmlNode.InnerText, objXmlNode["translate"]?.InnerText ?? strName));
+                            lstGrades.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
@@ -822,6 +894,7 @@ namespace Chummer
 
         private void SetupDataBindings()
         {
+            cmdRename.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
             cmdDelete.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
 
             cboBuildMethod.DoDatabinding("SelectedValue", _objCharacterOptions, nameof(CharacterOptions.BuildMethod));
@@ -883,7 +956,7 @@ namespace Chummer
             chkPrioritySpellsAsAdeptPowers.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.PrioritySpellsAsAdeptPowers));
             chkPrioritySpellsAsAdeptPowers.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
             chkMysAdeptSecondMAGAttribute.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
-            chkMysAdeptSecondMAGAttribute.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttributeEnabled));
+            chkMysAdeptSecondMAGAttribute.DoOneWayDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttributeEnabled));
             chkUsePointsOnBrokenGroups.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UsePointsOnBrokenGroups));
             chkSpecialKarmaCost.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.SpecialKarmaCostBasedOnShownValue));
             chkUseCalculatedPublicAwareness.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UseCalculatedPublicAwareness));
@@ -973,12 +1046,13 @@ namespace Chummer
             }
 
             cboSetting.BeginUpdate();
+            cboSetting.DataSource = null;
+            cboSetting.DataSource = lstSettings;
             if (_blnLoading)
             {
                 cboSetting.ValueMember = nameof(ListItem.Value);
                 cboSetting.DisplayMember = nameof(ListItem.Name);
             }
-            cboSetting.DataSource = lstSettings;
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboSetting.SelectedValue = strOldSelected;
             if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)

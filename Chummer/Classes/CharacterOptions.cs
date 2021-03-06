@@ -1999,7 +1999,7 @@ namespace Chummer
             get => _strContactPointsExpression;
             set
             {
-                string strNewValue = value.CleanXPath();
+                string strNewValue = value.CleanXPath().Trim('\"');
                 if (_strContactPointsExpression != strNewValue)
                 {
                     _strContactPointsExpression = strNewValue;
@@ -2016,7 +2016,7 @@ namespace Chummer
             get => _strKnowledgePointsExpression;
             set
             {
-                string strNewValue = value.CleanXPath();
+                string strNewValue = value.CleanXPath().Trim('\"');
                 if (_strKnowledgePointsExpression != strNewValue)
                 {
                     _strKnowledgePointsExpression = strNewValue;
