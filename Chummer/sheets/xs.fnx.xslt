@@ -125,7 +125,7 @@
 <!-- fnx-fmt-nmbr : format a number with appropriate decimal mark and separator value
     Parameters:
       nmbr  the number to be formatted.
-      dec    the number of decimal places (defaults to zero).
+      dec   the number of decimal places (defaults to zero).
       wdth  right-justify to this many characters (defaults to 0: no padding)
       mark  the decimal mark and separator to be used.
 -->
@@ -135,44 +135,66 @@
       <xsl:param name="wdth" select="0"/>
       <xsl:param name="mark" select='$lang.marks'/>
 
-    <xsl:variable name="mask">
+<!-- extract integer value if no decimal places requested -->
+    <xsl:variable name="wk-nmbr">
       <xsl:choose>
         <xsl:when test="$dec &gt; 0">
-          <xsl:variable name="decs">
-            <xsl:call-template name="fnx-repeat">
-              <xsl:with-param name="string" select="'#'"/>        
-              <xsl:with-param name="count" select="$dec"/>
-            </xsl:call-template>
-          </xsl:variable>
-          <xsl:value-of select="concat('#,0.',decs)"/>
+          <xsl:value-of select="$nmbr"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="'#,0'"/>
+          <xsl:variable name="x-mrk" select='substring($mark,1,1)'/>
+          <xsl:value-of select="substring-before(concat($nmbr,$x-mrk),$x-mrk)"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
 
-    <xsl:variable name="n" select='format-number($nmbr,$mask)'/>
-
-    <xsl:variable name="nbr">
+<!-- format the mask - allowing for local diacritic marks -->
+    <xsl:variable name="wk-mask">
+      <xsl:variable name="x-msk">
+        <xsl:choose>
+          <xsl:when test="$dec &gt; 0">
+            <xsl:variable name="x-dec">
+              <xsl:call-template name="fnx-repeat">
+                <xsl:with-param name="string" select="'0'"/>        
+                <xsl:with-param name="count" select="$dec"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:value-of select="concat('#,##0.',$x-dec)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="'#,##0'"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
       <xsl:choose>
-        <xsl:when test="$n = 'NaN'">
+        <xsl:when test="$mark = $en-marks">
+          <xsl:value-of select="$x-msk"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="translate($x-msk,$en-marks,$mark)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+<!-- format the number using the determined mask-->
+    <xsl:variable name="wk-fmt" select='format-number($wk-nmbr,$wk-mask)'/>
+    <xsl:variable name="wk-nbr">
+      <xsl:choose>
+        <xsl:when test="$wk-fmt = 'NaN'">
           <xsl:value-of select="$nmbr" />
         </xsl:when>
-        <xsl:when test="$mark = '$en-marks'">
-          <xsl:value-of select="$n"/>
-        </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="translate($n,$en-marks,$mark)"/>
+          <xsl:value-of select="$wk-fmt"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    
+<!-- generate padding to the width requested -->
     <xsl:call-template name="fnx-repeat">
       <xsl:with-param name="string" select="'&#160;'"/>        
-      <xsl:with-param name="count" select="$wdth - string-length($nbr)"/>
+      <xsl:with-param name="count" select="$wdth - string-length($wk-nbr)"/>
     </xsl:call-template>
-    <xsl:value-of select="$nbr"/>
+<!-- return the formatted number -->
+    <xsl:value-of select="$wk-nbr"/>
   </xsl:template>
 
 </xsl:stylesheet>

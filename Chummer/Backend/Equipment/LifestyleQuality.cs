@@ -152,8 +152,8 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("security", ref _intSecurity);
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
-            if (!objXmlLifestyleQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlLifestyleQuality.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlLifestyleQuality.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
             var strAllowedFreeLifestyles = string.Empty;
@@ -325,7 +325,7 @@ namespace Chummer.Backend.Equipment
                 strAllowedFreeLifestyles = GetNode()?["allowed"]?.InnerText ?? string.Empty;
             _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',', StringSplitOptions.RemoveEmptyEntries);
             Bonus = objNode["bonus"];
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             LegacyShim();
         }

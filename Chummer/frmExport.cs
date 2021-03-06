@@ -231,7 +231,9 @@ namespace Chummer
             string strText = e.Result.ToString();
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massie enough to slow down the program
-            Regex.Replace(strDisplayText, @"<mugshots>([^(\[...\])])*<\/mugshots>", "<mugshots>[...]</mugshots>", RegexOptions.Compiled);
+            strDisplayText = Regex.Replace(strDisplayText, "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>", "<mainmugshotbase64>[...]</mainmugshotbase64>");
+            strDisplayText = Regex.Replace(strDisplayText, "<stringbase64>[^\\s\\S]*</stringbase64>", "<stringbase64>[...]</stringbase64>");
+            strDisplayText = Regex.Replace(strDisplayText, "base64\": \"[^\\\"]*\",", "base64\": \"[...]\",");
             _dicCache.AddOrUpdate(_strXslt, x => new Tuple<string, string>(strText, strDisplayText), (a, b) => new Tuple<string, string>(strText, strDisplayText));
             txtText.Text = strDisplayText;
             cmdOK.Enabled = true;

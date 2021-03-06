@@ -179,8 +179,8 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlAccessory.TryGetStringFieldQuickly("page", ref _strPage);
             _nodAllowGear = objXmlAccessory["allowgear"];
-            if (!objXmlAccessory.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlAccessory.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlAccessory.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlAccessory.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {

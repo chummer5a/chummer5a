@@ -18,7 +18,8 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
 using System.Xml;
  using System.Xml.XPath;
  using Chummer.Backend.Equipment;
@@ -162,7 +163,7 @@ namespace Chummer
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
-        public int SelectedRating => decimal.ToInt32(nudRating.Value);
+        public int SelectedRating => nudRating.ValueAsInt;
 
 		/// <summary>
 		/// Categories that the Armor allows to be used.
@@ -244,7 +245,7 @@ namespace Chummer
             nudRating.Maximum = Convert.ToDecimal(objXmlMod.SelectSingleNode("maxrating")?.Value, GlobalOptions.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
             {
-                while (nudRating.Maximum > 1 && !objXmlMod.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                while (nudRating.Maximum > 1 && !objXmlMod.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt))
                 {
                     nudRating.Maximum -= 1;
                 }
@@ -255,7 +256,7 @@ namespace Chummer
                 decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                 if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
                     decCostMultiplier *= 0.9m;
-                while (nudRating.Maximum > 1 && !objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                while (nudRating.Maximum > 1 && !objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                 {
                     nudRating.Maximum -= 1;
                 }
@@ -373,7 +374,7 @@ namespace Chummer
                 if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCapacity = strValues[decimal.ToInt32(nudRating.Value) - 1];
+                    strCapacity = strValues[nudRating.ValueAsInt - 1];
                 }
 
                 strCapacity = strCapacity.CheapReplace("Capacity", () => _decArmorCapacity.ToString(GlobalOptions.InvariantCultureInfo))
@@ -414,27 +415,24 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
 
             // Populate the Mods list.
-            string[] strAllowed = AllowedCategories.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            string strMount = string.Empty;
-            for (int i = 0; i < strAllowed.Length; i++)
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
+            StringBuilder sbdCategoryFilter = new StringBuilder(ExcludeGeneralCategory ? string.Empty : "category = \"General\" or ");
+            foreach (string strCategory in AllowedCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
-                if (!string.IsNullOrEmpty(strAllowed[i]))
-                    strMount += "category = \"" + strAllowed[i] + '\"';
-                if (i < strAllowed.Length - 1 || !ExcludeGeneralCategory)
-                {
-                    strMount += " or ";
-                }
+                if (!string.IsNullOrEmpty(strCategory))
+                    sbdCategoryFilter.Append("category = \"" + strCategory + "\" or ");
             }
-            if (!ExcludeGeneralCategory)
+            if (sbdCategoryFilter.Length > 0)
             {
-                strMount += "category = \"General\"";
+                sbdCategoryFilter.Length -= 4;
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(")");
             }
-            strMount += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             int intOverLimit = 0;
             XPathNodeIterator objXmlModList =
-                _xmlBaseDataNode.Select("/chummer/mods/mod[" + strMount + " and (" + _objCharacter.Options.BookXPath() +
-                                        ")]");
+                _xmlBaseDataNode.Select("/chummer/mods/mod[" + sbdFilter.ToString() + ']');
             if (objXmlModList.Count > 0)
             {
                 foreach (XPathNavigator objXmlMod in objXmlModList)

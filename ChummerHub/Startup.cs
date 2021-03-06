@@ -25,6 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -69,6 +70,7 @@ namespace ChummerHub
             AppSettings = ConfigurationManager.AppSettings;
             if (_gdrive == null)
                 _gdrive = new DriveHandler(logger, configuration);
+           
         }
 
         public IConfiguration Configuration { get; }
@@ -169,11 +171,14 @@ namespace ChummerHub
               .AddDefaultTokenProviders()
               .AddSignInManager();
 
-            // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
-            services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            //// Add application services.
+            //services.AddTransient<IEmailSender, EmailSender>();
+
+            ////services.AddSingleton<IEmailSender, EmailSender>();
+            //services.Configure<AuthMessageSenderOptions>(Configuration);
 
 
 
@@ -404,9 +409,7 @@ namespace ChummerHub
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
         {
             //app.UseSession();
             app.UseCors(options => options.AllowAnyOrigin());
@@ -414,7 +417,7 @@ namespace ChummerHub
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+                //app.UseDatabaseErrorPage();
 
             }
             else

@@ -62,7 +62,7 @@ namespace Chummer
                 if (Suffix == 'F' || Suffix == 'R')
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-                Value = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
+                Value = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
             else
             {

@@ -791,21 +791,21 @@ namespace Chummer
         /// <param name="strNeedle">String to look for</param>
         /// <param name="strNameElement">Name of the element that corresponds to the item's untranslated name.</param>
         /// <param name="strTranslateElement">Name of the element that corresponds to the item's translated name.</param>
-        /// <param name="blnAddAnd">Whether to add " and " to the beginning of the search XPath</param>
         /// <returns></returns>
-        public static string GenerateSearchXPath(string strNeedle, string strNameElement = "name", string strTranslateElement = "translate", bool blnAddAnd = true)
+        public static string GenerateSearchXPath(string strNeedle, string strNameElement = "name", string strTranslateElement = "translate")
         {
             if (string.IsNullOrEmpty(strNeedle))
                 return string.Empty;
             string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
             // Treat everything as being uppercase so the search is case-insensitive.
-            return (blnAddAnd ? " and " : string.Empty) + string.Format(
+            string strReturn = string.Format(
                 GlobalOptions.InvariantCultureInfo,
                 "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
                 "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2}))",
                 strTranslateElement,
                 strNameElement,
                 strSearchText);
+            return strReturn;
         }
 
         /// <summary>
@@ -1085,10 +1085,12 @@ namespace Chummer
                 // each page should have its own text extraction strategy for it to work properly
                 // this way we don't need to check for previous page appearing in the current page
                 // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage), new SimpleTextExtractionStrategy()).CleanStylisticLigatures().FastEscape('\r').NormalizeWhiteSpace();
+                string strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
+                        new SimpleTextExtractionStrategy())
+                    .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
 
                 // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPdf.AddRange(strPageText.Split('\n', StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)));
+                lstStringFromPdf.AddRange(strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
 
                 for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
                 {
@@ -1246,7 +1248,7 @@ namespace Chummer
                         }
                     }
                 }
-                return sbdResultContent.ToString();
+                return sbdResultContent.ToString().Trim();
             }
             return string.Empty;
         }
@@ -1268,19 +1270,25 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public static Timescale ConvertStringToTimescale(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Instant":
+                case "INSTANT":
+                case "IMMEDIATE":
                     return Timescale.Instant;
-                case "Seconds":
+                case "SECOND":
+                case "SECONDS":
                     return Timescale.Seconds;
-                case "CombatTurns":
+                case "COMBATTURN":
+                case "COMBATTURNS":
                     return Timescale.CombatTurns;
-                case "Minutes":
+                case "MINUTE":
+                case "MINUTES":
                     return Timescale.Minutes;
-                case "Hours":
+                case "HOUR":
+                case "HOURS":
                     return Timescale.Hours;
-                case "Days":
+                case "DAY":
+                case "DAYS":
                     return Timescale.Days;
                 default:
                     return Timescale.Instant;

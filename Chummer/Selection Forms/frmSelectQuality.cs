@@ -356,8 +356,7 @@ namespace Chummer
                 return;
 
             string strCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
-            StringBuilder sbdFilter = new StringBuilder("(")
-                .Append(_objCharacter.Options.BookXPath()).Append(')');
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
             {
                 sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
@@ -433,11 +432,8 @@ namespace Chummer
                     }
                 }
             }
-            string strSearch = CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-            if (!string.IsNullOrWhiteSpace(strSearch))
-            {
-                sbdFilter.Append(strSearch);
-            }
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
             List <ListItem> lstQuality = new List<ListItem>();

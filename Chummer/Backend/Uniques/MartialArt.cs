@@ -101,8 +101,8 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
-            if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
@@ -224,7 +224,7 @@ namespace Chummer
                 }
             }
 
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

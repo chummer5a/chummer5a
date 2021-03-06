@@ -657,14 +657,17 @@ namespace Chummer
                                 }
 
                                 // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-                                XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]");
-                                if (objAmendingNodeExtraIds?.Count > 0)
+                                using (XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]"))
                                 {
-                                    foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                    if (objAmendingNodeExtraIds?.Count > 0)
                                     {
-                                        if (sbdFilter.Length > 0)
-                                            sbdFilter.Append(" and ");
-                                        sbdFilter.Append(objExtraId.Name).Append(" = ").Append(objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                        foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+                                        {
+                                            if (sbdFilter.Length > 0)
+                                                sbdFilter.Append(" and ");
+                                            sbdFilter.Append(objExtraId.Name).Append(" = ")
+                                                .Append(objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                        }
                                     }
                                 }
 
@@ -931,289 +934,330 @@ namespace Chummer
                 return blnReturn;
             }
 
-            string strNewXPath = strXPath + '/' + xmlAmendingNode.Name + sbdFilter.ToString();
+            string strFilter = sbdFilter.ToString();
+            string strNewXPath = strXPath + '/' + xmlAmendingNode.Name + strFilter;
 
-            XmlNodeList objNodesToEdit = xmlDoc.SelectNodes(strNewXPath);
-
-            List<XmlNode> lstElementChildren = null;
-            // Pre-cache list of elements if we don't have an operation specified or have recurse specified
-            if (string.IsNullOrEmpty(strOperation) || strOperation == "recurse")
+            using (XmlNodeList objNodesToEdit = xmlDoc.SelectNodes(strNewXPath))
             {
-                lstElementChildren = new List<XmlNode>(xmlAmendingNode.ChildNodes.Count);
-                if (xmlAmendingNode.HasChildNodes)
+                List<XmlNode> lstElementChildren = null;
+                // Pre-cache list of elements if we don't have an operation specified or have recurse specified
+                if (string.IsNullOrEmpty(strOperation) || strOperation == "recurse")
                 {
-                    foreach (XmlNode objChild in xmlAmendingNode.ChildNodes)
+                    lstElementChildren = new List<XmlNode>(xmlAmendingNode.ChildNodes.Count);
+                    if (xmlAmendingNode.HasChildNodes)
                     {
-                        if (objChild.NodeType == XmlNodeType.Element)
+                        foreach (XmlNode objChild in xmlAmendingNode.ChildNodes)
                         {
-                            lstElementChildren.Add(objChild);
+                            if (objChild.NodeType == XmlNodeType.Element)
+                            {
+                                lstElementChildren.Add(objChild);
+                            }
                         }
                     }
                 }
-            }
 
-            switch (strOperation)
-            {
-                // These operations are supported
-                case "remove":
+                switch (strOperation)
+                {
+                    // These operations are supported
+                    case "remove":
                     // Replace operation without "addifnotfound" offers identical functionality to "override_*", but with all the extra bells and whistles of the amend system for targeting what to override
                     // Replace operation with "addifnotfound" offers identical functionality to "custom_*", but with all the extra bells and whistles of the amend system for targeting where to replace/add the item
-                case "replace":
-                case "append":
-                    break;
-                case "regexreplace":
-                    // Operation only supported if a pattern is actually defined
-                    if (string.IsNullOrWhiteSpace(strRegexPattern))
-                        goto case "replace";
-                    // Test to make sure RegEx pattern is properly formatted before actual amend code starts
-                    // Exit out early if it is not properly formatted
-                    try
-                    {
-                        bool _ = Regex.IsMatch("Test for properly formatted Regular Expression pattern.", strRegexPattern);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Program.MainForm.ShowMessageBox(ex.ToString());
-                        return false;
-                    }
-                    break;
-                case "recurse":
-                    // Operation only supported if we have children
-                    if (lstElementChildren?.Count > 0)
+                    case "replace":
+                    case "append":
                         break;
-                    goto default;
-                // If no supported operation is specified, the default is...
-                default:
-                    // ..."recurse" if we have children...
-                    if (lstElementChildren?.Count > 0)
-                        strOperation = "recurse";
-                    // ..."append" if we don't have children and there's no target...
-                    else if (objNodesToEdit?.Count == 0)
-                        strOperation = "append";
-                    // ..."replace" but adding if not found if we don't have children and there are one or more targets.
-                    else
-                    {
-                        strOperation = "replace";
-                        if (!blnAddIfNotFoundAttributePresent)
-                            blnAddIfNotFound = true;
-                    }
-
-                    break;
-            }
-
-            // We found nodes to target with the amend!
-            if (objNodesToEdit?.Count > 0 || (strOperation == "recurse" && !blnAddIfNotFound))
-            {
-                // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
-                if (strOperation == "recurse")
-                {
-                    if (lstElementChildren?.Count > 0)
-                    {
-                        if (!(lstExtraNodesToAddIfNotFound?.Count > 0) && objNodesToEdit?.Count > 0)
+                    case "regexreplace":
+                        // Operation only supported if a pattern is actually defined
+                        if (string.IsNullOrWhiteSpace(strRegexPattern))
+                            goto case "replace";
+                        // Test to make sure RegEx pattern is properly formatted before actual amend code starts
+                        // Exit out early if it is not properly formatted
+                        try
                         {
-                            foreach (XmlNode objChild in lstElementChildren)
-                            {
-                                blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath);
-                            }
+                            bool _ = Regex.IsMatch("Test for properly formatted Regular Expression pattern.",
+                                strRegexPattern);
                         }
+                        catch (ArgumentException ex)
+                        {
+                            Program.MainForm.ShowMessageBox(ex.ToString());
+                            return false;
+                        }
+
+                        break;
+                    case "recurse":
+                        // Operation only supported if we have children
+                        if (lstElementChildren?.Count > 0)
+                            break;
+                        goto default;
+                    // If no supported operation is specified, the default is...
+                    default:
+                        // ..."recurse" if we have children...
+                        if (lstElementChildren?.Count > 0)
+                            strOperation = "recurse";
+                        // ..."append" if we don't have children and there's no target...
+                        else if (objNodesToEdit?.Count == 0)
+                            strOperation = "append";
+                        // ..."replace" but adding if not found if we don't have children and there are one or more targets.
                         else
                         {
-                            if (lstExtraNodesToAddIfNotFound == null)
-                                lstExtraNodesToAddIfNotFound = new List<Tuple<XmlNode, string>>(1);
-                            Tuple<XmlNode, string> objMyData = new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
-                            lstExtraNodesToAddIfNotFound.Add(objMyData);
-                            foreach (XmlNode objChild in lstElementChildren)
-                            {
-                                blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, lstExtraNodesToAddIfNotFound);
-                            }
-                            // Remove our info in case we weren't added.
-                            // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found
-                            lstExtraNodesToAddIfNotFound.Remove(objMyData);
+                            strOperation = "replace";
+                            if (!blnAddIfNotFoundAttributePresent)
+                                blnAddIfNotFound = true;
                         }
-                    }
+
+                        break;
                 }
-                // ... otherwise loop through any nodes that satisfy the XPath filter.
-                else if (objNodesToEdit != null)
+
+                // We found nodes to target with the amend!
+                if (objNodesToEdit?.Count > 0 || (strOperation == "recurse" && !blnAddIfNotFound))
                 {
-                    foreach (XmlNode objNodeToEdit in objNodesToEdit)
+                    // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
+                    if (strOperation == "recurse")
                     {
-                        XmlNode xmlParentNode = objNodeToEdit.ParentNode;
-                        // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
-                        if (strOperation == "remove")
+                        if (lstElementChildren?.Count > 0)
                         {
-                            xmlParentNode?.RemoveChild(objNodeToEdit);
-                        }
-                        else
-                        {
-                            switch (strOperation)
+                            if (!(lstExtraNodesToAddIfNotFound?.Count > 0) && objNodesToEdit?.Count > 0)
                             {
-                                case "append":
-                                    if (xmlAmendingNode.HasChildNodes)
-                                    {
-                                        foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
-                                        {
-                                            XmlNodeType eChildNodeType = xmlChild.NodeType;
-
-                                            // Skip adding comments, they're pointless for the purposes of Chummer5a's code
-                                            if (eChildNodeType == XmlNodeType.Comment)
-                                                continue;
-
-                                            // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
-                                            if (eChildNodeType == XmlNodeType.Text ||
-                                                eChildNodeType == XmlNodeType.Attribute ||
-                                                eChildNodeType == XmlNodeType.CDATA)
-                                            {
-                                                bool blnItemFound = false;
-                                                if (objNodeToEdit.HasChildNodes)
-                                                {
-                                                    foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
-                                                    {
-                                                        if (objChildToEdit.NodeType == eChildNodeType)
-                                                        {
-                                                            if (eChildNodeType != XmlNodeType.Attribute || objChildToEdit.Name == xmlChild.Name)
-                                                            {
-                                                                objChildToEdit.Value += xmlChild.Value;
-                                                                blnItemFound = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                if (blnItemFound)
-                                                    continue;
-                                            }
-
-                                            StripAmendAttributesRecursively(xmlChild);
-                                            objNodeToEdit.AppendChild(xmlDoc.ImportNode(xmlChild, true));
-                                        }
-                                    }
-                                    else if (objNodeToEdit.HasChildNodes)
-                                    {
-                                        using (XmlNodeList xmlGrandParentNodeList = xmlDoc.SelectNodes(strXPath))
-                                        {
-                                            if (xmlGrandParentNodeList?.Count > 0)
-                                            {
-                                                foreach (XmlNode xmlGrandparentNode in xmlGrandParentNodeList)
-                                                {
-                                                    StripAmendAttributesRecursively(xmlAmendingNode);
-                                                    xmlGrandparentNode.AppendChild(xmlDoc.ImportNode(xmlAmendingNode, true));
-                                                }
-                                            }
-                                        }
-                                    }
-                                    break;
-                                case "replace":
-                                    StripAmendAttributesRecursively(xmlAmendingNode);
-                                    xmlParentNode?.ReplaceChild(xmlDoc.ImportNode(xmlAmendingNode, true), objNodeToEdit);
-                                    break;
-                                case "regexreplace":
-                                    if (xmlAmendingNode.HasChildNodes)
-                                    {
-                                        foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
-                                        {
-                                            XmlNodeType eChildNodeType = xmlChild.NodeType;
-
-                                            // Text, Attributes, and CDATA are subject to the RegexReplace
-                                            if (eChildNodeType == XmlNodeType.Text ||
-                                                eChildNodeType == XmlNodeType.Attribute ||
-                                                eChildNodeType == XmlNodeType.CDATA)
-                                            {
-                                                if (objNodeToEdit.HasChildNodes)
-                                                {
-                                                    foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
-                                                    {
-                                                        if (objChildToEdit.NodeType == eChildNodeType)
-                                                        {
-                                                            if (eChildNodeType != XmlNodeType.Attribute || objChildToEdit.Name == xmlChild.Name)
-                                                            {
-                                                                // Try-Catch just in case initial RegEx pattern validity check overlooked something
-                                                                try
-                                                                {
-                                                                    objChildToEdit.Value = Regex.Replace(objChildToEdit.Value, strRegexPattern, xmlChild.Value);
-                                                                }
-                                                                catch (ArgumentException ex)
-                                                                {
-                                                                    Program.MainForm.ShowMessageBox(ex.ToString());
-                                                                    // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
-                                                                    // So just exit out early instead of spamming the user with a bunch of error messages
-                                                                    if (!blnReturn)
-                                                                        return blnReturn;
-                                                                }
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    // If amending node has no contents, then treat it as if it just had an empty string Text data as its only content
-                                    else if (objNodeToEdit.HasChildNodes)
-                                    {
-                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
-                                        {
-                                            if (objChildToEdit.NodeType == XmlNodeType.Text)
-                                            {
-                                                // Try-Catch just in case initial RegEx pattern validity check overlooked something
-                                                try
-                                                {
-                                                    objChildToEdit.Value = Regex.Replace(objChildToEdit.Value, strRegexPattern, string.Empty);
-                                                }
-                                                catch (ArgumentException ex)
-                                                {
-                                                    Program.MainForm.ShowMessageBox(ex.ToString());
-                                                    // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
-                                                    // So just exit out early instead of spamming the user with a bunch of error messages
-                                                    if (!blnReturn)
-                                                        return blnReturn;
-                                                }
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-
-                    blnReturn = true;
-                }
-            }
-            // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
-            else if (strOperation == "append" || blnAddIfNotFound && (strOperation == "recurse" || strOperation == "replace"))
-            {
-                // Indication that we recursed into a set of nodes that don't exist in the base document, so those nodes will need to be recreated
-                if (lstExtraNodesToAddIfNotFound?.Count > 0 && sbdFilter.Length == 0) // Filter of any kind on this node would fail after addition, so skip if there is one
-                {
-                    // Because this is a list, foreach will move from oldest element to newest
-                    // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
-                    foreach (Tuple<XmlNode, string> objDataToAdd in lstExtraNodesToAddIfNotFound)
-                    {
-                        using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(objDataToAdd.Item2))
-                        {
-                            if (xmlParentNodeList?.Count > 0)
-                            {
-                                foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                                foreach (XmlNode objChild in lstElementChildren)
                                 {
-                                    xmlParentNode.AppendChild(xmlDoc.ImportNode(objDataToAdd.Item1, false));
+                                    blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath);
+                                }
+                            }
+                            else
+                            {
+                                if (lstExtraNodesToAddIfNotFound == null)
+                                    lstExtraNodesToAddIfNotFound = new List<Tuple<XmlNode, string>>(1);
+                                Tuple<XmlNode, string> objMyData =
+                                    new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
+                                lstExtraNodesToAddIfNotFound.Add(objMyData);
+                                foreach (XmlNode objChild in lstElementChildren)
+                                {
+                                    blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath,
+                                        lstExtraNodesToAddIfNotFound);
+                                }
+
+                                // Remove our info in case we weren't added.
+                                // List is used instead of a Stack because oldest element needs to be retrieved first if an element is found
+                                lstExtraNodesToAddIfNotFound.Remove(objMyData);
+                            }
+                        }
+                    }
+                    // ... otherwise loop through any nodes that satisfy the XPath filter.
+                    else if (objNodesToEdit != null)
+                    {
+                        foreach (XmlNode objNodeToEdit in objNodesToEdit)
+                        {
+                            XmlNode xmlParentNode = objNodeToEdit.ParentNode;
+                            // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
+                            if (strOperation == "remove")
+                            {
+                                xmlParentNode?.RemoveChild(objNodeToEdit);
+                            }
+                            else
+                            {
+                                switch (strOperation)
+                                {
+                                    case "append":
+                                        if (xmlAmendingNode.HasChildNodes)
+                                        {
+                                            foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
+                                            {
+                                                XmlNodeType eChildNodeType = xmlChild.NodeType;
+
+                                                // Skip adding comments, they're pointless for the purposes of Chummer5a's code
+                                                if (eChildNodeType == XmlNodeType.Comment)
+                                                    continue;
+
+                                                // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
+                                                if (eChildNodeType == XmlNodeType.Text ||
+                                                    eChildNodeType == XmlNodeType.Attribute ||
+                                                    eChildNodeType == XmlNodeType.CDATA)
+                                                {
+                                                    bool blnItemFound = false;
+                                                    if (objNodeToEdit.HasChildNodes)
+                                                    {
+                                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                        {
+                                                            if (objChildToEdit.NodeType == eChildNodeType)
+                                                            {
+                                                                if (eChildNodeType != XmlNodeType.Attribute ||
+                                                                    objChildToEdit.Name == xmlChild.Name)
+                                                                {
+                                                                    objChildToEdit.Value += xmlChild.Value;
+                                                                    blnItemFound = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (blnItemFound)
+                                                        continue;
+                                                }
+
+                                                StripAmendAttributesRecursively(xmlChild);
+                                                objNodeToEdit.AppendChild(xmlDoc.ImportNode(xmlChild, true));
+                                            }
+                                        }
+                                        else if (objNodeToEdit.HasChildNodes)
+                                        {
+                                            using (XmlNodeList xmlGrandParentNodeList = xmlDoc.SelectNodes(strXPath))
+                                            {
+                                                if (xmlGrandParentNodeList?.Count > 0)
+                                                {
+                                                    foreach (XmlNode xmlGrandparentNode in xmlGrandParentNodeList)
+                                                    {
+                                                        StripAmendAttributesRecursively(xmlAmendingNode);
+                                                        xmlGrandparentNode.AppendChild(
+                                                            xmlDoc.ImportNode(xmlAmendingNode, true));
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        break;
+                                    case "replace":
+                                        StripAmendAttributesRecursively(xmlAmendingNode);
+                                        xmlParentNode?.ReplaceChild(xmlDoc.ImportNode(xmlAmendingNode, true),
+                                            objNodeToEdit);
+                                        break;
+                                    case "regexreplace":
+                                        if (xmlAmendingNode.HasChildNodes)
+                                        {
+                                            foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
+                                            {
+                                                XmlNodeType eChildNodeType = xmlChild.NodeType;
+
+                                                // Text, Attributes, and CDATA are subject to the RegexReplace
+                                                if (eChildNodeType == XmlNodeType.Text ||
+                                                    eChildNodeType == XmlNodeType.Attribute ||
+                                                    eChildNodeType == XmlNodeType.CDATA)
+                                                {
+                                                    if (objNodeToEdit.HasChildNodes)
+                                                    {
+                                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                        {
+                                                            if (objChildToEdit.NodeType == eChildNodeType)
+                                                            {
+                                                                if (eChildNodeType != XmlNodeType.Attribute ||
+                                                                    objChildToEdit.Name == xmlChild.Name)
+                                                                {
+                                                                    // Try-Catch just in case initial RegEx pattern validity check overlooked something
+                                                                    try
+                                                                    {
+                                                                        objChildToEdit.Value =
+                                                                            Regex.Replace(objChildToEdit.Value,
+                                                                                strRegexPattern, xmlChild.Value);
+                                                                    }
+                                                                    catch (ArgumentException ex)
+                                                                    {
+                                                                        Program.MainForm.ShowMessageBox(ex.ToString());
+                                                                        // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
+                                                                        // So just exit out early instead of spamming the user with a bunch of error messages
+                                                                        if (!blnReturn)
+                                                                            return blnReturn;
+                                                                    }
+
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // If amending node has no contents, then treat it as if it just had an empty string Text data as its only content
+                                        else if (objNodeToEdit.HasChildNodes)
+                                        {
+                                            foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                            {
+                                                if (objChildToEdit.NodeType == XmlNodeType.Text)
+                                                {
+                                                    // Try-Catch just in case initial RegEx pattern validity check overlooked something
+                                                    try
+                                                    {
+                                                        objChildToEdit.Value = Regex.Replace(objChildToEdit.Value,
+                                                            strRegexPattern, string.Empty);
+                                                    }
+                                                    catch (ArgumentException ex)
+                                                    {
+                                                        Program.MainForm.ShowMessageBox(ex.ToString());
+                                                        // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
+                                                        // So just exit out early instead of spamming the user with a bunch of error messages
+                                                        if (!blnReturn)
+                                                            return blnReturn;
+                                                    }
+
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        break;
                                 }
                             }
                         }
-                    }
 
-                    lstExtraNodesToAddIfNotFound.Clear(); // Everything in the list up to this point has been added, so now we clear the list
-                }
-                using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPath))
-                {
-                    if (xmlParentNodeList?.Count > 0)
-                    {
-                        foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                        // Handle the special case where we're modifying multiple nodes and want to add contents to parents if they're not found, but some parents do still contain existing values
+                        if (blnAddIfNotFound)
                         {
-                            StripAmendAttributesRecursively(xmlAmendingNode);
-                            xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlAmendingNode, true));
+                            using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPath))
+                            {
+                                if (xmlParentNodeList?.Count > objNodesToEdit.Count)
+                                {
+                                    StripAmendAttributesRecursively(xmlAmendingNode);
+                                    foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                                    {
+                                        // Make sure we can't actually find any targets
+                                        if (xmlParentNode.SelectSingleNode(xmlAmendingNode.Name + strFilter) == null)
+                                            xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlAmendingNode, true));
+                                    }
+                                }
+                            }
                         }
 
                         blnReturn = true;
+                    }
+                }
+                // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
+                else if (strOperation == "append" ||
+                         (blnAddIfNotFound && (strOperation == "recurse" || strOperation == "replace")))
+                {
+                    // Indication that we recursed into a set of nodes that don't exist in the base document, so those nodes will need to be recreated
+                    if (lstExtraNodesToAddIfNotFound?.Count > 0 && sbdFilter.Length == 0
+                    ) // Filter of any kind on this node would fail after addition, so skip if there is one
+                    {
+                        // Because this is a list, foreach will move from oldest element to newest
+                        // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
+                        foreach (Tuple<XmlNode, string> objDataToAdd in lstExtraNodesToAddIfNotFound)
+                        {
+                            using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(objDataToAdd.Item2))
+                            {
+                                if (xmlParentNodeList?.Count > 0)
+                                {
+                                    foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                                    {
+                                        xmlParentNode.AppendChild(xmlDoc.ImportNode(objDataToAdd.Item1, false));
+                                    }
+                                }
+                            }
+                        }
+
+                        lstExtraNodesToAddIfNotFound
+                            .Clear(); // Everything in the list up to this point has been added, so now we clear the list
+                    }
+
+                    using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPath))
+                    {
+                        if (xmlParentNodeList?.Count > 0)
+                        {
+                            StripAmendAttributesRecursively(xmlAmendingNode);
+                            foreach (XmlNode xmlParentNode in xmlParentNodeList)
+                            {
+                                xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlAmendingNode, true));
+                            }
+
+                            blnReturn = true;
+                        }
                     }
                 }
             }

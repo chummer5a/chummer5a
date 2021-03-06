@@ -53,18 +53,27 @@ namespace Chummer
                 Active = true
             };
 
-            MouseEnter += Label_MouseEnter;
-            MouseLeave += Label_MouseLeave;
+            MouseEnter += OnMouseEnter;
+            MouseLeave += OnMouseLeave;
+            SelectedIndexChanged += ClearUnintendedHighlight;
+            Resize += ClearUnintendedHighlight;
+        }
+        
+        private void ClearUnintendedHighlight(object sender, EventArgs e)
+        {
+            if (DropDownStyle != ComboBoxStyle.DropDownList && IsHandleCreated)
+                this.DoThreadSafe(ClearSelection);
         }
 
-        private void Label_MouseEnter(object sender, EventArgs ea)
+        private void OnMouseEnter(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(TooltipText))
             {
                 _tt.Show(TooltipText, Parent);
             }
         }
-        private void Label_MouseLeave(object sender, EventArgs ea)
+
+        private void OnMouseLeave(object sender, EventArgs e)
         {
             _tt.Hide(this);
         }
@@ -118,6 +127,14 @@ namespace Chummer
                     intMaxItemWidth = intLoopItemWidth;
             }
             DropDownWidth = intMaxItemWidth;
+        }
+
+        private void ClearSelection()
+        {
+            Control objActiveControl = FindForm()?.ActiveControl;
+            if (objActiveControl == null || objActiveControl == this)
+                return;
+            SelectionLength = 0;
         }
 
         protected override void Dispose(bool disposing)

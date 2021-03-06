@@ -28,11 +28,9 @@ namespace Chummer.UI.Table
         private int _intArrowPadding = 3;
         private SortOrder _eSortType = SortOrder.None;
         private readonly int _intLabelPadding = 3;
-        private readonly Graphics _objGraphics;
 
         public HeaderCell()
         {
-            _objGraphics = CreateGraphics();
             InitializeComponent();
             this.UpdateLightDarkMode();
             Sortable = false;
@@ -52,22 +50,29 @@ namespace Chummer.UI.Table
         private void ResizeControl(object sender, LayoutEventArgs e)
         {
             SuspendLayout();
-            if (Sortable)
+            using (Graphics g = CreateGraphics())
             {
-                int intArrowSize = 2 * ArrowPadding + ArrowSize;
-                int intMinWidth = (int)((intArrowSize + _intLabelPadding) * _objGraphics.DpiX / 96.0f) + _lblCellText.Width;
-                int intMinHeight = Math.Max(_lblCellText.Height + (int)(2 * _intLabelPadding * _objGraphics.DpiY / 96.0f), (int)(intArrowSize * _objGraphics.DpiY / 96.0f));
-                MinimumSize = new Size(intMinWidth, intMinHeight);
-            }
-            else
-            {
-                int intMinWidth = _lblCellText.Width + (int)(_intLabelPadding * _objGraphics.DpiX / 96.0f);
-                int intMinHeight = _lblCellText.Height + (int)(2 * _intLabelPadding * _objGraphics.DpiY / 96.0f);
-                MinimumSize = new Size(intMinWidth, intMinHeight);
-            }
+                if (Sortable)
+                {
+                    int intArrowSize = 2 * ArrowPadding + ArrowSize;
+                    int intMinWidth = (int) ((intArrowSize + _intLabelPadding) * g.DpiX / 96.0f) +
+                                      _lblCellText.Width;
+                    int intMinHeight =
+                        Math.Max(_lblCellText.Height + (int) (2 * _intLabelPadding * g.DpiY / 96.0f),
+                            (int) (intArrowSize * g.DpiY / 96.0f));
+                    MinimumSize = new Size(intMinWidth, intMinHeight);
+                }
+                else
+                {
+                    int intMinWidth = _lblCellText.Width + (int) (_intLabelPadding * g.DpiX / 96.0f);
+                    int intMinHeight = _lblCellText.Height + (int) (2 * _intLabelPadding * g.DpiY / 96.0f);
+                    MinimumSize = new Size(intMinWidth, intMinHeight);
+                }
 
-            _lblCellText.Location = new Point((int)(_intLabelPadding * _objGraphics.DpiX / 96.0f), (MinimumSize.Height - _lblCellText.Height) / 2);
-                ResumeLayout(false);
+                _lblCellText.Location = new Point((int) (_intLabelPadding * g.DpiX / 96.0f),
+                    (MinimumSize.Height - _lblCellText.Height) / 2);
+            }
+            ResumeLayout(false);
             Invalidate();
         }
 

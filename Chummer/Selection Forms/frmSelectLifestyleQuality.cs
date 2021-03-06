@@ -340,34 +340,35 @@ namespace Chummer
         /// </summary>
         private List<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
-                strFilter += " and category = \"" + strCategory + '\"';
+                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             }
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
 
             if (_strSelectedLifestyle != "Bolt Hole")
             {
-                strFilter += " and (name != \"Dug a Hole\")";
+                sbdFilter.Append(" and (name != \"Dug a Hole\")");
             }
-
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
-            using (XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]"))
+            using (XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + sbdFilter.ToString() + "]"))
                 if (objXmlQualityList?.Count > 0)
                     foreach (XmlNode objXmlQuality in objXmlQualityList)
                     {

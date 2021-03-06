@@ -506,8 +506,8 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
             objXmlCyberware.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
-            if (!objXmlCyberware.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlCyberware.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlCyberware.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlCyberware.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -2578,7 +2578,7 @@ namespace Chummer.Backend.Equipment
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
                     if (blnIsSuccess)
-                        intReturn = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                        intReturn = ((double)objProcess).StandardRound();
                 }
 
                 return intReturn;
@@ -2620,7 +2620,7 @@ namespace Chummer.Backend.Equipment
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
                     if (blnIsSuccess)
-                        intReturn = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                        intReturn = ((double)objProcess).StandardRound();
                 }
 
                 return intReturn;
@@ -3074,7 +3074,7 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAvail += ((double)objProcess).StandardRound();
             }
 
             if (blnCheckChildren)
@@ -5259,11 +5259,11 @@ namespace Chummer.Backend.Equipment
             if (decEssDelta > 0)
             {
                 //The new Essence cost is greater than the old one.
-                _objCharacter.IncreaseEssenceHole(decEssDelta);
+                _objCharacter.DecreaseEssenceHole(decEssDelta);
             }
             else if (decEssDelta < 0)
             {
-                _objCharacter.DecreaseEssenceHole(-decEssDelta);
+                _objCharacter.IncreaseEssenceHole(-decEssDelta);
             }
         }
 

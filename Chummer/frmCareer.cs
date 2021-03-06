@@ -687,7 +687,7 @@ namespace Chummer
                         lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
                         lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
                         lblCMStun.Visible = true; // Needed for some weird reason
-                        lblCMStun.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+                        lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
                         lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
                         lblESSMax.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEssence));
@@ -2255,7 +2255,7 @@ namespace Chummer
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
 
-                intClones = decimal.ToInt32(frmPickNumber.SelectedValue);
+                intClones = frmPickNumber.SelectedValue.ToInt32();
             }
 
             if (intClones <= 0)
@@ -2277,9 +2277,8 @@ namespace Chummer
                         lstClones[i] = objLoopCharacter;
                     }
                 });
+                Program.MainForm.OpenCharacterList(lstClones, false);
             }
-
-            Program.MainForm.OpenCharacterList(lstClones, false);
         }
 
         private void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
@@ -2481,7 +2480,7 @@ namespace Chummer
                         if (objPower.Bonus != null)
                         {
                             ImprovementManager.ForcedValue = objPower.Extra;
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, Convert.ToInt32(objPower.TotalRating),
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, objPower.TotalRating,
                                 objPower.DisplayNameShort(GlobalOptions.Language));
                         }
                     }
@@ -2994,10 +2993,11 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                Character objOpenCharacter;
                 using (new CursorWait(this))
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
+                {
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                }
             }
         }
 
@@ -3149,10 +3149,11 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                Character objOpenCharacter;
                 using (new CursorWait(this))
-                    objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
+                {
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                }
             }
         }
 
@@ -3751,9 +3752,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = treGear.SelectedNode?.Tag is Location objLocation
-                    ? PickGear(null, objLocation)
-                    : PickGear(null);
+                blnAddAgain = PickGear(null, treGear.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -3825,8 +3824,8 @@ namespace Chummer
 
                 objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
 
-                objVehicle.Location = objLocation;
-
+                //objVehicle.Location = objLocation;
+                objLocation?.Children.Add(objVehicle);
                 CharacterObject.Vehicles.Add(objVehicle);
 
                 IsCharacterUpdateRequested = true;
@@ -3842,7 +3841,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -3987,7 +3986,7 @@ namespace Chummer
         {
             if (CharacterObject.Mugshots.Count <= 0)
                 return;
-            RemoveMugshot(decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            RemoveMugshot(nudMugshotIndex.ValueAsInt - 1);
 
             lblNumMugshots.Text = LanguageManager.GetString("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalOptions.CultureInfo);
             nudMugshotIndex.Maximum -= 1;
@@ -3995,12 +3994,12 @@ namespace Chummer
                 nudMugshotIndex.Value = nudMugshotIndex.Maximum;
             else
             {
-                if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+                if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                     chkIsMainMugshot.Checked = true;
                 else if (chkIsMainMugshot.Checked)
                     chkIsMainMugshot.Checked = false;
 
-                UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+                UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
             }
 
             IsDirty = true;
@@ -4024,23 +4023,23 @@ namespace Chummer
                     nudMugshotIndex.Value = nudMugshotIndex.Minimum;
             }
 
-            if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                 chkIsMainMugshot.Checked = true;
             else if (chkIsMainMugshot.Checked)
                 chkIsMainMugshot.Checked = false;
 
-            UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
         }
 
         private void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
         {
             bool blnStatusChanged = false;
-            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != decimal.ToInt32(nudMugshotIndex.Value) - 1)
+            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != nudMugshotIndex.ValueAsInt - 1)
             {
-                CharacterObject.MainMugshotIndex = decimal.ToInt32(nudMugshotIndex.Value) - 1;
+                CharacterObject.MainMugshotIndex = nudMugshotIndex.ValueAsInt - 1;
                 blnStatusChanged = true;
             }
-            else if (!chkIsMainMugshot.Checked && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            else if (!chkIsMainMugshot.Checked && nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
             {
                 CharacterObject.MainMugshotIndex = -1;
                 blnStatusChanged = true;
@@ -4240,7 +4239,7 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma += decimal.ToInt32(frmNewExpense.Amount);
+                CharacterObject.Karma += frmNewExpense.Amount.ToInt32();
 
                 if (frmNewExpense.KarmaNuyenExchange)
                 {
@@ -4294,7 +4293,7 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma += decimal.ToInt32(frmNewExpense.Amount) * -1;
+                CharacterObject.Karma -= frmNewExpense.Amount.ToInt32();
 
                 if (frmNewExpense.KarmaNuyenExchange)
                 {
@@ -4353,8 +4352,8 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = -decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
-                    objExpense.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP).ToInt32();
+                    objExpense.Create(-intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
@@ -4363,7 +4362,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    CharacterObject.Karma += intAmount;
+                    CharacterObject.Karma -= intAmount;
                 }
             }
 
@@ -4408,7 +4407,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = decimal.ToInt32(frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP);
+                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP).ToInt32();
                     objExpense.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
@@ -5342,8 +5341,10 @@ namespace Chummer
                     return false;
                 }
 
-                if (!blnMetatypeQuality && blnConfirmDelete && !CommonFunctions.ConfirmKarmaExpense(blnCompleteDelete ? LanguageManager.GetString("Message_ConfirmKarmaExpenseRemove") :
-                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseLowerLevel"), objSelectedQuality.DisplayNameShort(GlobalOptions.Language), intTotalKarmaCost.ToString(GlobalOptions.CultureInfo))))
+                if (!blnMetatypeQuality && blnConfirmDelete && !CommonFunctions.ConfirmKarmaExpense(
+                    string.Format(GlobalOptions.CultureInfo, blnCompleteDelete
+                        ? LanguageManager.GetString("Message_ConfirmKarmaExpenseRemove") : LanguageManager.GetString("Message_ConfirmKarmaExpenseLowerLevel"),
+                        objSelectedQuality.DisplayNameShort(GlobalOptions.Language), intTotalKarmaCost)))
                     return false;
 
                 // Create the Karma expense.
@@ -5498,7 +5499,7 @@ namespace Chummer
                     if (!blnFreeCost)
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                        XPathNavigator xpnDiscountNode = xpnSelectedQuality?.SelectSingleNode("costdiscount");
+                        XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNode("costdiscount");
                         if (xpnDiscountNode != null && xpnDiscountNode.RequirementsMet(CharacterObject))
                         {
                             int intTemp = 0;
@@ -5733,18 +5734,13 @@ namespace Chummer
 
             if (objWeek == null)
                 return;
-            string strOldValue = objWeek.Notes;
-            using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+            using (frmNotes frmItemNotes = new frmNotes(objWeek.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-
                 objWeek.Notes = frmItemNotes.Notes;
-                if (objWeek.Notes != strOldValue)
-                {
-                    IsDirty = true;
-                }
+                IsDirty = true;
             }
         }
 
@@ -5974,7 +5970,7 @@ namespace Chummer
             TreeNode nodSelectedImprovement = treImprovements.SelectedNode;
             switch (nodSelectedImprovement?.Tag)
             {
-                case Improvement objImprovement when !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement")):
+                case Improvement _ when !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovement")):
                     return;
                 // Remove the Improvement from the character.
                 case Improvement objImprovement:
@@ -5984,7 +5980,7 @@ namespace Chummer
                     break;
                 case string strSelectedId when strSelectedId == "Node_SelectedImprovements":
                     return;
-                case string strSelectedId when !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup")):
+                case string _ when !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteImprovementGroup")):
                     return;
                 case string strSelectedId:
                 {
@@ -6170,7 +6166,7 @@ namespace Chummer
                 if (frmPickNumber.DialogResult == DialogResult.Cancel)
                     return;
 
-                intKarmaCost = decimal.ToInt32(frmPickNumber.SelectedValue);
+                intKarmaCost = frmPickNumber.SelectedValue.ToInt32();
             }
 
             // Make sure the character has enough Karma to improve the CharacterAttribute.
@@ -6402,7 +6398,6 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 objArmor.Create(objXmlArmor, frmPickArmor.Rating, lstWeapons);
                 objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
-                objArmor.Location = objLocation;
 
                 if (objArmor.InternalId.IsEmptyGuid())
                     return frmPickArmor.AddAgain;
@@ -6444,6 +6439,8 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
 
+                // objArmor.Location = objLocation;
+                objLocation?.Children.Add(objArmor);
                 CharacterObject.Armor.Add(objArmor);
 
                 foreach (Weapon objWeapon in lstWeapons)
@@ -8203,7 +8200,7 @@ namespace Chummer
 
             }
             // Refund the Karma amount and remove the Expense Entry.
-            CharacterObject.Karma -= decimal.ToInt32(objExpense.Amount);
+            CharacterObject.Karma -= objExpense.Amount.ToInt32();
             CharacterObject.ExpenseEntries.Remove(objExpense);
 
             IsLoading = false;
@@ -10353,8 +10350,7 @@ namespace Chummer
 
         private void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treLifestyles.SelectedNode;
-            if (!(nodSelected?.Tag is Lifestyle objLifestyle))
+            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
             string strGuid = objLifestyle.InternalId;
@@ -10404,10 +10400,6 @@ namespace Chummer
 
             objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
-            nodSelected.Text = objLifestyle.CurrentDisplayName;
-            nodSelected.Tag = objLifestyle;
-            nodSelected.ForeColor = objLifestyle.PreferredColor;
-            nodSelected.ToolTipText = objLifestyle.Notes.WordWrap();
 
             string strSpace = LanguageManager.GetString("String_Space");
 
@@ -12075,7 +12067,7 @@ namespace Chummer
             }
 
             // If this is a manual entry, let the player modify the amount.
-            int intOldAmount = decimal.ToInt32(objExpense.Amount);
+            int intOldAmount = objExpense.Amount.ToInt32();
             bool blnAllowEdit = false;
             if (objExpense.Undo != null)
             {
@@ -12100,7 +12092,7 @@ namespace Chummer
                     return;
 
                 // If this is a manual entry, update the character's Karma total.
-                int intNewAmount = decimal.ToInt32(frmEditExpense.Amount);
+                int intNewAmount = frmEditExpense.Amount.ToInt32();
                 if (blnAllowEdit && intOldAmount != intNewAmount)
                 {
                     objExpense.Amount = intNewAmount;
@@ -13293,9 +13285,9 @@ namespace Chummer
 
                     cboCyberwareOverclocker.BeginUpdate();
                     cboCyberwareOverclocker.DataSource = null;
+                    cboCyberwareOverclocker.DataSource = lstOverclocker;
                     cboCyberwareOverclocker.DisplayMember = nameof(ListItem.Name);
                     cboCyberwareOverclocker.ValueMember = nameof(ListItem.Value);
-                    cboCyberwareOverclocker.DataSource = lstOverclocker;
                     cboCyberwareOverclocker.SelectedValue = objGear.Overclocked;
                     if (cboCyberwareOverclocker.SelectedIndex == -1)
                         cboCyberwareOverclocker.SelectedIndex = 0;
@@ -13575,9 +13567,9 @@ namespace Chummer
                     objWeapon.ActiveAmmoSlot = intCurrentSlot;
                     cboWeaponAmmo.BeginUpdate();
                     cboWeaponAmmo.DataSource = null;
+                    cboWeaponAmmo.DataSource = lstAmmo;
                     cboWeaponAmmo.ValueMember = nameof(ListItem.Value);
                     cboWeaponAmmo.DisplayMember = nameof(ListItem.Name);
-                    cboWeaponAmmo.DataSource = lstAmmo;
                     cboWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString(GlobalOptions.InvariantCultureInfo);
                     if (cboWeaponAmmo.SelectedIndex == -1)
                         cboWeaponAmmo.SelectedIndex = 0;
@@ -14174,9 +14166,9 @@ namespace Chummer
 
                     cboGearOverclocker.BeginUpdate();
                     cboGearOverclocker.DataSource = null;
+                    cboGearOverclocker.DataSource = lstOverclocker;
                     cboGearOverclocker.DisplayMember = nameof(ListItem.Name);
                     cboGearOverclocker.ValueMember = nameof(ListItem.Value);
-                    cboGearOverclocker.DataSource = lstOverclocker;
                     cboGearOverclocker.SelectedValue = objGear.Overclocked;
                     if (cboGearOverclocker.SelectedIndex == -1)
                         cboGearOverclocker.SelectedIndex = 0;
@@ -14564,7 +14556,9 @@ namespace Chummer
                     // See if the character already has the item on them if they chose to stack.
                     if (frmPickGear.Stack)
                     {
-                        objStackWith = objStackGear ?? CharacterObject.Gear.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
+                        objStackWith = objStackGear
+                                       ?? CharacterObject.Gear.FirstOrDefault(x => x.Location == objLocation
+                                           && objGear.IsIdenticalToOtherGear(x));
                     }
 
                     if (objStackWith != null)
@@ -14639,6 +14633,7 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 
+                        objLocation?.Children.Add(objGear);
                         if (!blnNullParent)
                         {
                             objSelectedGear.Children.Add(objGear);
@@ -14647,8 +14642,6 @@ namespace Chummer
                         {
                             CharacterObject.Gear.Add(objGear);
                         }
-
-                        objLocation?.Children.Add(objGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -15419,9 +15412,9 @@ namespace Chummer
                     objWeapon.ActiveAmmoSlot = intCurrentSlot;
                     cboVehicleWeaponAmmo.BeginUpdate();
                     cboVehicleWeaponAmmo.DataSource = null;
+                    cboVehicleWeaponAmmo.DataSource = lstAmmo;
                     cboVehicleWeaponAmmo.ValueMember = nameof(ListItem.Value);
                     cboVehicleWeaponAmmo.DisplayMember = nameof(ListItem.Name);
-                    cboVehicleWeaponAmmo.DataSource = lstAmmo;
                     cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString(GlobalOptions.InvariantCultureInfo);
                     if (cboVehicleWeaponAmmo.SelectedIndex == -1)
                         cboVehicleWeaponAmmo.SelectedIndex = 0;
@@ -17090,7 +17083,8 @@ namespace Chummer
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is Location objLocation)) return;
+            if (!(treGear.SelectedNode?.Tag is Location objLocation))
+                return;
             bool blnAddAgain;
             do
             {
@@ -17104,7 +17098,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -17114,7 +17108,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = PickWeapon(treWeapons.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = PickWeapon(treWeapons.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }

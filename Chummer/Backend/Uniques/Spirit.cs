@@ -597,6 +597,19 @@ namespace Chummer
 
         private bool _blnFettered;
         private int _intCachedAllowFettering = int.MinValue;
+
+        public bool AllowFettering
+        {
+            get
+            {
+                if (_intCachedAllowFettering < 0)
+                    _intCachedAllowFettering = (EntityType == SpiritType.Spirit ||
+                    EntityType == SpiritType.Sprite && CharacterObject.AllowSpriteFettering)
+                        ? 1
+                        : 0;
+                return _intCachedAllowFettering > 0;
+            }
+        }
         /// <summary>
         /// Whether the sprite/spirit has unlimited services due to Fettering.
         /// See KC 91 and SG 192 for sprites and spirits, respectively.
@@ -829,6 +842,7 @@ namespace Chummer
             else if (e.PropertyName == nameof(Character.AllowSpriteFettering))
             {
                 _intCachedAllowFettering = int.MinValue;
+                OnPropertyChanged(nameof(AllowFettering));
                 OnPropertyChanged(nameof(Fettered));
             }
         }

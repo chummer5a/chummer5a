@@ -208,10 +208,8 @@ namespace Chummer.Backend.Equipment
             objXmlVehicle.TryGetInt32FieldQuickly("electromagneticmodslots", ref _intAddElectromagneticModSlots);
             objXmlVehicle.TryGetInt32FieldQuickly("cosmeticmodslots", ref _intAddCosmeticModSlots);
             objXmlVehicle.TryGetStringFieldQuickly("avail", ref _strAvail);
-            if (!objXmlVehicle.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlVehicle.TryGetStringFieldQuickly("notes", ref _strNotes);
-
-
+            if (!objXmlVehicle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlVehicle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -1400,7 +1398,7 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAvail += Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAvail += ((double)objProcess).StandardRound();
             }
 
             if (blnIncludeChildren)
@@ -3104,24 +3102,28 @@ namespace Chummer.Backend.Equipment
         /// <param name="strOutCyberwareGrade"></param>
         public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, string strCyberwareGrade, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem, out string strOutCyberwareGrade)
         {
-            AvailabilityValue objTotalAvail = TotalAvailTuple();
-            if (!objTotalAvail.AddToParent)
+            if (string.IsNullOrEmpty(ParentID))
             {
-                int intAvailInt = objTotalAvail.Value;
-                if (intAvailInt > _objCharacter.Options.MaximumAvailability)
+                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
                 {
-                    if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                    int intAvailInt = objTotalAvail.Value;
+                    if (intAvailInt > _objCharacter.Options.MaximumAvailability)
                     {
-                        blnRestrictedGearUsed = true;
-                        strRestrictedItem = CurrentDisplayName;
-                    }
-                    else
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = CurrentDisplayName;
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += Environment.NewLine + "\t\t" + DisplayNameShort(GlobalOptions.Language);
+                        }
                     }
                 }
             }
+
             foreach (VehicleMod objChild in Mods)
             {
                 objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem, out strCyberwareGrade);

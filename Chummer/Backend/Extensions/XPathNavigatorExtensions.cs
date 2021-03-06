@@ -239,6 +239,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Like TryGetField for strings, only with as little overhead as possible and with an extra line ending normalization thrown in.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetMultiLineStringFieldQuickly(this XPathNavigator node, string field, ref string read)
+        {
+            string strReturn = string.Empty;
+            if (node.TryGetStringFieldQuickly(field, ref strReturn))
+            {
+                read = strReturn.NormalizeLineEndings();
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Like TryGetField for ints, but taking advantage of int.TryParse... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

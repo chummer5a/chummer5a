@@ -39,8 +39,7 @@ namespace Chummer
         {
             if (objNotes == null || treNode == null)
                 return false;
-            string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
             {
                 frmItemNotes.ShowDialog(Program.MainForm);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -48,14 +47,10 @@ namespace Chummer
 
                 objNotes.Notes = frmItemNotes.Notes;
             }
-            if (objNotes.Notes != strOldValue)
-            {
-                treNode.ForeColor = objNotes.PreferredColor;
-                treNode.ToolTipText = objNotes.Notes.WordWrap();
+            treNode.ForeColor = objNotes.PreferredColor;
+            treNode.ToolTipText = objNotes.Notes.WordWrap();
 
-                return true;
-            }
-            return false;
+            return true;
         }
     }
 }

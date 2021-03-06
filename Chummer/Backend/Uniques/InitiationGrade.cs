@@ -121,7 +121,7 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("group", ref _blnGroup);
             objNode.TryGetBoolFieldQuickly("ordeal", ref _blnOrdeal);
             objNode.TryGetBoolFieldQuickly("schooling", ref _blnSchooling);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

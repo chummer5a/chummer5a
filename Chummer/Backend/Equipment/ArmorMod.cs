@@ -137,8 +137,8 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlArmorNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArmorNode.TryGetStringFieldQuickly("page", ref _strPage);
-            if (!objXmlArmorNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlArmorNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlArmorNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArmorNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -400,7 +400,7 @@ namespace Chummer.Backend.Equipment
                 _blnWirelessOn = false;
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
@@ -895,7 +895,7 @@ namespace Chummer.Backend.Equipment
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
-                    intAvail = Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo);
+                    intAvail = ((double)objProcess).StandardRound();
             }
 
             if (blnCheckChildren)

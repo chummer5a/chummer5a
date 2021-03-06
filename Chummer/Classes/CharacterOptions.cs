@@ -1599,7 +1599,7 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true)
         {
-            StringBuilder sbdPath = new StringBuilder();
+            StringBuilder sbdPath = new StringBuilder("(");
 
             if (excludeHidden)
             {
@@ -1625,6 +1625,16 @@ namespace Chummer
                 if (sbdPath.Length != 0)
                     sbdPath.Append(" and ");
                 sbdPath.Append("not(optionaldrone)");
+            }
+
+            if (sbdPath.Length > 1)
+                sbdPath.Append(")");
+            else
+            {
+                // We have only the opening parentheses; clear the string builder so that we return an empty string
+                sbdPath.Clear();
+                // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
+                Utils.BreakIfDebug();
             }
             return sbdPath.ToString();
         }

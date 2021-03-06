@@ -136,9 +136,9 @@ namespace Chummer
             lstKit.Sort(CompareListItems.CompareNames);
             lstKits.BeginUpdate();
             lstKits.DataSource = null;
+            lstKits.DataSource = lstKit;
             lstKits.ValueMember = nameof(ListItem.Value);
             lstKits.DisplayMember = nameof(ListItem.Name);
-            lstKits.DataSource = lstKit;
             lstKits.EndUpdate();
 
             if (lstKit.Count == 0)

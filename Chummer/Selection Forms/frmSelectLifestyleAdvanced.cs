@@ -635,13 +635,13 @@ namespace Chummer
             _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            _objLifestyle.Area = decimal.ToInt32(nudArea.Value);
-            _objLifestyle.Comforts = decimal.ToInt32(nudComforts.Value);
-            _objLifestyle.Security = decimal.ToInt32(nudSecurity.Value);
+            _objLifestyle.Area = nudArea.ValueAsInt;
+            _objLifestyle.Comforts = nudComforts.ValueAsInt;
+            _objLifestyle.Security = nudSecurity.ValueAsInt;
             _objLifestyle.TrustFund = chkTrustFund.Checked;
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : decimal.ToInt32(nudRoommates.Value);
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : nudRoommates.ValueAsInt;
             _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
-            _objLifestyle.BonusLP = decimal.ToInt32(nudBonusLP.Value);
+            _objLifestyle.BonusLP = nudBonusLP.ValueAsInt;
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);

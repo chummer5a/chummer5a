@@ -78,6 +78,7 @@ namespace Chummer
                 limit.Add(improvement.ImprovedName);
             }
 
+            string strFilterPrefix = "spells/spell[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
             foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.Select("categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
@@ -87,18 +88,20 @@ namespace Chummer
                         (x.ImproveType == Improvement.ImprovementType.AllowSpellRange ||
                          x.ImproveType == Improvement.ImprovementType.LimitSpellRange) && x.Enabled))
                     {
-                        if (_xmlBaseSpellDataNode
-                                .Select(
-                                    "spells/spell[category = \"" + strCategory + "\" and range = \"" + improvement.ImprovedName + "\"]")
-                                .Count > 0)
+                        if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\" and range = \"" + improvement.ImprovedName + "\"]")
+                                != null)
                         {
                             limit.Add(strCategory);
                         }
                     }
 
-                    if (limit.Count != 0 && !limit.Contains(strCategory)) continue;
-                    if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory) continue;
+                    if (limit.Count != 0 && !limit.Contains(strCategory))
+                        continue;
+                    if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory)
+                        continue;
                 }
+                if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\"]") == null)
+                    continue;
 
                 _lstCategory.Add(new ListItem(strCategory,
                     objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
@@ -113,9 +116,9 @@ namespace Chummer
 
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
+            cboCategory.DataSource = _lstCategory;
             cboCategory.ValueMember = nameof(ListItem.Value);
             cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory)) cboCategory.SelectedIndex = 0;
             else cboCategory.SelectedValue = s_StrSelectCategory;
@@ -260,30 +263,31 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strCategory = cboCategory.SelectedValue?.ToString();
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + '\"';
+                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
             if (_objCharacter.Options.ExtendAnyDetectionSpell)
-                strFilter += " and ((not(contains(name, \", Extended\"))))";
-
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+                sbdFilter.Append(" and ((not(contains(name, \", Extended\"))))");
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             // Populate the Spell list.
             List<ListItem> lstSpellItems = new List<ListItem>();
-            foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell[" + strFilter + "]"))
+            foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell[" + sbdFilter.ToString() + "]"))
             {
                 string strSpellCategory = objXmlSpell.SelectSingleNode("category")?.Value ?? string.Empty;
                 string strDescriptor = objXmlSpell.SelectSingleNode("descriptor")?.Value ?? string.Empty;

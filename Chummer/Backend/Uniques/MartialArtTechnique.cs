@@ -59,8 +59,8 @@ namespace Chummer
             }
 
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName))
-                if (!xmlTechniqueDataNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                    xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                if (!xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -144,7 +144,7 @@ namespace Chummer
             }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

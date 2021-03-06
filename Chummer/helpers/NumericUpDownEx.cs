@@ -46,14 +46,11 @@ namespace Chummer
         // default value that will be used when incrementing via mousewheel
         private int _intMouseIncrement = 1;
 
-        private readonly Graphics _objGraphics;
-
         /// <summary>
         /// object creator
         /// </summary>
         public NumericUpDownEx()
         {
-            _objGraphics = CreateGraphics();
             // get a reference to the underlying UpDownButtons field
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
             _upDownButtons = Controls[0];
@@ -78,59 +75,84 @@ namespace Chummer
             base.MouseEnter += _mouseEnterLeave;
             base.MouseLeave += _mouseEnterLeave;
             // DPI handler for margins (WinForms is buggy with handling scaling of margins on numeric up-downs)
+            ParentChanged += OnParentChanged;
             MarginChanged += OnMarginChanged;
+            DpiChangedAfterParent += OnMarginChanged;
+        }
+
+        private void OnParentChanged(object sender, EventArgs e)
+        {
+            if (_blnHaveProcessedMarginsOnce)
+                OnMarginChanged(sender, e);
         }
 
         private bool _blnDoProcessMargins = true;
+        private bool _blnHaveProcessedMarginsOnce = false;
         private void OnMarginChanged(object sender, EventArgs e)
         {
             if (!_blnDoProcessMargins)
                 return;
-            // Only care about adjusting margins for non-standard DPI
-            if (Math.Abs(_objGraphics.DpiX - 96.0f) < float.Epsilon && Math.Abs(_objGraphics.DpiY - 96.0f) < float.Epsilon)
-                return;
+            using (Graphics g = CreateGraphics())
+            {
+                // Only care about adjusting margins for non-standard DPI
+                if (Math.Abs(g.DpiX - 96.0f) < float.Epsilon &&
+                    Math.Abs(g.DpiY - 96.0f) < float.Epsilon)
+                    return;
 
-            int intMinNonZeroMargin = int.MaxValue;
-            BitArray ablnConsiderMargins = new BitArray(4, false);
-            if (Margin.Left != 0)
-            {
-                intMinNonZeroMargin = Math.Min(Margin.Left, intMinNonZeroMargin);
-                ablnConsiderMargins[0] = true;
-            }
-            if (Margin.Top != 0)
-            {
-                intMinNonZeroMargin = Math.Min(Margin.Top, intMinNonZeroMargin);
-                ablnConsiderMargins[1] = true;
-            }
-            if (Margin.Right != 0)
-            {
-                intMinNonZeroMargin = Math.Min(Margin.Right, intMinNonZeroMargin);
-                ablnConsiderMargins[2] = true;
-            }
-            if (Margin.Bottom != 0)
-            {
-                intMinNonZeroMargin = Math.Min(Margin.Bottom, intMinNonZeroMargin);
-                ablnConsiderMargins[3] = true;
-            }
-            // No non-zero margins, exit
-            if (intMinNonZeroMargin == int.MaxValue)
-                return;
+                int intMinNonZeroMargin = int.MaxValue;
+                BitArray ablnConsiderMargins = new BitArray(4, false);
+                if (Margin.Left != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Left, intMinNonZeroMargin);
+                    ablnConsiderMargins[0] = true;
+                }
 
-            int intNewCommonMarginX = (int)(3 * _objGraphics.DpiX / 96.0f);
-            int intNewCommonMarginY = (int)(3 * _objGraphics.DpiY / 96.0f);
-            Padding objNewMargins = new Padding(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom);
-            if (ablnConsiderMargins[0])
-                objNewMargins.Left += intNewCommonMarginX - intMinNonZeroMargin;
-            if (ablnConsiderMargins[1])
-                objNewMargins.Top += intNewCommonMarginY - intMinNonZeroMargin;
-            if (ablnConsiderMargins[2])
-                objNewMargins.Right += intNewCommonMarginX - intMinNonZeroMargin;
-            if (ablnConsiderMargins[3])
-                objNewMargins.Bottom += intNewCommonMarginY - intMinNonZeroMargin;
+                if (Margin.Top != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Top, intMinNonZeroMargin);
+                    ablnConsiderMargins[1] = true;
+                }
 
-            _blnDoProcessMargins = false;
-            Margin = objNewMargins;
-            _blnDoProcessMargins = true;
+                if (Margin.Right != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Right, intMinNonZeroMargin);
+                    ablnConsiderMargins[2] = true;
+                }
+
+                if (Margin.Bottom != 0)
+                {
+                    intMinNonZeroMargin = Math.Min(Margin.Bottom, intMinNonZeroMargin);
+                    ablnConsiderMargins[3] = true;
+                }
+
+                // No non-zero margins, exit
+                if (intMinNonZeroMargin == int.MaxValue)
+                    return;
+                if (!_blnHaveProcessedMarginsOnce)
+                {
+                    intMinNonZeroMargin = intMinNonZeroMargin + Math.Max((int) (3 * g.DpiX / 96.0f),
+                        (int) (3 * g.DpiY / 96.0f));
+                }
+
+                int intNewCommonMarginX = (int) (3 * g.DpiX / 96.0f);
+                int intNewCommonMarginY = (int) (3 * g.DpiY / 96.0f);
+                Padding objNewMargins = new Padding(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom);
+                if (ablnConsiderMargins[0])
+                    objNewMargins.Left += intNewCommonMarginX - intMinNonZeroMargin;
+                if (ablnConsiderMargins[1])
+                    objNewMargins.Top += intNewCommonMarginY - intMinNonZeroMargin;
+                if (ablnConsiderMargins[2])
+                    objNewMargins.Right += intNewCommonMarginX - intMinNonZeroMargin;
+                if (ablnConsiderMargins[3])
+                    objNewMargins.Bottom += intNewCommonMarginY - intMinNonZeroMargin;
+
+                this.DoThreadSafe(() =>
+                {
+                    _blnDoProcessMargins = false;
+                    Margin = objNewMargins;
+                    _blnDoProcessMargins = true;
+                });
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -139,7 +161,6 @@ namespace Chummer
             {
                 _textbox?.Dispose();
                 _upDownButtons?.Dispose();
-                _objGraphics?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -494,6 +515,90 @@ namespace Chummer
         }
         #endregion
 
+        #region Integer Value Stuff
+        private int _intValue;
+        private int _intMinimum;
+        private int _intMaximum;
+        private readonly object _objIntValueLock = new object();
+
+        protected override void OnValueChanged(EventArgs e)
+        {
+            lock (_objIntValueLock) // Lock ensures synchronicity
+                _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
+            base.OnValueChanged(e);
+        }
+
+        /// <summary>
+        /// Cached expression of Value as an integer
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Browsable(false)]
+        public int ValueAsInt
+        {
+            get
+            {
+                lock (_objIntValueLock) // Lock ensures synchronicity
+                    return _intValue;
+            }
+            set => Value = value;
+        }
+
+        /// <summary>
+        /// Cached expression of Minimum as an integer
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Browsable(false)]
+        public int MinimumAsInt
+        {
+            get => _intMinimum;
+            set => Minimum = value;
+        }
+
+        /// <summary>
+        /// The minimum allowed value of the spin box.
+        /// </summary>
+        public new decimal Minimum
+        {
+            get => base.Minimum;
+            set
+            {
+                if (value == base.Minimum)
+                    return;
+                _intMinimum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
+                base.Minimum = value;
+            }
+        }
+
+        /// <summary>
+        /// Cached expression of Minimum as an integer
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Browsable(false)]
+        public int MaximumAsInt
+        {
+            get => _intMaximum;
+            set => Maximum = value;
+        }
+
+        /// <summary>
+        /// The maximum allowed value of the spin box.
+        /// </summary>
+        public new decimal Maximum
+        {
+            get => base.Maximum;
+            set
+            {
+                if (value == base.Maximum)
+                    return;
+                _intMaximum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
+                base.Maximum = value;
+            }
+        }
+        #endregion
+
 
         #region UpDownButtons visibility management
 
@@ -560,19 +665,22 @@ namespace Chummer
                 // change position if RTL
                 bool fixPos = RightToLeft == RightToLeft.Yes ^ UpDownAlign == LeftRightAlignment.Left;
 
-                int int2PxWidth = (int)(2 * _objGraphics.DpiX / 96.0f);
-                int int16PxWidth = (int)(16 * _objGraphics.DpiX / 96.0f);
-                if (_mouseOver)
+                using (Graphics g = CreateGraphics())
                 {
-                    _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - int2PxWidth;
-                    if (fixPos)
-                        _textbox.Location = new Point(int16PxWidth, _textbox.Location.Y);
-                }
-                else
-                {
-                    if (fixPos)
-                        _textbox.Location = new Point(int2PxWidth, _textbox.Location.Y);
-                    _textbox.Width = ClientSize.Width - _textbox.Left - int2PxWidth;
+                    int int2PxWidth = (int) (2 * g.DpiX / 96.0f);
+                    int int16PxWidth = (int) (16 * g.DpiX / 96.0f);
+                    if (_mouseOver)
+                    {
+                        _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - int2PxWidth;
+                        if (fixPos)
+                            _textbox.Location = new Point(int16PxWidth, _textbox.Location.Y);
+                    }
+                    else
+                    {
+                        if (fixPos)
+                            _textbox.Location = new Point(int2PxWidth, _textbox.Location.Y);
+                        _textbox.Width = ClientSize.Width - _textbox.Left - int2PxWidth;
+                    }
                 }
             }
         }

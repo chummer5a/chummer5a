@@ -69,7 +69,7 @@ namespace Chummer
 
         private void _btnPhysical_Click(object sender, EventArgs e)
         {
-            int val = decimal.ToInt32(_nudPhysical.Value);
+            int val = _nudPhysical.ValueAsInt;
             if (val + _progressBarPhysical.Value < 0)
                 _progressBarPhysical.Value = 0;
             else if (val + _progressBarPhysical.Value > _progressBarPhysical.Maximum)
@@ -81,7 +81,7 @@ namespace Chummer
 
         private void _btnApplyStun_Click(object sender, EventArgs e)
         {
-            int val = decimal.ToInt32(nudStun.Value);
+            int val = nudStun.ValueAsInt;
             if (val + _progressBarStun.Value < 0)
                 _progressBarStun.Value = 0;
             else if (val + _progressBarStun.Value > _progressBarStun.Value)

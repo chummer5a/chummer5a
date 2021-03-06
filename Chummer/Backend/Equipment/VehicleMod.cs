@@ -153,8 +153,8 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
             _intRating = intRating;
             _blnDowngrade = objXmlMod?["downgrade"] != null;
-            if (!objXmlMod.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMod.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMod.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -429,7 +429,7 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -890,10 +890,12 @@ namespace Chummer.Backend.Equipment
                 objAvail.CheapReplace(strAvail, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 objAvail.CheapReplace(strAvail, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString(GlobalOptions.InvariantCultureInfo) : "0.5");
+                objAvail.CheapReplace(strAvail, "Armor", () => Parent?.Armor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objAvail.CheapReplace(strAvail, "Speed", () => Parent?.Speed.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objAvail.CheapReplace(strAvail, "Acceleration", () => Parent?.Accel.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objAvail.CheapReplace(strAvail, "Handling", () => Parent?.Handling.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
-
+                objAvail.CheapReplace(strAvail, "Sensor", () => Parent?.BaseSensor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                objAvail.CheapReplace(strAvail, "Pilot", () => Parent?.Pilot.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objAvail.ToString(), out bool blnIsSuccess);
                 if (blnIsSuccess)
                     intAvail += ((double)objProcess).StandardRound();
@@ -1126,9 +1128,12 @@ namespace Chummer.Backend.Equipment
             objCost.CheapReplace(strCostExpr, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
             // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
             objCost.CheapReplace(strCostExpr, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString(GlobalOptions.InvariantCultureInfo) : "0.5");
+            objCost.CheapReplace(strCostExpr, "Armor", () => Parent?.Armor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
             objCost.CheapReplace(strCostExpr, "Speed", () => Parent?.Speed.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
             objCost.CheapReplace(strCostExpr, "Acceleration", () => Parent?.Accel.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
             objCost.CheapReplace(strCostExpr, "Handling", () => Parent?.Handling.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+            objCost.CheapReplace(strCostExpr, "Sensor", () => Parent?.BaseSensor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+            objCost.CheapReplace(strCostExpr, "Pilot", () => Parent?.Pilot.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
             objCost.Replace("Slots", intSlots.ToString(GlobalOptions.InvariantCultureInfo));
 
             object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
@@ -1189,9 +1194,12 @@ namespace Chummer.Backend.Equipment
                 objCost.CheapReplace(strCostExpr, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 objCost.CheapReplace(strCostExpr, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString(GlobalOptions.InvariantCultureInfo) : "0.5");
+                objCost.CheapReplace(strCostExpr, "Armor", () => Parent?.Armor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objCost.CheapReplace(strCostExpr, "Speed", () => Parent?.Speed.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objCost.CheapReplace(strCostExpr, "Acceleration", () => Parent?.Accel.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objCost.CheapReplace(strCostExpr, "Handling", () => Parent?.Handling.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Sensor", () => Parent?.BaseSensor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                objCost.CheapReplace(strCostExpr, "Pilot", () => Parent?.Pilot.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objCost.CheapReplace(strCostExpr, "Slots", () => WeaponMountParent?.CalculatedSlots.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
@@ -1240,10 +1248,12 @@ namespace Chummer.Backend.Equipment
                 objSlots.CheapReplace(strSlotsExpression, "Vehicle Cost", () => Parent?.OwnCost.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 objSlots.CheapReplace(strSlotsExpression, "Body", () => Parent?.Body > 0 ? Parent.Body.ToString(GlobalOptions.InvariantCultureInfo) : "0.5");
+                objSlots.CheapReplace(strSlotsExpression, "Armor", () => Parent?.Armor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objSlots.CheapReplace(strSlotsExpression, "Speed", () => Parent?.Speed.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objSlots.CheapReplace(strSlotsExpression, "Acceleration", () => Parent?.Accel.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 objSlots.CheapReplace(strSlotsExpression, "Handling", () => Parent?.Handling.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
-
+                objSlots.CheapReplace(strSlotsExpression, "Sensor", () => Parent?.BaseSensor.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
+                objSlots.CheapReplace(strSlotsExpression, "Pilot", () => Parent?.Pilot.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objSlots.ToString(), out bool blnIsSuccess);
                 return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }

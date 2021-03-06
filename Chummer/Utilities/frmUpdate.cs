@@ -138,13 +138,8 @@ namespace Chummer
             if (File.Exists(_strTempUpdatePath))
             {
                 string strUpdateLog = File.ReadAllText(_strTempUpdatePath);
-                webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" +
-                                                strUpdateLog
-                                                    .Replace("&", "&amp;")
-                                                    .Replace("<", "&lt;")
-                                                    .Replace(">", "&gt;")
-                                                    .Replace(Environment.NewLine, "<br />")
-                                                    .Replace("\n", "<br />").Replace("\r", string.Empty) + "</font>";
+                webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">"
+                                        + strUpdateLog.CleanForHTML() + "</font>";
             }
             DoVersionTextUpdate();
         }

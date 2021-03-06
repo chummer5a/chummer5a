@@ -76,8 +76,8 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
-            if (!objXmlComplexFormNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlComplexFormNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlComplexFormNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             if (objXmlComplexFormNode["bonus"] != null)
             {
                 ImprovementManager.ForcedValue = strExtra;
@@ -147,7 +147,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("fv", ref _strFV);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
         }
 

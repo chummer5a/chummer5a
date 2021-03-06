@@ -73,8 +73,8 @@ namespace Chummer
             objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
             _eImprovementSource = objSource;
             objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
-            if (!objXmlMetamagicNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlMetamagicNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMetamagicNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMetamagicNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             _nodBonus = objXmlMetamagicNode["bonus"];
             if (_nodBonus != null)
             {
@@ -166,7 +166,7 @@ namespace Chummer
             if (objNode["improvementsource"] != null)
                 SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

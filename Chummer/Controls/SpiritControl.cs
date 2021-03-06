@@ -64,7 +64,7 @@ namespace Chummer
             nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
             nudServices.DoDatabinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
             nudForce.DoDatabinding("Value", _objSpirit, nameof(Spirit.Force));
-            chkFettered.DoOneWayDataBinding("Enabled",_objSpirit.CharacterObject, nameof(Character.AllowSpriteFettering));
+            chkFettered.DoOneWayDataBinding("Enabled",_objSpirit, nameof(Spirit.AllowFettering));
             chkFettered.DoDatabinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
@@ -249,7 +249,7 @@ namespace Chummer
                 return;
             }
 
-            CreateCritter(strSpiritName, decimal.ToInt32(nudForce.Value));
+            CreateCritter(strSpiritName, nudForce.ValueAsInt);
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -274,17 +274,12 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            string strOldValue = _objSpirit.Notes;
-            using (frmNotes frmSpritNotes = new frmNotes { Notes = strOldValue })
+            using (frmNotes frmSpritNotes = new frmNotes(_objSpirit.Notes))
             {
                 frmSpritNotes.ShowDialog(this);
                 if (frmSpritNotes.DialogResult != DialogResult.OK)
                     return;
-                frmSpritNotes.ShowDialog(this);
-
                 _objSpirit.Notes = frmSpritNotes.Notes;
-                if (strOldValue == _objSpirit.Notes)
-                    return;
             }
 
             string strTooltip = LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
@@ -437,9 +432,9 @@ namespace Chummer
 
             cboSpiritName.BeginUpdate();
             cboSpiritName.DataSource = null;
+            cboSpiritName.DataSource = lstCritters;
             cboSpiritName.DisplayMember = nameof(ListItem.Name);
             cboSpiritName.ValueMember = nameof(ListItem.Value);
-            cboSpiritName.DataSource = lstCritters;
 
             // Set the control back to its original value.
             cboSpiritName.SelectedValue = strCurrentValue;

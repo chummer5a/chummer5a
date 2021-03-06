@@ -150,6 +150,7 @@
   <xsl:variable name="lang.Magic"      select="'Magia'"/>
   <xsl:variable name="lang.Magician"      select="'Mágico'"/>
   <xsl:variable name="lang.Mana"    select="'Mana'"/>
+  <xsl:variable name="lang.Maneuvers"    select="'Manobras'"/>
   <xsl:variable name="lang.Manipulation"  select="'Manipulação'"/>
   <xsl:variable name="lang.Manual"    select="'Manual'"/>
   <xsl:variable name="lang.Memory"    select="'Memória'"/>
@@ -220,7 +221,6 @@
   <xsl:variable name="lang.Self"      select="'Próprio'"/>
   <xsl:variable name="lang.Services"    select="'Serviços'"/>
   <xsl:variable name="lang.Sensor"    select="'Sensor'"/>
-  <xsl:variable name="lang.Sex"      select="'Sexo'"/>
   <xsl:variable name="lang.Show"      select="'Mostrar: '"/>
   <xsl:variable name="lang.Skill"      select="'Perícia'"/>
   <xsl:variable name="lang.Skills"    select="'Perícias'"/>

@@ -130,8 +130,7 @@ namespace Chummer.UI.Shared
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                         objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
                         continue;
-                    string strOldValue = objImprovement.Notes;
-                    using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+                    using (frmNotes frmItemNotes = new frmNotes(objImprovement.Notes))
                     {
                         frmItemNotes.ShowDialog(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -139,13 +138,9 @@ namespace Chummer.UI.Shared
 
                         objImprovement.Notes = frmItemNotes.Notes;
                     }
-
-                    if (objImprovement.Notes == strOldValue)
-                        continue;
-                    MakeDirty?.Invoke(null, null);
-
                     treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
                     treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
+                    MakeDirty?.Invoke(null, null);
                 }
             }
         }
@@ -165,8 +160,7 @@ namespace Chummer.UI.Shared
         /// <param name="treNode"></param>
         private void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
-            string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -174,9 +168,6 @@ namespace Chummer.UI.Shared
 
                 objNotes.Notes = frmItemNotes.Notes;
             }
-
-            if (objNotes.Notes == strOldValue)
-                return;
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap();
             MakeDirty?.Invoke(null,null);

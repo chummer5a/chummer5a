@@ -45,7 +45,7 @@ namespace Chummer
             this.lblCost = new System.Windows.Forms.Label();
             this.lblSlots = new System.Windows.Forms.Label();
             this.lblSlotsLabel = new System.Windows.Forms.Label();
-            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
@@ -273,6 +273,7 @@ namespace Chummer
             this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeItem.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkFreeItem, 2);
+            this.chkFreeItem.DefaultColorScheme = true;
             this.chkFreeItem.Location = new System.Drawing.Point(304, 215);
             this.chkFreeItem.Name = "chkFreeItem";
             this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
@@ -370,6 +371,7 @@ namespace Chummer
             // 
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(361, 267);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
@@ -377,6 +379,7 @@ namespace Chummer
             this.lblSource.TabIndex = 69;
             this.lblSource.Text = "[Source]";
             this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
             // 
             // lblSourceLabel
             // 

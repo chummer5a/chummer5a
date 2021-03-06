@@ -88,14 +88,20 @@ namespace Chummer
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
 
             // Populate the Armor Category list.
+            string strFilterPrefix = "/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             if (objXmlCategoryList != null)
+            {
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
                     string strInnerText = objXmlCategory.InnerText;
-                    _lstCategory.Add(new ListItem(strInnerText,
-                        objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
+                    {
+                        _lstCategory.Add(new ListItem(strInnerText,
+                            objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    }
                 }
+            }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -162,7 +168,7 @@ namespace Chummer
                     nudRating.Maximum = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
                     if (chkHideOverAvailLimit.Checked)
                     {
-                        while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -173,7 +179,7 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(xmlArmor.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -349,28 +355,29 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
 
             string strCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + '\"';
+                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-
-            BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + strFilter + ']'));
+            BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter.ToString() + ']'));
         }
 
         /// <summary>
@@ -521,7 +528,7 @@ namespace Chummer
                 s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]/category")?.InnerText;
                 _strSelectedArmor = strSelectedId;
                 _decMarkup = nudMarkup.Value;
-                _intRating = decimal.ToInt32(nudRating.Value);
+                _intRating = nudRating.ValueAsInt;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
                 DialogResult = DialogResult.OK;
@@ -540,7 +547,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
 
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
-                _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
+                _objSelectedArmor.Rating = nudRating.ValueAsInt;
 
                 lblSource.Text =     _objSelectedArmor.SourceDetail.ToString();
                 lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);

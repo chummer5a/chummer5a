@@ -40,7 +40,6 @@ namespace Chummer.UI.Skills
         private readonly Font _fntNormalName;
         private readonly Font _fntItalicName;
         private CharacterAttrib _objAttributeActive;
-        private readonly Graphics _objGraphics;
         private readonly Button cmdDelete;
         private readonly ButtonWithToolTip btnCareerIncrease;
         private readonly Label lblCareerRating;
@@ -56,7 +55,6 @@ namespace Chummer.UI.Skills
         {
             if (objSkill == null)
                 return;
-            _objGraphics = CreateGraphics();
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
@@ -109,13 +107,17 @@ namespace Chummer.UI.Skills
                 tlpRight.Controls.Add(cmdDelete, 4, 0);
             }
 
+            int intMinimumSize;
+            using (Graphics g = CreateGraphics())
+                intMinimumSize = (int)(25 * g.DpiX / 96.0f);
+
             if (objSkill.CharacterObject.Created)
             {
                 lblCareerRating = new Label
                 {
                     Anchor = AnchorStyles.Right,
                     AutoSize = true,
-                    MinimumSize = new Size((int) (25 * _objGraphics.DpiX / 96.0f), 0),
+                    MinimumSize = new Size(intMinimumSize, 0),
                     Name = "lblCareerRating",
                     Text = "00",
                     TextAlign = ContentAlignment.MiddleRight
@@ -203,9 +205,9 @@ namespace Chummer.UI.Skills
                 cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
                 cboSelectAttribute.BeginUpdate();
                 cboSelectAttribute.DataSource = null;
+                cboSelectAttribute.DataSource = lstAttributeItems;
                 cboSelectAttribute.DisplayMember = nameof(ListItem.Name);
                 cboSelectAttribute.ValueMember = nameof(ListItem.Value);
-                cboSelectAttribute.DataSource = lstAttributeItems;
                 cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
                 cboSelectAttribute.EndUpdate();
                 cboSelectAttribute.UpdateLightDarkMode();
@@ -281,9 +283,9 @@ namespace Chummer.UI.Skills
                     };
                     cboSpec.BeginUpdate();
                     cboSpec.DataSource = null;
+                    cboSpec.DataSource = objSkill.CGLSpecializations;
                     cboSpec.DisplayMember = nameof(ListItem.Name);
                     cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DataSource = objSkill.CGLSpecializations;
                     cboSpec.SelectedIndex = -1;
                     cboSpec.DoDatabinding("Text", objSkill, nameof(Skill.Specialization));
                     cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
@@ -351,9 +353,9 @@ namespace Chummer.UI.Skills
                         string strOldSpec = cboSpec.Text;
                         cboSpec.BeginUpdate();
                         cboSpec.DataSource = null;
+                        cboSpec.DataSource = _objSkill.CGLSpecializations;
                         cboSpec.DisplayMember = nameof(ListItem.Name);
                         cboSpec.ValueMember = nameof(ListItem.Value);
-                        cboSpec.DataSource = _objSkill.CGLSpecializations;
                         if (string.IsNullOrEmpty(strOldSpec))
                             cboSpec.SelectedIndex = -1;
                         else
@@ -500,12 +502,11 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmItemNotes = new frmNotes { Notes = _objSkill.Notes })
+            using (frmNotes frmItemNotes = new frmNotes(_objSkill.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-
                 _objSkill.Notes = frmItemNotes.Notes;
             }
         }
@@ -578,10 +579,13 @@ namespace Chummer.UI.Skills
 
         private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
         {
-            pnlAttributes.MinimumSize = new Size((int)(40 * _objGraphics.DpiX / 96.0f), 0);
-            if (lblCareerRating != null)
-                lblCareerRating.MinimumSize = new Size((int)(25 * _objGraphics.DpiX / 96.0f), 0);
-            lblModifiedRating.MinimumSize = new Size((int)(50 * _objGraphics.DpiX / 96.0f), 0);
+            using (Graphics g = CreateGraphics())
+            {
+                pnlAttributes.MinimumSize = new Size((int) (40 * g.DpiX / 96.0f), 0);
+                if (lblCareerRating != null)
+                    lblCareerRating.MinimumSize = new Size((int) (25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int) (50 * g.DpiX / 96.0f), 0);
+            }
         }
     }
 }

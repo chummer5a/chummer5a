@@ -79,7 +79,7 @@ namespace Chummer
             else
             {
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
-                objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             }
 
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);

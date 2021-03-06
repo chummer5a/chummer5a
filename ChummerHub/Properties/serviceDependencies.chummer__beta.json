@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "appInsights1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/microsoft.insights/components/sinners",
-      "type": "appInsights.azure",
-      "connectionId": "APPINSIGHTS_CONNECTIONSTRING",
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sinnersdbserver/databases/SINners_DB_Beta_5",
+      "type": "mssql.azure",
+      "connectionId": "DefaultConnection",
       "secretStore": "AzureAppSettings"
     },
     "mssql2": {
@@ -12,10 +12,16 @@
       "connectionId": "MasterSqlConnection",
       "secretStore": "AzureAppSettings"
     },
-    "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sinnersdbserver/databases/SINners_DB_Beta_5",
-      "type": "mssql.azure",
-      "connectionId": "DefaultConnection",
+    "secrets1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/SinnersVault",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUri",
+      "secretStore": "AzureAppSettings"
+    },
+    "appInsights1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/microsoft.insights/components/sinners",
+      "type": "appInsights.azure",
+      "connectionId": "APPINSIGHTS_CONNECTIONSTRING",
       "secretStore": "AzureAppSettings"
     }
   }

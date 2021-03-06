@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="SINnerUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://chummer.azurewebsites.net/</Value>
+      <Value Profile="(Default)">https://chummer-stable.azurewebsites.net/</Value>
     </Setting>
   </Settings>
 </SettingsFile>

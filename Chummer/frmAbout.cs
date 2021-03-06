@@ -61,7 +61,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyDescriptionAttribute)attributes[0]).Description.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine);
+                return ((AssemblyDescriptionAttribute)attributes[0]).Description.NormalizeLineEndings();
             }
         }
 
@@ -74,7 +74,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyProductAttribute)attributes[0]).Product.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine).WordWrap();
+                return ((AssemblyProductAttribute)attributes[0]).Product.NormalizeLineEndings().WordWrap();
             }
         }
 
@@ -87,7 +87,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine).WordWrap();
+                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright.NormalizeLineEndings().WordWrap();
             }
         }
 
@@ -100,7 +100,7 @@ namespace Chummer
                 {
                     return string.Empty;
                 }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company.Replace("\n\r", Environment.NewLine).Replace("\n", Environment.NewLine).WordWrap();
+                return ((AssemblyCompanyAttribute)attributes[0]).Company.NormalizeLineEndings().WordWrap();
             }
         }
         #endregion

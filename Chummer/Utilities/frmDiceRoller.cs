@@ -64,7 +64,7 @@ namespace Chummer
 
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
-            List<int> lstRandom = new List<int>(decimal.ToInt32(nudDice.Value));
+            List<int> lstRandom = new List<int>(nudDice.ValueAsInt);
             int intHitCount = 0;
             int intGlitchCount = 0;
             int intGlitchMin = 1;
@@ -125,7 +125,7 @@ namespace Chummer
                 ? intHitCount + 1
                 : ((nudDice.Value + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
+            intGlitchThreshold -= nudGremlins.ValueAsInt;
             if (intGlitchThreshold < 1)
                 intGlitchThreshold = 1;
 
@@ -134,7 +134,7 @@ namespace Chummer
             if (chkBubbleDie.Checked
                 && (chkVariableGlitch.Checked
                     || (intGlitchCount == intGlitchThreshold - 1
-                        && (decimal.ToInt32(nudDice.Value) & 1) == 0)))
+                        && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                 _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
@@ -177,11 +177,12 @@ namespace Chummer
 
             sbdResults.AppendLine().AppendLine().Append(LanguageManager.GetString("Label_DiceRoller_Sum")).Append(strSpace).Append(lstRandom.Sum().ToString(GlobalOptions.CultureInfo));
             lblResults.Text = sbdResults.ToString();
+
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
+            lstResults.DataSource = _lstResults;
             lstResults.ValueMember = nameof(ListItem.Value);
             lstResults.DisplayMember = nameof(ListItem.Name);
-            lstResults.DataSource = _lstResults;
             lstResults.EndUpdate();
         }
 
@@ -228,7 +229,7 @@ namespace Chummer
             if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 intHitCount = intKeepSum;
             int intGlitchCount = 0;
-            List<int> lstRandom = new List<int>(decimal.ToInt32(nudDice.Value) - intHitCount);
+            List<int> lstRandom = new List<int>(nudDice.ValueAsInt - intHitCount);
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             int intGlitchMin = 1;
@@ -280,7 +281,7 @@ namespace Chummer
                 ? intHitCount + 1
                 : ((nudDice.Value + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= decimal.ToInt32(nudGremlins.Value);
+            intGlitchThreshold -= nudGremlins.ValueAsInt;
             if (intGlitchThreshold < 1)
                 intGlitchThreshold = 1;
 
@@ -289,7 +290,7 @@ namespace Chummer
             if (chkBubbleDie.Checked
                 && (chkVariableGlitch.Checked
                     || (intGlitchCount == intGlitchThreshold - 1
-                        && (decimal.ToInt32(nudDice.Value) & 1) == 0)))
+                        && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
                 _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
@@ -332,11 +333,13 @@ namespace Chummer
                 sbdResults.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
 
             sbdResults.AppendLine().AppendLine().Append(LanguageManager.GetString("Label_DiceRoller_Sum")).Append(strSpace).Append((lstRandom.Sum() + intKeepSum).ToString(GlobalOptions.CultureInfo));
+            lblResults.Text = sbdResults.ToString();
+
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
+            lstResults.DataSource = _lstResults;
             lstResults.ValueMember = nameof(ListItem.Value);
             lstResults.DisplayMember = nameof(ListItem.Name);
-            lstResults.DataSource = _lstResults;
             lstResults.EndUpdate();
         }
         #endregion

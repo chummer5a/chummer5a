@@ -109,9 +109,9 @@ namespace Chummer
                     {
                         new ListItem(_strForceItem, _strForceItem)
                     };
+                    cboSpec.DataSource = lstSingle;
                     cboSpec.ValueMember = nameof(ListItem.Value);
                     cboSpec.DisplayMember = nameof(ListItem.Name);
-                    cboSpec.DataSource = lstSingle;
                     cboSpec.SelectedIndex = 0;
                     AcceptForm();
                 }

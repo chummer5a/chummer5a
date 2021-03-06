@@ -242,23 +242,17 @@ namespace Chummer
         {
             if (objNotes == null)
                 return;
-            string strOldValue = objNotes.Notes;
-            using (frmNotes frmItemNotes = new frmNotes{ Notes = strOldValue })
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
-
                 objNotes.Notes = frmItemNotes.Notes;
-                if (objNotes.Notes != strOldValue)
+                IsDirty = true;
+                if (treNode != null)
                 {
-                    IsDirty = true;
-
-                    if (treNode != null)
-                    {
-                        treNode.ForeColor = objNotes.PreferredColor;
-                        treNode.ToolTipText = objNotes.Notes.WordWrap();
-                    }
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap();
                 }
             }
         }
@@ -1753,6 +1747,8 @@ namespace Chummer
                 string strSelectedNode = (treQualities.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
                 // Create the root nodes.
+                foreach (Quality objQuality in _objCharacter.Qualities)
+                    objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                 treQualities.Nodes.Clear();
 
                 // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
@@ -1805,6 +1801,7 @@ namespace Chummer
                                     {
                                         TreeNode objParent = objNode.Parent;
                                         objNode.Remove();
+                                        objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                         if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
@@ -1832,6 +1829,7 @@ namespace Chummer
                                         if (objNode.Parent != null)
                                             lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
+                                        objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                     }
                                     else
                                     {
@@ -1860,7 +1858,7 @@ namespace Chummer
 
             void AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality,treQualities);
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality, treQualities);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode = null;
@@ -1927,6 +1925,36 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
+                    objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
+                }
+            }
+
+            void AddedQualityOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == nameof(Quality.Suppressed))
+                {
+                    Quality objQuality = sender as Quality;
+                    if (objQuality == null)
+                        return;
+                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                    if (objNode == null)
+                        return;
+                    Font objOldFont = objNode.NodeFont;
+                    //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
+                    objNode.NodeFont = new Font(treQualities.Font,
+                        objQuality.Suppressed ? FontStyle.Strikeout : FontStyle.Regular);
+                    // Dispose the old font if it's not null so that we don't leak memory
+                    objOldFont?.Dispose();
+                }
+                else if (e.PropertyName == nameof(Quality.Notes))
+                {
+                    Quality objQuality = sender as Quality;
+                    if (objQuality == null)
+                        return;
+                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                    if (objNode == null)
+                        return;
+                    objNode.ToolTipText = objQuality.Notes.WordWrap();
                 }
             }
         }
@@ -4670,18 +4698,24 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            HashSet<TreeNode> setOldParentNodes = new HashSet<TreeNode>();
                             foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objOldParent = null;
                                 TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
                                 if (objNode != null)
                                 {
-                                    objOldParent = objNode.Parent;
+                                    setOldParentNodes.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
+                            }
+                            foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 AddToTree(objLifestyle);
-                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                    objOldParent.Remove();
+                            }
+                            foreach (TreeNode nodOldParent in setOldParentNodes)
+                            {
+                                if (nodOldParent.Level == 0 && nodOldParent.Nodes.Count == 0)
+                                    nodOldParent.Remove();
                             }
                             break;
                         }
@@ -6082,23 +6116,18 @@ namespace Chummer
                 // Convert the image to a string using Base64.
                 GlobalOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
-                Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true);
-                if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                using (Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
                 {
-                    _objCharacter.Mugshots.Add(bmpMugshot);
-                }
-                else
-                {
-                    try
+                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                     {
-                        Bitmap bmpConvertedMugshot = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                        _objCharacter.Mugshots.Add(bmpConvertedMugshot);
+                        _objCharacter.Mugshots.Add(bmpMugshot.Clone() as Bitmap); // Clone makes sure file handle is closed
                     }
-                    finally
+                    else
                     {
-                        bmpMugshot.Dispose();
+                        _objCharacter.Mugshots.Add(bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
                     }
                 }
+
                 if (_objCharacter.MainMugshotIndex == -1)
                     _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
             }

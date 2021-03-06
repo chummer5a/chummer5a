@@ -44,12 +44,13 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
+                var keys = new KeyVault(_logger);
+                string refreshToken = keys.GetSecret("AuthenticationGoogleRefreshToken");//Startup.AppSettings["AuthenticationGoogleRefreshToken"];
                 UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                            new ClientSecrets
                            {
-                               ClientId = Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
-                               ClientSecret = Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
+                               ClientId = keys.GetSecret("GoogleChummerSINersId"), //Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
+                               ClientSecret = keys.GetSecret("GoogleChummerSINersSecret"), //Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
                            }, Scopes, "user", CancellationToken.None, new GoogleIDataStore("me", refreshToken, _logger));
 
                 return credential;
@@ -65,31 +66,37 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
+                //string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
+                var keys = new KeyVault(_logger);
+                string refreshToken = keys.GetSecret("AuthenticationGoogleRefreshToken");
 
-                if (string.IsNullOrEmpty(refreshToken))
-                    refreshToken = Configuration["AuthenticationGoogleRefreshToken"];
-                if (string.IsNullOrEmpty(refreshToken))
-                    refreshToken = "1/-zsfciq55d9xfAYQ_-U1tmpsMiwHT7oKf1fEO8bm9hQ";
-                    //throw new ArgumentException("Startup.AppSettings[\"AuthenticationGoogleRefreshToken\"] == null! ");
+                //_logger.LogInformation("AuthenticationGoogleRefreshToken retrieved from KeyVault: " + refreshToken);
+                
+                    
 
                 var token = new TokenResponse
                 {
                     AccessToken = "",
                     RefreshToken = refreshToken
                 };
-                var foolGitGuardian = "-";
+            
+                
                 var flow2 = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
+                    
                     ClientSecrets = new ClientSecrets
                     {
-                        ClientId = "779360551859-i817g72s0ork3bffvnhtvpl0q2gi8sub.apps.googleusercontent.com",//Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
-                        ClientSecret = "Q2yMsXBtdd" + foolGitGuardian + "zxp6vPXcjkGFz"//Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
+
+                        ClientId = keys.GetSecret("GoogleChummerSINersId"),//Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
+                        ClientSecret = keys.GetSecret("GoogleChummerSINersSecret"),//Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
                     },
                     Scopes = Scopes,
                     DataStore = new GoogleIDataStore("me", refreshToken, _logger)
-                }) ;
+                });
 
+                _logger.LogInformation("AuthenticationGoogleRefreshToken retrieved from KeyVault: " + refreshToken
+                    + Environment.NewLine + "\tGoogleChummerSINersId: " + flow2.ClientSecrets.ClientId + Environment.NewLine 
+                    + "\tGoogleChummerSINersSecret: " + flow2.ClientSecrets.ClientSecret);
 
                 UserCredential credential = new UserCredential(flow2, "me", token);
                 return credential;
@@ -108,10 +115,8 @@ namespace ChummerHub.Services.GoogleDrive
         {
             Configuration = configuration;
             _logger = Logger;
-            string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
-
-            if (string.IsNullOrEmpty(_folderId))
-                _folderId = "1VHXJk1IbVj0aRQHzuM3-j_fPsc-hCWO7";//Startup.AppSettings["Authentication.Google.ChummerFolderId"];
+            var keys = new KeyVault(Logger);
+            _folderId = keys.GetSecret("ChummerFolderId");
         }
 
         internal string StoreXmlInCloud(SINnerUploadAble uploadFile, IFormFile uploadedFile)
@@ -132,9 +137,7 @@ namespace ChummerHub.Services.GoogleDrive
                     ApplicationName = "SINners",
                     GZipEnabled = true,
                 };
-#pragma warning disable CS0219 // The variable 'cancellationToken' is assigned but its value is never used
                 CancellationToken cancellationToken = new CancellationToken();
-#pragma warning restore CS0219 // The variable 'cancellationToken' is assigned but its value is never used
 
 
                 // Create Drive API service.
@@ -289,7 +292,7 @@ namespace ChummerHub.Services.GoogleDrive
                 //{
                 //    fileMetadata.Properties.Add(tag.Display, tag.TagValue);
                 //}
-                _logger.LogError("Updating " + uploadFile.FileName + " as " + googlefileMetadata.Name);// + " to folder: " + _folderId);
+                _logger.LogInformation("Updating " + uploadFile.FileName + " as " + googlefileMetadata.Name + " to folder: " + _folderId + " GoogleDriveFileId: " + fileMetaData.GoogleDriveFileId);
                 //fileMetadata.MimeType = _contentType;
                 googlefileMetadata.OriginalFilename = uploadFile.FileName;
 

@@ -90,16 +90,16 @@ namespace Chummer
             List<ListItem> lstAccessories = new List<ListItem>();
 
             // Populate the Accessory list.
-            StringBuilder sbdMount = new StringBuilder("(contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
-            foreach (var strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
+            StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
+            foreach (string strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
-                sbdMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
+                sbdFilter.Append(" or contains(mount, \"").Append(strAllowedMount).Append("\")");
             }
-
-            sbdMount.Append(')').Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+            sbdFilter.Append(')');
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             int intOverLimit = 0;
-            foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(string.Format(GlobalOptions.InvariantCultureInfo, "accessories/accessory[({0}) and ({1})]",
-                sbdMount, _objCharacter.Options.BookXPath())))
+            foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[" + sbdFilter.ToString() + "]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
@@ -368,7 +368,7 @@ namespace Chummer
                 nudRating.Maximum = intMaxRating;
                 if (chkHideOverAvailLimit.Checked)
                 {
-                    while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -378,7 +378,7 @@ namespace Chummer
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(xmlAccessory.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > nudRating.Minimum && !xmlAccessory.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -567,7 +567,7 @@ namespace Chummer
             {
                 _strSelectedAccessory = strSelectedId;
                 _decMarkup = nudMarkup.Value;
-                _intSelectedRating = nudRating.Visible ? decimal.ToInt32(nudRating.Value) : 0;
+                _intSelectedRating = nudRating.Visible ? nudRating.ValueAsInt : 0;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 DialogResult = DialogResult.OK;
             }

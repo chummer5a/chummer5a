@@ -2473,13 +2473,13 @@ namespace Chummer
                         xmlCharacterNavigator.TryGetStringFieldQuickly("weight", ref _strWeight);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("skin", ref _strSkin);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("hair", ref _strHair);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("description", ref _strDescription);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("background", ref _strBackground);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("concept", ref _strConcept);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("notes", ref _strNotes);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("description", ref _strDescription);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("background", ref _strBackground);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("concept", ref _strConcept);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("alias", ref _strAlias);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("playername", ref _strPlayerName);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("gamenotes", ref _strGameNotes);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("gamenotes", ref _strGameNotes);
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                             _strPrimaryArm = "Right";
 
@@ -2557,7 +2557,7 @@ namespace Chummer
                             _decEssenceAtSpecialStart = decimal.MinValue;
                         xmlCharacterNavigator.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("groupname", ref _strGroupName);
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
+                        xmlCharacterNavigator.TryGetMultiLineStringFieldQuickly("groupnotes", ref _strGroupNotes);
                         //end load_char_misc
                     }
 
@@ -7175,8 +7175,16 @@ namespace Chummer
             {
                 if(_strDescription != value)
                 {
-                    _strDescription = value;
-                    OnPropertyChanged();
+                    string strOldText = _strDescription.RtfToPlainText();
+                    string strOldHtml = _strDescription.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strDescription = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7191,8 +7199,16 @@ namespace Chummer
             {
                 if(_strBackground != value)
                 {
-                    _strBackground = value;
-                    OnPropertyChanged();
+                    string strOldText = _strBackground.RtfToPlainText();
+                    string strOldHtml = _strBackground.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strBackground = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7207,8 +7223,16 @@ namespace Chummer
             {
                 if(_strConcept != value)
                 {
-                    _strConcept = value;
-                    OnPropertyChanged();
+                    string strOldText = _strConcept.RtfToPlainText();
+                    string strOldHtml = _strConcept.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strConcept = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7223,8 +7247,16 @@ namespace Chummer
             {
                 if(_strNotes != value)
                 {
-                    _strNotes = value;
-                    OnPropertyChanged();
+                    string strOldText = _strNotes.RtfToPlainText();
+                    string strOldHtml = _strNotes.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strNotes = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7239,8 +7271,16 @@ namespace Chummer
             {
                 if(_strGameNotes != value)
                 {
-                    _strGameNotes = value;
-                    OnPropertyChanged();
+                    string strOldText = _strGameNotes.RtfToPlainText();
+                    string strOldHtml = _strGameNotes.RtfToHtml();
+                    string strNewText = value.RtfToPlainText();
+                    string strNewHtml = value.RtfToHtml();
+                    _strGameNotes = string.IsNullOrWhiteSpace(strNewText) ? string.Empty : value;
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -7781,7 +7821,7 @@ namespace Chummer
                 {
                     // Since we're only interested in the amount they have earned, only count values that are greater than 0 and are not refunds.
                     if(objEntry.Type == ExpenseType.Karma && (objEntry.Amount > 0 || objEntry.ForceCareerVisible) && !objEntry.Refund)
-                        intKarma += decimal.ToInt32(objEntry.Amount);
+                        intKarma += objEntry.Amount.StandardRound();
                 }
 
                 return _intCachedCareerKarma = intKarma;
@@ -9903,7 +9943,7 @@ namespace Chummer
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery).StandardRound();
                 if(Improvements.Any(x =>
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
-                    intReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                    intReturn += Essence().ToInt32();
                 return intReturn;
             }
         }
@@ -9927,7 +9967,7 @@ namespace Chummer
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery).StandardRound();
                     if(Improvements.Any(x =>
                        x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
-                        intAIReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                        intAIReturn += Essence().ToInt32();
                     return intAIReturn;
                 }
 
@@ -9935,7 +9975,7 @@ namespace Chummer
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery).StandardRound();
                 if(Improvements.Any(x =>
                    x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
-                    intReturn += decimal.ToInt32(decimal.Floor(Essence()));
+                    intReturn += Essence().ToInt32();
                 return intReturn;
             }
         }
@@ -10382,12 +10422,10 @@ namespace Chummer
             return GetArmorRatingWithImprovement(eDamageType, out int _);
         }
 
-        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromArmorImprovements)
+        public int GetArmorRatingWithImprovement(Improvement.ImprovementType eDamageType, out int intFromEquippedArmorImprovements)
         {
-            intFromArmorImprovements = 0;
+            intFromEquippedArmorImprovements = 0;
             List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
-            if (lstArmorsToConsider.Count == 0)
-                return 0;
             decimal decBaseArmorImprovement = 0;
             if (eDamageType != Improvement.ImprovementType.None)
             {
@@ -10395,6 +10433,9 @@ namespace Chummer
                 if (eDamageType != Improvement.ImprovementType.Armor)
                     decBaseArmorImprovement += ImprovementManager.ValueOf(this, Improvement.ImprovementType.Armor);
             }
+            if (lstArmorsToConsider.Count == 0)
+                return decBaseArmorImprovement.StandardRound();
+            decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
             Dictionary<Armor, decimal> dicArmorImprovementValues = lstArmorsToConsider.ToDictionary(objArmor => objArmor, objArmor => decBaseArmorImprovement);
             foreach (Improvement objImprovement in Improvements)
             {
@@ -10409,6 +10450,7 @@ namespace Chummer
                         ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
                     if (objSourceArmor != null)
                     {
+                        decGeneralArmorImprovementValue -= objImprovement.Value;
                         foreach (Armor objArmor in lstArmorsToConsider)
                         {
                             if (objArmor != objSourceArmor)
@@ -10431,7 +10473,6 @@ namespace Chummer
                      || objArmor.ArmorValue.StartsWith('-'))
                     && objArmor.Category != "Clothing")
                     continue;
-                int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
                 int intCustomStackBonus = 0;
                 string strArmorName = objArmor.Name;
                 foreach (Armor objInnerArmor in lstArmorsToConsider)
@@ -10448,27 +10489,31 @@ namespace Chummer
 
                 if (objArmor.Category == "Clothing")
                 {
-                    int intSpecialArmor = intArmorValue - objArmor.TotalArmor;
-                    intTotalClothing += intArmorValue - intSpecialArmor + intCustomStackBonus;
+                    int intSpecialArmor = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
+                    intTotalClothing += objArmor.TotalArmor + intCustomStackBonus;
                     if (intSpecialArmor > intHighestClothingBonus)
                         intHighestClothingBonus = intSpecialArmor;
                 }
-                else if (intArmorValue + intCustomStackBonus > intHighest)
+                else
                 {
-                    intHighest = intArmorValue + intCustomStackBonus;
-                    intFromArmorImprovements = intHighest - objArmor.TotalArmor;
-                    intHighestNoCustomStack = intArmorValue;
-                    objHighestArmor = objArmor;
+                    int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
+                    if (intArmorValue + intCustomStackBonus > intHighest)
+                    {
+                        intHighest = intArmorValue + intCustomStackBonus;
+                        intFromEquippedArmorImprovements = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
+                        intHighestNoCustomStack = intArmorValue;
+                        objHighestArmor = objArmor;
+                    }
                 }
             }
 
             int intArmor = intHighestNoCustomStack;
-
-            if (intTotalClothing + intHighestClothingBonus > intHighest)
+            int intHighestClothing = intTotalClothing + intHighestClothingBonus + decGeneralArmorImprovementValue.StandardRound();
+            if (intHighestClothing > intHighest)
             {
                 objHighestArmor = null;
-                intArmor = intTotalClothing + intHighestClothingBonus;
-                intFromArmorImprovements = intHighestClothingBonus;
+                intArmor = intHighestClothing;
+                intFromEquippedArmorImprovements = intHighestClothingBonus;
             }
 
             // Run through the list of Armor currently worn again and look at non-Clothing items that start with '+' since they stack with the highest Armor.
@@ -14398,19 +14443,19 @@ namespace Chummer
                             {
                                 case "RES":
                                     intOldRESCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                                 case "DEP":
                                     intOldDEPCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                                 case "MAG":
                                     intOldMAGCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                                 case "MAGAdept":
                                     intOldMAGAdeptCareerMinimumReduction -=
-                                        objImprovement.Minimum + decimal.ToInt32(objImprovement.Augmented);
+                                        objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                     break;
                             }
                         }
@@ -14545,10 +14590,10 @@ namespace Chummer
                             if(UseMysticAdeptPPs)
                             {
                                 // First burn away PPs gained during chargen...
-                                decimal decPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
-                                MysticAdeptPowerPoints -= decimal.ToInt32(decPPBurn);
+                                int intChargenPPBurn = Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
+                                MysticAdeptPowerPoints -= intChargenPPBurn;
                                 // ... now burn away PPs gained from initiations.
-                                decPPBurn = Math.Min(intMAGMinimumReductionDelta - decPPBurn,
+                                decimal decPPBurn = Math.Min(intMAGMinimumReductionDelta - intChargenPPBurn,
                                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
                                 // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                                 if(decPPBurn != 0)
@@ -16244,7 +16289,7 @@ namespace Chummer
                                             while ((strLine = await objReader.ReadLineAsync()) != null)
                                             {
                                                 // Trim away the newlines and empty spaces at the beginning and end of lines
-                                                strLine = strLine.Trim('\n', '\r').Trim();
+                                                strLine = strLine.Trim('\n', '\r', ' ').Trim();
 
                                                 lstTextStatBlockLines.Add(strLine);
                                             }
@@ -16253,34 +16298,18 @@ namespace Chummer
                                 }
                                 else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) && strEntryFullName.Contains('.'))
                                 {
-                                    Bitmap bmpMugshot = new Bitmap(entry.Open(), true);
-                                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                                    using (Bitmap bmpMugshot = new Bitmap(entry.Open(), true))
                                     {
+                                        Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
+                                            ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
+                                            : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
                                         if (dicImages.ContainsKey(strKey))
                                         {
                                             dicImages[strKey].Dispose();
-                                            dicImages[strKey] = bmpMugshot;
+                                            dicImages[strKey] = bmpNewMugshot;
                                         }
                                         else
-                                            dicImages.Add(strKey, bmpMugshot);
-                                    }
-                                    else
-                                    {
-                                        try
-                                        {
-                                            Bitmap bmpMugshotCorrected = bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                            if (dicImages.ContainsKey(strKey))
-                                            {
-                                                dicImages[strKey].Dispose();
-                                                dicImages[strKey] = bmpMugshotCorrected;
-                                            }
-                                            else
-                                                dicImages.Add(strKey, bmpMugshotCorrected);
-                                        }
-                                        finally
-                                        {
-                                            bmpMugshot.Dispose();
-                                        }
+                                            dicImages.Add(strKey, bmpNewMugshot);
                                     }
                                 }
                             }
@@ -18248,7 +18277,7 @@ namespace Chummer
 
                     // Deduct the amount for free Qualities.
                     _intCachedPositiveQualitiesTotal -=
-                        decimal.ToInt32(ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality);
+                        (ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) * Options.KarmaQuality).StandardRound();
 
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)
@@ -18497,7 +18526,7 @@ namespace Chummer
                 // Add any Power Point Improvements to MAG.
                 decMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
 
-                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < decimal.ToInt32(decimal.Floor(decMAG / 2));
+                return AnyPowerAdeptWayDiscountEnabled && Powers.Count(p => p.DiscountedAdeptWay) < (decMAG / 2).ToInt32();
             }
         }
 
@@ -18579,7 +18608,7 @@ namespace Chummer
             }
 
             // The character gains 10 + ((Threshold - Hits) * 10)BP worth of Negative Qualities.
-            int intThreshold = 3 + decimal.ToInt32(decimal.Floor(Essence() - ESS.MetatypeMaximum));
+            int intThreshold = 3 + (Essence() - ESS.MetatypeMaximum).ToInt32();
             int intResult = 10;
             if (intWILResult < intThreshold)
             {

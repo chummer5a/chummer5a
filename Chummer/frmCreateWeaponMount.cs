@@ -916,5 +916,10 @@ namespace Chummer
 
             _blnLoading = blnOldLoading;
         }
+
+        private void lblSource_Click(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPdfFromControl(sender, e);
+        }
     }
 }

@@ -96,16 +96,16 @@ namespace Chummer
                     }
 
                     cboChoice1.Visible = true;
+                    cboChoice1.DataSource = lstChoice1;
                     cboChoice1.ValueMember = nameof(ListItem.Value);
                     cboChoice1.DisplayMember = nameof(ListItem.Name);
-                    cboChoice1.DataSource = lstChoice1;
 
                     if (lstChoice2.Count > 0)
                     {
                         cboChoice2.Visible = true;
+                        cboChoice2.DataSource = lstChoice2;
                         cboChoice2.ValueMember = nameof(ListItem.Value);
                         cboChoice2.DisplayMember = nameof(ListItem.Name);
-                        cboChoice2.DataSource = lstChoice2;
                     }
                     else
                     {
@@ -222,8 +222,9 @@ namespace Chummer
         {
             string strForceId = string.Empty;
 
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')' + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             List<ListItem> lstMentors = new List<ListItem>();
             foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select("mentors/mentor[" + strFilter + "]"))
             {

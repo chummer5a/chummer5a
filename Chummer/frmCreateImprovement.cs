@@ -247,6 +247,28 @@ namespace Chummer
                         }
                     }
                     break;
+                case "SelectEcho":
+                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Echo))
+                    {
+                        frmPickMetamagic.ShowDialog(this);
+                        if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                        }
+                    }
+                    break;
+                case "SelectMetamagic":
+                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Metamagic))
+                    {
+                        frmPickMetamagic.ShowDialog(this);
+                        if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                        }
+                    }
+                    break;
                 case "SelectMentalAttribute":
                     using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
                     {
@@ -524,6 +546,14 @@ namespace Chummer
                             strRating = "<applytorating>True</applytorating>";
 
                         // Retrieve the XML data from the document and replace the values as necessary.
+                        XmlAttributeCollection xmlAttributeCollection = objFetchNode["xml"]?.Attributes;
+                        if (xmlAttributeCollection != null)
+                        {
+                            foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
+                            {
+                                objWriter.WriteAttributeString(xmlAttribute.LocalName, xmlAttribute.Value);
+                            }
+                        }
                         // ReSharper disable once PossibleNullReferenceException
                         string strXml = objFetchNode["xml"].InnerText
                             .Replace("{val}", nudVal.Value.ToString(GlobalOptions.InvariantCultureInfo))

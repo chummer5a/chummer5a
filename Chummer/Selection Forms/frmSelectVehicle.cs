@@ -83,10 +83,15 @@ namespace Chummer
             }
 
             // Populate the Vehicle Category list.
+            string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
+                {
+                    _lstCategory.Add(new ListItem(strInnerText,
+                        objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
@@ -397,26 +402,27 @@ namespace Chummer
         private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + '\"';
+                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
-
-            BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle[" + strFilter + ']'));
+            BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle[" + sbdFilter.ToString() + ']'));
         }
 
         private void BuildVehicleList(XPathNodeIterator objXmlVehicleList)

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <weapons>
+    <!-- Make sure we don't override existing spec information and just set categories for weapons that already have a custom specialization defined -->
+    <weapon xpathfilter="(spec = 'Assault Rifles' or spec2 = 'Assault Rifles' or spec = 'Carbines' or spec2 = 'Carbines' or spec = 'Submachine Guns' or spec2 = 'Submachine Guns') and (useskill = 'Automatics' or (not(useskill) and (category = 'Assault Rifles' or category = 'Carbines' or category = 'Submachine Guns' or category = 'Machine Pistols')))">
+      <useskill>Longarms</useskill>
+    </weapon>
+    <weapon xpathfilter="(spec = 'Machine Pistols' or spec2 = 'Machine Pistols') and (useskill = 'Automatics' or (not(useskill) and (category = 'Assault Rifles' or category = 'Carbines' or category = 'Submachine Guns' or category = 'Machine Pistols')))">
+      <useskill>Pistols</useskill>
+    </weapon>
+    <!-- For everything else, set up new skill dicepools appropriately -->
+    <weapon xpathfilter="category = 'Assault Rifles' and (not(useskill) or useskill = 'Automatics')">
+      <useskill>Longarms</useskill>
+      <spec>Assault Rifles</spec>
+    </weapon>
+    <weapon xpathfilter="category = 'Carbines' and (not(useskill) or useskill = 'Automatics')">
+      <useskill>Longarms</useskill>
+      <spec>Carbines</spec>
+    </weapon>
+    <weapon xpathfilter="category = 'Submachine Guns' and (not(useskill) or useskill = 'Automatics')">
+      <useskill>Longarms</useskill>
+      <spec>Submachine Guns</spec>
+    </weapon>
+    <weapon xpathfilter="category = 'Machine Pistols' and (not(useskill) or useskill = 'Automatics')">
+      <useskill>Pistols</useskill>
+      <spec>Machine Pistols</spec>
+    </weapon>
+    <!-- Pick up any stragglers -->
+    <weapon xpathfilter="useskill = 'Automatics'">
+      <useskill>Longarms</useskill>
+    </weapon>
+  </weapons>
+</chummer>

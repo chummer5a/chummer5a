@@ -53,7 +53,7 @@
         <xsl:choose>
           <xsl:when test="gender != ''">
             <xsl:call-template name="fnx-pad-r">
-              <xsl:with-param name="string" select="concat(metatype,', ',sex)"/>
+              <xsl:with-param name="string" select="concat(metatype,', ',gender)"/>
               <xsl:with-param name="length" select="40"/>
             </xsl:call-template>
           </xsl:when>
@@ -65,38 +65,38 @@
           </xsl:otherwise>
         </xsl:choose>
               <xsl:if test="movementwalk != '' and movementwalk != '0'">
-                <br/><xsl:value-of select="$lang.Movement"/>:
+                <br/>
                 <xsl:variable name="mv1">
                   <xsl:call-template name="formatrate">
                     <xsl:with-param name="movrate" select="movementwalk"/>
                   </xsl:call-template>
                 </xsl:variable>
                 <xsl:call-template name="fnx-pad-r">
-                  <xsl:with-param name="string" select="$mv1"/>
+                  <xsl:with-param name="string" select="concat($lang.Movement,': ',$mv1)"/>
                   <xsl:with-param name="length" select="40"/>
                 </xsl:call-template>
               </xsl:if>
               <xsl:if test="movementswim != '' and movementswim != '0'">
-                <br/><xsl:value-of select="$lang.Swim"/>:
+                <br/>
                 <xsl:variable name="mv2">
                   <xsl:call-template name="formatrate">
                     <xsl:with-param name="movrate" select="movementswim"/>
                   </xsl:call-template>
                 </xsl:variable>
                 <xsl:call-template name="fnx-pad-r">
-                  <xsl:with-param name="string" select="$mv2"/>
+                  <xsl:with-param name="string" select="concat($lang.Swim,': ',$mv2)"/>
                   <xsl:with-param name="length" select="40"/>
                 </xsl:call-template>
               </xsl:if>
               <xsl:if test="movementfly != '' and movementfly != '0'">
-                <br/><xsl:value-of select="$lang.Fly"/>:
+                <br/>
                 <xsl:variable name="mv3">
                   <xsl:call-template name="formatrate">
                     <xsl:with-param name="movrate" select="movementfly"/>
                   </xsl:call-template>
                 </xsl:variable>
                 <xsl:call-template name="fnx-pad-r">
-                  <xsl:with-param name="string" select="$mv3"/>
+                  <xsl:with-param name="string" select="concat($lang.Fly,': ',$mv3)"/>
                   <xsl:with-param name="length" select="40"/>
                 </xsl:call-template>
               </xsl:if>
@@ -213,111 +213,152 @@
                 <br/>
                 <br/>== <xsl:value-of select="$lang.Attributes"/> ==
                 <br/>
-              <xsl:if test="attributes/attribute[../attributecategory_english != metatypecategory] and attributes/attributecategory != ''">
+              <xsl:if test="attributes/attribute[name_english = 'BOD' and (../attributecategory_english != metatypecategory)]">
                 <xsl:value-of select="$lang.CurrentForm"/>: <xsl:value-of select="attributes/attributecategory"/><br/>
               </xsl:if>
-        <xsl:variable name="tBOD">
+        <xsl:variable name="tBOD1">
           <xsl:value-of select="$lang.BOD"/>: <xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tBOD2">
           <xsl:if test="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/base">
-            (<xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/total"/>)
+            <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'BOD' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'BOD' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
           </xsl:if>
         </xsl:variable>
         <xsl:call-template name="fnx-pad-r">
-          <xsl:with-param name="string" select="$tBOD"/>
+          <xsl:with-param name="string" select="concat($tBOD1,$tBOD2)"/>
           <xsl:with-param name="length" select="40"/>
         </xsl:call-template>
+        <xsl:variable name="tCHA1">
                 <xsl:value-of select="$lang.CHA"/>: <xsl:value-of
                     select="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tCHA2">
                 <xsl:if test="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/base">
-          (<xsl:value-of select="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/total"/>)
+          <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'CHA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'CHA' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
         </xsl:if>
+        </xsl:variable>
+        <xsl:value-of select="concat($tCHA1,$tCHA2)"/>
 
                 <br/>
-        <xsl:variable name="tAGI">
+        <xsl:variable name="tAGI1">
           <xsl:value-of select="$lang.AGI"/>: <xsl:value-of select="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tAGI2">
           <xsl:if test="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/base">
-            (<xsl:value-of select="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total"/>)
+            <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'AGI' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
           </xsl:if>
         </xsl:variable>
         <xsl:call-template name="fnx-pad-r">
-          <xsl:with-param name="string" select="$tAGI"/>
+          <xsl:with-param name="string" select="concat($tAGI1,$tAGI2)"/>
           <xsl:with-param name="length" select="40"/>
         </xsl:call-template>
-              <xsl:variable name="tINT">
+        <xsl:variable name="tINT1">
                 <xsl:value-of select="$lang.INT"/>: <xsl:value-of select="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tINT2">
                 <xsl:if test="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/base">
-          (<xsl:value-of select="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/total"/>)
+          <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'INT' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'INT' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
         </xsl:if>
-              </xsl:variable>
-              <xsl:call-template name="fnx-pad-r">
-                <xsl:with-param name="string" select="$tINT"/>
-                <xsl:with-param name="length" select="40"/>
-              </xsl:call-template>
+        </xsl:variable>
+        <xsl:value-of select="concat($tINT1,$tINT2)"/>
+
                 <br/>
-        <xsl:variable name="tREA">
+        <xsl:variable name="tREA1">
           <xsl:value-of select="$lang.REA"/>: <xsl:value-of select="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tREA2">
           <xsl:if test="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/base">
-            (<xsl:value-of select="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/total"/>)
+            <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'REA' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'REA' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
           </xsl:if>
         </xsl:variable>
         <xsl:call-template name="fnx-pad-r">
-          <xsl:with-param name="string" select="$tREA"/>
+          <xsl:with-param name="string" select="concat($tREA1,$tREA2)"/>
           <xsl:with-param name="length" select="40"/>
         </xsl:call-template>
+        <xsl:variable name="tLOG1">
                 <xsl:value-of select="$lang.LOG"/>: <xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tLOG2">
                 <xsl:if test="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/base">
-          (<xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total"/>)
+          <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>(</xsl:text>
         </xsl:if>
+        </xsl:variable>
+        <xsl:value-of select="concat($tLOG1,$tLOG2)"/>
 
                 <br/>
-        <xsl:variable name="tSTR">
+        <xsl:variable name="tSTR1">
           <xsl:value-of select="$lang.STR"/>: <xsl:value-of select="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tSTR2">
           <xsl:if test="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/base">
-            (<xsl:value-of select="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/total"/>)
+            <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'STR' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'STR' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
           </xsl:if>
         </xsl:variable>
         <xsl:call-template name="fnx-pad-r">
-          <xsl:with-param name="string" select="$tSTR"/>
+          <xsl:with-param name="string" select="concat($tSTR1,$tSTR2)"/>
           <xsl:with-param name="length" select="40"/>
         </xsl:call-template>
+        <xsl:variable name="tWIL1">
                 <xsl:value-of select="$lang.WIL"/>: <xsl:value-of select="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tWIL2">
                 <xsl:if test="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/base">
-          (<xsl:value-of select="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/total"/>)
+          <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'WIL' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'WIL' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
         </xsl:if>
+        </xsl:variable>
+        <xsl:value-of select="concat($tWIL1,$tWIL2)"/>
 
                 <br/>
-        <xsl:variable name="tEDG">
+        <xsl:variable name="tEDG1">
           <xsl:value-of select="$lang.EDG"/>: <xsl:value-of select="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/base"/>
+        </xsl:variable>
+        <xsl:variable name="tEDG2">
           <xsl:if test="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/base">
-            (<xsl:value-of select="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/total"/>)
+            <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'EDG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'EDG' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
           </xsl:if>
         </xsl:variable>
         <xsl:call-template name="fnx-pad-r">
-          <xsl:with-param name="string" select="$tEDG"/>
+          <xsl:with-param name="string" select="concat($tEDG1,$tEDG2)"/>
           <xsl:with-param name="length" select="40"/>
         </xsl:call-template>
-                <xsl:if test="magenabled = 'True'">
+        <xsl:variable name="tSPC1">
+          <xsl:choose>
+            <xsl:when test="magenabled = 'True'">
                     <xsl:value-of select="$lang.MAG"/>: <xsl:value-of select="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/base">
-            (<xsl:value-of select="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total"/>)
-                    </xsl:if><xsl:if test="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]"> | <xsl:value-of select="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'MAGAdept']/base">
-                      (<xsl:value-of select="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/total"/>)
-                    </xsl:if>
-                  </xsl:if>
-                </xsl:if>
-                <xsl:if test="resenabled = 'True'">
+            </xsl:when>
+            <xsl:when test="resenabled = 'True'">
                     <xsl:value-of select="$lang.RES"/>: <xsl:value-of select="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/base"/>
-                    <xsl:if test="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/base">
-            (<xsl:value-of select="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total"/>)
-                    </xsl:if>
-                </xsl:if>
-              <xsl:if test="depenabled = 'True'">
+            </xsl:when>
+            <xsl:when test="depenabled = 'True'">
                 <xsl:value-of select="$lang.DEP"/>: <xsl:value-of select="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/base"/>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="tSPC2">
+          <xsl:choose>
+            <xsl:when test="magenabled = 'True'">
+                <xsl:choose>
+                  <xsl:when test="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/base">
+            <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'MAG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAG' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]"> | <xsl:value-of select="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/base"/>
+                      <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'MAGAdept' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'MAGAdept' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
+                  </xsl:when>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:when test="resenabled = 'True'">
+                    <xsl:if test="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/base">
+            <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'RES' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'RES' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
+                    </xsl:if>
+            </xsl:when>
+            <xsl:when test="depenabled = 'True'">
                 <xsl:if test="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'DEP' and ../attributecategory_english = metatypecategory]))]/base">
-                  (<xsl:value-of select="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total"/>)
+                  <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'DEP' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'AGI' and ../attributecategory_english = metatypecategory]))]/total"/><xsl:text>)</xsl:text>
                 </xsl:if>
-              </xsl:if>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:value-of select="concat($tSPC1,$tSPC2)"/>
 
                 <br/>
                 <br/>== <xsl:value-of select="$lang.DerivedAttributes"/>
@@ -444,16 +485,24 @@
           <xsl:call-template name="qualities"/>
                 </xsl:if>
 
-                <xsl:if test="tradition and tradition/istechnomancertradition = 'False'">
+                <xsl:if test="martialarts/martialart">
+                    <br/>
+                    <br/>
+          == <xsl:value-of select="$lang.MartialArts"/> ==
+          <xsl:call-template name="martialarts"/>
+                </xsl:if>
+
+          <xsl:choose>
+            <xsl:when test="magenabled = 'True'">
+                <xsl:if test="tradition">
                     <br/>
                     <br/>
           == <xsl:value-of select="$lang.Tradition"/> ==
                     <br/>
           <xsl:value-of select="tradition/name"/>,
-          <xsl:value-of select="$lang.ResistDrain"/>&#160;
+          <xsl:value-of select="$lang.ResistDrain"/>&#160;<xsl:value-of select="tradition/drainattributes"/>:
                     <xsl:value-of select="tradition/drainvalue"/>
                 </xsl:if>
-
                 <xsl:if test="spells/spell">
                     <br/>
                     <br/>
@@ -467,21 +516,33 @@
           == <xsl:value-of select="$lang.Powers"/> ==
           <xsl:call-template name="powers"/>
                 </xsl:if>
-
+            </xsl:when>
+            <xsl:when test="resenabled = 'True'">
+                <xsl:if test="tradition">
+                    <br/>
+                    <br/>
+          == <xsl:value-of select="$lang.Stream"/> ==
+                    <br/>
+          <xsl:value-of select="tradition/name"/>,
+          <xsl:value-of select="$lang.ResistFading"/>&#160;<xsl:value-of select="tradition/drainattributes"/>:
+                    <xsl:value-of select="tradition/drainvalue"/>
+                </xsl:if>
                 <xsl:if test="complexforms/complexform">
                     <br/>
                     <br/>
           == <xsl:value-of select="$lang.ComplexForms"/> ==
-          <br/>(<xsl:value-of select="$lang.Tradition"/>: <xsl:value-of select="tradition/name"/>,
-                    <xsl:value-of select="$lang.ResistFading"/>&#160;<xsl:value-of select="tradition/drainattributes"/> = <xsl:value-of select="tradition/drainvalue"/>) <xsl:call-template name="complexforms"/>
+                  <xsl:call-template name="complexforms"/>
                 </xsl:if>
-
+            </xsl:when>
+            <xsl:when test="depenabled = 'True'">
         <xsl:if test="aiprograms/aiprogram">
           <br/>
           <br/>
           == <xsl:value-of select="$lang.AIandAdvanced"/> ==
           <xsl:call-template name="aiprograms"/>
         </xsl:if>
+            </xsl:when>
+          </xsl:choose>
 
                 <xsl:if test="critterpowers/critterpower">
                     <br/>
@@ -490,18 +551,18 @@
           <xsl:call-template name="critterpowers"/>
                 </xsl:if>
 
-                <xsl:if test="lifestyles/lifestyle">
-                    <br/>
-                    <br/>
-          == <xsl:value-of select="$lang.Lifestyle"/> ==
-          <xsl:call-template name="lifestyle"/>
-                </xsl:if>
-
                 <xsl:if test="cyberwares/cyberware">
                     <br/>
                     <br/>
           == <xsl:value-of select="$lang.Cyberware"/>/<xsl:value-of select="$lang.Bioware"/> ==
           <xsl:call-template name="cyberware"/>
+                </xsl:if>
+
+                <xsl:if test="lifestyles/lifestyle">
+                    <br/>
+                    <br/>
+          == <xsl:value-of select="$lang.Lifestyle"/> ==
+          <xsl:call-template name="lifestyle"/>
                 </xsl:if>
 
                 <xsl:if test="armors/armor">
@@ -516,13 +577,6 @@
                     <br/>
           == <xsl:value-of select="$lang.Weapons"/> ==
           <xsl:call-template name="weapons"/>
-                </xsl:if>
-
-                <xsl:if test="martialarts/martialart">
-                    <br/>
-                    <br/>
-          == <xsl:value-of select="$lang.MartialArts"/> ==
-          <xsl:call-template name="martialarts"/>
                 </xsl:if>
 
                 <xsl:if test="gears/gear[iscommlink = 'True'] or armors/armor/gears/gear[iscommlink = 'True'] or cyberwares/cyberware/gears/gear[iscommlink = 'True'] or cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True'] or weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']">
@@ -758,7 +812,7 @@
             <xsl:value-of select="name"/>
             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
             <xsl:if test="rating &gt; 0">
-        <xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/>
+        <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
       </xsl:if>
         </xsl:for-each>
     </xsl:template>
@@ -769,7 +823,9 @@
             <br/>
             <xsl:value-of select="name"/>
             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-            <xsl:if test="rating &gt; 0"> <xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/></xsl:if>
+            <xsl:if test="rating &gt; 0">
+              <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
+            </xsl:if>
         </xsl:for-each>
     </xsl:template>
 
@@ -826,7 +882,7 @@
             <xsl:sort select="name"/>
             <br/><xsl:value-of select="name"/>
             (<xsl:value-of select="baselifestyle"/>)
-            <xsl:value-of select="months"/>&#160;
+            <xsl:value-of select="months"/><xsl:text> </xsl:text>
           <xsl:choose>
             <xsl:when test="increment = 'Day'">
               <xsl:choose>
@@ -877,7 +933,7 @@
                 <xsl:for-each select="children/cyberware">
                     <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
                     <xsl:if test="rating != 0">
-                      <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/>
+                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
                     </xsl:if>
                 </xsl:for-each>
             </xsl:if>
@@ -932,13 +988,17 @@
         <xsl:value-of select="$lang.DP"/>: <xsl:value-of select="dataprocessing"/>,
         <xsl:value-of select="$lang.FWL"/>: <xsl:value-of select="firewall"/>)
       <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-            <xsl:if test="rating != 0"><xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+            <xsl:if test="rating != 0">
+              <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
+            </xsl:if>
             <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
             <xsl:if test="children/gear">
                 <xsl:for-each select="children/gear">
                     <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
                     <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-                    <xsl:if test="rating != 0"><xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+                    <xsl:if test="rating != 0">
+                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
+                    </xsl:if>
           <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname"/>"</xsl:if>
           <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
                     <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
@@ -1234,7 +1294,7 @@
                     <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
                     <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
                     <xsl:if test="rating != 0">
-            <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/>
+            <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
           </xsl:if>
           <xsl:if test="gearname != ''">: <xsl:value-of select="  gearname"/></xsl:if>
                     <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
@@ -1271,13 +1331,15 @@
                 <xsl:for-each select="mods/mod">
                     <xsl:sort select="name"/>
                     <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
-                    <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+                    <xsl:if test="rating != 0">
+                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
+                    </xsl:if>
                     <xsl:if test="cyberwares/cyberware"> (<xsl:for-each
                             select="cyberwares/cyberware">
                             <xsl:sort select="name"/>
                             <br/>&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name"/>
                             <xsl:if test="rating != 0">
-                <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/>
+                <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
                </xsl:if>
                         </xsl:for-each>) </xsl:if>
                 </xsl:for-each>
@@ -1287,7 +1349,9 @@
                     <xsl:sort select="name"/>
                     <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
                     <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-                    <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+                    <xsl:if test="rating != 0">
+                      <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
+                    </xsl:if>
           <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname"/>"</xsl:if>
                     <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
                     <xsl:if test="children/gear">
@@ -1295,7 +1359,7 @@
                             <br/>&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name"/>
                             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
                             <xsl:if test="rating != 0">
-                <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/>
+                <xsl:value-of select="concat('&#160;',$lang.Rating,'&#160;',rating)"/>
               </xsl:if>
               <xsl:if test="gearname != ''"> "<xsl:value-of select="gearname"/>"</xsl:if>
                             <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
@@ -1342,9 +1406,14 @@
             <br/>
             <xsl:value-of select="name"/>
             <xsl:for-each select="martialarttechniques/martialarttechnique">
-                <xsl:sort select="."/>
-                <br/>&#160;&#160;&#160;+ <xsl:value-of select="."/>
+                <xsl:sort select="name"/>
+                <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
             </xsl:for-each>
+        </xsl:for-each>
+        <xsl:for-each select="martialartmaneuvers/martialartmaneuver">
+            <xsl:sort select="name"/>
+            <br/>
+            <xsl:value-of select="name"/>
         </xsl:for-each>
     </xsl:template>
 

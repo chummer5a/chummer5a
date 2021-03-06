@@ -25,10 +25,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
 using NLog;
 
 namespace Chummer
@@ -195,8 +197,8 @@ namespace Chummer
                 //Shim for customdata files that have the old name for the metagenic flag.
                 objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenic);
             }
-            if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlQuality.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlQuality.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
             _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
             _eQualitySource = objQualitySource;
@@ -460,7 +462,7 @@ namespace Chummer
             _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? GetNode()?["firstlevelbonus"];
             _nodDiscounts = objNode["costdiscount"]?.CreateNavigator();
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (_eQualityType == QualityType.LifeModule)
             {
@@ -551,8 +553,11 @@ namespace Chummer
             get => _guiWeaponID.ToString("D", GlobalOptions.InvariantCultureInfo);
             set
             {
-                if (Guid.TryParse(value, out Guid guiTemp))
+                if (Guid.TryParse(value, out Guid guiTemp) && _guiWeaponID != guiTemp)
+                {
                     _guiWeaponID = guiTemp;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -562,7 +567,13 @@ namespace Chummer
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName == value)
+                    return;
+                _strName = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -576,7 +587,14 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
+            set
+            {
+                string strNewExtra = _objCharacter.ReverseTranslateExtra(value);
+                if (_strExtra == strNewExtra)
+                    return;
+                _strExtra = strNewExtra;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -585,7 +603,13 @@ namespace Chummer
         public string Source
         {
             get => _strSource;
-            set => _strSource = value;
+            set
+            {
+                if (_strSource == value)
+                    return;
+                _strSource = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -594,7 +618,13 @@ namespace Chummer
         public string Page
         {
             get => _strPage;
-            set => _strPage = value;
+            set
+            {
+                if (_strPage == value)
+                    return;
+                _strPage = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -617,7 +647,13 @@ namespace Chummer
         public string SourceName
         {
             get => _strSourceName;
-            set => _strSourceName = value;
+            set
+            {
+                if (_strSourceName == value)
+                    return;
+                _strSourceName = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -634,7 +670,13 @@ namespace Chummer
         public XmlNode Bonus
         {
             get => _nodBonus;
-            set => _nodBonus = value;
+            set
+            {
+                if (_nodBonus == value)
+                    return;
+                _nodBonus = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -643,7 +685,13 @@ namespace Chummer
         public XmlNode FirstLevelBonus
         {
             get => _nodFirstLevelBonus;
-            set => _nodFirstLevelBonus = value;
+            set
+            {
+                if (_nodFirstLevelBonus == value)
+                    return;
+                _nodFirstLevelBonus = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -652,7 +700,13 @@ namespace Chummer
         public QualityType Type
         {
             get => _eQualityType;
-            set => _eQualityType = value;
+            set
+            {
+                if (_eQualityType == value)
+                    return;
+                _eQualityType = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -661,7 +715,13 @@ namespace Chummer
         public QualitySource OriginSource
         {
             get => _eQualitySource;
-            set => _eQualitySource = value;
+            set
+            {
+                if (_eQualitySource == value)
+                    return;
+                _eQualitySource = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -689,7 +749,13 @@ namespace Chummer
                 }
                 return intReturn;
             }
-            set => _intBP = value;
+            set
+            {
+                if (_intBP == value)
+                    return;
+                _intBP = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -745,7 +811,13 @@ namespace Chummer
         public bool AllowPrint
         {
             get => _blnPrint;
-            set => _blnPrint = value;
+            set
+            {
+                if (_blnPrint == value)
+                    return;
+                _blnPrint = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -754,7 +826,13 @@ namespace Chummer
         public bool DoubleCost
         {
             get => _blnDoubleCostCareer;
-            set => _blnDoubleCostCareer = value;
+            set
+            {
+                if (_blnDoubleCostCareer == value)
+                    return;
+                _blnDoubleCostCareer = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -763,7 +841,13 @@ namespace Chummer
         public bool CanBuyWithSpellPoints
         {
             get => _blnCanBuyWithSpellPoints;
-            set => _blnCanBuyWithSpellPoints = value;
+            set
+            {
+                if (_blnCanBuyWithSpellPoints == value)
+                    return;
+                _blnCanBuyWithSpellPoints = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -772,7 +856,13 @@ namespace Chummer
         public bool Implemented
         {
             get => _blnImplemented;
-            set => _blnImplemented = value;
+            set
+            {
+                if (_blnImplemented == value)
+                    return;
+                _blnImplemented = value;
+                OnPropertyChanged();
+            }
         }
         /// <summary>
         /// Whether or not the Quality contributes towards the character's Quality BP limits.
@@ -799,8 +889,15 @@ namespace Chummer
 
                 return _blnContributeToLimit;
             }
-            set => _blnContributeToLimit = value;
+            set
+            {
+                if (_blnContributeToLimit == value)
+                    return;
+                _blnContributeToLimit = value;
+                OnPropertyChanged();
+            }
         }
+
         /// <summary>
         /// Whether or not the Quality contributes towards the character's Quality BP limits.
         /// </summary>
@@ -808,7 +905,7 @@ namespace Chummer
         {
             get
             {
-                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.MetatypeRemovedAtChargen || _eQualitySource == QualitySource.Heritage)
+                if (OriginSource == QualitySource.Metatype || OriginSource == QualitySource.MetatypeRemovable || OriginSource == QualitySource.MetatypeRemovedAtChargen || OriginSource == QualitySource.Heritage)
                     return false;
 
                 return Metagenic && _objCharacter.MetagenicLimit > 0;
@@ -821,7 +918,13 @@ namespace Chummer
         public bool StagedPurchase
         {
             get => _blnStagedPurchase;
-            set => _blnStagedPurchase = value;
+            set
+            {
+                if (_blnStagedPurchase == value)
+                    return;
+                _blnStagedPurchase = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -831,7 +934,7 @@ namespace Chummer
         {
             get
             {
-                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable || _eQualitySource == QualitySource.Heritage)
+                if (OriginSource == QualitySource.Metatype || OriginSource == QualitySource.MetatypeRemovable || OriginSource == QualitySource.Heritage)
                     return false;
 
                 // Positive Metagenic Qualities are free if you're a Changeling.
@@ -839,7 +942,7 @@ namespace Chummer
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
+                if (Name == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
                 if (_objCharacter.Improvements.Any(imp =>
                     imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
@@ -878,6 +981,7 @@ namespace Chummer
                     return;
                 _strCachedNotes = string.Empty;
                 _strNotes = value;
+                OnPropertyChanged();
             }
         }
 
@@ -886,23 +990,24 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedSuppressed != -1)
-                    return _intCachedSuppressed == 1;
-                _intCachedSuppressed = Convert.ToInt32(_objCharacter.Improvements.Count(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
-                    (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled));
-                if (_intCachedSuppressed > 0)
+                if (_intCachedSuppressed < 0)
                 {
-                    ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
-                        imp.SourceName == SourceIDString).ToArray());
-                }
-                else
-                {
-                    ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
-                        imp.SourceName == SourceIDString).ToArray());
+                    _intCachedSuppressed = _objCharacter.Improvements.Count(imp =>
+                        imp.ImproveType == Improvement.ImprovementType.DisableQuality &&
+                        (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled);
+                    if (_intCachedSuppressed > 0)
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                            imp.SourceName == SourceIDString).ToArray());
+                    }
+                    else
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(imp =>
+                            imp.SourceName == SourceIDString).ToArray());
+                    }
                 }
 
-                return _intCachedSuppressed == 1;
+                return _intCachedSuppressed > 0;
             }
         }
 
@@ -931,7 +1036,7 @@ namespace Chummer
         #endregion
 
         #region UI Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality,TreeView treQualities)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality, TreeView treQualities)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
                  OriginSource == QualitySource.Improvement ||
@@ -1171,6 +1276,31 @@ namespace Chummer
 
             return workNode;
         }
+
+        //A tree of dependencies. Once some of the properties are changed,
+        //anything they depend on, also needs to raise OnChanged
+        //This tree keeps track of dependencies
+        private static readonly DependencyGraph<string, Quality> s_QualityDependencyGraph =
+            new DependencyGraph<string, Quality>(
+                new DependencyGraphNode<string, Quality>(nameof(Notes),
+                    new DependencyGraphNode<string, Quality>(nameof(Suppressed))
+                ),
+                new DependencyGraphNode<string, Quality>(nameof(BP),
+                    new DependencyGraphNode<string, Quality>(nameof(Type))
+                ),
+                new DependencyGraphNode<string, Quality>(nameof(ContributeToMetagenicLimit),
+                    new DependencyGraphNode<string, Quality>(nameof(OriginSource)),
+                    new DependencyGraphNode<string, Quality>(nameof(Metagenic))
+                ),
+                new DependencyGraphNode<string, Quality>(nameof(PreferredColor),
+                    new DependencyGraphNode<string, Quality>(nameof(OriginSource))
+                ),
+                new DependencyGraphNode<string, Quality>(nameof(ContributeToBP),
+                    new DependencyGraphNode<string, Quality>(nameof(OriginSource)),
+                    new DependencyGraphNode<string, Quality>(nameof(Metagenic)),
+                    new DependencyGraphNode<string, Quality>(nameof(Name))
+                )
+            );
         #endregion
 
         /// <summary>
@@ -1307,8 +1437,31 @@ namespace Chummer
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            OnMultiplePropertyChanged(strPropertyName);
+        }
+
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
+            ICollection<string> lstNamesOfChangedProperties = null;
+            foreach (string strPropertyName in lstPropertyNames)
+            {
+                if (lstNamesOfChangedProperties == null)
+                    lstNamesOfChangedProperties = s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                else
+                {
+                    foreach (string strLoopChangedProperty in s_QualityDependencyGraph.GetWithAllDependents(
+                        this, strPropertyName))
+                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                }
+            }
+
+            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+                return;
+
             if (lstPropertyNames.Contains(nameof(Suppressed)))
                 _intCachedSuppressed = -1;
             foreach (string strPropertyToChange in lstPropertyNames)

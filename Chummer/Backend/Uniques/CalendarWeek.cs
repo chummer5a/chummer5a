@@ -74,7 +74,7 @@ namespace Chummer
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetInt32FieldQuickly("year", ref _intYear);
             objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>

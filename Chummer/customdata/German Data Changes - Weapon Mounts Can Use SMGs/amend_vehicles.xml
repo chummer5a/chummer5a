@@ -21,11 +21,11 @@
     <weaponmounts>
       <weaponmount>
         <id>4e9da56b-622c-439f-9718-98ac3a792351</id>
-        <weaponcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponcategories>
+        <weaponcategories amendoperation="append">,Submachine Guns</weaponcategories>
       </weaponmount>
       <weaponmount>
         <id>73f6f721-9732-4773-8ce6-0e3f5222a49f</id>
-        <weaponcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponcategories>
+        <weaponcategories amendoperation="append">,Submachine Guns</weaponcategories>
       </weaponmount>
     </weaponmounts>
 </chummer>

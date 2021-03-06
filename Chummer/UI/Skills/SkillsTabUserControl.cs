@@ -171,18 +171,18 @@ namespace Chummer.UI.Skills
 
             cboDisplayFilter.BeginUpdate();
             cboDisplayFilter.DataSource = null;
+            cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
-            cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _lstDropDownActiveSkills.Count;
             cboDisplayFilter.EndUpdate();
 
             cboDisplayFilterKnowledge.BeginUpdate();
             cboDisplayFilterKnowledge.DataSource = null;
+            cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
             cboDisplayFilterKnowledge.ValueMember = "Item2";
             cboDisplayFilterKnowledge.DisplayMember = "Item1";
-            cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
             cboDisplayFilterKnowledge.SelectedIndex = 1;
             cboDisplayFilterKnowledge.MaxDropDownItems = _lstDropDownKnowledgeSkills.Count;
             cboDisplayFilterKnowledge.EndUpdate();
@@ -190,18 +190,18 @@ namespace Chummer.UI.Skills
 
             cboSort.BeginUpdate();
             cboSort.DataSource = null;
+            cboSort.DataSource = _sortList;
             cboSort.ValueMember = "Item2";
             cboSort.DisplayMember = "Item1";
-            cboSort.DataSource = _sortList;
             cboSort.SelectedIndex = 0;
             cboSort.MaxDropDownItems = _sortList.Count;
             cboSort.EndUpdate();
 
             cboSortKnowledge.BeginUpdate();
             cboSortKnowledge.DataSource = null;
+            cboSortKnowledge.DataSource = _lstSortKnowledgeList;
             cboSortKnowledge.ValueMember = "Item2";
             cboSortKnowledge.DisplayMember = "Item1";
-            cboSortKnowledge.DataSource = _lstSortKnowledgeList;
             cboSortKnowledge.SelectedIndex = 0;
             cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
             cboSortKnowledge.EndUpdate();

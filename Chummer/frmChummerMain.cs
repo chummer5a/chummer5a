@@ -847,10 +847,11 @@ namespace Chummer
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-            Character objOpenCharacter;
             using (new CursorWait(this))
-                objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
-            Program.MainForm.OpenCharacter(objOpenCharacter);
+            {
+                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
+                Program.MainForm.OpenCharacter(objOpenCharacter);
+            }
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -868,10 +869,11 @@ namespace Chummer
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            Character objOpenCharacter;
             using (new CursorWait(this))
-                objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
-            Program.MainForm.OpenCharacter(objOpenCharacter);
+            {
+                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
+                Program.MainForm.OpenCharacter(objOpenCharacter);
+            }
         }
 
         private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
@@ -972,7 +974,8 @@ namespace Chummer
                 }
                 if(OpenCharacters.Contains(objCharacter))
                 {
-                    OpenCharacter(objCharacter, blnIncludeInMRU);
+                    using (new CursorWait(this))
+                        OpenCharacter(objCharacter, blnIncludeInMRU);
                     return true;
                 }
             }
@@ -1082,8 +1085,8 @@ namespace Chummer
                             lstCharacters[i] = objLoopCharacter;
                     });
                 });
+                Program.MainForm.OpenCharacterList(lstCharacters);
             }
-            Program.MainForm.OpenCharacterList(lstCharacters);
         }
 
         private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
@@ -1353,50 +1356,60 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            using (new CursorWait(this))
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                Multiselect = true
-            })
-            {
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-                //Timekeeper.Start("load_sum");
-                using (new CursorWait(this))
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
-                    foreach (string strFile in openFileDialog.FileNames)
+                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
+                             LanguageManager.GetString("DialogFilter_All"),
+                    Multiselect = true
+                })
+                {
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    Character[] lstCharacters = null;
+                    //Timekeeper.Start("load_sum");
+                    using (new CursorWait(this))
                     {
-                        Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                        if (objLoopCharacter != null)
-                            SwitchToOpenCharacter(objLoopCharacter, true);
-                        else
-                            lstFilesToOpen.Add(strFile);
-                    }
-
-                    if (lstFilesToOpen.Count > 0)
-                    {
-                        using (_frmLoading = new frmLoading { CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen) })
+                        List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
+                        foreach (string strFile in openFileDialog.FileNames)
                         {
-                            _frmLoading.Reset(35 * lstFilesToOpen.Count);
-                            _frmLoading.Show();
-                            Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                            object lstCharactersLock = new object();
-                            // Hacky, but necessary because innards of Parallel.For would end up invoking
-                            // a UI function that would wait for Parallel.For to finish, causing the program
-                            // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                            await Task.Run(() =>
+                            Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                            if (objLoopCharacter != null)
+                                SwitchToOpenCharacter(objLoopCharacter, true);
+                            else
+                                lstFilesToOpen.Add(strFile);
+                        }
+
+                        if (lstFilesToOpen.Count > 0)
+                        {
+                            using (_frmLoading = new frmLoading
                             {
-                                Parallel.For(0, lstCharacters.Length, i =>
+                                CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"),
+                                    lstFilesToOpen)
+                            })
+                            {
+                                _frmLoading.Reset(35 * lstFilesToOpen.Count);
+                                _frmLoading.Show();
+                                lstCharacters = new Character[lstFilesToOpen.Count];
+                                object lstCharactersLock = new object();
+                                // Hacky, but necessary because innards of Parallel.For would end up invoking
+                                // a UI function that would wait for Parallel.For to finish, causing the program
+                                // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+                                await Task.Run(() =>
                                 {
-                                    Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
-                                    lock (lstCharactersLock)
-                                        lstCharacters[i] = objLoopCharacter;
+                                    Parallel.For(0, lstCharacters.Length, i =>
+                                    {
+                                        Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
+                                        lock (lstCharactersLock)
+                                            lstCharacters[i] = objLoopCharacter;
+                                    });
                                 });
-                            });
-                            Program.MainForm.OpenCharacterList(lstCharacters);
+                            }
                         }
                     }
+
+                    Program.MainForm.OpenCharacterList(lstCharacters);
                 }
             }
 
@@ -1423,37 +1436,34 @@ namespace Chummer
             if(lstCharacters == null)
                 return;
 
-            using (new CursorWait(this))
+            FormWindowState wsPreference = MdiChildren.Length == 0
+                                           || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
+                ? FormWindowState.Maximized
+                : FormWindowState.Normal;
+            List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
+            foreach (Character objCharacter in lstCharacters)
             {
-                FormWindowState wsPreference = MdiChildren.Length == 0
-                                               || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
-                    ? FormWindowState.Maximized
-                    : FormWindowState.Normal;
-                List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
-                foreach (Character objCharacter in lstCharacters)
-                {
-                    if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
-                        continue;
-                    //Timekeeper.Start("load_event_time");
-                    // Show the character forms.
-                    CharacterShared frmNewCharacter = objCharacter.Created
-                        ? (CharacterShared) new frmCareer(objCharacter)
-                        : new frmCreate(objCharacter);
-                    frmNewCharacter.MdiParent = this;
-                    frmNewCharacter.Show();
-                    lstNewFormsToProcess.Add(frmNewCharacter);
+                if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
+                    continue;
+                //Timekeeper.Start("load_event_time");
+                // Show the character forms.
+                CharacterShared frmNewCharacter = objCharacter.Created
+                    ? (CharacterShared)new frmCareer(objCharacter)
+                    : new frmCreate(objCharacter);
+                frmNewCharacter.MdiParent = this;
+                frmNewCharacter.Show();
+                lstNewFormsToProcess.Add(frmNewCharacter);
 
-                    if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
-                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
-                    UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
+                UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
 
-                    //Timekeeper.Finish("load_event_time");
-                }
-                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
-                    frmNewCharacter.WindowState = wsPreference;
+                //Timekeeper.Finish("load_event_time");
             }
+            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+            foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
+                frmNewCharacter.WindowState = wsPreference;
         }
 
         /// <summary>
@@ -1477,40 +1487,40 @@ namespace Chummer
                 {
                     FileName = strFileName
                 };
-                if (!strFileName.StartsWith(strAutosavesPath))
+                if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                 {
-                    string strNewAutosaveName = Path.GetFileName(strFileName);
-                    if (!string.IsNullOrEmpty(strNewAutosaveName))
+                    if (!strFileName.StartsWith(strAutosavesPath))
                     {
-                        strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
-                        if (File.Exists(strNewAutosaveName) && File.GetLastWriteTimeUtc(strNewAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                        string strNewAutosaveName = Path.GetFileName(strFileName);
+                        if (!string.IsNullOrEmpty(strNewAutosaveName))
                         {
-                            blnLoadAutosave = true;
-                            objCharacter.FileName = strNewAutosaveName;
-                        }
-                    }
-
-                    if (!blnLoadAutosave)
-                    {
-                        string strOldAutosaveName = objCharacter.CharacterName;
-                        foreach (var invalidChar in Path.GetInvalidFileNameChars())
-                        {
-                            strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
-                        }
-
-                        if (!string.IsNullOrEmpty(strOldAutosaveName))
-                        {
-                            strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
-                            if (File.Exists(strOldAutosaveName) && File.GetLastWriteTimeUtc(strOldAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                            strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
+                            if (File.Exists(strNewAutosaveName) && File.GetLastWriteTimeUtc(strNewAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
                             {
                                 blnLoadAutosave = true;
-                                objCharacter.FileName = strOldAutosaveName;
+                                objCharacter.FileName = strNewAutosaveName;
+                            }
+                        }
+
+                        if (!blnLoadAutosave && !string.IsNullOrEmpty(strNewName))
+                        {
+                            string strOldAutosaveName = strNewName;
+                            foreach (var invalidChar in Path.GetInvalidFileNameChars())
+                            {
+                                strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
+                            }
+
+                            if (!string.IsNullOrEmpty(strOldAutosaveName))
+                            {
+                                strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
+                                if (File.Exists(strOldAutosaveName) && File.GetLastWriteTimeUtc(strOldAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                                {
+                                    blnLoadAutosave = true;
+                                    objCharacter.FileName = strOldAutosaveName;
+                                }
                             }
                         }
                     }
-                }
-                if (blnShowErrors && _frmLoading?.IsDisposed != false)
-                {
                     if (blnLoadAutosave && Program.MainForm.ShowMessageBox(
                         string.Format(GlobalOptions.CultureInfo,
                             LanguageManager.GetString("Message_AutosaveFound"),
@@ -1523,6 +1533,9 @@ namespace Chummer
                         blnLoadAutosave = false;
                         objCharacter.FileName = strFileName;
                     }
+                }
+                if (blnShowErrors && _frmLoading?.IsDisposed != false)
+                {
                     using (_frmLoading = new frmLoading { CharacterFile = objCharacter.FileName })
                     {
                         _frmLoading.Reset(35);

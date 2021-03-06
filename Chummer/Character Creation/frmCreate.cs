@@ -647,7 +647,7 @@ namespace Chummer
                         lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
                         lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
                         lblCMStun.Visible = true; // Needed for some weird reason
-                        lblCMStun.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+                        lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
                         lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
                         lblESSMax.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEssence));
@@ -3092,14 +3092,13 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(CharacterObject);
                     objWeapon.Create(objXmlWeapon, lstWeapons);
                     objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-                    //objWeapon.Location = objLocation;
-                    objLocation?.Children.Add(objWeapon);
-
                     if (frmPickWeapon.FreeCost)
                     {
                         objWeapon.Cost = "0";
                     }
 
+                    //objWeapon.Location = objLocation;
+                    objLocation?.Children.Add(objWeapon);
                     CharacterObject.Weapons.Add(objWeapon);
 
                     foreach (Weapon objExtraWeapon in lstWeapons)
@@ -3245,7 +3244,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddVehicle(treVehicles.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -3358,7 +3357,7 @@ namespace Chummer
         {
             if (CharacterObject.Mugshots.Count <= 0)
                 return;
-            RemoveMugshot(decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            RemoveMugshot(nudMugshotIndex.ValueAsInt - 1);
 
             lblNumMugshots.Text = LanguageManager.GetString("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalOptions.CultureInfo);
             nudMugshotIndex.Maximum -= 1;
@@ -3366,12 +3365,12 @@ namespace Chummer
                 nudMugshotIndex.Value = nudMugshotIndex.Maximum;
             else
             {
-                if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+                if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                     chkIsMainMugshot.Checked = true;
                 else if (chkIsMainMugshot.Checked)
                     chkIsMainMugshot.Checked = false;
 
-                UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+                UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
             }
 
             IsDirty = true;
@@ -3394,23 +3393,23 @@ namespace Chummer
                     nudMugshotIndex.Value = nudMugshotIndex.Minimum;
             }
 
-            if (decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
                 chkIsMainMugshot.Checked = true;
             else if (chkIsMainMugshot.Checked)
                 chkIsMainMugshot.Checked = false;
 
-            UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
+            UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
         }
 
         private void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
         {
             bool blnStatusChanged = false;
-            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != decimal.ToInt32(nudMugshotIndex.Value) - 1)
+            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != nudMugshotIndex.ValueAsInt - 1)
             {
-                CharacterObject.MainMugshotIndex = decimal.ToInt32(nudMugshotIndex.Value) - 1;
+                CharacterObject.MainMugshotIndex = nudMugshotIndex.ValueAsInt - 1;
                 blnStatusChanged = true;
             }
-            else if (!chkIsMainMugshot.Checked && decimal.ToInt32(nudMugshotIndex.Value) - 1 == CharacterObject.MainMugshotIndex)
+            else if (!chkIsMainMugshot.Checked && nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
             {
                 CharacterObject.MainMugshotIndex = -1;
                 blnStatusChanged = true;
@@ -4113,7 +4112,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = AddArmor(treArmor.SelectedNode?.Tag is Location objLocation ? objLocation : null);
+                blnAddAgain = AddArmor(treArmor.SelectedNode?.Tag as Location);
             }
             while (blnAddAgain);
         }
@@ -4140,13 +4139,13 @@ namespace Chummer
                     objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
                     if (objArmor.InternalId.IsEmptyGuid())
                         return frmPickArmor.AddAgain;
-                    //objArmor.Location = objLocation;
-                    objLocation?.Children.Add(objArmor);
                     if (frmPickArmor.FreeCost)
                     {
                         objArmor.Cost = "0";
                     }
 
+                    //objArmor.Location = objLocation;
+                    objLocation?.Children.Add(objArmor);
                     CharacterObject.Armor.Add(objArmor);
 
                     foreach (Weapon objWeapon in lstWeapons)
@@ -5016,21 +5015,16 @@ namespace Chummer
             {
                 case Gear objGear:
                 {
-                    string strOldValue = objGear.Notes;
-                    using (frmNotes frmItemNotes = new frmNotes { Notes = strOldValue })
+                    using (frmNotes frmItemNotes = new frmNotes(objGear.Notes))
                     {
                         frmItemNotes.ShowDialog(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
                             return;
-
                         objGear.Notes = frmItemNotes.Notes;
-                        if (objGear.Notes != strOldValue)
-                        {
-                            IsDirty = true;
+                        IsDirty = true;
 
-                            treVehicles.SelectedNode.ForeColor = objGear.PreferredColor;
-                            treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
-                        }
+                        treVehicles.SelectedNode.ForeColor = objGear.PreferredColor;
+                        treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
                     }
 
                     break;
@@ -6698,7 +6692,7 @@ namespace Chummer
                 case Cyberware objCyberware:
                 {
                     // Update the selected Cyberware Rating.
-                    objCyberware.Rating = decimal.ToInt32(nudCyberwareRating.Value);
+                    objCyberware.Rating = nudCyberwareRating.ValueAsInt;
 
                     // See if a Bonus node exists.
                     if (objCyberware.Bonus != null && objCyberware.Bonus.InnerXml.Contains("Rating") || objCyberware.PairBonus != null && objCyberware.PairBonus.InnerXml.Contains("Rating") || objCyberware.WirelessOn && objCyberware.WirelessBonus != null && objCyberware.WirelessBonus.InnerXml.Contains("Rating"))
@@ -6753,7 +6747,7 @@ namespace Chummer
                     // Find the selected piece of Gear.
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
-                        if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudCyberwareRating.Value)))
+                        if (!objGear.RefreshSingleFocusRating(treFoci, nudCyberwareRating.ValueAsInt))
                         {
                             IsRefreshing = true;
                             nudCyberwareRating.Value = objGear.Rating;
@@ -6762,7 +6756,7 @@ namespace Chummer
                         }
                     }
                     else
-                        objGear.Rating = decimal.ToInt32(nudCyberwareRating.Value);
+                        objGear.Rating = nudCyberwareRating.ValueAsInt;
 
                     // See if a Bonus node exists.
                     if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
@@ -6953,8 +6947,7 @@ namespace Chummer
 
         private void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treLifestyles.SelectedNode;
-            if (!(nodSelected?.Tag is Lifestyle objLifestyle))
+            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
             string strGuid = objLifestyle.InternalId;
@@ -6995,10 +6988,6 @@ namespace Chummer
 
             objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
-            nodSelected.Text = objLifestyle.CurrentDisplayName;
-            nodSelected.Tag = objLifestyle;
-            nodSelected.ForeColor = objLifestyle.PreferredColor;
-            nodSelected.ToolTipText = objLifestyle.Notes.WordWrap();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -7076,7 +7065,7 @@ namespace Chummer
             if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
-            objLifestyle.Increments = decimal.ToInt32(nudLifestyleMonths.Value);
+            objLifestyle.Increments = nudLifestyleMonths.ValueAsInt;
 
             IsRefreshing = false;
 
@@ -7106,7 +7095,7 @@ namespace Chummer
 
             if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
             {
-                if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudGearRating.Value)))
+                if (!objGear.RefreshSingleFocusRating(treFoci, nudGearRating.ValueAsInt))
                 {
                     IsRefreshing = true;
                     nudGearRating.Value = objGear.Rating;
@@ -7115,7 +7104,7 @@ namespace Chummer
                 }
             }
             else
-                objGear.Rating = decimal.ToInt32(nudGearRating.Value);
+                objGear.Rating = nudGearRating.ValueAsInt;
             if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
             {
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
@@ -7745,14 +7734,14 @@ namespace Chummer
             switch (treVehicles.SelectedNode?.Tag)
             {
                 case VehicleMod objMod:
-                    objMod.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                    objMod.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objMod.CurrentDisplayName;
                     break;
                 case Gear objGear:
                 {
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
-                        if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudVehicleRating.Value)))
+                        if (!objGear.RefreshSingleFocusRating(treFoci, nudVehicleRating.ValueAsInt))
                         {
                             IsRefreshing = true;
                             nudVehicleRating.Value = objGear.Rating;
@@ -7761,16 +7750,16 @@ namespace Chummer
                         }
                     }
                     else
-                        objGear.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                        objGear.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objGear.CurrentDisplayName;
                     break;
                 }
                 case WeaponAccessory objAccessory:
-                    objAccessory.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                    objAccessory.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objAccessory.CurrentDisplayName;
                     break;
                 case Cyberware objCyberware:
-                    objCyberware.Rating = decimal.ToInt32(nudVehicleRating.Value);
+                    objCyberware.Rating = nudVehicleRating.ValueAsInt;
                     treVehicles.SelectedNode.Text = objCyberware.CurrentDisplayName;
                     break;
                 default:
@@ -8024,7 +8013,7 @@ namespace Chummer
                 // Locate the selected ArmorMod.
                 case ArmorMod objMod:
                 {
-                    objMod.Rating = decimal.ToInt32(nudArmorRating.Value);
+                    objMod.Rating = nudArmorRating.ValueAsInt;
                     treArmor.SelectedNode.Text = objMod.CurrentDisplayName;
 
                     // See if a Bonus node exists.
@@ -8044,7 +8033,7 @@ namespace Chummer
                 {
                     if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                     {
-                        if (!objGear.RefreshSingleFocusRating(treFoci, decimal.ToInt32(nudArmorRating.Value)))
+                        if (!objGear.RefreshSingleFocusRating(treFoci, nudArmorRating.ValueAsInt))
                         {
                             IsRefreshing = true;
                             nudArmorRating.Value = objGear.Rating;
@@ -8053,7 +8042,7 @@ namespace Chummer
                         }
                     }
                     else
-                        objGear.Rating = decimal.ToInt32(nudArmorRating.Value);
+                        objGear.Rating = nudArmorRating.ValueAsInt;
                     treArmor.SelectedNode.Text = objGear.CurrentDisplayName;
 
                     // See if a Bonus node exists.
@@ -8073,7 +8062,7 @@ namespace Chummer
                     break;
                 }
                 case Armor objArmor:
-                    objArmor.Rating = decimal.ToInt32(nudArmorRating.Value);
+                    objArmor.Rating = nudArmorRating.ValueAsInt;
                     treArmor.SelectedNode.Text = objArmor.CurrentDisplayName;
                     break;
             }
@@ -8857,7 +8846,7 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Resources/Nuyen.
-            int intNuyenBP = decimal.ToInt32(CharacterObject.NuyenBP);
+            int intNuyenBP = CharacterObject.NuyenBP.StandardRound();
 
             intKarmaPointsRemain -= intNuyenBP;
 
@@ -8939,7 +8928,7 @@ namespace Chummer
 
                 if (nudMysticAdeptMAGMagician.Value > 0)
                 {
-                    int intPPBought = decimal.ToInt32(nudMysticAdeptMAGMagician.Value);
+                    int intPPBought = nudMysticAdeptMAGMagician.ValueAsInt;
                     if (CharacterObjectOptions.PrioritySpellsAsAdeptPowers)
                     {
                         spells += Math.Min(limit, intPPBought);
@@ -11007,31 +10996,26 @@ namespace Chummer
                     ObservableCollection<Gear> destinationGear =
                         blnNullParent ? CharacterObject.Gear : objSelectedGear.Children;
                     bool blnMatchFound = false;
-                    // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition")
+                    foreach (Gear objExistingGear in destinationGear)
                     {
-                        foreach (Gear objVehicleGear in destinationGear)
+                        if (objExistingGear.Location == objLocation
+                            && objGear.IsIdenticalToOtherGear(objExistingGear, true)
+                            && Program.MainForm.ShowMessageBox(this,
+                                LanguageManager.GetString("Message_MergeIdentical"),
+                                LanguageManager.GetString("MessageTitle_MergeIdentical"),
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (objVehicleGear.Name == objGear.Name && objVehicleGear.Category == objGear.Category &&
-                                objVehicleGear.Rating == objGear.Rating && objVehicleGear.Extra == objGear.Extra &&
-                                objVehicleGear.Children.SequenceEqual(objGear.Children)
-                                && Program.MainForm.ShowMessageBox(this,
-                                    LanguageManager.GetString("Message_MergeIdentical"),
-                                    LanguageManager.GetString("MessageTitle_MergeIdentical"),
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            {
-                                // A match was found, so increase the quantity instead.
-                                objVehicleGear.Quantity += objGear.Quantity;
-                                blnMatchFound = true;
-                                break;
-                            }
+                            // A match was found, so increase the quantity instead.
+                            objExistingGear.Quantity += objGear.Quantity;
+                            blnMatchFound = true;
+                            break;
                         }
                     }
 
                     if (!blnMatchFound)
                     {
-                        destinationGear.Add(objGear);
                         objLocation?.Children.Add(objGear);
+                        destinationGear.Add(objGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -12090,10 +12074,10 @@ namespace Chummer
                 lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
             }
             cboCyberwareGrade.BeginUpdate();
-            //cboCyberwareGrade.DataSource = null;
+            cboCyberwareGrade.DataSource = null;
+            cboCyberwareGrade.DataSource = lstCyberwareGrades;
             cboCyberwareGrade.ValueMember = nameof(ListItem.Value);
             cboCyberwareGrade.DisplayMember = nameof(ListItem.Name);
-            cboCyberwareGrade.DataSource = lstCyberwareGrades;
             cboCyberwareGrade.EndUpdate();
         }
 

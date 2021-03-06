@@ -645,7 +645,7 @@ namespace Chummer
                         }
                     }
                     objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);
-                    for (int i = decimal.ToInt32(nudRating.Value); i <= intHighestCostNode; ++i)
+                    for (int i = nudRating.ValueAsInt; i <= intHighestCostNode; ++i)
                     {
                         XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("cost" + i.ToString(GlobalOptions.InvariantCultureInfo));
                         if (objLoopNode != null)
@@ -682,7 +682,7 @@ namespace Chummer
                         string[] strValues = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                         string strCost = "0";
                         if (nudRating.Value > 0)
-                            strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim('[', ']');
+                            strCost = strValues[nudRating.ValueAsInt - 1].Trim('[', ']');
                         decimal decCost = Convert.ToDecimal(strCost, GlobalOptions.InvariantCultureInfo) * decMultiplier;
                         decCost *= 1 + (nudMarkup.Value / 100.0m);
                         if (chkBlackMarketDiscount.Checked)
@@ -751,8 +751,8 @@ namespace Chummer
                             if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
                             {
                                 string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                if (strValues.Length >= decimal.ToInt32(nudRating.Value))
-                                    lblCapacity.Text = strValues[decimal.ToInt32(nudRating.Value) - 1];
+                                if (strValues.Length >= nudRating.ValueAsInt)
+                                    lblCapacity.Text = strValues[nudRating.ValueAsInt - 1];
                                 else
                                 {
                                     try
@@ -812,7 +812,7 @@ namespace Chummer
                         if (strCapacityText.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
                             string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                            lblCapacity.Text = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
+                            lblCapacity.Text = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)];
                         }
                         else
                         {
@@ -851,13 +851,13 @@ namespace Chummer
                 if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                 {
                     string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
+                    strExpression = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)].Trim('[', ']');
                 }
 
                 if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                 {
                     StringBuilder objValue = new StringBuilder(strExpression);
-                    objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.Replace("{Rating}", nudRating.ValueAsInt.ToString(GlobalOptions.InvariantCultureInfo));
                     objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
 
@@ -883,13 +883,13 @@ namespace Chummer
                         if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
                             string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                            strExpression = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)].Trim('[', ']');
+                            strExpression = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)].Trim('[', ']');
                         }
 
                         if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                         {
                             StringBuilder objValue = new StringBuilder(strExpression);
-                            objValue.Replace("{Rating}", decimal.ToInt32(nudRating.Value).ToString(GlobalOptions.InvariantCultureInfo));
+                            objValue.Replace("{Rating}", nudRating.ValueAsInt.ToString(GlobalOptions.InvariantCultureInfo));
                             objValue.CheapReplace(strExpression, "{Parent Rating}", () => (_objGearParent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ?? "0");
                             _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
 
@@ -912,7 +912,7 @@ namespace Chummer
                 }
                 if (chkHideOverAvailLimit.Checked)
                 {
-                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckAvailRestriction(_objCharacter, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
+                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt, _intAvailModifier))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -926,7 +926,7 @@ namespace Chummer
                     decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                     if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
                         decCostMultiplier *= 0.9m;
-                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -957,27 +957,29 @@ namespace Chummer
                 sbdFilter.Append(" and category = \"" + strCategory + '\"');
             else if (_setAllowedCategories.Count > 0)
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    sbdFilter.Append(" and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')');
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
             if (_setAllowedNames.Count > 0)
             {
                 StringBuilder sbdNameFilter = new StringBuilder();
-                foreach (var strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
+                foreach (string strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
                 {
-                    sbdNameFilter.Append("name = \"" + strItem + "\" or ");
+                    sbdNameFilter.Append("name = \"").Append(strItem).Append("\" or ");
                 }
                 if (sbdNameFilter.Length > 0)
                 {
-                    sbdFilter.Append(" and (" + sbdNameFilter.ToString().TrimEndOnce(" or ") + ')');
+                    sbdNameFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdNameFilter.ToString()).Append(')');
                 }
             }
             if (ShowArmorCapacityOnly)
@@ -991,9 +993,9 @@ namespace Chummer
             if (_objGearParent == null)
                 sbdFilter.Append(" and not(requireparent)");
             if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
-                sbdFilter.Append(" and ammoforweapontype = \"" + ForceItemAmmoForWeaponType + "\"");
-
-            sbdFilter.Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and ammoforweapontype = \"").Append(ForceItemAmmoForWeaponType).Append("\"");
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
@@ -1123,7 +1125,7 @@ namespace Chummer
                     ? cboCategory.SelectedValue?.ToString()
                     : _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = \"" + strSelectedId + "\"]/category")?.Value;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                _intSelectedRating = decimal.ToInt32(nudRating.Value);
+                _intSelectedRating = nudRating.ValueAsInt;
                 _decSelectedQty = nudGearQty.Value;
                 _decMarkup = nudMarkup.Value;
 

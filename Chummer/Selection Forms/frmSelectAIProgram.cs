@@ -265,29 +265,30 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
 
             string strCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + '\"';
+                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             else
             {
-                StringBuilder objCategoryFilter = new StringBuilder();
+                StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
                 }
-                if (objCategoryFilter.Length > 0)
+                if (sbdCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    sbdCategoryFilter.Length -= 4;
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
                 }
             }
-
-            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrEmpty(txtSearch.Text))
+                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             // Populate the Program list.
-            UpdateProgramList(_xmlBaseChummerNode.Select("programs/program[" + strFilter + ']'));
+            UpdateProgramList(_xmlBaseChummerNode.Select("programs/program[" + sbdFilter.ToString() + ']'));
         }
 
         /// <summary>
@@ -348,9 +349,9 @@ namespace Chummer
             lstPrograms.Sort(CompareListItems.CompareNames);
             lstAIPrograms.BeginUpdate();
             lstAIPrograms.DataSource = null;
+            lstAIPrograms.DataSource = lstPrograms;
             lstAIPrograms.ValueMember = nameof(ListItem.Value);
             lstAIPrograms.DisplayMember = nameof(ListItem.Name);
-            lstAIPrograms.DataSource = lstPrograms;
             lstAIPrograms.EndUpdate();
         }
 

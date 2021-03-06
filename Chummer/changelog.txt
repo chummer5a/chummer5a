@@ -3,7 +3,7 @@ Application Fixes:
 - Added a check for xml files storing invalid characters that prevents the file from being saved or loaded. As test issues have been constrained to issues with the notes, it's assumed that this is mostly coming from ingesting PDF documents. If the issue is found, prompt the user whether they want to load with unsafe settings, as this has a small chance of causing application instability. 
 - Added safeguard to notes save method to prevent them from storing said invalid characters. 
 - Characters with MAG attributes but who are neither magicians nor adepts of any kind no longer have their MAG attribute disappear in Career mode when the optional rule to have Mystic Adepts use a second MAG attribute is enabled.
-- Dark mode's darkened backgrounds have been made slightly lighter (by up to 10%).
+- Dark mode's darkened backgrounds have been made slightly lighter (by up to 20%).
 - Fixed an issue where some sourcebooks would insert ligature characters into an item's notes that Chummer could not handle and would prevent the character from being saved and/or crash whenever the character was opened.
 - When loading a character from a save file, the program now automatically checks if there are any saves in the autosave folder that seem to match the currently loading save file's character and that have a later last write date and time than those of the currently loading save file. If it finds such an autosave, it now prompts the user of whether they want to load the autosave instead, though if they do, the old save file will not be altered until they manually save, just in case they realize that the autosave is not what they want after it has been loaded.
 - Characters with all but one skill disabled in a skill group no longer have their only enabled skill's rating show up as their rating for that skill group.
@@ -27,6 +27,20 @@ Application Fixes:
 - Critter definitions where inherent critter power, inherent gear, and/or natural weapon stats are based on the critter's force no longer cause Chummer to crash.
 - Gear that is added to an armor mod now properly has its parent set to said armor mod, fixing various issues like being unable to delete gear added to an armor mod.
 - The Export screen's preview window no longer displays a preview of the Base64 strings used to store raw image data for mugshots, which should speed up the function considerably.
+- The English names of a character's skills are now also exposed upon exporting said character.
+- Custom improvements for adding echoes and metamagics to a character have been added.
+- The Source label in the weapon mount creation screen is now properly clickable.
+- Vehicle mod costs, availabilities, and slot capacity requirements can now use their parent vehicles' Armor, Sensor, and Pilot ratings.
+- Special whitespace characters necessary for certain languages, e.g. non-breaking spaces in French or zero-width spaces in hyphenated English, are no longer automatically converted to standard, single-width spaces in characters' notes.
+- Armor, Vehicle, Vehicle Mod, Weapon, and Spell selection screens no longer show categories that have no selectable items (usually if the character does not have the necessary books enabled).
+- Adding Gear directly to locations now works properly.
+- Restricted Gear for weapons and/or vehicles that are added by other items no longer counts both the source item and the weapon/vehicle itself as two separate items.
+- Fixed Fettering not being properly allowed for Magicians.
+- Items and improvements that disable specialization bonuses for a skill, e.g. Loss of Confidence, now properly disable them.
+- The dice roller now properly shows updated results after rerolling misses. Fixes #4305.
+- Dropdown boxes in non-English languages now properly display their localized texts and sort by them instead of showing and sorting by English values. Fixes #4319.
+- Fixed an issue in the amend system where if multiple parent nodes were being modified at once with the option to add a node if it is not found, having that node present in only one parent would prevent it from being added to all the parents that were missing it. Fixes a bug that was mentioned off-handedly in #4310.
+- The message for removing or downgrading a quality in Career mode now properly includes the quality's name and the cost of removing it.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
@@ -43,6 +57,20 @@ Data Changes:
 - Removed the Advanced Ritual Casting requirement from Attune Item and Empower rituals. Closes #4277
 - Added separate [Custom Cyberdeck] Firewall gear item for Fuchi Cyber-N.
 - Corrected a few mentor spirit bonus texts that did not have spaces after colons.
+- Added customdata to allow the weapon mounts from Rigger 5 to mount Sporting Rifles. Closes #4287
+- Added Barehanded Adept to quality whitelist for Focused Concentration. Closes #4293
+- Fixed incorrect liner categories for the Ares Victory line. Closes #4299
+- Fixed incorrect weapon types for underbarrel grenade launchers that prevent them from being reloaded properly. Closes #4297
+- Helmets in the custom ruleset "Helmets Are Mods, SWAT and MilSpec Are FBA" now properly have capacities for gear instead of negative armor capacities.
+- Rigger 5.0 attribute increase drone mods now properly consume slot points based on the increase instead of on the total rating. The first level of an attribute increase (the first three for armor) are not also properly free.
+- Weapons that come with Trigger Removal as default no longer get an extra +1 Accuracy compared to their printed statblocks.
+- In Priority-based creation, Apprentices now get the same skill group extras that Aspected Magicians get, though they cannot choose the Enchanting skill group because those skills are forbidden for Apprentices. Fixes #4313.
+- The customdata for letting Rigger 5.0 Standard and Heavy vehicle mounts to sporting rifles now works for proper Rigger 5.0-style weapon mounts as well. Fixes #4289.
+- Fixed incorrect stats for Krime Trollbow Horns.
+- Fixed incorrect specializations for various Carbines from Street Lethal.
+- Removed Hardened Rolling Blades weapon, as No Future says that Rolling Blades are only available in Bladed form.
+- Carbines is now one of the recommended specializations for the Automatics skill.
+- Added customdata that removes Automatics as a skill, placing Machine Pistols into the Pistols skill and all other Automatics weapons into the Longarms skill. Heavy Weapons replaces Automatics in the Firearms skill group. Implements #4310.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

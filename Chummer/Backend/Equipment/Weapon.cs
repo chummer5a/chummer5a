@@ -211,8 +211,8 @@ namespace Chummer.Backend.Equipment
             if (_strMaxRating == "0")
                 _strMaxRating = string.Empty;
             objXmlWeapon.TryGetStringFieldQuickly("minrating", ref _strMinRating);
-            if (!objXmlWeapon.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlWeapon.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlWeapon.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -278,8 +278,8 @@ namespace Chummer.Backend.Equipment
                     _strDoubledCostWeaponSlots = strMounts.ToString();
                 }
             }
-            if (!objXmlWeapon.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlWeapon.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlWeapon.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             _nodWirelessBonus = objXmlWeapon["wirelessbonus"];
             objXmlWeapon.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
             objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
@@ -5116,7 +5116,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strOutRestrictedItem">Item that is being used for Restricted Gear (tracked across gear children).</param>
         public void CheckRestrictedGear(bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intOutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
         {
-            if (!IncludedInWeapon)
+            if (!IncludedInWeapon && string.IsNullOrEmpty(ParentID))
             {
                 AvailabilityValue objTotalAvail = TotalAvailTuple();
                 if (!objTotalAvail.AddToParent)
@@ -5343,7 +5343,7 @@ namespace Chummer.Backend.Equipment
                     objSelectedAmmo = objExternalSource;
                 }
 
-                AmmoRemaining = decimal.ToInt32(decQty);
+                AmmoRemaining = decQty.ToInt32();
                 AmmoLoaded = objSelectedAmmo.InternalId;
             }
         }
