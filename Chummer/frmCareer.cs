@@ -5108,8 +5108,10 @@ namespace Chummer
                     return false;
                 }
 
-                if (!blnMetatypeQuality && blnConfirmDelete && !CharacterObject.ConfirmKarmaExpense(blnCompleteDelete ? LanguageManager.GetString("Message_ConfirmKarmaExpenseRemove") :
-                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseLowerLevel"), objSelectedQuality.DisplayNameShort(GlobalOptions.Language), intTotalKarmaCost.ToString(GlobalOptions.CultureInfo))))
+                if (!blnMetatypeQuality && blnConfirmDelete && !CharacterObject.ConfirmKarmaExpense(
+                    string.Format(GlobalOptions.CultureInfo, blnCompleteDelete
+                        ? LanguageManager.GetString("Message_ConfirmKarmaExpenseRemove") : LanguageManager.GetString("Message_ConfirmKarmaExpenseLowerLevel"),
+                        objSelectedQuality.DisplayNameShort(GlobalOptions.Language), intTotalKarmaCost)))
                     return false;
 
                 // Create the Karma expense.

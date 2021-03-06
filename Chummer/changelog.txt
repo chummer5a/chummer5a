@@ -40,6 +40,7 @@ Application Fixes:
 - The dice roller now properly shows updated results after rerolling misses. Fixes #4305.
 - Dropdown boxes in non-English languages now properly display their localized texts and sort by them instead of showing and sorting by English values. Fixes #4319.
 - Fixed an issue in the amend system where if multiple parent nodes were being modified at once with the option to add a node if it is not found, having that node present in only one parent would prevent it from being added to all the parents that were missing it. Fixes a bug that was mentioned off-handedly in #4310.
+- The message for removing or downgrading a quality in Career mode now properly includes the quality's name and the cost of removing it.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
