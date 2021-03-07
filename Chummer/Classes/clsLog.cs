@@ -347,28 +347,28 @@ namespace Chummer
             Stopwatch sw = Stopwatch.StartNew();
             //TODO: Add timestamp to logs
 
-            StringBuilder objTimeStamper = new StringBuilder(loglevel + "\t");
-            objTimeStamper.Append(file.SplitNoAlloc(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).LastOrDefault() ?? string.Empty)
+            StringBuilder sbdTimeStamper = new StringBuilder(loglevel + "\t")
+                .Append(file.SplitNoAlloc(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).LastOrDefault() ?? string.Empty)
                 .Append('.').Append(method).Append(':').Append(line);
 
             if (info != null)
             {
                 bool blnItemAdded = false;
-                objTimeStamper.Append(' ');
+                sbdTimeStamper.Append(' ');
                 foreach (string time in info)
                 {
                     if (string.IsNullOrWhiteSpace(time))
                         continue;
                     blnItemAdded = true;
-                    objTimeStamper.Append(time).Append(", ");
+                    sbdTimeStamper.Append(time).Append(", ");
                 }
 
-                objTimeStamper.Length -= blnItemAdded ? 2 : 1;
+                sbdTimeStamper.Length -= blnItemAdded ? 2 : 1;
             }
 
             sw.TaskEnd("makeentry");
 
-            string strTimeStamp = objTimeStamper.ToString();
+            string strTimeStamp = sbdTimeStamper.ToString();
             lock (s_LogWriterLock)
                 s_LogWriter?.WriteLine(strTimeStamp);
             sw.TaskEnd("filewrite");

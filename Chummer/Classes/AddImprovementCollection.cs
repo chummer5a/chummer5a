@@ -5812,15 +5812,15 @@ namespace Chummer.Classes
             {
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
 
-                StringBuilder objCountString = new StringBuilder(bonusNode.Attributes?["count"]?.InnerText);
+                StringBuilder sbdCountString = new StringBuilder(bonusNode.Attributes?["count"]?.InnerText);
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
-                    objCountString.CheapReplace(strCount, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objCountString.CheapReplace(strCount, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
+                    sbdCountString.CheapReplace(strCount, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    sbdCountString.CheapReplace(strCount, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCountString.ToString(), out bool blnIsSuccess);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdCountString.ToString(), out bool blnIsSuccess);
                 powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
             }
 

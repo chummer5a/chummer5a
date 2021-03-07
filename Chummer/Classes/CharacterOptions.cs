@@ -1563,13 +1563,13 @@ namespace Chummer
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
-                    StringBuilder objNuyenFormat = string.IsNullOrEmpty(NuyenFormat) ? new StringBuilder("#,0") : new StringBuilder(NuyenFormat);
+                    StringBuilder sbdNuyenFormat = string.IsNullOrEmpty(NuyenFormat) ? new StringBuilder("#,0") : new StringBuilder(NuyenFormat);
                     if (intCurrentNuyenDecimals == 0)
                     {
-                        objNuyenFormat.Append(".");
+                        sbdNuyenFormat.Append(".");
                         for (int i = 0; i < intNewNuyenDecimals; ++i)
                         {
-                            objNuyenFormat.Append("0");
+                            sbdNuyenFormat.Append("0");
                         }
                     }
                     else
@@ -1578,10 +1578,10 @@ namespace Chummer
                         intNewNuyenDecimals -= intCurrentNuyenDecimals;
                         for (int i = 0; i < intNewNuyenDecimals; ++i)
                         {
-                            objNuyenFormat.Append(strDecimalTypeToAdd);
+                            sbdNuyenFormat.Append(strDecimalTypeToAdd);
                         }
                     }
-                    NuyenFormat = objNuyenFormat.ToString();
+                    NuyenFormat = sbdNuyenFormat.ToString();
                 }
             }
         }
