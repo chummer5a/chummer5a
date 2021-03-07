@@ -343,7 +343,7 @@ namespace Chummer
             else
             {
                 HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
-                for (int iI = lsbCustomDataDirectories.Items.Count; iI >= 0; --iI)
+                for (int iI = lsbCustomDataDirectories.Items.Count - 1; iI >= 0; --iI)
                 {
                     ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
                     CustomDataDirectoryInfo objExistingInfo = objExistingItem.Value as CustomDataDirectoryInfo;

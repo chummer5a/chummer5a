@@ -73,7 +73,6 @@ namespace Chummer
                             }
                             else
                                 XPathContent = null;
-
                             IsLoaded = true;
                         }
                     }
@@ -273,13 +272,20 @@ namespace Chummer
             if (!s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
             {
                 int intEmergencyRelease = 0;
-                while (xmlReferenceOfReturn == null)
+                while (true) // Hacky as heck, but it works for now. We break either when we successfully add our XmlReference to the dictionary.
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     xmlReferenceOfReturn = new XmlReference();
-                    blnLoadFile = s_DicXmlDocuments.TryAdd(intDataConfigHash, xmlReferenceOfReturn);
-                    if (!blnLoadFile) // It somehow got added in the meantime, so let's fetch it again
+                    if (s_DicXmlDocuments.TryAdd(intDataConfigHash, xmlReferenceOfReturn))
+                    {
+                        blnLoadFile = true;
+                        break;
+                    }
+                    else
+                    {
+                        // It somehow got added in the meantime, so let's fetch it again
                         s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                    }
                     if (intEmergencyRelease > 1000) // Shouldn't every happen, but just in case it does, emergency exit out of the loading function
                     {
                         Utils.BreakIfDebug();

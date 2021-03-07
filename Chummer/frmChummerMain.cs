@@ -235,8 +235,10 @@ namespace Chummer
                             {
                                 Parallel.ForEach(s_astrPreloadFileNames, x =>
                                 {
+                                    _frmLoading.PerformStep(x);
                                     XmlManager.Load(x);
-                                    _frmLoading.PerformStep(Application.ProductName);
+                                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                        XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
                                 });
                             });
                             //Timekeeper.Finish("cache_load");
@@ -322,14 +324,7 @@ namespace Chummer
                         }
 
                         _frmLoading.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
-                        if (blnShowTest)
-                        {
-                            frmTest frmTestData = new frmTest();
-                            frmTestData.Show();
-                        }
-
-                        if (lstCharactersToLoad.Count > 0)
-                            OpenCharacterList(lstCharactersToLoad);
+                        
                         if (CharacterRoster != null)
                         {
                             if (MasterIndex == null)
@@ -343,6 +338,15 @@ namespace Chummer
                             MasterIndex.WindowState = FormWindowState.Maximized;
                             CharacterRoster.WindowState = FormWindowState.Maximized;
                         }
+
+                        if (blnShowTest)
+                        {
+                            frmTest frmTestData = new frmTest();
+                            frmTestData.Show();
+                        }
+
+                        if (lstCharactersToLoad.Count > 0)
+                            OpenCharacterList(lstCharactersToLoad);
                     }
 
                     Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
