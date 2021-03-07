@@ -326,8 +326,10 @@ namespace Chummer
                     ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
                     ListItem objNewListItem =
                         new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                    cboSetting.BeginUpdate();
                     cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
                     cboSetting.SelectedItem = objNewListItem;
+                    cboSetting.EndUpdate();
                 }
 
                 _objReferenceCharacterOptions = objNewOption;
@@ -367,8 +369,10 @@ namespace Chummer
                     ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
                     ListItem objNewListItem =
                         new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                    cboSetting.BeginUpdate();
                     cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
                     cboSetting.SelectedItem = objNewListItem;
+                    cboSetting.EndUpdate();
                 }
 
                 _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
@@ -622,6 +626,7 @@ namespace Chummer
 
             // Put the Sourcebooks into a List so they can first be sorted.
             object objOldSelected = treSourcebook.SelectedNode?.Tag;
+            treSourcebook.BeginUpdate();
             treSourcebook.Nodes.Clear();
             _setPermanentSourcebooks.Clear();
             using (XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book"))
@@ -654,12 +659,14 @@ namespace Chummer
             treSourcebook.Sort();
             if (objOldSelected != null)
                 treSourcebook.SelectedNode = treSourcebook.FindNodeByTag(objOldSelected);
+            treSourcebook.EndUpdate();
         }
 
         private void PopulateCustomDataDirectoryTreeView()
         {
             object objOldSelected = treCustomDataDirectories.SelectedNode?.Tag;
-            if(_lstCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
+            treCustomDataDirectories.BeginUpdate();
+            if (_lstCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
             {
                 treCustomDataDirectories.Nodes.Clear();
 
@@ -704,6 +711,7 @@ namespace Chummer
 
             if(objOldSelected != null)
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
+            treCustomDataDirectories.EndUpdate();
         }
 
         /// <summary>
@@ -811,8 +819,6 @@ namespace Chummer
 
         private void PopulateAllowedGrades()
         {
-            flpAllowedCyberwareGrades.Controls.Clear();
-
             List<ListItem> lstGrades = new List<ListItem>();
 
             using (XmlNodeList objXmlNodeList = XmlManager.Load("bioware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
@@ -862,6 +868,8 @@ namespace Chummer
                 }
             }
 
+            flpAllowedCyberwareGrades.SuspendLayout();
+            flpAllowedCyberwareGrades.Controls.Clear();
             foreach (ListItem objGrade in lstGrades)
             {
                 CheckBox chkGrade = new CheckBox
@@ -876,20 +884,20 @@ namespace Chummer
                 chkGrade.CheckedChanged += chkGrade_CheckedChanged;
                 flpAllowedCyberwareGrades.Controls.Add(chkGrade);
             }
+            flpAllowedCyberwareGrades.ResumeLayout();
         }
 
         private void SetToolTips()
         {
-            const int width = 100;
-            chkUnarmedSkillImprovements.SetToolTip(LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements").WordWrap(width));
-            chkIgnoreArt.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreArt").WordWrap(width));
-            chkIgnoreComplexFormLimit.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreComplexFormLimit").WordWrap(width));
-            chkCyberlegMovement.SetToolTip(LanguageManager.GetString("Tip_OptionsCyberlegMovement").WordWrap(width));
-            chkDontDoubleQualityPurchases.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases").WordWrap(width));
-            chkDontDoubleQualityRefunds.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds").WordWrap(width));
-            chkStrictSkillGroups.SetToolTip(LanguageManager.GetString("Tip_OptionStrictSkillGroups").WordWrap(width));
-            chkAllowInitiation.SetToolTip(LanguageManager.GetString("Tip_OptionsAllowInitiation").WordWrap(width));
-            chkUseCalculatedPublicAwareness.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness").WordWrap(width));
+            chkUnarmedSkillImprovements.SetToolTip(LanguageManager.GetString("Tip_OptionsUnarmedSkillImprovements").WordWrap());
+            chkIgnoreArt.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreArt").WordWrap());
+            chkIgnoreComplexFormLimit.SetToolTip(LanguageManager.GetString("Tip_OptionsIgnoreComplexFormLimit").WordWrap());
+            chkCyberlegMovement.SetToolTip(LanguageManager.GetString("Tip_OptionsCyberlegMovement").WordWrap());
+            chkDontDoubleQualityPurchases.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityPurchases").WordWrap());
+            chkDontDoubleQualityRefunds.SetToolTip(LanguageManager.GetString("Tip_OptionsDontDoubleQualityRefunds").WordWrap());
+            chkStrictSkillGroups.SetToolTip(LanguageManager.GetString("Tip_OptionStrictSkillGroups").WordWrap());
+            chkAllowInitiation.SetToolTip(LanguageManager.GetString("Tip_OptionsAllowInitiation").WordWrap());
+            chkUseCalculatedPublicAwareness.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness").WordWrap());
         }
 
         private void SetupDataBindings()
