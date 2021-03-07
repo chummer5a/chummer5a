@@ -45,12 +45,8 @@ namespace Chummer
             this.nudMaxAvail = new Chummer.NumericUpDownEx();
             this.cboPriorityTable = new Chummer.ElasticComboBox();
             this.lblPriorityTable = new System.Windows.Forms.Label();
-            this.lblSumToTen = new System.Windows.Forms.Label();
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
-            this.lblPriorities = new Chummer.LabelWithToolTip();
-            this.txtPriorities = new System.Windows.Forms.TextBox();
-            this.nudSumToTen = new Chummer.NumericUpDownEx();
             this.lblMaxNuyenKarma = new System.Windows.Forms.Label();
             this.lblMaxAvail = new System.Windows.Forms.Label();
             this.nudMaxNuyenKarma = new Chummer.NumericUpDownEx();
@@ -63,6 +59,10 @@ namespace Chummer
             this.nudQualityKarmaLimit = new Chummer.NumericUpDownEx();
             this.lblStartingKarma = new System.Windows.Forms.Label();
             this.nudStartingKarma = new Chummer.NumericUpDownEx();
+            this.lblPriorities = new Chummer.LabelWithToolTip();
+            this.txtPriorities = new System.Windows.Forms.TextBox();
+            this.nudSumToTen = new Chummer.NumericUpDownEx();
+            this.lblSumToTen = new System.Windows.Forms.Label();
             this.gpbBasicOptionsPrinting = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsPrinting = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkPrintSkillsWithZeroRating = new System.Windows.Forms.CheckBox();
@@ -291,10 +291,10 @@ namespace Chummer
             this.gpbBasicOptionsCreateSettings.SuspendLayout();
             this.tlpBasicOptionsCreateSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
             this.gpbBasicOptionsPrinting.SuspendLayout();
             this.tlpBasicOptionsPrinting.SuspendLayout();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
@@ -515,7 +515,7 @@ namespace Chummer
             this.gpbBasicOptionsCreateSettings.Controls.Add(this.tlpBasicOptionsCreateSettings);
             this.gpbBasicOptionsCreateSettings.Location = new System.Drawing.Point(3, 3);
             this.gpbBasicOptionsCreateSettings.Name = "gpbBasicOptionsCreateSettings";
-            this.gpbBasicOptionsCreateSettings.Size = new System.Drawing.Size(468, 229);
+            this.gpbBasicOptionsCreateSettings.Size = new System.Drawing.Size(468, 202);
             this.gpbBasicOptionsCreateSettings.TabIndex = 5;
             this.gpbBasicOptionsCreateSettings.TabStop = false;
             this.gpbBasicOptionsCreateSettings.Tag = "Label_CharacterOptions_CharacterCreationSettings";
@@ -530,33 +530,32 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpBasicOptionsCreateSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBasicOptionsCreateSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblAllowedCyberwareGrades, 2, 5);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblAllowedCyberwareGrades, 2, 4);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxAvail, 3, 0);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.cboPriorityTable, 1, 1);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblPriorityTable, 0, 1);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblSumToTen, 0, 3);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblBuildMethod, 0, 0);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.cboBuildMethod, 1, 0);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblPriorities, 0, 2);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtPriorities, 1, 2);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudSumToTen, 1, 3);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxNuyenKarma, 2, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxNuyenKarma, 2, 3);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxAvail, 2, 0);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxNuyenKarma, 3, 4);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.flpAllowedCyberwareGrades, 2, 6);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblKnowledgePoints, 0, 7);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblContactPoints, 0, 6);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtKnowledgePoints, 1, 7);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblQualityKarmaLimit, 0, 5);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtContactPoints, 1, 6);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudQualityKarmaLimit, 1, 5);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblStartingKarma, 0, 4);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudStartingKarma, 1, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxNuyenKarma, 3, 3);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.flpAllowedCyberwareGrades, 2, 5);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblKnowledgePoints, 0, 6);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblContactPoints, 0, 5);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtKnowledgePoints, 1, 6);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblQualityKarmaLimit, 0, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtContactPoints, 1, 5);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudQualityKarmaLimit, 1, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblStartingKarma, 0, 3);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudStartingKarma, 1, 3);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblPriorities, 2, 1);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtPriorities, 3, 1);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudSumToTen, 3, 2);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblSumToTen, 2, 2);
             this.tlpBasicOptionsCreateSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBasicOptionsCreateSettings.Location = new System.Drawing.Point(3, 16);
             this.tlpBasicOptionsCreateSettings.Name = "tlpBasicOptionsCreateSettings";
-            this.tlpBasicOptionsCreateSettings.RowCount = 9;
-            this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsCreateSettings.RowCount = 8;
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -565,7 +564,8 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsCreateSettings.Size = new System.Drawing.Size(462, 210);
+            this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpBasicOptionsCreateSettings.Size = new System.Drawing.Size(462, 183);
             this.tlpBasicOptionsCreateSettings.TabIndex = 0;
             // 
             // lblAllowedCyberwareGrades
@@ -573,7 +573,7 @@ namespace Chummer
             this.lblAllowedCyberwareGrades.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblAllowedCyberwareGrades.AutoSize = true;
             this.tlpBasicOptionsCreateSettings.SetColumnSpan(this.lblAllowedCyberwareGrades, 2);
-            this.lblAllowedCyberwareGrades.Location = new System.Drawing.Point(291, 139);
+            this.lblAllowedCyberwareGrades.Location = new System.Drawing.Point(291, 112);
             this.lblAllowedCyberwareGrades.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAllowedCyberwareGrades.Name = "lblAllowedCyberwareGrades";
             this.lblAllowedCyberwareGrades.Size = new System.Drawing.Size(134, 13);
@@ -606,37 +606,27 @@ namespace Chummer
             this.cboPriorityTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPriorityTable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPriorityTable.FormattingEnabled = true;
-            this.cboPriorityTable.Location = new System.Drawing.Point(105, 30);
+            this.cboPriorityTable.Location = new System.Drawing.Point(105, 42);
             this.cboPriorityTable.Name = "cboPriorityTable";
+            this.tlpBasicOptionsCreateSettings.SetRowSpan(this.cboPriorityTable, 2);
             this.cboPriorityTable.Size = new System.Drawing.Size(180, 21);
             this.cboPriorityTable.TabIndex = 18;
             this.cboPriorityTable.TooltipText = "";
+            this.cboPriorityTable.SelectedIndexChanged += new System.EventHandler(this.cboPriorityTable_SelectedIndexChanged);
             // 
             // lblPriorityTable
             // 
             this.lblPriorityTable.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPriorityTable.AutoSize = true;
-            this.lblPriorityTable.Location = new System.Drawing.Point(31, 34);
+            this.lblPriorityTable.Location = new System.Drawing.Point(31, 46);
             this.lblPriorityTable.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPriorityTable.Name = "lblPriorityTable";
+            this.tlpBasicOptionsCreateSettings.SetRowSpan(this.lblPriorityTable, 2);
             this.lblPriorityTable.Size = new System.Drawing.Size(68, 13);
             this.lblPriorityTable.TabIndex = 17;
             this.lblPriorityTable.Tag = "Label_CharacterOptions_PriorityTable";
             this.lblPriorityTable.Text = "Priority Table";
             this.lblPriorityTable.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblSumToTen
-            // 
-            this.lblSumToTen.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSumToTen.AutoSize = true;
-            this.lblSumToTen.Location = new System.Drawing.Point(37, 86);
-            this.lblSumToTen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSumToTen.Name = "lblSumToTen";
-            this.lblSumToTen.Size = new System.Drawing.Size(62, 13);
-            this.lblSumToTen.TabIndex = 4;
-            this.lblSumToTen.Tag = "Label_SelectBP_SumToX";
-            this.lblSumToTen.Text = "Sum to Ten";
-            this.lblSumToTen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblBuildMethod
             // 
@@ -662,55 +652,11 @@ namespace Chummer
             this.cboBuildMethod.TabIndex = 1;
             this.cboBuildMethod.TooltipText = "";
             // 
-            // lblPriorities
-            // 
-            this.lblPriorities.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblPriorities.AutoSize = true;
-            this.lblPriorities.Location = new System.Drawing.Point(53, 60);
-            this.lblPriorities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPriorities.Name = "lblPriorities";
-            this.lblPriorities.Size = new System.Drawing.Size(46, 13);
-            this.lblPriorities.TabIndex = 2;
-            this.lblPriorities.Tag = "Label_SelectBP_Priorities";
-            this.lblPriorities.Text = "Priorities";
-            this.lblPriorities.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblPriorities.ToolTipText = "";
-            // 
-            // txtPriorities
-            // 
-            this.txtPriorities.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPriorities.Location = new System.Drawing.Point(105, 57);
-            this.txtPriorities.MaxLength = 5;
-            this.txtPriorities.Name = "txtPriorities";
-            this.txtPriorities.Size = new System.Drawing.Size(180, 20);
-            this.txtPriorities.TabIndex = 3;
-            this.txtPriorities.TextChanged += new System.EventHandler(this.txtPriorities_TextChanged);
-            this.txtPriorities.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPriorities_KeyPress);
-            // 
-            // nudSumToTen
-            // 
-            this.nudSumToTen.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudSumToTen.AutoSize = true;
-            this.nudSumToTen.Location = new System.Drawing.Point(105, 83);
-            this.nudSumToTen.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudSumToTen.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudSumToTen.Name = "nudSumToTen";
-            this.nudSumToTen.Size = new System.Drawing.Size(41, 20);
-            this.nudSumToTen.TabIndex = 5;
-            // 
             // lblMaxNuyenKarma
             // 
             this.lblMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMaxNuyenKarma.AutoSize = true;
-            this.lblMaxNuyenKarma.Location = new System.Drawing.Point(300, 112);
+            this.lblMaxNuyenKarma.Location = new System.Drawing.Point(300, 85);
             this.lblMaxNuyenKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxNuyenKarma.Name = "lblMaxNuyenKarma";
             this.lblMaxNuyenKarma.Size = new System.Drawing.Size(94, 13);
@@ -736,7 +682,7 @@ namespace Chummer
             // 
             this.nudMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudMaxNuyenKarma.AutoSize = true;
-            this.nudMaxNuyenKarma.Location = new System.Drawing.Point(400, 109);
+            this.nudMaxNuyenKarma.Location = new System.Drawing.Point(400, 82);
             this.nudMaxNuyenKarma.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -758,7 +704,7 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.SetColumnSpan(this.flpAllowedCyberwareGrades, 2);
             this.flpAllowedCyberwareGrades.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpAllowedCyberwareGrades.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpAllowedCyberwareGrades.Location = new System.Drawing.Point(288, 158);
+            this.flpAllowedCyberwareGrades.Location = new System.Drawing.Point(288, 131);
             this.flpAllowedCyberwareGrades.Margin = new System.Windows.Forms.Padding(0);
             this.flpAllowedCyberwareGrades.Name = "flpAllowedCyberwareGrades";
             this.tlpBasicOptionsCreateSettings.SetRowSpan(this.flpAllowedCyberwareGrades, 3);
@@ -770,7 +716,7 @@ namespace Chummer
             // 
             this.lblKnowledgePoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKnowledgePoints.AutoSize = true;
-            this.lblKnowledgePoints.Location = new System.Drawing.Point(7, 190);
+            this.lblKnowledgePoints.Location = new System.Drawing.Point(7, 163);
             this.lblKnowledgePoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKnowledgePoints.Name = "lblKnowledgePoints";
             this.lblKnowledgePoints.Size = new System.Drawing.Size(92, 13);
@@ -784,7 +730,7 @@ namespace Chummer
             // 
             this.lblContactPoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblContactPoints.AutoSize = true;
-            this.lblContactPoints.Location = new System.Drawing.Point(23, 164);
+            this.lblContactPoints.Location = new System.Drawing.Point(23, 137);
             this.lblContactPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblContactPoints.Name = "lblContactPoints";
             this.lblContactPoints.Size = new System.Drawing.Size(76, 13);
@@ -797,7 +743,7 @@ namespace Chummer
             // txtKnowledgePoints
             // 
             this.txtKnowledgePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtKnowledgePoints.Location = new System.Drawing.Point(105, 187);
+            this.txtKnowledgePoints.Location = new System.Drawing.Point(105, 160);
             this.txtKnowledgePoints.Name = "txtKnowledgePoints";
             this.txtKnowledgePoints.Size = new System.Drawing.Size(180, 20);
             this.txtKnowledgePoints.TabIndex = 3;
@@ -808,7 +754,7 @@ namespace Chummer
             // 
             this.lblQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblQualityKarmaLimit.AutoSize = true;
-            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(3, 138);
+            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(3, 111);
             this.lblQualityKarmaLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblQualityKarmaLimit.Name = "lblQualityKarmaLimit";
             this.lblQualityKarmaLimit.Size = new System.Drawing.Size(96, 13);
@@ -820,7 +766,7 @@ namespace Chummer
             // txtContactPoints
             // 
             this.txtContactPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtContactPoints.Location = new System.Drawing.Point(105, 161);
+            this.txtContactPoints.Location = new System.Drawing.Point(105, 134);
             this.txtContactPoints.Name = "txtContactPoints";
             this.txtContactPoints.Size = new System.Drawing.Size(180, 20);
             this.txtContactPoints.TabIndex = 2;
@@ -831,7 +777,7 @@ namespace Chummer
             // 
             this.nudQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudQualityKarmaLimit.AutoSize = true;
-            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(105, 135);
+            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(105, 108);
             this.nudQualityKarmaLimit.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -850,7 +796,7 @@ namespace Chummer
             // 
             this.lblStartingKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblStartingKarma.AutoSize = true;
-            this.lblStartingKarma.Location = new System.Drawing.Point(23, 112);
+            this.lblStartingKarma.Location = new System.Drawing.Point(23, 85);
             this.lblStartingKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblStartingKarma.Name = "lblStartingKarma";
             this.lblStartingKarma.Size = new System.Drawing.Size(76, 13);
@@ -863,7 +809,7 @@ namespace Chummer
             // 
             this.nudStartingKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudStartingKarma.AutoSize = true;
-            this.nudStartingKarma.Location = new System.Drawing.Point(105, 109);
+            this.nudStartingKarma.Location = new System.Drawing.Point(105, 82);
             this.nudStartingKarma.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -877,6 +823,63 @@ namespace Chummer
             this.nudStartingKarma.Name = "nudStartingKarma";
             this.nudStartingKarma.Size = new System.Drawing.Size(59, 20);
             this.nudStartingKarma.TabIndex = 24;
+            // 
+            // lblPriorities
+            // 
+            this.lblPriorities.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblPriorities.AutoSize = true;
+            this.lblPriorities.Location = new System.Drawing.Point(348, 33);
+            this.lblPriorities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPriorities.Name = "lblPriorities";
+            this.lblPriorities.Size = new System.Drawing.Size(46, 13);
+            this.lblPriorities.TabIndex = 2;
+            this.lblPriorities.Tag = "Label_SelectBP_Priorities";
+            this.lblPriorities.Text = "Priorities";
+            this.lblPriorities.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblPriorities.ToolTipText = "";
+            // 
+            // txtPriorities
+            // 
+            this.txtPriorities.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPriorities.Location = new System.Drawing.Point(400, 30);
+            this.txtPriorities.MaxLength = 5;
+            this.txtPriorities.Name = "txtPriorities";
+            this.txtPriorities.Size = new System.Drawing.Size(59, 20);
+            this.txtPriorities.TabIndex = 3;
+            this.txtPriorities.TextChanged += new System.EventHandler(this.txtPriorities_TextChanged);
+            this.txtPriorities.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPriorities_KeyPress);
+            // 
+            // nudSumToTen
+            // 
+            this.nudSumToTen.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudSumToTen.AutoSize = true;
+            this.nudSumToTen.Location = new System.Drawing.Point(400, 56);
+            this.nudSumToTen.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudSumToTen.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudSumToTen.Name = "nudSumToTen";
+            this.nudSumToTen.Size = new System.Drawing.Size(41, 20);
+            this.nudSumToTen.TabIndex = 5;
+            // 
+            // lblSumToTen
+            // 
+            this.lblSumToTen.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSumToTen.AutoSize = true;
+            this.lblSumToTen.Location = new System.Drawing.Point(332, 59);
+            this.lblSumToTen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSumToTen.Name = "lblSumToTen";
+            this.lblSumToTen.Size = new System.Drawing.Size(62, 13);
+            this.lblSumToTen.TabIndex = 4;
+            this.lblSumToTen.Tag = "Label_SelectBP_SumToX";
+            this.lblSumToTen.Text = "Sum to Ten";
+            this.lblSumToTen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // gpbBasicOptionsPrinting
             // 
@@ -966,7 +969,7 @@ namespace Chummer
             this.gpbBasicOptionsOfficialRules.AutoSize = true;
             this.gpbBasicOptionsOfficialRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbBasicOptionsOfficialRules.Controls.Add(this.tlpBasicOptionsOfficialRules);
-            this.gpbBasicOptionsOfficialRules.Location = new System.Drawing.Point(3, 238);
+            this.gpbBasicOptionsOfficialRules.Location = new System.Drawing.Point(3, 211);
             this.gpbBasicOptionsOfficialRules.Name = "gpbBasicOptionsOfficialRules";
             this.gpbBasicOptionsOfficialRules.Size = new System.Drawing.Size(472, 228);
             this.gpbBasicOptionsOfficialRules.TabIndex = 3;
@@ -1126,7 +1129,7 @@ namespace Chummer
             this.gpbBasicOptionsCyberlimbs.AutoSize = true;
             this.gpbBasicOptionsCyberlimbs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbBasicOptionsCyberlimbs.Controls.Add(this.tlpBasicOptionsCyberlimbs);
-            this.gpbBasicOptionsCyberlimbs.Location = new System.Drawing.Point(481, 238);
+            this.gpbBasicOptionsCyberlimbs.Location = new System.Drawing.Point(481, 211);
             this.gpbBasicOptionsCyberlimbs.Name = "gpbBasicOptionsCyberlimbs";
             this.gpbBasicOptionsCyberlimbs.Size = new System.Drawing.Size(385, 143);
             this.gpbBasicOptionsCyberlimbs.TabIndex = 2;
@@ -1371,7 +1374,7 @@ namespace Chummer
             this.gpbBasicOptionsRounding.AutoSize = true;
             this.gpbBasicOptionsRounding.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbBasicOptionsRounding.Controls.Add(this.tlpBasicOptionsRounding);
-            this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(3, 472);
+            this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(3, 445);
             this.gpbBasicOptionsRounding.Name = "gpbBasicOptionsRounding";
             this.gpbBasicOptionsRounding.Size = new System.Drawing.Size(361, 120);
             this.gpbBasicOptionsRounding.TabIndex = 1;
@@ -4328,10 +4331,10 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.ResumeLayout(false);
             this.tlpBasicOptionsCreateSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
             this.gpbBasicOptionsPrinting.ResumeLayout(false);
             this.gpbBasicOptionsPrinting.PerformLayout();
             this.tlpBasicOptionsPrinting.ResumeLayout(false);

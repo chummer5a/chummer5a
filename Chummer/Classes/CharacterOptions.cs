@@ -397,7 +397,9 @@ namespace Chummer
         /// <summary>
         /// Save the current settings to the settings file.
         /// </summary>
-        public bool Save(string strNewFileName = "")
+        /// <param name="strNewFileName">New file name to use. If empty, uses the existing, built-in file name.</param>
+        /// <param name="blnClearSourceGuid">Whether to clear SourceId after a successful save or not. Used to turn built-in options into custom ones.</param>
+        public bool Save(string strNewFileName = "", bool blnClearSourceGuid = false)
         {
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -431,7 +433,7 @@ namespace Chummer
                     objWriter.WriteStartElement("settings");
 
                     // <id />
-                    objWriter.WriteElementString("id", _guiSourceId.ToString("D", GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("id", (blnClearSourceGuid ? Guid.Empty : _guiSourceId).ToString("D", GlobalOptions.InvariantCultureInfo));
                     // <name />
                     objWriter.WriteElementString("name", _strName);
 
@@ -737,6 +739,8 @@ namespace Chummer
                 }
             }
 
+            if (blnClearSourceGuid)
+                _guiSourceId = Guid.Empty;
             return true;
         }
 

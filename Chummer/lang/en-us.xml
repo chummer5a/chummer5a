@@ -7778,16 +7778,28 @@
       <text>Enter a new name for your setting.</text>
     </string>
     <string>
-      <key>Message_CharacterOptions_DuplicateSettingFileName</key>
-      <text>A setting with a file name of {0} already exists. Please select a different file name.</text>
+      <key>Message_CharacterOptions_DuplicateSettingName</key>
+      <text>A setting with a name of {0} already exists. Saving a new setting with the same name will not override the existing setting, instead it will create two settings with the same name.\nDo you wish to create two settings with the same name?</text>
     </string>
     <string>
-      <key>MessageTitle_CharacterOptions_DuplicateSettingFileName</key>
-      <text>Duplicate Setting File Name</text>
+      <key>MessageTitle_CharacterOptions_DuplicateSettingName</key>
+      <text>Setting Name Already Exists</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SelectSettingName</key>
+      <text>Enter a name for your setting.</text>
     </string>
     <string>
       <key>Message_CharacterOptions_SelectSettingFileName</key>
       <text>Enter a file name for your setting.</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SettingFileNameTooLongError</key>
+      <text>Chummer has encountered an issue trying to save this setting because there are too many existing settings with similar file names to the name you have given.\nThis is an issue that is too rare and too complicated for Chummer to work around automatically. Please give this setting a different name and then rename it after it has saved.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_SettingFileNameTooLongError</key>
+      <text>No Valid Settings Name Possible</text>
     </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->

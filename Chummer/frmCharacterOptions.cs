@@ -42,6 +42,8 @@ namespace Chummer
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
         private bool _blnIsLayoutSuspended = true;
+        // Used to revert to old selected setting if user cancels out of selecting a different one
+        private int _intOldSelectedSettingIndex = -1;
         private readonly HashSet<string> _setPermanentSourcebooks = new HashSet<string>();
 
         #region Form Events
@@ -70,11 +72,8 @@ namespace Chummer
             cboBuildMethod.BeginUpdate();
             cboBuildMethod.DataSource = null;
             cboBuildMethod.DataSource = lstBuildMethods;
-            if (_blnLoading)
-            {
-                cboBuildMethod.ValueMember = nameof(ListItem.Value);
-                cboBuildMethod.DisplayMember = nameof(ListItem.Name);
-            }
+            cboBuildMethod.ValueMember = nameof(ListItem.Value);
+            cboBuildMethod.DisplayMember = nameof(ListItem.Name);
             cboBuildMethod.EndUpdate();
 
             PopulateOptions();
@@ -159,6 +158,7 @@ namespace Chummer
                     _blnIsLayoutSuspended = false;
                     ResumeLayout();
                 }
+                _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
         }
 
@@ -174,7 +174,7 @@ namespace Chummer
 
             try
             {
-                File.Delete(_objReferenceCharacterOptions.FileName);
+                File.Delete(Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterOptions.FileName));
             }
             catch (UnauthorizedAccessException)
             {
@@ -214,35 +214,73 @@ namespace Chummer
         private void cmdSaveAs_Click(object sender, EventArgs e)
         {
             string strSelectedName;
+            string strSelectedFullFileName;
             do
             {
-                using (frmSelectText frmSelectName = new frmSelectText
+                do
                 {
-                    DefaultString = _objCharacterOptions.BuiltInOption ? string.Empty : _objCharacterOptions.FileName.TrimEndOnce(".xml"),
-                    PreventFileNameCharErrors = true,
-                    Description = LanguageManager.GetString("Message_CharacterOptions_SelectSettingFileName")
-                })
-                {
-                    frmSelectName.ShowDialog(this);
-                    if (frmSelectName.DialogResult != DialogResult.OK)
-                        return;
-                    strSelectedName = frmSelectName.SelectedValue;
-                    if (!strSelectedName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-                        strSelectedName += ".xml";
-                }
+                    using (frmSelectText frmSelectName = new frmSelectText
+                    {
+                        DefaultString = _objCharacterOptions.BuiltInOption
+                            ? string.Empty
+                            : _objCharacterOptions.FileName.TrimEndOnce(".xml"),
+                        Description = LanguageManager.GetString("Message_CharacterOptions_SelectSettingName")
+                    })
+                    {
+                        frmSelectName.ShowDialog(this);
+                        if (frmSelectName.DialogResult != DialogResult.OK)
+                            return;
+                        strSelectedName = frmSelectName.SelectedValue;
+                    }
 
-                if (OptionsManager.LoadedCharacterOptions.Any(x => x.Value.FileName == strSelectedName))
+                    if (OptionsManager.LoadedCharacterOptions.Any(x => x.Value.Name == strSelectedName))
+                    {
+                        DialogResult eCreateDuplicateSetting = Program.MainForm.ShowMessageBox(
+                            string.Format(LanguageManager.GetString("Message_CharacterOptions_DuplicateSettingName"),
+                                strSelectedName),
+                            LanguageManager.GetString("MessageTitle_CharacterOptions_DuplicateFileName"),
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                        if (eCreateDuplicateSetting == DialogResult.Cancel)
+                            return;
+                        if (eCreateDuplicateSetting == DialogResult.No)
+                            strSelectedName = string.Empty;
+                    }
+                } while (string.IsNullOrWhiteSpace(strSelectedName));
+
+                string strBaseFileName = strSelectedName.FastEscape(Path.GetInvalidFileNameChars()).TrimEndOnce(".xml");
+                // Make sure our file name isn't too long, otherwise we run into problems on Windows
+                // We can assume that Chummer's startup path minus 16 is within the limit, otherwise the user would have had problems installing Chummer with its data files in the first place
+                if (strBaseFileName.Length > Application.StartupPath.Length - 16)
+                    strBaseFileName = strBaseFileName.Substring(0, Application.StartupPath.Length - 16);
+                strSelectedFullFileName = strBaseFileName + ".xml";
+                int intMaxNameLength = char.MaxValue - Application.StartupPath.Length - "settings".Length - 6;
+                uint uintAccumulator = 1;
+                string strSeparator = "_";
+                while (OptionsManager.LoadedCharacterOptions.Any(x => x.Value.FileName == strSelectedFullFileName))
                 {
-                    // TODO: Turn this into a prompt to overwrite (which also needs to consider build method being overwritten for a character)
-                    Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_CharacterOptions_DuplicateSettingFileName"), strSelectedName),
-                        LanguageManager.GetString("MessageTitle_CharacterOptions_DuplicateSettingFileName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    strSelectedName = string.Empty;
+                    strSelectedFullFileName = strBaseFileName + strSeparator + uintAccumulator.ToString(GlobalOptions.InvariantCultureInfo) + ".xml";
+                    if (strSelectedFullFileName.Length > intMaxNameLength)
+                    {
+                        Program.MainForm.ShowMessageBox(
+                            LanguageManager.GetString("Message_CharacterOptions_SettingFileNameTooLongError"),
+                            LanguageManager.GetString("MessageTitle_CharacterOptions_SettingFileNameTooLongError"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        strSelectedName = string.Empty;
+                        break;
+                    }
+                    if (uintAccumulator == uint.MaxValue)
+                    {
+                        uintAccumulator = 0;
+                        strSeparator += "_";
+                    }
+                    uintAccumulator += 1;
                 }
-            } while (string.IsNullOrEmpty(strSelectedName));
+            } while (string.IsNullOrWhiteSpace(strSelectedName));
 
             using (new CursorWait(this))
             {
-                if (!_objCharacterOptions.Save(strSelectedName))
+                _objCharacterOptions.Name = strSelectedName;
+                if (!_objCharacterOptions.Save(strSelectedFullFileName, true))
                     return;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -254,7 +292,7 @@ namespace Chummer
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
                 objNewCharacterOptions.CopyValues(_objCharacterOptions);
                 OptionsManager.LoadedCharacterOptions.Add(
-                    Path.Combine(Utils.GetStartupPath, "settings", objNewCharacterOptions.FileName),
+                    objNewCharacterOptions.FileName,
                     objNewCharacterOptions);
                 _objReferenceCharacterOptions = objNewCharacterOptions;
                 cmdSaveAs.Enabled = false;
@@ -307,8 +345,14 @@ namespace Chummer
                 string text = LanguageManager.GetString("Message_CharacterOptions_UnsavedDirty");
                 string caption = LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty");
 
-                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) !=
+                    DialogResult.Yes)
+                {
+                    _blnLoading = true;
+                    cboSetting.SelectedIndex = _intOldSelectedSettingIndex;
+                    _blnLoading = false;
                     return;
+                }
             }
 
             using (new CursorWait(this))
@@ -342,6 +386,7 @@ namespace Chummer
                     _blnIsLayoutSuspended = false;
                     ResumeLayout();
                 }
+                _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
         }
 
@@ -384,6 +429,7 @@ namespace Chummer
                     _blnIsLayoutSuspended = false;
                     ResumeLayout();
                 }
+                _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
         }
 
@@ -615,6 +661,16 @@ namespace Chummer
                 _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.BannedWareGrades));
             }
         }
+
+        private void cboPriorityTable_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+            string strNewPriorityTable = cboPriorityTable.SelectedValue?.ToString();
+            if (string.IsNullOrWhiteSpace(strNewPriorityTable))
+                return;
+            _objCharacterOptions.PriorityTable = strNewPriorityTable;
+        }
         #endregion
 
         #region Methods
@@ -754,25 +810,26 @@ namespace Chummer
                 }
             }
 
-            string strOldSelected = cboPriorityTable.SelectedValue?.ToString();
+            string strOldSelected = _objCharacterOptions.PriorityTable;
 
+            bool blnOldLoading = _blnLoading;
+            _blnLoading = true;
             cboPriorityTable.BeginUpdate();
             cboPriorityTable.DataSource = null;
             cboPriorityTable.DataSource = lstPriorityTables;
-            if (_blnLoading)
-            {
-                cboPriorityTable.ValueMember = nameof(ListItem.Value);
-                cboPriorityTable.DisplayMember = nameof(ListItem.Name);
-            }
-
+            cboPriorityTable.ValueMember = nameof(ListItem.Value);
+            cboPriorityTable.DisplayMember = nameof(ListItem.Name);
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboPriorityTable.SelectedValue = strOldSelected;
             if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
                 cboPriorityTable.SelectedValue = _objReferenceCharacterOptions.PriorityTable;
             if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
                 cboPriorityTable.SelectedIndex = 0;
-
             cboPriorityTable.EndUpdate();
+            _blnLoading = blnOldLoading;
+            string strSelectedTable = cboPriorityTable.SelectedValue?.ToString();
+            if (!string.IsNullOrWhiteSpace(strSelectedTable) && _objCharacterOptions.PriorityTable != strSelectedTable)
+                _objCharacterOptions.PriorityTable = strSelectedTable;
         }
 
         private void PopulateLimbCountList()
@@ -802,12 +859,8 @@ namespace Chummer
             cboLimbCount.BeginUpdate();
             cboLimbCount.DataSource = null;
             cboLimbCount.DataSource = lstLimbCount;
-            if (_blnLoading)
-            {
-                cboLimbCount.ValueMember = nameof(ListItem.Value);
-                cboLimbCount.DisplayMember = nameof(ListItem.Name);
-            }
-
+            cboLimbCount.ValueMember = nameof(ListItem.Value);
+            cboLimbCount.DisplayMember = nameof(ListItem.Name);
             if (!string.IsNullOrEmpty(strLimbSlot))
                 cboLimbCount.SelectedValue = strLimbSlot;
             if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
@@ -908,7 +961,6 @@ namespace Chummer
             cboBuildMethod.DoDatabinding("SelectedValue", _objCharacterOptions, nameof(CharacterOptions.BuildMethod));
             lblPriorityTable.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
             cboPriorityTable.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
-            cboPriorityTable.DoDatabinding("SelectedValue", _objCharacterOptions, nameof(CharacterOptions.PriorityTable));
             lblPriorities.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
             txtPriorities.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
             txtPriorities.DoDatabinding("Text", _objCharacterOptions, nameof(CharacterOptions.PriorityArray));
@@ -1042,32 +1094,30 @@ namespace Chummer
 
         private void PopulateSettingsList()
         {
-            string strOldSelected = string.Empty;
+            string strSelect = string.Empty;
             if (!_blnLoading)
-                strOldSelected = cboSetting.SelectedValue?.ToString();
+                strSelect = cboSetting.SelectedValue?.ToString();
             List<ListItem> lstSettings = new List<ListItem>();
             foreach (KeyValuePair<string, CharacterOptions> kvpCharacterOptionsEntry in OptionsManager.LoadedCharacterOptions)
             {
                 lstSettings.Add(new ListItem(kvpCharacterOptionsEntry.Key, kvpCharacterOptionsEntry.Value.DisplayName));
-                if (_blnLoading && _objReferenceCharacterOptions == kvpCharacterOptionsEntry.Value)
-                    strOldSelected = kvpCharacterOptionsEntry.Key;
+                if (_objReferenceCharacterOptions == kvpCharacterOptionsEntry.Value)
+                    strSelect = kvpCharacterOptionsEntry.Key;
             }
 
             cboSetting.BeginUpdate();
             cboSetting.DataSource = null;
             cboSetting.DataSource = lstSettings;
-            if (_blnLoading)
-            {
-                cboSetting.ValueMember = nameof(ListItem.Value);
-                cboSetting.DisplayMember = nameof(ListItem.Name);
-            }
-            if (!string.IsNullOrEmpty(strOldSelected))
-                cboSetting.SelectedValue = strOldSelected;
+            cboSetting.ValueMember = nameof(ListItem.Value);
+            cboSetting.DisplayMember = nameof(ListItem.Name);
+            if (!string.IsNullOrEmpty(strSelect))
+                cboSetting.SelectedValue = strSelect;
             if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
                 cboSetting.SelectedValue = cboSetting.FindStringExact(GlobalOptions.DefaultCharacterOption);
             if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
                 cboSetting.SelectedIndex = 0;
             cboSetting.EndUpdate();
+            _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
         }
 
         private void OptionsChanged(object sender, PropertyChangedEventArgs e)
@@ -1079,6 +1129,8 @@ namespace Chummer
                 cmdSave.Enabled = cmdSaveAs.Enabled && !_objCharacterOptions.BuiltInOption;
                 if (e.PropertyName == nameof(CharacterOptions.EnabledCustomDataDirectoryPaths))
                     PopulateOptions();
+                else if (e.PropertyName == nameof(CharacterOptions.PriorityTable))
+                    PopulatePriorityTableList();
                 if (cmdSave.Enabled && _objReferenceCharacterOptions.BuildMethod != _objCharacterOptions.BuildMethod && Program.MainForm.OpenCharacters.Any(x => !x.Created && x.Options == _objReferenceCharacterOptions))
                 {
                     cmdSave.Enabled = false;
