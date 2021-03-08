@@ -235,10 +235,10 @@ namespace Chummer
                             {
                                 Parallel.ForEach(s_astrPreloadFileNames, x =>
                                 {
-                                    _frmLoading.PerformStep(x);
                                     XmlManager.Load(x);
                                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                                         XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
+                                    _frmLoading.PerformStep(Application.ProductName);
                                 });
                             });
                             //Timekeeper.Finish("cache_load");

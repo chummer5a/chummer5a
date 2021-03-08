@@ -174,10 +174,11 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
-
-            bool blnHasCustomData = lstEnabledCustomDataPaths?.Count > 0;
-            int intDataConfigHash = blnHasCustomData
-                ? (new[] { strLanguage, strPath }).Concat(lstEnabledCustomDataPaths).GetEnsembleHashCode()
+            
+            List<string> lstRelevantCustomDataPaths =
+                CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
+            int intDataConfigHash = lstRelevantCustomDataPaths.Count > 0
+                ? (new[] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
                 : new { strLanguage, strPath }.GetHashCode();
 
             // Look to see if this XmlDocument is already loaded.
@@ -260,9 +261,11 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
 
-            bool blnHasCustomData = lstEnabledCustomDataPaths?.Count > 0;
+            List<string> lstRelevantCustomDataPaths =
+                CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
+            bool blnHasCustomData = lstRelevantCustomDataPaths.Count > 0;
             int intDataConfigHash = blnHasCustomData
-                ? (new [] { strLanguage, strPath }).Concat(lstEnabledCustomDataPaths).GetEnsembleHashCode()
+                ? (new [] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
                 : new { strLanguage, strPath }.GetHashCode();
 
             XmlDocument xmlReturn = null;
@@ -341,9 +344,9 @@ namespace Chummer
                 }
 
                 // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
-                if (strFileName != "improvements.xml" && lstEnabledCustomDataPaths?.Count > 0)
+                if (blnHasCustomData)
                 {
-                    foreach (string strLoopPath in lstEnabledCustomDataPaths)
+                    foreach (string strLoopPath in lstRelevantCustomDataPaths)
                     {
                         DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath, strFileName);
                     }
@@ -374,7 +377,7 @@ namespace Chummer
                 // Cache the merged document and its relevant information (also sets IsLoaded to true).
                 xmlReferenceOfReturn.XmlContent = xmlReturn;
                 // Make sure we do not override the cached document with our live data
-                if (GlobalOptions.LiveCustomData && blnHasCustomData && strFileName != "improvements.xml")
+                if (GlobalOptions.LiveCustomData && blnHasCustomData)
                     xmlReturn = xmlReferenceOfReturn.XmlContent.Clone() as XmlDocument;
             }
             else
@@ -384,7 +387,7 @@ namespace Chummer
                     await Task.Delay(20);
                 }
                 // Make sure we do not override the cached document with our live data
-                if (GlobalOptions.LiveCustomData && blnHasCustomData && strFileName != "improvements.xml")
+                if (GlobalOptions.LiveCustomData && blnHasCustomData)
                     xmlReturn = xmlReferenceOfReturn.XmlContent.Clone() as XmlDocument;
                 else
                     xmlReturn = xmlReferenceOfReturn.XmlContent;
@@ -619,6 +622,34 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Filter through a list of data paths and return a list of ones that modify the given file. Used to recycle data files between different rule sets.
+        /// </summary>
+        /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
+        /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
+        /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in in <paramref name="lstPaths"/>.</returns>
+        private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyList<string> lstPaths)
+        {
+            List<string> lstReturn = new List<string>();
+            if (strFileName != "improvements.xml" && lstPaths?.Count > 0)
+            {
+                lstReturn.Capacity = lstPaths.Count;
+                foreach (string strLoopPath in lstPaths)
+                {
+                    if (Directory.EnumerateFiles(strLoopPath, "override_*_" + strFileName, SearchOption.AllDirectories).Any()
+                        || Directory.EnumerateFiles(strLoopPath, "override_" + strFileName, SearchOption.AllDirectories).Any()
+                        || Directory.EnumerateFiles(strLoopPath, "custom_*_" + strFileName, SearchOption.AllDirectories).Any()
+                        || Directory.EnumerateFiles(strLoopPath, "custom_" + strFileName, SearchOption.AllDirectories).Any()
+                        || Directory.EnumerateFiles(strLoopPath, "amend_*_" + strFileName, SearchOption.AllDirectories).Any()
+                        || Directory.EnumerateFiles(strLoopPath, "amend_" + strFileName, SearchOption.AllDirectories).Any())
+                    {
+                        lstReturn.Add(strLoopPath);
+                    }
+                }
+            }
+            return lstReturn;
         }
 
         private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories)
