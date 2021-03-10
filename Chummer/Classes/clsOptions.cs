@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using iText.Kernel.Pdf;
@@ -518,6 +519,20 @@ namespace Chummer
                 }
 
                 objCustomDataDirectoryKey.Close();
+            }
+            // Add in default customdata directory's paths
+            string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+            if (Directory.Exists(strCustomDataRootPath))
+            {
+                foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
+                {
+                    // Only add directories for which we don't already have entries loaded from registry
+                    if (_setCustomDataDirectoryInfo.All(x => x.Path != strLoopDirectoryPath))
+                    {
+                        CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
+                        _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
+                    }
+                }
             }
 
             XmlManager.RebuildDataDirectoryInfo(_setCustomDataDirectoryInfo);

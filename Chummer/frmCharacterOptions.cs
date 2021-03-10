@@ -53,6 +53,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objReferenceCharacterOptions = objExistingOptions ?? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
             _objCharacterOptions = new CharacterOptions(_objReferenceCharacterOptions);
+            RebuildCustomDataDirectoryInfos();
         }
 
         private void frmCharacterOptions_Load(object sender, EventArgs e)
@@ -78,26 +79,6 @@ namespace Chummer
 
             PopulateOptions();
             SetupDataBindings();
-
-            foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
-            {
-                CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
-                if (objLoopInfo != null)
-                {
-                    _lstCharacterCustomDataDirectoryInfos.Add(
-                        new Tuple<object, bool>(
-                            objLoopInfo,
-                            kvpCustomDataDirectory.Value.Item2));
-                }
-                else
-                {
-                    _lstCharacterCustomDataDirectoryInfos.Add(
-                        new Tuple<object, bool>(
-                            kvpCustomDataDirectory.Key,
-                            kvpCustomDataDirectory.Value.Item2));
-                }
-            }
-            PopulateCustomDataDirectoryTreeView();
 
             IsDirty = false;
             cmdSaveAs.Enabled = false;
@@ -201,6 +182,7 @@ namespace Chummer
 
                 _objReferenceCharacterOptions = kvpReplacementOption.Value;
                 _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
+                RebuildCustomDataDirectoryInfos();
                 IsDirty = false;
                 PopulateSettingsList();
                 if (blnDoResumeLayout)
@@ -378,6 +360,7 @@ namespace Chummer
 
                 _objReferenceCharacterOptions = objNewOption;
                 _objCharacterOptions.CopyValues(objNewOption);
+                RebuildCustomDataDirectoryInfos();
                 PopulateOptions();
                 _blnLoading = false;
                 IsDirty = false;
@@ -421,6 +404,7 @@ namespace Chummer
                 }
 
                 _objCharacterOptions.CopyValues(_objReferenceCharacterOptions);
+                RebuildCustomDataDirectoryInfos();
                 PopulateOptions();
                 _blnLoading = false;
                 IsDirty = false;
@@ -617,7 +601,10 @@ namespace Chummer
                 }
                 CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
                 if (!blnSuccess)
+                {
                     txtContactPoints.ForeColor = Color.Red;
+                    return;
+                }
             }
             txtContactPoints.ForeColor = SystemColors.WindowText;
         }
@@ -636,7 +623,10 @@ namespace Chummer
                 }
                 CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
                 if (!blnSuccess)
-                    txtKnowledgePoints.ForeColor = Color.Red;
+                {
+                    txtContactPoints.ForeColor = Color.Red;
+                    return;
+                }
             }
             txtKnowledgePoints.ForeColor = SystemColors.WindowText;
         }
@@ -785,6 +775,7 @@ namespace Chummer
             PopulatePriorityTableList();
             PopulateLimbCountList();
             PopulateAllowedGrades();
+            PopulateCustomDataDirectoryTreeView();
             if (blnDoResumeLayout)
             {
                 _blnIsLayoutSuspended = false;
@@ -938,6 +929,29 @@ namespace Chummer
                 flpAllowedCyberwareGrades.Controls.Add(chkGrade);
             }
             flpAllowedCyberwareGrades.ResumeLayout();
+        }
+
+        private void RebuildCustomDataDirectoryInfos()
+        {
+            _lstCharacterCustomDataDirectoryInfos.Clear();
+            foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
+            {
+                CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
+                if (objLoopInfo != null)
+                {
+                    _lstCharacterCustomDataDirectoryInfos.Add(
+                        new Tuple<object, bool>(
+                            objLoopInfo,
+                            kvpCustomDataDirectory.Value.Item2));
+                }
+                else
+                {
+                    _lstCharacterCustomDataDirectoryInfos.Add(
+                        new Tuple<object, bool>(
+                            kvpCustomDataDirectory.Key,
+                            kvpCustomDataDirectory.Value.Item2));
+                }
+            }
         }
 
         private void SetToolTips()

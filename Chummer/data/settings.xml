@@ -1488,7 +1488,7 @@
         <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
           <order>0</order>
-          <enabled>False</enabled>
+          <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
       <buildmethod>Priority</buildmethod>
@@ -1645,7 +1645,7 @@
         <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
           <order>0</order>
-          <enabled>False</enabled>
+          <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
       <buildmethod>SumtoTen</buildmethod>
@@ -1802,7 +1802,7 @@
         <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
           <order>0</order>
-          <enabled>False</enabled>
+          <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
       <buildmethod>Karma</buildmethod>
