@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,10 +18,22 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <gears>
-    <gear>
-      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
-      <hide />
-    </gear>
-  </gears>
+    <qualities>
+        <quality> <!-- Dermal Alteration (Rhino Hide) -->
+            <id>bfb6b16b-d2b1-4b28-af37-e011d016da37</id>
+            <karma>7</karma>
+        </quality>
+        <quality> <!-- Functional Tail (Prehensile) -->
+            <id>c724871b-6ae9-43fe-a0ae-83b0afcd4123</id>
+            <karma>7</karma>
+        </quality>
+        <quality> <!-- Perceptive Defender -->
+            <id>b5f6d958-2563-431b-a7a4-a9028a9f0277</id>
+            <karma>3</karma>
+        </quality>
+        <quality> <!-- Practice Practice Practice -->
+            <id>81fc0829-3456-4701-8ecc-f101d145b538</id>
+            <limit amendoperation="addnode">False</limit>
+        </quality>
+    </qualities>
 </chummer>
