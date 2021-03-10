@@ -46,7 +46,7 @@ namespace Chummer
             {
                 lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
             }
-
+            lstGameplayOptions.Sort(CompareListItems.CompareNames);
             cboCharacterOption.BeginUpdate();
             cboCharacterOption.ValueMember = nameof(ListItem.Value);
             cboCharacterOption.DisplayMember = nameof(ListItem.Name);
@@ -99,7 +99,7 @@ namespace Chummer
             {
                 lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
             }
-
+            lstGameplayOptions.Sort(CompareListItems.CompareNames);
             cboCharacterOption.BeginUpdate();
             cboCharacterOption.DataSource = lstGameplayOptions;
             cboCharacterOption.SelectedValue = objOldSelected;

@@ -494,10 +494,8 @@ namespace Chummer
 
         private void PopulateDefaultCharacterOptionList()
         {
-            List<ListItem> lstCharacterOptions = new List<ListItem>(OptionsManager.LoadedCharacterOptions.Count);
-
             int intIndex = 0;
-
+            List<ListItem> lstCharacterOptions = new List<ListItem>(OptionsManager.LoadedCharacterOptions.Count);
             foreach (KeyValuePair<string, CharacterOptions> kvpLoopCharacterOptions in OptionsManager.LoadedCharacterOptions)
             {
                 string strId = kvpLoopCharacterOptions.Key;
@@ -513,6 +511,7 @@ namespace Chummer
                     }
                 }
             }
+            lstCharacterOptions.Sort(CompareListItems.CompareNames);
 
             string strOldSelected = cboDefaultCharacterOption.SelectedValue?.ToString();
 

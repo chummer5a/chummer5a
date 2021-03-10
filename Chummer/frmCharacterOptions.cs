@@ -1104,7 +1104,7 @@ namespace Chummer
                 if (_objReferenceCharacterOptions == kvpCharacterOptionsEntry.Value)
                     strSelect = kvpCharacterOptionsEntry.Key;
             }
-
+            lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
             cboSetting.DataSource = null;
             cboSetting.DataSource = lstSettings;
