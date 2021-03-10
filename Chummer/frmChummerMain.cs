@@ -1810,6 +1810,8 @@ namespace Chummer
 
         public ObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
 
+        public Version CurrentVersion => _objCurrentVersion;
+
         #endregion
     }
 }

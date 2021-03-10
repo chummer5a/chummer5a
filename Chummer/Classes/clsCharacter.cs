@@ -2170,10 +2170,7 @@ namespace Chummer
                         if (xmlCharacterNavigator.TryGetStringFieldQuickly("appversion", ref strVersion) &&
                             !string.IsNullOrEmpty(strVersion))
                         {
-                            if (strVersion.StartsWith("0.", StringComparison.Ordinal))
-                            {
-                                strVersion = strVersion.Substring(2);
-                            }
+                            strVersion = strVersion.TrimStartOnce("0.");
 
                             if (!Version.TryParse(strVersion, out _verSavedVersion))
                             {
@@ -2194,15 +2191,33 @@ namespace Chummer
 #if !DEBUG
                         if (!Utils.IsUnitTest)
                         {
-                            Version verCurrentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                            if (verCurrentVersion.CompareTo(_verSavedVersion) == -1)
+                            string strMinimumVersion = string.Empty;
+                            // Check to see if a character has a minimum version set where they will not load properly on anything older
+                            if (xmlCharacterNavigator.TryGetStringFieldQuickly("minimumappversion", ref strMinimumVersion) &&
+                                !string.IsNullOrEmpty(strMinimumVersion))
+                            {
+                                strMinimumVersion = strMinimumVersion.TrimStartOnce("0.");
+                                if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Program.MainForm.CurrentVersion)
+                                {
+                                    Program.MainForm.ShowMessageBox(
+                                        string.Format(GlobalOptions.CultureInfo,
+                                            LanguageManager.GetString("Message_OlderThanChummerSaveMinimumVersion"),
+                                            objMinimumVersion, Program.MainForm.CurrentVersion),
+                                        LanguageManager.GetString("MessageTitle_OlderThanChummerSaveMinimumVersion"),
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                                    IsLoading = false;
+                                    return false;
+                                }
+                            }
+                            if (_verSavedVersion > Program.MainForm.CurrentVersion)
                             {
                                 if (DialogResult.Yes != Program.MainForm.ShowMessageBox(
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
-                                        _verSavedVersion.ToString(), verCurrentVersion.ToString()),
-                                    LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
+                                        _verSavedVersion, Program.MainForm.CurrentVersion),
+                                    LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
                                     MessageBoxButtons.YesNo,
-                                    MessageBoxIcon.Error))
+                                    MessageBoxIcon.Warning))
                                 {
                                     IsLoading = false;
                                     return false;
@@ -2210,6 +2225,7 @@ namespace Chummer
                             }
                         }
 #endif
+
                         // Get the name of the settings file in use if possible.
                         xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
 
