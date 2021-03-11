@@ -72,6 +72,8 @@ Data Changes:
 - Removed Hardened Rolling Blades weapon, as No Future says that Rolling Blades are only available in Bladed form.
 - Carbines is now one of the recommended specializations for the Automatics skill.
 - Added customdata that removes Automatics as a skill, placing Machine Pistols into the Pistols skill and all other Automatics weapons into the Longarms skill. Heavy Weapons replaces Automatics in the Firearms skill group. Implements #4310.
+- Evo Sublime now properly is only available as an implanted cyberdeck.
+- Fixed the cost of integrated synthlinks and internal SmartCams.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

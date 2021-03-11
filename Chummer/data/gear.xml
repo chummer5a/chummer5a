@@ -3593,6 +3593,13 @@
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
+      <requireparent />
+      <required>
+        <parentdetails>
+          <name>Cyberdeck</name>
+          <category>Headware</category>
+        </parentdetails>
+      </required>
     </gear>
     <gear>
       <id>b00002dd-2aed-47d7-9ecf-88c7fafb4746</id>
@@ -19836,7 +19843,7 @@
       <page>170</page>
       <avail>+4</avail>
       <requireparent />
-      <cost>{Parent Cost}x2</cost>
+      <cost>{Parent Cost}*2</cost>
     </gear>
     <gear>
       <id>357d77f6-0e9e-4e5f-87f2-9c4b5422d23c</id>
@@ -19949,7 +19956,7 @@
       <page>175</page>
       <avail>8</avail>
       <bonus />
-      <cost>{Parent Cost}x2</cost>
+      <cost>{Parent Cost}*2</cost>
       <requireparent />
       <required>
         <geardetails>
