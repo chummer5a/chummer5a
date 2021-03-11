@@ -437,7 +437,7 @@ namespace Chummer
             lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intEndPosition + 1), false));
 
             // Start building the return value.
-            StringBuilder objReturn = new StringBuilder(strInput.Length);
+            StringBuilder sbdReturn = new StringBuilder(strInput.Length);
             foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
             {
                 string strLoop = objLoop.Item1;
@@ -452,19 +452,19 @@ namespace Chummer
                             strLoop = ProcessCompoundString(strLoop, strLanguage, objCharacter, blnUseTranslateExtra);
                         }
                         // Use more expensive TranslateExtra if flag is set to use that
-                        objReturn.Append(blnUseTranslateExtra
+                        sbdReturn.Append(blnUseTranslateExtra
                             ? TranslateExtra(strLoop, strLanguage, objCharacter)
                             : GetString(strLoop, strLanguage, false));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
                     else
                     {
-                        objReturn.Append(strLoop);
+                        sbdReturn.Append(strLoop);
                     }
                 }
             }
 
-            return objReturn.ToString();
+            return sbdReturn.ToString();
         }
 
         /// <summary>
@@ -565,8 +565,8 @@ namespace Chummer
                 }
             );
 
-            StringBuilder objMissingMessage = new StringBuilder();
-            StringBuilder objUnusedMessage = new StringBuilder();
+            StringBuilder sbdMissingMessage = new StringBuilder();
+            StringBuilder sbdUnusedMessage = new StringBuilder();
             Parallel.Invoke(
                 () =>
                 {
@@ -574,7 +574,7 @@ namespace Chummer
                     foreach (string strKey in lstEnglish)
                     {
                         if (!lstLanguage.Contains(strKey))
-                            objMissingMessage.AppendLine("Missing String: " + strKey);
+                            sbdMissingMessage.AppendLine("Missing String: " + strKey);
                     }
                 },
                 () =>
@@ -583,12 +583,12 @@ namespace Chummer
                     foreach (string strKey in lstLanguage)
                     {
                         if (!lstEnglish.Contains(strKey))
-                            objUnusedMessage.AppendLine("Unused String: " + strKey);
+                            sbdUnusedMessage.AppendLine("Unused String: " + strKey);
                     }
                 }
             );
 
-            string strMessage = (objMissingMessage + objUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+            string strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
             Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

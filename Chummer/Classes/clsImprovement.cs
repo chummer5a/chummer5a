@@ -3202,74 +3202,73 @@ namespace Chummer
                 }
                 if (intMinimumRating <= 0)
                 {
-                    StringBuilder objFilter = new StringBuilder();
+                    StringBuilder sbdFilter = new StringBuilder();
                     if (setAllowedCategories?.Count > 0)
                     {
-                        objFilter.Append('(');
+                        sbdFilter.Append('(');
                         foreach (string strCategory in setAllowedCategories)
                         {
-                            objFilter.Append("category = \"" + strCategory + "\" or ");
+                            sbdFilter.Append("category = \"" + strCategory + "\" or ");
                         }
 
-                        objFilter.Length -= 4;
-                        objFilter.Append(')');
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
                     }
                     if (setForbiddenCategories?.Count > 0)
                     {
-                        if (objFilter.Length > 0)
-                            objFilter.Append(" and ");
-                        objFilter.Append("not(");
+                        if (sbdFilter.Length > 0)
+                            sbdFilter.Append(" and ");
+                        sbdFilter.Append("not(");
                         foreach (string strCategory in setForbiddenCategories)
                         {
-                            objFilter.Append("category = \"" + strCategory + "\" or ");
+                            sbdFilter.Append("category = \"" + strCategory + "\" or ");
                         }
 
-                        objFilter.Length -= 4;
-                        objFilter.Append(')');
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
                     }
                     if (setAllowedNames?.Count > 0)
                     {
-                        if (objFilter.Length > 0)
-                            objFilter.Append(" and ");
-                        objFilter.Append('(');
+                        if (sbdFilter.Length > 0)
+                            sbdFilter.Append(" and ");
+                        sbdFilter.Append('(');
                         foreach (string strName in setAllowedNames)
                         {
-                            objFilter.Append("name = \"" + strName + "\" or ");
+                            sbdFilter.Append("name = \"" + strName + "\" or ");
                         }
 
-                        objFilter.Length -= 4;
-                        objFilter.Append(')');
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
                     }
                     if (setProcessedSkillNames.Count > 0)
                     {
-                        if (objFilter.Length > 0)
-                            objFilter.Append(" and ");
-                        objFilter.Append("not(");
+                        if (sbdFilter.Length > 0)
+                            sbdFilter.Append(" and ");
+                        sbdFilter.Append("not(");
                         foreach (string strName in setProcessedSkillNames)
                         {
-                            objFilter.Append("name = \"" + strName + "\" or ");
+                            sbdFilter.Append("name = \"" + strName + "\" or ");
                         }
 
-                        objFilter.Length -= 4;
-                        objFilter.Append(')');
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
                     }
                     if (setAllowedLinkedAttributes?.Count > 0)
                     {
-                        if (objFilter.Length > 0)
-                            objFilter.Append(" and ");
-                        objFilter.Append('(');
+                        if (sbdFilter.Length > 0)
+                            sbdFilter.Append(" and ");
+                        sbdFilter.Append('(');
                         foreach (string strAttribute in setAllowedLinkedAttributes)
                         {
-                            objFilter.Append("attribute = \"" + strAttribute + "\" or ");
+                            sbdFilter.Append("attribute = \"" + strAttribute + "\" or ");
                         }
 
-                        objFilter.Length -= 4;
-                        objFilter.Append(')');
+                        sbdFilter.Length -= 4;
+                        sbdFilter.Append(')');
                     }
 
-                    string strFilter = objFilter.Length > 0 ? ") and (" + objFilter.ToString() : string.Empty;
-                    using (XmlNodeList xmlSkillList = objCharacter.LoadData("skills.xml")
-                        .SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
+                    using (XmlNodeList xmlSkillList = objCharacter.LoadData("skills.xml").SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
                     {
                         if (xmlSkillList?.Count > 0)
                         {

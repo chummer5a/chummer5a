@@ -79,10 +79,10 @@ namespace Chummer
             Parallel.For(0, modules.Count, i =>
             {
                 XmlNode objStoryModule = modules[i];
-                StringBuilder objModuleString = new StringBuilder();
-                Write(objModuleString, objStoryModule["story"]?.InnerText ?? string.Empty, 5, xmlBaseMacrosNode);
+                StringBuilder sbdModuleString = new StringBuilder();
+                Write(sbdModuleString, objStoryModule["story"]?.InnerText ?? string.Empty, 5, xmlBaseMacrosNode);
                 lock (storyLock)
-                    story[i] = objModuleString.ToString();
+                    story[i] = sbdModuleString.ToString();
             });
 
             return string.Join(Environment.NewLine + Environment.NewLine, story);

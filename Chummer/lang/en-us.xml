@@ -1168,7 +1168,19 @@
     </string>
     <string>
       <key>Message_OutdatedChummerSave</key>
-      <text>This save file was created in a later version of Chummer ({0}) than your current version of Chummer ({1}). \nThis file may not load properly, and it is strongly suggested you update to the latest version of Chummer.\nAre you sure you want to continue loading this character?</text>
+      <text>This save file was created in a later version of Chummer ({0}) than your current version of Chummer ({1}).\nThis file may not load properly, and it is strongly suggested you update to the latest version of Chummer.\nAre you sure you want to continue loading this character?</text>
+    </string>
+    <string>
+      <key>MessageTitle_OutdatedChummerSave</key>
+      <text>Attempting to Load with Older Version of Chummer</text>
+    </string>
+    <string>
+      <key>Message_OlderThanChummerSaveMinimumVersion</key>
+      <text>Due to significant changes in a newer version of Chummer, this save file requires a later version of Chummer ({0}) than your current version of Chummer ({1}).\nThis file will not load properly in your current version of Chummer.\nChummer will now abort loading this character.</text>
+    </string>
+    <string>
+      <key>MessageTitle_OlderThanChummerSaveMinimumVersion</key>
+      <text>Current Version of Chummer Too Old for This Save</text>
     </string>
     <string>
       <key>Message_IncorrectGameVersion_SR4</key>

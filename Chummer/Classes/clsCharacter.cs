@@ -2243,10 +2243,7 @@ namespace Chummer
                         if (xmlCharacterNavigator.TryGetStringFieldQuickly("appversion", ref strVersion) &&
                             !string.IsNullOrEmpty(strVersion))
                         {
-                            if (strVersion.StartsWith("0.", StringComparison.Ordinal))
-                            {
-                                strVersion = strVersion.Substring(2);
-                            }
+                            strVersion = strVersion.TrimStartOnce("0.");
 
                             if (!Version.TryParse(strVersion, out _verSavedVersion))
                             {
@@ -2267,15 +2264,33 @@ namespace Chummer
 #if !DEBUG
                         if (!Utils.IsUnitTest)
                         {
-                            Version verCurrentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                            if (verCurrentVersion.CompareTo(_verSavedVersion) == -1)
+                            string strMinimumVersion = string.Empty;
+                            // Check to see if a character has a minimum version set where they will not load properly on anything older
+                            if (xmlCharacterNavigator.TryGetStringFieldQuickly("minimumappversion", ref strMinimumVersion) &&
+                                !string.IsNullOrEmpty(strMinimumVersion))
+                            {
+                                strMinimumVersion = strMinimumVersion.TrimStartOnce("0.");
+                                if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Program.MainForm.CurrentVersion)
+                                {
+                                    Program.MainForm.ShowMessageBox(
+                                        string.Format(GlobalOptions.CultureInfo,
+                                            LanguageManager.GetString("Message_OlderThanChummerSaveMinimumVersion"),
+                                            objMinimumVersion, Program.MainForm.CurrentVersion),
+                                        LanguageManager.GetString("MessageTitle_OlderThanChummerSaveMinimumVersion"),
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                                    IsLoading = false;
+                                    return false;
+                                }
+                            }
+                            if (_verSavedVersion > Program.MainForm.CurrentVersion)
                             {
                                 if (DialogResult.Yes != Program.MainForm.ShowMessageBox(
                                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
-                                        _verSavedVersion.ToString(), verCurrentVersion.ToString()),
-                                    LanguageManager.GetString("MessageTitle_IncorrectGameVersion"),
+                                        _verSavedVersion, Program.MainForm.CurrentVersion),
+                                    LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
                                     MessageBoxButtons.YesNo,
-                                    MessageBoxIcon.Error))
+                                    MessageBoxIcon.Warning))
                                 {
                                     IsLoading = false;
                                     return false;
@@ -2283,6 +2298,7 @@ namespace Chummer
                             }
                         }
 #endif
+
                         // Get the name of the settings file in use if possible.
                         xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strCharacterOptionsKey);
 
@@ -10033,17 +10049,17 @@ namespace Chummer
         {
             get
             {
-                StringBuilder objReturn = new StringBuilder(StreetCred.ToString(GlobalOptions.CultureInfo));
+                StringBuilder sbdReturn = new StringBuilder(StreetCred.ToString(GlobalOptions.CultureInfo));
                 string strSpace = LanguageManager.GetString("String_Space");
 
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
                     if(objImprovement.ImproveType == Improvement.ImprovementType.StreetCred && objImprovement.Enabled)
-                        objReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                             .Append(strSpace).Append('(').Append(objImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                 }
 
-                objReturn.Append(strSpace).Append('+').Append(strSpace).Append('[').Append(LanguageManager.GetString("String_CareerKarma"))
+                sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[').Append(LanguageManager.GetString("String_CareerKarma"))
                     .Append(strSpace).Append('÷').Append(strSpace)
                     .Append((10 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCredMultiplier)).ToString(GlobalOptions.CultureInfo)).Append(']')
                     .Append(strSpace).Append('(')
@@ -10051,10 +10067,10 @@ namespace Chummer
                     .Append(')');
 
                 if(BurntStreetCred != 0)
-                    objReturn.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_BurntStreetCred"))
+                    sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_BurntStreetCred"))
                         .Append(strSpace).Append('(').Append(BurntStreetCred.ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                return objReturn.ToString();
+                return sbdReturn.ToString();
             }
         }
 
@@ -10101,28 +10117,26 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder objReturn = new StringBuilder(Notoriety.ToString(GlobalOptions.CultureInfo));
+                StringBuilder sbdReturn = new StringBuilder(Notoriety.ToString(GlobalOptions.CultureInfo));
 
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
                     if(objImprovement.ImproveType == Improvement.ImprovementType.Notoriety && objImprovement.Enabled)
-                        objReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                             .Append(strSpace).Append('(').Append(objImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                 }
 
                 /*
                 int intEnemies = Contacts.Count(x => x.EntityType == ContactType.Enemy);
                 if (intEnemies > 0)
-                    objReturn.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_SummaryEnemies")).Append(strSpace).Append('(').Append(intEnemies.ToString(GlobalOptions.CultureInfo)).Append(')');
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_SummaryEnemies")).Append(strSpace).Append('(').Append(intEnemies.ToString(GlobalOptions.CultureInfo)).Append(')');
                     */
 
-                if(BurntStreetCred > 0)
-                    objReturn.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_BurntStreetCred"))
+                if (BurntStreetCred > 0)
+                    sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_BurntStreetCred"))
                         .Append(strSpace).Append('(').Append((BurntStreetCred / 2).ToString(GlobalOptions.CultureInfo)).Append(')');
 
-                string strReturn = objReturn.ToString();
-
-                return strReturn;
+                return sbdReturn.ToString();
             }
         }
 
@@ -10182,19 +10196,19 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder objReturn = new StringBuilder(PublicAwareness.ToString(GlobalOptions.CultureInfo));
+                StringBuilder sbdReturn = new StringBuilder(PublicAwareness.ToString(GlobalOptions.CultureInfo));
 
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
                     if(objImprovement.ImproveType == Improvement.ImprovementType.PublicAwareness &&
                         objImprovement.Enabled)
-                        objReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objImprovement))
                             .Append(strSpace).Append('(').Append(objImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
                 }
 
                 if(Options.UseCalculatedPublicAwareness)
                 {
-                    objReturn.Append(strSpace).Append('+').Append(strSpace).Append('[').Append(LanguageManager.GetString("String_StreetCred"))
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('[').Append(LanguageManager.GetString("String_StreetCred"))
                         .Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("String_Notoriety")).Append(']')
                         .Append(strSpace).Append('÷').Append(strSpace).Append(3.ToString(GlobalOptions.CultureInfo))
                         .Append(strSpace).Append('(').Append(((TotalStreetCred + TotalNotoriety) / 3).ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -10219,12 +10233,12 @@ namespace Chummer
                             }
                         }
 
-                        objReturn.Append(strSpace).Append('-').Append(strSpace).Append(strErasedString)
+                        sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(strErasedString)
                             .Append(strSpace).Append('(').Append((intTotalPublicAwareness - 1).ToString(GlobalOptions.CultureInfo)).Append(')');
                     }
                 }
 
-                return objReturn.ToString();
+                return sbdReturn.ToString();
             }
         }
 
@@ -12285,7 +12299,7 @@ namespace Chummer
                     .Append(strSpace).AppendLine(objMentorSpirit.DisplayAdvantage(GlobalOptions.Language))
                     .AppendLine().Append(LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"))
                     .Append(strSpace).AppendLine(objMentorSpirit.Disadvantage);
-                return sbdReturn.ToString().WordWrap(96);
+                return sbdReturn.ToString().WordWrap();
             }
         }
 
