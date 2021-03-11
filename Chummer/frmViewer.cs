@@ -739,9 +739,10 @@ namespace Chummer
             List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
 
             cboXSLT.BeginUpdate();
+            cboXSLT.DataSource = null;
+            cboXSLT.DataSource = lstFiles;
             cboXSLT.ValueMember = nameof(ListItem.Value);
             cboXSLT.DisplayMember = nameof(ListItem.Name);
-            cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
 
@@ -759,9 +760,10 @@ namespace Chummer
             }
 
             myCboLanguage.BeginUpdate();
+            myCboLanguage.DataSource = null;
+            myCboLanguage.DataSource = LstLanguages;
             myCboLanguage.ValueMember = nameof(ListItem.Value);
             myCboLanguage.DisplayMember = nameof(ListItem.Name);
-            myCboLanguage.DataSource = LstLanguages;
             myCboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (myCboLanguage.SelectedIndex == -1)
                 myCboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;

@@ -297,9 +297,9 @@ namespace Chummer
             _objTradition = new Tradition(this);
         }
 
-        public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false)
+        public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false, string strLanguage = "")
         {
-            XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml");
+            XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
             XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator()?.SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = \"" + Metatype + "\"]"
                 : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
@@ -12451,7 +12451,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Metatype;
 
-            return GetNode(true)?.SelectSingleNode("translate")?.Value ?? Metatype;
+            return GetNode(true, strLanguage)?.SelectSingleNode("translate")?.Value ?? Metatype;
         }
 
         /// <summary>
@@ -12484,7 +12484,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Metavariant;
 
-            return GetNode()?.SelectSingleNode("translate")?.Value ?? Metavariant;
+            return GetNode(false, strLanguage)?.SelectSingleNode("translate")?.Value ?? Metavariant;
         }
 
         public string FormattedMetatype => FormattedMetatypeMethod(GlobalOptions.Language);
