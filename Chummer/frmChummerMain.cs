@@ -214,7 +214,11 @@ namespace Chummer
 
                     Program.MainForm = this;
 
+#if DEBUG
+                    if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion < new Version(5, 215, 0))
+#else
                     if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion < new Version(5, 215, 0))
+#endif
                     {
                         if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
                             LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
@@ -1220,9 +1224,9 @@ namespace Chummer
                 tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
                 tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
         }
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
 
         private static bool showDevWarningAboutDebuggingOnlyOnce = true;
 
@@ -1777,9 +1781,9 @@ namespace Chummer
         {
             Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
         }
-        #endregion
+#endregion
 
-        #region Application Properties
+#region Application Properties
         /// <summary>
         /// The frmDiceRoller window being used by the application.
         /// </summary>
@@ -1795,6 +1799,6 @@ namespace Chummer
 
         public Version CurrentVersion => _objCurrentVersion;
 
-        #endregion
+#endregion
     }
 }
