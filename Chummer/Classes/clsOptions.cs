@@ -184,6 +184,7 @@ namespace Chummer
         private static bool _blnAllowSkillDiceRolling;
 
         public const int MaxStackLimit = 1024;
+        private static bool _blnShowCharacterCustomDataWarning;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(new XoRoShiRo128starstar());
 
@@ -560,6 +561,15 @@ namespace Chummer
                 }
             }
             _lstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
+            
+            if (blnFirstEverLaunch)
+                ShowCharacterCustomDataWarning = false;
+            else
+            {
+                bool blnTemp = false;
+                LoadBoolFromRegistry(ref blnTemp, "charactercustomdatawarningshown");
+                ShowCharacterCustomDataWarning = !blnTemp;
+            }
         }
         #endregion
 
@@ -1069,6 +1079,31 @@ namespace Chummer
         {
             get => _blnPreferNightlyUpdates;
             set => _blnPreferNightlyUpdates = value;
+        }
+
+        /// <summary>
+        /// Whether or not to show a warning that this Nightly build is special
+        /// </summary>
+        public static bool ShowCharacterCustomDataWarning
+        {
+            get => _blnShowCharacterCustomDataWarning;
+            set
+            {
+                _blnShowCharacterCustomDataWarning = value;
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+                {
+                    if (objRegistry == null)
+                        return;
+                    if (value)
+                    {
+                        objRegistry.DeleteValue("charactercustomdatawarningshown");
+                    }
+                    else
+                    {
+                        objRegistry.SetValue("charactercustomdatawarningshown", bool.TrueString);
+                    }
+                }
+            }
         }
 
         public static string CharacterRosterPath

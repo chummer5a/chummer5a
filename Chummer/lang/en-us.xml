@@ -1151,6 +1151,14 @@
       <text>File Not Found</text>
     </string>
     <string>
+      <key>Message_CharacterCustomDataWarning</key>
+      <text>This version of the Nightly releases dramatically changes the way character settings/options are handled compared to older versions. While this version of Chummer can handle saves and settings from older versions, the reverse is absolutely not the case. Settings and characters saved with this version of Chummer will not work properly when opened in an older version of Chummer, including older stable releases.\n\nAre you sure you want to continue using this Nightly? This warning will not appear again if you do.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterCustomDataWarning</key>
+      <text>Warning! This Nightly Is Special!</text>
+    </string>
+    <string>
       <key>Message_RemoveCharacterAssociation</key>
       <text>Are you sure you want to remove this Character association?\nThe save file will NOT be deleted.</text>
     </string>

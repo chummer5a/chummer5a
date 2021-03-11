@@ -213,6 +213,20 @@ namespace Chummer
                     PopulateMRUToolstripMenu(this, null);
 
                     Program.MainForm = this;
+
+                    if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion < new Version(5, 215, 0))
+                    {
+                        if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
+                            LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                        {
+                            Application.Exit();
+                            return;
+                        }
+
+                        GlobalOptions.ShowCharacterCustomDataWarning = false;
+                    }
+
                     if (GlobalOptions.AllowEasterEggs)
                     {
                         _mascotChummy = new Chummy(null);
@@ -1778,6 +1792,8 @@ namespace Chummer
         public ThreadSafeObservableCollection<Character> OpenCharacters => _lstCharacters;
 
         public ObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
+
+        public Version CurrentVersion => _objCurrentVersion;
 
         #endregion
     }
