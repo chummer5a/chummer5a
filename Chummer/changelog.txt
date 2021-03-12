@@ -1,4 +1,4 @@
-Future Build 214
+Build 214
 Application Fixes:
 - Added a check for xml files storing invalid characters that prevents the file from being saved or loaded. As test issues have been constrained to issues with the notes, it's assumed that this is mostly coming from ingesting PDF documents. If the issue is found, prompt the user whether they want to load with unsafe settings, as this has a small chance of causing application instability. 
 - Added safeguard to notes save method to prevent them from storing said invalid characters. 
