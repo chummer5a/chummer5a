@@ -52,7 +52,7 @@ namespace Chummer
                 UseFading = true,
                 Active = true
             };
-
+            DoubleBuffered = true;
             MouseEnter += OnMouseEnter;
             MouseLeave += OnMouseLeave;
             SelectedIndexChanged += ClearUnintendedHighlight;
