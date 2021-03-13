@@ -35,7 +35,7 @@ namespace Chummer
 		private readonly List<ListItem> _lstGrade = new List<ListItem>(10);
 		private readonly Character _objCharacter;
 	    private Drug _objDrug;
-	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
+	    private readonly XmlDocument _objXmlDocument;
 		private double _dblCostMultiplier;
 		private int _intAddictionThreshold;
 
@@ -49,6 +49,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            _objXmlDocument = objCharacter.LoadData("drugcomponents.xml");
             LoadData();
 
             _lstSelectedDrugComponents = new List<clsNodeData>(5);

@@ -51,8 +51,6 @@ namespace Chummer.UI.Skills
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            _lstDropDownActiveSkills = GenerateDropdownFilter();
-            _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter();
             _sortList = GenerateSortList();
             _lstSortKnowledgeList = GenerateKnowledgeSortList();
         }
@@ -69,11 +67,11 @@ namespace Chummer.UI.Skills
         }
 
         private Character _objCharacter;
-        private readonly List<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
+        private List<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
         private readonly List<Tuple<string, IComparer<Skill>>>  _sortList;
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
-        private readonly List<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
+        private List<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
         private readonly List<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeList;
 
         private void SkillsTabUserControl_Load(object sender, EventArgs e)
@@ -93,6 +91,9 @@ namespace Chummer.UI.Skills
                 _objCharacter = new Character();
                 Utils.BreakIfDebug();
             }
+
+            _lstDropDownActiveSkills = GenerateDropdownFilter(_objCharacter);
+            _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter(_objCharacter);
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
@@ -214,9 +215,9 @@ namespace Chummer.UI.Skills
 
             if (!_objCharacter.Created)
             {
-                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
-                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
-                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.BuildMethodHasSkillPoints));
+                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
 
                 lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
@@ -236,7 +237,7 @@ namespace Chummer.UI.Skills
                 lblKnowledgeSkillPointsTitle.Visible = false;
             }
 
-            btnExotic.Visible = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
+            btnExotic.Visible = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
 
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
@@ -486,7 +487,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static List<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
+        private static List<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter(Character objCharacter)
         {
             List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>(7)
             {
@@ -510,7 +511,8 @@ namespace Chummer.UI.Skills
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
 
-            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]"))
+            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+                .SelectNodes("/chummer/categories/category[@type = \"active\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {
@@ -535,7 +537,8 @@ namespace Chummer.UI.Skills
                         skill => skill.Attribute == strAttribute));
             }
 
-            using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skillgroups/name"))
+            using (XmlNodeList xmlSkillGroupList = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+                .SelectNodes("/chummer/skillgroups/name"))
             {
                 if (xmlSkillGroupList != null)
                 {
@@ -617,7 +620,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static List<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter()
+        private static List<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter(Character objCharacter)
         {
             List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>(5)
             {
@@ -638,7 +641,8 @@ namespace Chummer.UI.Skills
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
 
-            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            using (XmlNodeList xmlSkillCategoryList = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+                .SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 if (xmlSkillCategoryList != null)
                 {
@@ -735,7 +739,7 @@ namespace Chummer.UI.Skills
         private void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
+            XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
             {
                 frmPickExoticSkill.ShowDialog(this);
@@ -773,7 +777,7 @@ namespace Chummer.UI.Skills
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
                 })
                 {
-                    form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills);
+                    form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter));
 
                     if (form.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;

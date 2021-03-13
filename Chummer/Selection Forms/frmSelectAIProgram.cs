@@ -50,7 +50,7 @@ namespace Chummer
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
-            _xmlBaseChummerNode = XmlManager.Load("programs.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").CreateNavigator().SelectSingleNode("/chummer");
             if (!_objCharacter.IsCritter) return;
             _xmlOptionalAIProgramsNode = _objCharacter.GetNode().SelectSingleNode("optionalaiprograms");
         }
@@ -222,8 +222,8 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strPage))
                         {
                             string strSpace = LanguageManager.GetString("String_Space");
-                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + " " + strPage);
+                            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
                         }
                         else
                         {
@@ -268,7 +268,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
 
             string strCategory = cboCategory.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             else
             {
@@ -331,7 +331,7 @@ namespace Chummer
                         continue;
                 }
                 string strDisplayName = objXmlProgram.SelectSingleNode("translate")?.Value ?? strName;
-                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;
                     if (!string.IsNullOrEmpty(strCategory))
@@ -374,7 +374,7 @@ namespace Chummer
                 }
 
                 _strSelectedAIProgram = strSelectedId;
-                s_StrSelectedCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlProgram.SelectSingleNode("category")?.Value;
+                s_StrSelectedCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlProgram.SelectSingleNode("category")?.Value;
 
                 DialogResult = DialogResult.OK;
             }

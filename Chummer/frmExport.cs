@@ -68,7 +68,7 @@ namespace Chummer
 
         private void frmExport_Load(object sender, EventArgs e)
         {
-            cboLanguage = frmViewer.PopulateLanguageList(cboLanguage, GlobalOptions.DefaultCharacterSheet);
+            LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalOptions.DefaultCharacterSheet, _objCharacter.Yield());
             cboXSLT.BeginUpdate();
             cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.

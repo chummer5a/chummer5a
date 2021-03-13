@@ -101,7 +101,7 @@ namespace Chummer
                 {
                     Parallel.ForEach(_lstFileNames, strFileName =>
                     {
-                        XPathNavigator xmlBaseNode = XmlManager.Load(strFileName).GetFastNavigator().SelectSingleNode("/chummer");
+                        XPathNavigator xmlBaseNode = XmlManager.LoadXPath(strFileName).CreateNavigator().SelectSingleNode("/chummer");
                         if (xmlBaseNode != null)
                         {
                             bool blnLoopFileNameHasItems = false;

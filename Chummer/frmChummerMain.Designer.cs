@@ -72,7 +72,8 @@ namespace Chummer
             this.toolsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuToolsDiceRoller = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCharacterOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -456,7 +457,8 @@ namespace Chummer
             this.toolsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuToolsDiceRoller,
             this.toolStripSeparator5,
-            this.optionsToolStripMenuItem,
+            this.mnuOptions,
+            this.mnuCharacterOptions,
             this.mnuToolsUpdate,
             this.mnuRestart,
             this.toolStripSeparator6,
@@ -481,14 +483,23 @@ namespace Chummer
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
-            // optionsToolStripMenuItem
+            // mnuOptions
             // 
-            this.optionsToolStripMenuItem.Image = global::Chummer.Properties.Resources.cog_edit;
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.optionsToolStripMenuItem.Tag = "Menu_Main_Options";
-            this.optionsToolStripMenuItem.Text = "&Options";
-            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            this.mnuOptions.Image = global::Chummer.Properties.Resources.cog_edit;
+            this.mnuOptions.Name = "mnuOptions";
+            this.mnuOptions.Size = new System.Drawing.Size(180, 22);
+            this.mnuOptions.Tag = "Menu_Main_Options";
+            this.mnuOptions.Text = "&Global Options";
+            this.mnuOptions.Click += new System.EventHandler(this.mnuOptions_Click);
+            // 
+            // mnuCharacterOptions
+            // 
+            this.mnuCharacterOptions.Image = global::Chummer.Properties.Resources.group_gear;
+            this.mnuCharacterOptions.Name = "mnuCharacterOptions";
+            this.mnuCharacterOptions.Size = new System.Drawing.Size(180, 22);
+            this.mnuCharacterOptions.Tag = "Menu_Main_Character_Options";
+            this.mnuCharacterOptions.Text = "&Character Options";
+            this.mnuCharacterOptions.Click += new System.EventHandler(this.mnuCharacterOptions_Click);
             // 
             // mnuToolsUpdate
             // 
@@ -496,7 +507,7 @@ namespace Chummer
             this.mnuToolsUpdate.Name = "mnuToolsUpdate";
             this.mnuToolsUpdate.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsUpdate.Tag = "Menu_Main_Update";
-            this.mnuToolsUpdate.Text = "Check for Updates";
+            this.mnuToolsUpdate.Text = "Check for &Updates";
             this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
             // 
             // mnuRestart
@@ -504,8 +515,8 @@ namespace Chummer
             this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
             this.mnuRestart.Name = "mnuRestart";
             this.mnuRestart.Size = new System.Drawing.Size(180, 22);
-            this.mnuRestart.Tag = "Button_Update_RestartChummer";
-            this.mnuRestart.Text = "Restart Chummer";
+            this.mnuRestart.Tag = "Menu_Main_Restart";
+            this.mnuRestart.Text = "&Restart Chummer";
             this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
             // 
             // toolStripSeparator6
@@ -519,7 +530,7 @@ namespace Chummer
             this.mnuToolsTranslator.Name = "mnuToolsTranslator";
             this.mnuToolsTranslator.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
-            this.mnuToolsTranslator.Text = "Translator";
+            this.mnuToolsTranslator.Text = "&Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
             // 
             // mnuHeroLabImporter
@@ -528,7 +539,7 @@ namespace Chummer
             this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
             this.mnuHeroLabImporter.Size = new System.Drawing.Size(180, 22);
             this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
-            this.mnuHeroLabImporter.Text = "Hero Lab Importer";
+            this.mnuHeroLabImporter.Text = "&Hero Lab Importer";
             this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
             // 
             // windowsMenu
@@ -580,7 +591,7 @@ namespace Chummer
             this.mnuChummerWiki.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
             this.mnuChummerWiki.Size = new System.Drawing.Size(217, 22);
             this.mnuChummerWiki.Tag = "Menu_Main_ChummerWiki";
-            this.mnuChummerWiki.Text = "Chummer Wiki";
+            this.mnuChummerWiki.Text = "Chummer &Wiki";
             this.mnuChummerWiki.Click += new System.EventHandler(this.mnuChummerWiki_Click);
             // 
             // mnuChummerDiscord
@@ -590,7 +601,7 @@ namespace Chummer
             this.mnuChummerDiscord.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
             this.mnuChummerDiscord.Size = new System.Drawing.Size(217, 22);
             this.mnuChummerDiscord.Tag = "Menu_Main_ChummerDiscord";
-            this.mnuChummerDiscord.Text = "Chummer Discord";
+            this.mnuChummerDiscord.Text = "Chummer &Discord";
             this.mnuChummerDiscord.Click += new System.EventHandler(this.mnuChummerDiscord_Click);
             // 
             // toolStripSeparator8
@@ -613,7 +624,7 @@ namespace Chummer
             this.mnuHelpDumpshock.Name = "mnuHelpDumpshock";
             this.mnuHelpDumpshock.Size = new System.Drawing.Size(217, 22);
             this.mnuHelpDumpshock.Tag = "Menu_Main_IssueTracker";
-            this.mnuHelpDumpshock.Text = "&Dumpshock Thread";
+            this.mnuHelpDumpshock.Text = "D&umpshock Thread";
             this.mnuHelpDumpshock.Click += new System.EventHandler(this.mnuHelpDumpshock_Click);
             // 
             // aboutToolStripMenuItem
@@ -804,7 +815,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuFilePrintMultiple;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsMenu;
-        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuOptions;
         private System.Windows.Forms.ToolStripMenuItem windowsMenu;
         private System.Windows.Forms.ToolStripMenuItem newWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem;
@@ -852,6 +863,7 @@ namespace Chummer
         private ToolStripMenuItem tsClose;
         private ToolStripMenuItem tsPrint;
         private ToolStripMenuItem tsExport;
+        private ToolStripMenuItem mnuCharacterOptions;
     }
 }
 

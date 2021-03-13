@@ -60,9 +60,9 @@ namespace Chummer
             _lstExistingQualities = lstExistingQualities;
 
             // Load the Quality information.
-            _objXmlDocument = XmlManager.Load("lifestyles.xml");
-            _objMetatypeDocument = XmlManager.Load("metatypes.xml");
-            _objCritterDocument = XmlManager.Load("critters.xml");
+            _objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
+            _objMetatypeDocument = _objCharacter.LoadData("metatypes.xml");
+            _objCritterDocument = _objCharacter.LoadData("critters.xml");
         }
 
         private void frmSelectLifestyleQuality_Load(object sender, EventArgs e)
@@ -98,7 +98,7 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule || _objCharacter.Created)
+            if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 lblBPLabel.Text = LanguageManager.GetString("Label_LP");
 
             _blnLoading = false;
@@ -155,7 +155,7 @@ namespace Chummer
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
             }
             else
@@ -341,7 +341,7 @@ namespace Chummer
         private List<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
                 sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             }
@@ -417,7 +417,7 @@ namespace Chummer
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
             DialogResult = DialogResult.OK;
         }
@@ -550,7 +550,7 @@ namespace Chummer
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-                XmlDocument _objXmlQualityDocument = XmlManager.Load("qualities.xml");
+                XmlDocument _objXmlQualityDocument = _objCharacter.LoadData("qualities.xml");
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;

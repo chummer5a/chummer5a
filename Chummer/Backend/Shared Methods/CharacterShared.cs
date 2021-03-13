@@ -5648,7 +5648,7 @@ namespace Chummer
         {
             if (sender is ContactControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5679,7 +5679,7 @@ namespace Chummer
         {
             if (sender is PetControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5711,7 +5711,7 @@ namespace Chummer
         {
             if (sender is ContactControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -6068,7 +6068,7 @@ namespace Chummer
             {
                 Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
                     return;
                 objSpirit.Fettered = false; // Fettered spirits consume MAG.
                 CharacterObject.Spirits.Remove(objSpirit);
@@ -6087,9 +6087,9 @@ namespace Chummer
         {
             using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
             {
-                if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.RecentImageFolder) && Directory.Exists(GlobalOptions.RecentImageFolder))
                 {
-                    dlgOpenFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
+                    dlgOpenFileDialog.InitialDirectory = GlobalOptions.RecentImageFolder;
                 }
                 // Prompt the user to select an image to associate with this character.
 
@@ -6114,7 +6114,7 @@ namespace Chummer
                 }
 
                 // Convert the image to a string using Base64.
-                _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
+                GlobalOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
                 using (Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
                 {
@@ -6432,7 +6432,7 @@ namespace Chummer
 
         public void PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
             bool blnAddAgain;
 
             do

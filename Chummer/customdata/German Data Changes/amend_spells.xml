@@ -17,26 +17,12 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!--
-  Hide the German skilljack because it's stupid
-  Set skilljack to flat 0.1 ess and R*1000 cost
-  Set skillwires to R*0.1 ess
--->
 <chummer>
-  <cyberwares>
-    <cyberware>
-      <id>c533c0db-3a04-4fdd-95f9-d4d9781a3e79</id>
-      <hide />
-    </cyberware>
-    <cyberware>
-      <id>d31497dd-2be9-4b8a-808f-3ced36287c0c</id>
-      <ess>0.1</ess>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 1000</cost>
-    </cyberware>
-    <cyberware>
-      <id>60485c4e-042f-44f6-ad89-324003223f73</id>
-      <ess>Rating * 0.1</ess>
-    </cyberware>
-  </cyberwares>
+  <spells>
+    <spell> <!-- Growth -->
+      <id>98381c0f-da21-466e-9f66-46381496be5a</id>
+      <category>Health</category>
+      <range>T</range>
+    </spell>
+  </spells>
 </chummer>

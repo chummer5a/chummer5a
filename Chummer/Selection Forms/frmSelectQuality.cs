@@ -50,7 +50,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Quality information.
-            _xmlBaseQualityDataNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").CreateNavigator().SelectSingleNode("/chummer");
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNode().SelectSingleNode("qualityrestriction");
         }
 
@@ -188,8 +188,8 @@ namespace Chummer
 
                 string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
             else
@@ -357,7 +357,7 @@ namespace Chummer
 
             string strCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
             {
                 sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
             }
@@ -483,7 +483,7 @@ namespace Chummer
                 return;
 
             _strSelectedQuality = strSelectedQuality;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
+            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
             DialogResult = DialogResult.OK;
         }
 

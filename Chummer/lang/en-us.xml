@@ -1058,6 +1058,30 @@
       <key>String_Dark</key>
       <text>Dark</text>
     </string>
+    <string>
+      <key>String_ContactPoints</key>
+      <text>Contact Points</text>
+    </string>
+    <string>
+      <key>String_KnowledgePoints</key>
+      <text>Knowledge Points</text>
+    </string>
+    <string>
+      <key>String_Skull</key>
+      <text>Skull</text>
+    </string>
+    <string>
+      <key>String_Torso</key>
+      <text>Torso</text>
+    </string>
+    <string>
+      <key>String_Arms</key>
+      <text>Arms</text>
+    </string>
+    <string>
+      <key>String_Legs</key>
+      <text>Legs</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
@@ -1125,6 +1149,14 @@
     <string>
       <key>MessageTitle_FileNotFound</key>
       <text>File Not Found</text>
+    </string>
+    <string>
+      <key>Message_CharacterCustomDataWarning</key>
+      <text>This version of the Nightly releases dramatically changes the way character settings/options are handled compared to older versions. While this version of Chummer can handle saves and settings from older versions, the reverse is absolutely not the case. Settings and characters saved with this version of Chummer will not work properly when opened in an older version of Chummer, including older stable releases.\n\nAre you sure you want to continue using this Nightly? This warning will not appear again if you do.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterCustomDataWarning</key>
+      <text>Warning! This Nightly Is Special!</text>
     </string>
     <string>
       <key>Message_RemoveCharacterAssociation</key>
@@ -1356,11 +1388,19 @@
     </string>
     <string>
       <key>Menu_Main_Options</key>
-      <text>&amp;Options</text>
+      <text>&amp;Global Options</text>
+    </string>
+    <string>
+      <key>Menu_Main_Character_Options</key>
+      <text>&amp;Character Options</text>
     </string>
     <string>
       <key>Menu_Main_Update</key>
-      <text>Check for Updates</text>
+      <text>Check for &amp;Updates</text>
+    </string>
+    <string>
+      <key>Menu_Main_Restart</key>
+      <text>&amp;Restart Chummer</text>
     </string>
     <string>
       <key>Menu_Main_NewWindow</key>
@@ -1372,11 +1412,11 @@
     </string>
     <string>
       <key>Menu_Main_ChummerWiki</key>
-      <text>Chummer Wiki</text>
+      <text>Chummer &amp;Wiki</text>
     </string>
     <string>
       <key>Menu_Main_ChummerDiscord</key>
-      <text>Chummer Discord</text>
+      <text>Chummer &amp;Discord</text>
     </string>
     <string>
       <key>Menu_Main_RevisionHistory</key>
@@ -1384,7 +1424,7 @@
     </string>
     <string>
       <key>Menu_Main_DumpshockThread</key>
-      <text>&amp;Dumpshock Thread</text>
+      <text>D&amp;umpshock Thread</text>
     </string>
     <string>
       <key>Menu_Main_About</key>
@@ -1392,11 +1432,11 @@
     </string>
     <string>
       <key>Menu_Main_Translator</key>
-      <text>Translator</text>
+      <text>&amp;Translator</text>
     </string>
     <string>
       <key>Menu_Main_HeroLabImporter</key>
-      <text>Hero Lab Importer</text>
+      <text>&amp;Hero Lab Importer</text>
     </string>
     <string>
       <key>String_MetatypeLoadError</key>
@@ -1509,6 +1549,14 @@
     <string>
       <key>Menu_FileSaveAs</key>
       <text>Save &amp;As</text>
+    </string>
+    <string>
+      <key>String_Save</key>
+      <text>Save</text>
+    </string>
+    <string>
+      <key>String_SaveAs</key>
+      <text>Save As...</text>
     </string>
     <string>
       <key>Menu_FileSaveAsCreated</key>
@@ -4368,7 +4416,7 @@
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating.</text>
+      <text>Characters receive some free points (amount depends on the gameplay option chosen) to spend on general Knowledge Skills, including Languages. Additional Knowledge Skills cost {0} Karma per new rating  and {1} Karma for a Specialization. A Language with a Rating of 0 is considered to be your Native Language.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -6797,7 +6845,7 @@
     <!-- Region Options Window -->
     <string>
       <key>Title_Options</key>
-      <text>Options</text>
+      <text>Global Options</text>
     </string>
     <string>
       <key>Label_Options_SettingsFile</key>
@@ -6832,6 +6880,10 @@
       <text>Optional Rules</text>
     </string>
     <string>
+      <key>Tab_Options_CustomData</key>
+      <text>Custom Data</text>
+    </string>
+    <string>
       <key>Tab_Options_HouseRules</key>
       <text>House Rules</text>
     </string>
@@ -6856,6 +6908,14 @@
       <text>Plugins</text>
     </string>
     <string>
+      <key>Tab_Options_CustomDataDirectories</key>
+      <text>Custom Data Directories</text>
+    </string>
+    <string>
+      <key>Tab_Options_Basic</key>
+      <text>Basic Options</text>
+    </string>
+    <string>
       <key>Label_Options_EditSourcebookInfo</key>
       <text>Edit Sourcebook Info</text>
     </string>
@@ -6869,7 +6929,7 @@
     </string>
     <string>
       <key>Label_Options_CustomDataDirectories</key>
-      <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+      <text>Custom Data Directory Entries (Changes Are Only Applied After a Restart)</text>
     </string>
     <string>
       <key>Button_Options_UploadPastebin</key>
@@ -6917,7 +6977,7 @@
     </string>
     <string>
       <key>Checkbox_Options_LiveUpdateCleanCharacterFiles</key>
-      <text>Automatically load changes from open characters' save files if there are no pending changes to be saved</text>
+      <text>Automatically load changes from open characters' save\nfiles if there are no pending changes to be saved</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLogging</key>
@@ -6962,6 +7022,10 @@
     <string>
       <key>Checkbox_Options_PrintFreeExpenses</key>
       <text>Print Free Karma and Nuyen Expenses</text>
+    </string>
+    <string>
+      <key>Label_Options_DefaultCharacterOption</key>
+      <text>Default Setting for New Characters:</text>
     </string>
     <string>
       <key>Label_Options_BPAttribute</key>
@@ -7656,6 +7720,108 @@
       <text>Lossy (JPG)</text>
     </string>
     <!-- End Region-->
+    <!-- Region Character Options -->
+    <string>
+      <key>Title_CharacterOptions</key>
+      <text>Character Settings</text>
+    </string>
+    <string>
+      <key>String_Rename</key>
+      <text>Rename</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CharacterCreationSettings</key>
+      <text>Character Creation Settings</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Printing</key>
+      <text>Printing</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_OptionsOfficialRules</key>
+      <text>Options for Official Rules</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Cyberlimbs</key>
+      <text>Cyberlimbs</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_DecimalsAndRounding</key>
+      <text>Decimals and Rounding</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CustomData</key>
+      <text>Custom Data Directories to Use</text>
+    </string>
+    <string>
+      <key>Button_ChangeCustomDataEntries</key>
+      <text>Change Custom Data Entries</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Combat</key>
+      <text>Combat</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MagicAndResonance</key>
+      <text>Magic and Resonance</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_PriorityTable</key>
+      <text>Priority Table</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_AllowedCyberwareGrades</key>
+      <text>Allowed Cyberware Grades</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_RedlinerLimbs</key>
+      <text>Limbs Considered by Redliner:</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_UnsavedDirty</key>
+      <text>You currently have unsaved changes in your currently selected setting. Are you sure you want to lose your changes?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_UnsavedDirty</key>
+      <text>Unsaved Changes</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_ConfirmDelete</key>
+      <text>This action will permanently delete the setting {0}. Are you sure that you wish to proceed?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_ConfirmDelete</key>
+      <text>Confirm Delete</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SettingRename</key>
+      <text>Enter a new name for your setting.</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_DuplicateSettingName</key>
+      <text>A setting with a name of {0} already exists. Saving a new setting with the same name will not override the existing setting, instead it will create two settings with the same name.\nDo you wish to create two settings with the same name?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DuplicateSettingName</key>
+      <text>Setting Name Already Exists</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SelectSettingName</key>
+      <text>Enter a name for your setting.</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SelectSettingFileName</key>
+      <text>Enter a file name for your setting.</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SettingFileNameTooLongError</key>
+      <text>Chummer has encountered an issue trying to save this setting because there are too many existing settings with similar file names to the name you have given.\nThis is an issue that is too rare and too complicated for Chummer to work around automatically. Please give this setting a different name and then rename it after it has saved.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_SettingFileNameTooLongError</key>
+      <text>No Valid Settings Name Possible</text>
+    </string>
+    <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>
       <key>Title_PrintMultiple</key>
@@ -7812,12 +7978,20 @@
       <text>Select Build Method</text>
     </string>
     <string>
+      <key>Label_SelectBP_BuildMethod</key>
+      <text>Build Method</text>
+    </string>
+    <string>
       <key>Label_SelectBP_MaxAvail</key>
       <text>Maximum Availability</text>
     </string>
     <string>
       <key>Label_SelectBP_StartingKarma</key>
       <text>Starting Karma</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_Priorities</key>
+      <text>Priorities</text>
     </string>
     <string>
       <key>Label_SelectBP_SumToX</key>
@@ -7828,20 +8002,24 @@
       <text>Nuyen Karma Max</text>
     </string>
     <string>
+      <key>Label_SelectBP_QualityKarmaLimit</key>
+      <text>Quality Karma Limit</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_EnabledBooks</key>
+      <text>Enabled Books</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_CustomData</key>
+      <text>Custom Data</text>
+    </string>
+    <string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
       <text>Ignore Character Creation Rules</text>
     </string>
     <string>
-      <key>String_SelectBP_BPSummary</key>
-      <text>Enter the amount of Build Points with which you are allowed to create your character (Default {0}).</text>
-    </string>
-    <string>
-      <key>String_SelectBP_KarmaSummary</key>
-      <text>Enter the amount of Karma with which you are allowed to create your character (Default {0}).</text>
-    </string>
-    <string>
-      <key>String_SelectBP_PrioritySummary</key>
-      <text>Enter the maximum availability with which you are allowed to create your character.</text>
+      <key>String_SelectBP_Summary</key>
+      <text>Brief Summary of Selected Gameplay Option:</text>
     </string>
     <string>
       <key>Tip_SelectKarma_IgnoreRules</key>
@@ -9131,16 +9309,16 @@
     <!-- End Region-->
     <!-- Region CharacterOptions Messages -->
     <string>
-      <key>Message_CharacterOptions_OpenOptions</key>
-      <text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Options menu now?</text>
+      <key>Message_CharacterOptions_DesyncBuildMethod</key>
+      <text>The settings file present that matches with the character's settings file ({0}) has a different build method.\n\nSelect a different settings file with the same build method instead?</text>
     </string>
     <string>
-      <key>MessageTitle_CharacterOptions_OpenOptions</key>
-      <text>No Settings File Found</text>
+      <key>MessageTitle_CharacterOptions_DesyncBuildMethod</key>
+      <text>Loaded Settings File Has Different Build Method</text>
     </string>
     <string>
       <key>Message_CharacterOptions_CannotLoadSetting</key>
-      <text>The character's settings file ({0}) could not be found. Use default settings instead?</text>
+      <text>The character's settings file ({0}) could not be found.\n\nSelect an existing settings file with the same build method instead?</text>
     </string>
     <string>
       <key>MessageTitle_CharacterOptions_CannotLoadSetting</key>
@@ -9153,6 +9331,14 @@
     <string>
       <key>MessageText_CharacterOptions_CannotLoadCharacter</key>
       <text>Cannot Load Character</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_DesyncBooksOrCustomData</key>
+      <text>This character was saved in an older version of Chummer5a, and the settings file present that matches with the character's settings file ({0}) has a different set of enabled sourcebooks and/or custom data directories.\n\nModify the settings file that this character will use?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DesyncBooksOrCustomData</key>
+      <text>Loaded Settings File Has Different Books and/or Custom Data Directories</text>
     </string>
     <!-- End Region-->
     <!-- Region Karma Value Strings -->

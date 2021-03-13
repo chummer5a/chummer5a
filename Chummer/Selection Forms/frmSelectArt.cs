@@ -55,26 +55,26 @@ namespace Chummer
             switch (objWindowMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = XmlManager.Load("metamagic.xml").GetFastNavigator().SelectSingleNode("/chummer/arts");
+                    _objXmlDocument = objCharacter.LoadDataXPath("metamagic.xml").CreateNavigator().SelectSingleNode("/chummer/arts");
                     _strLocalName = LanguageManager.GetString("String_Art");
                     _strBaseXPath = "art";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enhancement:
-                    _objXmlDocument = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer/enhancements");
+                    _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").CreateNavigator().SelectSingleNode("/chummer/enhancements");
                     _strLocalName = LanguageManager.GetString("String_Enhancement");
                     _strBaseXPath = "enhancement";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enchantment:
                     _strLocalName = LanguageManager.GetString("String_Enchantment");
-                    _objXmlDocument = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").CreateNavigator().SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual");
-                    _objXmlDocument = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").CreateNavigator().SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;
@@ -117,8 +117,8 @@ namespace Chummer
             string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strSpace = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

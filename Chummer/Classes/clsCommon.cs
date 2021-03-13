@@ -733,12 +733,14 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
+        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "", Character objCharacter = null)
         {
             if (!string.IsNullOrWhiteSpace(strAltCode))
             {
-                XmlNode xmlOriginalCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
+                XmlNode xmlOriginalCode = XmlManager.Load("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                    .SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
                 return xmlOriginalCode?.InnerText ?? strAltCode;
             }
             return string.Empty;
@@ -748,12 +750,14 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookShort(string strCode, string strLanguage = "")
+        public static string LanguageBookShort(string strCode, string strLanguage = "", Character objCharacter = null)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode xmlAltCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
+                XmlNode xmlAltCode = XmlManager.Load("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                    .SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
                 return xmlAltCode?.InnerText ?? strCode;
             }
             return string.Empty;
@@ -763,12 +767,14 @@ namespace Chummer
         /// Book name (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookLong(string strCode, string strLanguage = "")
+        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode xmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode xmlBook = XmlManager.Load("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                    .SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 if (xmlBook != null)
                 {
                     string strReturn = xmlBook["translate"]?.InnerText ?? xmlBook["name"]?.InnerText;
@@ -872,6 +878,26 @@ namespace Chummer
             return decValue;
         }
 
+        /// <summary>
+        /// Verify that the user wants to delete an item.
+        /// </summary>
+        public static bool ConfirmDelete(string strMessage)
+        {
+            return !GlobalOptions.ConfirmDelete ||
+                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
+        /// </summary>
+        public static bool ConfirmKarmaExpense(string strMessage)
+        {
+            return !GlobalOptions.ConfirmKarmaExpense ||
+                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
         #region PDF Functions
         /// <summary>
         /// Opens a PDF file using the provided source information.
@@ -881,15 +907,30 @@ namespace Chummer
         public static void OpenPdfFromControl(object sender, EventArgs e)
         {
             if (sender is Control objControl)
-                OpenPdf(objControl.Text);
+            {
+                Control objLoopControl = objControl;
+                Character objCharacter = null;
+                while (objLoopControl != null)
+                {
+                    if (objLoopControl is CharacterShared objShared)
+                    {
+                        objCharacter = objShared.CharacterObject;
+                        break;
+                    }
+                    objLoopControl = objLoopControl.Parent;
+                }
+                OpenPdf(objControl.Text, objCharacter);
+            }
         }
+
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="strSource">Book code and page number to open.</param>
-        /// <param name="strPdfParamaters">PDF parameters to use. If empty, use GlobalOptions.PDFParameters.</param>
-        /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PDFAppPath.</param>
-        public static void OpenPdf(string strSource, string strPdfParamaters = "", string strPdfAppPath = "")
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strPdfParamaters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
+        /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PdfAppPath.</param>
+        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParamaters = "", string strPdfAppPath = "")
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -935,7 +976,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0]);
+            string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook);
@@ -976,8 +1017,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <returns></returns>
-        public static string GetTextFromPdf(string strSource, string strText)
+        public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null)
         {
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
@@ -993,7 +1035,7 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(strTemp[0]);
+            string strBook = LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook);

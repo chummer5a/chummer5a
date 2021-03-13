@@ -19,7 +19,28 @@
 -->
 <chummer>
   <weapons>
-    <weapon amendoperation="addnode">
+    <weapon>
+      <id>e52049c2-35d1-4918-96b6-8c7bbf3010a6</id>
+      <name>Grenade: Painade</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>12R</avail>
+      <cost>150</cost>
+      <source>CA</source>
+      <page>135</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
       <id>78eeb006-e377-4e5a-bf69-adae197bb5d4</id>
       <name>Underbarrel Flamethrower</name>
       <category>Underbarrel Weapons</category>
@@ -62,7 +83,7 @@
         </OR>
       </required>
     </weapon>
-    <weapon amendoperation="addnode">
+    <weapon>
       <id>2845e48b-ce4e-4fd0-af23-41f5aba86f5d</id>
       <name>Underbarrel Chainsaw</name>
       <category>Underbarrel Weapons</category>
@@ -105,14 +126,4 @@
       </required>
     </weapon>
   </weapons>
-  <accessories>
-    <accessory>
-      <name>Underbarrel Chainsaw</name>
-      <hide />
-    </accessory>
-    <accessory>
-      <name>Underbarrel Flamethrower</name>
-      <hide />
-    </accessory>
-  </accessories>
 </chummer>

@@ -37,7 +37,7 @@ namespace ChummerHub.Client.UI
             _inConstructor = true;
             InitializeComponent();
 
-            TagValueArchetype.DataSource = ContactControl.ContactArchetypes;
+            TagValueArchetype.DataSource = Contact.ContactArchetypes(parent.CharacterObject);
             Name = "SINnersBasic";
             bGroupSearch.Enabled = false;
             AutoSize = true;

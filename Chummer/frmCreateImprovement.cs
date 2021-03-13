@@ -43,7 +43,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _strCustomGroup = strCustomGroup;
-            _objDocument = XmlManager.Load("improvements.xml");
+            _objDocument = objCharacter.LoadData("improvements.xml");
         }
 
         private void frmCreateImprovement_Load(object sender, EventArgs e)
@@ -186,7 +186,7 @@ namespace Chummer
             {
                 case "SelectActionDicePool":
                     List<ListItem> lstActions;
-                    using (XmlNodeList xmlActionList = XmlManager.Load("actions.xml").SelectNodes("/chummer/actions/action"))
+                    using (XmlNodeList xmlActionList = _objCharacter.LoadData("actions.xml").SelectNodes("/chummer/actions/action"))
                     {
                         lstActions = new List<ListItem>(xmlActionList?.Count ?? 0);
                         if (xmlActionList?.Count > 0)
@@ -365,7 +365,7 @@ namespace Chummer
                         }
 
                         string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
-                        using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill" + strFilter))
+                        using (XmlNodeList xmlSkillList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/knowledgeskills/skill" + strFilter))
                         {
                             if (xmlSkillList?.Count > 0)
                             {
@@ -397,7 +397,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectSkillCategory":
-                    using (frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory())
+                    using (frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory(_objCharacter))
                     {
                         frmPickSkillCategory.Description = LanguageManager.GetString("Title_SelectSkillCategory");
                         frmPickSkillCategory.ShowDialog(this);
@@ -410,7 +410,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectSkillGroup":
-                    using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup())
+                    using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter))
                     {
                         frmPickSkillGroup.Description = LanguageManager.GetString("Title_SelectSkillGroup");
                         frmPickSkillGroup.ShowDialog(this);
@@ -424,7 +424,7 @@ namespace Chummer
                     break;
                 case "SelectSpell":
                     List<ListItem> lstSpells;
-                    using (XmlNodeList xmlSpellList = XmlManager.Load("spells.xml").SelectNodes("/chummer/spells/spell"))
+                    using (XmlNodeList xmlSpellList = _objCharacter.LoadData("spells.xml").SelectNodes("/chummer/spells/spell"))
                     {
                         lstSpells = new List<ListItem>(xmlSpellList?.Count ?? 0);
                         if (xmlSpellList?.Count > 0)
@@ -454,7 +454,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectWeaponCategory":
-                    using (frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory())
+                    using (frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter))
                     {
                         frmPickWeaponCategory.Description = LanguageManager.GetString("Title_SelectWeaponCategory");
                         frmPickWeaponCategory.ShowDialog(this);
@@ -467,7 +467,7 @@ namespace Chummer
                     }
                     break;
                 case "SelectSpellCategory":
-                    using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory())
+                    using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter))
                     {
                         frmPickSpellCategory.Description = LanguageManager.GetString("Title_SelectSpellCategory");
                         frmPickSpellCategory.ShowDialog(this);
@@ -487,7 +487,7 @@ namespace Chummer
 
                         if (frmPickPower.DialogResult == DialogResult.OK)
                         {
-                            txtSelect.Text = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.InnerText;
+                            txtSelect.Text = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.InnerText;
                             txtTranslateSelection.Text = TranslateField(_strSelect, frmPickPower.SelectedPower);
                         }
                     }
@@ -645,39 +645,39 @@ namespace Chummer
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
                         astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 
-                        objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + astrToTranslateParts[0] + "\"]");
+                        objXmlNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + astrToTranslateParts[0] + "\"]");
                         string strFirstPartTranslated = objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? astrToTranslateParts[0];
 
-                        return strFirstPartTranslated + LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(astrToTranslateParts[1]) + ')';
+                        return strFirstPartTranslated + LanguageManager.GetString("String_Space") + '(' + _objCharacter.TranslateExtra(astrToTranslateParts[1]) + ')';
                     }
                     else
                     {
-                        objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
+                        objXmlNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
                         return objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? strToTranslate;
                     }
 
                 case "SelectKnowSkill":
-                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strToTranslate + "\"]");
                     return objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? strToTranslate;
 
                 case "SelectSkillCategory":
-                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
                     return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectSkillGroup":
-                    objXmlNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = \"" + strToTranslate + "\"]");
                     return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectWeaponCategory":
-                    objXmlNode = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
                     return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectSpellCategory":
-                    objXmlNode = XmlManager.Load("spells.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadData("spells.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
                     return objXmlNode?.Attributes?["translate"]?.InnerText ?? objXmlNode?.SelectSingleNode(".")?.InnerText ?? strToTranslate;
 
                 case "SelectAdeptPower":
-                    objXmlNode = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + strToTranslate + "\" or name = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + strToTranslate + "\" or name = \"" + strToTranslate + "\"]");
                     return objXmlNode?.SelectSingleNode("translate")?.InnerText ?? objXmlNode?.SelectSingleNode("name")?.InnerText ?? strToTranslate;
 
                 default:

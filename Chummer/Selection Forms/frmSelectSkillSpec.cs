@@ -39,7 +39,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("skills.xml");
+            _objXmlDocument = XmlManager.Load("skills.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
@@ -49,7 +49,7 @@ namespace Chummer
                 new ListItem("Custom", string.Empty)
             };
 
-            if (_objCharacter.Created || _objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+            if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
             {
                 chkKarma.Checked = true;
                 chkKarma.Visible = false;
@@ -73,7 +73,7 @@ namespace Chummer
                         if (_objSkill.SkillCategory != "Combat Active")
                             continue;
                         // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                        XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                        XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
                         //Might need to include skill name or might miss some values?
                         XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
                         if (objXmlWeaponList == null)

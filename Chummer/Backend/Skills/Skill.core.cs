@@ -65,7 +65,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
         /// </summary>
-        public bool BaseUnlocked => CharacterObject.BuildMethodHasSkillPoints
+        public bool BaseUnlocked => CharacterObject.EffectiveBuildMethodUsesPriorityTables
                                     && (SkillGroupObject == null
                                         || SkillGroupObject.Base <= 0
                                         || (CharacterObject.Options.UsePointsOnBrokenGroups
@@ -213,7 +213,7 @@ namespace Chummer.Backend.Skills
                 int intOtherBonus = RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled).Sum(x => x.Maximum);
                 if (CharacterObject.Created || CharacterObject.IgnoreRules)
                     return 12 + intOtherBonus;
-                return (IsKnowledgeSkill && CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6) + intOtherBonus;
+                return (IsKnowledgeSkill && CharacterObject.EffectiveBuildMethodIsLifeModule ? 9 : 6) + intOtherBonus;
             }
         }
 
@@ -442,7 +442,7 @@ namespace Chummer.Backend.Skills
                 int intSpecCount = 0;
                 foreach (SkillSpecialization objSpec in Specializations)
                 {
-                    if (!objSpec.Free && (BuyWithKarma || CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule))
+                    if (!objSpec.Free && (BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables))
                         intSpecCount += 1;
                 }
                 int intSpecCost = intSpecCount * CharacterObject.Options.KarmaSpecialization;
@@ -745,7 +745,7 @@ namespace Chummer.Backend.Skills
 
         public void AddSpecialization(string strName)
         {
-            SkillSpecialization nspec = new SkillSpecialization(strName);
+            SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
             if (CharacterObject.Created)
             {
                 int intPrice = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;

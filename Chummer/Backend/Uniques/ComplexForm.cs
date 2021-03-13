@@ -169,7 +169,7 @@ namespace Chummer
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
             objWriter.WriteElementString("fv", DisplayFV(strLanguageToPrint));
             objWriter.WriteElementString("target", DisplayTarget(strLanguageToPrint));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -215,7 +215,7 @@ namespace Chummer
                 _strName = value;
             }
         }
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Complex Form's extra info.
@@ -223,7 +223,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = LanguageManager.ReverseTranslateExtra(value);
+            set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Chummer
             {
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
-                    strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                    strExtra = _objCharacter.TranslateExtra(Extra, strLanguage);
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
@@ -559,7 +559,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("complexforms.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("complexforms.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/complexforms/complexform[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -610,8 +610,7 @@ namespace Chummer
         {
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
                     return false;
             }
 

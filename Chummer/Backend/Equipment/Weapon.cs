@@ -223,7 +223,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -238,7 +238,7 @@ namespace Chummer.Backend.Equipment
                             strTranslatedNameOnPage = strNameOnPage;
 
                         Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language),
-                            strTranslatedNameOnPage);
+                            strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -320,7 +320,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.NuyenDecimals)
+                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.MaxNuyenDecimals)
                         {
                             Minimum = decMin,
                             Maximum = decMax,
@@ -343,7 +343,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlWeapon.TryGetStringFieldQuickly("page", ref _strPage);
 
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
+            XmlDocument objXmlDocument = _objCharacter.LoadData("weapons.xml");
 
             if (!objXmlWeapon.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
                 _strWeaponType = objXmlDocument
@@ -465,7 +465,7 @@ namespace Chummer.Backend.Equipment
                         XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
                         if (xmlGearsNode != null)
                         {
-                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+                            XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
                             foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
                             {
                                 XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
@@ -546,7 +546,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -748,7 +748,7 @@ namespace Chummer.Backend.Equipment
             // Legacy shim
             if (Name.Contains("Osmium Mace (STR"))
             {
-                XmlNode objNewOsmiumMaceNode = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
+                XmlNode objNewOsmiumMaceNode = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
                 if (objNewOsmiumMaceNode != null)
                 {
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
@@ -1055,7 +1055,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             }
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", CustomName);
             objWriter.WriteElementString("location", Location?.DisplayName());
@@ -1357,13 +1357,7 @@ namespace Chummer.Backend.Equipment
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}",
-                        () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}",
-                        () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
 
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
@@ -1398,7 +1392,9 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadData("weapons.xml", strLanguage)
+                       .SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText
+                   ?? Category;
         }
 
         /// <summary>
@@ -1410,7 +1406,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoCategory;
 
-            return XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.InnerText ?? AmmoCategory;
+            return _objCharacter.LoadData("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.InnerText ?? AmmoCategory;
         }
 
         /// <summary>
@@ -1932,7 +1928,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("weapons.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/weapons/weapon[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -3056,126 +3052,7 @@ namespace Chummer.Backend.Equipment
 
             StringBuilder sbdAP = new StringBuilder(strAP)
                 .CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
-            int intUseSTR = 0;
-            int intUseAGI = 0;
-            int intUseSTRBase = 0;
-            int intUseAGIBase = 0;
-            if (strAP.Contains("{STR") || strAP.Contains("{AGI"))
-            {
-                if (Cyberware)
-                {
-                    if (ParentVehicle != null)
-                    {
-                        intUseSTR = ParentVehicle.TotalBody;
-                        intUseSTRBase = intUseSTR;
-                        intUseAGI = ParentVehicle.Pilot;
-                        intUseAGIBase = intUseAGI;
-                        if (!string.IsNullOrEmpty(ParentID))
-                        {
-                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
-                            if (objWeaponParent != null)
-                            {
-                                Cyberware objAttributeSource = objWeaponParent;
-                                int intSTR = objAttributeSource.TotalStrength;
-                                int intSTRBase = objAttributeSource.BaseStrength;
-                                int intAGI = objAttributeSource.TotalAgility;
-                                int intAGIBase = objAttributeSource.BaseAgility;
-                                while (objAttributeSource != null)
-                                {
-                                    if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
-                                        break;
-                                    objAttributeSource = objAttributeSource.Parent;
-                                    if (objAttributeSource == null) continue;
-                                    intSTR = objAttributeSource.TotalStrength;
-                                    intSTRBase = objAttributeSource.BaseStrength;
-                                    intAGI = objAttributeSource.TotalAgility;
-                                    intAGIBase = objAttributeSource.BaseAgility;
-                                }
-
-                                intUseSTR = intSTR;
-                                intUseAGI = intAGI;
-                                intUseSTRBase = intSTRBase;
-                                intUseAGIBase = intAGIBase;
-
-                                if (intUseSTR == 0)
-                                    intUseSTR = objVehicleMod.TotalStrength;
-                                if (intUseAGI == 0)
-                                    intUseAGI = objVehicleMod.TotalAgility;
-                                if (intUseSTRBase == 0)
-                                    intUseSTRBase = ParentVehicle.TotalBody;
-                                if (intUseAGIBase == 0)
-                                    intUseAGIBase = ParentVehicle.Pilot;
-                            }
-                        }
-                    }
-                    else if (!string.IsNullOrEmpty(ParentID))
-                    {
-                        // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
-                        if (objWeaponParent != null)
-                        {
-                            Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.TotalStrength;
-                            int intSTRBase = objAttributeSource.BaseStrength;
-                            int intAGI = objAttributeSource.TotalAgility;
-                            int intAGIBase = objAttributeSource.BaseAgility;
-                            while (objAttributeSource != null)
-                            {
-                                if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
-                                    break;
-                                objAttributeSource = objAttributeSource.Parent;
-                                if (objAttributeSource == null) continue;
-                                intSTR = objAttributeSource.TotalStrength;
-                                intSTRBase = objAttributeSource.BaseStrength;
-                                intAGI = objAttributeSource.TotalAgility;
-                                intAGIBase = objAttributeSource.BaseAgility;
-                            }
-
-                            intUseSTR = intSTR;
-                            intUseAGI = intAGI;
-                            intUseSTRBase = intSTRBase;
-                            intUseAGIBase = intAGIBase;
-                        }
-                        if (intUseSTR == 0)
-                            intUseSTR = _objCharacter.STR.TotalValue;
-                        if (intUseAGI == 0)
-                            intUseAGI = _objCharacter.AGI.TotalValue;
-                        if (intUseSTRBase == 0)
-                            intUseSTRBase = _objCharacter.STR.TotalBase;
-                        if (intUseAGIBase == 0)
-                            intUseAGIBase = _objCharacter.AGI.TotalBase;
-                    }
-                }
-                else if (ParentVehicle == null)
-                {
-                    intUseSTR = _objCharacter.STR.TotalValue;
-                    intUseAGI = _objCharacter.AGI.TotalValue;
-                }
-
-                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR).StandardRound();
-            }
-
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
-            {
-                CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
-                if (strAttribute == "STR")
-                {
-                    sbdAP.Replace("{" + strAttribute + "}", intUseSTR.ToString(GlobalOptions.InvariantCultureInfo));
-                    sbdAP.Replace("{" + strAttribute + "Base}", intUseSTRBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
-                else if (strAttribute == "AGI")
-                {
-                    sbdAP.Replace("{" + strAttribute + "}", intUseAGI.ToString(GlobalOptions.InvariantCultureInfo));
-                    sbdAP.Replace("{" + strAttribute + "Base}", intUseAGIBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
-                else
-                {
-                    sbdAP.CheapReplace(strAP, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    sbdAP.CheapReplace(strAP, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
-            }
+            ProcessAttributesInXPath(sbdAP, strAP);
 
             int intAP;
             try
@@ -3495,107 +3372,7 @@ namespace Chummer.Backend.Equipment
                 StringBuilder sbdAccuracy = new StringBuilder(strAccuracy);
                 int intAccuracy = 0;
                 sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                int intUseSTR = 0;
-                int intUseAGI = 0;
-                int intUseSTRBase = 0;
-                int intUseAGIBase = 0;
-                if (strAccuracy.Contains("{STR") || strAccuracy.Contains("{AGI"))
-                {
-                    if (Cyberware)
-                    {
-                        if (ParentVehicle != null)
-                        {
-                            intUseSTR = ParentVehicle.TotalBody;
-                            intUseSTRBase = intUseSTR;
-                            intUseAGI = ParentVehicle.Pilot;
-                            intUseAGIBase = intUseAGI;
-                            if (!string.IsNullOrEmpty(ParentID))
-                            {
-                                // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                                Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
-                                if (objWeaponParent != null)
-                                {
-                                    Cyberware objAttributeSource = objWeaponParent;
-                                    int intSTR = objAttributeSource.TotalStrength;
-                                    int intSTRBase = objAttributeSource.BaseStrength;
-                                    int intAGI = objAttributeSource.TotalAgility;
-                                    int intAGIBase = objAttributeSource.BaseAgility;
-                                    while (objAttributeSource != null)
-                                    {
-                                        if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
-                                            break;
-                                        objAttributeSource = objAttributeSource.Parent;
-                                        if (objAttributeSource == null) continue;
-                                        intSTR = objAttributeSource.TotalStrength;
-                                        intSTRBase = objAttributeSource.BaseStrength;
-                                        intAGI = objAttributeSource.TotalAgility;
-                                        intAGIBase = objAttributeSource.BaseAgility;
-                                    }
-
-                                    intUseSTR = intSTR;
-                                    intUseAGI = intAGI;
-                                    intUseSTRBase = intSTRBase;
-                                    intUseAGIBase = intAGIBase;
-
-                                    if (intUseSTR == 0)
-                                        intUseSTR = objVehicleMod.TotalStrength;
-                                    if (intUseAGI == 0)
-                                        intUseAGI = objVehicleMod.TotalAgility;
-                                    if (intUseSTRBase == 0)
-                                        intUseSTRBase = ParentVehicle.TotalBody;
-                                    if (intUseAGIBase == 0)
-                                        intUseAGIBase = ParentVehicle.Pilot;
-                                }
-                            }
-                        }
-                        else if (!string.IsNullOrEmpty(ParentID))
-                        {
-                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                            Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
-                            if (objWeaponParent != null)
-                            {
-                                Cyberware objAttributeSource = objWeaponParent;
-                                int intSTR = objAttributeSource.TotalStrength;
-                                int intSTRBase = objAttributeSource.BaseStrength;
-                                int intAGI = objAttributeSource.TotalAgility;
-                                int intAGIBase = objAttributeSource.BaseAgility;
-                                while (objAttributeSource != null)
-                                {
-                                    if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
-                                        break;
-                                    objAttributeSource = objAttributeSource.Parent;
-                                    if (objAttributeSource == null) continue;
-                                    intSTR = objAttributeSource.TotalStrength;
-                                    intSTRBase = objAttributeSource.BaseStrength;
-                                    intAGI = objAttributeSource.TotalAgility;
-                                    intAGIBase = objAttributeSource.BaseAgility;
-                                }
-
-                                intUseSTR = intSTR;
-                                intUseAGI = intAGI;
-                                intUseSTRBase = intSTRBase;
-                                intUseAGIBase = intAGIBase;
-                            }
-                            if (intUseSTR == 0)
-                                intUseSTR = _objCharacter.STR.TotalValue;
-                            if (intUseAGI == 0)
-                                intUseAGI = _objCharacter.AGI.TotalValue;
-                            if (intUseSTRBase == 0)
-                                intUseSTRBase = _objCharacter.STR.TotalBase;
-                            if (intUseAGIBase == 0)
-                                intUseAGIBase = _objCharacter.AGI.TotalBase;
-                        }
-                    }
-                    else if (ParentVehicle == null)
-                    {
-                        intUseSTR = _objCharacter.STR.TotalValue;
-                        intUseAGI = _objCharacter.AGI.TotalValue;
-                    }
-
-                    if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
-                        intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR).StandardRound();
-                }
-
+                ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
                 Func<string> funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalOptions.InvariantCultureInfo);
                 if (ParentVehicle != null)
                 {
@@ -3609,25 +3386,6 @@ namespace Chummer.Backend.Equipment
                     };
                 }
                 sbdAccuracy.CheapReplace(strAccuracy, "Physical", funcPhysicalLimitString).CheapReplace(strAccuracy, "Missile", funcPhysicalLimitString);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
-                    if (strAttribute == "STR")
-                    {
-                        sbdAccuracy.Replace("{" + strAttribute + "}", intUseSTR.ToString(GlobalOptions.InvariantCultureInfo));
-                        sbdAccuracy.Replace("{" + strAttribute + "Base}", intUseSTRBase.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-                    else if (strAttribute == "AGI")
-                    {
-                        sbdAccuracy.Replace("{" + strAttribute + "}", intUseAGI.ToString(GlobalOptions.InvariantCultureInfo));
-                        sbdAccuracy.Replace("{" + strAttribute + "Base}", intUseAGIBase.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-                    else
-                    {
-                        sbdAccuracy.CheapReplace(strAccuracy, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                        sbdAccuracy.CheapReplace(strAccuracy, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
-                }
 
                 // Replace the division sign with "div" since we're using XPath.
                 sbdAccuracy.Replace("/", " div ");
@@ -3804,7 +3562,7 @@ namespace Chummer.Backend.Equipment
                 strRange = Category;
             if (!string.IsNullOrWhiteSpace(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", strLanguage);
+                XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml",  strLanguage);
                 XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
                 XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
                 if (xmlTranslateNode != null)
@@ -3813,7 +3571,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objXmlDocument = XmlManager.Load("weapons.xml", strLanguage);
+                    objXmlDocument = _objCharacter.LoadData("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
                     xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
                     if (xmlTranslateNode != null)
@@ -3833,7 +3591,7 @@ namespace Chummer.Backend.Equipment
             string strRange = AlternateRange.Trim();
             if (!string.IsNullOrEmpty(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", strLanguage);
+                XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml", strLanguage);
                 XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
                 XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
                 if (xmlTranslateNode != null)
@@ -3842,7 +3600,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objXmlDocument = XmlManager.Load("weapons.xml", strLanguage);
+                    objXmlDocument = _objCharacter.LoadData("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
                     xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
                     if (xmlTranslateNode != null)
@@ -3870,7 +3628,7 @@ namespace Chummer.Backend.Equipment
                 strRangeCategory = Range;
 
 
-            XmlDocument objXmlDocument = XmlManager.Load("ranges.xml");
+            XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml");
             XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRangeCategory + "\"]");
             if (objXmlCategoryNode?[strFindRange] == null)
             {
@@ -4023,8 +3781,8 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
-            int i = Convert.ToInt32(XmlManager.Load("ranges.xml")
-                .SelectSingleNode("chummer/modifiers/" + strRange.ToLowerInvariant())
+            int i = Convert.ToInt32(_objCharacter.LoadData("ranges.xml")
+                .SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")
                 ?.InnerText, GlobalOptions.InvariantCultureInfo);
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
             i = Math.Min(0, i);
@@ -4341,7 +4099,7 @@ namespace Chummer.Backend.Equipment
                 string strGunnerySpec = GetNode()?.SelectSingleNode("category/@gunneryspec")?.InnerText;
                 if (string.IsNullOrEmpty(strGunnerySpec))
                 {
-                    strGunnerySpec = XmlManager.Load("weapons.xml")
+                    strGunnerySpec = _objCharacter.LoadData("weapons.xml")
                         .SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@gunneryspec")?.InnerText
                                      ?? "None";
                 }
@@ -5364,7 +5122,7 @@ namespace Chummer.Backend.Equipment
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
-                    if (intAvailInt > _objCharacter.MaximumAvailability)
+                    if (intAvailInt > _objCharacter.Options.MaximumAvailability)
                     {
                         if (intAvailInt <= _objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                         {
@@ -5694,7 +5452,7 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlWeaponImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                XmlDocument xmlWeaponDocument = XmlManager.Load("weapons.xml");
+                XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
                 XmlNode xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strOriginalName + "\"]");
                 if (xmlWeaponDataNode == null)
                 {
@@ -5749,7 +5507,7 @@ namespace Chummer.Backend.Equipment
                         string strWeaponAccessoryName = xmlWeaponImportNode.Attributes["name"]?.InnerText;
                         if (!string.IsNullOrEmpty(strWeaponAccessoryName))
                         {
-                            XmlDocument xmlWeaponDocument = XmlManager.Load("weapons.xml");
+                            XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
                             XmlNode xmlWeaponAccessoryData = null;
                             foreach (XmlNode xmlLoopNode in xmlWeaponDocument.SelectNodes("chummer/accessories/accessory[contains(name, \"" + strWeaponAccessoryName + "\")]"))
                             {
@@ -6029,11 +5787,7 @@ namespace Chummer.Backend.Equipment
                         objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
                     }
                 }
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
                 // Replace the division sign with "div" since we're using XPath.
                 objValue.Replace("/", " div ");
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -6113,11 +5867,11 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (!CanBeRemoved()) return false;
+            if (!CanBeRemoved)
+                return false;
             if (blnConfirmDelete)
             {
-                if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
                     return false;
             }
 
@@ -6145,47 +5899,50 @@ namespace Chummer.Backend.Equipment
         /// Check whether the weapon is not removable due to various restrictions.
         /// </summary>
         /// <returns></returns>
-        private bool CanBeRemoved()
+        private bool CanBeRemoved
         {
-            // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
-            if (Cyberware)
+            get
             {
-                Program.MainForm.ShowMessageBox(
-                    LanguageManager.GetString("Message_CannotRemoveCyberweapon"),
-                    LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
+                // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
+                if (Cyberware)
+                {
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString("Message_CannotRemoveCyberweapon"),
+                        LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
 
-            // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
-            if (Category.StartsWith("Quality", StringComparison.Ordinal))
-            {
-                Program.MainForm.ShowMessageBox(
-                    LanguageManager.GetString("Message_CannotRemoveQualityWeapon"),
-                    LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
+                // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
+                if (Category.StartsWith("Quality", StringComparison.Ordinal))
+                {
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString("Message_CannotRemoveQualityWeapon"),
+                        LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
 
-            if (Category == "Gear")
-            {
-                string message = LanguageManager.GetString(
-                    ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon",
-                    GlobalOptions.Language);
-                Program.MainForm.ShowMessageBox(message,
-                    LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
+                if (Category == "Gear")
+                {
+                    string message = LanguageManager.GetString(
+                        ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon",
+                        GlobalOptions.Language);
+                    Program.MainForm.ShowMessageBox(message,
+                        LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return false;
+                }
 
-            return true;
+                return true;
+            }
         }
 
         public void Sell(decimal percentage)
         {
             decimal decAmount = TotalCost * percentage;
             string expense = ParentVehicle != null ? "String_ExpenseSoldVehicleWeapon" : "String_ExpenseSoldWeapon";
-            if (!Remove()) return;
+            if (!Remove(GlobalOptions.ConfirmDelete)) return;
 
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
@@ -6267,6 +6024,150 @@ namespace Chummer.Backend.Equipment
             }
 
             return true;
+        }
+
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "")
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            Dictionary<string, int> dicAttributeOverrides = null;
+            if (strOriginal.Contains("{STR") || strOriginal.Contains("{AGI"))
+            {
+                int intUseSTR = 0;
+                int intUseAGI = 0;
+                int intUseSTRUnaug = 0;
+                int intUseAGIUnaug = 0;
+                int intUseSTRBase = 0;
+                int intUseAGIBase = 0;
+                if (Cyberware)
+                {
+                    if (ParentVehicle != null)
+                    {
+                        intUseSTR = ParentVehicle.TotalBody;
+                        intUseSTRUnaug = intUseSTR;
+                        intUseSTRBase = intUseSTR;
+                        intUseAGI = ParentVehicle.Pilot;
+                        intUseAGIUnaug = intUseAGI;
+                        intUseAGIBase = intUseAGI;
+                        if (!string.IsNullOrEmpty(ParentID))
+                        {
+                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                            if (objWeaponParent != null)
+                            {
+                                Cyberware objAttributeSource = objWeaponParent;
+                                int intSTR = objAttributeSource.TotalStrength;
+                                int intSTRValue = objAttributeSource.StrengthValue;
+                                int intSTRBase = objAttributeSource.BaseStrength;
+                                int intAGI = objAttributeSource.TotalAgility;
+                                int intAGIValue = objAttributeSource.AgilityValue;
+                                int intAGIBase = objAttributeSource.BaseAgility;
+                                while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
+                                {
+                                    objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null)
+                                        continue;
+                                    intSTR = objAttributeSource.TotalStrength;
+                                    intSTRValue = objAttributeSource.StrengthValue;
+                                    intSTRBase = objAttributeSource.BaseStrength;
+                                    intAGI = objAttributeSource.TotalAgility;
+                                    intAGIValue = objAttributeSource.AgilityValue;
+                                    intAGIBase = objAttributeSource.BaseAgility;
+                                }
+
+                                intUseSTR = intSTR;
+                                intUseAGI = intAGI;
+                                intUseSTRUnaug = intSTRValue;
+                                intUseAGIUnaug = intAGIValue;
+                                intUseSTRBase = intSTRBase;
+                                intUseAGIBase = intAGIBase;
+
+                                if (intUseSTR == 0)
+                                    intUseSTR = objVehicleMod.TotalStrength;
+                                if (intUseAGI == 0)
+                                    intUseAGI = objVehicleMod.TotalAgility;
+                                if (intUseSTRUnaug == 0)
+                                    intUseSTRUnaug = objVehicleMod.TotalStrength;
+                                if (intUseAGIUnaug == 0)
+                                    intUseAGIUnaug = objVehicleMod.TotalAgility;
+                                if (intUseSTRBase == 0)
+                                    intUseSTRBase = ParentVehicle.TotalBody;
+                                if (intUseAGIBase == 0)
+                                    intUseAGIBase = ParentVehicle.Pilot;
+                            }
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(ParentID))
+                    {
+                        // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                        Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
+                        if (objWeaponParent != null)
+                        {
+                            Cyberware objAttributeSource = objWeaponParent;
+                            int intSTR = objAttributeSource.TotalStrength;
+                            int intSTRValue = objAttributeSource.StrengthValue;
+                            int intSTRBase = objAttributeSource.BaseStrength;
+                            int intAGI = objAttributeSource.TotalAgility;
+                            int intAGIValue = objAttributeSource.AgilityValue;
+                            int intAGIBase = objAttributeSource.BaseAgility;
+                            while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
+                            {
+                                objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null)
+                                    continue;
+                                intSTR = objAttributeSource.TotalStrength;
+                                intSTRValue = objAttributeSource.StrengthValue;
+                                intSTRBase = objAttributeSource.BaseStrength;
+                                intAGI = objAttributeSource.TotalAgility;
+                                intAGIValue = objAttributeSource.AgilityValue;
+                                intAGIBase = objAttributeSource.BaseAgility;
+                            }
+
+                            intUseSTR = intSTR;
+                            intUseAGI = intAGI;
+                            intUseSTRUnaug = intSTRValue;
+                            intUseAGIUnaug = intAGIValue;
+                            intUseSTRBase = intSTRBase;
+                            intUseAGIBase = intAGIBase;
+                        }
+                        if (intUseSTR == 0)
+                            intUseSTR = _objCharacter.STR.TotalValue;
+                        if (intUseAGI == 0)
+                            intUseAGI = _objCharacter.AGI.TotalValue;
+                        if (intUseSTRUnaug == 0)
+                            intUseSTRUnaug = _objCharacter.STR.Value;
+                        if (intUseAGIUnaug == 0)
+                            intUseAGIUnaug = _objCharacter.AGI.Value;
+                        if (intUseSTRBase == 0)
+                            intUseSTRBase = _objCharacter.STR.TotalBase;
+                        if (intUseAGIBase == 0)
+                            intUseAGIBase = _objCharacter.AGI.TotalBase;
+                    }
+                }
+                else if (ParentVehicle == null)
+                {
+                    intUseSTR = _objCharacter.STR.TotalValue;
+                    intUseAGI = _objCharacter.AGI.TotalValue;
+                    intUseSTRUnaug = _objCharacter.STR.Value;
+                    intUseAGIUnaug = _objCharacter.AGI.Value;
+                    intUseSTRBase = _objCharacter.STR.TotalBase;
+                    intUseAGIBase = _objCharacter.AGI.TotalBase;
+                }
+                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
+                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR).StandardRound();
+                dicAttributeOverrides = new Dictionary<string, int>
+                {
+                    {"STR", intUseSTR},
+                    {"STRUnaug", intUseSTRUnaug},
+                    {"STRBase", intUseSTRBase},
+                    {"AGI", intUseAGI},
+                    {"AGIUnaug", intUseAGIUnaug},
+                    {"AGIBase", intUseAGIBase},
+                };
+            }
+            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
         }
     }
 }

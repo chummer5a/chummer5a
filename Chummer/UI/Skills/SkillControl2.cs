@@ -239,13 +239,13 @@ namespace Chummer.UI.Skills
                 btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
                 btnAttribute.FlatAppearance.MouseOverBackColor = Color.Transparent;
 
-                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
+                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
                 nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
-                nudSkill.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
                 nudKarma.DoDatabinding("Value", objSkill, nameof(Skill.Karma));
                 nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
-                nudKarma.DoOneWayDataBinding("InterceptMouseWheel", objSkill.CharacterObject.Options, nameof(CharacterOptions.InterceptMode));
+                nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
                 nudSkill.UpdateLightDarkMode();
                 nudSkill.TranslateWinForm();
@@ -301,7 +301,7 @@ namespace Chummer.UI.Skills
                         Name = "chkKarma",
                         UseVisualStyleBackColor = true
                     };
-                    chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.BuildMethodHasSkillPoints));
+                    chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                     chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
                     chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                     chkKarma.UpdateLightDarkMode();
@@ -390,7 +390,7 @@ namespace Chummer.UI.Skills
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _objSkill.CurrentDisplayName, _objSkill.Rating + 1, _objSkill.UpgradeKarmaCost);
 
-            if (!_objSkill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             _objSkill.Upgrade();
@@ -425,7 +425,7 @@ namespace Chummer.UI.Skills
 
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
-            if (!_objSkill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill))
@@ -492,7 +492,7 @@ namespace Chummer.UI.Skills
         {
             if (_objSkill.AllowDelete)
             {
-                if (!_objSkill.CharacterObject.ConfirmDelete(LanguageManager.GetString(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
                     return;
                 _objSkill.UnbindSkill();
                 _objSkill.CharacterObject.SkillsSection.Skills.Remove(_objSkill);
@@ -513,7 +513,7 @@ namespace Chummer.UI.Skills
 
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalOptions.Language));
+            CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalOptions.Language), _objSkill.CharacterObject);
         }
 
         [UsedImplicitly]

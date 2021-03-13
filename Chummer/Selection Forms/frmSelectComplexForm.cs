@@ -44,7 +44,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
-            _xmlBaseComplexFormsNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer/complexforms");
+            _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").CreateNavigator().SelectSingleNode("/chummer/complexforms");
 
             _xmlOptionalComplexFormNode = _objCharacter.GetNode();
             if (_xmlOptionalComplexFormNode == null) return;
@@ -142,10 +142,10 @@ namespace Chummer
                 string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
 
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace +
-                    LanguageManager.GetString("String_Page") + strSpace + strPage);
+                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
+                                     LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {

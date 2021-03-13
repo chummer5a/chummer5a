@@ -224,7 +224,7 @@ namespace Chummer
             {
                 if (xmlAddWeaponList?.Count > 0 && lstWeapons != null)
                 {
-                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                    XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
                     foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
                         string strLoopID = objXmlAddWeapon.InnerText;
@@ -329,7 +329,7 @@ namespace Chummer
                 if (objXmlQuality.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) && !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage);
+                string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -343,7 +343,7 @@ namespace Chummer
                             && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
                             strTranslatedNameOnPage = strNameOnPage;
 
-                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), strTranslatedNameOnPage);
+                        Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -352,7 +352,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -477,8 +477,7 @@ namespace Chummer
             // Legacy shim for priority-given qualities
             else if (_eQualitySource == QualitySource.Metatype
                      && _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
-                     && (_objCharacter.BuildMethod == CharacterBuildMethod.Priority
-                         || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                     && _objCharacter.EffectiveBuildMethodUsesPriorityTables
                      && GetNode()?["onlyprioritygiven"] != null)
             {
                 _eQualitySource = QualitySource.Heritage;
@@ -508,17 +507,20 @@ namespace Chummer
                 objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name + strRatingString);
-                objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);
+                objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", BP.ToString(objCulture));
                 string strQualityType = Type.ToString();
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
-                    strQualityType = XmlManager.Load("qualities.xml", strLanguageToPrint).SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate")?.InnerText ?? strQualityType;
+                    strQualityType =
+                        _objCharacter.LoadData("qualities.xml", strLanguageToPrint)
+                            .SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate")
+                            ?.InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", Type.ToString());
                 objWriter.WriteElementString("qualitysource", OriginSource.ToString());
-                objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+                objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
                 objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
                 if (_objCharacter.Options.PrintNotes)
                     objWriter.WriteElementString("notes", Notes);
@@ -587,7 +589,7 @@ namespace Chummer
             get => _strExtra;
             set
             {
-                string strNewExtra = LanguageManager.ReverseTranslateExtra(value);
+                string strNewExtra = _objCharacter.ReverseTranslateExtra(value);
                 if (_strExtra == strNewExtra)
                     return;
                 _strExtra = strNewExtra;
@@ -659,7 +661,7 @@ namespace Chummer
         /// </summary>
         public string GetSourceName(string strLanguage)
         {
-            return LanguageManager.TranslateExtra(_strSourceName, strLanguage);
+            return _objCharacter.TranslateExtra(_strSourceName, strLanguage);
         }
 
         /// <summary>
@@ -779,7 +781,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpace + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             int intLevels = Levels;
@@ -1021,7 +1023,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("qualities.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("qualities.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/qualities/quality[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -1335,7 +1337,7 @@ namespace Chummer
 
                 if (blnAddItem)
                 {
-                    if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
                         , objOldQuality.DisplayNameShort(GlobalOptions.Language)
                         , DisplayNameShort(GlobalOptions.Language))))
                         blnAddItem = false;
@@ -1371,7 +1373,7 @@ namespace Chummer
 
                     if (blnAddItem)
                     {
-                        if (!objCharacter.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                             blnAddItem = false;
                     }
                 }

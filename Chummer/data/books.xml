@@ -41,6 +41,7 @@
       <id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
       <name>Shadowrun 5th Edition</name>
       <code>SR5</code>
+      <permanent />
     </book>
     <book>
       <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
@@ -227,11 +228,11 @@
       <name>The Seattle Gambit</name>
       <code>TSG</code>
     </book>
-	  <book>
-		  <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
-		  <name>Street Lethal</name>
-		  <code>SL</code>
-	  </book>
+    <book>
+      <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
+      <name>Street Lethal</name>
+      <code>SL</code>
+    </book>
     <book>
       <id>35f513da-865a-45ce-a8f9-eb0336e47427</id>
       <name>Kill Code</name>
@@ -243,12 +244,12 @@
       <code>HAMG</code>
     </book>
     <book>
-	  <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+      <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
       <name>Better Than Bad</name>
       <code>BTB</code>
     </book>
     <book>
-	  <id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
+      <id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
       <name>Aetherology</name>
       <code>AET</code>
     </book>

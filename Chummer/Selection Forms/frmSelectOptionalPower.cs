@@ -29,7 +29,7 @@ namespace Chummer
         private readonly List<ListItem> _lstPowerItems = new List<ListItem>();
 
         #region Control Events
-        public frmSelectOptionalPower(params Tuple<string, string>[] lstPowerExtraPairs)
+        public frmSelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -37,10 +37,10 @@ namespace Chummer
 
             foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
             {
-                string strName = LanguageManager.TranslateExtra(lstObject.Item1);
+                string strName = objCharacter.TranslateExtra(lstObject.Item1);
                 if (!string.IsNullOrEmpty(lstObject.Item2))
                 {
-                    strName += LanguageManager.GetString("String_Space") + '(' + LanguageManager.TranslateExtra(lstObject.Item2) + ')';
+                    strName += LanguageManager.GetString("String_Space") + '(' + objCharacter.TranslateExtra(lstObject.Item2) + ')';
                 }
                 _lstPowerItems.Add(new ListItem(lstObject, strName));
             }

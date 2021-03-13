@@ -261,7 +261,7 @@ namespace Chummer
             {
                 case "$ReverseTranslateExtra":
                 {
-                    return LanguageManager.ReverseTranslateExtra(strArguments);
+                    return _objCharacter.ReverseTranslateExtra(strArguments);
                 }
                 case "$XmlNameFriendly":
                 {
@@ -375,7 +375,7 @@ namespace Chummer
                         _objCharacter.Spells.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra;
                     if (!string.IsNullOrEmpty(strExtra))
                     {
-                        return LanguageManager.TranslateExtra(strExtra, strLanguage);
+                        return _objCharacter.TranslateExtra(strExtra, strLanguage);
                     }
 
                     return string.Empty;
@@ -420,7 +420,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = XmlManager.Load("stories.xml", strLanguage)
+            _objCachedMyXmlNode = _objCharacter.LoadData("stories.xml", strLanguage)
                 .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/stories/story[id = \"{0}\" or id = \"{1}\"]",
                     SourceIDString, SourceIDString.ToUpperInvariant()));
             _strCachedXmlNodeLanguage = strLanguage;

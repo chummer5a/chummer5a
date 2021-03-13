@@ -59,19 +59,19 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the PACKS information.
-            _xmlBaseChummerNode = XmlManager.Load("packs.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlGearsBaseGearsNode = XmlManager.Load("gear.xml").GetFastNavigator().SelectSingleNode("/chummer/gears");
-            _xmlWeaponsBaseChummerNode = XmlManager.Load("weapons.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlArmorBaseChummerNode = XmlManager.Load("armor.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlQualitiesBaseQualitiesNode = XmlManager.Load("qualities.xml").GetFastNavigator().SelectSingleNode("/chummer/qualities");
-            _xmlSkillsBaseChummerNode = XmlManager.Load("skills.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlSpellsBaseSpellsNode = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer/spells");
-            _xmlComplexFormsBaseChummerNode = XmlManager.Load("complexforms.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlVehiclesBaseChummerNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlBiowareBaseChummerNode = XmlManager.Load("bioware.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlCyberwareBaseChummerNode = XmlManager.Load("cyberware.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlPowersBasePowersNode = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer/powers");
-            _xmlMartialArtsBaseChummerNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlGearsBaseGearsNode = _objCharacter.LoadDataXPath("gear.xml").CreateNavigator().SelectSingleNode("/chummer/gears");
+            _xmlWeaponsBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlArmorBaseChummerNode = _objCharacter.LoadDataXPath("armor.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlQualitiesBaseQualitiesNode = _objCharacter.LoadDataXPath("qualities.xml").CreateNavigator().SelectSingleNode("/chummer/qualities");
+            _xmlSkillsBaseChummerNode = _objCharacter.LoadDataXPath("skills.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlSpellsBaseSpellsNode = _objCharacter.LoadDataXPath("spells.xml").CreateNavigator().SelectSingleNode("/chummer/spells");
+            _xmlComplexFormsBaseChummerNode = _objCharacter.LoadDataXPath("complexforms.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlVehiclesBaseChummerNode = _objCharacter.LoadDataXPath("vehicles.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBiowareBaseChummerNode = _objCharacter.LoadDataXPath("bioware.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlCyberwareBaseChummerNode = _objCharacter.LoadDataXPath("cyberware.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlPowersBasePowersNode = _objCharacter.LoadDataXPath("powers.xml").CreateNavigator().SelectSingleNode("/chummer/powers");
+            _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").CreateNavigator().SelectSingleNode("/chummer");
         }
 
         private void frmSelectPACKSKit_Load(object sender, EventArgs e)
@@ -208,7 +208,7 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                objChild.Text += strSpace + '('+ LanguageManager.TranslateExtra(strSelect)+ ')';
+                                objChild.Text += strSpace + '('+ _objCharacter.TranslateExtra(strSelect)+ ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -228,7 +228,7 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                objChild.Text += strSpace + '(' + LanguageManager.TranslateExtra(strSelect) + ')';
+                                objChild.Text += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -941,7 +941,7 @@ namespace Chummer
             }
 
             // Reload the PACKS files since they have changed.
-            _xmlBaseChummerNode = XmlManager.Load("packs.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").CreateNavigator().SelectSingleNode("/chummer");
             cboCategory_SelectedIndexChanged(sender, e);
         }
         #endregion

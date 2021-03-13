@@ -132,107 +132,6 @@ namespace Chummer
         #endregion
     }
 
-    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>
-    {
-        #region Properties
-
-        public string Name { get; }
-
-        public string Path { get; }
-
-        public bool Enabled { get; set; }
-
-        #endregion
-
-        private readonly int _intHashCode;
-
-        public CustomDataDirectoryInfo(string strName, string strPath)
-        {
-            Name = strName;
-            Path = strPath;
-            _intHashCode = new {Name, Path}.GetHashCode();
-        }
-
-        public int CompareTo(object obj)
-        {
-            if(obj == null)
-                return 1;
-            if(obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
-            {
-                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
-                if(intReturn == 0)
-                {
-                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
-                    if(intReturn == 0)
-                    {
-                        intReturn = Enabled == objOtherDirectoryInfo.Enabled ? 0 : (Enabled ? -1 : 1);
-                    }
-                }
-
-                return intReturn;
-            }
-
-            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj is CustomDataDirectoryInfo objOther)
-                return Equals(objOther);
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return _intHashCode;
-        }
-
-        public bool Equals(CustomDataDirectoryInfo other)
-        {
-            return other != null && Name == other.Name && Path == other.Path && Enabled == other.Enabled;
-        }
-
-        public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            if (left is null)
-            {
-                return right is null;
-            }
-
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return !(left == right);
-        }
-
-        public static bool operator <(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return left is null ? !(right is null) : left.CompareTo(right) < 0;
-        }
-
-        public static bool operator <=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return left is null || left.CompareTo(right) <= 0;
-        }
-
-        public static bool operator >(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return !(left is null) && left.CompareTo(right) > 0;
-        }
-
-        public static bool operator >=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
-        {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
-        }
-    }
-
     /// <summary>
     /// Global Options. A single instance class since Options are common for all characters, reduces execution time and memory usage.
     /// </summary>
@@ -252,8 +151,7 @@ namespace Chummer
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
-        public const string DefaultBuildMethodDefaultValue = "Priority";
-        public const string DefaultGameplayOptionDefaultValue = "Standard";
+        public const string DefaultCharacterOptionDefaultValue = "223a11ff-80e0-428b-89a9-6ef1c243b8b6"; // GUID for built-in Standard option
 
         private static bool _blnAutomaticUpdate;
         private static bool _blnLiveCustomData;
@@ -265,8 +163,6 @@ namespace Chummer
         private static bool _blnPrintToFileFirst;
         private static int _intEmulatedBrowserVersion = 8;
         private static bool _lifeModuleEnabled;
-        private static bool _blnDronemods;
-        private static bool _blnDronemodsMaximumPilot;
         private static bool _blnPreferNightlyUpdates;
         private static bool _blnLiveUpdateCleanCharacterFiles;
         private static bool _blnHideMasterIndex;
@@ -277,12 +173,18 @@ namespace Chummer
         private static bool _blnCustomDateTimeFormats;
         private static string _strCustomDateFormat;
         private static string _strCustomTimeFormat;
-        private static string _strDefaultBuildMethod = DefaultBuildMethodDefaultValue;
-        private static string _strDefaultGameplayOption = DefaultGameplayOptionDefaultValue;
+        private static string _strDefaultCharacterOption = DefaultCharacterOptionDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
         private static ColorMode _eColorMode;
+        private static bool _blnConfirmDelete = true;
+        private static bool _blnConfirmKarmaExpense = true;
+        private static bool _blnHideItemsOverAvailLimit = true;
+        private static bool _blnAllowHoverIncrement;
+        private static bool _blnSearchInCategoryOnly = true;
+        private static bool _blnAllowSkillDiceRolling;
 
         public const int MaxStackLimit = 1024;
+        private static bool _blnShowCharacterCustomDataWarning;
 
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(new XoRoShiRo128starstar());
 
@@ -296,9 +198,10 @@ namespace Chummer
         private static bool _blnUseLogging;
         private static UseAILogging _enumUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
+        private static string _strImageFolder = string.Empty;
 
         // Custom Data Directory information.
-        private static readonly List<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfo = new List<CustomDataDirectoryInfo>();
+        private static readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfo = new HashSet<CustomDataDirectoryInfo>();
 
         #region Constructor
         /// <summary>
@@ -490,8 +393,6 @@ namespace Chummer
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
-            LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
-            LoadBoolFromRegistry(ref _blnDronemodsMaximumPilot, "dronemodsPilot");
             LoadBoolFromRegistry(ref _blnHideMasterIndex, "hidemasterindex");
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
@@ -507,10 +408,18 @@ namespace Chummer
             if(_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
-            LoadStringFromRegistry(ref _strDefaultBuildMethod, "defaultbuildmethod");
-            LoadStringFromRegistry(ref _strDefaultGameplayOption, "defaultgameplayoption");
+            LoadStringFromRegistry(ref _strDefaultCharacterOption, "defaultcharacteroption"); // Deliberate name change to force users to re-check
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
+            // Confirm delete.
+            LoadBoolFromRegistry(ref _blnConfirmDelete, "confirmdelete");
+            // Confirm Karma Expense.
+            LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense");
+            LoadBoolFromRegistry(ref _blnHideItemsOverAvailLimit, "hideitemsoveravaillimit");
+            LoadBoolFromRegistry(ref _blnAllowHoverIncrement, "allowhoverincrement");
+            LoadBoolFromRegistry(ref _blnSearchInCategoryOnly, "searchincategoryonly");
+            // Whether or not dice rolling is allowed for Skills.
+            LoadBoolFromRegistry(ref _blnAllowSkillDiceRolling, "allowskilldicerolling");
 
             // Language.
             string strLanguage = _strLanguage;
@@ -550,6 +459,9 @@ namespace Chummer
             // Folder path to check for characters.
             LoadStringFromRegistry(ref _strCharacterRosterPath, "characterrosterpath");
 
+            // Most recent image folder location used.
+            LoadStringFromRegistry(ref _strImageFolder, "recentimagefolder");
+
             // Which Plugins are enabled.
             LoadBoolFromRegistry(ref _blnPluginsEnabled, "pluginsenabled");
 
@@ -585,9 +497,48 @@ namespace Chummer
             // The quality at which images should be saved. int.MaxValue saves as Png, everything else saves as Jpeg
             LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality");
 
-            RebuildCustomDataDirectoryInfoList();
+            // Retrieve CustomDataDirectoryInfo objects from registry
+            RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
+            if (objCustomDataDirectoryKey != null)
+            {
+                foreach (string strDirectoryName in objCustomDataDirectoryKey.GetSubKeyNames())
+                {
+                    using (RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(strDirectoryName))
+                    {
+                        if (objLoopKey == null)
+                            continue;
+                        string strPath = string.Empty;
+                        object objRegistryResult = objLoopKey.GetValue("Path");
+                        if (objRegistryResult != null)
+                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
+                        if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
+                        {
+                            CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(strDirectoryName, strPath);
+                            _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
+                        }
+                    }
+                }
 
-            for(int i = 1; i <= MaxMruSize; i++)
+                objCustomDataDirectoryKey.Close();
+            }
+            // Add in default customdata directory's paths
+            string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+            if (Directory.Exists(strCustomDataRootPath))
+            {
+                foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
+                {
+                    // Only add directories for which we don't already have entries loaded from registry
+                    if (_setCustomDataDirectoryInfo.All(x => x.Path != strLoopDirectoryPath))
+                    {
+                        CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
+                        _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
+                    }
+                }
+            }
+
+            XmlManager.RebuildDataDirectoryInfo(_setCustomDataDirectoryInfo);
+
+            for (int i = 1; i <= MaxMruSize; i++)
             {
                 object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
                 if(objLoopValue != null)
@@ -610,6 +561,91 @@ namespace Chummer
                 }
             }
             _lstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
+            
+            if (blnFirstEverLaunch)
+                ShowCharacterCustomDataWarning = false;
+            else
+            {
+                bool blnTemp = false;
+                LoadBoolFromRegistry(ref blnTemp, "charactercustomdatawarningshown");
+                ShowCharacterCustomDataWarning = !blnTemp;
+            }
+        }
+        #endregion
+
+        #region Methods
+
+        public static void SaveOptionsToRegistry()
+        {
+            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+            {
+                if (objRegistry == null)
+                    return;
+                objRegistry.SetValue("autoupdate", AutomaticUpdate.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("liveupdatecleancharacterfiles", LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
+                objRegistry.SetValue("colormode", ColorModeSetting.ToString());
+                objRegistry.SetValue("language", Language);
+                objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("defaultsheet", DefaultCharacterSheet);
+                objRegistry.SetValue("datesincludetime", DatesIncludeTime.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("printtofilefirst", PrintToFileFirst.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("emulatedbrowserversion", EmulatedBrowserVersion.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("pdfapppath", PDFAppPath);
+                objRegistry.SetValue("pdfparameters", PDFParameters);
+                objRegistry.SetValue("lifemodule", LifeModuleEnabled.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("prefernightlybuilds", PreferNightlyBuilds.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("characterrosterpath", CharacterRosterPath);
+                objRegistry.SetValue("hidemasterindex", HideMasterIndex.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("hidecharacterroster", HideCharacterRoster.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("createbackuponcareer", CreateBackupOnCareer.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("confirmdelete", ConfirmDelete.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("confirmkarmaexpense", ConfirmKarmaExpense.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("hideitemsoveravaillimit", HideItemsOverAvailLimit.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("allowhoverincrement", AllowHoverIncrement.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("searchincategoryonly", SearchInCategoryOnly.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("defaultcharacteroption", DefaultCharacterOption);
+                objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("customdateformat", CustomDateFormat);
+                objRegistry.SetValue("customtimeformat", CustomTimeFormat);
+                objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
+
+                //Save the Plugins-Dictionary
+                objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
+
+                // Save the SourcebookInfo.
+                using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook"))
+                {
+                    if (objSourceRegistry != null)
+                    {
+                        foreach (SourcebookInfo objSource in SourcebookInfo)
+                            objSourceRegistry.SetValue(objSource.Code, objSource.Path + '|' + objSource.Offset.ToString(InvariantCultureInfo));
+                    }
+                }
+
+                // Save the Custom Data Directory Info.
+                if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
+                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
+                using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory"))
+                {
+                    if (objCustomDataDirectoryRegistry != null)
+                    {
+                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
+                        {
+                            using (RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name))
+                            {
+                                objLoopKey?.SetValue("Path", objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, "$CHUMMER"));
+                            }
+                        }
+                    }
+                }
+            }
         }
         #endregion
 
@@ -691,6 +727,62 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not confirmation messages are shown when deleting an object.
+        /// </summary>
+        public static bool ConfirmDelete
+        {
+            get => _blnConfirmDelete;
+            set => _blnConfirmDelete = value;
+        }
+
+        /// <summary>
+        /// Whether or not confirmation messages are shown for Karma Expenses.
+        /// </summary>
+        public static bool ConfirmKarmaExpense
+        {
+            get => _blnConfirmKarmaExpense;
+            set => _blnConfirmKarmaExpense = value;
+        }
+
+        /// <summary>
+        /// Whether items that exceed the Availability Limit should be shown in Create Mode.
+        /// </summary>
+        public static bool HideItemsOverAvailLimit
+        {
+            get => _blnHideItemsOverAvailLimit;
+            set => _blnHideItemsOverAvailLimit = value;
+        }
+
+        /// <summary>
+        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+        /// </summary>
+        public static bool AllowHoverIncrement
+        {
+            get => _blnAllowHoverIncrement;
+            set => _blnAllowHoverIncrement = value;
+        }
+
+        /// <summary>
+        /// Whether searching in a selection form will limit itself to the current Category that's selected.
+        /// </summary>
+        public static bool SearchInCategoryOnly
+        {
+            get => _blnSearchInCategoryOnly;
+            set => _blnSearchInCategoryOnly = value;
+        }
+
+        public static NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+
+        /// <summary>
+        /// Whether or not dice rolling is allowed for Skills.
+        /// </summary>
+        public static bool AllowSkillDiceRolling
+        {
+            get => _blnAllowSkillDiceRolling;
+            set => _blnAllowSkillDiceRolling = value;
+        }
+
+        /// <summary>
         /// Whether or not the app should use logging.
         /// </summary>
         public static bool UseLogging
@@ -760,18 +852,6 @@ namespace Chummer
         {
             get => _blnDatesIncludeTime;
             set => _blnDatesIncludeTime = value;
-        }
-
-        public static bool Dronemods
-        {
-            get => _blnDronemods;
-            set => _blnDronemods = value;
-        }
-
-        public static bool DronemodsMaximumPilot
-        {
-            get => _blnDronemodsMaximumPilot;
-            set => _blnDronemodsMaximumPilot = value;
         }
 
 
@@ -895,21 +975,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Default build method to select when creating a new character
+        /// Default character option to select when creating a new character
         /// </summary>
-        public static string DefaultBuildMethod
+        public static string DefaultCharacterOption
         {
-            get => _strDefaultBuildMethod;
-            set => _strDefaultBuildMethod = value;
-        }
-
-        /// <summary>
-        /// Default gameplay option to select when creating a new character
-        /// </summary>
-        public static string DefaultGameplayOption
-        {
-            get => _strDefaultGameplayOption;
-            set => _strDefaultGameplayOption = value;
+            get => _strDefaultCharacterOption;
+            set => _strDefaultCharacterOption = value;
         }
 
         public static RegistryKey ChummerRegistryKey => _objBaseChummerKey;
@@ -941,7 +1012,7 @@ namespace Chummer
                 {
                     _lstSourcebookInfo = new HashSet<SourcebookInfo>();
                     // Retrieve the SourcebookInfo objects.
-                    using (XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book[not(hide)]"))
+                    using (XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book"))
                     {
                         if (xmlBookList != null)
                         {
@@ -996,73 +1067,10 @@ namespace Chummer
             }
         }
 
-        public static void RebuildCustomDataDirectoryInfoList()
-        {
-            _lstCustomDataDirectoryInfo.Clear();
-
-            // Retrieve CustomDataDirectoryInfo objects from registry
-            RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
-            if(objCustomDataDirectoryKey != null)
-            {
-                List<KeyValuePair<CustomDataDirectoryInfo, int>> lstUnorderedCustomDataDirectories = new List<KeyValuePair<CustomDataDirectoryInfo, int>>(objCustomDataDirectoryKey.SubKeyCount);
-                int intMinLoadOrderValue = int.MaxValue;
-                int intMaxLoadOrderValue = int.MinValue;
-                foreach (string strDirectoryName in objCustomDataDirectoryKey.GetSubKeyNames())
-                {
-                    RegistryKey objLoopKey = objCustomDataDirectoryKey.OpenSubKey(strDirectoryName);
-                    if (objLoopKey != null)
-                    {
-                        string strPath = string.Empty;
-                        object objRegistryResult = objLoopKey.GetValue("Path");
-                        if(objRegistryResult != null)
-                            strPath = objRegistryResult.ToString().Replace("$CHUMMER", Utils.GetStartupPath);
-                        if(!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
-                        {
-                            CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(strDirectoryName, strPath);
-                            objRegistryResult = objLoopKey.GetValue("Enabled");
-                            if(objRegistryResult != null)
-                            {
-                                if(bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
-                                    objCustomDataDirectory.Enabled = blnTemp;
-                            }
-
-                            objRegistryResult = objLoopKey.GetValue("LoadOrder");
-                            if(objRegistryResult != null && int.TryParse(objRegistryResult.ToString(), out int intLoadOrder))
-                            {
-                                // First load the infos alongside their load orders into a list whose order we don't care about
-                                intMaxLoadOrderValue = Math.Max(intMaxLoadOrderValue, intLoadOrder);
-                                intMinLoadOrderValue = Math.Min(intMinLoadOrderValue, intLoadOrder);
-                                lstUnorderedCustomDataDirectories.Add(new KeyValuePair<CustomDataDirectoryInfo, int>(objCustomDataDirectory, intLoadOrder));
-                            }
-                            else
-                                lstUnorderedCustomDataDirectories.Add(new KeyValuePair<CustomDataDirectoryInfo, int>(objCustomDataDirectory, int.MinValue));
-                        }
-                        objLoopKey.Close();
-                    }
-                }
-
-                // Now translate the list of infos whose order we don't care about into the list where we do care about the order of infos
-                for(int i = intMinLoadOrderValue; i <= intMaxLoadOrderValue; ++i)
-                {
-                    KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair = lstUnorderedCustomDataDirectories.FirstOrDefault(x => x.Value == i);
-                    if(!objLoopPair.Equals(default(KeyValuePair<CustomDataDirectoryInfo, int>)))
-                        _lstCustomDataDirectoryInfo.Add(objLoopPair.Key);
-                }
-                foreach(KeyValuePair<CustomDataDirectoryInfo, int> objLoopPair in lstUnorderedCustomDataDirectories.Where(x => x.Value == int.MinValue))
-                {
-                    _lstCustomDataDirectoryInfo.Add(objLoopPair.Key);
-                }
-
-                objCustomDataDirectoryKey.Close();
-            }
-
-            XmlManager.RebuildDataDirectoryInfo();
-        }
-
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static List<CustomDataDirectoryInfo> CustomDataDirectoryInfo => _lstCustomDataDirectoryInfo;
+        public static HashSet<CustomDataDirectoryInfo> CustomDataDirectoryInfos => _setCustomDataDirectoryInfo;
 
         /// <summary>
         /// Should the updater check for Release builds, or Nightly builds
@@ -1071,6 +1079,31 @@ namespace Chummer
         {
             get => _blnPreferNightlyUpdates;
             set => _blnPreferNightlyUpdates = value;
+        }
+
+        /// <summary>
+        /// Whether or not to show a warning that this Nightly build is special
+        /// </summary>
+        public static bool ShowCharacterCustomDataWarning
+        {
+            get => _blnShowCharacterCustomDataWarning;
+            set
+            {
+                _blnShowCharacterCustomDataWarning = value;
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+                {
+                    if (objRegistry == null)
+                        return;
+                    if (value)
+                    {
+                        objRegistry.DeleteValue("charactercustomdatawarningshown");
+                    }
+                    else
+                    {
+                        objRegistry.SetValue("charactercustomdatawarningshown", bool.TrueString);
+                    }
+                }
+            }
         }
 
         public static string CharacterRosterPath
@@ -1092,6 +1125,23 @@ namespace Chummer
             return SavedImageQuality == int.MaxValue
                 ? objImageToSave.ToBase64String(ImageFormat.Png)
                 : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+        }
+
+        /// <summary>
+        /// Last folder from which a mugshot was added
+        /// </summary>
+        public static string RecentImageFolder
+        {
+            get => _strImageFolder;
+            set
+            {
+                if (_strImageFolder != value)
+                {
+                    _strImageFolder = value;
+                    using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+                        objRegistry?.SetValue("recentimagefolder", value);
+                }
+            }
         }
         #endregion
 
@@ -1298,6 +1348,7 @@ namespace Chummer
             get => _strCustomTimeFormat;
             set => _strCustomTimeFormat = value;
         }
+
         /// <summary>
         /// Should the application assume that the Black Market Pipeline discount should automatically be used if the character has an appropriate contact?
         /// </summary>

@@ -33,12 +33,12 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
-        public frmSelectWeaponCategory()
+        public frmSelectWeaponCategory(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("weapons.xml");
+            _objXmlDocument = XmlManager.Load("weapons.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectWeaponCategory_Load(object sender, EventArgs e)

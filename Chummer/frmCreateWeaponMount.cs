@@ -38,11 +38,11 @@ namespace Chummer
 
 	    public frmCreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
 		{
-            _xmlDoc = XmlManager.Load("vehicles.xml");
-		    _objVehicle = objVehicle;
+            _objVehicle = objVehicle;
 		    _objMount = objWeaponMount;
 		    _objCharacter = objCharacter;
-			InitializeComponent();
+            _xmlDoc = _objCharacter.LoadData("vehicles.xml");
+            InitializeComponent();
 		}
 
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
@@ -51,7 +51,7 @@ namespace Chummer
             List<ListItem> lstSize;
             // Populate the Weapon Mount Category list.
             string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
-            if (!_objVehicle.IsDrone && GlobalOptions.Dronemods)
+            if (!_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
                 strSizeFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlSizeNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
             {
@@ -520,7 +520,7 @@ namespace Chummer
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+            SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
 	        lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 	    }
@@ -571,7 +571,7 @@ namespace Chummer
                         break;
 
                     blnAddAgain = frmPickVehicleMod.AddAgain;
-                    XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+                    XmlDocument objXmlDocument = _objCharacter.LoadData("vehicles.xml");
                     XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
                     VehicleMod objMod = new VehicleMod(_objCharacter)
@@ -590,7 +590,7 @@ namespace Chummer
                         bool blnOverCapacity = false;
                         if (_objCharacter.Options.BookEnabled("R5"))
                         {
-                            if (_objVehicle.IsDrone && GlobalOptions.Dronemods)
+                            if (_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
                             {
                                 if (_objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots)
                                     blnOverCapacity = true;
@@ -681,7 +681,7 @@ namespace Chummer
                 VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedId);
                 if (objMod != null && !objMod.IncludedInVehicle)
                 {
-                    if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
+                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
                         return;
 
                     _lstMods.Remove(objMod);
@@ -726,8 +726,8 @@ namespace Chummer
             List<ListItem> lstFlexibility;
             List<ListItem> lstControl;
             // Populate the Weapon Mount Category list.
-            string strFilter = "category != \"Size\" and not(hide)";
-            if (!_objVehicle.IsDrone || !GlobalOptions.Dronemods)
+            string strFilter = "category != \"Size\" and " + _objCharacter.Options.BookXPath();
+            if (!_objVehicle.IsDrone && _objCharacter.Options.DroneMods)
                 strFilter += " and not(optionaldrone)";
             using (XmlNodeList xmlWeaponMountOptionNodeList = _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
             {

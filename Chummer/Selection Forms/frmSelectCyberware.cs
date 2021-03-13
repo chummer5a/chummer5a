@@ -80,13 +80,13 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Cyberware:
                     _objMode = Mode.Cyberware;
-                    _xmlBaseCyberwareDataNode = XmlManager.Load("cyberware.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                    _xmlBaseCyberwareDataNode = objCharacter.LoadDataXPath("cyberware.xml").CreateNavigator().SelectSingleNode("/chummer");
                     _strNodeXPath = "cyberwares/cyberware";
                     Tag = "Title_SelectCyberware";
                     break;
                 case Improvement.ImprovementSource.Bioware:
                     _objMode = Mode.Bioware;
-                    _xmlBaseCyberwareDataNode = XmlManager.Load("bioware.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                    _xmlBaseCyberwareDataNode = objCharacter.LoadDataXPath("bioware.xml").CreateNavigator().SelectSingleNode("/chummer");
                     _strNodeXPath = "biowares/bioware";
                     Tag = "Title_SelectCyberware_Bioware";
                     break;
@@ -117,8 +117,8 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             if (!string.IsNullOrEmpty(DefaultSearchText))
@@ -329,8 +329,8 @@ namespace Chummer
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -939,7 +939,7 @@ namespace Chummer
 
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() +')');
             StringBuilder sbdCategoryFilter;
-            if (strCategory != "Show All" && !Upgrading && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            if (strCategory != "Show All" && !Upgrading && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdCategoryFilter = new StringBuilder("category = \"" + strCategory + "\" or category = \"None\"");
             else
             {
@@ -1285,7 +1285,7 @@ namespace Chummer
                 else
                     return;
             }
-            _sStrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
+            _sStrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode.SelectSingleNode("category")?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
             SelectedRating = nudRating.ValueAsInt;
@@ -1343,9 +1343,9 @@ namespace Chummer
                     }
                     else if (objWareGrade.Burnout)
                         continue;
-                    if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.Options.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                         continue;
-                    if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.Options.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
                         lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + objWareGrade.CurrentDisplayName));
                     }

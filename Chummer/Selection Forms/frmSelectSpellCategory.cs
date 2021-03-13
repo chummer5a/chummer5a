@@ -31,12 +31,12 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
 
         #region Control Events
-        public frmSelectSpellCategory()
+        public frmSelectSpellCategory(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("spells.xml");
+            _objXmlDocument = XmlManager.Load("spells.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectSpellCategory_Load(object sender, EventArgs e)

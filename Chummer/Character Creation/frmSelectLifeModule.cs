@@ -31,7 +31,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly int _intStage;
         private string _strDefaultStageName;
-        private XmlDocument _xmlDocument;
+        private readonly XmlDocument _xmlDocument;
         private string _strSelectedId;
         private Regex _rgxSearchRegex;
 
@@ -45,11 +45,11 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _intStage = intStage;
+            _xmlDocument = _objCharacter.LoadData("lifemodules.xml");
         }
 
         private void frmSelectLifeModule_Load(object sender, EventArgs e)
         {
-            _xmlDocument = XmlManager.Load("lifemodules.xml");
             string strSelectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
             XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
@@ -152,7 +152,7 @@ namespace Chummer
             }
 
             _strSelectedId = (string)e.Node.Tag;
-            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml"));
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, _objCharacter.LoadData("lifemodules.xml"));
 
             if (xmlSelectedNodeInfo != null)
             {
@@ -175,7 +175,7 @@ namespace Chummer
 
         }
 
-        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml"));
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, _objCharacter.LoadData("lifemodules.xml"));
 
         private void treModules_DoubleClick(object sender, EventArgs e)
         {

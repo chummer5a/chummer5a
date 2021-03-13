@@ -167,7 +167,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
-            XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+            XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
             XmlNode xmlLifestyleNode =
                 xmlLifestyleDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + _strBaseLifestyle + "\"]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
@@ -216,7 +216,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -322,9 +322,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-            XmlDocument xmlLifestyles = XmlManager.Load("lifestyles.xml");
-            if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =\"" + _strBaseLifestyle + "\"]") == null
-                && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =\"" + _strName + "\"]") != null)
+            XmlDocument xmlLifestyles = _objCharacter.LoadData("lifestyles.xml");
+            if (xmlLifestyles.SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strBaseLifestyle}\"]") == null
+                && xmlLifestyles.SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strName}\"]") != null)
             {
                 string baselifestyle = _strName;
                 _strName = _strBaseLifestyle;
@@ -476,7 +476,7 @@ namespace Chummer.Backend.Equipment
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
             if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
                 xmlLifestyleNode["costforarea"] != null) return;
-            XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
+            XmlDocument objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
             XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
             if (objLifestyleQualityNode != null)
             {
@@ -573,7 +573,7 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
             objWriter.WriteElementString("trustfund", TrustFund.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("qualities");
 
@@ -756,7 +756,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strBaseLifestyle == value) return;
                 _strBaseLifestyle = value;
-                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                 // This needs a handler for translations, will fix later.
                 if (value == "Bolt Hole")
                 {
@@ -1071,7 +1071,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -1373,8 +1373,9 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (!blnConfirmDelete) return _objCharacter.Lifestyles.Remove(this);
-            return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")) && _objCharacter.Lifestyles.Remove(this);
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
+                return false;
+            return _objCharacter.Lifestyles.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

@@ -63,12 +63,19 @@ namespace Chummer.Backend.Attributes
             _enumMetatypeCategory = enumCategory;
             _objCharacter = character;
             if (_objCharacter != null)
+            {
                 _objCharacter.PropertyChanged += OnCharacterChanged;
+                _objCharacter.Options.PropertyChanged += OnCharacterOptionsPropertyChanged;
+            }
         }
 
         public void UnbindAttribute()
         {
-            _objCharacter.PropertyChanged -= OnCharacterChanged;
+            if (_objCharacter != null)
+            {
+                _objCharacter.PropertyChanged -= OnCharacterChanged;
+                _objCharacter.Options.PropertyChanged -= OnCharacterOptionsPropertyChanged;
+            }
         }
 
         /// <summary>
@@ -684,7 +691,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Is it possible to place points in Base or is it prevented by their build method?
         /// </summary>
-        public bool BaseUnlocked => _objCharacter.BuildMethodHasSkillPoints;
+        public bool BaseUnlocked => _objCharacter.EffectiveBuildMethodUsesPriorityTables;
 
         /// <summary>
         /// CharacterAttribute Limits
@@ -1047,13 +1054,65 @@ namespace Chummer.Backend.Attributes
             {
                 OnPropertyChanged(nameof(CanUpgradeCareer));
             }
+            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
+            {
+                OnPropertyChanged(nameof(BaseUnlocked));
+            }
             else if (e.PropertyName == nameof(Character.LimbCount))
             {
                 if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
                     (Abbrev == "AGI" || Abbrev == "STR") &&
-                    CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                  && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                  && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                 {
                     OnPropertyChanged(nameof(TotalValue));
+                }
+            }
+        }
+
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.DontUseCyberlimbCalculation):
+                {
+                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.CyberlimbAttributeBonusCap):
+                case nameof(CharacterOptions.ExcludeLimbSlot):
+                {
+                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        OnMultiplePropertyChanged(nameof(TotalValue));
+                    }
+                    break;
+                }
+                case nameof(CharacterOptions.UnclampAttributeMinimum):
+                {
+                    OnPropertyChanged(nameof(RawMinimum));
+                    break;
+                }
+                case nameof(CharacterOptions.KarmaAttribute):
+                case nameof(CharacterOptions.AlternateMetatypeAttributeKarma):
+                {
+                    OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
+                    break;
+                }
+                case nameof(CharacterOptions.ReverseAttributePriorityOrder):
+                {
+                    OnPropertyChanged(nameof(TotalKarmaCost));
+                    break;
                 }
             }
         }

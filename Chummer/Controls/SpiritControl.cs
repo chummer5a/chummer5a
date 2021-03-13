@@ -317,7 +317,9 @@ namespace Chummer
                 return;
             string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
 
-            XmlDocument objXmlDocument = _objSpirit.EntityType == SpiritType.Spirit ? XmlManager.Load("traditions.xml") : XmlManager.Load("streams.xml");
+            XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData(_objSpirit.EntityType == SpiritType.Spirit
+                    ? "traditions.xml"
+                    : "streams.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
             foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
@@ -447,7 +449,7 @@ namespace Chummer
         private async void CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
+            XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strCritterName + "\"]");
 
@@ -463,12 +465,10 @@ namespace Chummer
                 // The Critter should use the same settings file as the character.
                 using (Character objCharacter = new Character
                 {
-                    SettingsFile = _objSpirit.CharacterObject.SettingsFile,
-
+                    CharacterOptionsKey = _objSpirit.CharacterObject.CharacterOptionsKey,
                     // Override the defaults for the setting.
                     IgnoreRules = true,
-                    IsCritter = true,
-                    BuildMethod = CharacterBuildMethod.Karma
+                    IsCritter = true
                 })
                 {
                     if (!string.IsNullOrEmpty(txtCritterName.Text))
@@ -625,7 +625,7 @@ namespace Chummer
                     if (objXmlMetatype["movement"] != null)
                         objCharacter.Movement = objXmlMetatype["movement"].InnerText;
                     // Load the Qualities file.
-                    XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
+                    XmlDocument objXmlQualityDocument = _objSpirit.CharacterObject.LoadData("qualities.xml");
 
                     // Determine if the Metatype has any bonuses.
                     if (objXmlMetatype.InnerXml.Contains("bonus"))
@@ -650,7 +650,7 @@ namespace Chummer
                     // Add any Critter Powers the Metatype/Critter should have.
                     XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCharacter.Metatype + "\"]");
 
-                    objXmlDocument = XmlManager.Load("critterpowers.xml");
+                    objXmlDocument = _objSpirit.CharacterObject.LoadData("critterpowers.xml");
                     foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                     {
                         XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
@@ -681,7 +681,7 @@ namespace Chummer
                     }
 
                     // Add any Complex Forms the Critter comes with (typically Sprites)
-                    XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
+                    XmlDocument objXmlProgramDocument = _objSpirit.CharacterObject.LoadData("complexforms.xml");
                     foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                     {
                         string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -691,44 +691,10 @@ namespace Chummer
                         objCharacter.ComplexForms.Add(objComplexForm);
                     }
 
-                    // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                    XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                    foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
-                    {
-                        int intRating = 0;
-                        if (objXmlGear.Attributes["rating"] != null)
-                            intRating = CommonFunctions.ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, intForce, 0, 0);
-                        string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                        XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
-                        Gear objGear = new Gear(objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
-                        objGear.Cost = "0";
-                        objCharacter.Gear.Add(objGear);
-                    }
-
-                    // Add the Unarmed Attack Weapon to the character.
-                    objXmlDocument = XmlManager.Load("weapons.xml");
-                    XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-                    if (objXmlWeapon != null)
-                    {
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Weapon objWeapon = new Weapon(objCharacter);
-                        objWeapon.Create(objXmlWeapon, lstWeapons);
-                        objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
-                        objCharacter.Weapons.Add(objWeapon);
-                        foreach (Weapon objLoopWeapon in lstWeapons)
-                            objCharacter.Weapons.Add(objLoopWeapon);
-                    }
-
                     objCharacter.Alias = strCritterName;
                     objCharacter.Created = true;
                     if (!objCharacter.Save())
-                    {
                         return;
-                    }
-
-                    _objSpirit.FileName = objCharacter.FileName;
                 }
 
                 // Link the newly-created Critter to the Spirit.

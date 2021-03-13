@@ -72,12 +72,12 @@ namespace Chummer
             {
                 case Mode.Metamagic:
                     _strRootXPath = "/chummer/metamagics/metamagic";
-                    _objXmlDocument = XmlManager.Load("metamagic.xml");
+                    _objXmlDocument = _objCharacter.LoadData("metamagic.xml");
                     _strType = LanguageManager.GetString("String_Metamagic");
                     break;
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
-                    _objXmlDocument = XmlManager.Load("echoes.xml");
+                    _objXmlDocument = _objCharacter.LoadData("echoes.xml");
                     _strType = LanguageManager.GetString("String_Echo");
                     break;
             }
@@ -107,7 +107,7 @@ namespace Chummer
                 {
                     string strSource = objXmlMetamagic["source"]?.InnerText;
                     string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                 }
                 else

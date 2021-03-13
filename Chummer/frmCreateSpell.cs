@@ -38,7 +38,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("spells.xml");
+            _objXmlDocument = objCharacter.LoadData("spells.xml");
         }
 
         private void frmCreateSpell_Load(object sender, EventArgs e)

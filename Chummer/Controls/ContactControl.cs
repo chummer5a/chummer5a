@@ -374,34 +374,6 @@ namespace Chummer
                 }
             }
         }
-
-        private static List<ListItem> _lstContactArchetypes;
-
-        public static List<ListItem> ContactArchetypes
-        {
-            get
-            {
-                if (_lstContactArchetypes != null)
-                    return _lstContactArchetypes;
-                _lstContactArchetypes = new List<ListItem>(10) {ListItem.Blank};
-                XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
-                if (xmlContactsBaseNode == null)
-                    return _lstContactArchetypes;
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
-                {
-                    if (xmlNodeList == null)
-                        return _lstContactArchetypes;
-                    foreach (XmlNode xmlNode in xmlNodeList)
-                    {
-                        string strName = xmlNode.InnerText;
-                        _lstContactArchetypes.Add(new ListItem(strName,
-                            xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                    }
-                }
-
-                return _lstContactArchetypes;
-            }
-        }
         #endregion
 
         #region Methods
@@ -425,12 +397,10 @@ namespace Chummer
             //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
             //        }
 
-            ContactArchetypes.Sort(CompareListItems.CompareNames);
-
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = nameof(ListItem.Value);
             cboContactRole.DisplayMember = nameof(ListItem.Name);
-            cboContactRole.DataSource = new BindingSource { DataSource = ContactArchetypes };
+            cboContactRole.DataSource = new BindingSource { DataSource = Contact.ContactArchetypes(_objContact.CharacterObject) };
             cboContactRole.EndUpdate();
         }
 
@@ -808,7 +778,7 @@ namespace Chummer
                 ListItem.Blank
             };
 
-            XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+            XmlNode xmlContactsBaseNode = _objContact.CharacterObject.LoadData("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
                 using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("genders/gender"))
@@ -885,7 +855,7 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+            using (XmlNodeList xmlMetatypeList = _objContact.CharacterObject.LoadData("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
             {
                 if (xmlMetatypeList != null)
                 {

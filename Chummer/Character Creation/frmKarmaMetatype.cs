@@ -48,14 +48,14 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile);
+            XmlDocument xmlMetatypeDoc = _objCharacter.LoadData(strXmlFile);
             _xmlMetatypeDocumentMetatypesNode = xmlMetatypeDoc.SelectSingleNode("/chummer/metatypes");
             _xmlBaseMetatypeDataNode = xmlMetatypeDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlSkillsDocumentKnowledgeSkillsNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
-            XmlDocument xmlQualityDoc = XmlManager.Load("qualities.xml");
+            _xmlSkillsDocumentKnowledgeSkillsNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
+            XmlDocument xmlQualityDoc = _objCharacter.LoadData("qualities.xml");
             _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers");
+            _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
 
         private void frmMetatype_Load(object sender, EventArgs e)
@@ -290,7 +290,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect));
+                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
                             sbdQualities.Append(')');
                         }
                     }
@@ -362,7 +362,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect));
+                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
                             sbdQualities.Append(')');
                         }
                     }

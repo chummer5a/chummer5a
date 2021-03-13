@@ -190,7 +190,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -205,7 +205,7 @@ namespace Chummer.Backend.Equipment
                             strTranslatedNameOnPage = strNameOnPage;
 
                         Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language),
-                            strTranslatedNameOnPage);
+                            strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -245,8 +245,7 @@ namespace Chummer.Backend.Equipment
                                 GlobalOptions.DefaultLanguage, false);
                             if (string.IsNullOrEmpty(strCustomName))
                                 strCustomName =
-                                    LanguageManager.ReverseTranslateExtra(frmPickText.SelectedValue,
-                                        GlobalOptions.Language);
+                                    _objCharacter.ReverseTranslateExtra(frmPickText.SelectedValue);
                             _strName = strCustomName;
                             _objCachedMyXmlNode = null;
                         }
@@ -284,7 +283,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.NuyenDecimals)
+                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.MaxNuyenDecimals)
                         {
                             Minimum = decMin,
                             Maximum = decMax,
@@ -310,7 +309,7 @@ namespace Chummer.Backend.Equipment
                 blnDoExtra = objXmlGear["ammoforweapontype"].Attributes?["noextra"]?.InnerText != bool.TrueString;
             if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
             {
-                frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory
+                frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
                     WeaponType = strAmmoWeaponType
@@ -328,7 +327,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlWeaponList != null)
                 {
-                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                    XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
 
                     // More than one Weapon can be added, so loop through all occurrences.
                     foreach (XmlNode objXmlAddWeapon in xmlWeaponList)
@@ -430,7 +429,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         public void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements)
         {
@@ -454,7 +453,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (xmlChooseGearList != null && xmlChooseGearList.Count > 0)
                     {
-                        XmlDocument xmlDocument = xmlParentGearNode.OwnerDocument ?? XmlManager.Load("gear.xml");
+                        XmlDocument xmlDocument = xmlParentGearNode.OwnerDocument ?? _objCharacter.LoadData("gear.xml");
                         bool blnCancelledDialog = false;
                         List<XmlNode> lstChildrenToCreate = new List<XmlNode>(xmlChooseGearList.Count);
                         foreach (XmlNode objXmlChooseGearNode in xmlChooseGearList)
@@ -494,7 +493,7 @@ namespace Chummer.Backend.Equipment
                                 string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
                                 string strDisplayName = LanguageManager.GetString(strName, false);
                                 if (string.IsNullOrEmpty(strDisplayName))
-                                    strDisplayName = LanguageManager.TranslateExtra(strName);
+                                    strDisplayName = _objCharacter.TranslateExtra(strName);
                                 lstGears.Add(new ListItem(strName, strDisplayName));
                             }
 
@@ -512,7 +511,7 @@ namespace Chummer.Backend.Equipment
                             string strChooseGearNodeName = objXmlChooseGearNode["name"]?.InnerText ?? string.Empty;
                             string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                             if (string.IsNullOrEmpty(strFriendlyName))
-                                strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName);
+                                strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
                             using (frmSelectItem frmPickItem = new frmSelectItem
                             {
                                 Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), strFriendlyName)
@@ -567,7 +566,7 @@ namespace Chummer.Backend.Equipment
                 return;
             XmlNode xmlChildName = xmlChildNode["name"];
             XmlAttributeCollection xmlChildNameAttributes = xmlChildName?.Attributes;
-            XmlDocument xmlDocument = xmlChildNode.OwnerDocument ?? XmlManager.Load("gear.xml");
+            XmlDocument xmlDocument = xmlChildNode.OwnerDocument ?? _objCharacter.LoadData("gear.xml");
             XmlNode xmlChildDataNode = xmlDocument.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
                 "/chummer/gears/gear[name = {0} and category = {1}]",
                 xmlChildName?.InnerText.CleanXPath(), xmlChildNode["category"]?.InnerText.CleanXPath()));
@@ -955,7 +954,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Shim
             if (!string.IsNullOrEmpty(_strMaxRating) && _strName.Contains("Certified Credstick"))
             {
-                XmlNode objNuyenNode = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
+                XmlNode objNuyenNode = _objCharacter.LoadData("gear.xml").SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
                     if (Rating > 0)
@@ -1005,7 +1004,7 @@ namespace Chummer.Backend.Equipment
                 int intResult = _objCharacter.LastSavedVersion.CompareTo(new Version(5, 193, 5));
                 if (intResult == -1)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+                    XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
                     XmlNode gear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + "]");
                     if (gear != null)
                     {
@@ -1248,13 +1247,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail_english", TotalAvail(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("bonded", Bonded.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", Equipped.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("location", Location?.DisplayName());
             objWriter.WriteElementString("gearname", GearName);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("children");
             foreach (Gear objGear in Children)
@@ -1405,7 +1404,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadData("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -1504,13 +1503,7 @@ namespace Chummer.Backend.Equipment
                 objValue.CheapReplace(strExpression, "{Parent Rating}",
                     () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo) ??
                           int.MaxValue.ToString(GlobalOptions.InvariantCultureInfo));
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + '}',
-                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, '{' + strCharAttributeName + "Base}",
-                        () => CharacterObject.GetAttribute(strCharAttributeName).TotalBase.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
 
                 foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                 {
@@ -1619,7 +1612,7 @@ namespace Chummer.Backend.Equipment
             get => _strExtra;
             set
             {
-                string strNewValue = LanguageManager.ReverseTranslateExtra(value);
+                string strNewValue = _objCharacter.ReverseTranslateExtra(value);
                 if (_strExtra != strNewValue)
                 {
                     _strExtra = strNewValue;
@@ -2087,7 +2080,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
+                XmlDocument objDoc = _objCharacter.LoadData("gear.xml", strLanguage);
                 string strNameWithQuotes = Name.CleanXPath();
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
                         ? string.Format(GlobalOptions.InvariantCultureInfo,
@@ -2580,7 +2573,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode = GetNode(strLanguage);
             if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
             {
-                return LanguageManager.TranslateExtra(Name, strLanguage);
+                return _objCharacter.TranslateExtra(Name, strLanguage);
             }
 
             return xmlGearDataNode?["translate"]?.InnerText ?? Name;
@@ -2604,7 +2597,7 @@ namespace Chummer.Backend.Equipment
             if (Rating > 0)
                 sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString(RatingLabel, strLanguage)).Append(strSpace).Append(Rating.ToString(objCulture)).Append(')');
             if (!string.IsNullOrEmpty(Extra))
-                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.TranslateExtra(Extra, strLanguage)).Append(')');
+                sbdReturn.Append(strSpace).Append('(').Append(_objCharacter.TranslateExtra(Extra, strLanguage)).Append(')');
 
             if (!string.IsNullOrEmpty(GearName))
             {
@@ -3026,7 +3019,7 @@ namespace Chummer.Backend.Equipment
                 {
                     int intAvailInt = objTotalAvail.Value;
                     //TODO: Make this dynamically update without having to validate the character.
-                    if (intAvailInt > CharacterObject.MaximumAvailability)
+                    if (intAvailInt > CharacterObject.Options.MaximumAvailability)
                     {
                         if (intAvailInt <= CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
                         {
@@ -3219,7 +3212,7 @@ namespace Chummer.Backend.Equipment
             string strOriginalName = xmlGearImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+                XmlDocument xmlGearDocument = _objCharacter.LoadData("gear.xml");
                 string strForceValue = string.Empty;
                 XmlNode xmlGearDataNode = null;
                 using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strOriginalName + "\")]"))
@@ -3527,8 +3520,7 @@ namespace Chummer.Backend.Equipment
         {
             if (blnConfirmDelete)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear",
-                    GlobalOptions.Language)))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
                     return false;
             }
 

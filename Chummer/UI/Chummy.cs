@@ -36,7 +36,7 @@ namespace Chummer
         private readonly Point _eyeballCenter;
         private readonly Point _mouthCenter;
         private readonly Pen _thickPen;
-        readonly XPathNavigator _objXmlDocument = XmlManager.Load("tips.xml").GetFastNavigator().SelectSingleNode("/chummer/tips");
+        private readonly XPathNavigator _objXmlDocument;
         private readonly List<string> _usedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
@@ -46,7 +46,7 @@ namespace Chummer
             IsBalloon = true
         };
 
-        public Chummy()
+        public Chummy(Character objCharacter)
         {
             InitializeComponent();
 
@@ -72,6 +72,7 @@ namespace Chummer
             }
 
             _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(), this, _mouthCenter);
+            _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).CreateNavigator().SelectSingleNode("/chummer/tips");
         }
         #region Event Handlers
         private void tmr_DrawTick(object sender, EventArgs e)

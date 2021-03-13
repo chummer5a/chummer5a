@@ -46,7 +46,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
             // Load the Lifestyles information.
-            _objXmlDocument = XmlManager.Load("lifestyles.xml");
+            _objXmlDocument = objCharacter.LoadData("lifestyles.xml");
         }
 
         private void frmSelectLifestyle_Load(object sender, EventArgs e)
@@ -81,14 +81,13 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
             // Fill the Options list.
-            using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"" + "SR5" + "\" or category = \"" + "Contracts" + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+            using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"SR5\" or category = \"Contracts\") and (" + _objCharacter.Options.BookXPath() + ")]"))
                 if (xmlLifestyleOptionsList?.Count > 0)
                     foreach (XmlNode objXmlOption in xmlLifestyleOptionsList)
                     {
                         string strOptionName = objXmlOption["name"]?.InnerText;
                         if (string.IsNullOrEmpty(strOptionName))
                             continue;
-                        TreeNode nodOption = new TreeNode();
                         XmlNode nodMultiplier = objXmlOption["multiplier"];
                         string strBaseString = string.Empty;
                         if (nodMultiplier == null)
@@ -96,7 +95,10 @@ namespace Chummer
                             nodMultiplier = objXmlOption["multiplierbaseonly"];
                             strBaseString = strSpace + LanguageManager.GetString("Label_Base");
                         }
-                        nodOption.Tag = objXmlOption["id"]?.InnerText;
+                        TreeNode nodOption = new TreeNode
+                        {
+                            Tag = objXmlOption["id"]?.InnerText
+                        };
                         if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out int intCost))
                         {
                             nodOption.Text = (objXmlOption["translate"]?.InnerText ?? strOptionName)
@@ -208,8 +210,8 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {
@@ -312,8 +314,8 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
                         string strSpace = LanguageManager.GetString("String_Space");
-                        lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                        lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                        lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                        lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                     }
                     else
                     {

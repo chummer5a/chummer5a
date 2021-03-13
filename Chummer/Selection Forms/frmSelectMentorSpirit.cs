@@ -36,13 +36,13 @@ namespace Chummer
         {
             InitializeComponent();
 
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Mentor information.
-            _xmlBaseMentorSpiritDataNode = XmlManager.Load(strXmlFile).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).CreateNavigator().SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
@@ -138,7 +138,7 @@ namespace Chummer
 
                 string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 cmdOK.Enabled = true;

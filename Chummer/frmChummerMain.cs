@@ -113,7 +113,7 @@ namespace Chummer
             "cyberware.xml",
             "drugcomponents.xml",
             "echoes.xml",
-            "gameplayoptions.xml",
+            "options.xml",
             "gear.xml",
             "improvements.xml",
             "licenses.xml",
@@ -130,6 +130,7 @@ namespace Chummer
             "programs.xml",
             "qualities.xml",
             "ranges.xml",
+            "settings.xml",
             "sheets.xml",
             "skills.xml",
             "spells.xml",
@@ -212,9 +213,27 @@ namespace Chummer
                     PopulateMRUToolstripMenu(this, null);
 
                     Program.MainForm = this;
+
+#if DEBUG
+                    if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion < new Version(5, 215, 0))
+#else
+                    if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion < new Version(5, 215, 0))
+#endif
+                    {
+                        if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
+                            LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                        {
+                            Application.Exit();
+                            return;
+                        }
+
+                        GlobalOptions.ShowCharacterCustomDataWarning = false;
+                    }
+
                     if (GlobalOptions.AllowEasterEggs)
                     {
-                        _mascotChummy = new Chummy();
+                        _mascotChummy = new Chummy(null);
                         _mascotChummy.Show(this);
                     }
 
@@ -235,6 +254,8 @@ namespace Chummer
                                 Parallel.ForEach(s_astrPreloadFileNames, x =>
                                 {
                                     XmlManager.Load(x);
+                                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                        XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
                                     _frmLoading.PerformStep(Application.ProductName);
                                 });
                             });
@@ -321,14 +342,7 @@ namespace Chummer
                         }
 
                         _frmLoading.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
-                        if (blnShowTest)
-                        {
-                            frmTest frmTestData = new frmTest();
-                            frmTestData.Show();
-                        }
-
-                        if (lstCharactersToLoad.Count > 0)
-                            OpenCharacterList(lstCharactersToLoad);
+                        
                         if (CharacterRoster != null)
                         {
                             if (MasterIndex == null)
@@ -342,6 +356,15 @@ namespace Chummer
                             MasterIndex.WindowState = FormWindowState.Maximized;
                             CharacterRoster.WindowState = FormWindowState.Maximized;
                         }
+
+                        if (blnShowTest)
+                        {
+                            frmTest frmTestData = new frmTest();
+                            frmTestData.Show();
+                        }
+
+                        if (lstCharactersToLoad.Count > 0)
+                            OpenCharacterList(lstCharactersToLoad);
                     }
 
                     Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
@@ -718,11 +741,18 @@ namespace Chummer
             }
         }
 
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuOptions_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
                 using (frmOptions frmOptions = new frmOptions())
                     frmOptions.ShowDialog(this);
+        }
+
+        private void mnuCharacterOptions_Click(object sender, EventArgs e)
+        {
+            using (new CursorWait(this))
+                using (frmCharacterOptions frmCharacterOptions = new frmCharacterOptions())
+                    frmCharacterOptions.ShowDialog(this);
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -792,34 +822,20 @@ namespace Chummer
         private void mnuNewCritter_Click(object sender, EventArgs e)
         {
             Character objCharacter = new Character();
-            string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
-            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
             using (new CursorWait(this))
             {
-                if (settingsFiles.Length > 1)
-                {
-                    using (frmSelectSetting frmPickSetting = new frmSelectSetting())
-                    {
-                        frmPickSetting.ShowDialog(this);
-
-                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                            return;
-
-                        objCharacter.SettingsFile = frmPickSetting.SettingsFile;
-                    }
-                }
-                else
-                {
-                    string strSettingsFile = settingsFiles[0];
-                    objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
-                }
+                using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
+	            {
+	                frmPickSetting.ShowDialog(this);
+                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
+	                    return;
+	            }
 
                 // Override the defaults for the setting.
                 objCharacter.IgnoreRules = true;
                 objCharacter.IsCritter = true;
                 objCharacter.Created = true;
-                objCharacter.BuildMethod = CharacterBuildMethod.Karma;
 
                 // Show the Metatype selection window.
                 using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
@@ -831,7 +847,7 @@ namespace Chummer
                 }
 
                 // Add the Unarmed Attack Weapon to the character.
-                XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                XmlNode objXmlWeapon = objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                 if (objXmlWeapon != null)
                 {
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -1208,9 +1224,9 @@ namespace Chummer
                 tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
                 tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
         }
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
 
         private static bool showDevWarningAboutDebuggingOnlyOnce = true;
 
@@ -1292,78 +1308,49 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
         {
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
-            Character objCharacter;
+            Character objCharacter = new Character();
             using (new CursorWait(this))
             {
-                if (!File.Exists(strFilePath))
-                {
-                    if (DialogResult.Yes == ShowMessageBox(
-                        LanguageManager.GetString("Message_CharacterOptions_OpenOptions"),
-                        LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"),
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question))
+                // Show the BP selection window.
+	            using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
+	            {
+	                frmBP.ShowDialog(this);
+                    if (frmBP.DialogResult == DialogResult.Cancel)
                     {
-                        using (frmOptions frmOptions = new frmOptions())
-                            frmOptions.ShowDialog(this);
+                        objCharacter.Dispose();
+                        return;
                     }
                 }
-
-                objCharacter = new Character();
-                string settingsPath = Path.Combine(Utils.GetStartupPath, "settings");
-                string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
-
-                if (settingsFiles.Length > 1)
-                {
-                    using (frmSelectSetting frmPickSetting = new frmSelectSetting())
+                // Show the Metatype selection window.
+	            if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
+	            {
+	                using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
                     {
-                        frmPickSetting.ShowDialog(this);
+                        frmSelectMetatype.ShowDialog(this);
 
-                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                        {
+                            objCharacter.Dispose();
                             return;
-
-                        objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+                        }
                     }
                 }
                 else
-                {
-                    string strSettingsFile = settingsFiles[0];
-                    objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
-                }
-
-                // Show the BP selection window.
-                using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
-                {
-                    frmBP.ShowDialog(this);
-
-                    if (frmBP.DialogResult == DialogResult.Cancel)
-                        return;
-                }
-
-                if (objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
                 {
                     using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
                     {
                         frmSelectMetatype.ShowDialog(this);
 
                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                        {
+                            objCharacter.Dispose();
                             return;
-                    }
-                }
-                // Show the Metatype selection window.
-                else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                {
-                    using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
-                    {
-                        frmSelectMetatype.ShowDialog(this);
-
-                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                            return;
+                        }
                     }
                 }
 
                 // Add the Unarmed Attack Weapon to the character.
-                XmlNode objXmlWeapon = XmlManager.Load("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                XmlNode objXmlWeapon = objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                 if (objXmlWeapon != null)
                 {
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -1794,9 +1781,9 @@ namespace Chummer
         {
             Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
         }
-        #endregion
+#endregion
 
-        #region Application Properties
+#region Application Properties
         /// <summary>
         /// The frmDiceRoller window being used by the application.
         /// </summary>
@@ -1812,6 +1799,6 @@ namespace Chummer
 
         public Version CurrentVersion => _objCurrentVersion;
 
-        #endregion
+#endregion
     }
 }

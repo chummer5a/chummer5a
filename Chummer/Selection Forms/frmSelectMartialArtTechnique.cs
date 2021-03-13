@@ -46,8 +46,8 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             // Load the Martial Art information.
-            _xmlBaseChummerNode = XmlManager.Load("martialarts.xml").GetFastNavigator().SelectSingleNode("/chummer");
-            // Populate the Martial Art Tecnnique list.
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").CreateNavigator().SelectSingleNode("/chummer");
+            // Populate the Martial Art Technique list.
             XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
             if (xmlMartialArtNode != null)
             {
@@ -121,7 +121,7 @@ namespace Chummer
                 {
                     string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = xmlTechnique.SelectSingleNode("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }

@@ -19,6 +19,26 @@
 -->
 <chummer>
   <gears>
+    <gear> <!-- Proteus Poseidon -->
+      <id>f9941dbe-1db1-4948-a8be-d760733446ea</id>
+      <dataprocessing>6</dataprocessing>
+      <firewall>5</firewall>
+    </gear>
+    <gear> <!-- Arrow: Seeker Shaft -->
+      <id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
+      <avail>8R</avail>
+      <cost>(Rating * 30)</cost>
+    </gear>
+    <gear> <!-- Arrow: Monotip Head -->
+      <id>39042c0a-4b22-4762-8d56-623033860178</id>
+      <avail>12F</avail>
+      <cost>45</cost>
+    </gear>
+    <gear> <!-- Bolt: Stick-n-Shock w/Static Shaft -->
+      <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
+      <hide />
+    </gear>
+    <!-- Commlink Apps have prices -->
     <gear>
       <id>6731a23a-25cc-4c86-be77-35e90693e837</id>
       <cost>80</cost>

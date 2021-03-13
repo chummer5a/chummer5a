@@ -53,7 +53,7 @@ namespace Chummer
             List<ListItem> lstSkills;
 
             // Build the list of Exotic Active Skills from the Skills file.
-            using (XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
+            using (XmlNodeList objXmlSkillList = _objCharacter.LoadData("skills.xml").SelectNodes("/chummer/skills/skill[exotic = \"True\"]"))
             {
                 lstSkills = new List<ListItem>(objXmlSkillList?.Count ?? 0);
                 if (objXmlSkillList?.Count > 0)
@@ -98,7 +98,8 @@ namespace Chummer
         /// <summary>
         /// Skill specialization that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString() ?? LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text);
+        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString()
+                                                           ?? _objCharacter.ReverseTranslateExtra(cboSkillSpecialisations.Text);
 
         #endregion
 
@@ -108,7 +109,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedCategory)) return;
             List<ListItem> lstSkillSpecializations;
 
-            using (XmlNodeList xmlWeaponList = XmlManager.Load("weapons.xml")
+            using (XmlNodeList xmlWeaponList = _objCharacter.LoadData("weapons.xml")
                 .SelectNodes(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/weapons/weapon[(category = \"{0}s\" or useskill = \"{0}\") and ({1})]",
                     strSelectedCategory, _objCharacter.Options.BookXPath(false))))
             {
@@ -126,7 +127,7 @@ namespace Chummer
                 }
             }
 
-            using (XmlNodeList xmlSpecializationList = XmlManager.Load("skills.xml")
+            using (XmlNodeList xmlSpecializationList = _objCharacter.LoadData("skills.xml")
                 .SelectNodes("/chummer/skills/skill[name = \"" + strSelectedCategory + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
             {
                 if (xmlSpecializationList?.Count > 0)

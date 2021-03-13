@@ -464,39 +464,17 @@ namespace Chummer
                 && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 using (new CursorWait(this))
-                using (frmOptions frmOptions = new frmOptions())
-                    frmOptions.ShowDialog(this);
+                	using (frmOptions frmOptions = new frmOptions())
+                    	frmOptions.ShowDialog(this);
             }
-
             using (new CursorWait(this))
             {
                 cmdImport.Enabled = false;
                 cmdSelectFile.Enabled = false;
                 Character objCharacter = new Character();
-                string settingsPath = Path.Combine(Application.StartupPath, "settings");
-                string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
-
-                if (settingsFiles.Length > 1)
-                {
-                    using (frmSelectSetting frmPickSetting = new frmSelectSetting())
-                    {
-                        frmPickSetting.ShowDialog(this);
-
-                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
-                            return;
-
-                        objCharacter.SettingsFile = frmPickSetting.SettingsFile;
-                    }
-                }
-                else
-                {
-                    string strSettingsFile = settingsFiles[0];
-                    objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
-                }
-
                 Program.MainForm.OpenCharacters.Add(objCharacter);
                 //Timekeeper.Start("load_file");
-                bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId, objCharacter.SettingsFile).ConfigureAwait(true);
+                bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId).ConfigureAwait(true);
                 //Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {

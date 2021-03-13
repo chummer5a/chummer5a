@@ -179,7 +179,7 @@ namespace Chummer.Backend.Equipment
                     !string.IsNullOrEmpty(strNameOnPage))
                     strEnglishNameOnPage = strNameOnPage;
 
-                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage);
+                string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
                 if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
@@ -194,7 +194,7 @@ namespace Chummer.Backend.Equipment
                             strTranslatedNameOnPage = strNameOnPage;
 
                         Notes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language),
-                            strTranslatedNameOnPage);
+                            strTranslatedNameOnPage, _objCharacter);
                     }
                 }
                 else
@@ -226,8 +226,7 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
 
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language),
-            GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         ///     Save the object's XML to the XmlWriter.
@@ -339,7 +338,7 @@ namespace Chummer.Backend.Equipment
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
             if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
                 return;
-            var objXmlDocument = XmlManager.Load("lifestyles.xml");
+            var objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
             var objLifestyleQualityNode = GetNode() ??
                                           objXmlDocument.SelectSingleNode(
                                               "/chummer/qualities/quality[name = \"" + _strName + "\"]");
@@ -410,13 +409,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("lp", LP.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             var strLifestyleQualityType = Type.ToString();
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                var objNode = XmlManager.Load("lifestyles.xml", strLanguageToPrint)
+                XmlNode objNode = _objCharacter.LoadData("lifestyles.xml", strLanguageToPrint)
                     .SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
                 strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
@@ -424,7 +423,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
             objWriter.WriteElementString("lifestylequalitytype_english", Type.ToString());
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -558,7 +557,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(Extra))
                 // Attempt to retrieve the CharacterAttribute name.
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' +
-                             LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                             _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             return strReturn;
         }
 
@@ -755,7 +754,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
                     !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/qualities/quality[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,

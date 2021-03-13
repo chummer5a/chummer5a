@@ -57,7 +57,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
             // Load the Vehicle information.
-            _xmlBaseVehicleDataNode = XmlManager.Load("vehicles.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").CreateNavigator().SelectSingleNode("/chummer");
             if (_xmlBaseVehicleDataNode != null)
                 _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode.SelectSingleNode("modcategories"));
             if (lstExistingMods != null)
@@ -79,8 +79,8 @@ namespace Chummer
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -267,7 +267,7 @@ namespace Chummer
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || _objCharacter.Options.SearchInCategoryOnly))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || GlobalOptions.SearchInCategoryOnly))
                 strFilter += " and category = \"" + strCategory + '\"';
             /*
             else if (!string.IsNullOrEmpty(AllowedCategories))
@@ -367,7 +367,7 @@ namespace Chummer
                     strMinRating = ReplaceStrings(strMinRating);
                     object objTempProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
                     if (blnTempIsSuccess)
-                        intMinRating = Convert.ToInt32(objTempProcess, GlobalOptions.InvariantCultureInfo);
+                        intMinRating = ((double)objTempProcess).StandardRound();
                 }
 
                 string strRating = objXmlMod.SelectSingleNode("rating")?.Value;
@@ -442,7 +442,7 @@ namespace Chummer
                     SelectedRating = nudRating.ValueAsInt;
                     _intMarkup = nudMarkup.ValueAsInt;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                    s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
+                    s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
                     DialogResult = DialogResult.OK;
                 }
             }
@@ -495,7 +495,7 @@ namespace Chummer
                     strMinRating = ReplaceStrings(strMinRating);
                     object objTempProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
                     if (blnTempIsSuccess)
-                        intMinRating = Convert.ToInt32(objTempProcess, GlobalOptions.InvariantCultureInfo);
+                        intMinRating = ((double)objTempProcess).StandardRound();
                 }
                 lblRatingLabel.Visible = true;
                 string strRating = xmlVehicleMod.SelectSingleNode("rating")?.Value;
@@ -715,7 +715,7 @@ namespace Chummer
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             }
