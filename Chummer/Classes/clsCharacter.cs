@@ -1438,6 +1438,8 @@ namespace Chummer
 
                     // <createdversion />
                     objWriter.WriteElementString("createdversion", _strVersionCreated);
+                    // <minimumappversion />
+                    objWriter.WriteElementString("minimumappversion", "5.214.1");
                     // <appversion />
                     objWriter.WriteElementString("appversion", Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
                     // <gameedition />

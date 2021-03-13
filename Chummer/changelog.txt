@@ -1,3 +1,78 @@
+Future Build 215
+Application Changes:
+- Properly split apart settings that can be different for individual characters (e.g. karma costs, enabled sourcebooks, enabled custom data) and those that cannot (e.g. PDF paths, UI language, dark mode). The old Options screen now controls the latter, while the former can be managed through a separate, dedicated screen.
+- Settings files that were created for previous versions of Chummer will automatically be converted to character-based settings that use a new format. Characters created for previous versions of Chummer will have their specific entries for certain settings (e.g. character creation karma costs, enabled sourcebooks) converted as well. However, these two changes mean that once settings and/or characters are saved in this version of Chummer, they cannot be opened (properly) with older versions. The Nightlies will therefore show a one-time warning about using the Nightly when one might plan to go back and open up characters with the latest stable (or an earlier build).
+- Properly unhardcoded Sum-to-Ten costs for each priority category. They can now be modified with custom data files.
+
+Data Changes:
+- Consolidated all German Data Changes custom data into a single German Data Changes entry.
+
+Changed/New Strings:
+- String_ContactPoints
+- String_KnowledgePoints
+- String_Skull
+- String_Torso
+- String_Arms
+- String_Legs
+- Message_CharacterCustomDataWarning
+- MessageTitle_CharacterCustomDataWarning
+- Menu_Main_Options
+- Menu_Main_Character_Options
+- Menu_Main_Update
+- Menu_Main_Restart
+- Menu_Main_ChummerWiki
+- Menu_Main_ChummerDiscord
+- Menu_Main_DumpshockThread
+- Menu_Main_Translator
+- Menu_Main_HeroLabImporter
+- String_Save
+- String_SaveAs
+- Tip_SkillsKnowledgeSkills
+- Title_Options
+- Tab_Options_CustomData
+- Tab_Options_CustomDataDirectories
+- Tab_Options_Basic
+- Label_Options_CustomDataDirectories
+- Checkbox_Options_LiveUpdateCleanCharacterFiles
+- Label_Options_DefaultCharacterOption
+- Title_CharacterOptions
+- String_Rename
+- Label_CharacterOptions_CharacterCreationSettings
+- Label_CharacterOptions_Printing
+- Label_CharacterOptions_OptionsOfficialRules
+- Label_CharacterOptions_Cyberlimbs
+- Label_CharacterOptions_DecimalsAndRounding
+- Label_CharacterOptions_CustomData
+- Button_ChangeCustomDataEntries
+- Label_CharacterOptions_Combat
+- Label_CharacterOptions_MagicAndResonance
+- Label_CharacterOptions_PriorityTable
+- Label_CharacterOptions_AllowedCyberwareGrades
+- Label_CharacterOptions_RedlinerLimbs
+- Message_CharacterOptions_UnsavedDirty
+- MessageTitle_CharacterOptions_UnsavedDirty
+- Message_CharacterOptions_ConfirmDelete
+- MessageTitle_CharacterOptions_ConfirmDelete
+- Message_CharacterOptions_SettingRename
+- Message_CharacterOptions_DuplicateSettingName
+- MessageTitle_CharacterOptions_DuplicateSettingName
+- Message_CharacterOptions_SelectSettingName
+- Message_CharacterOptions_SelectSettingFileName
+- Message_CharacterOptions_SettingFileNameTooLongError
+- MessageTitle_CharacterOptions_SettingFileNameTooLongError
+- Label_SelectBP_BuildMethod
+- Label_SelectBP_Priorities
+- Label_SelectBP_QualityKarmaLimit
+- Label_SelectBP_EnabledBooks
+- Label_SelectBP_CustomData
+- Checkbox_SelectBP_IgnoreRules
+- String_SelectBP_Summary
+- Message_CharacterOptions_DesyncBuildMethod
+- MessageTitle_CharacterOptions_DesyncBuildMethod
+- Message_CharacterOptions_CannotLoadSetting
+- Message_CharacterOptions_DesyncBooksOrCustomData
+- MessageTitle_CharacterOptions_DesyncBooksOrCustomData
+
 Build 214
 Application Fixes:
 - Added a check for xml files storing invalid characters that prevents the file from being saved or loaded. As test issues have been constrained to issues with the notes, it's assumed that this is mostly coming from ingesting PDF documents. If the issue is found, prompt the user whether they want to load with unsafe settings, as this has a small chance of causing application instability. 
