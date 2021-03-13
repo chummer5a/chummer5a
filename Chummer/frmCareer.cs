@@ -2148,42 +2148,7 @@ namespace Chummer
 
         private void mnuFileExport_Click(object sender, EventArgs e)
         {
-            XmlDocument objCharacterXML = new XmlDocument
-            {
-                XmlResolver = null
-            };
-            // Write the Character information to a MemoryStream so we don't need to create any files.
-            MemoryStream objStream = new MemoryStream();
-            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
-            {
-                // Being the document.
-                objWriter.WriteStartDocument();
-
-                // </characters>
-                objWriter.WriteStartElement("characters");
-
-#if DEBUG
-                CharacterObject.PrintToStream(objStream, objWriter);
-#else
-                CharacterObject.PrintToStream(objWriter);
-#endif
-
-                // </characters>
-                objWriter.WriteEndElement();
-
-                // Finish the document and flush the Writer and Stream.
-                objWriter.WriteEndDocument();
-                objWriter.Flush();
-
-                // Read the stream.
-                objStream.Position = 0;
-
-                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
-                        objCharacterXML.Load(objXmlReader);
-            }
-
-            using (frmExport frmExportCharacter = new frmExport(objCharacterXML))
+            using (frmExport frmExportCharacter = new frmExport(CharacterObject))
                 frmExportCharacter.ShowDialog(this);
         }
 

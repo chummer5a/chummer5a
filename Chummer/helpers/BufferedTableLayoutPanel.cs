@@ -23,16 +23,12 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class BufferedTableLayoutPanel : TableLayoutPanel
+    public sealed partial class BufferedTableLayoutPanel : TableLayoutPanel
     {
         public BufferedTableLayoutPanel()
         {
-            SetStyle(ControlStyles.AllPaintingInWmPaint
-                     | ControlStyles.OptimizedDoubleBuffer
-                     | ControlStyles.UserPaint
-                     | ControlStyles.CacheText,
-                true);
             InitializeComponent();
+            DoubleBuffered = true;
         }
 
         public BufferedTableLayoutPanel(IContainer container)
@@ -40,12 +36,8 @@ namespace Chummer
             if (container == null)
                 throw new ArgumentNullException(nameof(container));
             container.Add(this);
-            SetStyle(ControlStyles.AllPaintingInWmPaint
-                     | ControlStyles.OptimizedDoubleBuffer
-                     | ControlStyles.UserPaint
-                     | ControlStyles.CacheText,
-                true);
             InitializeComponent();
+            DoubleBuffered = true;
         }
     }
 }

@@ -1,4 +1,4 @@
-Future Build 214
+Build 214
 Application Fixes:
 - Added a check for xml files storing invalid characters that prevents the file from being saved or loaded. As test issues have been constrained to issues with the notes, it's assumed that this is mostly coming from ingesting PDF documents. If the issue is found, prompt the user whether they want to load with unsafe settings, as this has a small chance of causing application instability. 
 - Added safeguard to notes save method to prevent them from storing said invalid characters. 
@@ -42,6 +42,8 @@ Application Fixes:
 - Fixed an issue in the amend system where if multiple parent nodes were being modified at once with the option to add a node if it is not found, having that node present in only one parent would prevent it from being added to all the parents that were missing it. Fixes a bug that was mentioned off-handedly in #4310.
 - The message for removing or downgrading a quality in Career mode now properly includes the quality's name and the cost of removing it.
 - Added support for save files having a minimum version of Chummer defined. This will be used in a near-future version of Chummer that contains a significant enough change to the structure of character saves that it will need it.
+- The export tool can now export in languages other than the one in which Chummer is currently being used.
+- Fixed an issue where character sheets exported in a different language than Chummer's current language still have their metatype and metavariant texts set based on the language that Chummer is using.
 
 Data Changes:
 - The Ares Light Fire 75's suppressor is no longer incorrectly referred to as the Ares Light Fire 70's suppressor.
@@ -72,6 +74,8 @@ Data Changes:
 - Removed Hardened Rolling Blades weapon, as No Future says that Rolling Blades are only available in Bladed form.
 - Carbines is now one of the recommended specializations for the Automatics skill.
 - Added customdata that removes Automatics as a skill, placing Machine Pistols into the Pistols skill and all other Automatics weapons into the Longarms skill. Heavy Weapons replaces Automatics in the Firearms skill group. Implements #4310.
+- Evo Sublime now properly is only available as an implanted cyberdeck.
+- Fixed the cost of integrated synthlinks and internal SmartCams.
 
 Changed/New Strings:
 - MessageTitle_AutosaveFound

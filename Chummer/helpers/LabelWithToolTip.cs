@@ -66,6 +66,7 @@ namespace Chummer
         {
             ToolTipObject = objToolTip;
             _intToolTipWrap = intToolTipWrap;
+            DoubleBuffered = true;
         }
 
         protected override void Dispose(bool disposing)

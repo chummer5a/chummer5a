@@ -35,7 +35,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public class NumericUpDownEx : NumericUpDown
+    public sealed class NumericUpDownEx : NumericUpDown
     {
         // reference to the underlying TextBox control
         private readonly TextBox _textbox;
@@ -65,6 +65,7 @@ namespace Chummer
             {
                 throw new ArgumentNullException(GetType().FullName, "Can't find internal TextBox field.");
             }
+            DoubleBuffered = true;
             // add handlers (MouseEnter and MouseLeave events of NumericUpDown
             // are not working properly)
             _textbox.MouseEnter += _mouseEnterLeave;

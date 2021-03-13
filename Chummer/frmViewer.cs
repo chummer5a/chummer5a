@@ -720,9 +720,10 @@ namespace Chummer
             List<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage, _lstCharacters);
 
             cboXSLT.BeginUpdate();
+            cboXSLT.DataSource = null;
+            cboXSLT.DataSource = lstFiles;
             cboXSLT.ValueMember = nameof(ListItem.Value);
             cboXSLT.DisplayMember = nameof(ListItem.Name);
-            cboXSLT.DataSource = lstFiles;
             cboXSLT.EndUpdate();
         }
 
