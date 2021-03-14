@@ -51,12 +51,17 @@ namespace Chummer
                 if (objNewCharacterOptions.Load(xmlBuiltInSetting) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
                     s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.SourceId, objNewCharacterOptions);
             }
-            foreach (string strSettingsFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
+            string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+            if (Directory.Exists(strSettingsPath))
             {
-                string strSettingName = Path.GetFileName(strSettingsFilePath);
-                CharacterOptions objNewCharacterOptions = new CharacterOptions();
-                if (objNewCharacterOptions.Load(strSettingName, false) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                    s_dicLoadedCharacterOptions.TryAdd(strSettingName, objNewCharacterOptions);
+                foreach (string strSettingsFilePath in Directory.EnumerateFiles(strSettingsPath, "*.xml"))
+                {
+                    string strSettingName = Path.GetFileName(strSettingsFilePath);
+                    CharacterOptions objNewCharacterOptions = new CharacterOptions();
+                    if (objNewCharacterOptions.Load(strSettingName, false) &&
+                        (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
+                        s_dicLoadedCharacterOptions.TryAdd(strSettingName, objNewCharacterOptions);
+                }
             }
         }
     }
