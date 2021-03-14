@@ -214,34 +214,27 @@ namespace Chummer
 
                     Program.MainForm = this;
 
-#if DEBUG
-                    if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion < new Version(5, 215, 0))
-#else
-                    if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion < new Version(5, 215, 0))
-#endif
-                    {
-                        if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
-                            LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                        {
-                            Application.Exit();
-                            return;
-                        }
-
-                        GlobalOptions.ShowCharacterCustomDataWarning = false;
-                    }
-
-                    if (GlobalOptions.AllowEasterEggs)
-                    {
-                        _mascotChummy = new Chummy(null);
-                        _mascotChummy.Show(this);
-                    }
-
-
                     using (_frmLoading = new frmLoading { CharacterFile = Text })
                     {
-                        _frmLoading.Reset(3 + s_astrPreloadFileNames.Length);
+                        _frmLoading.Reset((GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length);
                         _frmLoading.Show();
+
+#if DEBUG
+                        if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Minor < 215)
+#else
+                        if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion.Minor < 215)
+#endif
+                        {
+                            if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
+                                LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            {
+                                Application.Exit();
+                                return;
+                            }
+
+                            GlobalOptions.ShowCharacterCustomDataWarning = false;
+                        }
 
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
@@ -348,6 +341,13 @@ namespace Chummer
                             if (MasterIndex == null)
                                 CharacterRoster.WindowState = FormWindowState.Maximized;
                             CharacterRoster.Show();
+                        }
+
+                        if (GlobalOptions.AllowEasterEggs)
+                        {
+                            _frmLoading.PerformStep(LanguageManager.GetString("String_Chummy"));
+                            _mascotChummy = new Chummy(null);
+                            _mascotChummy.Show(this);
                         }
 
                         // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes

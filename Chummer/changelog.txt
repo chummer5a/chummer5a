@@ -72,6 +72,7 @@ Changed/New Strings:
 - Message_CharacterOptions_CannotLoadSetting
 - Message_CharacterOptions_DesyncBooksOrCustomData
 - MessageTitle_CharacterOptions_DesyncBooksOrCustomData
+- String_Chummy
 
 Build 214
 Application Fixes:
