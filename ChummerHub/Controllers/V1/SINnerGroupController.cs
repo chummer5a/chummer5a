@@ -1292,10 +1292,10 @@ namespace ChummerHub.Controllers.V1
                     List<Guid?> groupfoundseq = new List<Guid?>();
                     if (!string.IsNullOrEmpty(Groupname))
                     {
-                        string strGroupNameUpper = Groupname.ToUpperInvariant();
+                        string strGroupNameUpper = Groupname;
                         groupfoundseq = await _context.SINnerGroups
                             .Where(a => a.Groupname != null
-                                        && a.Groupname.ToUpperInvariant().Contains(strGroupNameUpper)
+                                        && a.Groupname.Contains(strGroupNameUpper)
                                         && (a.Language == language || string.IsNullOrEmpty(language)))
                             .Select(a => a.Id).ToListAsync();
                         if (groupfoundseq.Count == 0)

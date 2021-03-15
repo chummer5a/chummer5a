@@ -226,11 +226,11 @@ namespace ChummerHub.Controllers.V1
                 ApplicationUser user = null;
                 if (!string.IsNullOrEmpty(User?.Identity?.Name))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
-                var sin = await _context.SINners
+                var sin = await _context.SINners.AsNoTracking()
                     .Include(a => a.SINnerMetaData.Visibility)
-                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                    .Include(a => a.MyGroup)
-                    .Include(b => b.MyGroup.MySettings)
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights).AsNoTracking()
+                    .Include(a => a.MyGroup).AsNoTracking()
+                    .Include(b => b.MyGroup.MySettings).AsNoTracking()
                     .Where(a => a.Id == id).Take(1)
                     .FirstOrDefaultAsync(a => a.Id == id);
                 res = new ResultSinnerGetSINById(sin);
@@ -677,13 +677,13 @@ namespace ChummerHub.Controllers.V1
                     }
 
                     Guid? guiSinnerId = sinner.Id; // Separate definition prevents funny business with async
-                    var oldsinner = await _context.SINners
-                        //.Include(a => a.MyExtendedAttributes)
-                        .Include(a => a.SINnerMetaData)
-                        .Include(a => a.SINnerMetaData.Visibility)
-                        .Include(a => a.SINnerMetaData.Visibility.UserRights)
-                        .Include(b => b.MyGroup)
+                    var oldsinner = await _context.SINners.AsNoTracking()
+                        .Include(a => a.SINnerMetaData).AsNoTracking()
+                        .Include(a => a.SINnerMetaData.Visibility).AsNoTracking()
+                        .Include(a => a.SINnerMetaData.Visibility.UserRights).AsNoTracking()
+                        .Include(b => b.MyGroup).AsNoTracking()
                         .Where(a => a.Id == guiSinnerId).FirstOrDefaultAsync();
+                    SINnerGroup oldgroup = null;
                     if (oldsinner != null)
                     {
                         var canedit = await CheckIfUpdateSINnerFile(oldsinner.Id.Value, user);
@@ -697,10 +697,12 @@ namespace ChummerHub.Controllers.V1
                             return BadRequest(res);
 
                         }
+                        oldgroup = oldsinner.MyGroup;
+                        oldsinner.MyGroup = null;
                         var olduserrights = oldsinner.SINnerMetaData.Visibility.UserRights.ToList();
                         oldsinner.SINnerMetaData.Visibility.UserRights.Clear();
                         _context.UserRights.RemoveRange(olduserrights);
-                        //check if ANY visibility-data was uploaded
+                                                //check if ANY visibility-data was uploaded
                         if (sinner.SINnerMetaData.Visibility.UserRights.Count > 0)
                         {
                             bool userfound = false;
@@ -768,14 +770,16 @@ namespace ChummerHub.Controllers.V1
 
                     sinner.UploadClientId = uploadInfo.Client.Id;
                     SINner dbsinner = await CheckIfUpdateSINnerFile(sinner.Id.Value, user, true);
-                    SINnerGroup oldgroup = null;
+                    
                     if (dbsinner != null)
                     {
-                        oldgroup = dbsinner.MyGroup;
+                        if (oldgroup == null && dbsinner.MyGroup != null)
+                            oldgroup = dbsinner.MyGroup;
                         if (string.IsNullOrEmpty(sinner.GoogleDriveFileId))
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                         if (string.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
+                        sinner.MyGroup = oldgroup;
 
 
                         var alltags = _context.Tags.Where(a => a != null && a.SINnerId == dbsinner.Id).ToArray();
@@ -785,6 +789,8 @@ namespace ChummerHub.Controllers.V1
                         _context.SINnerVisibility.Remove(dbsinner.SINnerMetaData.Visibility);
                         _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
                         _context.SINners.Remove(dbsinner);
+                        if (oldgroup != null)
+                            _context.SINnerGroups.Remove(oldgroup);
 
                         dbsinner.SINnerMetaData.Visibility.UserRights.Clear();
                         dbsinner.SINnerMetaData.Visibility.UserRights = null;
@@ -832,8 +838,18 @@ namespace ChummerHub.Controllers.V1
                             return BadRequest(res);
                         }
 
-
-                        await _context.SINners.AddAsync(sinner);
+                        try
+                        {
+                            await _context.SINners.AddAsync(sinner);
+                        }
+                        catch(InvalidOperationException e)
+                        {
+                            var hub = new HubException("InvalidOperationException while adding sinner to context: " + e.Message, e);
+                            hub.Data.Add("oldsinner", oldsinner?.Id);
+                            hub.Data.Add("oldgroup", oldgroup?.Id);
+                            _logger.LogError(e, e.Message);
+                            throw hub;
+                        }
                         string msg = "Sinner " + sinner.Id + " updated: " + _context.Entry(dbsinner).State.ToString();
                         msg += Environment.NewLine + Environment.NewLine + "LastChange: " + dbsinner.LastChange;
                         _logger.LogInformation(msg);
@@ -1172,24 +1188,24 @@ namespace ChummerHub.Controllers.V1
             SINner dbsinner = null;
             if (allincludes)
             {
-                dbsinner = await _context.SINners
-                    .Include(a => a.SINnerMetaData)
-                    .Include(a => a.SINnerMetaData.Visibility)
-                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                dbsinner = await _context.SINners.AsNoTracking()
+                    .Include(a => a.SINnerMetaData).AsNoTracking()
+                    .Include(a => a.SINnerMetaData.Visibility).AsNoTracking()
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights).AsNoTracking()
                     //.Include(a => a.MyExtendedAttributes)
-                    .Include(a => a.MyGroup).Where(a => a.Id == id).FirstOrDefaultAsync();
+                    .Include(a => a.MyGroup).AsNoTracking().Where(a => a.Id == id).FirstOrDefaultAsync();
             }
             else
             {
-                dbsinner = await _context.SINners
-                    .Include(a => a.MyGroup).Where(a => a.Id == id).FirstOrDefaultAsync();
+                dbsinner = await _context.SINners.AsNoTracking()
+                    .Include(a => a.MyGroup).AsNoTracking().Where(a => a.Id == id).FirstOrDefaultAsync();
             }
 
             if (dbsinner == null)
                 return null;
             string normEmail = user?.NormalizedEmail;
             string userName = user?.UserName;
-            var ur = _context.UserRights.Where(a => a.SINnerId == id).ToList();
+            var ur = _context.UserRights.AsNoTracking().Where(a => a.SINnerId == id).ToList();
             if (ur.Any(a => ((!string.IsNullOrEmpty(a.EMail)
                               && a.EMail.ToUpperInvariant() == normEmail)
                              || a.EMail == null)
@@ -1197,6 +1213,8 @@ namespace ChummerHub.Controllers.V1
             {
                 return dbsinner;
             }
+            if (ur.Count == 0)
+                return dbsinner;
             if (dbsinner.MyGroup != null)
             {
                 if (!string.IsNullOrEmpty(dbsinner.MyGroup.MyAdminIdentityRole))
@@ -1211,15 +1229,16 @@ namespace ChummerHub.Controllers.V1
                         return dbsinner;
                 }
             }
+            List<SINnerUserRight> ur2 = null;
             if (!allincludes && (dbsinner.SINnerMetaData?.Visibility?.UserRights == null))
             {
-                dbsinner = await _context.SINners
-                    .Include(a => a.SINnerMetaData)
-                    .Include(a => a.SINnerMetaData.Visibility)
-                    .Include(a => a.SINnerMetaData.Visibility.UserRights)
+                dbsinner = await _context.SINners.AsNoTracking()
+                    .Include(a => a.SINnerMetaData).AsNoTracking()
+                    .Include(a => a.SINnerMetaData.Visibility).AsNoTracking()
+                    .Include(a => a.SINnerMetaData.Visibility.UserRights).AsNoTracking()
                     //.Include(a => a.MyExtendedAttributes)
-                    .Include(a => a.MyGroup).Where(a => a.Id == id).FirstOrDefaultAsync();
-                var ur2 = _context.UserRights.Where(a => a.SINnerId == id).ToList();
+                    .Include(a => a.MyGroup).AsNoTracking().Where(a => a.Id == id).FirstOrDefaultAsync();
+                ur2 = _context.UserRights.AsNoTracking().Where(a => a.SINnerId == id).ToList();
                 if (ur2.Any(a => ((!string.IsNullOrEmpty(a.EMail)
                                   && a.EMail.ToUpperInvariant() == normEmail)
                                  || a.EMail == null)
@@ -1231,7 +1250,7 @@ namespace ChummerHub.Controllers.V1
                     return dbsinner;
             }
             
-            throw new NoUserRightException(userName, dbsinner.Id);
+            throw new NoUserRightException(userName, dbsinner.Id, "ur2.Count == " + ur2?.Count);
         }
 
         private bool UploadClientExists(Guid id)
