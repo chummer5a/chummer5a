@@ -33,12 +33,17 @@ namespace ChummerHub
         {
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NoUserRightException.NoUserRightException(string, Guid?)'
         public NoUserRightException(string userName, Guid? id) : base(message: "User " + userName + " may not edit SINner with Id " + id + "!")
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'NoUserRightException.NoUserRightException(string, Guid?)'
         {
             this.userName = userName;
             this.id = id;
+        }
+
+        public NoUserRightException(string userName, Guid? id, string message) : base("User " + userName + " may not edit SINner with Id " + id + "!" + Environment.NewLine + message)
+        {
+            this.userName = userName;
+            this.id = id;
+            
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'NoUserRightException.NoUserRightException(string, Exception)'

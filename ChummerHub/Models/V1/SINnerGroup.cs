@@ -28,6 +28,7 @@ namespace ChummerHub.Models.V1
         [JsonIgnore]
         [XmlIgnore]
         public string GameMasterUsername { get; set; }
+
         public SINnerGroupSetting MySettings { get; set; }
 
         [MaxLength(64)]
@@ -49,9 +50,7 @@ namespace ChummerHub.Models.V1
 
         [NotMapped]
         [MaxLength(8)]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyHash'
         public string MyHash
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyHash'
         {
             get
             {
@@ -109,9 +108,8 @@ namespace ChummerHub.Models.V1
                         try
                         {
                             groupmembers = await context.SINners
-                            //.Include(a => a.MyGroup)
+                            .Include(a => a.MyGroup)
                             .Include(a => a.SINnerMetaData)
-                            //.Include(a => a.MyExtendedAttributes)
                             .Include(a => a.SINnerMetaData.Visibility)
                             .Include(a => a.SINnerMetaData.Visibility.UserRights)
                             .Where(a => a.MyGroup.Id == Id && Id != null).ToListAsync();
@@ -129,8 +127,6 @@ namespace ChummerHub.Models.V1
 
                     foreach (var member in groupmembers)
                     {
-                        //if (member.MyExtendedAttributes == null)
-                        //    member.MyExtendedAttributes = new SINnerExtended(member);
                         if (member.SINnerMetaData == null)
                             member.SINnerMetaData = new SINnerMetaData();
                         if (member.SINnerMetaData.Tags == null)
@@ -152,15 +148,11 @@ namespace ChummerHub.Models.V1
 
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyGroups'
         public List<SINnerGroup> MyGroups { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyGroups'
 
         [ForeignKey("MyParentGroupId")]
         [JsonIgnore]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyParentGroup'
         public SINnerGroup MyParentGroup { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroup.MyParentGroup'
 
         /// <summary>
         /// Only users of the specified Role can join this group
@@ -170,21 +162,13 @@ namespace ChummerHub.Models.V1
 
     }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting'
     public class SINnerGroupSetting : SINnerUploadAble
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting'
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.Id'
-#pragma warning disable CS0108 // 'SINnerGroupSetting.Id' hides inherited member 'SINnerUploadAble.Id'. Use the new keyword if hiding was intended.
         public Guid? Id { get; set; }
-#pragma warning restore CS0108 // 'SINnerGroupSetting.Id' hides inherited member 'SINnerUploadAble.Id'. Use the new keyword if hiding was intended.
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.Id'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.MyGroupId'
         public Guid MyGroupId { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupSetting.MyGroupId'
     }
 }
 
