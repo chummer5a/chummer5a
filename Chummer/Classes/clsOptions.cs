@@ -1096,7 +1096,8 @@ namespace Chummer
                         return;
                     if (value)
                     {
-                        objRegistry.DeleteValue("charactercustomdatawarningshown");
+                        if(objRegistry.GetValueNames().Contains("charactercustomdatawarningshown"))
+                            objRegistry.DeleteValue("charactercustomdatawarningshown");
                     }
                     else
                     {
