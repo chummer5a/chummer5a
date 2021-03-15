@@ -3,6 +3,7 @@ Application Changes:
 - Properly split apart settings that can be different for individual characters (e.g. karma costs, enabled sourcebooks, enabled custom data) and those that cannot (e.g. PDF paths, UI language, dark mode). The old Options screen now controls the latter, while the former can be managed through a separate, dedicated screen.
 - Settings files that were created for previous versions of Chummer will automatically be converted to character-based settings that use a new format. Characters created for previous versions of Chummer will have their specific entries for certain settings (e.g. character creation karma costs, enabled sourcebooks) converted as well. However, these two changes mean that once settings and/or characters are saved in this version of Chummer, they cannot be opened (properly) with older versions. The Nightlies will therefore show a one-time warning about using the Nightly when one might plan to go back and open up characters with the latest stable (or an earlier build).
 - Properly unhardcoded Sum-to-Ten costs for each priority category. They can now be modified with custom data files.
+- Attempting to add an exotic skill no longer causes Chummer to crash. Fixes #4329.
 
 Data Changes:
 - Consolidated all German Data Changes custom data into a single German Data Changes entry.

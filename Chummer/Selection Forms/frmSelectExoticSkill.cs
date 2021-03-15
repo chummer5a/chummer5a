@@ -106,12 +106,12 @@ namespace Chummer
         private void BuildList()
         {
             string strSelectedCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
-            if (string.IsNullOrEmpty(strSelectedCategory)) return;
+            if (string.IsNullOrEmpty(strSelectedCategory))
+                return;
             List<ListItem> lstSkillSpecializations;
-
             using (XmlNodeList xmlWeaponList = _objCharacter.LoadData("weapons.xml")
-                .SelectNodes(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/weapons/weapon[(category = \"{0}s\" or useskill = \"{0}\") and ({1})]",
-                    strSelectedCategory, _objCharacter.Options.BookXPath(false))))
+                .SelectNodes(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/weapons/weapon[(category = {0} or useskill = {1}) and ({2})]",
+                    (strSelectedCategory + 's').CleanXPath(), strSelectedCategory.CleanXPath(), _objCharacter.Options.BookXPath(false))))
             {
                 lstSkillSpecializations = new List<ListItem>(xmlWeaponList?.Count ?? 1);
                 if (xmlWeaponList?.Count > 0)
@@ -128,7 +128,7 @@ namespace Chummer
             }
 
             using (XmlNodeList xmlSpecializationList = _objCharacter.LoadData("skills.xml")
-                .SelectNodes("/chummer/skills/skill[name = \"" + strSelectedCategory + "\" and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
+                .SelectNodes("/chummer/skills/skill[name = " + strSelectedCategory.CleanXPath() + " and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
             {
                 if (xmlSpecializationList?.Count > 0)
                 {

@@ -1603,7 +1603,7 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true)
         {
-            StringBuilder sbdPath = new StringBuilder("(");
+            StringBuilder sbdPath = new StringBuilder();
 
             if (excludeHidden)
             {
@@ -1632,7 +1632,7 @@ namespace Chummer
             }
 
             if (sbdPath.Length > 1)
-                sbdPath.Append(")");
+                sbdPath.Insert(0, '(').Append(')');
             else
             {
                 // We have only the opening parentheses; clear the string builder so that we return an empty string
