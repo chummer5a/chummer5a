@@ -1143,7 +1143,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strDirectoryName))
                     continue;
                 // Only load in directories that are either present in our GlobalOptions or are enabled
-                bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
+                bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
                 if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
                 {
                     string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
@@ -1183,7 +1183,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strOrder) || !int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _))
                     {
                         // Only load in directories that are either present in our GlobalOptions or are enabled
-                        bool blnLoopEnabled = Convert.ToBoolean(objXmlDirectoryName.SelectSingleNode("enabled")?.Value);
+                        bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
                         if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
                         {
                             _dicCustomDataDirectoryNames.Add(strDirectoryName,
