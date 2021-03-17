@@ -460,16 +460,16 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (IsDirty)
-            {
-                if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_UnsavedDirty"),
-                    LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    return;
+            Close();
+        }
 
-                DialogResult = DialogResult.Cancel;
+        private void frmCharacterOptions_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (IsDirty && Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_UnsavedDirty"),
+                LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            {
+                e.Cancel = true;
             }
-            else
-                DialogResult = DialogResult.OK;
         }
 
         private void cmdEnableSourcebooks_Click(object sender, EventArgs e)
