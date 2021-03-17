@@ -34,6 +34,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly CharacterOptions _objCharacterOptions;
         private CharacterOptions _objReferenceCharacterOptions;
+        private readonly List<ListItem> _lstSettings = new List<ListItem>();
         // List of custom data directories on the character, in load order. If the character has a directory name for which we have no info, Item1 will be null
         private readonly List<Tuple<object, bool>> _lstCharacterCustomDataDirectoryInfos = new List<Tuple<object, bool>>();
         private bool _blnLoading = true;
@@ -120,14 +121,18 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                if (cboSetting.SelectedItem != null)
+                if (cboSetting.SelectedIndex >= 0)
                 {
-                    ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
-                    ListItem objNewListItem = new ListItem(objCurrentListItem.Value, _objCharacterOptions.DisplayName);
+                    int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
+                    ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value, _objCharacterOptions.DisplayName);
                     _blnLoading = true;
                     cboSetting.BeginUpdate();
-                    cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
-                    cboSetting.SelectedItem = objNewListItem;
+                    _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
+                    cboSetting.DataSource = null;
+                    cboSetting.DataSource = _lstSettings;
+                    cboSetting.ValueMember = nameof(ListItem.Value);
+                    cboSetting.DisplayMember = nameof(ListItem.Name);
+                    cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
                     cboSetting.EndUpdate();
                     _blnLoading = false;
                 }
@@ -335,6 +340,7 @@ namespace Chummer
                     _blnLoading = false;
                     return;
                 }
+                IsDirty = false;
             }
 
             using (new CursorWait(this))
@@ -347,14 +353,18 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                if (_blnWasRenamed && cboSetting.SelectedItem != null)
+                if (_blnWasRenamed && _intOldSelectedSettingIndex >= 0)
                 {
-                    ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
+                    int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
                     ListItem objNewListItem =
-                        new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                        new ListItem(_lstSettings[_intOldSelectedSettingIndex].Value, _objReferenceCharacterOptions.DisplayName);
                     cboSetting.BeginUpdate();
-                    cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
-                    cboSetting.SelectedItem = objNewListItem;
+                    _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
+                    cboSetting.DataSource = null;
+                    cboSetting.DataSource = _lstSettings;
+                    cboSetting.ValueMember = nameof(ListItem.Value);
+                    cboSetting.DisplayMember = nameof(ListItem.Name);
+                    cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
                     cboSetting.EndUpdate();
                 }
 
@@ -392,14 +402,18 @@ namespace Chummer
                     SuspendLayout();
                 }
 
-                if (_blnWasRenamed && cboSetting.SelectedItem != null)
+                if (_blnWasRenamed && cboSetting.SelectedIndex >= 0)
                 {
-                    ListItem objCurrentListItem = (ListItem) cboSetting.SelectedItem;
+                    int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
                     ListItem objNewListItem =
-                        new ListItem(objCurrentListItem.Value, _objReferenceCharacterOptions.DisplayName);
+                        new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value, _objReferenceCharacterOptions.DisplayName);
                     cboSetting.BeginUpdate();
-                    cboSetting.Items[cboSetting.Items.IndexOf(cboSetting.SelectedItem)] = objNewListItem;
-                    cboSetting.SelectedItem = objNewListItem;
+                    _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
+                    cboSetting.DataSource = null;
+                    cboSetting.DataSource = _lstSettings;
+                    cboSetting.ValueMember = nameof(ListItem.Value);
+                    cboSetting.DisplayMember = nameof(ListItem.Name);
+                    cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
                     cboSetting.EndUpdate();
                 }
 
@@ -684,6 +698,8 @@ namespace Chummer
                         if(objXmlBook["hide"] != null)
                             continue;
                         string strCode = objXmlBook["code"]?.InnerText;
+                        if (string.IsNullOrEmpty(strCode))
+                            continue;
                         bool blnChecked = _objCharacterOptions.Books.Contains(strCode);
                         if (objXmlBook["permanent"] != null)
                         {
@@ -741,8 +757,10 @@ namespace Chummer
                 {
                     TreeNode objNode = treCustomDataDirectories.Nodes[i];
                     Tuple<object, bool> objCustomDataDirectory = _lstCharacterCustomDataDirectoryInfos[i];
-                    objNode.Tag = objCustomDataDirectory.Item1;
-                    objNode.Checked = objCustomDataDirectory.Item2;
+                    if (objCustomDataDirectory.Item1 != objNode.Tag)
+                        objNode.Tag = objCustomDataDirectory.Item1;
+                    if (objCustomDataDirectory.Item2 != objNode.Checked)
+                        objNode.Checked = objCustomDataDirectory.Item2;
                     if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
@@ -1111,24 +1129,24 @@ namespace Chummer
             string strSelect = string.Empty;
             if (!_blnLoading)
                 strSelect = cboSetting.SelectedValue?.ToString();
-            List<ListItem> lstSettings = new List<ListItem>();
+            cboSetting.BeginUpdate();
+            _lstSettings.Clear();
             foreach (KeyValuePair<string, CharacterOptions> kvpCharacterOptionsEntry in OptionsManager.LoadedCharacterOptions)
             {
-                lstSettings.Add(new ListItem(kvpCharacterOptionsEntry.Key, kvpCharacterOptionsEntry.Value.DisplayName));
+                _lstSettings.Add(new ListItem(kvpCharacterOptionsEntry.Key, kvpCharacterOptionsEntry.Value.DisplayName));
                 if (_objReferenceCharacterOptions == kvpCharacterOptionsEntry.Value)
                     strSelect = kvpCharacterOptionsEntry.Key;
             }
-            lstSettings.Sort(CompareListItems.CompareNames);
-            cboSetting.BeginUpdate();
+            _lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.DataSource = null;
-            cboSetting.DataSource = lstSettings;
+            cboSetting.DataSource = _lstSettings;
             cboSetting.ValueMember = nameof(ListItem.Value);
             cboSetting.DisplayMember = nameof(ListItem.Name);
             if (!string.IsNullOrEmpty(strSelect))
                 cboSetting.SelectedValue = strSelect;
-            if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
+            if (cboSetting.SelectedIndex == -1 && _lstSettings.Count > 0)
                 cboSetting.SelectedValue = cboSetting.FindStringExact(GlobalOptions.DefaultCharacterOption);
-            if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
+            if (cboSetting.SelectedIndex == -1 && _lstSettings.Count > 0)
                 cboSetting.SelectedIndex = 0;
             cboSetting.EndUpdate();
             _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
