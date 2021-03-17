@@ -111,7 +111,7 @@ namespace Chummer.Backend.Attributes
             objNode.TryGetInt32FieldQuickly("metatypeaugmax", ref _intMetatypeAugMax);
             objNode.TryGetInt32FieldQuickly("base", ref _intBase);
             objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
-            if (!BaseUnlocked)
+            if (!BaseUnlocked && !_objCharacter.Created)
             {
                 _intBase = 0;
             }
