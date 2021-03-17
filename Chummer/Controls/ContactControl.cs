@@ -364,8 +364,7 @@ namespace Chummer
                     chkGroup.Visible = value;
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
-                    if (_objContact?.CharacterObject.Created == false)
-                        chkFree.Visible = value;
+                    chkFree.Visible = _objContact?.CharacterObject.Created == false && value;
                     chkBlackmail.Visible = value;
                     chkFamily.Visible = value;
                     imgLink.Visible = value;
