@@ -27,15 +27,16 @@ namespace Chummer
     public sealed partial class frmSelectBuildMethod : Form
     {
         private readonly Character _objCharacter;
-        private readonly bool _blnLockBuildMethod;
         private readonly CharacterBuildMethod _eStartingBuildMethod;
         private bool _blnLoading = true;
+        private readonly bool _blnForExistingCharacter;
 
         #region Control Events
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _eStartingBuildMethod = _objCharacter.Options.BuildMethod;
+            _blnForExistingCharacter = blnUseCurrentValues;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -57,7 +58,6 @@ namespace Chummer
                 if (cboCharacterOption.SelectedIndex == -1)
                     cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
                 chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
-                _blnLockBuildMethod = !_objCharacter.Created && _objCharacter.Options.BuildMethod == _objCharacter.EffectiveBuildMethod;
             }
             else
                 cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
@@ -72,8 +72,63 @@ namespace Chummer
         {
             if (!(cboCharacterOption.SelectedValue is CharacterOptions objSelectedGameplayOption))
                 return;
+            CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
+            if (_blnForExistingCharacter && !_objCharacter.Created && _objCharacter.Options.BuildMethod == _objCharacter.EffectiveBuildMethod && eSelectedBuildMethod != _eStartingBuildMethod)
+            {
+                if (Program.MainForm.ShowMessageBox(this,
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectBP_SwitchBuildMethods"),
+                        LanguageManager.GetString("String_" + eSelectedBuildMethod), LanguageManager.GetString("String_" + _eStartingBuildMethod)).WordWrap(),
+                    LanguageManager.GetString("MessageTitle_SelectBP_SwitchBuildMethods"), MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return;
+                string strOldCharacterOptionsKey = _objCharacter.CharacterOptionsKey;
+                _objCharacter.CharacterOptionsKey = OptionsManager.LoadedCharacterOptions
+                    .First(x => x.Value == objSelectedGameplayOption).Key;
+                // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
+                if (_objCharacter.IsLoading)
+                    _objCharacter.PostLoadMethods.Enqueue(SwitchBuildMethods);
+                else if (!SwitchBuildMethods())
+                    return;
 
-            _objCharacter.CharacterOptionsKey = OptionsManager.LoadedCharacterOptions.First(x => x.Value == objSelectedGameplayOption).Key;
+                bool SwitchBuildMethods()
+                {
+                    if (eSelectedBuildMethod.UsesPriorityTables())
+                    {
+                        using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(_objCharacter))
+                        {
+                            frmSelectMetatype.ShowDialog(this);
+                            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                            {
+                                _objCharacter.CharacterOptionsKey = strOldCharacterOptionsKey;
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(_objCharacter))
+                        {
+                            frmSelectMetatype.ShowDialog(this);
+                            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                            {
+                                _objCharacter.CharacterOptionsKey = strOldCharacterOptionsKey;
+                                return false;
+                            }
+                        }
+                    }
+
+                    if (_eStartingBuildMethod == CharacterBuildMethod.LifeModule)
+                    {
+                        _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.LifeModule);
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                _objCharacter.CharacterOptionsKey = OptionsManager.LoadedCharacterOptions
+                    .First(x => x.Value == objSelectedGameplayOption).Key;
+            }
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             DialogResult = DialogResult.OK;
         }
@@ -165,9 +220,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(lblBooks.Text))
                     lblCustomData.Text = LanguageManager.GetString("String_None");
             }
-
-            if (_blnLockBuildMethod)
-                cmdOK.Enabled = objSelectedGameplayOption?.BuildMethod == _eStartingBuildMethod;
+            
             if (!_blnLoading)
                 ResumeLayout();
         }

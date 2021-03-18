@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
@@ -298,6 +299,24 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
+                if (_objReferenceCharacterOptions.BuildMethod != _objCharacterOptions.BuildMethod)
+                {
+                    StringBuilder sbdConflictingCharacters = new StringBuilder();
+                    foreach (Character objCharacter in Program.MainForm.OpenCharacters)
+                    {
+                        if (!objCharacter.Created && objCharacter.Options == _objReferenceCharacterOptions)
+                            sbdConflictingCharacters.AppendLine(objCharacter.CharacterName);
+                    }
+                    if (sbdConflictingCharacters.Length > 0)
+                    {
+                        Program.MainForm.ShowMessageBox(this,
+                            LanguageManager.GetString("Message_CharacterOptions_OpenCharacterOnBuildMethodChange") +
+                            sbdConflictingCharacters.ToString(),
+                            LanguageManager.GetString("MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
                 if (!_objCharacterOptions.Save())
                     return;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -1163,26 +1182,18 @@ namespace Chummer
                     PopulateOptions();
                 else if (e.PropertyName == nameof(CharacterOptions.PriorityTable))
                     PopulatePriorityTableList();
-                if (cmdSave.Enabled && _objReferenceCharacterOptions.BuildMethod != _objCharacterOptions.BuildMethod && Program.MainForm.OpenCharacters.Any(x => !x.Created && x.Options == _objReferenceCharacterOptions))
-                {
-                    cmdSave.Enabled = false;
-                }
             }
             else if (e.PropertyName == nameof(CharacterOptions.BuiltInOption))
             {
                 cmdSave.Enabled = cmdSaveAs.Enabled
-                                  && !_objCharacterOptions.BuiltInOption
-                                  && (_objReferenceCharacterOptions.BuildMethod == _objCharacterOptions.BuildMethod
-                                      || Program.MainForm.OpenCharacters.All(x => x.Created || x.Options != _objReferenceCharacterOptions));
+                                  && !_objCharacterOptions.BuiltInOption;
             }
             else if (e.PropertyName == nameof(CharacterOptions.PriorityArray)
                      || e.PropertyName == nameof(CharacterOptions.BuildMethod))
             {
                 cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
                 cmdSave.Enabled = cmdSaveAs.Enabled
-                                  && !_objCharacterOptions.BuiltInOption
-                                  && (_objReferenceCharacterOptions.BuildMethod == _objCharacterOptions.BuildMethod
-                                      || Program.MainForm.OpenCharacters.All(x => x.Created || x.Options != _objReferenceCharacterOptions));
+                                  && !_objCharacterOptions.BuiltInOption;
             }
         }
 

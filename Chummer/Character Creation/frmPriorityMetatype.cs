@@ -24,7 +24,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -651,6 +653,9 @@ namespace Chummer
                         return;
                     }
 
+                    // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
+                    _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Selected && x.GetNode()?["onlyprioritygiven"] != null);
+
                     string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
                     string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
 
@@ -661,10 +666,47 @@ namespace Chummer
                     strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
                     int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
 
-                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
-                        || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
-                        _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText, strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode,
+                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) !=
+                        strSelectedMetatype
+                        || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) !=
+                        strSelectedMetavariant)
+                    {
+                        // Remove qualities that require the old metatype
+                        List<Quality> lstQualitiesToCheck = new List<Quality>(_objCharacter.Qualities.Count);
+                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        {
+                            if (objQuality.OriginSource == QualitySource.Improvement
+                                || objQuality.OriginSource == QualitySource.Heritage
+                                || objQuality.OriginSource == QualitySource.Metatype
+                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                continue;
+                            XmlNode xmlRestrictionNode = objQuality.GetNode()?["required"];
+                            if (xmlRestrictionNode != null &&
+                                (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                            {
+                                lstQualitiesToCheck.Add(objQuality);
+                            }
+                            else
+                            {
+                                xmlRestrictionNode = objQuality.GetNode()?["forbidden"];
+                                if (xmlRestrictionNode != null &&
+                                    (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                                {
+                                    lstQualitiesToCheck.Add(objQuality);
+                                }
+                            }
+                        }
+                        _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText,
+                            strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
+                            _xmlCritterPowerDocumentPowersNode,
                             _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
+                        foreach (Quality objQuality in lstQualitiesToCheck)
+                        {
+                            if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
+                                _objCharacter.Qualities.Remove(objQuality);
+                        }
+                    }
 
                     string strOldSpecialPriority = _objCharacter.SpecialPriority;
                     string strOldTalentPriority = _objCharacter.TalentPriority;
@@ -849,24 +891,157 @@ namespace Chummer
                                 break;
                             }
                         }
-
-                        // Sprites can never have Physical Attributes
-                        if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite", StringComparison.Ordinal))
-                        {
-                            _objCharacter.BOD.AssignLimits(0, 0, 0);
-                            _objCharacter.AGI.AssignLimits(0, 0, 0);
-                            _objCharacter.REA.AssignLimits(0, 0, 0);
-                            _objCharacter.STR.AssignLimits(0, 0, 0);
-                            _objCharacter.MAG.AssignLimits(0, 0, 0);
-                            _objCharacter.MAGAdept.AssignLimits(0, 0, 0);
-                        }
-
-                        // Set free contact points
-                        _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
-
-                        DialogResult = DialogResult.OK;
-                        Close();
                     }
+
+                    // Sprites can never have Physical Attributes
+                    if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite", StringComparison.Ordinal))
+                    {
+                        _objCharacter.BOD.AssignLimits(0, 0, 0);
+                        _objCharacter.AGI.AssignLimits(0, 0, 0);
+                        _objCharacter.REA.AssignLimits(0, 0, 0);
+                        _objCharacter.STR.AssignLimits(0, 0, 0);
+                        _objCharacter.MAG.AssignLimits(0, 0, 0);
+                        _objCharacter.MAGAdept.AssignLimits(0, 0, 0);
+                    }
+
+                    // Set free contact points
+                    _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
+
+                    // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
+                    bool blnDoSwitch = false;
+                    foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        if (objAttribute.Base > 0)
+                        {
+                            blnDoSwitch = false;
+                            break;
+                        }
+                        if (objAttribute.Karma > 0)
+                            blnDoSwitch = true;
+                    }
+                    if (blnDoSwitch)
+                    {
+                        int intPointsSpent = 0;
+                        while (intPointsSpent < _objCharacter.TotalAttributes)
+                        {
+                            CharacterAttrib objAttributeToShift = null;
+                            foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                            {
+                                if (objAttribute.Karma > 0)
+                                {
+                                    if (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value)
+                                        objAttributeToShift = objAttribute;
+                                }
+                            }
+                            if (objAttributeToShift == null)
+                                break;
+                            int intKarma = Math.Min(objAttributeToShift.Karma, _objCharacter.TotalAttributes - intPointsSpent);
+                            objAttributeToShift.Karma -= intKarma;
+                            objAttributeToShift.Base += intKarma;
+                            intPointsSpent += intKarma;
+                        }
+                    }
+                    blnDoSwitch = false;
+                    foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    {
+                        if (objAttribute.Base > 0)
+                        {
+                            blnDoSwitch = false;
+                            break;
+                        }
+                        if (objAttribute.Karma > 0)
+                            blnDoSwitch = true;
+                    }
+                    if (blnDoSwitch)
+                    {
+                        int intPointsSpent = 0;
+                        while (intPointsSpent < _objCharacter.TotalSpecial)
+                        {
+                            CharacterAttrib objAttributeToShift = null;
+                            foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                            {
+                                if (objAttribute.Karma > 0)
+                                {
+                                    if (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value)
+                                        objAttributeToShift = objAttribute;
+                                }
+                            }
+                            if (objAttributeToShift == null)
+                                break;
+                            int intKarma = Math.Min(objAttributeToShift.Karma, _objCharacter.TotalSpecial - intPointsSpent);
+                            objAttributeToShift.Karma -= intKarma;
+                            objAttributeToShift.Base += intKarma;
+                            intPointsSpent += intKarma;
+                        }
+                    }
+                    blnDoSwitch = false;
+                    foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                    {
+                        if (objGroup.Base > 0)
+                        {
+                            blnDoSwitch = false;
+                            break;
+                        }
+                        if (objGroup.Karma > 0)
+                            blnDoSwitch = true;
+                    }
+                    if (blnDoSwitch)
+                    {
+                        int intPointsSpent = 0;
+                        while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
+                        {
+                            SkillGroup objGroupToShift = null;
+                            foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                            {
+                                if (objGroup.Karma > 0)
+                                {
+                                    if (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating)
+                                        objGroupToShift = objGroup;
+                                }
+                            }
+                            if (objGroupToShift == null)
+                                break;
+                            int intKarma = Math.Min(objGroupToShift.Karma, _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
+                            objGroupToShift.Karma -= intKarma;
+                            objGroupToShift.Base += intKarma;
+                            intPointsSpent += intKarma;
+                        }
+                    }
+                    blnDoSwitch = false;
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objSkill.Base > 0)
+                        {
+                            blnDoSwitch = false;
+                            break;
+                        }
+                        if (objSkill.Karma > 0)
+                            blnDoSwitch = true;
+                    }
+                    if (blnDoSwitch)
+                    {
+                        int intPointsSpent = 0;
+                        while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
+                        {
+                            Skill objSkillToShift = null;
+                            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                            {
+                                if (objSkill.Karma > 0)
+                                {
+                                    if (objSkillToShift == null || objSkillToShift.Rating < objSkill.Rating)
+                                        objSkillToShift = objSkill;
+                                }
+                            }
+                            if (objSkillToShift == null)
+                                break;
+                            int intKarma = Math.Min(objSkillToShift.Karma, _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
+                            objSkillToShift.Karma -= intKarma;
+                            objSkillToShift.Base += intKarma;
+                            intPointsSpent += intKarma;
+                        }
+                    }
+                    DialogResult = DialogResult.OK;
+                    Close();
                 }
                 else
                 {

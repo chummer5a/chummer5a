@@ -42,6 +42,15 @@ namespace Chummer
         LifeModule = 3
     }
 
+    public static class CharacterBuildMethodExtensions
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool UsesPriorityTables(this CharacterBuildMethod eBuildMethod)
+        {
+            return eBuildMethod == CharacterBuildMethod.Priority || eBuildMethod == CharacterBuildMethod.SumtoTen;
+        }
+    }
+
     public class CharacterOptions : INotifyPropertyChanged, IEquatable<CharacterOptions>
     {
         private Guid _guiSourceId = Guid.Empty;
@@ -1267,8 +1276,7 @@ namespace Chummer
             }
         }
 
-        public bool BuildMethodUsesPriorityTables => BuildMethod == CharacterBuildMethod.Priority
-                                                     || BuildMethod == CharacterBuildMethod.SumtoTen;
+        public bool BuildMethodUsesPriorityTables => BuildMethod.UsesPriorityTables();
 
         public bool BuildMethodIsPriority => BuildMethod == CharacterBuildMethod.Priority;
 

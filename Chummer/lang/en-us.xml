@@ -8025,6 +8025,14 @@
       <key>Tip_SelectKarma_IgnoreRules</key>
       <text>When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>
     </string>
+    <string>
+      <key>Message_SelectBP_SwitchBuildMethods</key>
+      <text>The selected build method ({0}) is different from the existing build method of the character ({1}). Do you wish to switch build methods?</text>
+    </string>
+    <string>
+      <key>MessageTitle_SelectBP_SwitchBuildMethods</key>
+      <text>Switch Build Method?</text>
+    </string>
     <!-- End Region-->
     <!-- Region Advanced Contact Options Window -->
     <string>
@@ -9310,7 +9318,7 @@
     <!-- Region CharacterOptions Messages -->
     <string>
       <key>Message_CharacterOptions_DesyncBuildMethod</key>
-      <text>The settings file present that matches with the character's settings file ({0}) has a different build method.\n\nSelect a different settings file with the same build method instead?</text>
+      <text>The settings file present that matches with the character's settings file ({0}) has a different build method ({1}) than what the character was saved with ({2}).\n\nChummer will prompt you to confirm the setting this character is meant to use. Do you wish to continue loading this character?</text>
     </string>
     <string>
       <key>MessageTitle_CharacterOptions_DesyncBuildMethod</key>
@@ -9339,6 +9347,14 @@
     <string>
       <key>MessageTitle_CharacterOptions_DesyncBooksOrCustomData</key>
       <text>Loaded Settings File Has Different Books and/or Custom Data Directories</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_OpenCharacterOnBuildMethodChange</key>
+      <text>Due to technical limitations, Chummer cannot change the build method of an existing setting that is being used by an open character in Create mode. Please save your changes as a new setting or close the following characters first:\n\n</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange</key>
+      <text>Cannot Change Build Method for Open Characters in Create Mode</text>
     </string>
     <!-- End Region-->
     <!-- Region Karma Value Strings -->

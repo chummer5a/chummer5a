@@ -2119,7 +2119,10 @@ namespace Chummer
 
         public bool IsLoading { get; set; }
 
-        public Queue<Action> PostLoadMethods => new Queue<Action>();
+        /// <summary>
+        /// Queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
+        /// </summary>
+        public Queue<Func<bool>> PostLoadMethods => new Queue<Func<bool>>();
 
         /// <summary>
         /// Load the Character from an XML file.
@@ -2314,22 +2317,40 @@ namespace Chummer
                                 : CharacterBuildMethod.Priority;
                         }
                         bool blnShowSelectBP = false;
-                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
-                            || (!Created && OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod != eSavedBuildMethod))
+                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
                         {
                             // Prompt if we want to switch options or leave
                             if (!Utils.IsUnitTest && showWarnings)
                             {
                                 if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString(
-                                            OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
-                                                ? "Message_CharacterOptions_DesyncBuildMethod"
-                                                : "Message_CharacterOptions_CannotLoadSetting"),
+                                        LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"),
                                         Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)).WordWrap(),
-                                    LanguageManager.GetString(
-                                        OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
-                                            ? "MessageTitle_CharacterOptions_DesyncBuildMethod"
-                                            : "MessageTitle_CharacterOptions_CannotLoadSetting"),
+                                    LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"),
+                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                {
+                                    IsLoading = false;
+                                    return false;
+                                }
+                                blnShowSelectBP = true;
+                            }
+                            // Set up interim options for selection by build method
+                            string strReplacementOptionsKey = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x =>
+                                x.Value.BuiltInOption && x.Value.BuildMethod == eSavedBuildMethod).Key;
+                            if (string.IsNullOrEmpty(strReplacementOptionsKey))
+                                strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
+                            _strCharacterOptionsKey = strReplacementOptionsKey;
+                        }
+                        else if (!Created && OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod != eSavedBuildMethod)
+                        {
+                            // Prompt if we want to switch options or leave
+                            if (!Utils.IsUnitTest && showWarnings)
+                            {
+                                if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_CharacterOptions_DesyncBuildMethod"),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey),
+                                        LanguageManager.GetString("String_" + OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod),
+                                        LanguageManager.GetString("String_" + eSavedBuildMethod)).WordWrap(),
+                                    LanguageManager.GetString("MessageTitle_CharacterOptions_DesyncBuildMethod"),
                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                 {
                                     IsLoading = false;
@@ -2397,23 +2418,6 @@ namespace Chummer
 
                         Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
 
-                        if (blnShowSelectBP)
-                        {
-                            DialogResult ePickBPResult = DialogResult.Cancel;
-                            Program.MainForm.DoThreadSafe(() =>
-                            {
-                                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
-                                {
-                                    frmPickBP.ShowDialog(Program.MainForm);
-                                    ePickBPResult = frmPickBP.DialogResult;
-                                }
-                            });
-                            if (ePickBPResult != DialogResult.OK)
-                            {
-                                IsLoading = false;
-                                return false;
-                            }
-                        }
 
                         if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart",
                             ref _decEssenceAtSpecialStart))
@@ -4002,8 +4006,9 @@ namespace Chummer
 
                         if (!InitiationEnabled || !AddInitiationsAllowed)
                             ClearInitiations();
-                        foreach (Action funcToCall in PostLoadMethods)
-                            funcToCall.Invoke();
+                        foreach (Func<bool> funcToCall in PostLoadMethods)
+                            if (!funcToCall.Invoke())
+                                return false;
                         PostLoadMethods.Clear();
                         //Timekeeper.Finish("load_char_improvementrefreshers");
                     }
@@ -7434,17 +7439,17 @@ namespace Chummer
             }
         }
 
-        private void RefreshAstralReputationImprovements()
+        private bool RefreshAstralReputationImprovements()
         {
             if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
             {
                 PostLoadMethods.Enqueue(RefreshAstralReputationImprovements);
-                return;
+                return true;
             }
             int intCurrentTotalAstralReputation = TotalAstralReputation;
             List<Improvement> lstCurrentAstralReputationImprovements = Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AstralReputation).ToList();
             if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
-                return;
+                return true;
             ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements);
             ImprovementManager.CreateImprovement(this, "Summoning", Improvement.ImprovementSource.AstralReputation,
                 nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.Skill, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
@@ -7459,6 +7464,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(this, "Chain Breaker", Improvement.ImprovementSource.AstralReputation,
                     nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.DisableQuality, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
                     -intCurrentTotalAstralReputation);
+            return true;
         }
 
         /// <summary>
@@ -11948,8 +11954,7 @@ namespace Chummer
         /// </summary>
         public CharacterBuildMethod EffectiveBuildMethod => IsCritter ? CharacterBuildMethod.Karma : Options.BuildMethod;
 
-        public bool EffectiveBuildMethodUsesPriorityTables => EffectiveBuildMethod == CharacterBuildMethod.Priority
-                                                              || EffectiveBuildMethod == CharacterBuildMethod.SumtoTen;
+        public bool EffectiveBuildMethodUsesPriorityTables => EffectiveBuildMethod.UsesPriorityTables();
 
         public bool EffectiveBuildMethodIsLifeModule => EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
 
@@ -14290,12 +14295,12 @@ namespace Chummer
             }
         }
 
-        private void RefreshRedlinerImprovements()
+        private bool RefreshRedlinerImprovements()
         {
             if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
             {
                 PostLoadMethods.Enqueue(RefreshRedlinerImprovements);
-                return;
+                return true;
             }
             //Get attributes affected by redliner/cyber singularity seeker
             List<Improvement> lstSeekerImprovements = Improvements.Where(objLoopImprovement =>
@@ -14310,7 +14315,7 @@ namespace Chummer
             if(lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
             {
                 _intCachedRedlinerBonus = 0;
-                return;
+                return true;
             }
 
             //Calculate bonus from cyberlimbs
@@ -14361,6 +14366,7 @@ namespace Chummer
 
                 ImprovementManager.Commit(this);
             }
+            return true;
         }
 
         public void RefreshEssenceLossImprovements()

@@ -13531,30 +13531,6 @@ namespace Chummer
         /// </summary>
         public void ChangeMetatype()
         {
-            // Determine if the character has any chosen Qualities that depend on their current Metatype. If so, don't let the change happen.
-            string strQualities = string.Empty;
-            foreach (Quality objQuality in CharacterObject.Qualities)
-            {
-                if (objQuality.OriginSource != QualitySource.Metatype && objQuality.OriginSource != QualitySource.MetatypeRemovable && objQuality.OriginSource != QualitySource.MetatypeRemovedAtChargen && objQuality.OriginSource == QualitySource.Heritage)
-                {
-                    XmlNode xmlQualityRequired = objQuality.GetNode()?["required"];
-                    if (xmlQualityRequired != null)
-                    {
-                        if (xmlQualityRequired.SelectNodes("oneof/metatype[. = \"" + CharacterObject.Metatype + "\"]")?.Count > 0 ||
-                            xmlQualityRequired.SelectNodes("oneof/metavariant[. = \"" + CharacterObject.Metavariant + "\"]")?.Count > 0)
-                            strQualities += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
-                        if (xmlQualityRequired.SelectNodes("allof/metatype[. = \"" + CharacterObject.Metatype + "\"]")?.Count > 0 ||
-                            xmlQualityRequired.SelectNodes("allof/metavariant[. = \"" + CharacterObject.Metavariant + "\"]")?.Count > 0)
-                            strQualities += Environment.NewLine + '\t' + objQuality.DisplayNameShort(GlobalOptions.Language);
-                    }
-                }
-            }
-            if (!string.IsNullOrEmpty(strQualities))
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotChangeMetatype") + strQualities, LanguageManager.GetString("MessageTitle_CannotChangeMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject))
@@ -13569,7 +13545,6 @@ namespace Chummer
                 using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(CharacterObject))
                 {
                     frmSelectMetatype.ShowDialog(this);
-
                     if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                         return;
                 }

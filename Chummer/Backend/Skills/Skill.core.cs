@@ -31,7 +31,7 @@ namespace Chummer.Backend.Skills
         private bool _blnBuyWithKarma;
 
         /// <summary>
-        /// How many points REALLY are in _base. Better that subclasses calculating Base - FreeBase()
+        /// How many points REALLY are in _base. Better than subclasses calculating Base - FreeBase()
         /// </summary>
         public int BasePoints
         {
