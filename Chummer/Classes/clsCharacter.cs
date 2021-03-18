@@ -2314,26 +2314,8 @@ namespace Chummer
                                 : CharacterBuildMethod.Priority;
                         }
                         bool blnShowSelectBP = false;
-                        bool blnOptionsDesync =
-                            !OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
-                            || (!Created &&
-                                OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod !=
-                                eSavedBuildMethod);
-                        // Check to make sure Build Karma and Sum-to-Ten (if applicable) align, but only if we're still in character creation because it doesn't matter otherwise
-                        if (!blnOptionsDesync && !Created)
-                        {
-                            int intDummy = 0;
-                            if (xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref intDummy)
-                                && intDummy != OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildKarma)
-                                blnOptionsDesync = true;
-                            else if (eSavedBuildMethod == CharacterBuildMethod.SumtoTen
-                                     && xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref intDummy)
-                                     && intDummy != OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].SumtoTen)
-                            {
-                                blnOptionsDesync = true;
-                            }
-                        }
-                        if (blnOptionsDesync)
+                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey)
+                            || (!Created && OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod != eSavedBuildMethod))
                         {
                             // Prompt if we want to switch options or leave
                             if (!Utils.IsUnitTest && showWarnings)
