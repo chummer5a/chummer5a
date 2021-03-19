@@ -204,7 +204,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
+            if (Grade != null)
+                objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("qty", Quantity.ToString( "#,0.##", objCulture));
             objWriter.WriteElementString("addictionthreshold", AddictionThreshold.ToString(objCulture));
             objWriter.WriteElementString("addictionrating", AddictionRating.ToString(objCulture));
