@@ -506,7 +506,7 @@ namespace Chummer
                 objWriter.WriteElementString("guid", InternalId);
                 objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-                objWriter.WriteElementString("name_english", Name + strRatingString);
+                objWriter.WriteElementString("name_english", Name);
                 objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", BP.ToString(objCulture));
                 string strQualityType = Type.ToString();

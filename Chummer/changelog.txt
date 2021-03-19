@@ -7,6 +7,7 @@ Application Changes:
 - The "Free" checkbox under Contacts no longer remains visible after collapsing a contact control in Career mode.
 - If a character has purchased qualities at character creation that require certain metatypes or metavariants, then instead of the character being restricted from changing their priorities and/or metatype, those qualities now automatically get removed if the character can no longer have them.
 - Characters are no longer stuck in the build method that was chosen when they were first created.
+- The exported English names of qualities no longer contain the quality's rating (which made it behave differently than the regular name).
 
 Data Changes:
 - Consolidated all German Data Changes custom data into a single German Data Changes entry.
