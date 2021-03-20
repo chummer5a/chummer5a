@@ -12,6 +12,7 @@ Application Changes:
 
 Data Changes:
 - Consolidated all German Data Changes custom data into a single German Data Changes entry.
+- Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
 
 Changed/New Strings:
 - String_ContactPoints
