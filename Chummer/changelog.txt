@@ -83,6 +83,9 @@ Changed/New Strings:
 - MessageTitle_SelectBP_SwitchBuildMethods
 - Message_CharacterOptions_OpenCharacterOnBuildMethodChange
 - MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange
+- Message_Options_ConfirmTelemetry
+- Message_Options_CloseForms
+- Message_Update_CloseForms
 
 Build 214
 Application Fixes:

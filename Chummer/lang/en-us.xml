@@ -5754,7 +5754,7 @@
     </string>
     <string> <!-- Note: worded to be as close to a GDPR privacy notice as possible, just in case -->
       <key>Message_Options_ConfirmTelemetry</key>
-      <text>If this option is enabled, your Chummer logs and usage metrics will be sent to the Chummer Dev-Team. These contain data that help give us insight on what needs to be improved and how things should be fixed, with more detailed levels giving us more information.\nWe also always collect information about what operating system you use and in what municipality you are located; the former helps with crashes and performance data, while the latter gives us insight into what locales we should support and/or add to the program.\nThese and all other data are anonymized before collection, will be securely stored on a Microsoft Azure server for a period of up to 2 years, and will not be shared with any parties outside of a few, core Chummer contributors. Data will be uploaded whenever you start Chummer, exit Chummer, or load in a new character.\n\nYou have full rights to any data you send to us. If you wish to request all data we have on you or have your data permanently removed, please contact the current administrator of this service, MegalonArchon (archon.megalon@gmail.com), and we will try to fulfill your request as soon as possible.\n\nDo you wish to proceed and enable telemetry?</text>
+      <text>If this option is enabled, your Chummer logs and usage metrics will be sent to the Chummer Dev-Team. These contain data that help give us insight on what needs to be improved and how things should be fixed, with more detailed levels giving us more information.\nWe also always collect information about what operating system you use and in what municipality you are located; the former helps with crashes and performance data, while the latter gives us insight into what locales should be supported and/or added to the program.\nThese and all other data are anonymized before collection, will be securely stored on a Microsoft Azure server for a period of up to 2 years, and will not be shared with any parties outside of a few, core Chummer contributors. Data will be uploaded whenever you start Chummer, exit Chummer, or load in a new character.\n\nYou have full rights to any data you send to us. If you wish to request all data the Chummer development team has on you or have your data permanently removed, please contact the current administrator of this service, MegalonArchon (archon.megalon@gmail.com), and they will try to fulfill your request as soon as possible.\n\nDo you wish to proceed and enable telemetry?</text>
     </string>
     <string>
       <key>MessageTitle_Options_ConfirmTelemetry</key>
@@ -7601,7 +7601,7 @@
     </string>
     <string>
       <key>Message_Options_CloseForms</key>
-      <text>Options are only enumerated on character load. Should we restart the application?</text>
+      <text>Options are only enumerated on startup, so changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
     </string>
     <string>
       <key>Message_Options_SaveForms</key>
@@ -8914,7 +8914,7 @@
     </string>
     <string>
       <key>Message_Update_CloseForms</key>
-      <text>A newer version of Chummer5a has been automatically downloaded. Should we apply it and restart the application?</text>
+      <text>A newer version of Chummer5a has been automatically downloaded. Should it be applied and the application restarted?</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Viewer Window -->
