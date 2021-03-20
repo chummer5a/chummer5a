@@ -14478,9 +14478,9 @@ namespace Chummer
                     if (frmPickGear.DialogResult == DialogResult.Cancel)
                         return false;
 
-                // Open the Cyberware XML file and locate the selected piece.
-                XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
-                objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
+                    // Open the Cyberware XML file and locate the selected piece.
+                    XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
+                    objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
 
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -14548,14 +14548,19 @@ namespace Chummer
                     else if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                         decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
-                    // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                    // This is wrapped in a try statement since the character may not have a piece of Gear selected and has clicked the Buy Additional Ammo button for a Weapon.
-                    if (!blnNullParent && objStackWith == null && CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objGear.PluginCapacity < 0)
+                    if (!blnNullParent && objStackWith == null)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
-                            LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                        return frmPickGear.AddAgain;
+                        // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
+                        if (CharacterObjectOptions.EnforceCapacity &&
+                            objSelectedGear.CapacityRemaining - objGear.PluginCapacity < 0)
+                        {
+                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
+                                LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                            return frmPickGear.AddAgain;
+                        }
+                        // Multiply cost by parent gear's quantity
+                        decCost *= objSelectedGear.Quantity;
                     }
 
                     ExpenseUndo objUndo = new ExpenseUndo();
