@@ -1072,7 +1072,7 @@ namespace Chummer
             return Guid.TryParse(strGuid, out Guid _);
         }
 
-        private static Dictionary<string, string> s_dicLigaturesMap = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> s_dicLigaturesMap = new Dictionary<string, string>
         {
             {"ﬀ", "ff"},
             {"ﬃ", "ffi"},

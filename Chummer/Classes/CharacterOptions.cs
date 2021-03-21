@@ -1230,9 +1230,8 @@ namespace Chummer
 
             // Used to legacy sweep build settings.
             XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNode("defaultbuild");
-            CharacterBuildMethod eBuildMethod;
             if (objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp)
-                && Enum.TryParse(strTemp, true, out eBuildMethod)
+                && Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod)
                 || xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp) == true
                 && Enum.TryParse(strTemp, true, out eBuildMethod))
                 _eBuildMethod = eBuildMethod;

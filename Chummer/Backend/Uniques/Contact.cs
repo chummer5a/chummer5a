@@ -81,7 +81,6 @@ namespace Chummer
         private bool _blnFree;
         private readonly List<Image> _lstMugshots = new List<Image>(1);
         private int _intMainMugshotIndex = -1;
-        private int _intKarmaMinimum = 2;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -432,8 +431,7 @@ namespace Chummer
                     decReturn += 2;
                 decReturn +=
                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
-                decReturn = Math.Max(decReturn,
-                    _intKarmaMinimum + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
+                decReturn = Math.Max(decReturn, 2 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
                 return decReturn.StandardRound();
             }
         }

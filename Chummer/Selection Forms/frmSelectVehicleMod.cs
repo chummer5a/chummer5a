@@ -31,7 +31,6 @@ namespace Chummer
     {
         private readonly Vehicle _objVehicle;
         private int _intWeaponMountSlots;
-        private int _intModMultiplier = 1;
         private int _intMarkup;
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
@@ -639,7 +638,6 @@ namespace Chummer
                     objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out blnIsSuccess);
                     if (blnIsSuccess)
                         decItemCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
-                    decItemCost *= _intModMultiplier;
 
                     // Apply any markup.
                     decItemCost *= 1 + (nudMarkup.Value / 100.0m);

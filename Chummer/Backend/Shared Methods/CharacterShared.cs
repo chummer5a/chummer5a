@@ -1933,8 +1933,7 @@ namespace Chummer
             {
                 if (e.PropertyName == nameof(Quality.Suppressed))
                 {
-                    Quality objQuality = sender as Quality;
-                    if (objQuality == null)
+                    if (!(sender is Quality objQuality))
                         return;
                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                     if (objNode == null)
@@ -1948,8 +1947,7 @@ namespace Chummer
                 }
                 else if (e.PropertyName == nameof(Quality.Notes))
                 {
-                    Quality objQuality = sender as Quality;
-                    if (objQuality == null)
+                    if (!(sender is Quality objQuality))
                         return;
                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                     if (objNode == null)

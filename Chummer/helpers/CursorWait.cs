@@ -30,7 +30,7 @@ namespace Chummer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static bool _blnTopMostWaitCursor;
-        private static ConcurrentDictionary<Control, CursorWait> _dicWaitingControls = new ConcurrentDictionary<Control, CursorWait>();
+        private static readonly ConcurrentDictionary<Control, CursorWait> _dicWaitingControls = new ConcurrentDictionary<Control, CursorWait>();
         private readonly bool _blnOldUseWaitCursor;
         private readonly bool _blnControlIsForm;
         private readonly Control _objControl;

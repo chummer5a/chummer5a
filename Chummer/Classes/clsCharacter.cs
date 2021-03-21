@@ -534,8 +534,10 @@ namespace Chummer
         private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            dicChangedProperties.Add(this, new HashSet<string> {nameof(MentorSpirits)});
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
+                {
+                    {this, new HashSet<string> {nameof(MentorSpirits)}}
+                };
             if (e.Action == NotifyCollectionChangedAction.Add && !IsLoading)
             {
                 foreach (MentorSpirit objNewItem in e.NewItems)
@@ -570,8 +572,10 @@ namespace Chummer
         private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            dicChangedProperties.Add(this, new HashSet<string> { nameof(Qualities) });
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
+                {
+                    {this, new HashSet<string> {nameof(Qualities)}}
+                };
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 foreach(Power objPower in Powers)

@@ -44,13 +44,11 @@ namespace Chummer
         #region Control Events
         public ContactControl(Contact objContact)
         {
-            if (objContact == null)
-                throw new ArgumentNullException(nameof(objContact));
+            _objContact = objContact ?? throw new ArgumentNullException(nameof(objContact));
+
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            _objContact = objContact;
 
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {

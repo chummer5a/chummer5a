@@ -179,8 +179,7 @@ namespace Chummer
             if (!_blnLoading)
                 SuspendLayout();
             // Load the Priority information.
-            CharacterOptions objSelectedGameplayOption = cboCharacterOption.SelectedValue as CharacterOptions;
-            if (objSelectedGameplayOption != null)
+            if (cboCharacterOption.SelectedValue is CharacterOptions objSelectedGameplayOption)
             {
                 lblBuildMethod.Text = LanguageManager.GetString("String_" + objSelectedGameplayOption.BuildMethod);
                 switch (objSelectedGameplayOption.BuildMethod)
