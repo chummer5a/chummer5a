@@ -578,12 +578,17 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("accuracy", _strAccuracy?.ToString(GlobalOptions.InvariantCultureInfo));
+            
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
             {
                 if (string.IsNullOrWhiteSpace(clip.AmmoName))
                 {
                     clip.AmmoName = GetAmmoName(clip.Guid, GlobalOptions.DefaultLanguage);
+                    var ammo = GetAmmo(clip.Guid);
+                    clip.AmmoType = ammo;
+                    
                 }
                 clip.Save(objWriter);
             }
@@ -1034,14 +1039,18 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("type", RangeType);
             objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
             objWriter.WriteElementString("accuracy", GetAccuracy(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("rawaccuracy", Accuracy);
             objWriter.WriteElementString("damage", CalculatedDamage(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage_english", CalculatedDamage(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage));
             objWriter.WriteElementString("rawdamage", Damage);
             objWriter.WriteElementString("ap", TotalAP(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("rawap", AP);
             objWriter.WriteElementString("mode", CalculatedMode(strLanguageToPrint));
             objWriter.WriteElementString("rc", TotalRC(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("rawrc", RC);
             objWriter.WriteElementString("ammo", CalculatedAmmo(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("ammo_english", CalculatedAmmo(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage));
+            objWriter.WriteElementString("maxammo", Ammo);
             objWriter.WriteElementString("conceal", CalculatedConcealability(objCulture));
             if (objGear != null)
             {
@@ -1138,6 +1147,22 @@ namespace Chummer.Backend.Equipment
                 : _objCharacter.Gear.DeepFindById(strAmmoGuid);
 
             return objAmmo?.DisplayNameShort(strLanguage) ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Get the Ammo-Object from the character or Vehicle.
+        /// </summary>
+        /// <param name="guiAmmo">InternalId of the Ammo to find.</param>
+        public Gear GetAmmo(Guid guiAmmo)
+        {
+            if (guiAmmo == Guid.Empty)
+                return null;
+            string strAmmoGuid = guiAmmo.ToString("D", GlobalOptions.InvariantCultureInfo);
+            Gear objAmmo = ParentVehicle != null
+                ? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid)
+                : _objCharacter.Gear.DeepFindById(strAmmoGuid);
+
+            return objAmmo;
         }
 
         /// <summary>
@@ -5831,6 +5856,7 @@ namespace Chummer.Backend.Equipment
             internal Guid Guid { get; set; }
             internal int Ammo { get; set; }
             public string AmmoName { get; internal set; }
+            public Gear AmmoType { get; set; }
 
             internal static Clip Load(XmlNode node)
             {
@@ -5848,12 +5874,20 @@ namespace Chummer.Backend.Equipment
 
             internal void Save(XmlTextWriter writer)
             {
+                
                 if (Guid != Guid.Empty || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
                 {
                     writer.WriteStartElement("clip");
                     writer.WriteElementString("name", AmmoName);
                     writer.WriteElementString("id", Guid.ToString("D", GlobalOptions.InvariantCultureInfo));
                     writer.WriteElementString("count", Ammo.ToString(GlobalOptions.InvariantCultureInfo));
+                    if (this.AmmoType != null)
+                    {
+                        writer.WriteStartElement("ammotype");
+                        writer.WriteElementString("DV", AmmoType.WeaponBonusDamage("en-US"));
+                        writer.WriteElementString("BonusRange", AmmoType.WeaponBonusRange.ToString(GlobalOptions.InvariantCultureInfo));
+                        writer.WriteEndElement();
+                    }
                     writer.WriteEndElement();
                 }
             }
