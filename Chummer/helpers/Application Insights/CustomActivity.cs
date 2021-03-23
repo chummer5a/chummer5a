@@ -121,7 +121,7 @@ namespace Chummer
 
         private bool _blnDisposed;
 
-        public void Dispose()
+        public new void Dispose()
         {
             if (_blnDisposed)
                 return;
@@ -147,6 +147,7 @@ namespace Chummer
             }
 
             _blnDisposed = true;
+            base.Dispose();
         }
     }
 }

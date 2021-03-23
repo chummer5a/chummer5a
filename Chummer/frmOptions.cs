@@ -764,21 +764,6 @@ namespace Chummer
             return lstSheetLanguages;
         }
 
-        private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
-        {
-            List<string> names = new List<string>(10);
-
-            if (Directory.Exists(path))
-            {
-                foreach (string strName in Directory.GetFiles(path, "*.xsl", SearchOption.AllDirectories))
-                {
-                    names.Add(Path.GetFileNameWithoutExtension(strName));
-                }
-            }
-
-            return names;
-        }
-
         private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
             List<ListItem> lstSheets;

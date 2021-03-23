@@ -143,9 +143,10 @@ namespace Chummer
                 {
                     if (!objNewLanguage.ErrorAlreadyShown)
                     {
-                        StringBuilder sbdMessage = new StringBuilder("Language with code ").Append(strLanguage)
-                            .AppendLine(" could not be loaded for the following reasons:").AppendLine().Append(objNewLanguage.ErrorMessage);
-                        Program.MainForm.ShowMessageBox(sbdMessage.ToString(), "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(
+                            "Language with code " + strLanguage + " could not be loaded for the following reasons:" +
+                            Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                         objNewLanguage.ErrorAlreadyShown = true;
                     }
                     return false;

@@ -5959,10 +5959,8 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Gear")
                 {
-                    string message = LanguageManager.GetString(
-                        ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon",
-                        GlobalOptions.Language);
-                    Program.MainForm.ShowMessageBox(message,
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString(ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon"),
                         LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;

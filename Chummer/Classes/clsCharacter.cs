@@ -2047,6 +2047,7 @@ namespace Chummer
                     }
                     catch (XmlException ex)
                     {
+                        Log.Warn(ex);
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
@@ -2168,8 +2169,8 @@ namespace Chummer
                             try
                             {
                                 using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, objSettings))
-                                    objXmlDocument.Load(objXmlReader);
+                                    using (XmlReader objXmlReader = XmlReader.Create(sr, objSettings))
+                                        objXmlDocument.Load(objXmlReader);
                                 errorCaught = false;
                             }
                             catch (XmlException ex)
@@ -2182,7 +2183,7 @@ namespace Chummer
 
                                     if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidTextFound"),
                                                                         LanguageManager.GetString("Message_InvalidTextFound_Title"),
-                                                                        MessageBoxButtons.YesNo) == DialogResult.No)
+                                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                                     {
                                         IsLoading = false;
                                         return false;
@@ -6878,8 +6879,7 @@ namespace Chummer
                     }
                     catch(UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
-                            GlobalOptions.Language));
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     }
                 }
 
@@ -16694,11 +16694,11 @@ namespace Chummer
 
                         if (string.IsNullOrEmpty(strSettingsName))
                         {
-                            string strMessage = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_MissingGameplayOption"),
-                                CharacterOptionsKey);
-                            if (Program.MainForm.ShowMessageBox(strMessage,
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title"),
-                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                            if (Program.MainForm.ShowMessageBox(
+                                string.Format(GlobalOptions.CultureInfo,
+                                    LanguageManager.GetString("Message_MissingGameplayOption"), CharacterOptionsKey),
+                                LanguageManager.GetString("Message_MissingGameplayOption_Title"),
+                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                 {
@@ -16707,6 +16707,8 @@ namespace Chummer
                                         return false;
                                 }
                             }
+                            else
+                                return false;
                         }
 
                         if (EffectiveBuildMethodUsesPriorityTables)

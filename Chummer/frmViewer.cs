@@ -705,16 +705,6 @@ namespace Chummer
             return true;
         }
 
-        private static List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
-        {
-            if (Directory.Exists(path))
-            {
-                return Directory.GetFiles(path, "*.xsl", SearchOption.AllDirectories).Select(Path.GetFileNameWithoutExtension).ToList();
-            }
-
-            return new List<string>();
-        }
-
         private void PopulateXsltList()
         {
             List<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage, _lstCharacters);

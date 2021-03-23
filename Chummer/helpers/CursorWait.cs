@@ -104,8 +104,8 @@ namespace Chummer
             }
             catch(Exception e)
             {
-                Log.WarnException("Exception while creating CursorWait-Object for \"" + objControl + "\":"
-                    + Environment.NewLine + e.ToString(), e);
+                Log.Warn(e, "Exception while creating CursorWait-Object for \"" + objControl + "\":"
+                    + Environment.NewLine + e.ToString());
             }
         }
 
