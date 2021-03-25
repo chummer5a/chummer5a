@@ -718,6 +718,7 @@
         <ap>6</ap>
         <damage>-2</damage>
         <damagetype>S</damagetype>
+        <accuracy>-2</accuracy>
       </weaponbonus>
       <ammoforweapontype>bow</ammoforweapontype>
     </gear>
