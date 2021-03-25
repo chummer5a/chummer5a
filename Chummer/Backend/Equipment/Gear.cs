@@ -1266,6 +1266,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weaponbonusdamage", WeaponBonusDamage(strLanguageToPrint));
                 objWriter.WriteElementString("weaponbonusdamage_english", WeaponBonusDamage(GlobalOptions.DefaultLanguage));
                 objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
+                objWriter.WriteElementString("weaponbonusacc", WeaponBonusAcc);
             }
             if (_nodFlechetteWeaponBonus != null)
             {
@@ -2653,6 +2654,27 @@ namespace Chummer.Backend.Equipment
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
                 string strReturn = _nodWeaponBonus["apreplace"]?.InnerText ?? _nodWeaponBonus["ap"]?.InnerText ?? "0";
+
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus AP.
+        /// </summary>
+        public string WeaponBonusAcc
+        {
+            get
+            {
+                if (_nodWeaponBonus == null)
+                    return string.Empty;
+                // Use the apreplace value if applicable.
+                // Use the ap bonus if available, otherwise use 0.
+                string strReturn = _nodWeaponBonus["accuracy"]?.InnerText ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-'))
