@@ -2664,7 +2664,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Weapon Bonus AP.
+        /// Weapon Bonus Accuracy.
         /// </summary>
         public string WeaponBonusAcc
         {
