@@ -7013,7 +7013,7 @@ namespace Chummer
             this.tabTechnomancer.Location = new System.Drawing.Point(4, 22);
             this.tabTechnomancer.Name = "tabTechnomancer";
             this.tabTechnomancer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTechnomancer.Size = new System.Drawing.Size(977, 607);
+            this.tabTechnomancer.Size = new System.Drawing.Size(977, 631);
             this.tabTechnomancer.TabIndex = 3;
             this.tabTechnomancer.Tag = "Tab_Technomancer";
             this.tabTechnomancer.Text = "Sprites and Complex Forms";
@@ -7037,7 +7037,7 @@ namespace Chummer
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTechnomancer.Size = new System.Drawing.Size(971, 601);
+            this.tlpTechnomancer.Size = new System.Drawing.Size(971, 625);
             this.tlpTechnomancer.TabIndex = 182;
             // 
             // cmdAddSprite
@@ -7063,7 +7063,7 @@ namespace Chummer
             this.panSprites.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panSprites.Location = new System.Drawing.Point(3, 446);
             this.panSprites.Name = "panSprites";
-            this.panSprites.Size = new System.Drawing.Size(965, 152);
+            this.panSprites.Size = new System.Drawing.Size(965, 176);
             this.panSprites.TabIndex = 25;
             // 
             // treComplexForms
@@ -7545,7 +7545,7 @@ namespace Chummer
             this.tabAdvancedPrograms.Location = new System.Drawing.Point(4, 22);
             this.tabAdvancedPrograms.Name = "tabAdvancedPrograms";
             this.tabAdvancedPrograms.Padding = new System.Windows.Forms.Padding(3);
-            this.tabAdvancedPrograms.Size = new System.Drawing.Size(977, 607);
+            this.tabAdvancedPrograms.Size = new System.Drawing.Size(977, 631);
             this.tabAdvancedPrograms.TabIndex = 19;
             this.tabAdvancedPrograms.Tag = "Tab_AdvancedPrograms";
             this.tabAdvancedPrograms.Text = "Advanced Programs";
@@ -7573,7 +7573,7 @@ namespace Chummer
             this.tlpAdvancedPrograms.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAdvancedPrograms.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAdvancedPrograms.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpAdvancedPrograms.Size = new System.Drawing.Size(971, 613);
+            this.tlpAdvancedPrograms.Size = new System.Drawing.Size(971, 625);
             this.tlpAdvancedPrograms.TabIndex = 152;
             // 
             // lblAIProgramsRequiresLabel
@@ -7602,7 +7602,7 @@ namespace Chummer
             this.tlpAdvancedPrograms.SetRowSpan(this.treAIPrograms, 3);
             this.treAIPrograms.ShowNodeToolTips = true;
             this.treAIPrograms.ShowRootLines = false;
-            this.treAIPrograms.Size = new System.Drawing.Size(295, 578);
+            this.treAIPrograms.Size = new System.Drawing.Size(295, 590);
             this.treAIPrograms.TabIndex = 71;
             this.treAIPrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAIPrograms_AfterSelect);
             this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treAIPrograms_KeyDown);

@@ -2794,7 +2794,7 @@ namespace Chummer
             // 
             // mnuSpecialChangeMetatype
             // 
-            this.mnuSpecialChangeMetatype.Image = global::Chummer.Properties.Resources.user_go;
+            this.mnuSpecialChangeMetatype.Image = global::Chummer.Properties.Resources.user_halk_go;
             this.mnuSpecialChangeMetatype.Name = "mnuSpecialChangeMetatype";
             this.mnuSpecialChangeMetatype.Size = new System.Drawing.Size(213, 22);
             this.mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangeMetatype";
@@ -5074,7 +5074,7 @@ namespace Chummer
             this.tabTechnomancer.Location = new System.Drawing.Point(4, 22);
             this.tabTechnomancer.Name = "tabTechnomancer";
             this.tabTechnomancer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTechnomancer.Size = new System.Drawing.Size(977, 607);
+            this.tabTechnomancer.Size = new System.Drawing.Size(977, 631);
             this.tabTechnomancer.TabIndex = 3;
             this.tabTechnomancer.Tag = "Tab_Technomancer";
             this.tabTechnomancer.Text = "Sprites and Complex Forms";
@@ -5097,7 +5097,7 @@ namespace Chummer
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTechnomancer.Size = new System.Drawing.Size(971, 601);
+            this.tlpTechnomancer.Size = new System.Drawing.Size(971, 625);
             this.tlpTechnomancer.TabIndex = 155;
             // 
             // cmdAddSprite
@@ -5123,7 +5123,7 @@ namespace Chummer
             this.panSprites.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panSprites.Location = new System.Drawing.Point(3, 446);
             this.panSprites.Name = "panSprites";
-            this.panSprites.Size = new System.Drawing.Size(965, 152);
+            this.panSprites.Size = new System.Drawing.Size(965, 176);
             this.panSprites.TabIndex = 25;
             // 
             // treComplexForms
@@ -5404,6 +5404,7 @@ namespace Chummer
             this.flpFadingAttributesValue.Name = "flpFadingAttributesValue";
             this.flpFadingAttributesValue.Size = new System.Drawing.Size(106, 25);
             this.flpFadingAttributesValue.TabIndex = 187;
+            this.flpFadingAttributesValue.WrapContents = false;
             // 
             // lblFadingAttributes
             // 
@@ -12083,7 +12084,7 @@ namespace Chummer
             this.tabCharacterInfo.Location = new System.Drawing.Point(4, 22);
             this.tabCharacterInfo.Name = "tabCharacterInfo";
             this.tabCharacterInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCharacterInfo.Size = new System.Drawing.Size(977, 631);
+            this.tabCharacterInfo.Size = new System.Drawing.Size(977, 607);
             this.tabCharacterInfo.TabIndex = 9;
             this.tabCharacterInfo.Tag = "Tab_CharacterInfo";
             this.tabCharacterInfo.Text = "Character Info";
@@ -12159,7 +12160,7 @@ namespace Chummer
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCharacterInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpCharacterInfo.Size = new System.Drawing.Size(971, 625);
+            this.tlpCharacterInfo.Size = new System.Drawing.Size(971, 601);
             this.tlpCharacterInfo.TabIndex = 96;
             // 
             // tlpLongTexts
@@ -12182,7 +12183,7 @@ namespace Chummer
             this.tlpLongTexts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpLongTexts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpLongTexts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpLongTexts.Size = new System.Drawing.Size(724, 573);
+            this.tlpLongTexts.Size = new System.Drawing.Size(724, 549);
             this.tlpLongTexts.TabIndex = 100;
             // 
             // gpbDescription
@@ -12193,7 +12194,7 @@ namespace Chummer
             this.gpbDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbDescription.Location = new System.Drawing.Point(3, 3);
             this.gpbDescription.Name = "gpbDescription";
-            this.gpbDescription.Size = new System.Drawing.Size(718, 137);
+            this.gpbDescription.Size = new System.Drawing.Size(718, 131);
             this.gpbDescription.TabIndex = 96;
             this.gpbDescription.TabStop = false;
             this.gpbDescription.Tag = "Label_Description";
@@ -12212,7 +12213,7 @@ namespace Chummer
             this.rtfDescription.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
     "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfDescription.Size = new System.Drawing.Size(712, 118);
+            this.rtfDescription.Size = new System.Drawing.Size(712, 112);
             this.rtfDescription.TabIndex = 0;
             // 
             // gpbBackground
@@ -12221,9 +12222,9 @@ namespace Chummer
             this.gpbBackground.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbBackground.Controls.Add(this.rtfBackground);
             this.gpbBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpbBackground.Location = new System.Drawing.Point(3, 146);
+            this.gpbBackground.Location = new System.Drawing.Point(3, 140);
             this.gpbBackground.Name = "gpbBackground";
-            this.gpbBackground.Size = new System.Drawing.Size(718, 137);
+            this.gpbBackground.Size = new System.Drawing.Size(718, 131);
             this.gpbBackground.TabIndex = 97;
             this.gpbBackground.TabStop = false;
             this.gpbBackground.Tag = "Label_Background";
@@ -12242,7 +12243,7 @@ namespace Chummer
             this.rtfBackground.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
     "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfBackground.Size = new System.Drawing.Size(712, 118);
+            this.rtfBackground.Size = new System.Drawing.Size(712, 112);
             this.rtfBackground.TabIndex = 0;
             // 
             // gpbConcept
@@ -12251,9 +12252,9 @@ namespace Chummer
             this.gpbConcept.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbConcept.Controls.Add(this.rtfConcept);
             this.gpbConcept.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpbConcept.Location = new System.Drawing.Point(3, 289);
+            this.gpbConcept.Location = new System.Drawing.Point(3, 277);
             this.gpbConcept.Name = "gpbConcept";
-            this.gpbConcept.Size = new System.Drawing.Size(718, 137);
+            this.gpbConcept.Size = new System.Drawing.Size(718, 131);
             this.gpbConcept.TabIndex = 98;
             this.gpbConcept.TabStop = false;
             this.gpbConcept.Tag = "Label_Concept";
@@ -12272,7 +12273,7 @@ namespace Chummer
             this.rtfConcept.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
     "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfConcept.Size = new System.Drawing.Size(712, 118);
+            this.rtfConcept.Size = new System.Drawing.Size(712, 112);
             this.rtfConcept.TabIndex = 0;
             // 
             // gpbNotes
@@ -12281,9 +12282,9 @@ namespace Chummer
             this.gpbNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbNotes.Controls.Add(this.rtfNotes);
             this.gpbNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpbNotes.Location = new System.Drawing.Point(3, 432);
+            this.gpbNotes.Location = new System.Drawing.Point(3, 414);
             this.gpbNotes.Name = "gpbNotes";
-            this.gpbNotes.Size = new System.Drawing.Size(718, 138);
+            this.gpbNotes.Size = new System.Drawing.Size(718, 132);
             this.gpbNotes.TabIndex = 99;
             this.gpbNotes.TabStop = false;
             this.gpbNotes.Tag = "Label_Notes";
@@ -12302,7 +12303,7 @@ namespace Chummer
             this.rtfNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
     "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfNotes.Size = new System.Drawing.Size(712, 119);
+            this.rtfNotes.Size = new System.Drawing.Size(712, 113);
             this.rtfNotes.TabIndex = 0;
             // 
             // picMugshot
@@ -12312,7 +12313,7 @@ namespace Chummer
             this.picMugshot.Location = new System.Drawing.Point(727, 314);
             this.picMugshot.MinimumSize = new System.Drawing.Size(21, 31);
             this.picMugshot.Name = "picMugshot";
-            this.picMugshot.Size = new System.Drawing.Size(241, 308);
+            this.picMugshot.Size = new System.Drawing.Size(241, 284);
             this.picMugshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picMugshot.TabIndex = 20;
             this.picMugshot.TabStop = false;

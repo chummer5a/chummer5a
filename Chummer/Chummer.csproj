@@ -5720,6 +5720,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_gray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_green.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_halk.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_halk_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_hendrix.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_imprisoned.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\user_imprisoned_black.png" />
@@ -9650,6 +9651,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\user_gray.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\user_green.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\user_halk.ico" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\user_halk_go.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\user_hendrix.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\user_imprisoned.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16_Ico\user_imprisoned_black.ico" />
@@ -13579,6 +13581,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_gray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_green.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_halk.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_halk_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_hendrix.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_imprisoned.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_imprisoned_black.png" />
@@ -17508,6 +17511,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\user_gray.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\user_green.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\user_halk.ico" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\user_halk_go.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\user_hendrix.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\user_imprisoned.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\user_imprisoned_black.ico" />
