@@ -45,6 +45,11 @@ namespace Chummer
         private static void LoadCharacterOptions()
         {
             s_dicLoadedCharacterOptions.Clear();
+            if (Utils.IsDesignerMode)
+            {
+                s_dicLoadedCharacterOptions.TryAdd(GlobalOptions.DefaultCharacterOption, new CharacterOptions());
+                return;
+            }
             foreach (XPathNavigator xmlBuiltInSetting in XmlManager.LoadXPath("settings.xml").CreateNavigator().Select("/chummer/settings/setting"))
             {
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();

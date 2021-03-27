@@ -751,7 +751,7 @@ namespace Chummer
         private void mnuCharacterOptions_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                using (frmCharacterOptions frmCharacterOptions = new frmCharacterOptions())
+                using (frmCharacterOptions frmCharacterOptions = new frmCharacterOptions((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Options))
                     frmCharacterOptions.ShowDialog(this);
         }
 

@@ -17324,5 +17324,19 @@ namespace Chummer
         {
             chtNuyen.Visible = chkShowNuyenChart.Checked;
         }
+
+        private void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
+        {
+            using (new CursorWait(this))
+            {
+                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true))
+                {
+                    frmPickBP.ShowDialog(this);
+
+                    if (frmPickBP.DialogResult != DialogResult.Cancel)
+                        IsCharacterUpdateRequested = true;
+                }
+            }
+        }
     }
 }

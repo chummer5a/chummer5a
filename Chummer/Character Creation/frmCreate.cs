@@ -1847,8 +1847,15 @@ namespace Chummer
         private void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-	            using (frmCharacterOptions frmOptions = new frmCharacterOptions(CharacterObject.Options))
-	                frmOptions.ShowDialog(this);
+            {
+                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true))
+                {
+                    frmPickBP.ShowDialog(this);
+
+                    if (frmPickBP.DialogResult != DialogResult.Cancel)
+                        IsCharacterUpdateRequested = true;
+                }
+            }
         }
 
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
@@ -2750,17 +2757,6 @@ namespace Chummer
         private void tsbPaste_Click(object sender, EventArgs e)
         {
             mnuEditPaste_Click(sender, e);
-        }
-
-        private void mnuSpecialBPAvailLimit_Click(object sender, EventArgs e)
-        {
-            using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true))
-            {
-                frmPickBP.ShowDialog(this);
-
-                if (frmPickBP.DialogResult != DialogResult.Cancel)
-                    IsCharacterUpdateRequested = true;
-            }
         }
 
         private void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
