@@ -42,7 +42,7 @@ namespace Chummer
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
+        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime || Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.OrdinalIgnoreCase);
 
         public static Version CachedGitVersion { get; set; }
 
