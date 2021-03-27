@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Character contacts -->
-<!-- Version -500 -->
+<!-- CSS stylesheet definitions -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-  <xsl:template name="Shadowrun5CSS">
+  <xsl:template name="Chummer5CSS">
     <style type="text/css">
-        * {
+      * {
         font-family: segoe, tahoma, 'trebuchet ms', arial;
         font-size: 8.25pt;
         margin: 0;
@@ -33,10 +32,9 @@
         padding: 0.25em;
         margin: 0.25em;
         border: solid 0.0625em #1c4a2d;
-        text-transform: uppercase;
         }
         .indent {
-        padding-left: 1em;
+        padding-left: 2mm;
         }
         .notesrow {
         text-align: justify;
@@ -48,14 +46,11 @@
         }
         th {
         text-align: center;
-        text-transform: uppercase;
         }
         .title {
         font-weight: bold;
-        text-transform: uppercase;
         }
         .upper {
-        text-transform: uppercase;
         }
         .block {
         bottom-padding: 0;
@@ -75,7 +70,7 @@
         object-fit: scale-down;
         image-rendering: optimizeQuality;
         }
-        }
+      }
     </style>
     <!--[if IE]
         <style type="text/css">

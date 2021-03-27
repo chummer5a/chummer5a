@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Character sheet based on the Shadowrun 5th Edition Character Sheet (English - US) -->
+<!-- Character sheet based on the Shadowrun 5th Edition Character Sheet -->
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
 <!-- Version -496 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -15,6 +15,7 @@
   <xsl:include href="xt.CritterPowers.xslt"/>
   <xsl:include href="xt.Expenses.xslt"/>
   <xsl:include href="xt.Lifestyles.xslt"/>
+  <xsl:include href="xt.MartialArts.xslt"/>
   <xsl:include href="xt.MovementRate.xslt"/>
   <xsl:include href="xt.Notes.xslt"/>
   <xsl:include href="xt.PreserveHtml.xslt"/>
@@ -59,7 +60,7 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <xsl:call-template name="Shadowrun5CSS" />
+        <xsl:call-template name="Chummer5CSS" />
       </head>
       <body>
         <div class="block" style="width: 100%; text-align: center; vertical-align: center; border-bottom: thick solid #1c4a2d; margin: 0; padding-top: 0.9em; padding-bottom: 0.1em; font-weight: bold; font-variant: small-caps; font-size: 17pt; letter-spacing: 0.05em; text-shadow: 0 0 0.05em #fffff, 0 0 0.1em #1c4a2d;">
@@ -443,7 +444,7 @@
               </tr>
               <tr>
                 <xsl:choose>
-                  <xsl:when test="attributes/attribute[../attributecategory_english != metatypecategory] and attributes/attributecategory != ''">
+                  <xsl:when test="attributes/attribute[name_english = 'BOD' and (../attributecategory_english != metatypecategory)]">
                     <td width="75%" colspan="3" class="attributecell">
                       <p>
                         <xsl:value-of select="$lang.CurrentForm"/>: <xsl:value-of select="attributes/attributecategory"/>
@@ -751,13 +752,7 @@
         <xsl:if test="martialarts/martialart">
           <div class="block" id="MartialArtsBlock">
             <table class="tablestyle">
-              <tr>
-                <th width="80%" style="text-align: left">
-                  <xsl:value-of select="$lang.MartialArt"/>
-                </th>
-                <th width="20%"/>
-              </tr>
-              <xsl:call-template name="martialarts"/>
+              <xsl:call-template name="MartialArtsList"/>
             </table>
           </div>
           <xsl:call-template name="RowSummary">
@@ -808,20 +803,20 @@
           <div class="block" id="ArmorBlock">
             <table width="100%" class="tablestyle">
               <tr>
-                <th width="60%" style="text-align: left">
+                <th width="70%" style="text-align: left">
                   <xsl:value-of select="$lang.Armor"/>
                 </th>
                 <th width="10%">
                   <xsl:value-of select="$lang.ArmorValue"/>
-                </th>
-                <th width="10%">
-                  <xsl:value-of select="$lang.Equipped"/>
                 </th>
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
               <xsl:variable name="inarmor" select="armors/armor[equipped = 'True']"/>
               <xsl:if test="$inarmor">
+                <tr><td colspan="100%" style="font-weight: bold">
+                  <xsl:value-of select="$lang.Equipped"/>
+                </td></tr>
                 <xsl:for-each select="armors/armor[equipped = 'True']">
                   <xsl:sort select="name"/>
                   <xsl:call-template name="armor"/>
@@ -833,7 +828,6 @@
                   <td style="font-weight: bold; text-align: center;">
                     <xsl:value-of select="armor"/>
                   </td>
-                  <td/>
                   <td/>
                   <td/>
                 </tr>
@@ -873,16 +867,35 @@
                 <th width="9%"><xsl:value-of select="$lang.AP"/></th>
                 <th width="8%"><xsl:value-of select="$lang.Mode"/></th>
                 <th width="4%"><xsl:value-of select="$lang.RC"/></th>
-                <th width="7%">
-                  <xsl:value-of select="$lang.Ammo"/>
-                </th>
-                <th width="7%">
-                  [<xsl:value-of select="$lang.Loaded"/>]
-                </th>
+                <th width="7%"><xsl:value-of select="$lang.Ammo"/></th>
+                <th width="7%">[<xsl:value-of select="$lang.Loaded"/>]</th>
                 <th width="10%"/>
               </tr>
-              <xsl:for-each select="weapons/weapon[type = 'Ranged']">
-                <xsl:sort select="name"/>
+              <xsl:variable name="sortedcopy">
+                <xsl:for-each select="weapons/weapon[type = 'Ranged']">
+                  <xsl:sort select="location"/>
+                  <xsl:sort select="fullname"/>
+                  <xsl:copy-of select="current()"/>
+                </xsl:for-each>
+              </xsl:variable>
+              <xsl:for-each select="msxsl:node-set($sortedcopy)/weapon">
+                <xsl:choose>
+                  <xsl:when test="location != preceding-sibling::weapon[1]/location">
+                    <tr>
+                      <td colspan="100%" style="border-top: 0.2em; border-bottom:solid black 0.1em;">
+                        <strong><xsl:value-of select="location"/></strong>
+                      </td>
+                    </tr>
+                  </xsl:when>
+                  <xsl:when test="location = ''"/>
+                  <xsl:when test="position() = 1">
+                    <tr>
+                      <td colspan="100%" style="border-bottom:solid black 0.1em;">
+                        <strong><xsl:value-of select="location"/></strong>
+                      </td>
+                    </tr>
+                  </xsl:when>
+                </xsl:choose>
                 <xsl:call-template name="RangedWeapons">
                   <xsl:with-param name="weapon" select="weapons/weapon"/>
                 </xsl:call-template>
@@ -902,36 +915,54 @@
                 <th width="30%" style="text-align: left">
                   <xsl:value-of select="$lang.Weapon"/>
                 </th>
-                <th width="8%">
-                  <xsl:value-of select="$lang.Pool"/>
-                </th>
-                <th width="11%">
-                  <xsl:value-of select="$lang.Accuracy"/>
-                </th>
-                <th width="13%">
-                  <xsl:value-of select="$lang.Damage"/>
-                </th>
-                <th width="8%">
-                  <xsl:value-of select="$lang.AP"/>
-                </th>
-                <th width="10%">
-                  <xsl:value-of select="$lang.Reach"/>
-                </th>
+                <th width="8%"><xsl:value-of select="$lang.Pool"/></th>
+                <th width="11%"><xsl:value-of select="$lang.Accuracy"/></th>
+                <th width="13%"><xsl:value-of select="$lang.Damage"/></th>
+                <th width="8%"><xsl:value-of select="$lang.AP"/></th>
+                <th width="10%"><xsl:value-of select="$lang.Reach"/></th>
                 <th width="10%"/>
                 <th width="10%"/>
               </tr>
               <xsl:variable name="sortedcopy">
                 <xsl:for-each select="weapons/weapon[type = 'Melee']">
+                  <xsl:sort select="location"/>
                   <xsl:sort select="fullname"/>
                   <xsl:copy-of select="current()"/>
                 </xsl:for-each>
               </xsl:variable>
               <xsl:for-each select="msxsl:node-set($sortedcopy)/weapon">
-                <xsl:if test="position()=1 or fullname != preceding-sibling::weapon[1]/fullname">
-                  <xsl:call-template name="meleeweapons">
-                    <xsl:with-param name="weapon" select="weapons/weapon"/>
-                  </xsl:call-template>
-                </xsl:if>
+                <xsl:choose>
+                  <xsl:when test="location != preceding-sibling::weapon[1]/location">
+                    <tr>
+                      <td colspan="100%" style="border-top: 0.2em; border-bottom:solid black 0.1em;">
+                        <strong><xsl:value-of select="location"/></strong>
+                      </td>
+                    </tr>
+                  </xsl:when>
+                  <xsl:when test="location = ''"/>
+                  <xsl:when test="position() = 1">
+                    <tr>
+                      <td colspan="100%" style="border-bottom:solid black 0.1em;">
+                        <strong><xsl:value-of select="location"/></strong>
+                      </td>
+                    </tr>
+                  </xsl:when>
+                </xsl:choose>
+                <xsl:choose>
+                  <xsl:when test="location != preceding-sibling::weapon[1]/location
+                               or fullname != preceding-sibling::weapon[1]/fullname
+                               or weaponname != preceding-sibling::weapon[1]/weaponname
+                               or (notes != preceding-sibling::weapon[1]/notes and ProduceNotes)">
+                    <xsl:call-template name="meleeweapons">
+                      <xsl:with-param name="weapon" select="weapons/weapon"/>
+                    </xsl:call-template>
+                  </xsl:when>
+                  <xsl:when test="position() = 1">
+                    <xsl:call-template name="meleeweapons">
+                      <xsl:with-param name="weapon" select="weapons/weapon"/>
+                    </xsl:call-template>
+                  </xsl:when>
+                </xsl:choose>
               </xsl:for-each>
             </table>
           </div>
@@ -1005,14 +1036,24 @@
           </xsl:call-template>
         </xsl:if>
 
-        <xsl:if test="gears/gear[iscommlink = 'True']">
+        <xsl:if test="gears/gear[iscommlink = 'True']
+             or armors/armor/gears/gear[iscommlink = 'True']
+             or cyberwares/cyberware/gears/gear[iscommlink = 'True']
+             or cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']
+             or weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']
+             or gears/gear[isprogram = 'True']
+             or armors/armor/gears/gear[isprogram = 'True']
+             or cyberwares/cyberware/gears/gear[isprogram = 'True']
+             or cyberwares/cyberware/children/cyberwear/gears/gear[isprogram = 'True']
+             or weapons/weapon/accessories/accessory/gears/gear[isprogram = 'True']">
           <div class="block" id="DevicesBlock">
             <table class="tablestyle">
               <tr>
-                <th width="30%" style="text-align: left">
+                <th width="26%" style="text-align: left">
                   <xsl:value-of select="$lang.Device"/>
                 </th>
                 <th width="16%"><xsl:value-of select="$lang.Category"/></th>
+                <th width="4%"><xsl:value-of select="$lang.Qty"/></th>
                 <th width="6%"><xsl:value-of select="$lang.DeviceRating"/></th>
                 <th width="8%"><xsl:value-of select="$lang.Attack"/></th>
                 <th width="8%"><xsl:value-of select="$lang.Sleaze"/></th>
@@ -1430,6 +1471,13 @@
       </xsl:if>
 <!-- ** ** ** end of Technomancer details ** ** ** -->
 
+<!--
+      *                                     *
+      ***                                 ***
+      *****         A.I. details        *****
+      ***                                 ***
+      *                                     *
+-->
         <xsl:if test="aiprograms/aiprogram">
           <div class="block" id="AIProgramBlock">
             <table class="tablestyle">
@@ -1437,7 +1485,9 @@
                 <th width="40%" style="text-align: left">
                   <xsl:value-of select="$lang.Name"/>
                 </th>
-                <th width="40%"><xsl:value-of select="$lang.Requires"/>&#160;<xsl:value-of select="$lang.Program"/></th>
+                <th width="40%">
+                  <xsl:value-of select="$lang.Requires"/>&#160;<xsl:value-of select="$lang.Program"/>
+                </th>
                 <th/>
                 <th width="10%" style="text-align:center;"></th>
               </tr>
@@ -1450,6 +1500,7 @@
             <xsl:with-param name="blockname" select="'AIProgramBlock'"/>
           </xsl:call-template>
         </xsl:if>
+<!-- ** ** ** end of A.I. details ** ** ** -->
 
         <xsl:if test="contacts/contact">
           <div class="block" id="ContactsBlock">
@@ -1651,12 +1702,6 @@
             <xsl:with-param name="length" select="2"/>
           </xsl:call-template>
         </td>
-        <td style="text-align: center">
-          <xsl:choose>
-            <xsl:when test="equipped = 'True'">**</xsl:when>
-            <xsl:otherwise> </xsl:otherwise>
-          </xsl:choose>
-        </td>
         <td/>
         <td style="text-align: center">
           <xsl:value-of select="source"/>
@@ -1678,8 +1723,7 @@
                 <xsl:value-of select="rating"/>
               </xsl:if>
               <xsl:if test="gears/gear">
-                (
-                <xsl:for-each select="gears/gear">
+                (<xsl:for-each select="gears/gear">
                   <xsl:sort select="name"/>
                   <xsl:value-of select="name"/>
                   <xsl:if test="rating != 0">
@@ -1697,8 +1741,7 @@
                     </xsl:call-template>
                   </xsl:if>
                   <xsl:if test="last() &gt; 1">; </xsl:if>
-                </xsl:for-each>
-                )
+                </xsl:for-each>)
               </xsl:if>
               <xsl:if test="last() &gt; 1">; </xsl:if>
             </xsl:for-each>
@@ -1806,19 +1849,6 @@
             </xsl:if>
             <xsl:if test="last() &gt; 1">; </xsl:if>
           </xsl:for-each>
-        </td>
-      </tr>
-    </xsl:if>
-
-    <xsl:if test="notes != '' and $ProduceNotes">
-      <tr>
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td colspan="100%" class="notesrow2">
-          <xsl:call-template name="PreserveLineBreaks">
-            <xsl:with-param name="text" select="notes"/>
-          </xsl:call-template>
         </td>
       </tr>
     </xsl:if>
@@ -1974,6 +2004,14 @@
         <xsl:value-of select="category"/>
       </td>
       <td style="text-align: center">
+        <xsl:choose>
+          <xsl:when test="qty &gt; 1">
+            <xsl:value-of select="qty"/>
+          </xsl:when>
+          <xsl:otherwise>&#160;</xsl:otherwise>
+        </xsl:choose>
+      </td>
+      <td style="text-align: center">
         <xsl:value-of select="devicerating"/>
       </td>
       <td style="text-align: center">
@@ -2107,10 +2145,8 @@
             </xsl:for-each>)
           </xsl:if>
         </td>
-        <td>
-          <xsl:if test="requiresprogram != ''">
-            <xsl:value-of select="requiresprogram"/>
-          </xsl:if>
+        <td style="text-align:center;">
+          <xsl:value-of select="requiresprogram"/>
         </td>
         <td/>
         <td style="text-align:center;">
@@ -2432,55 +2468,6 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template name="martialarts">
-    <xsl:for-each select="martialarts/martialart">
-      <xsl:sort select="name"/>
-      <tr>
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td>
-          <xsl:value-of select="name"/>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-        </td>
-        <td style="text-align: center">
-          <xsl:value-of select="source"/>
-          <xsl:text> </xsl:text>
-          <xsl:value-of select="page"/>
-        </td>
-      </tr>
-      <tr>
-        <xsl:if test="position() mod 2 != 1">
-          <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-        </xsl:if>
-        <td class="indent">
-          <xsl:for-each select="martialarttechniques/martialarttechnique">
-            <xsl:sort select="."/>
-            <xsl:value-of select="name"/><xsl:if test="notes != ''"> - <xsl:value-of select="notes"/></xsl:if>
-            <xsl:if test="position() != last()"><br /></xsl:if>
-          </xsl:for-each>
-        </td>
-        <td></td>
-      </tr>
-      <xsl:if test="notes != '' and $ProduceNotes">
-        <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100%" class="notesrow2">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
-            </xsl:call-template>
-          </td>
-        </tr>
-      </xsl:if>
-      <xsl:call-template name="Xline">
-        <xsl:with-param name="cntl" select="last()-position()"/>
-        <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
-      </xsl:call-template>
-    </xsl:for-each>
-  </xsl:template>
-
   <xsl:template name="resistances">
     <tr>
       <td style="width: 50%;">
@@ -2665,7 +2652,7 @@
         </table>
       </td>
     </tr>
-	<tr>
+    <tr>
       <td>
         <table class="tablestyle" style="margin-top:0.2em;">
           <tr>
@@ -2917,10 +2904,10 @@
         <td width="50%" class="block" id="KarmaExpensesBlock">
           <table class="tablestyle">
             <tr>
-              <th width="35%" style="text-align: left">
+              <th width="36%" style="text-align: left">
                 <xsl:value-of select="$lang.Date"/>
               </th>
-              <th width="4%"/>
+              <th width="3%"/>
               <th width="11%">
                 <xsl:value-of select="$lang.Amount"/>
               </th>
@@ -2943,10 +2930,10 @@
         <td width="50%" class="block" id="NuyenExpensesBlock">
           <table class="tablestyle">
             <tr>
-              <th width="35%" style="text-align: left">
+              <th width="36%" style="text-align: left">
                 <xsl:value-of select="$lang.Date"/>
               </th>
-              <th width="4%"/>
+              <th width="3%"/>
               <th width="11%"><xsl:value-of select="$lang.Amount"/></th>
               <th width="4%"/>
               <th width="46%" style="text-align: left">
@@ -2969,9 +2956,9 @@
   </xsl:template>
 
   <xsl:template name="gear1">
-    <xsl:variable name="halfcut" select="round(count(gears/gear[iscommlink != 'True' or location != '']) div 3)"/>
+    <xsl:variable name="halfcut" select="round(count(gears/gear) div 3)"/>
     <xsl:variable name="sortedcopy">
-      <xsl:for-each select="gears/gear[iscommlink != 'True' or location != '']">
+      <xsl:for-each select="gears/gear">
         <xsl:sort select="location"/>
         <xsl:sort select="name"/>
         <xsl:if test="position() &lt;= $halfcut">
@@ -2985,9 +2972,9 @@
   </xsl:template>
 
   <xsl:template name="gear2">
-    <xsl:variable name="halfcut" select="round(count(gears/gear[iscommlink != 'True' or location != '']) div 3)"/>
+    <xsl:variable name="halfcut" select="round(count(gears/gear) div 3)"/>
     <xsl:variable name="sortedcopy">
-      <xsl:for-each select="gears/gear[iscommlink != 'True' or location != '']">
+      <xsl:for-each select="gears/gear">
         <xsl:sort select="location"/>
         <xsl:sort select="name"/>
         <xsl:if test="position() &gt; $halfcut and position() &lt;= $halfcut * 2">
@@ -3001,9 +2988,9 @@
   </xsl:template>
 
   <xsl:template name="gear3">
-    <xsl:variable name="halfcut" select="round(count(gears/gear[iscommlink != 'True' or location != '']) div 3)"/>
+    <xsl:variable name="halfcut" select="round(count(gears/gear) div 3)"/>
     <xsl:variable name="sortedcopy">
-      <xsl:for-each select="gears/gear[iscommlink != 'True' or location != '']">
+      <xsl:for-each select="gears/gear">
         <xsl:sort select="location"/>
         <xsl:sort select="name"/>
         <xsl:if test="position() &gt; $halfcut * 2">
@@ -3063,7 +3050,7 @@
         </td>
       </tr>
 
-      <xsl:if test="children/gear">
+      <xsl:if test="iscommlink != 'True' and children/gear">
         <tr>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
@@ -3072,19 +3059,6 @@
             <xsl:call-template name="gearplugin">
               <xsl:with-param name="gear" select="."/>
               <xsl:with-param name="rtg" select="$rtglit"/>
-            </xsl:call-template>
-          </td>
-        </tr>
-      </xsl:if>
-
-      <xsl:if test="notes != '' and $ProduceNotes">
-        <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100%" class="notesrow2">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
             </xsl:call-template>
           </td>
         </tr>
