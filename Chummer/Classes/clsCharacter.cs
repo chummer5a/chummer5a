@@ -2321,6 +2321,58 @@ namespace Chummer
                                 ? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOptionDefaultValue].BuildMethod
                                 : CharacterBuildMethod.Priority;
                         }
+                        HashSet<string> setSavedBooks = new HashSet<string>();
+                        foreach (XPathNavigator xmlBook in xmlCharacterNavigator.Select("sources/source"))
+                            if (!string.IsNullOrEmpty(xmlBook.Value))
+                                setSavedBooks.Add(xmlBook.Value);
+                        List<string> lstSavedCustomDataDirectoryNames = new List<string>();
+                        foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select("customdatadirectorynames/directoryname"))
+                            if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
+                                lstSavedCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
+                        decimal decLegacyMaxNuyen = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption].NuyenMaximumBP;
+                        xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref decLegacyMaxNuyen);
+                        int intLegacyMaxKarma = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption].BuildKarma;
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref intLegacyMaxKarma);
+                        // Calculate a score for a character option that roughly coincides with how suitable it is as a replacement for the current one the character save contains
+                        // Options with a negative score should not be considered suitable at all
+                        int CalculateCharacterOptionsMatchScore(CharacterOptions objOptionsToCheck)
+                        {
+                            int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
+                            int intDummy = intLegacyMaxKarma - objOptionsToCheck.BuildKarma;
+                            intReturn -= intDummy * intDummy;
+                            intDummy = decLegacyMaxNuyen.StandardRound() - objOptionsToCheck.NuyenMaximumBP.StandardRound();
+                            intReturn -= intDummy * intDummy;
+                            int intBaseline = decLegacyMaxNuyen.StandardRound() * decLegacyMaxNuyen.StandardRound() + intLegacyMaxKarma * intLegacyMaxKarma;
+                            intDummy = Math.Max(setSavedBooks.Count, 1) * lstSavedCustomDataDirectoryNames.Count * intBaseline;
+                            if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
+                            {
+                                intReturn += int.MaxValue / 2 + intDummy * intDummy;
+                            }
+                            else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                     eSavedBuildMethod.UsesPriorityTables())
+                            {
+                                intReturn += int.MaxValue / 2 + intDummy * intDummy / 2;
+                            }
+                            for (int i = 0; i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count; ++i)
+                            {
+                                string strLoopCustomDataName =
+                                    objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
+                                int intLoopIndex = lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
+                                if (intLoopIndex < 0)
+                                    intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * intBaseline;
+                                else
+                                    intReturn -= (i - intLoopIndex) * (i - intLoopIndex) * intBaseline;
+                            }
+                            foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
+                                if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
+                                    intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * intBaseline;
+                            int intBookBaselineScore = (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
+                            HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
+                            setDummyBooks.IntersectWith(objOptionsToCheck.Books);
+                            intReturn -= (setSavedBooks.Count - setDummyBooks.Count) * (setSavedBooks.Count - setDummyBooks.Count) * intBookBaselineScore;
+                            return intReturn;
+                        }
+
                         bool blnShowSelectBP = false;
                         if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
                         {
@@ -2329,7 +2381,7 @@ namespace Chummer
                             {
                                 if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
                                         LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"),
-                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)).WordWrap(),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
                                     LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"),
                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                 {
@@ -2339,8 +2391,17 @@ namespace Chummer
                                 blnShowSelectBP = true;
                             }
                             // Set up interim options for selection by build method
-                            string strReplacementOptionsKey = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x =>
-                                x.Value.BuiltInOption && x.Value.BuildMethod == eSavedBuildMethod).Key;
+                            string strReplacementOptionsKey = string.Empty;
+                            int intMostSuitable = 0;
+                            foreach (KeyValuePair<string, CharacterOptions> kvpLoopOptions in OptionsManager.LoadedCharacterOptions)
+                            {
+                                int intLoopScore = CalculateCharacterOptionsMatchScore(kvpLoopOptions.Value);
+                                if (intLoopScore > intMostSuitable)
+                                {
+                                    intMostSuitable = intLoopScore;
+                                    strReplacementOptionsKey = kvpLoopOptions.Key;
+                                }
+                            }
                             if (string.IsNullOrEmpty(strReplacementOptionsKey))
                                 strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
                             _strCharacterOptionsKey = strReplacementOptionsKey;
@@ -2354,7 +2415,7 @@ namespace Chummer
                                         LanguageManager.GetString("Message_CharacterOptions_DesyncBuildMethod"),
                                         Path.GetFileNameWithoutExtension(_strCharacterOptionsKey),
                                         LanguageManager.GetString("String_" + OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod),
-                                        LanguageManager.GetString("String_" + eSavedBuildMethod)).WordWrap(),
+                                        LanguageManager.GetString("String_" + eSavedBuildMethod)),
                                     LanguageManager.GetString("MessageTitle_CharacterOptions_DesyncBuildMethod"),
                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                 {
@@ -2364,39 +2425,37 @@ namespace Chummer
                                 blnShowSelectBP = true;
                             }
                             // Set up interim options for selection by build method
-                            string strReplacementOptionsKey = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x =>
-                                x.Value.BuiltInOption && x.Value.BuildMethod == eSavedBuildMethod).Key;
+                            string strReplacementOptionsKey = string.Empty;
+                            int intMostSuitable = 0;
+                            foreach (KeyValuePair<string, CharacterOptions> kvpLoopOptions in OptionsManager.LoadedCharacterOptions)
+                            {
+                                int intLoopScore = CalculateCharacterOptionsMatchScore(kvpLoopOptions.Value);
+                                if (intLoopScore > intMostSuitable)
+                                {
+                                    intMostSuitable = intLoopScore;
+                                    strReplacementOptionsKey = kvpLoopOptions.Key;
+                                }
+                            }
                             if (string.IsNullOrEmpty(strReplacementOptionsKey))
                                 strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
                             _strCharacterOptionsKey = strReplacementOptionsKey;
                         }
                         // Legacy load stuff
-                        else if (!Utils.IsUnitTest
-                                 && showWarnings
-                                 && (xmlCharacterNavigator.SelectSingleNode("sources/source") != null
-                                     || xmlCharacterNavigator.SelectSingleNode("customdatadirectorynames/directoryname") != null))
+                        else if (!Utils.IsUnitTest && showWarnings && (setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
                         {
                             CharacterOptions objCurrentlyLoadedOptions = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
-                            HashSet<string> setBooks = new HashSet<string>();
-                            foreach (XPathNavigator xmlBook in xmlCharacterNavigator.Select("sources/source"))
-                                if (!string.IsNullOrEmpty(xmlBook.Value))
-                                    setBooks.Add(xmlBook.Value);
                             // More books is fine, so just test if the stored book list is a subset of the current option's book list
-                            bool blnPromptConfirmSetting = !setBooks.IsProperSubsetOf(objCurrentlyLoadedOptions.Books);
+                            bool blnPromptConfirmSetting = !setSavedBooks.IsProperSubsetOf(objCurrentlyLoadedOptions.Books);
                             if (!blnPromptConfirmSetting)
                             {
-                                List<string> lstCustomDataDirectoryNames = new List<string>();
-                                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select("customdatadirectorynames/directoryname"))
-                                    if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
-                                        lstCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
                                 // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
-                                blnPromptConfirmSetting = lstCustomDataDirectoryNames.Count != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos.Count;
+                                blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos.Count;
                                 if (!blnPromptConfirmSetting)
                                 {
                                     // Check to make sure all the names are the same
-                                    for (int i = 0; i < lstCustomDataDirectoryNames.Count; ++i)
+                                    for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
                                     {
-                                        if (lstCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos[i].Name)
+                                        if (lstSavedCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos[i].Name)
                                         {
                                             blnPromptConfirmSetting = true;
                                             break;
@@ -2409,7 +2468,7 @@ namespace Chummer
                             {
                                 DialogResult eShowBPResult = Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
                                         LanguageManager.GetString("Message_CharacterOptions_DesyncBooksOrCustomData"),
-                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)).WordWrap(),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
                                     LanguageManager.GetString("MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
                                     MessageBoxButtons.YesNoCancel);
                                 if (eShowBPResult == DialogResult.Cancel)
@@ -12323,11 +12382,8 @@ namespace Chummer
 
                 MentorSpirit objMentorSpirit = MentorSpirits[0];
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder(LanguageManager.GetString("Label_SelectMentorSpirit_Advantage"))
-                    .Append(strSpace).AppendLine(objMentorSpirit.DisplayAdvantage(GlobalOptions.Language))
-                    .AppendLine().Append(LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"))
-                    .Append(strSpace).AppendLine(objMentorSpirit.Disadvantage);
-                return sbdReturn.ToString().WordWrap();
+                return (LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace + objMentorSpirit.DisplayAdvantage(GlobalOptions.Language)
+                        + Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + strSpace + objMentorSpirit.Disadvantage).WordWrap();
             }
         }
 
