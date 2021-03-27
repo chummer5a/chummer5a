@@ -9326,7 +9326,7 @@
     </string>
     <string>
       <key>Message_CharacterOptions_CannotLoadSetting</key>
-      <text>The character's settings file ({0}) could not be found.\n\nSelect an existing settings file with the same build method instead?</text>
+      <text>The character's settings file ({0}) could not be found.\n\nSelect an existing settings file instead?</text>
     </string>
     <string>
       <key>MessageTitle_CharacterOptions_CannotLoadSetting</key>

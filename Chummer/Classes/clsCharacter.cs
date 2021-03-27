@@ -2423,6 +2423,23 @@ namespace Chummer
 
                         Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
 
+                        if (blnShowSelectBP)
+                        {
+                            DialogResult ePickBPResult = DialogResult.Cancel;
+                            Program.MainForm.DoThreadSafe(() =>
+                            {
+                                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
+                                {
+                                    frmPickBP.ShowDialog(Program.MainForm);
+                                    ePickBPResult = frmPickBP.DialogResult;
+                                }
+                            });
+                            if (ePickBPResult != DialogResult.OK)
+                            {
+                                IsLoading = false;
+                                return false;
+                            }
+                        }
 
                         if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart",
                             ref _decEssenceAtSpecialStart))
