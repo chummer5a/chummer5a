@@ -5509,7 +5509,7 @@ namespace Chummer
                             StringBuilder sbdDisallowedMounts = new StringBuilder();
                             foreach (string strLoop in setDisallowedMounts)
                                 if (!strLoop.EndsWith("Right", StringComparison.Ordinal) && (!strLoop.EndsWith("Left", StringComparison.Ordinal) || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                    sbdDisallowedMounts.Append(strLoop).Append(',');
+                                    sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
                             // Remove trailing ","
                             if (sbdDisallowedMounts.Length > 0)
                                 sbdDisallowedMounts.Length -= 1;
@@ -5562,7 +5562,7 @@ namespace Chummer
                             StringBuilder sbdDisallowedMounts = new StringBuilder();
                             foreach (string strLoop in setDisallowedMounts)
                                 if (!strLoop.EndsWith("Right", StringComparison.Ordinal) && (!strLoop.EndsWith("Left", StringComparison.Ordinal) || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                    sbdDisallowedMounts.Append(strLoop).Append(',');
+                                    sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
                             // Remove trailing ","
                             if (sbdDisallowedMounts.Length > 0)
                                 sbdDisallowedMounts.Length -= 1;
@@ -10800,51 +10800,121 @@ namespace Chummer
                     frmPickCyberware.GenetechCostMultiplier = decMultiplier;
                 }
 
+                Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>();
+                Dictionary<string, int> dicHasMounts = new Dictionary<string, int>();
                 if (objSelectedCyberware != null)
                 {
                     frmPickCyberware.SetGrade = objSelectedCyberware.Grade;
                     frmPickCyberware.LockGrade();
+                    frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
                     // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                     if (!objSelectedCyberware.Capacity.Contains('['))
                     {
-                        frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
                         frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
                     }
 
-                    frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
-                    HashSet<string> setDisallowedMounts = new HashSet<string>();
-                    HashSet<string> setHasMounts = new HashSet<string>();
-                    foreach (string strLoop in objSelectedCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        setDisallowedMounts.Add(strLoop + objSelectedCyberware.Location);
+                    foreach (string strLoop in objSelectedCyberware.BlocksMounts.SplitNoAlloc(',',
+                        StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (!dicDisallowedMounts.ContainsKey(strLoop))
+                            dicDisallowedMounts.Add(strLoop, int.MaxValue);
+                    }
                     string strLoopHasModularMount = objSelectedCyberware.HasModularMount;
-                    if (!string.IsNullOrEmpty(strLoopHasModularMount))
-                        setHasMounts.Add(strLoopHasModularMount);
+                    if (!string.IsNullOrEmpty(strLoopHasModularMount) && !dicHasMounts.ContainsKey(strLoopHasModularMount))
+                        dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
                     foreach (Cyberware objLoopCyberware in objSelectedCyberware.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
                     {
                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                            if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                        {
+                            string strKey = strLoop;
+                            if (objSelectedCyberware.Location != objLoopCyberware.Location)
+                                strKey += objLoopCyberware.Location;
+                            if (!dicDisallowedMounts.ContainsKey(strKey))
+                                dicDisallowedMounts.Add(strKey, int.MaxValue);
+                        }
                         strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                        if (!string.IsNullOrEmpty(strLoopHasModularMount) && !setHasMounts.Contains(strLoopHasModularMount))
-                            setHasMounts.Add(strLoopHasModularMount);
+                        if (objSelectedCyberware.Location != objLoopCyberware.Location)
+                            strLoopHasModularMount += objLoopCyberware.Location;
+                        if (!string.IsNullOrEmpty(strLoopHasModularMount) && !dicHasMounts.ContainsKey(strLoopHasModularMount))
+                            dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
                     }
-
-                    StringBuilder sbdDisallowedMounts = new StringBuilder();
-                    foreach (string strLoop in setDisallowedMounts)
-                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal) && (!strLoop.EndsWith("Left", StringComparison.Ordinal) || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                            sbdDisallowedMounts.Append(strLoop).Append(',');
-                    // Remove trailing ","
-                    if (sbdDisallowedMounts.Length > 0)
-                        sbdDisallowedMounts.Length -= 1;
-                    frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
-                    StringBuilder sbdHasMounts = new StringBuilder();
-                    foreach (string strLoop in setHasMounts)
-                        sbdHasMounts.Append(strLoop).Append(',');
-                    // Remove trailing ","
-                    if (sbdHasMounts.Length > 0)
-                        sbdHasMounts.Length -= 1;
-                    frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
                 }
+                else
+                {
+                    foreach (Cyberware objLoopCyberware in CharacterObject.Cyberware)
+                    {
+                        HashSet<string> setLoopDisallowedMounts = new HashSet<string>(objLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
+                        HashSet<string> setLoopHasModularMount = new HashSet<string>();
+                        if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
+                            setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
+                        foreach (Cyberware objInnerLoopCyberware in objLoopCyberware.Children.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                        {
+                            foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                setLoopDisallowedMounts.Add(strLoop);
+                            if (!string.IsNullOrEmpty(objInnerLoopCyberware.HasModularMount))
+                                setLoopHasModularMount.Add(objInnerLoopCyberware.HasModularMount);
+                        }
+                        foreach (string strLoop in setLoopDisallowedMounts)
+                        {
+                            string strKey = strLoop + objLoopCyberware.Location;
+                            if (!dicDisallowedMounts.ContainsKey(strKey))
+                                dicDisallowedMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                            else
+                                dicDisallowedMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                        }
+                        foreach (string strLoop in setLoopHasModularMount)
+                        {
+                            string strKey = strLoop + objLoopCyberware.Location;
+                            if (!dicHasMounts.ContainsKey(strKey))
+                                dicHasMounts.Add(strKey, objLoopCyberware.LimbSlotCount);
+                            else
+                                dicHasMounts[strKey] += objLoopCyberware.LimbSlotCount;
+                        }
+                    }
+                }
+
+                StringBuilder sbdDisallowedMounts = new StringBuilder();
+                foreach (KeyValuePair<string, int> kvpLoop in dicDisallowedMounts)
+                {
+                    string strKey = kvpLoop.Key;
+                    if (strKey.EndsWith("Right", StringComparison.Ordinal))
+                        continue;
+                    int intValue = kvpLoop.Value;
+                    if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                    {
+                        strKey = strKey.TrimEndOnce("Left", true);
+                        intValue = dicDisallowedMounts.ContainsKey(strKey + "Right") ? 2 * Math.Min(intValue, dicDisallowedMounts[strKey + "Right"]) : 0;
+                        if (dicDisallowedMounts.ContainsKey(strKey))
+                            intValue += dicDisallowedMounts[strKey];
+                    }
+                    if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
+                        sbdDisallowedMounts.Append(strKey).Append(',');
+                }
+                // Remove trailing ","
+                if (sbdDisallowedMounts.Length > 0)
+                    sbdDisallowedMounts.Length -= 1;
+                frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
+                StringBuilder sbdHasMounts = new StringBuilder();
+                foreach (KeyValuePair<string, int> kvpLoop in dicHasMounts)
+                {
+                    string strKey = kvpLoop.Key;
+                    if (strKey.EndsWith("Right", StringComparison.Ordinal))
+                        continue;
+                    int intValue = kvpLoop.Value;
+                    if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                    {
+                        strKey = strKey.TrimEndOnce("Left", true);
+                        intValue = dicHasMounts.ContainsKey(strKey + "Right") ? 2 * Math.Min(intValue, dicHasMounts[strKey + "Right"]) : 0;
+                        if (dicHasMounts.ContainsKey(strKey))
+                            intValue += dicHasMounts[strKey];
+                    }
+                    if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
+                        sbdHasMounts.Append(strKey).Append(',');
+                }
+                // Remove trailing ","
+                if (sbdHasMounts.Length > 0)
+                    sbdHasMounts.Length -= 1;
+                frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
 
                 frmPickCyberware.ShowDialog(this);
 

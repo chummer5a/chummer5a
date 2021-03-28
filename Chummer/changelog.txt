@@ -9,6 +9,7 @@ Application Changes:
 - Characters are no longer stuck in the build method that was chosen when they were first created.
 - The exported English names of qualities no longer contain the quality's rating (which made it behave differently than the regular name).
 - Purchasing a plugin for a stack of gear with more than one item now properly multiplies the expenditure of the purchase by the size of the stack.
+- Fixed issues where cyberlimbs and modular connectors would not properly block competing modular connectors.
 
 Data Changes:
 - Consolidated all German Data Changes custom data into a single German Data Changes entry.

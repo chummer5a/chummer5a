@@ -1078,7 +1078,7 @@ namespace Chummer
                         string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
                         if (!string.IsNullOrEmpty(strLoopMount))
                         {
-                            foreach (string strLoop in _strHasModularMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                            foreach (string strLoop in _strDisallowedMounts.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 if (strLoopMount == strLoop)
                                 {
