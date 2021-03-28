@@ -83,9 +83,6 @@ namespace Chummer
             SetupDataBindings();
 
             IsDirty = false;
-            cmdSaveAs.Enabled = false;
-            cmdSave.Enabled = false;
-
             _blnLoading = false;
             _blnIsLayoutSuspended = false;
         }
@@ -283,8 +280,6 @@ namespace Chummer
                     objNewCharacterOptions.FileName,
                     objNewCharacterOptions);
                 _objReferenceCharacterOptions = objNewCharacterOptions;
-                cmdSaveAs.Enabled = false;
-                cmdSave.Enabled = false;
                 IsDirty = false;
                 PopulateSettingsList();
                 if (blnDoResumeLayout)
@@ -327,8 +322,6 @@ namespace Chummer
                 }
 
                 _objReferenceCharacterOptions.CopyValues(_objCharacterOptions);
-                cmdSaveAs.Enabled = false;
-                cmdSave.Enabled = false;
                 IsDirty = false;
                 if (blnDoResumeLayout)
                 {
@@ -1249,7 +1242,11 @@ namespace Chummer
                     _blnDirty = value;
                     cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
                     if (!value)
+                    {
                         _blnWasRenamed = false;
+                        cmdSaveAs.Enabled = false;
+                        cmdSave.Enabled = false;
+                    }
                 }
             }
         }
