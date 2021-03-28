@@ -4025,7 +4025,7 @@ namespace Chummer.Backend.Equipment
                     List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
                     foreach (Cyberware objChild in Children)
                     {
-                        if (s_StrengthCustomizationStrings.Contains(objChild.Name))
+                        if (s_AgilityCustomizationStrings.Contains(objChild.Name))
                             lstCustomizationWare.Add(objChild);
                     }
                     if (lstCustomizationWare.Count > 0)
