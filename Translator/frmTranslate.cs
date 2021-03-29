@@ -873,8 +873,7 @@ namespace Translator
             XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = "\t", Indent = true};
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
-                if (xwWriter != null)
-                    objXmlDocument.Save(xwWriter);
+                objXmlDocument.Save(xwWriter);
             }
         }
 

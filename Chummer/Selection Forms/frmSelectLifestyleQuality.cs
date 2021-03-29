@@ -343,7 +343,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
-                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
+                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
             }
             else
             {
@@ -351,12 +351,12 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
+                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
             }
 
@@ -368,8 +368,10 @@ namespace Chummer
                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
-            using (XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + sbdFilter.ToString() + "]"))
+            using (XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + sbdFilter + "]"))
+            {
                 if (objXmlQualityList?.Count > 0)
+                {
                     foreach (XmlNode objXmlQuality in objXmlQualityList)
                     {
                         string strId = objXmlQuality["id"]?.InnerText;
@@ -382,6 +384,9 @@ namespace Chummer
                                 break;
                         }
                     }
+                }
+            }
+
             if (blnDoUIUpdate)
             {
                 lstLifestyleQuality.Sort(CompareListItems.CompareNames);

@@ -940,7 +940,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() +')');
             StringBuilder sbdCategoryFilter;
             if (strCategory != "Show All" && !Upgrading && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdCategoryFilter = new StringBuilder("category = \"" + strCategory + "\" or category = \"None\"");
+                sbdCategoryFilter = new StringBuilder("category = " + strCategory.CleanXPath() + " or category = \"None\"");
             else
             {
                 sbdCategoryFilter = new StringBuilder();
@@ -948,7 +948,7 @@ namespace Chummer
                 {
                     string strItem = objItem.Value.ToString();
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        sbdCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
@@ -959,9 +959,9 @@ namespace Chummer
                 sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
 
             if (ParentVehicle == null && _objCharacter.IsAI)
-                sbdFilter.Append(" and (id = \"")
-                    .Append(Cyberware.EssenceHoleGUID + "\" or id = \"")
-                    .Append(Cyberware.EssenceAntiHoleGUID + "\" or mountsto)");
+                sbdFilter.Append(" and (id = ")
+                    .Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath()).Append(" or id = ")
+                    .Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath()).Append(" or mountsto)");
             else if (_objParentNode != null)
                 sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
             else
@@ -970,8 +970,8 @@ namespace Chummer
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceIDString == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"")
-                    .Append(objCurrentGrade.Name).Append("\")");
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
+                    .Append(objCurrentGrade.Name.CleanXPath()).Append(")");
                 if (objCurrentGrade.SecondHand)
                     sbdFilter.Append(" and not(nosecondhand)");
             }
@@ -980,7 +980,7 @@ namespace Chummer
             XPathNodeIterator node = null;
             try
             {
-                node = _xmlBaseCyberwareDataNode.Select(_strNodeXPath + '[' + sbdFilter.ToString() + ']');
+                node = _xmlBaseCyberwareDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']');
             }
             catch (XPathException e)
             {

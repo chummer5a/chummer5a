@@ -639,7 +639,7 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
+                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
             else
             {
                 StringBuilder sbdCategoryFilter = new StringBuilder();
@@ -647,7 +647,7 @@ namespace Chummer
                 {
                     foreach (string strLoopCategory in _hashLimitToCategories)
                     {
-                        sbdCategoryFilter.Append("category = \"" + strLoopCategory + "\" or ");
+                        sbdCategoryFilter.Append("category = " + strLoopCategory.CleanXPath() + " or ");
                     }
                     sbdCategoryFilter.Length -= 4;
                 }
@@ -658,13 +658,13 @@ namespace Chummer
 
                 if (sbdCategoryFilter.Length > 0)
                 {
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + sbdFilter.ToString() + ']');
+            XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + sbdFilter + ']');
             BuildWeaponList(objXmlWeaponList);
         }
 

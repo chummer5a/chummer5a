@@ -88,7 +88,7 @@ namespace Chummer
         }
 
         private bool _blnDoProcessMargins = true;
-        private bool _blnHaveProcessedMarginsOnce = false;
+        private bool _blnHaveProcessedMarginsOnce;
 
         private void OnMarginChanged(object sender, EventArgs e)
         {

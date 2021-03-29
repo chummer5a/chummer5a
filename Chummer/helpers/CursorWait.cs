@@ -21,7 +21,6 @@ using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -105,7 +104,7 @@ namespace Chummer
             catch(Exception e)
             {
                 Log.Warn(e, "Exception while creating CursorWait-Object for \"" + objControl + "\":"
-                    + Environment.NewLine + e.ToString());
+                    + Environment.NewLine + e);
             }
         }
 

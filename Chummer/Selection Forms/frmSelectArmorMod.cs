@@ -420,19 +420,19 @@ namespace Chummer
             foreach (string strCategory in AllowedCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 if (!string.IsNullOrEmpty(strCategory))
-                    sbdCategoryFilter.Append("category = \"" + strCategory + "\" or ");
+                    sbdCategoryFilter.Append("category = " + strCategory.CleanXPath() + " or ");
             }
             if (sbdCategoryFilter.Length > 0)
             {
                 sbdCategoryFilter.Length -= 4;
-                sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(")");
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(")");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             int intOverLimit = 0;
             XPathNodeIterator objXmlModList =
-                _xmlBaseDataNode.Select("/chummer/mods/mod[" + sbdFilter.ToString() + ']');
+                _xmlBaseDataNode.Select("/chummer/mods/mod[" + sbdFilter + ']');
             if (objXmlModList.Count > 0)
             {
                 foreach (XPathNavigator objXmlMod in objXmlModList)

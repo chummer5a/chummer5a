@@ -79,7 +79,7 @@ namespace Chummer
             if (parentActivity != null)
             {
                 MyOperationType = parentActivity.MyOperationType;
-                SetParentId(parentActivity.Id);
+                SetParentId(parentActivity.Id ?? string.Empty);
                 tc = parentActivity.tc;
                 MyTelemetryTarget = parentActivity.MyTelemetryTarget;
                 switch (MyOperationType)

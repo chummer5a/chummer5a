@@ -558,7 +558,7 @@ namespace Chummer
             }
 
             // Retireve the information for the selected piece of Gear.
-            XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = \"" + strSelectedId + "\"]");
+            XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
 
             if (objXmlGear == null)
             {
@@ -954,19 +954,19 @@ namespace Chummer
                 strCategory = cboCategory.SelectedValue?.ToString();
             StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = \"" + strCategory + '\"');
+                sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else if (_setAllowedCategories.Count > 0)
             {
                 StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
+                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
             }
             if (_setAllowedNames.Count > 0)
@@ -974,12 +974,12 @@ namespace Chummer
                 StringBuilder sbdNameFilter = new StringBuilder();
                 foreach (string strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
                 {
-                    sbdNameFilter.Append("name = \"").Append(strItem).Append("\" or ");
+                    sbdNameFilter.Append("name = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdNameFilter.Length > 0)
                 {
                     sbdNameFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdNameFilter.ToString()).Append(')');
+                    sbdFilter.Append(" and (").Append(sbdNameFilter).Append(')');
                 }
             }
             if (ShowArmorCapacityOnly)
@@ -993,7 +993,7 @@ namespace Chummer
             if (_objGearParent == null)
                 sbdFilter.Append(" and not(requireparent)");
             if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
-                sbdFilter.Append(" and ammoforweapontype = \"").Append(ForceItemAmmoForWeaponType).Append("\"");
+                sbdFilter.Append(" and ammoforweapontype = ").Append(ForceItemAmmoForWeaponType.CleanXPath());
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
