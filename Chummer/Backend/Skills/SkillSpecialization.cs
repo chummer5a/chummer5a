@@ -91,8 +91,8 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
-            int intSpecializationBonus = Parent.CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
-                && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
+            int intSpecializationBonus = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
+                                                                             && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? 0
                 : SpecializationBonus;
             objWriter.WriteElementString("specbonus", intSpecializationBonus.ToString(objCulture));
@@ -176,7 +176,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public int SpecializationBonus => Parent.CharacterObject.Options.SpecializationBonus + (Expertise ? 1 : 0);
+        public int SpecializationBonus => _objCharacter.Options.SpecializationBonus + (Expertise ? 1 : 0);
 
         #endregion
     }

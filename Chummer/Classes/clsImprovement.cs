@@ -3462,7 +3462,7 @@ namespace Chummer
                             s_StrSelectedValue = frmPickText.SelectedValue;
                         }
                     }
-                    else
+                    else if (objCharacter != null)
                     {
                         using (frmSelectItem frmSelect = new frmSelectItem
                         {
@@ -3478,8 +3478,7 @@ namespace Chummer
                                 Log.Debug("CreateImprovements exit");
                                 return false;
                             }
-                            XPathNavigator xmlDoc = objCharacter.LoadData(nodBonus["selecttext"].Attributes["xml"]?.InnerText)
-                                .GetFastNavigator();
+                            XPathNavigator xmlDoc = objCharacter.LoadData(nodBonus["selecttext"].Attributes["xml"]?.InnerText).GetFastNavigator();
                             List<ListItem> lstItems = new List<ListItem>(5);
                             foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                             {
@@ -3499,8 +3498,7 @@ namespace Chummer
                             }
                             //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
                             //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                            lstItems = new List<ListItem>(lstItems.GroupBy(o => new { o.Value, o.Name })
-                                .Select(o => o.FirstOrDefault()));
+                            lstItems = new List<ListItem>(lstItems.GroupBy(o => new { o.Value, o.Name }).Select(o => o.FirstOrDefault()));
 
                             if (lstItems.Count == 0)
                             {

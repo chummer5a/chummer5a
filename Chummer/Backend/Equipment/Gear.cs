@@ -306,7 +306,7 @@ namespace Chummer.Backend.Equipment
             string strAmmoWeaponType = string.Empty;
             bool blnDoExtra = false;
             if (objXmlGear.TryGetStringFieldQuickly("ammoforweapontype", ref strAmmoWeaponType))
-                blnDoExtra = objXmlGear["ammoforweapontype"].Attributes?["noextra"]?.InnerText != bool.TrueString;
+                blnDoExtra = objXmlGear["ammoforweapontype"].Attributes["noextra"]?.InnerText != bool.TrueString;
             if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
             {
                 frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter)

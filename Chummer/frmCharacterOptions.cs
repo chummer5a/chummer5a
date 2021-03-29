@@ -306,7 +306,7 @@ namespace Chummer
                     {
                         Program.MainForm.ShowMessageBox(this,
                             LanguageManager.GetString("Message_CharacterOptions_OpenCharacterOnBuildMethodChange") +
-                            sbdConflictingCharacters.ToString(),
+                            sbdConflictingCharacters,
                             LanguageManager.GetString("MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
