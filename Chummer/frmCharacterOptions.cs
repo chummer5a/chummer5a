@@ -489,12 +489,18 @@ namespace Chummer
             _blnLoading = true;
             foreach (TreeNode objNode in treSourcebook.Nodes)
             {
-                if (!_setPermanentSourcebooks.Contains(objNode.Tag.ToString()))
+                string strBookCode = objNode.Tag.ToString();
+                if (!_setPermanentSourcebooks.Contains(strBookCode))
                 {
                     objNode.Checked = _blnSourcebookToggle;
+                    if (_blnSourcebookToggle)
+                        _objCharacterOptions.Books.Add(strBookCode);
+                    else
+                        _objCharacterOptions.Books.Remove(strBookCode);
                 }
             }
             _blnLoading = false;
+            _objCharacterOptions.RecalculateBookXPath();
             _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.Books));
             _blnSourcebookToggle = !_blnSourcebookToggle;
         }
