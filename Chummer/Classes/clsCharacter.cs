@@ -14976,11 +14976,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{BOD}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{BOD}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{BODUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
@@ -15000,11 +15004,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{AGI}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{AGI}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{AGIUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15023,11 +15031,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{REA}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{REA}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{REAUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15047,11 +15059,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{STR}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{STR}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{STRUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15070,11 +15086,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{CHA}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{CHA}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{CHAUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15099,11 +15119,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{INT}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{INT}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{INTUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15126,11 +15150,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{LOG}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{LOG}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{LOGUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15170,11 +15198,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{WIL}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{WIL}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{WILUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15184,11 +15216,15 @@ namespace Chummer
             {
                 if (Options.ContactPointsExpression.Contains("{EDG}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{EDG}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{EDGUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15215,6 +15251,8 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{MAG}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{MAG}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.Value))
             {
@@ -15224,6 +15262,8 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{MAGUnaug}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15240,11 +15280,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{MAGAdept}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15259,11 +15303,15 @@ namespace Chummer
                 if (Options.ContactPointsExpression.Contains("{RES}"))
                     lstProperties.Add(nameof(ContactPoints));
                 OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{RES}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{RESUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15275,11 +15323,15 @@ namespace Chummer
             {
                 if (Options.ContactPointsExpression.Contains("{DEP}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{DEP}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if (e?.PropertyName == nameof(CharacterAttrib.Value))
             {
                 if (Options.ContactPointsExpression.Contains("{DEPUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15289,6 +15341,20 @@ namespace Chummer
             if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
                 OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (Options.ContactPointsExpression.Contains("{ESS}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{ESS}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{ESSUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{ESSUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
