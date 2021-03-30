@@ -494,7 +494,6 @@ namespace Chummer
 
         private void PopulateDefaultCharacterOptionList()
         {
-            int intIndex = 0;
             List<ListItem> lstCharacterOptions = new List<ListItem>(OptionsManager.LoadedCharacterOptions.Count);
             foreach (KeyValuePair<string, CharacterOptions> kvpLoopCharacterOptions in OptionsManager.LoadedCharacterOptions)
             {
@@ -505,22 +504,17 @@ namespace Chummer
                     if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
                         strName = LanguageManager.GetString(strName.TrimStartOnce('{').TrimEndOnce('}'), _strSelectedLanguage);
                     lstCharacterOptions.Add(new ListItem(strId, strName));
-                    if (!string.IsNullOrWhiteSpace(GlobalOptions.DefaultCharacterOption) && GlobalOptions.DefaultCharacterOption == strId)
-                    {
-                        intIndex = lstCharacterOptions.Count - 1;
-                    }
                 }
             }
             lstCharacterOptions.Sort(CompareListItems.CompareNames);
 
-            string strOldSelected = cboDefaultCharacterOption.SelectedValue?.ToString();
+            string strOldSelected = cboDefaultCharacterOption.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterOption;
 
             cboDefaultCharacterOption.BeginUpdate();
             cboDefaultCharacterOption.DataSource = null;
             cboDefaultCharacterOption.DataSource = lstCharacterOptions;
             cboDefaultCharacterOption.ValueMember = nameof(ListItem.Value);
             cboDefaultCharacterOption.DisplayMember = nameof(ListItem.Name);
-            cboDefaultCharacterOption.SelectedIndex = intIndex;
 
             if(!string.IsNullOrEmpty(strOldSelected))
             {
