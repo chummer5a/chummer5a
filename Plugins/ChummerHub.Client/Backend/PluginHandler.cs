@@ -550,7 +550,7 @@ namespace Chummer.Plugins
                 mnuSINnerSearchs.TranslateToolStripItemsRecursively();
                 yield return mnuSINnerSearchs;
             }
-#endif
+
             ToolStripMenuItem mnuSINnersArchetypes = new ToolStripMenuItem
             {
                 Name = "mnuSINnersArchetypes",
@@ -564,7 +564,7 @@ namespace Chummer.Plugins
             mnuSINnersArchetypes.UpdateLightDarkMode();
             mnuSINnersArchetypes.TranslateToolStripItemsRecursively();
             yield return mnuSINnersArchetypes;
-
+#endif
             if (Settings.Default.UserModeRegistered)
             {
                 ToolStripMenuItem mnuSINners = new ToolStripMenuItem
