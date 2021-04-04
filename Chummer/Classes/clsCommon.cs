@@ -979,7 +979,7 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(astrSourceParts[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook);
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfos.ContainsKey(strBook) ? GlobalOptions.SourcebookInfos[strBook] : null;
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
@@ -1038,7 +1038,7 @@ namespace Chummer
             string strBook = LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook);
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfos.ContainsKey(strBook) ? GlobalOptions.SourcebookInfos[strBook] : null;
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return string.Empty;

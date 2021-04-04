@@ -194,7 +194,7 @@ namespace Chummer
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
         private static string _strPDFParameters = string.Empty;
-        private static HashSet<SourcebookInfo> _lstSourcebookInfo;
+        private static Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
         private static bool _blnUseLogging;
         private static UseAILogging _enumUseLoggingApplicationInsights;
         private static string _strCharacterRosterPath;
@@ -577,74 +577,93 @@ namespace Chummer
 
         public static void SaveOptionsToRegistry()
         {
-            using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+            try
             {
-                if (objRegistry == null)
-                    return;
-                objRegistry.SetValue("autoupdate", AutomaticUpdate.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("liveupdatecleancharacterfiles", LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
-                objRegistry.SetValue("colormode", ColorModeSetting.ToString());
-                objRegistry.SetValue("language", Language);
-                objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("defaultsheet", DefaultCharacterSheet);
-                objRegistry.SetValue("datesincludetime", DatesIncludeTime.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("printtofilefirst", PrintToFileFirst.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("emulatedbrowserversion", EmulatedBrowserVersion.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("pdfapppath", PDFAppPath);
-                objRegistry.SetValue("pdfparameters", PDFParameters);
-                objRegistry.SetValue("lifemodule", LifeModuleEnabled.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("prefernightlybuilds", PreferNightlyBuilds.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("characterrosterpath", CharacterRosterPath);
-                objRegistry.SetValue("hidemasterindex", HideMasterIndex.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("hidecharacterroster", HideCharacterRoster.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("createbackuponcareer", CreateBackupOnCareer.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("confirmdelete", ConfirmDelete.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("confirmkarmaexpense", ConfirmKarmaExpense.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("hideitemsoveravaillimit", HideItemsOverAvailLimit.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("allowhoverincrement", AllowHoverIncrement.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("searchincategoryonly", SearchInCategoryOnly.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("defaultcharacteroption", DefaultCharacterOption);
-                objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
-                objRegistry.SetValue("customdateformat", CustomDateFormat);
-                objRegistry.SetValue("customtimeformat", CustomTimeFormat);
-                objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
-
-                //Save the Plugins-Dictionary
-                objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
-
-                // Save the SourcebookInfo.
-                using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook"))
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
                 {
-                    if (objSourceRegistry != null)
-                    {
-                        foreach (SourcebookInfo objSource in SourcebookInfo)
-                            objSourceRegistry.SetValue(objSource.Code, objSource.Path + '|' + objSource.Offset.ToString(InvariantCultureInfo));
-                    }
-                }
+                    if (objRegistry == null)
+                        return;
+                    objRegistry.SetValue("autoupdate", AutomaticUpdate.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("liveupdatecleancharacterfiles",
+                        LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
+                    objRegistry.SetValue("colormode", ColorModeSetting.ToString());
+                    objRegistry.SetValue("language", Language);
+                    objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("defaultsheet", DefaultCharacterSheet);
+                    objRegistry.SetValue("datesincludetime", DatesIncludeTime.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("printtofilefirst", PrintToFileFirst.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("emulatedbrowserversion",
+                        EmulatedBrowserVersion.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("pdfapppath", PDFAppPath);
+                    objRegistry.SetValue("pdfparameters", PDFParameters);
+                    objRegistry.SetValue("lifemodule", LifeModuleEnabled.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("prefernightlybuilds", PreferNightlyBuilds.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("characterrosterpath", CharacterRosterPath);
+                    objRegistry.SetValue("hidemasterindex", HideMasterIndex.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("hidecharacterroster", HideCharacterRoster.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("createbackuponcareer", CreateBackupOnCareer.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("confirmdelete", ConfirmDelete.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("confirmkarmaexpense", ConfirmKarmaExpense.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("hideitemsoveravaillimit",
+                        HideItemsOverAvailLimit.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("allowhoverincrement", AllowHoverIncrement.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("searchincategoryonly", SearchInCategoryOnly.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("defaultcharacteroption", DefaultCharacterOption);
+                    objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("customdateformat", CustomDateFormat);
+                    objRegistry.SetValue("customtimeformat", CustomTimeFormat);
+                    objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
 
-                // Save the Custom Data Directory Info.
-                if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
-                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
-                using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory"))
-                {
-                    if (objCustomDataDirectoryRegistry != null)
+                    //Save the Plugins-Dictionary
+                    objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
+
+                    // Save the SourcebookInfo.
+                    using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook"))
                     {
-                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
+                        if (objSourceRegistry != null)
                         {
-                            using (RegistryKey objLoopKey = objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name))
+                            foreach (SourcebookInfo objSource in SourcebookInfos.Values)
+                                objSourceRegistry.SetValue(objSource.Code,
+                                    objSource.Path + '|' + objSource.Offset.ToString(InvariantCultureInfo));
+                        }
+                    }
+
+                    // Save the Custom Data Directory Info.
+                    if (objRegistry.OpenSubKey("CustomDataDirectory") != null)
+                        objRegistry.DeleteSubKeyTree("CustomDataDirectory");
+                    using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory"))
+                    {
+                        if (objCustomDataDirectoryRegistry != null)
+                        {
+                            foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
                             {
-                                objLoopKey?.SetValue("Path", objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, "$CHUMMER"));
+                                using (RegistryKey objLoopKey =
+                                    objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name))
+                                {
+                                    objLoopKey?.SetValue("Path",
+                                        objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, "$CHUMMER"));
+                                }
                             }
                         }
                     }
                 }
+            }
+            catch (System.Security.SecurityException)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Program.MainForm.ShowMessageBox(
+                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }
         #endregion
@@ -1003,14 +1022,14 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static HashSet<SourcebookInfo> SourcebookInfo
+        public static Dictionary<string, SourcebookInfo> SourcebookInfos
         {
             get
             {
-                // We need to generate _lstSourcebookInfo outside of the constructor to avoid initialization cycles
-                if(_lstSourcebookInfo == null)
+                // We need to generate _dicSourcebookInfos outside of the constructor to avoid initialization cycles
+                if (_dicSourcebookInfos == null)
                 {
-                    _lstSourcebookInfo = new HashSet<SourcebookInfo>();
+                    _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>();
                     // Retrieve the SourcebookInfo objects.
                     using (XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book"))
                     {
@@ -1043,9 +1062,7 @@ namespace Chummer
                                             if (!File.Exists(objSource.Path))
                                                 objSource.Path = string.Empty;
                                             if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                            {
                                                 objSource.Offset = intTmp;
-                                            }
                                         }
                                     }
                                 }
@@ -1058,12 +1075,12 @@ namespace Chummer
 
                                 }
 
-                                _lstSourcebookInfo.Add(objSource);
+                                _dicSourcebookInfos.Add(strCode, objSource);
                             }
                         }
                     }
                 }
-                return _lstSourcebookInfo;
+                return _dicSourcebookInfos;
             }
         }
 

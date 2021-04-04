@@ -35,6 +35,10 @@
       <text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
     </string>
     <string>
+      <key>Message_Insufficient_Permissions_Warning_Registry</key>
+      <text>Chummer5 is currently not being run with permissions to modify registry values. Please make sure Chummer5 is being run by a user with appropriate access</text>
+    </string>
+    <string>
       <key>Message_Save_Error_Warning</key>
       <text>Chummer5 encountered an error while saving the character.</text>
     </string>

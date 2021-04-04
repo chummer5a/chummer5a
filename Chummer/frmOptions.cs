@@ -36,8 +36,10 @@ namespace Chummer
     public partial class frmOptions : Form
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        // List of custom data directories on the character, in load order. If the character has a directory name for which we have no info, Item1 will be null
+        // List of custom data directories possible to be added to a character
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
+        // List of sourcebook infos, needed to make sure we don't directly modify ones in the options unless we save our options
+        private readonly Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
         private bool _blnSkipRefresh;
         private bool _blnDirty;
         private bool _blnLoading = true;
@@ -58,6 +60,7 @@ namespace Chummer
             this.TranslateWinForm(_strSelectedLanguage);
 
             _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfos);
+            _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>(GlobalOptions.SourcebookInfos);
             if (!string.IsNullOrEmpty(strActiveTab))
             {
                 int intActiveTabIndex = tabOptions.TabPages.IndexOfKey(strActiveTab);
@@ -135,7 +138,8 @@ namespace Chummer
 
         private void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PopulateXsltList();
+            using (new CursorWait(this))
+                PopulateXsltList();
         }
 
         private void cmdVerify_Click(object sender, EventArgs e)
@@ -169,52 +173,58 @@ namespace Chummer
         private void cmdPDFAppPath_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            using (new CursorWait(this))
             {
-                Filter = LanguageManager.GetString("DialogFilter_Exe") + '|' + LanguageManager.GetString("DialogFilter_All")
-            })
-            {
-                if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
-                    openFileDialog.FileName = Path.GetFileName(txtPDFAppPath.Text);
-                }
+                    Filter = LanguageManager.GetString("DialogFilter_Exe") + '|' +
+                             LanguageManager.GetString("DialogFilter_All")
+                })
+                {
+                    if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
+                    {
+                        openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
+                        openFileDialog.FileName = Path.GetFileName(txtPDFAppPath.Text);
+                    }
 
-                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    txtPDFAppPath.Text = openFileDialog.FileName;
+                    if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                        txtPDFAppPath.Text = openFileDialog.FileName;
+                }
             }
         }
 
         private void cmdPDFLocation_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            using (new CursorWait(this))
             {
-                Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' + LanguageManager.GetString("DialogFilter_All")
-            })
-            {
-                if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
-                    openFileDialog.FileName = Path.GetFileName(txtPDFLocation.Text);
-                }
+                    Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' +
+                             LanguageManager.GetString("DialogFilter_All")
+                })
+                {
+                    if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
+                    {
+                        openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
+                        openFileDialog.FileName = Path.GetFileName(txtPDFLocation.Text);
+                    }
 
-                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    UpdateSourcebookInfoPath(openFileDialog.FileName);
-                    txtPDFLocation.Text = openFileDialog.FileName;
+                    if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                    {
+                        UpdateSourcebookInfoPath(openFileDialog.FileName);
+                        txtPDFLocation.Text = openFileDialog.FileName;
+                    }
                 }
             }
         }
 
         private void lstGlobalSourcebookInfos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strSelectedCode = lstGlobalSourcebookInfos.SelectedValue?.ToString();
+            string strSelectedCode = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
 
             // Find the selected item in the Sourcebook List.
-            SourcebookInfo objSource = !string.IsNullOrEmpty(strSelectedCode)
-                ? GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strSelectedCode)
-                : null;
+            SourcebookInfo objSource = _dicSourcebookInfos.ContainsKey(strSelectedCode) ? _dicSourcebookInfos[strSelectedCode] : null;
 
             if (objSource != null)
             {
@@ -234,17 +244,17 @@ namespace Chummer
                 return;
 
             int intOffset = decimal.ToInt32(nudPDFOffset.Value);
-            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString();
-            SourcebookInfo objFoundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strTag);
+            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
+            SourcebookInfo objFoundSource = _dicSourcebookInfos.ContainsKey(strTag) ? _dicSourcebookInfos[strTag] : null;
 
-            if(objFoundSource != null)
+            if (objFoundSource != null)
             {
                 objFoundSource.Offset = intOffset;
             }
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                GlobalOptions.SourcebookInfo.Add(new SourcebookInfo
+                _dicSourcebookInfos.Add(strTag, new SourcebookInfo
                 {
                     Code = strTag,
                     Offset = intOffset
@@ -256,8 +266,8 @@ namespace Chummer
         {
             if(string.IsNullOrEmpty(txtPDFLocation.Text))
                 return;
-
-            CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+            using (new CursorWait(this))
+                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
         #endregion
 
@@ -289,7 +299,6 @@ namespace Chummer
 
             // Put the Sourcebooks into a List so they can first be sorted.
             List<ListItem> lstSourcebookInfos = new List<ListItem>();
-
             using(XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book"))
             {
                 if(objXmlBookList != null)
@@ -480,6 +489,9 @@ namespace Chummer
             foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
                 GlobalOptions.CustomDataDirectoryInfos.Add(objInfo);
             XmlManager.RebuildDataDirectoryInfo(GlobalOptions.CustomDataDirectoryInfos);
+            GlobalOptions.SourcebookInfos.Clear();
+            foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
+                GlobalOptions.SourcebookInfos.Add(objInfo.Code, objInfo);
         }
 
         /// <summary>
@@ -864,17 +876,17 @@ namespace Chummer
 
         private void UpdateSourcebookInfoPath(string strPath)
         {
-            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString();
-            SourcebookInfo objFoundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strTag);
+            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
+            SourcebookInfo objFoundSource = _dicSourcebookInfos.ContainsKey(strTag) ? _dicSourcebookInfos[strTag] : null;
 
-            if(objFoundSource != null)
+            if (objFoundSource != null)
             {
                 objFoundSource.Path = strPath;
             }
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                GlobalOptions.SourcebookInfo.Add(new SourcebookInfo
+                _dicSourcebookInfos.Add(strTag, new SourcebookInfo
                 {
                     Code = strTag,
                     Path = strPath
