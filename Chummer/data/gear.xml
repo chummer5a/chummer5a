@@ -378,7 +378,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>75</cost>
       <costfor>10</costfor>
-      <ammoforweapontype>dartgun</ammoforweapontype>
+      <ammoforweapontype noextra="True">dartgun</ammoforweapontype>
     </gear>
     <gear>
       <id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
