@@ -250,42 +250,42 @@ namespace Chummer
                         objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
                     }
 
+                    /* TODO: Add support for active and knowledge skills and skill groups
                     // Export Active Skills.
                     if (chkActiveSkills.Checked)
                     {
                         // <skills>
                         objWriter.WriteStartElement("skills");
 
-                        //TODO: Figure out what this did?
                         // Active Skills.
-                        //foreach (Skill objSkill in _objCharacter.Skills)
-                        //{
-                        //    if (!objSkill.KnowledgeSkill && !objSkill.IsGrouped && objSkill.Rating > 0)
-                        //    {
-                        //        // <skill>
-                        //        objWriter.WriteStartElement("skill");
-                        //        objWriter.WriteElementString("name", objSkill.Name);
-                        //        objWriter.WriteElementString("rating", objSkill.Rating.ToString());
-                        //        if (!string.IsNullOrEmpty(objSkill.Specialization))
-                        //            objWriter.WriteElementString("spec", objSkill.Specialization);
-                        //        // </skill>
-                        //        objWriter.WriteEndElement();
-                        //    }
-                        //}
+                        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            if (!objSkill.IsKnowledgeSkill && objSkill.Rating > 0)
+                            {
+                                // <skill>
+                                objWriter.WriteStartElement("skill");
+                                objWriter.WriteElementString("name", objSkill.Name);
+                                objWriter.WriteElementString("rating", objSkill.Rating.ToString());
+                                if (!string.IsNullOrEmpty(objSkill.Specialization))
+                                    objWriter.WriteElementString("spec", objSkill.Specialization);
+                                // </skill>
+                                objWriter.WriteEndElement();
+                            }
+                        }
 
                         // Skill Groups.
-                        //foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-                        //{
-                        //    if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
-                        //    {
-                        //        // <skillgroup>
-                        //        objWriter.WriteStartElement("skillgroup");
-                        //        objWriter.WriteElementString("name", objSkillGroup.Name);
-                        //        objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
-                        //        // </skillgroup>
-                        //        objWriter.WriteEndElement();
-                        //    }
-                        //}
+                        foreach (SkillGroup objSkillGroup in _objCharacter.SkillsSection.SkillGroups)
+                        {
+                            if (objSkillGroup.BaseUnbroken && objSkillGroup.Rating > 0)
+                            {
+                                // <skillgroup>
+                                objWriter.WriteStartElement("skillgroup");
+                                objWriter.WriteElementString("name", objSkillGroup.Name);
+                                objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
+                                // </skillgroup>
+                                objWriter.WriteEndElement();
+                            }
+                        }
                         // </skills>
                         objWriter.WriteEndElement();
                     }
@@ -311,6 +311,7 @@ namespace Chummer
                         // </knowledgeskills>
                         objWriter.WriteEndElement();
                     }
+                    */
 
                     // Export Martial Arts.
                     if (chkMartialArts.Checked)
