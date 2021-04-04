@@ -661,7 +661,11 @@ namespace Chummer.Backend.Equipment
                         AllowCancel = false
                     })
                     {
-                        frmPickNumber.ShowDialog(Program.MainForm);
+                        if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
@@ -993,11 +997,8 @@ namespace Chummer.Backend.Equipment
 
                 if (!string.IsNullOrEmpty(strForcedSide))
                     frmPickSide.ForceValue(strForcedSide);
-                else
-                    frmPickSide.ShowDialog(Program.MainForm);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickSide.DialogResult == DialogResult.Cancel)
+                else if (frmPickSide.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                 {
                     _guiID = Guid.Empty;
                     return false;

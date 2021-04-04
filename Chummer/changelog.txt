@@ -11,6 +11,7 @@ Application Changes:
 - Purchasing a plugin for a stack of gear with more than one item now properly multiplies the expenditure of the purchase by the size of the stack.
 - Fixed issues where cyberlimbs and modular connectors would not properly block competing modular connectors.
 - If Chummer is unable to update registry entries, it will now display a warning that it cannot update registry entries instead of crashing.
+- Cancelling out of number- or text-selection screens when adding some piece of gear, cyberware, weapon, armor, vehicle, lifestyle, or any modifications thereof now properly cancels out of adding the original item.
 
 Data Changes:
 - Consolidated all German Data Changes custom data into a single German Data Changes entry.

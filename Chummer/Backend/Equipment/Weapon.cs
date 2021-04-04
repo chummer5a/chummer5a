@@ -328,7 +328,11 @@ namespace Chummer.Backend.Equipment
                             AllowCancel = false
                         })
                         {
-                            frmPickNumber.ShowDialog(Program.MainForm);
+                            if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
                             _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                         }
                     }
@@ -5270,9 +5274,7 @@ namespace Chummer.Backend.Equipment
                 Count = lstCount
             })
             {
-                frmReloadWeapon.ShowDialog(Program.MainForm);
-
-                if (frmReloadWeapon.DialogResult == DialogResult.Cancel)
+                if (frmReloadWeapon.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                     return;
 
                 // Return any unspent rounds to the Ammo.

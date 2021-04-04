@@ -354,9 +354,11 @@ namespace Chummer.Backend.Equipment
                     })
                     {
                         frmSelect.SetGeneralItemsMode(lstQualities);
-                        frmSelect.ShowDialog(Program.MainForm);
-                        if (frmSelect.DialogResult == DialogResult.Cancel)
+                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
                             return;
+                        }
                         _strBaseLifestyle = frmSelect.SelectedItem;
                     }
                 }

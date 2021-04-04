@@ -236,19 +236,19 @@ namespace Chummer.Backend.Equipment
                         Description = LanguageManager.GetString("String_CustomItem_SelectText")
                     })
                     {
-                        frmPickText.ShowDialog(Program.MainForm);
-
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult != DialogResult.Cancel)
+                        if (frmPickText.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                         {
-                            string strCustomName = LanguageManager.GetString(frmPickText.SelectedValue,
-                                GlobalOptions.DefaultLanguage, false);
-                            if (string.IsNullOrEmpty(strCustomName))
-                                strCustomName =
-                                    _objCharacter.ReverseTranslateExtra(frmPickText.SelectedValue);
-                            _strName = strCustomName;
-                            _objCachedMyXmlNode = null;
+                            _guiID = Guid.Empty;
+                            return;
                         }
+                        string strCustomName = LanguageManager.GetString(frmPickText.SelectedValue,
+                            GlobalOptions.DefaultLanguage, false);
+                        if (string.IsNullOrEmpty(strCustomName))
+                            strCustomName =
+                                _objCharacter.ReverseTranslateExtra(frmPickText.SelectedValue);
+                        _strName = strCustomName;
+                        _objCachedMyXmlNode = null;
                     }
                 }
                 else
@@ -293,7 +293,11 @@ namespace Chummer.Backend.Equipment
                             AllowCancel = false
                         })
                         {
-                            frmPickNumber.ShowDialog(Program.MainForm);
+                            if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
                             _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                         }
                     }
@@ -317,7 +321,11 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(_strForcedValue) && !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
                     frmPickWeaponCategory.OnlyCategory = _strForcedValue;
 
-                frmPickWeaponCategory.ShowDialog(Program.MainForm);
+                if (frmPickWeaponCategory.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
 
                 _strExtra = frmPickWeaponCategory.SelectedCategory;
             }
@@ -518,10 +526,9 @@ namespace Chummer.Backend.Equipment
                             })
                             {
                                 frmPickItem.SetGeneralItemsMode(lstGears);
-                                frmPickItem.ShowDialog(Program.MainForm);
 
                                 // Make sure the dialogue window was not canceled.
-                                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                if (frmPickItem.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                                 {
                                     if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                                     {
