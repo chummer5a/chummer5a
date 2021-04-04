@@ -91,6 +91,8 @@ Changed/New Strings:
 - Message_Options_CloseForms
 - Message_Update_CloseForms
 - Message_Insufficient_Permissions_Warning_Registry
+- Message_MergeIdentical
+- MessageTitle_MergeIdentical
 
 Build 214
 Application Fixes:

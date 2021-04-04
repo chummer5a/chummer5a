@@ -4147,6 +4147,14 @@
       <key>String_WildReputation</key>
       <text>Wild Reputation</text>
     </string>
+    <string>
+      <key>Message_MergeIdentical</key>
+      <text>A gear entry identical to the current one ({0}) was found in the same location. Do you wish to increase the quantity of the existing gear entry instead of adding a new one?</text>
+    </string>
+    <string>
+      <key>MessageTitle_MergeIdentical</key>
+      <text>Identical Gear Found</text>
+    </string>
     <!-- End Region -->
     <!-- Region Common Tab -->
     <string>

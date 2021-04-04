@@ -11067,7 +11067,7 @@ namespace Chummer
                         if (objExistingGear.Location == objLocation
                             && objGear.IsIdenticalToOtherGear(objExistingGear, true)
                             && Program.MainForm.ShowMessageBox(this,
-                                LanguageManager.GetString("Message_MergeIdentical"),
+                                string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_MergeIdentical"), objGear.DisplayNameShort(GlobalOptions.Language)),
                                 LanguageManager.GetString("MessageTitle_MergeIdentical"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
