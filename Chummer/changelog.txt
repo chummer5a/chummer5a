@@ -19,6 +19,7 @@ Data Changes:
 - Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
 - Whisper of Bones now properly requires Necromancy.
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.
+- Smartlink from the Shadowrun 2050 ruleset now properly gives a +2 dicepool bonus when using smartguns.
 
 Changed/New Strings:
 - String_ContactPoints
