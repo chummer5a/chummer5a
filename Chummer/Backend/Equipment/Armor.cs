@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
         private Location _objLocation;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
-        private bool _blnWirelessOn;
+        private bool _blnWirelessOn = true;
         private bool _blnDiscountCost;
         private int _intSortOrder;
         private bool _blnStolen;
@@ -335,7 +335,6 @@ namespace Chummer.Backend.Equipment
                         _strExtra = ImprovementManager.SelectedValue;
                     }
                 }
-                ToggleWirelessBonuses(WirelessOn);
             }
 
             if (!blnSkipSelectForms)
@@ -485,6 +484,9 @@ namespace Chummer.Backend.Equipment
                 }
                 lstWeapons?.AddRange(lstChildWeapons);
             }
+
+            if (!blnSkipSelectForms)
+                RefreshWirelessBonuses();
 
             XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
 
@@ -712,6 +714,8 @@ namespace Chummer.Backend.Equipment
                     _blnEquipped = true;
                     Equipped = false;
                 }
+
+                RefreshWirelessBonuses();
             }
         }
 
@@ -1179,8 +1183,8 @@ namespace Chummer.Backend.Equipment
             {
                 if (value == _blnWirelessOn)
                     return;
-                ToggleWirelessBonuses(value);
                 _blnWirelessOn = value;
+                RefreshWirelessBonuses();
             }
         }
 
@@ -1730,38 +1734,52 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Toggle the Wireless Bonus for this armor.
         /// </summary>
-        /// <param name="enable"></param>
-        public void ToggleWirelessBonuses(bool enable)
+        public void RefreshWirelessBonuses()
         {
-            if (enable)
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
             {
-                if (WirelessBonus?.Attributes?.Count > 0)
+                if (WirelessOn && Equipped)
                 {
-                    if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    if (WirelessBonus.Attributes?.Count > 0)
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToArray());
+                        if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                        {
+                            ImprovementManager.DisableImprovements(_objCharacter,
+                                _objCharacter.Improvements.Where(x =>
+                                    x.ImproveSource == Improvement.ImprovementSource.Armor &&
+                                    x.SourceName == InternalId).ToArray());
+                        }
                     }
-                }
-                if (WirelessBonus?.InnerText != null)
-                {
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor,
-                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
-                }
 
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                    _strExtra = ImprovementManager.SelectedValue;
-            }
-            else
-            {
-                if (WirelessBonus?.Attributes?.Count > 0)
-                {
-                    if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
-                    {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId).ToArray());
-                    }
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
                 }
-                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId + "Wireless").ToArray());
+                else
+                {
+                    if (WirelessBonus.Attributes?.Count > 0)
+                    {
+                        if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                        {
+                            ImprovementManager.EnableImprovements(_objCharacter,
+                                _objCharacter.Improvements.Where(x =>
+                                    x.ImproveSource == Improvement.ImprovementSource.Armor &&
+                                    x.SourceName == InternalId).ToArray());
+                        }
+                    }
+
+                    ImprovementManager.RemoveImprovements(_objCharacter,
+                        _objCharacter.Improvements.Where(x =>
+                            x.ImproveSource == Improvement.ImprovementSource.Armor &&
+                            x.SourceName == InternalId + "Wireless").ToArray());
+                }
             }
+
+            foreach (ArmorMod objArmorMod in ArmorMods)
+                objArmorMod.RefreshWirelessBonuses();
+            foreach (Gear objGear in Gear)
+                objGear.RefreshWirelessBonuses();
         }
 
         #region UI Methods

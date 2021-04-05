@@ -51,7 +51,7 @@ namespace Chummer.Backend.Equipment
         private string _strAvail = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
-        private bool _blnWirelessOn;
+        private bool _blnWirelessOn = true;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private bool _blnIncludeInVehicle;

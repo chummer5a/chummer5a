@@ -128,7 +128,7 @@ namespace Chummer.Backend.Equipment
         private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes;
-        private bool _blnWirelessOn;
+        private bool _blnWirelessOn = true;
         private int _intMatrixCMFilled;
         private int _intSortOrder;
         private bool _blnStolen;
@@ -517,6 +517,9 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            if (blnCreateImprovements)
+                RefreshWirelessBonuses();
+
             // Add Subweapons (not underbarrels) if applicable.
             if (lstWeapons == null)
                 return;
@@ -545,8 +548,6 @@ namespace Chummer.Backend.Equipment
             }
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;
-
-            ToggleWirelessBonuses(WirelessOn);
         }
 
         private SourceString _objCachedSourceDetail;
@@ -1987,8 +1988,8 @@ namespace Chummer.Backend.Equipment
             {
                 if (value == _blnWirelessOn)
                     return;
-                ToggleWirelessBonuses(value);
                 _blnWirelessOn = value;
+                RefreshWirelessBonuses();
             }
         }
 
@@ -4009,12 +4010,10 @@ namespace Chummer.Backend.Equipment
 
                             intDicePool += objAutosoft?.Rating ?? -1;
 
-                            if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
+                            if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn)
+                                           && ParentVehicle.Gear.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped && x.WirelessOn))
                             {
-                                if (ParentVehicle.Gear.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
-                                {
-                                    ++decDicePoolModifier;
-                                }
+                                ++decDicePoolModifier;
                             }
                             break;
                         }
@@ -4023,7 +4022,7 @@ namespace Chummer.Backend.Equipment
                         {
                             intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
 
-                            if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
+                            if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
                             {
                                 decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
                             }
@@ -4035,7 +4034,7 @@ namespace Chummer.Backend.Equipment
                         {
                             intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").Pool;
 
-                            if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
+                            if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
                             {
                                 decDicePoolModifier +=
                                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
@@ -4051,7 +4050,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 intDicePool = objSkill.Pool;
 
-                                if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
+                                if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
                                 {
                                     decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
                                 }
@@ -4380,7 +4379,7 @@ namespace Chummer.Backend.Equipment
 
                 if (ParentVehicle == null)
                 {
-                    if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
+                    if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
                     {
                         sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
                             strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink));
@@ -4395,7 +4394,7 @@ namespace Chummer.Backend.Equipment
                             strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                     }
                 }
-                else if (WeaponAccessories.Any(accessory => accessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && accessory.WirelessOn))
+                else if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
                 {
                     if (ParentVehicle.Gear.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
                     {
@@ -5035,37 +5034,51 @@ namespace Chummer.Backend.Equipment
 
         #region Methods
         /// <summary>
-        /// Toggle the Wireless Bonus for this armor.
+        /// Toggle the Wireless Bonus for this weapon accessory.
         /// </summary>
-        /// <param name="enable"></param>
-        public void ToggleWirelessBonuses(bool enable)
+        public void RefreshWirelessBonuses()
         {
-            if (enable)
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
             {
-                if (WirelessBonus?.Attributes?.Count > 0)
+                if (WirelessOn && Equipped && Parent?.WirelessOn != false)
                 {
-                    if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    if (WirelessBonus?.Attributes?.Count > 0)
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
+                        if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                        {
+                            ImprovementManager.DisableImprovements(_objCharacter,
+                                _objCharacter.Improvements.Where(x =>
+                                    x.ImproveSource == Improvement.ImprovementSource.Weapon &&
+                                    x.SourceName == InternalId).ToArray());
+                        }
                     }
+
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId + "Wireless", WirelessBonus, 1, DisplayNameShort(GlobalOptions.Language));
                 }
-                if (WirelessBonus?.InnerText != null)
+                else
                 {
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod,
-                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Wireless", WirelessBonus, 1, DisplayNameShort(GlobalOptions.Language));
+                    if (WirelessBonus.Attributes?.Count > 0)
+                    {
+                        if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                        {
+                            ImprovementManager.EnableImprovements(_objCharacter,
+                                _objCharacter.Improvements.Where(x =>
+                                    x.ImproveSource == Improvement.ImprovementSource.Weapon &&
+                                    x.SourceName == InternalId).ToArray());
+                        }
+                    }
+
+                    ImprovementManager.RemoveImprovements(_objCharacter,
+                        _objCharacter.Improvements.Where(x =>
+                            x.ImproveSource == Improvement.ImprovementSource.Weapon &&
+                            x.SourceName == InternalId + "Wireless").ToArray());
                 }
             }
-            else
-            {
-                if (WirelessBonus?.Attributes?.Count > 0)
-                {
-                    if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
-                    {
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
-                    }
-                }
-                ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId + "Wireless").ToArray());
-            }
+
+            foreach (Weapon objWeapon in Children)
+                objWeapon.RefreshWirelessBonuses();
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                objAccessory.RefreshWirelessBonuses();
         }
 
         /// <summary>

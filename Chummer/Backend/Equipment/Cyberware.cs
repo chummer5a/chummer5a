@@ -84,7 +84,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessPairBonus;
         private readonly HashSet<string> _lstIncludeInPairBonus = new HashSet<string>();
         private readonly HashSet<string> _lstIncludeInWirelessPairBonus = new HashSet<string>();
-        private bool _blnWirelessOn;
+        private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
@@ -805,11 +805,6 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
-
-                if (WirelessBonus != null || WirelessPairBonus != null)
-                {
-                    ToggleWirelessBonuses(_blnWirelessOn);
-                }
             }
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
@@ -881,6 +876,9 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(_strPlugsIntoModularMount))
                 ChangeModularEquip(false);
+
+            if (blnCreateImprovements)
+                RefreshWirelessBonuses();
         }
 
         public bool GetValidLimbSlot(XmlNode objXmlCyberware)
@@ -1749,9 +1747,10 @@ namespace Chummer.Backend.Equipment
             get => _blnWirelessOn;
             set
             {
-                if (_blnWirelessOn == value) return;
+                if (_blnWirelessOn == value)
+                    return;
                 _blnWirelessOn = value;
-                ToggleWirelessBonuses(value);
+                RefreshWirelessBonuses();
             }
         }
 
@@ -2188,152 +2187,175 @@ namespace Chummer.Backend.Equipment
             set => _blnStolen = value;
         }
 
-        public void ToggleWirelessBonuses(bool enable)
+        /// <summary>
+        /// Toggle the Wireless Bonus for this weapon accessory.
+        /// </summary>
+        public void RefreshWirelessBonuses()
         {
-            if (enable)
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText) || !string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
             {
-                if (WirelessBonus?.Attributes?.Count > 0)
+                if (WirelessOn && ParentVehicle == null && IsModularCurrentlyEquipped && Parent?.WirelessOn != false)
                 {
-                    if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                    if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter,
-                            _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
+                        if (WirelessBonus?.Attributes?.Count > 0)
+                        {
+                            if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                            {
+                                ImprovementManager.DisableImprovements(_objCharacter,
+                                    _objCharacter.Improvements
+                                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
+                                        .ToArray());
+                            }
+                        }
+                        
+                        ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource, InternalId + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
+
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = ImprovementManager.SelectedValue;
                     }
-                }
 
-                if (WirelessBonus?.InnerText != null)
-                {
-                    ImprovementManager.CreateImprovements(_objCharacter, _objImprovementSource,
-                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
-                }
-
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                    _strExtra = ImprovementManager.SelectedValue;
-
-                if (WirelessPairBonus == null) return;
-                // This cyberware should not be included in the count to make things easier.
-                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                    x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                         x.IsModularCurrentlyEquipped && x.WirelessOn).ToList();
-                int intCount = lstPairableCyberwares.Count;
-                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
-                if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
-                {
-                    intCount = 0;
-                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                    if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
                     {
-                        if (objPairableCyberware.Location != Location)
-                            // We have found a cyberware with which this one could be paired, so increase count by 1
-                            intCount += 1;
-                        else
-                            // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                        // This cyberware should not be included in the count to make things easier.
+                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                            x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
+                                 x.IsModularCurrentlyEquipped && x.WirelessOn).ToList();
+                        int intCount = lstPairableCyberwares.Count;
+                        // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                        if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
+                        {
+                            intCount = 0;
+                            foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                            {
+                                if (objPairableCyberware.Location != Location)
+                                    // We have found a cyberware with which this one could be paired, so increase count by 1
+                                    intCount += 1;
+                                else
+                                    // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                                    intCount -= 1;
+                            }
+
+                            // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
+                            intCount = intCount > 0 ? 1 : 0;
+                        }
+
+                        if (WirelessPairBonus.Attributes?.Count > 0 && intCount % 2 == 1)
+                        {
+                            if (WirelessPairBonus.Attributes["mode"].InnerText == "replace")
+                            {
+                                ImprovementManager.RemoveImprovements(_objCharacter,
+                                    _objCharacter.Improvements
+                                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
+                                        .ToList());
+                            }
+
+                            ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "WirelessPair", WirelessPairBonus, Rating, DisplayNameShort(GlobalOptions.Language));
+                        }
+
+                        foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
+                                objLoopCyberware.InternalId + "WirelessPair");
+                            if (objLoopCyberware.WirelessPairBonus?.Attributes?["mode"]?.InnerText == "replace")
+                            {
+                                ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
+                                    objLoopCyberware.InternalId);
+                            }
+
+                            // Go down the list and create pair bonuses for every second item
+                            if (intCount > 0 && intCount % 2 == 1)
+                            {
+                                ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
+                                    objLoopCyberware.InternalId + "WirelessPair",
+                                    objLoopCyberware.WirelessPairBonus, objLoopCyberware.Rating,
+                                    objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                            }
+
                             intCount -= 1;
+                        }
                     }
-
-                    // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                    intCount = intCount > 0 ? 1 : 0;
                 }
-
-                if (WirelessPairBonus?.Attributes?.Count > 0 && intCount % 2 == 1)
+                else
                 {
-                    if (WirelessPairBonus.Attributes["mode"].InnerText == "replace")
+                    if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                     {
+                        if (WirelessBonus.Attributes?.Count > 0)
+                        {
+                            if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                            {
+                                ImprovementManager.EnableImprovements(_objCharacter,
+                                    _objCharacter.Improvements
+                                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
+                                        .ToArray());
+                            }
+                        }
+
                         ImprovementManager.RemoveImprovements(_objCharacter,
                             _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToList());
+                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless")
+                                .ToArray());
                     }
 
-                    ImprovementManager.CreateImprovements(_objCharacter, SourceType,
-                        _guiID.ToString("D", GlobalOptions.InvariantCultureInfo) + "WirelessPair", WirelessPairBonus, Rating, DisplayNameShort(GlobalOptions.Language));
-                }
-
-                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
-                {
-                    ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
-                        objLoopCyberware.InternalId + "WirelessPair");
-                    if (objLoopCyberware.WirelessPairBonus?.Attributes?["mode"]?.InnerText == "replace")
+                    if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
                     {
-                        ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
-                            objLoopCyberware.InternalId);
+                        ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "WirelessPair");
+                        // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
+                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                            x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
+                                 x.IsModularCurrentlyEquipped && WirelessOn).ToList();
+                        int intCount = lstPairableCyberwares.Count;
+                        // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                        if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
+                        {
+                            int intMatchLocationCount = 0;
+                            int intNotMatchLocationCount = 0;
+                            foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                            {
+                                if (objPairableCyberware.Location != Location)
+                                    intNotMatchLocationCount += 1;
+                                else
+                                    intMatchLocationCount += 1;
+                            }
+
+                            // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                            intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
+                        }
+
+                        if (WirelessPairBonus.Attributes?.Count > 0)
+                        {
+                            if (WirelessPairBonus.Attributes["mode"].InnerText == "replace")
+                            {
+                                ImprovementManager.EnableImprovements(_objCharacter,
+                                    _objCharacter.Improvements
+                                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId)
+                                        .ToArray());
+                            }
+                        }
+
+                        foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
+                                objLoopCyberware.InternalId + "WirelessPair");
+                            // Go down the list and create pair bonuses for every second item
+                            if (intCount > 0 && intCount % 2 == 0)
+                            {
+                                ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
+                                    objLoopCyberware.InternalId + "WirelessPair",
+                                    objLoopCyberware.WirelessPairBonus, objLoopCyberware.Rating,
+                                    objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
+                            }
+
+                            intCount -= 1;
+                        }
                     }
-                    // Go down the list and create pair bonuses for every second item
-                    if (intCount > 0 && intCount % 2 == 1)
-                    {
-                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
-                            objLoopCyberware.InternalId + "WirelessPair",
-                            objLoopCyberware.WirelessPairBonus, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
-                    }
-
-                    intCount -= 1;
-                }
-            }
-            else
-            {
-                if (WirelessBonus?.Attributes?.Count > 0)
-                {
-                    if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
-                    {
-                        ImprovementManager.EnableImprovements(_objCharacter,
-                            _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
-                    }
-                }
-
-                ImprovementManager.DisableImprovements(_objCharacter,
-                    _objCharacter.Improvements
-                        .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId + "Wireless").ToArray());
-
-                if (WirelessPairBonus == null) return;
-
-                ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "WirelessPair");
-                // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
-                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
-                    x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                         x.IsModularCurrentlyEquipped && WirelessOn).ToList();
-                int intCount = lstPairableCyberwares.Count;
-                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
-                if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
-                {
-                    int intMatchLocationCount = 0;
-                    int intNotMatchLocationCount = 0;
-                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
-                    {
-                        if (objPairableCyberware.Location != Location)
-                            intNotMatchLocationCount += 1;
-                        else
-                            intMatchLocationCount += 1;
-                    }
-
-                    // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
-                    intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
-                }
-
-                if (WirelessPairBonus?.Attributes?.Count > 0)
-                {
-                    if (WirelessPairBonus.Attributes["mode"].InnerText == "replace")
-                    {
-                        ImprovementManager.EnableImprovements(_objCharacter,
-                            _objCharacter.Improvements
-                                .Where(x => x.ImproveSource == SourceType && x.SourceName == InternalId).ToArray());
-                    }
-                }
-
-                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
-                {
-                    ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
-                        objLoopCyberware.InternalId + "WirelessPair");
-                    // Go down the list and create pair bonuses for every second item
-                    if (intCount > 0 && intCount % 2 == 0)
-                    {
-                        ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
-                            objLoopCyberware.InternalId + "WirelessPair",
-                            objLoopCyberware.WirelessPairBonus, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
-                    }
-
-                    intCount -= 1;
                 }
             }
+
+            foreach (Cyberware objCyberware in Children)
+                objCyberware.RefreshWirelessBonuses();
+            foreach (Gear objGear in Gear)
+                objGear.RefreshWirelessBonuses();
         }
 
         /// <summary>
@@ -2350,8 +2372,6 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void ChangeModularEquip(bool blnEquip)
         {
-
-            ToggleWirelessBonuses(blnEquip);
             if (blnEquip)
             {
                 ImprovementManager.EnableImprovements(_objCharacter,
@@ -2462,6 +2482,8 @@ namespace Chummer.Backend.Equipment
 
             foreach (Cyberware objChild in Children)
                 objChild.ChangeModularEquip(blnEquip);
+
+            RefreshWirelessBonuses();
         }
 
         public bool CanRemoveThroughImprovements

@@ -2584,23 +2584,19 @@ namespace Chummer
                                     objCyberware.Extra = ImprovementManager.SelectedValue;
                             }
 
-                            if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                            {
-                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating,
-                                    objCyberware.DisplayNameShort(GlobalOptions.Language));
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                                    objCyberware.Extra = ImprovementManager.SelectedValue;
-                            }
-
                             if (!objCyberware.IsModularCurrentlyEquipped)
                                 objCyberware.ChangeModularEquip(false);
-                            else if (objCyberware.PairBonus != null)
+                            else
                             {
-                                Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
-                                if (objMatchingCyberware != null)
-                                    dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
-                                else
-                                    dicPairableCyberwares.Add(objCyberware, 1);
+                                objCyberware.RefreshWirelessBonuses();
+                                if (objCyberware.PairBonus != null)
+                                {
+                                    Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
+                                    if (objMatchingCyberware != null)
+                                        dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                                    else
+                                        dicPairableCyberwares.Add(objCyberware, 1);
+                                }
                             }
 
                             TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
@@ -2740,12 +2736,14 @@ namespace Chummer
                     {
                         objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                     }
+                    objArmor.RefreshWirelessBonuses();
                 }
 
                 // Refresh Gear.
                 foreach (Gear objGear in CharacterObject.Gear)
                 {
                     objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter);
+                    objGear.RefreshWirelessBonuses();
                 }
 
                 // Refresh Weapons Gear
@@ -2758,6 +2756,7 @@ namespace Chummer
                             objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter);
                         }
                     }
+                    objWeapon.RefreshWirelessBonuses();
                 }
 
                 _blnReapplyImprovements = false;
@@ -13106,11 +13105,14 @@ namespace Chummer
                 return;
             }
 
-            string strESSFormat = CharacterObjectOptions.EssenceFormat;
-            if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus hasWirelessBonus)
+            if (treCyberware.SelectedNode?.Tag is IHasWirelessBonus objHasWirelessBonus)
             {
-                chkCyberwareWireless.Checked = hasWirelessBonus.WirelessOn;
+                chkCyberwareWireless.Visible = true;
+                chkCyberwareWireless.Checked = objHasWirelessBonus.WirelessOn;
             }
+            else
+                chkCyberwareWireless.Visible = false;
+
             if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblCyberwareSourceLabel.Visible = true;
@@ -13128,6 +13130,8 @@ namespace Chummer
                 lblCyberwareRatingLabel.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
                     LanguageManager.GetString(objHasRating.RatingLabel));
             }
+
+            string strESSFormat = CharacterObjectOptions.EssenceFormat;
             if (treCyberware.SelectedNode?.Tag is Cyberware objCyberware)
             {
                 gpbCyberwareCommon.Visible = true;
@@ -13306,6 +13310,14 @@ namespace Chummer
                 return;
             }
             string strSpace = LanguageManager.GetString("String_Space");
+            if (treWeapons.SelectedNode?.Tag is IHasWirelessBonus objHasWirelessBonus)
+            {
+                chkWeaponWireless.Visible = true;
+                chkWeaponWireless.Checked = objHasWirelessBonus.WirelessOn;
+            }
+            else
+                chkWeaponWireless.Visible = false;
+
             if (treWeapons.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblWeaponSourceLabel.Visible = true;
@@ -13790,6 +13802,14 @@ namespace Chummer
                 return;
             }
 
+            if (treArmor.SelectedNode?.Tag is IHasWirelessBonus objHasWirelessBonus)
+            {
+                chkArmorWireless.Visible = true;
+                chkArmorWireless.Checked = objHasWirelessBonus.WirelessOn;
+            }
+            else
+                chkArmorWireless.Visible = false;
+
             if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
             {
                 lblArmorSourceLabel.Visible = true;
@@ -14022,6 +14042,14 @@ namespace Chummer
                 flpGear.ResumeLayout();
                 return;
             }
+
+            if (treGear.SelectedNode?.Tag is IHasWirelessBonus objHasWirelessBonus)
+            {
+                chkGearWireless.Visible = true;
+                chkGearWireless.Checked = objHasWirelessBonus.WirelessOn;
+            }
+            else
+                chkArmorWireless.Visible = false;
 
             if (treGear.SelectedNode?.Tag is IHasSource objSelected)
             {
@@ -17273,14 +17301,12 @@ namespace Chummer
 
         private void chkGearWireless_CheckedChanged(object sender, EventArgs e)
         {
-            /*
             if (IsRefreshing)
                 return;
             if (treGear.SelectedNode.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkGearWireless.Checked;
             }
-            */
         }
 
         private void chkCyberwareWireless_CheckedChanged(object sender, EventArgs e)

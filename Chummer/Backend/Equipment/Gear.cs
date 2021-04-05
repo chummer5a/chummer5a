@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste, IHasWirelessBonus
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoForWeaponType = string.Empty;
         private bool _blnBonded;
         private bool _blnEquipped = true;
-        private bool _blnWirelessOn;
+        private bool _blnWirelessOn = true;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWeaponBonus;
@@ -434,12 +434,15 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
 
             objXmlGear.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+
+            if (blnAddImprovements)
+                RefreshWirelessBonuses();
         }
 
         private SourceString _objCachedSourceDetail;
         public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
-        public void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements)
+        private void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements)
         {
             XmlNode objGearsNode = xmlParentGearNode?["gears"];
             if (objGearsNode != null)
@@ -567,7 +570,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        protected void CreateChild(XmlNode xmlChildNode, bool blnAddImprovements)
+        private void CreateChild(XmlNode xmlChildNode, bool blnAddImprovements)
         {
             if (xmlChildNode == null)
                 return;
@@ -1653,7 +1656,13 @@ namespace Chummer.Backend.Equipment
         public bool WirelessOn
         {
             get => _blnWirelessOn;
-            set => _blnWirelessOn = value;
+            set
+            {
+                if (value == _blnWirelessOn)
+                    return;
+                _blnWirelessOn = value;
+                RefreshWirelessBonuses();
+            }
         }
 
         /// <summary>
@@ -2865,9 +2874,59 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (Children.Count > 0)
-                foreach (Gear objGear in Children)
-                    objGear.ChangeEquippedStatus(blnEquipped);
+            foreach (Gear objGear in Children)
+                objGear.ChangeEquippedStatus(blnEquipped);
+        }
+
+        /// <summary>
+        /// Toggle the Wireless Bonus for this gear.
+        /// </summary>
+        public void RefreshWirelessBonuses()
+        {
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            {
+                if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
+                {
+                    if (WirelessBonus.Attributes?.Count > 0)
+                    {
+                        if (WirelessBonus.Attributes["mode"].InnerText == "replace")
+                        {
+                            ImprovementManager.DisableImprovements(_objCharacter,
+                                _objCharacter.Improvements.Where(x =>
+                                        x.ImproveSource == Improvement.ImprovementSource.Gear &&
+                                        x.SourceName == InternalId)
+                                    .ToArray());
+                        }
+                    }
+
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+                }
+                else
+                {
+                    if (WirelessBonus.Attributes?.Count > 0)
+                    {
+                        if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
+                        {
+                            ImprovementManager.EnableImprovements(_objCharacter,
+                                _objCharacter.Improvements.Where(x =>
+                                        x.ImproveSource == Improvement.ImprovementSource.Gear &&
+                                        x.SourceName == InternalId)
+                                    .ToArray());
+                        }
+                    }
+
+                    ImprovementManager.RemoveImprovements(_objCharacter,
+                        _objCharacter.Improvements.Where(x =>
+                            x.ImproveSource == Improvement.ImprovementSource.Gear &&
+                            x.SourceName == InternalId + "Wireless").ToArray());
+                }
+            }
+
+            foreach (Gear objGear in Children)
+                objGear.RefreshWirelessBonuses();
         }
 
         /// <summary>
