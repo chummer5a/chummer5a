@@ -27826,7 +27826,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower select="Air">Elemental Attack</optionalpower>
           <optionalpower>Energy Aura</optionalpower>
           <optionalpower>Fear</optionalpower>
@@ -27920,7 +27920,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -28011,7 +28011,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Engulf</optionalpower>
@@ -28101,7 +28101,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Fear</optionalpower>
           <optionalpower>Guard</optionalpower>
           <optionalpower>Noxious Breath</optionalpower>
@@ -28193,7 +28193,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Fear</optionalpower>
           <optionalpower>Innate Spell</optionalpower>
           <optionalpower>Movement</optionalpower>
@@ -28285,7 +28285,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Binding</optionalpower>
           <optionalpower select="Water">Elemental Attack</optionalpower>
@@ -28454,7 +28454,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Animal Control</optionalpower>
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Elemental Attack</optionalpower>
@@ -28548,7 +28548,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Engulf</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -28643,7 +28643,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Movement</optionalpower>
@@ -28736,7 +28736,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -28830,7 +28830,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -28920,7 +28920,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Corrosive Spit</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -29018,7 +29018,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>

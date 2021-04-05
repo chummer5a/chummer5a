@@ -21,6 +21,7 @@ Data Changes:
 - Whisper of Bones now properly requires Necromancy.
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.
 - Smartlink from the Shadowrun 2050 ruleset now properly gives a +2 dicepool bonus when using smartguns.
+- When creating spirit critters with forces not divisible by 3, the number of optional powers they get is now properly based on rounding the result of the division down instead of up. Fixes #4356.
 
 Changed/New Strings:
 - String_ContactPoints
