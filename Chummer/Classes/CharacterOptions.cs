@@ -412,7 +412,7 @@ namespace Chummer
         {
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-            if (!Directory.Exists(settingsDirectoryPath) && !Utils.IsRunningInVisualStudio)
+            if (!Directory.Exists(settingsDirectoryPath))
             {
                 try
                 {
