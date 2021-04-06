@@ -471,7 +471,7 @@ namespace Chummer.Backend.Attributes
             //Timekeeper.Finish("load_char_attrib");
         }
 
-        public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
+        public void LoadFromHeroLab(XPathNavigator xmlStatBlockBaseNode, CustomActivity parentActivity)
         {
             if (xmlStatBlockBaseNode == null)
                 return;
@@ -529,12 +529,12 @@ namespace Chummer.Backend.Attributes
                     if (strAttribute == "ESS"
                     ) // Not Essence though, this will get modified automatically instead of having its value set to the one HeroLab displays
                         continue;
-                    XmlNode xmlHeroLabAttributeNode =
+                    XPathNavigator xmlHeroLabAttributeNode =
                         xmlStatBlockBaseNode.SelectSingleNode(
-                            "attributes/attribute[@name = \"" + GetAttributeEnglishName(strAttribute) + "\"]");
-                    XmlNode xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
+                            "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath() + "]");
+                    XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
                     if (xmlAttributeBaseNode != null &&
-                        int.TryParse(xmlAttributeBaseNode.InnerText, out int intHeroLabAttributeBaseValue))
+                        int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
                     {
                         int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
                         if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;

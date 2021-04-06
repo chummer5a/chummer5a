@@ -50,7 +50,7 @@ namespace Chummer
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
             // Load the Programs information.
-            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("programs.xml").SelectSingleNode("/chummer");
             if (!_objCharacter.IsCritter) return;
             _xmlOptionalAIProgramsNode = _objCharacter.GetNode().SelectSingleNode("optionalaiprograms");
         }

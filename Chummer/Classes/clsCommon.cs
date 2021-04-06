@@ -39,7 +39,7 @@ namespace Chummer
         #region XPath Evaluators
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument {XmlResolver = null};
+        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
         private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
@@ -739,9 +739,9 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strAltCode))
             {
-                XmlNode xmlOriginalCode = XmlManager.Load("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
                     .SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
-                return xmlOriginalCode?.InnerText ?? strAltCode;
+                return xmlOriginalCode?.Value ?? strAltCode;
             }
             return string.Empty;
         }
@@ -756,9 +756,9 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode xmlAltCode = XmlManager.Load("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
                     .SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
-                return xmlAltCode?.InnerText ?? strCode;
+                return xmlAltCode?.Value ?? strCode;
             }
             return string.Empty;
         }
@@ -773,11 +773,11 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode xmlBook = XmlManager.Load("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
+                XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
                     .SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 if (xmlBook != null)
                 {
-                    string strReturn = xmlBook["translate"]?.InnerText ?? xmlBook["name"]?.InnerText;
+                    string strReturn = xmlBook.SelectSingleNode("translate")?.Value ?? xmlBook.SelectSingleNode("name")?.Value;
                     if (!string.IsNullOrWhiteSpace(strReturn))
                         return strReturn;
                 }

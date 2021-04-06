@@ -57,24 +57,23 @@ namespace Chummer
                 {
                     lock (_loadingLock)
                     {
-                        if (value != _xmlContent)
+                        if (value == _xmlContent)
+                            return;
+                        IsLoaded = false;
+                        _xmlContent = value;
+                        if (value != null)
                         {
-                            IsLoaded = false;
-                            _xmlContent = value;
-                            if (value != null)
+                            using (MemoryStream memStream = new MemoryStream())
                             {
-                                using (MemoryStream memStream = new MemoryStream())
-                                {
-                                    value.Save(memStream);
-                                    memStream.Position = 0;
-                                    using (XmlReader objXmlReader = XmlReader.Create(memStream, new XmlReaderSettings {XmlResolver = null}))
-                                        XPathContent = new XPathDocument(objXmlReader);
-                                }
+                                value.Save(memStream);
+                                memStream.Position = 0;
+                                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.SafeXmlReaderSettings))
+                                    XPathContent = new XPathDocument(objXmlReader);
                             }
-                            else
-                                XPathContent = null;
-                            IsLoaded = true;
                         }
+                        else
+                            XPathContent = null;
+                        IsLoaded = true;
                     }
                 }
             }
@@ -131,13 +130,14 @@ namespace Chummer
         /// <summary>
         /// Load the selected XML file and its associated custom file synchronously.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static XPathDocument LoadXPath(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        public static XPathNavigator LoadXPath(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             return LoadXPathAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile).Result;
         }
@@ -145,12 +145,13 @@ namespace Chummer
         /// <summary>
         /// Load the selected XML file and its associated custom file asynchronously.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        public static async Task<XPathDocument> LoadXPathAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        public static async Task<XPathNavigator> LoadXPathAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
@@ -203,15 +204,15 @@ namespace Chummer
                 {
                     xmlDocumentOfReturn.Save(memStream);
                     memStream.Position = 0;
-                    using (XmlReader objXmlReader = XmlReader.Create(memStream, new XmlReaderSettings { XmlResolver = null }))
-                        return new XPathDocument(objXmlReader);
+                    using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.SafeXmlReaderSettings))
+                        return new XPathDocument(objXmlReader).CreateNavigator();
                 }
             }
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
             {
                 await Task.Delay(20);
             }
-            return xmlReferenceOfReturn.XPathContent;
+            return xmlReferenceOfReturn.XPathContent.CreateNavigator();
         }
 
         /// <summary>
@@ -275,7 +276,7 @@ namespace Chummer
             if (!s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
             {
                 int intEmergencyRelease = 0;
-                while (true) // Hacky as heck, but it works for now. We break either when we successfully add our XmlReference to the dictionary.
+                while (true) // Hacky as heck, but it works for now. We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     xmlReferenceOfReturn = new XmlReference();
@@ -284,11 +285,9 @@ namespace Chummer
                         blnLoadFile = true;
                         break;
                     }
-                    else
-                    {
-                        // It somehow got added in the meantime, so let's fetch it again
-                        s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
-                    }
+                    // It somehow got added in the meantime, so let's fetch it again
+                    if (s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn))
+                        break;
                     if (intEmergencyRelease > 1000) // Shouldn't every happen, but just in case it does, emergency exit out of the loading function
                     {
                         Utils.BreakIfDebug();
@@ -309,7 +308,7 @@ namespace Chummer
                 }
                 if (xmlReturn == null) // Not an else in case something goes wrong in safe cast in the line above
                 {
-                    xmlReturn = new XmlDocument {XmlResolver = null};
+                    xmlReturn = new XmlDocument { XmlResolver = null };
                     // write the root chummer node.
                     xmlReturn.AppendChild(xmlReturn.CreateElement("chummer"));
                     XmlElement xmlReturnDocElement = xmlReturn.DocumentElement;
@@ -317,7 +316,7 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings {XmlResolver = null}))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                                 xmlScratchpad.Load(objXmlReader);
 
                         if (xmlReturnDocElement != null)
@@ -357,19 +356,13 @@ namespace Chummer
                 {
                     // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
                     // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
-                    XmlDocument objDataDoc = LanguageManager.GetDataDocument(strLanguage);
+                    XPathDocument objDataDoc = LanguageManager.GetDataDocument(strLanguage);
                     if (objDataDoc != null)
                     {
                         XmlNode xmlBaseChummerNode = xmlReturn.SelectSingleNode("/chummer");
-                        using (XmlNodeList xmlTranslationTypeNodeList = objDataDoc.SelectNodes("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]/*"))
+                        foreach (XPathNavigator objType in objDataDoc.CreateNavigator().Select("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]/*"))
                         {
-                            if (xmlTranslationTypeNodeList?.Count > 0)
-                            {
-                                foreach (XmlNode objType in xmlTranslationTypeNodeList)
-                                {
-                                    AppendTranslations(xmlReturn, objType, xmlBaseChummerNode);
-                                }
-                            }
+                            AppendTranslations(xmlReturn, objType, xmlBaseChummerNode);
                         }
                     }
                 }
@@ -393,7 +386,7 @@ namespace Chummer
                     xmlReturn = xmlReferenceOfReturn.XmlContent;
             }
 
-            xmlReturn = xmlReturn ?? new XmlDocument {XmlResolver = null};
+            xmlReturn = xmlReturn ?? new XmlDocument { XmlResolver = null };
             if (strFileName == "improvements.xml")
                 return xmlReturn;
 
@@ -522,20 +515,20 @@ namespace Chummer
             }
         }
 
-        private static void AppendTranslations(XmlDocument xmlDataDocument, XmlNode xmlTranslationListParentNode, XmlNode xmlDataParentNode)
+        private static void AppendTranslations(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode)
         {
-            foreach (XmlNode objChild in xmlTranslationListParentNode.ChildNodes)
+            foreach (XPathNavigator objChild in xmlTranslationListParentNode.Select("*"))
             {
                 XmlNode xmlItem = null;
                 string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name + '[';
-                string strChildName = objChild["id"]?.InnerText;
+                string strChildName = objChild.SelectSingleNode("id")?.Value;
                 if (!string.IsNullOrEmpty(strChildName))
                 {
                     xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "id = " + strChildName.CleanXPath() + ']');
                 }
                 if (xmlItem == null)
                 {
-                    strChildName = objChild["name"]?.InnerText.Replace("&amp;", "&");
+                    strChildName = objChild.SelectSingleNode("name")?.Value.Replace("&amp;", "&");
                     if (!string.IsNullOrEmpty(strChildName))
                     {
                         xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "name = " + strChildName.CleanXPath() + ']');
@@ -544,39 +537,39 @@ namespace Chummer
                 // If this is a translatable item, find the proper node and add/update this information.
                 if (xmlItem != null)
                 {
-                    XmlNode xmlLoopNode = objChild["translate"];
+                    XPathNavigator xmlLoopNode = objChild.SelectSingleNode("translate");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild["altpage"];
+                    xmlLoopNode = objChild.SelectSingleNode("altpage");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild["altcode"];
+                    xmlLoopNode = objChild.SelectSingleNode("altcode");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild["altnotes"];
+                    xmlLoopNode = objChild.SelectSingleNode("altnotes");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild["altadvantage"];
+                    xmlLoopNode = objChild.SelectSingleNode("altadvantage");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild["altdisadvantage"];
+                    xmlLoopNode = objChild.SelectSingleNode("altdisadvantage");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild["altnameonpage"];
+                    xmlLoopNode = objChild.SelectSingleNode("altnameonpage");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild["alttexts"];
+                    xmlLoopNode = objChild.SelectSingleNode("alttexts");
                     if (xmlLoopNode != null)
-                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    string strTranslate = objChild.Attributes?["translate"]?.InnerXml;
+                    string strTranslate = objChild.SelectSingleNode("@translate")?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -584,27 +577,27 @@ namespace Chummer
                     }
 
                     // Sub-children to also process with the translation
-                    XmlNode xmlSubItemsNode = objChild["specs"];
+                    XPathNavigator xmlSubItemsNode = objChild.SelectSingleNode("specs");
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
                     }
-                    xmlSubItemsNode = objChild["metavariants"];
+                    xmlSubItemsNode = objChild.SelectSingleNode("metavariants");
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
                     }
-                    xmlSubItemsNode = objChild["choices"];
+                    xmlSubItemsNode = objChild.SelectSingleNode("choices");
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
                     }
-                    xmlSubItemsNode = objChild["talents"];
+                    xmlSubItemsNode = objChild.SelectSingleNode("talents");
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
                     }
-                    xmlSubItemsNode = objChild["versions"];
+                    xmlSubItemsNode = objChild.SelectSingleNode("versions");
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
@@ -612,7 +605,7 @@ namespace Chummer
                 }
                 else
                 {
-                    string strTranslate = objChild.Attributes?["translate"]?.InnerXml;
+                    string strTranslate = objChild.SelectSingleNode("@translate")?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1332,47 +1325,34 @@ namespace Chummer
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
                 foreach (Character objCharacter in lstCharacters)
                 {
-                    using (XmlNodeList lstSheetNodes = objCharacter.LoadData("sheets.xml", strLanguage).SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+                    foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
                     {
-                        if (lstSheetNodes != null)
+                        string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
+                        if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                         {
-                            foreach (XmlNode xmlSheet in lstSheetNodes)
-                            {
-                                string strSheetFileName = xmlSheet["filename"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
-                                {
-                                    lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
-                                            ? Path.Combine(strLanguage, strSheetFileName)
-                                            : strSheetFileName,
-                                        xmlSheet["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown")));
-                                    if (blnTerminateAfterFirstMatch)
-                                        return lstSheets;
-                                }
-                            }
+                            lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
+                                    ? Path.Combine(strLanguage, strSheetFileName)
+                                    : strSheetFileName,
+                                xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                            if (blnTerminateAfterFirstMatch)
+                                return lstSheets;
                         }
                     }
                 }
             }
             else
             {
-                using (XmlNodeList lstSheetNodes = Load("sheets.xml", null, strLanguage)
-                    .SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
+                foreach (XPathNavigator xmlSheet in LoadXPath("sheets.xml", null, strLanguage).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
                 {
-                    if (lstSheetNodes != null)
+                    string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
+                    if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                     {
-                        foreach (XmlNode xmlSheet in lstSheetNodes)
-                        {
-                            string strSheetFileName = xmlSheet["filename"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
-                            {
-                                lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
-                                        ? Path.Combine(strLanguage, strSheetFileName)
-                                        : strSheetFileName,
-                                    xmlSheet["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown")));
-                                if (blnTerminateAfterFirstMatch)
-                                    return lstSheets;
-                            }
-                        }
+                        lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
+                                ? Path.Combine(strLanguage, strSheetFileName)
+                                : strSheetFileName,
+                            xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
+                        if (blnTerminateAfterFirstMatch)
+                            return lstSheets;
                     }
                 }
             }
@@ -1389,10 +1369,7 @@ namespace Chummer
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return;
-            XmlDocument objLanguageDoc = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XPathDocument objLanguageDoc;
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
 
@@ -1400,7 +1377,7 @@ namespace Chummer
             {
                 using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                     using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                        objLanguageDoc.Load(objXmlReader);
+                        objLanguageDoc = new XPathDocument(objXmlReader);
             }
             catch (IOException ex)
             {
@@ -1413,7 +1390,7 @@ namespace Chummer
                 return;
             }
 
-            XPathNavigator objLanguageNavigator = objLanguageDoc.GetFastNavigator();
+            XPathNavigator objLanguageNavigator = objLanguageDoc.CreateNavigator();
 
             string strLangPath = Path.Combine(languageDirectoryPath, "results_" + strLanguage + ".xml");
             FileStream objStream = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
@@ -1442,7 +1419,7 @@ namespace Chummer
                         || strFile.EndsWith("sheets.xml", StringComparison.OrdinalIgnoreCase))
                         continue;
                     // Load the current English file.
-                    XPathNavigator objEnglishDoc = LoadXPath(strFileName).CreateNavigator();
+                    XPathNavigator objEnglishDoc = LoadXPath(strFileName);
                     XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNode("/chummer");
 
                     // First pass: make sure the document exists.

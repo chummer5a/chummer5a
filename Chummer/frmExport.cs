@@ -196,10 +196,7 @@ namespace Chummer
         #region Methods
         private void GenerateCharacterXml(object sender, DoWorkEventArgs e)
         {
-            XmlDocument objCharacterXml = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
             // Write the Character information to a MemoryStream so we don't need to create any files.
             MemoryStream objStream = new MemoryStream();
             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))

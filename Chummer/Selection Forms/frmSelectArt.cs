@@ -55,26 +55,26 @@ namespace Chummer
             switch (objWindowMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = objCharacter.LoadDataXPath("metamagic.xml").CreateNavigator().SelectSingleNode("/chummer/arts");
+                    _objXmlDocument = objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNode("/chummer/arts");
                     _strLocalName = LanguageManager.GetString("String_Art");
                     _strBaseXPath = "art";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enhancement:
-                    _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").CreateNavigator().SelectSingleNode("/chummer/enhancements");
+                    _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/enhancements");
                     _strLocalName = LanguageManager.GetString("String_Enhancement");
                     _strBaseXPath = "enhancement";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
                 case Mode.Enchantment:
                     _strLocalName = LanguageManager.GetString("String_Enchantment");
-                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").CreateNavigator().SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual");
-                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").CreateNavigator().SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;

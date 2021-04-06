@@ -484,7 +484,7 @@ namespace Chummer.Classes
             {
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlTraditionsBaseChummerNode =
-                    _objCharacter.LoadDataXPath("traditions.xml").CreateNavigator().SelectSingleNode("/chummer");
+                    _objCharacter.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
                 List<ListItem> lstTraditions = new List<ListItem>(30);
                 if (xmlTraditionsBaseChummerNode != null)
                 {

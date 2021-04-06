@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.XPath;
 using iText.Kernel.Pdf;
 using Microsoft.Win32;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -951,9 +952,11 @@ namespace Chummer
         /// </summary>
         public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
-        private static XmlDocument _xmlClipboard = new XmlDocument {XmlResolver = null};
+        private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
 
-        public static XmlReaderSettings SafeXmlReaderSettings { get; } = new XmlReaderSettings {XmlResolver = null};
+        public static XmlReaderSettings SafeAsyncXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null, Async = true };
+
+        public static XmlReaderSettings SafeXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null };
         /// <summary>
         /// XmlReaderSettings that should only be used if invalid characters are found. 
         /// </summary>
@@ -1031,53 +1034,47 @@ namespace Chummer
                 {
                     _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>();
                     // Retrieve the SourcebookInfo objects.
-                    using (XmlNodeList xmlBookList = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book"))
+                    foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml").Select("/chummer/books/book"))
                     {
-                        if (xmlBookList != null)
+                        string strCode = xmlBook.SelectSingleNode("code")?.Value;
+                        if (string.IsNullOrEmpty(strCode))
+                            continue;
+                        SourcebookInfo objSource = new SourcebookInfo
                         {
-                            foreach (XmlNode xmlBook in xmlBookList)
+                            Code = strCode
+                        };
+
+                        try
+                        {
+                            string strTemp = string.Empty;
+                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                             {
-                                string strCode = xmlBook["code"]?.InnerText;
-                                if (string.IsNullOrEmpty(strCode))
-                                    continue;
-                                SourcebookInfo objSource = new SourcebookInfo
+                                string[] strParts = strTemp.Split('|');
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
                                 {
-                                    Code = strCode
-                                };
-
-                                try
-                                {
-                                    string strTemp = string.Empty;
-                                    if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
-                                    {
-                                        string[] strParts = strTemp.Split('|');
-                                        objSource.Path = strParts[0];
-                                        if (string.IsNullOrEmpty(objSource.Path))
-                                        {
-                                            objSource.Path = string.Empty;
-                                            objSource.Offset = 0;
-                                        }
-                                        else
-                                        {
-                                            if (!File.Exists(objSource.Path))
-                                                objSource.Path = string.Empty;
-                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                                objSource.Offset = intTmp;
-                                        }
-                                    }
+                                    objSource.Path = string.Empty;
+                                    objSource.Offset = 0;
                                 }
-                                catch (System.Security.SecurityException)
+                                else
                                 {
-
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        objSource.Offset = intTmp;
                                 }
-                                catch (UnauthorizedAccessException)
-                                {
-
-                                }
-
-                                _dicSourcebookInfos.Add(strCode, objSource);
                             }
                         }
+                        catch (System.Security.SecurityException)
+                        {
+
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+
+                        }
+
+                        _dicSourcebookInfos.Add(strCode, objSource);
                     }
                 }
                 return _dicSourcebookInfos;

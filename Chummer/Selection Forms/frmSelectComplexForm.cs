@@ -44,7 +44,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
-            _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").CreateNavigator().SelectSingleNode("/chummer/complexforms");
+            _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNode("/chummer/complexforms");
 
             _xmlOptionalComplexFormNode = _objCharacter.GetNode();
             if (_xmlOptionalComplexFormNode == null) return;

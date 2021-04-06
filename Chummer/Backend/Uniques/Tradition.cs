@@ -307,14 +307,14 @@ namespace Chummer.Backend.Uniques
             }
         }
 
-        public void LoadFromHeroLab(XmlNode xmlHeroLabNode)
+        public void LoadFromHeroLab(XPathNavigator xmlHeroLabNode)
         {
             if (xmlHeroLabNode == null)
                 return;
             _eTraditionType = TraditionType.MAG;
-            _strName = xmlHeroLabNode.SelectSingleNode("@name")?.InnerText;
+            _strName = xmlHeroLabNode.SelectSingleNode("@name")?.Value;
             XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName)
-                ? _objCharacter.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + _strName + "\"]") : null;
+                ? _objCharacter.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = " + _strName.CleanXPath() + "]") : null;
             if(xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
                 _guiSourceID = new Guid(CustomMagicalTraditionGuid);
@@ -323,11 +323,11 @@ namespace Chummer.Backend.Uniques
             Create(xmlTraditionDataNode);
             if(IsCustomTradition)
             {
-                _strSpiritCombat = xmlHeroLabNode.SelectSingleNode("@combatspirits")?.InnerText;
-                _strSpiritDetection = xmlHeroLabNode.SelectSingleNode("@detectionspirits")?.InnerText;
-                _strSpiritHealth = xmlHeroLabNode.SelectSingleNode("@healthspirits")?.InnerText;
-                _strSpiritIllusion = xmlHeroLabNode.SelectSingleNode("@illusionspirits")?.InnerText;
-                _strSpiritManipulation = xmlHeroLabNode.SelectSingleNode("@manipulationspirits")?.InnerText;
+                _strSpiritCombat = xmlHeroLabNode.SelectSingleNode("@combatspirits")?.Value;
+                _strSpiritDetection = xmlHeroLabNode.SelectSingleNode("@detectionspirits")?.Value;
+                _strSpiritHealth = xmlHeroLabNode.SelectSingleNode("@healthspirits")?.Value;
+                _strSpiritIllusion = xmlHeroLabNode.SelectSingleNode("@illusionspirits")?.Value;
+                _strSpiritManipulation = xmlHeroLabNode.SelectSingleNode("@manipulationspirits")?.Value;
             }
         }
 

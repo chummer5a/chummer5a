@@ -29,6 +29,7 @@ using Chummer.Annotations;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
 using System.Drawing;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Skills
 {
@@ -340,24 +341,26 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-        public static Skill LoadFromHeroLab(Character objCharacter, XmlNode xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "")
+        public static Skill LoadFromHeroLab(Character objCharacter, XPathNavigator xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "")
         {
             if (xmlSkillNode == null)
                 throw new ArgumentNullException(nameof(xmlSkillNode));
-            string strName = xmlSkillNode.Attributes?["name"]?.InnerText ?? string.Empty;
+            string strName = xmlSkillNode.SelectSingleNode("@name")?.Value ?? string.Empty;
 
             XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml")
                 .SelectSingleNode((blnIsKnowledgeSkill
                     ? "/chummer/knowledgeskills/skill[name = "
                     : "/chummer/skills/skill[name = ") + strName.CleanXPath() + ']');
-            Guid suid = Guid.NewGuid();
+            Guid suid = Guid.Empty;
             if (xmlSkillDataNode?.TryGetField("id", Guid.TryParse, out suid) != true)
                 suid = Guid.NewGuid();
 
+            bool blnIsNativeLanguage = false;
             int intKarmaRating = 0;
-            if (xmlSkillNode.Attributes?["text"]?.InnerText != "N")      // Native Languages will have a base + karma rating of 0
-                if (!int.TryParse(xmlSkillNode.Attributes?["base"]?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intKarmaRating)) // Only reading karma rating out for now, any base rating will need modification within SkillsSection
-                    intKarmaRating = 0;
+            if (xmlSkillNode.SelectSingleNode("@text")?.Value == "N")
+                blnIsNativeLanguage = true;
+            else if (!int.TryParse(xmlSkillNode.SelectSingleNode("@base")?.Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intKarmaRating)) // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+                intKarmaRating = 0;
 
             Skill objSkill;
             if (blnIsKnowledgeSkill)
@@ -366,7 +369,8 @@ namespace Chummer.Backend.Skills
                 {
                     WriteableName = strName,
                     Karma = intKarmaRating,
-                    Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic")
+                    Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic"),
+                    IsNativeLanguage = blnIsNativeLanguage
                 };
 
                 objSkill = objKnowledgeSkill;
@@ -374,7 +378,7 @@ namespace Chummer.Backend.Skills
             else
             {
                 objSkill = FromData(xmlSkillDataNode, objCharacter);
-                if (xmlSkillNode.Attributes?["fromgroup"]?.InnerText == "yes")
+                if (xmlSkillNode.SelectSingleNode("@fromgroup")?.Value == "yes")
                 {
                     intKarmaRating -= objSkill.SkillGroupObject.Karma;
                 }
@@ -382,7 +386,7 @@ namespace Chummer.Backend.Skills
 
                 if (objSkill is ExoticSkill objExoticSkill)
                 {
-                    string strSpecializationName = xmlSkillNode.SelectSingleNode("specialization/@bonustext")?.InnerText ?? string.Empty;
+                    string strSpecializationName = xmlSkillNode.SelectSingleNode("specialization/@bonustext")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSpecializationName))
                     {
                         int intLastPlus = strSpecializationName.LastIndexOf('+');
@@ -397,22 +401,16 @@ namespace Chummer.Backend.Skills
 
             objSkill.SkillId = suid;
 
-            List<SkillSpecialization> lstSpecializations;
-            using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specialization"))
+            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
+            foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.Select("specialization"))
             {
-                lstSpecializations = new List<SkillSpecialization>(xmlSpecList?.Count ?? 0);
-                if (xmlSpecList?.Count > 0)
-                {
-                    foreach (XmlNode xmlSpecializationNode in xmlSpecList)
-                    {
-                        string strSpecializationName = xmlSpecializationNode.Attributes?["bonustext"]?.InnerText;
-                        if (string.IsNullOrEmpty(strSpecializationName)) continue;
-                        int intLastPlus = strSpecializationName.LastIndexOf('+');
-                        if (intLastPlus > strSpecializationName.Length)
-                            strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
-                        lstSpecializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
-                    }
-                }
+                string strSpecializationName = xmlSpecializationNode.SelectSingleNode("@bonustext")?.Value;
+                if (string.IsNullOrEmpty(strSpecializationName))
+                    continue;
+                int intLastPlus = strSpecializationName.LastIndexOf('+');
+                if (intLastPlus > strSpecializationName.Length)
+                    strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
+                lstSpecializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
             }
             if (lstSpecializations.Count > 0)
             {

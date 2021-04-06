@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Xml.XPath;
 using Chummer.Plugins;
 using NLog;
 
@@ -537,25 +538,25 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+                XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
                 if (objCache.Metatype != null)
                 {
-                    XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
+                    XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     if (objMetatypeNode == null)
                     {
-                        objMetatypeDoc = XmlManager.Load("critters.xml");
+                        objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     }
 
-                    StringBuilder sbdMetatype = new StringBuilder(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype);
+                    string strMetatype = objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metatype;
 
                     if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                     {
                         objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
-                        sbdMetatype.Append(LanguageManager.GetString("String_Space")).Append('(').Append(objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant).Append(')');
+                        strMetatype += LanguageManager.GetString("String_Space") + '(' + (objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metavariant) + ')';
                     }
-                    lblMetatype.Text = sbdMetatype.ToString();
+                    lblMetatype.Text = strMetatype;
                 }
                 else
                     lblMetatype.Text = LanguageManager.GetString("String_MetatypeLoadError");

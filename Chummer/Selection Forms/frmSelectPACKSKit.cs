@@ -59,19 +59,19 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the PACKS information.
-            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlGearsBaseGearsNode = _objCharacter.LoadDataXPath("gear.xml").CreateNavigator().SelectSingleNode("/chummer/gears");
-            _xmlWeaponsBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlArmorBaseChummerNode = _objCharacter.LoadDataXPath("armor.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlQualitiesBaseQualitiesNode = _objCharacter.LoadDataXPath("qualities.xml").CreateNavigator().SelectSingleNode("/chummer/qualities");
-            _xmlSkillsBaseChummerNode = _objCharacter.LoadDataXPath("skills.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlSpellsBaseSpellsNode = _objCharacter.LoadDataXPath("spells.xml").CreateNavigator().SelectSingleNode("/chummer/spells");
-            _xmlComplexFormsBaseChummerNode = _objCharacter.LoadDataXPath("complexforms.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlVehiclesBaseChummerNode = _objCharacter.LoadDataXPath("vehicles.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlBiowareBaseChummerNode = _objCharacter.LoadDataXPath("bioware.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlCyberwareBaseChummerNode = _objCharacter.LoadDataXPath("cyberware.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlPowersBasePowersNode = _objCharacter.LoadDataXPath("powers.xml").CreateNavigator().SelectSingleNode("/chummer/powers");
-            _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").SelectSingleNode("/chummer");
+            _xmlGearsBaseGearsNode = _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/gears");
+            _xmlWeaponsBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer");
+            _xmlArmorBaseChummerNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer");
+            _xmlQualitiesBaseQualitiesNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/qualities");
+            _xmlSkillsBaseChummerNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer");
+            _xmlSpellsBaseSpellsNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
+            _xmlComplexFormsBaseChummerNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNode("/chummer");
+            _xmlVehiclesBaseChummerNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer");
+            _xmlBiowareBaseChummerNode = _objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode("/chummer");
+            _xmlCyberwareBaseChummerNode = _objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode("/chummer");
+            _xmlPowersBasePowersNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers");
+            _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNode("/chummer");
         }
 
         private void frmSelectPACKSKit_Load(object sender, EventArgs e)
@@ -879,7 +879,7 @@ namespace Chummer
             string strCustomPath = Path.Combine(Utils.GetStartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
             {
-                XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
+                XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
@@ -916,7 +916,9 @@ namespace Chummer
 
                             // If this is not a new file, write out the current contents.
                             using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
+                            {
                                 if (objXmlNodeList?.Count > 0)
+                                {
                                     foreach (XmlNode objXmlNode in objXmlNodeList)
                                     {
                                         if (objXmlNode["name"]?.InnerText != strSelectedKit)
@@ -928,6 +930,8 @@ namespace Chummer
                                             objWriter.WriteEndElement();
                                         }
                                     }
+                                }
+                            }
 
                             // </packs>
                             objWriter.WriteEndElement();
@@ -941,7 +945,7 @@ namespace Chummer
             }
 
             // Reload the PACKS files since they have changed.
-            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").SelectSingleNode("/chummer");
             cboCategory_SelectedIndexChanged(sender, e);
         }
         #endregion

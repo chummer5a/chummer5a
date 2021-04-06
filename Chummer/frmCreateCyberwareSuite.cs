@@ -89,10 +89,7 @@ namespace Chummer
             bool blnNewFile = !File.Exists(strPath);
 
             // If this is not a new file, read in the existing contents.
-            XmlDocument objXmlCurrentDocument = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XmlDocument objXmlCurrentDocument = new XmlDocument { XmlResolver = null };
             if (!blnNewFile)
             {
                 try

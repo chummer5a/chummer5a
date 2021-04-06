@@ -26,6 +26,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 
@@ -432,7 +433,7 @@ namespace Chummer.Backend.Skills
                             _dicSkills.Add(objSkill.DictionaryKey, objSkill);
                         }
 
-                        UpdateUndoList(xmlSkillNode);
+                        UpdateUndoList(xmlSkillNode.OwnerDocument);
                     }
                 }
 
@@ -495,23 +496,16 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void LoadFromHeroLab(XmlNode xmlSkillNode, CustomActivity parentActivity)
+        internal void LoadFromHeroLab(XPathNavigator xmlSkillNode, CustomActivity parentActivity)
         {
             using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
-                List<SkillGroup> lstLoadingSkillGroups;
-                using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
+                List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("groups/skill"))
                 {
-                    lstLoadingSkillGroups = new List<SkillGroup>(xmlGroupsList?.Count ?? 0);
-                    if (xmlGroupsList?.Count > 0)
-                    {
-                        foreach (XmlNode xmlNode in xmlGroupsList)
-                        {
-                            SkillGroup objGroup = new SkillGroup(_objCharacter);
-                            objGroup.LoadFromHeroLab(xmlNode);
-                            lstLoadingSkillGroups.Add(objGroup);
-                        }
-                    }
+                    SkillGroup objGroup = new SkillGroup(_objCharacter);
+                    objGroup.LoadFromHeroLab(xmlNode);
+                    lstLoadingSkillGroups.Add(objGroup);
                 }
 
                 lstLoadingSkillGroups.Sort((i1, i2) =>
@@ -526,38 +520,26 @@ namespace Chummer.Backend.Skills
 
             using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
-                List<Skill> lstTempSkillList;
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("active/skill"))
+                List<Skill> lstTempSkillList = new List<Skill>();
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("active/skill"))
                 {
-                    lstTempSkillList = new List<Skill>(2 * xmlSkillsList?.Count ?? 0);
-                    if (xmlSkillsList?.Count > 0)
-                    {
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
-                            if (objSkill != null)
-                                lstTempSkillList.Add(objSkill);
-                        }
-                    }
+                    Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
+                    if (objSkill != null)
+                        lstTempSkillList.Add(objSkill);
+                }
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("knowledge/skill"))
+                {
+                    Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
+                    if (objSkill != null)
+                        lstTempSkillList.Add(objSkill);
+                }
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("language/skill"))
+                {
+                    Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
+                    if (objSkill != null)
+                        lstTempSkillList.Add(objSkill);
                 }
 
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knowledge/skill"))
-                    if (xmlSkillsList?.Count > 0)
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
-                            if (objSkill != null)
-                                lstTempSkillList.Add(objSkill);
-                        }
-
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("language/skill"))
-                    if (xmlSkillsList?.Count > 0)
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
-                            if (objSkill != null)
-                                lstTempSkillList.Add(objSkill);
-                        }
 
                 List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
 
@@ -611,8 +593,6 @@ namespace Chummer.Backend.Skills
                     if (blnDoAddToDictionary)
                         _dicSkills.Add(strName, objSkill);
                 }
-
-                UpdateUndoList(xmlSkillNode);
 
                 //This might give subtle bugs in the future,
                 //but right now it needs to be run once when upgrading or it might crash.
@@ -768,10 +748,10 @@ namespace Chummer.Backend.Skills
 
         }
 
-        private void UpdateUndoList(XmlNode skillNode)
+        private void UpdateUndoList(XmlDocument xmlSkillOwnerDocument)
         {
             //Hacky way of converting Expense entries to guid based skill identification
-            //specs allready did?
+            //specs already did?
             //First create dictionary mapping name=>guid
             Dictionary<string, Guid> dicGroups = new Dictionary<string, Guid>();
             ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
@@ -805,8 +785,8 @@ namespace Chummer.Backend.Skills
                 }
             );
 
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
+            UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
+            UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
         }
 
         private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequreingConverting)
@@ -814,7 +794,7 @@ namespace Chummer.Backend.Skills
             //Build a crazy xpath to get everything we want to convert
 
             StringBuilder sbdXPath = new StringBuilder("/character/expenses/expense[type = \'Karma\']/undo[")
-                .Append(string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'")))
+                .AppendJoin(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'"))
                 .Append("]/objectid");
 
             //Find everything

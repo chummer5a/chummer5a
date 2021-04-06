@@ -25,6 +25,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -78,7 +79,7 @@ namespace Chummer
                 return null;
             }
 
-            List<XmlDocument> lstCharacterXmlStatblocks = new List<XmlDocument>(3);
+            List<XPathNavigator> lstCharacterXmlStatblocks = new List<XPathNavigator>(3);
             try
             {
                 using (ZipArchive zipArchive = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
@@ -88,17 +89,14 @@ namespace Chummer
                         string strEntryFullName = entry.FullName;
                         if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
                         {
-                            XmlDocument xmlSourceDoc = new XmlDocument
-                            {
-                                XmlResolver = null
-                            };
                             // If we run into any problems loading the character cache, fail out early.
                             try
                             {
+                                XPathDocument xmlSourceDoc;
                                 using (StreamReader sr = new StreamReader(entry.Open(), true))
                                     using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                        xmlSourceDoc.Load(objXmlReader);
-                                lstCharacterXmlStatblocks.Add(xmlSourceDoc);
+                                        xmlSourceDoc = new XPathDocument(objXmlReader);
+                                lstCharacterXmlStatblocks.Add(xmlSourceDoc.CreateNavigator());
                             }
                             // If we run into any problems loading the character cache, fail out early.
                             catch (IOException)
@@ -153,17 +151,17 @@ namespace Chummer
                 ToolTipText = strFileText
             };
 
-            XmlDocument xmlMetatypesDocument = XmlManager.Load("metatypes.xml");
-            foreach (XmlDocument xmlCharacterDocument in lstCharacterXmlStatblocks)
+            XPathNavigator xmlMetatypesDocument = XmlManager.LoadXPath("metatypes.xml");
+            foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
             {
-                XmlNode xmlBaseCharacterNode = xmlCharacterDocument.SelectSingleNode("/document/public/character");
+                XPathNavigator xmlBaseCharacterNode = xmlCharacterDocument.SelectSingleNode("/document/public/character");
                 if (xmlBaseCharacterNode != null)
                 {
                     HeroLabCharacterCache objCache = new HeroLabCharacterCache
                     {
-                        PlayerName = xmlBaseCharacterNode.Attributes?["playername"]?.InnerText
+                        PlayerName = xmlBaseCharacterNode.SelectSingleNode("@playername")?.Value ?? string.Empty
                     };
-                    string strNameString = xmlBaseCharacterNode.Attributes?["name"]?.InnerText ?? string.Empty;
+                    string strNameString = xmlBaseCharacterNode.SelectSingleNode("@name")?.Value ?? string.Empty;
                     objCache.CharacterId = strNameString;
                     if (!string.IsNullOrEmpty(strNameString))
                     {
@@ -179,67 +177,55 @@ namespace Chummer
                         }
                     }
 
-                    string strRaceString = xmlBaseCharacterNode.SelectSingleNode("race/@name")?.InnerText;
+                    string strRaceString = xmlBaseCharacterNode.SelectSingleNode("race/@name")?.Value;
                     if (strRaceString == "Metasapient")
                         strRaceString = "A.I.";
                     if (!string.IsNullOrEmpty(strRaceString))
                     {
-                        using (XmlNodeList xmlMetatypeList = xmlMetatypesDocument.SelectNodes("/chummer/metatypes/metatype"))
+                        foreach (XPathNavigator xmlMetatype in xmlMetatypesDocument.Select("/chummer/metatypes/metatype"))
                         {
-                            if (xmlMetatypeList?.Count > 0)
+                            string strMetatypeName = xmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty;
+                            if (strMetatypeName == strRaceString)
                             {
-                                foreach (XmlNode xmlMetatype in xmlMetatypeList)
-                                {
-                                    string strMetatypeName = xmlMetatype["name"]?.InnerText ?? string.Empty;
-                                    if (strMetatypeName == strRaceString)
-                                    {
-                                        objCache.Metatype = strMetatypeName;
-                                        objCache.Metavariant = "None";
-                                        break;
-                                    }
+                                objCache.Metatype = strMetatypeName;
+                                objCache.Metavariant = "None";
+                                break;
+                            }
 
-                                    using (XmlNodeList xmlMetavariantList = xmlMetatype.SelectNodes("metavariants/metavariant"))
-                                    {
-                                        if (xmlMetavariantList?.Count > 0)
-                                        {
-                                            foreach (XmlNode xmlMetavariant in xmlMetavariantList)
-                                            {
-                                                string strMetavariantName = xmlMetavariant["name"]?.InnerText ?? string.Empty;
-                                                if (strMetavariantName == strRaceString)
-                                                {
-                                                    objCache.Metatype = strMetatypeName;
-                                                    objCache.Metavariant = strMetavariantName;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
+                            foreach (XPathNavigator xmlMetavariant in xmlMetatype.Select("metavariants/metavariant"))
+                            {
+                                string strMetavariantName = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
+                                if (strMetavariantName == strRaceString)
+                                {
+                                    objCache.Metatype = strMetatypeName;
+                                    objCache.Metavariant = strMetavariantName;
+                                    break;
                                 }
                             }
                         }
                     }
 
-                    objCache.Description = xmlBaseCharacterNode.SelectSingleNode("personal/description")?.InnerText;
-                    objCache.Karma = xmlBaseCharacterNode.SelectSingleNode("karma/@total")?.InnerText ?? "0";
-                    objCache.Essence = xmlBaseCharacterNode.SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.InnerText;
-                    objCache.BuildMethod = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.InnerText == "25" ?
+                    objCache.Description = xmlBaseCharacterNode.SelectSingleNode("personal/description")?.Value;
+                    objCache.Karma = xmlBaseCharacterNode.SelectSingleNode("karma/@total")?.Value ?? "0";
+                    objCache.Essence = xmlBaseCharacterNode.SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
+                    objCache.BuildMethod = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.Value == "25" ?
                         CharacterBuildMethod.Priority.ToString() :
                         CharacterBuildMethod.Karma.ToString();
 
                     objCache.Created = objCache.Karma != "0";
                     if (!objCache.Created)
                     {
-                        XmlNodeList xmlJournalEntries = xmlBaseCharacterNode.SelectNodes("journals/journal");
+                        XPathNodeIterator xmlJournalEntries = xmlBaseCharacterNode.Select("journals/journal");
                         if (xmlJournalEntries?.Count > 1)
                         {
                             objCache.Created = true;
                         }
-                        else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries[0]?.Attributes?["name"]?.InnerText != "Title")
+                        else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current?.SelectSingleNode("@name")?.Value != "Title")
                         {
                             objCache.Created = true;
                         }
                     }
-                    string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.InnerText;
+                    string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.Value;
                     if (!string.IsNullOrEmpty(strImageString) && _dicImages.TryGetValue(strImageString, out Bitmap objTemp))
                     {
                         objCache.Mugshot = objTemp;

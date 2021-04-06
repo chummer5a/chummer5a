@@ -44,7 +44,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the Powers information.
-            _xmlBasePowerDataNode = _objCharacter.LoadDataXPath("powers.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBasePowerDataNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer");
         }
 
         private void frmSelectPower_Load(object sender, EventArgs e)

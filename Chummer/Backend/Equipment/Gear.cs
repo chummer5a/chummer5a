@@ -30,6 +30,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using NLog;
@@ -3293,11 +3294,11 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Hero Lab Importing Methods
-        public bool ImportHeroLabGear(XmlNode xmlGearImportNode, XmlNode xmlParentGearNode, IList<Weapon> lstWeapons)
+        public bool ImportHeroLabGear(XPathNavigator xmlGearImportNode, XmlNode xmlParentGearNode, IList<Weapon> lstWeapons)
         {
             if (xmlGearImportNode == null)
                 return false;
-            string strOriginalName = xmlGearImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
+            string strOriginalName = xmlGearImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
                 XmlDocument xmlGearDocument = _objCharacter.LoadData("gear.xml");
@@ -3481,15 +3482,15 @@ namespace Chummer.Backend.Equipment
                 }
                 if (xmlGearDataNode != null)
                 {
-                    Create(xmlGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo), lstWeapons, strForceValue);
+                    Create(xmlGearDataNode, xmlGearImportNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons, strForceValue);
                 }
                 else
                 {
                     XmlNode xmlCustomGearDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
                     if (xmlCustomGearDataNode != null)
                     {
-                        Create(xmlCustomGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo), lstWeapons, strOriginalName);
-                        Cost = xmlGearImportNode.SelectSingleNode("gearcost/@value")?.InnerText;
+                        Create(xmlCustomGearDataNode, xmlGearImportNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons, strOriginalName);
+                        Cost = xmlGearImportNode.SelectSingleNode("gearcost/@value")?.Value;
                     }
                     else
                         return false;
@@ -3498,8 +3499,8 @@ namespace Chummer.Backend.Equipment
                 if (InternalId.IsEmptyGuid())
                     return false;
 
-                Quantity = Convert.ToDecimal(xmlGearImportNode.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
-                Notes = xmlGearImportNode["description"]?.InnerText;
+                Quantity = xmlGearImportNode.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
+                Notes = xmlGearImportNode.SelectSingleNode("description")?.Value;
 
                 ProcessHeroLabGearPlugins(xmlGearImportNode, lstWeapons);
 
@@ -3508,45 +3509,33 @@ namespace Chummer.Backend.Equipment
             return false;
         }
 
-        public void ProcessHeroLabGearPlugins(XmlNode xmlGearImportNode, IList<Weapon> lstWeapons)
+        public void ProcessHeroLabGearPlugins(XPathNavigator xmlGearImportNode, IList<Weapon> lstWeapons)
         {
             if (xmlGearImportNode == null)
                 return;
             foreach (string strPluginNodeName in Character.HeroLabPluginNodeNames)
             {
-                using (XmlNodeList xmlPluginsList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName + "/item[@useradded != \"no\"]"))
                 {
-                    if (xmlPluginsList?.Count > 0)
+                    Gear objPlugin = new Gear(_objCharacter);
+                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
                     {
-                        foreach (XmlNode xmlPluginToAdd in xmlPluginsList)
-                        {
-                            Gear objPlugin = new Gear(_objCharacter);
-                            if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
-                            {
-                                objPlugin.Parent = this;
-                                Children.Add(objPlugin);
-                            }
-                        }
+                        objPlugin.Parent = this;
+                        Children.Add(objPlugin);
                     }
                 }
 
-                using (XmlNodeList xmlPluginsList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                 {
-                    if (xmlPluginsList?.Count > 0)
+                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strName))
                     {
-                        foreach (XmlNode xmlPluginToAdd in xmlPluginsList)
+                        Gear objPlugin = Children.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                        if (objPlugin != null)
                         {
-                            string strName = xmlPluginToAdd.Attributes?["name"]?.InnerText ?? string.Empty;
-                            if (!string.IsNullOrEmpty(strName))
-                            {
-                                Gear objPlugin = Children.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                                if (objPlugin != null)
-                                {
-                                    objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes?["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
-                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
-                                }
-                            }
+                            objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
+                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                            objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                         }
                     }
                 }

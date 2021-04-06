@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
 
@@ -700,40 +701,32 @@ namespace Chummer
         private void PopulateSourcebookTreeView()
         {
             // Load the Sourcebook information.
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths);
-
             // Put the Sourcebooks into a List so they can first be sorted.
             object objOldSelected = treSourcebook.SelectedNode?.Tag;
             treSourcebook.BeginUpdate();
             treSourcebook.Nodes.Clear();
             _setPermanentSourcebooks.Clear();
-            using (XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book"))
+            foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths).Select("/chummer/books/book"))
             {
-                if(objXmlBookList != null)
+                if (objXmlBook.SelectSingleNode("hide") != null)
+                    continue;
+                string strCode = objXmlBook.SelectSingleNode("code")?.Value;
+                if (string.IsNullOrEmpty(strCode))
+                    continue;
+                bool blnChecked = _objCharacterOptions.Books.Contains(strCode);
+                if (objXmlBook.SelectSingleNode("permanent") != null)
                 {
-                    foreach(XmlNode objXmlBook in objXmlBookList)
-                    {
-                        if(objXmlBook["hide"] != null)
-                            continue;
-                        string strCode = objXmlBook["code"]?.InnerText;
-                        if (string.IsNullOrEmpty(strCode))
-                            continue;
-                        bool blnChecked = _objCharacterOptions.Books.Contains(strCode);
-                        if (objXmlBook["permanent"] != null)
-                        {
-                            _setPermanentSourcebooks.Add(strCode);
-                            _objCharacterOptions.Books.Add(strCode);
-                            blnChecked = true;
-                        }
-                        TreeNode objNode = new TreeNode
-                        {
-                            Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? string.Empty,
-                            Tag = strCode,
-                            Checked = blnChecked
-                        };
-                        treSourcebook.Nodes.Add(objNode);
-                    }
+                    _setPermanentSourcebooks.Add(strCode);
+                    _objCharacterOptions.Books.Add(strCode);
+                    blnChecked = true;
                 }
+                TreeNode objNode = new TreeNode
+                {
+                    Text = objXmlBook.SelectSingleNode("translate")?.Value ?? objXmlBook.SelectSingleNode("name")?.Value ?? string.Empty,
+                    Tag = strCode,
+                    Checked = blnChecked
+                };
+                treSourcebook.Nodes.Add(objNode);
             }
 
             treSourcebook.Sort();

@@ -80,13 +80,9 @@ namespace Chummer
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
                 HashSet<string> setValidCodes = new HashSet<string>();
-                XmlNodeList lstBookNodes = XmlManager.Load("books.xml").SelectNodes("/chummer/books/book/code");
-                if (lstBookNodes?.Count > 0)
+                foreach (XPathNavigator xmlBookNode in XmlManager.LoadXPath("books.xml").Select("/chummer/books/book/code"))
                 {
-                    foreach (XmlNode xmlBookNode in lstBookNodes)
-                    {
-                        setValidCodes.Add(xmlBookNode.InnerText);
-                    }
+                    setValidCodes.Add(xmlBookNode.Value);
                 }
 
                 string strSourceFilter = setValidCodes.Count > 0
@@ -101,7 +97,7 @@ namespace Chummer
                 {
                     Parallel.ForEach(_lstFileNames, strFileName =>
                     {
-                        XPathNavigator xmlBaseNode = XmlManager.LoadXPath(strFileName).CreateNavigator().SelectSingleNode("/chummer");
+                        XPathNavigator xmlBaseNode = XmlManager.LoadXPath(strFileName).SelectSingleNode("/chummer");
                         if (xmlBaseNode != null)
                         {
                             bool blnLoopFileNameHasItems = false;

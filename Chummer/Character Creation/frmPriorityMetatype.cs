@@ -62,8 +62,8 @@ namespace Chummer
             XmlDocument xmlMetatypeDoc = _objCharacter.LoadData(strXmlFile);
             _xmlMetatypeDocumentMetatypesNode = xmlMetatypeDoc.SelectSingleNode("/chummer/metatypes");
             _xmlBaseMetatypeDataNode = xmlMetatypeDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlBasePriorityDataNode = _objCharacter.LoadDataXPath("priorities.xml").CreateNavigator().SelectSingleNode("/chummer");
-            _xmlBaseSkillDataNode = _objCharacter.LoadDataXPath("skills.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBasePriorityDataNode = _objCharacter.LoadDataXPath("priorities.xml").SelectSingleNode("/chummer");
+            _xmlBaseSkillDataNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer");
             XmlDocument xmlQualityDoc = _objCharacter.LoadData("qualities.xml");
             _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");

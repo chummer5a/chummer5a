@@ -4685,14 +4685,14 @@ namespace Chummer.Backend.Equipment
 
         #region Hero Lab Importing
 
-        public bool ImportHeroLabCyberware(XmlNode xmlCyberwareImportNode, XmlNode xmlParentCyberwareNode,
+        public bool ImportHeroLabCyberware(XPathNavigator xmlCyberwareImportNode, XmlNode xmlParentCyberwareNode,
             IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles, Grade objSelectedGrade = null)
         {
             if (xmlCyberwareImportNode == null)
                 return false;
             bool blnCyberware = true;
             string strGradeName = objSelectedGrade?.Name ?? "Standard";
-            string strOriginalName = xmlCyberwareImportNode.Attributes?["name"]?.InnerText ?? string.Empty;
+            string strOriginalName = xmlCyberwareImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
                 List<Grade> objCyberwareGradeList =
@@ -4966,9 +4966,9 @@ namespace Chummer.Backend.Equipment
 
                     Create(xmlCyberwareDataNode, objSelectedGrade,
                         blnCyberware ? Improvement.ImprovementSource.Cyberware : Improvement.ImprovementSource.Bioware,
-                        Convert.ToInt32(xmlCyberwareImportNode.Attributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo), lstWeapons,
+                        xmlCyberwareImportNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons,
                         lstVehicles, true, true, strForceValue);
-                    Notes = xmlCyberwareImportNode["description"]?.InnerText;
+                    Notes = xmlCyberwareImportNode.SelectSingleNode("description")?.Value;
 
                     ProcessHeroLabCyberwarePlugins(xmlCyberwareImportNode, objSelectedGrade, lstWeapons, lstVehicles);
 
@@ -4979,65 +4979,55 @@ namespace Chummer.Backend.Equipment
             return false;
         }
 
-        public void ProcessHeroLabCyberwarePlugins(XmlNode xmlGearImportNode, Grade objParentGrade,
+        public void ProcessHeroLabCyberwarePlugins(XPathNavigator xmlGearImportNode, Grade objParentGrade,
             IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles)
         {
             if (xmlGearImportNode == null)
                 return;
             foreach (string strPluginNodeName in Character.HeroLabPluginNodeNames)
             {
-                XmlNodeList xmlPluginList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]");
-                if (xmlPluginList != null)
+                foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName + "/item[@useradded != \"no\"]"))
                 {
-                    foreach (XmlNode xmlPluginToAdd in xmlPluginList)
+                    Cyberware objPlugin = new Cyberware(_objCharacter);
+                    if (objPlugin.ImportHeroLabCyberware(xmlPluginToAdd, GetNode(), lstWeapons, lstVehicles,
+                        objParentGrade))
                     {
-                        Cyberware objPlugin = new Cyberware(_objCharacter);
-                        if (objPlugin.ImportHeroLabCyberware(xmlPluginToAdd, GetNode(), lstWeapons, lstVehicles,
-                            objParentGrade))
+                        objPlugin.Parent = this;
+                        Children.Add(objPlugin);
+                    }
+                    else
+                    {
+                        Gear objPluginGear = new Gear(_objCharacter);
+                        if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
                         {
-                            objPlugin.Parent = this;
-                            Children.Add(objPlugin);
-                        }
-                        else
-                        {
-                            Gear objPluginGear = new Gear(_objCharacter);
-                            if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, GetNode(), lstWeapons))
-                            {
-                                objPluginGear.Parent = this;
-                                Gear.Add(objPluginGear);
-                            }
+                            objPluginGear.Parent = this;
+                            Gear.Add(objPluginGear);
                         }
                     }
                 }
 
-                xmlPluginList = xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]");
-                if (xmlPluginList != null)
+                foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                 {
-                    foreach (XmlNode xmlPluginToAdd in xmlPluginList)
+                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strName))
                     {
-                        string strName = xmlPluginToAdd.Attributes?["name"]?.InnerText ?? string.Empty;
-                        if (!string.IsNullOrEmpty(strName))
+                        Cyberware objPlugin = Children.FirstOrDefault(x =>
+                            x.ParentID == InternalId && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                        if (objPlugin != null)
                         {
-                            Cyberware objPlugin = Children.FirstOrDefault(x =>
-                                x.ParentID == InternalId && (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                            if (objPlugin != null)
+                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                            objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objParentGrade, lstWeapons,
+                                lstVehicles);
+                        }
+                        else
+                        {
+                            Gear objPluginGear = Gear.FirstOrDefault(x =>
+                                x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                            if (objPluginGear != null)
                             {
-                                objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
-                                objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objParentGrade, lstWeapons,
-                                    lstVehicles);
-                            }
-                            else
-                            {
-                                Gear objPluginGear = Gear.FirstOrDefault(x =>
-                                    x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
-                                if (objPluginGear != null)
-                                {
-                                    objPluginGear.Quantity =
-                                        Convert.ToDecimal(xmlPluginToAdd.Attributes?["quantity"]?.InnerText ?? "1",
-                                            GlobalOptions.InvariantCultureInfo);
-                                    objPluginGear.Notes = xmlPluginToAdd["description"]?.InnerText;
-                                    objPluginGear.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
-                                }
+                                objPluginGear.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
+                                objPluginGear.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                objPluginGear.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                             }
                         }
                     }

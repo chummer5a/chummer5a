@@ -29,6 +29,7 @@ using System.Net;
 #endif
 using Application = System.Windows.Forms.Application;
 using System.Text;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer
@@ -666,16 +667,12 @@ namespace Chummer
             List<ListItem> lstLanguages = new List<ListItem>(languageFilePaths.Length);
             foreach (string filePath in languageFilePaths)
             {
-                XmlDocument xmlDocument = new XmlDocument
-                {
-                    XmlResolver = null
-                };
-
+                XPathDocument xmlDocument;
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlDocument.Load(objXmlReader);
+                            xmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch(IOException)
                 {
@@ -686,11 +683,11 @@ namespace Chummer
                     continue;
                 }
 
-                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNode("/chummer/name");
                 if(node == null)
                     continue;
 
-                lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.InnerText));
+                lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.Value));
             }
 
             lstLanguages.Sort(CompareListItems.CompareNames);
@@ -738,16 +735,12 @@ namespace Chummer
                 if(!setLanguagesWithSheets.Contains(strLanguageName))
                     continue;
 
-                XmlDocument xmlDocument = new XmlDocument
-                {
-                    XmlResolver = null
-                };
-
+                XPathDocument xmlDocument;
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlDocument.Load(objXmlReader);
+                            xmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch(IOException)
                 {
@@ -758,11 +751,11 @@ namespace Chummer
                     continue;
                 }
 
-                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNode("/chummer/name");
                 if(node == null)
                     continue;
 
-                lstSheetLanguages.Add(new ListItem(strLanguageName, node.InnerText));
+                lstSheetLanguages.Add(new ListItem(strLanguageName, node.Value));
             }
 
             lstSheetLanguages.Sort(CompareListItems.CompareNames);

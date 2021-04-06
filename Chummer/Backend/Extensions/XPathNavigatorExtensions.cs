@@ -19,6 +19,7 @@
 using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -385,6 +386,58 @@ namespace Chummer
             if (string.IsNullOrEmpty(strName))
                 return false;
             return xmlNode?.SelectSingleNode(strName) != null;
+        }
+
+        /// <summary>
+        /// Create a new XmlNode in an XmlDocument based on the contents of an XPathNavigator
+        /// </summary>
+        /// <param name="xmlNode">XPathNavigator to examine.</param>
+        /// <param name="xmlParentDocument">Document to house the XmlNode</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static XmlNode ToXmlNode(this XPathNavigator xmlNode, XmlDocument xmlParentDocument)
+        {
+            if (xmlNode == null || xmlParentDocument == null)
+                return null;
+            XmlNodeType eNodeType;
+            switch (xmlNode.NodeType)
+            {
+                case XPathNodeType.Root:
+                    eNodeType = XmlNodeType.Document;
+                    break;
+                case XPathNodeType.Element:
+                    eNodeType = XmlNodeType.Element;
+                    break;
+                case XPathNodeType.Attribute:
+                    eNodeType = XmlNodeType.Attribute;
+                    break;
+                case XPathNodeType.Namespace:
+                    eNodeType = XmlNodeType.XmlDeclaration;
+                    break;
+                case XPathNodeType.Text:
+                    eNodeType = XmlNodeType.Text;
+                    break;
+                case XPathNodeType.SignificantWhitespace:
+                    eNodeType = XmlNodeType.SignificantWhitespace;
+                    break;
+                case XPathNodeType.Whitespace:
+                    eNodeType = XmlNodeType.Whitespace;
+                    break;
+                case XPathNodeType.ProcessingInstruction:
+                    eNodeType = XmlNodeType.ProcessingInstruction;
+                    break;
+                case XPathNodeType.Comment:
+                    eNodeType = XmlNodeType.Comment;
+                    break;
+                case XPathNodeType.All:
+                    eNodeType = XmlNodeType.None;
+                    Utils.BreakIfDebug();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            XmlNode xmlReturn = xmlParentDocument.CreateNode(eNodeType, xmlNode.Prefix, xmlNode.Name, xmlNode.NamespaceURI);
+            xmlReturn.InnerXml = xmlNode.InnerXml;
+            return xmlReturn;
         }
     }
 }

@@ -762,10 +762,7 @@ namespace Chummer
         {
             _strFileName = strFileName;
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
-            XmlDocument objXmlDocument = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XPathDocument objXmlDocument;
             // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
             if (File.Exists(strFilePath))
             {
@@ -773,7 +770,7 @@ namespace Chummer
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objXmlDocument.Load(objXmlReader);
+                            objXmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -798,7 +795,7 @@ namespace Chummer
                 return false;
             }
 
-            return Load(objXmlDocument.GetFastNavigator().SelectSingleNode("//settings"));
+            return Load(objXmlDocument.CreateNavigator().SelectSingleNode("//settings"));
         }
 
         /// <summary>
@@ -1069,23 +1066,20 @@ namespace Chummer
             {
                 foreach (string strMRUCharacterFile in GlobalOptions.MostRecentlyUsedCharacters)
                 {
-                    XmlDocument objXmlDocument = new XmlDocument
-                    {
-                        XmlResolver = null
-                    };
+                    XPathDocument objXmlDocument;
                     if (!File.Exists(strMRUCharacterFile))
                         continue;
                     try
                     {
                         using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
                             using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                objXmlDocument.Load(objXmlReader);
+                                objXmlDocument = new XPathDocument(objXmlReader);
                     }
                     catch (XmlException)
                     {
                         continue;
                     }
-                    xmlLegacyCharacterNavigator = objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                    xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNode("/character");
 
                     if (xmlLegacyCharacterNavigator == null)
                         continue;
@@ -1100,23 +1094,20 @@ namespace Chummer
                 {
                     foreach (string strMRUCharacterFile in GlobalOptions.FavoritedCharacters)
                     {
-                        XmlDocument objXmlDocument = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XPathDocument objXmlDocument;
                         if (!File.Exists(strMRUCharacterFile))
                             continue;
                         try
                         {
                             using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                    objXmlDocument.Load(objXmlReader);
+                                    objXmlDocument = new XPathDocument(objXmlReader);
                         }
                         catch (XmlException)
                         {
                             continue;
                         }
-                        xmlLegacyCharacterNavigator = objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                        xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNode("/character");
 
                         if (xmlLegacyCharacterNavigator == null)
                             continue;
@@ -1224,9 +1215,9 @@ namespace Chummer
 
             RecalculateEnabledCustomDataDirectories();
 
-            foreach (XmlNode xmlBook in XmlManager.Load("books.xml", EnabledCustomDataDirectoryPaths).SelectNodes("/chummer/books/book[permanent]/code"))
-                if (!string.IsNullOrEmpty(xmlBook.InnerText))
-                    _lstBooks.Add(xmlBook.InnerText);
+            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths).Select("/chummer/books/book[permanent]/code"))
+                if (!string.IsNullOrEmpty(xmlBook.Value))
+                    _lstBooks.Add(xmlBook.Value);
 
             // Used to legacy sweep build settings.
             XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNode("defaultbuild");
@@ -1581,11 +1572,11 @@ namespace Chummer
             }
             string[] strBooks = strBookList.Split(',');
 
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml", EnabledCustomDataDirectoryPaths);
+            XPathNavigator objXmlDocument = XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths);
 
             foreach (string strBookName in strBooks)
             {
-                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.InnerText;
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.Value;
                 if (!string.IsNullOrEmpty(strCode))
                 {
                     _lstBooks.Add(strCode);
@@ -2155,7 +2146,7 @@ namespace Chummer
                 string strReturn = Name;
                 if (BuiltInOption)
                 {
-                    strReturn = XmlManager.Load("settings.xml").SelectSingleNode("/chummer/settings/setting[id = '" + SourceId + "']/translate")?.InnerText ?? strReturn;
+                    strReturn = XmlManager.LoadXPath("settings.xml").SelectSingleNode("/chummer/settings/setting[id = '" + SourceId + "']/translate")?.Value ?? strReturn;
                 }
                 else
                 {

@@ -38,7 +38,7 @@ namespace Chummer
 
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Mentor information.
-            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();

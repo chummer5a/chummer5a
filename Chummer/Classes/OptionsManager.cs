@@ -50,7 +50,7 @@ namespace Chummer
                 s_dicLoadedCharacterOptions.TryAdd(GlobalOptions.DefaultCharacterOption, new CharacterOptions());
                 return;
             }
-            foreach (XPathNavigator xmlBuiltInSetting in XmlManager.LoadXPath("settings.xml").CreateNavigator().Select("/chummer/settings/setting"))
+            foreach (XPathNavigator xmlBuiltInSetting in XmlManager.LoadXPath("settings.xml").Select("/chummer/settings/setting"))
             {
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
                 if (objNewCharacterOptions.Load(xmlBuiltInSetting) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))

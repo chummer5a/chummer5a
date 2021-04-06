@@ -203,8 +203,8 @@ namespace Chummer
 
                 //Dump skills, (optional)powers if present to output
 
-                XPathNavigator xmlSpiritPowersBaseChummerNode  = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).CreateNavigator().SelectSingleNode("/chummer");
-                XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).CreateNavigator().SelectSingleNode("/chummer");
+                XPathNavigator xmlSpiritPowersBaseChummerNode  = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
+                XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
                 XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                 if (xmlPowersNode != null)
                 {

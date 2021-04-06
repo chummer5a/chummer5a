@@ -661,23 +661,21 @@ namespace Chummer
                         objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                         objCharacter.CritterPowers.Add(objPower);
                     }
-
-                    if (objXmlCritter["optionalpowers"] != null)
+                    
+                    XmlNode xmlOptionalPowersNode = objXmlCritter["optionalpowers"];
+                    if (xmlOptionalPowersNode != null && intForce >= 3)
                     {
+                        XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
                         //For every 3 full points of Force a spirit has, it may gain one Optional Power.
                         for (int i = intForce - 3; i >= 0; i -= 3)
                         {
-                            XmlDocument objDummyDocument = new XmlDocument
-                            {
-                                XmlResolver = null
-                            };
                             XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
-                            objDummyDocument.AppendChild(bonusNode);
-                            XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true), true);
-                            objDummyDocument.ImportNode(powerNode, true);
+                            XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
                             bonusNode.AppendChild(powerNode);
-                            ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
+                            objDummyDocument.AppendChild(bonusNode);
                         }
+                        foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
+                            ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
                     }
 
                     // Add any Complex Forms the Critter comes with (typically Sprites)

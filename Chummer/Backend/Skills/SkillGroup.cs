@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using Chummer.Annotations;
 using System.Globalization;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Skills
 {
@@ -423,14 +424,14 @@ namespace Chummer.Backend.Skills
             xmlNode.TryGetInt32FieldQuickly("base", ref _intSkillFromSp);
         }
 
-        public void LoadFromHeroLab(XmlNode xmlNode)
+        public void LoadFromHeroLab(XPathNavigator xmlNode)
         {
             if (xmlNode == null)
                 return;
-            string strTemp = xmlNode.SelectSingleNode("@name")?.InnerText;
+            string strTemp = xmlNode.SelectSingleNode("@name")?.Value;
             if (!string.IsNullOrEmpty(strTemp))
                 _strGroupName = strTemp.TrimEndOnce("Group").Trim();
-            strTemp = xmlNode.SelectSingleNode("@base")?.InnerText;
+            strTemp = xmlNode.SelectSingleNode("@base")?.Value;
             if (!string.IsNullOrEmpty(strTemp) && int.TryParse(strTemp, out int intTemp))
                 _intSkillFromKarma = intTemp;
         }

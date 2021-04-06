@@ -41,7 +41,7 @@ namespace Chummer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private List<Character> _lstCharacters = new List<Character>(1);
-        private XmlDocument _objCharacterXml = new XmlDocument {XmlResolver = null};
+        private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading;
         private CultureInfo _objPrintCulture = GlobalOptions.CultureInfo;
@@ -357,14 +357,11 @@ namespace Chummer
                     objStream.Position = 0;
 
                     // Read the stream.
-                    XmlDocument objCharacterXml = new XmlDocument
-                    {
-                        XmlResolver = null
-                    };
+                    XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                     // Read it back in as an XmlDocument.
                     using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                     {
-                        using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                        using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                         {
                             if (_workerRefresher.CancellationPending)
                             {

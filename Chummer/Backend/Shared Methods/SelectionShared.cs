@@ -832,7 +832,7 @@ namespace Chummer
                                 return true;
                             }
 
-                            XPathNavigator xmlMetamagicDoc = objCharacter.LoadDataXPath("metamagic.xml").CreateNavigator()
+                            XPathNavigator xmlMetamagicDoc = objCharacter.LoadDataXPath("metamagic.xml")
                                 .SelectSingleNode("/chummer");
                             if (blnShowMessage)
                             {

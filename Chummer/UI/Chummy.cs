@@ -72,7 +72,7 @@ namespace Chummer
             }
 
             _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(), this, _mouthCenter);
-            _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).CreateNavigator().SelectSingleNode("/chummer/tips");
+            _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).SelectSingleNode("/chummer/tips");
         }
         #region Event Handlers
         private void tmr_DrawTick(object sender, EventArgs e)

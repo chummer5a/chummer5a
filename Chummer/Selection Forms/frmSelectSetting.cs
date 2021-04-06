@@ -22,6 +22,7 @@ using System.IO;
  using System.Text;
  using System.Windows.Forms;
 using System.Xml;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -45,12 +46,12 @@ namespace Chummer
             foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
             {
                 // Load the file so we can get the Setting name.
-                XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
+                XPathDocument objXmlDocument;
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objXmlDocument.Load(objXmlReader);
+                            objXmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -61,7 +62,7 @@ namespace Chummer
                     continue;
                 }
 
-                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name")?.InnerText ?? LanguageManager.GetString("String_Unknown")));
+                lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.CreateNavigator().SelectSingleNode("/settings/name")?.Value ?? LanguageManager.GetString("String_Unknown")));
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();

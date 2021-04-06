@@ -46,7 +46,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
-            _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").CreateNavigator().SelectSingleNode("/chummer");
+            _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer");
             _objArmor = objParentNode;
             _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
             if (_xmlBaseDataNode != null)

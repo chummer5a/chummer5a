@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Skills
 {
@@ -74,19 +75,12 @@ namespace Chummer.Backend.Skills
             List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
-            XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
-            using (XmlNodeList xmlSkillList = xmlSkillsDocument.SelectNodes("/chummer/knowledgeskills/skill"))
+            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
+            foreach (XPathNavigator xmlSkill in xmlSkillsDocument.Select("/chummer/knowledgeskills/skill"))
             {
-                if (xmlSkillList != null)
-                {
-                    foreach (XmlNode xmlSkill in xmlSkillList)
-                    {
-                        string strName = xmlSkill["name"]?.InnerText ?? string.Empty;
-                        lstReturn.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
-                    }
-                }
+                string strName = xmlSkill.SelectSingleNode("name")?.Value ?? string.Empty;
+                lstReturn.Add(new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
             }
-
             lstReturn.Sort(CompareListItems.CompareNames);
             return lstReturn;
         }
@@ -116,19 +110,12 @@ namespace Chummer.Backend.Skills
             List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
-            XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
-            using (XmlNodeList xmlCategoryList = xmlSkillsDocument.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]"))
+            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
+            foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.Select("/chummer/categories/category[@type = \"knowledge\"]"))
             {
-                if (xmlCategoryList != null)
-                {
-                    foreach (XmlNode objXmlCategory in xmlCategoryList)
-                    {
-                        string strInnerText = objXmlCategory.InnerText;
-                        lstReturn.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
-                }
+                string strInnerText = objXmlCategory.Value;
+                lstReturn.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
-
             lstReturn.Sort(CompareListItems.CompareNames);
             return lstReturn;
         }

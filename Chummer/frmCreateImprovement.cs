@@ -517,10 +517,7 @@ namespace Chummer
                 return;
             }
 
-            XmlDocument objBonusXml = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XmlDocument objBonusXml = new XmlDocument { XmlResolver = null };
             using (MemoryStream objStream = new MemoryStream())
             {
                 // Here instead of later because objWriter.Close() needs Stream to not be disposed, but StreamReader.Close() will dispose the Stream.
