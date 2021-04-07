@@ -57,7 +57,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
-            _setBlackMarketMaps = objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
+            _setBlackMarketMaps = objCharacter.GenerateBlackMarketMappings(objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer"));
         }
 
         private void frmSelectArmor_Load(object sender, EventArgs e)

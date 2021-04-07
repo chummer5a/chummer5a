@@ -816,18 +816,12 @@ namespace Chummer
         {
             List<ListItem> lstPriorityTables = new List<ListItem>();
 
-            using (XmlNodeList objXmlNodeList = XmlManager.Load("priorities.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
-                .SelectNodes("/chummer/prioritytables/prioritytable"))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("priorities.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
+                .Select("/chummer/prioritytables/prioritytable"))
             {
-                if (objXmlNodeList != null)
-                {
-                    foreach (XmlNode objXmlNode in objXmlNodeList)
-                    {
-                        string strName = objXmlNode.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
-                            lstPriorityTables.Add(new ListItem(objXmlNode.InnerText, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                    }
-                }
+                string strName = objXmlNode.Value;
+                if (!string.IsNullOrEmpty(strName))
+                    lstPriorityTables.Add(new ListItem(objXmlNode.Value, objXmlNode.SelectSingleNode("@translate")?.Value ?? strName));
             }
 
             string strOldSelected = _objCharacterOptions.PriorityTable;
@@ -856,19 +850,13 @@ namespace Chummer
         {
             List<ListItem> lstLimbCount = new List<ListItem>();
 
-            using (XmlNodeList objXmlNodeList = XmlManager.Load("options.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
-                .SelectNodes("/chummer/limbcounts/limb"))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
+                .Select("/chummer/limbcounts/limb"))
             {
-                if (objXmlNodeList != null)
-                {
-                    foreach (XmlNode objXmlNode in objXmlNodeList)
-                    {
-                        string strExclude = objXmlNode["exclude"]?.InnerText ?? string.Empty;
-                        if (!string.IsNullOrEmpty(strExclude))
-                            strExclude = '<' + strExclude;
-                        lstLimbCount.Add(new ListItem(objXmlNode["limbcount"]?.InnerText + strExclude, objXmlNode["translate"]?.InnerText ?? objXmlNode["name"]?.InnerText ?? string.Empty));
-                    }
-                }
+                string strExclude = objXmlNode.SelectSingleNode("exclude")?.Value ?? string.Empty;
+                if (!string.IsNullOrEmpty(strExclude))
+                    strExclude = '<' + strExclude;
+                lstLimbCount.Add(new ListItem(objXmlNode.SelectSingleNode("limbcount")?.Value + strExclude, objXmlNode.SelectSingleNode("translate")?.Value ?? objXmlNode.SelectSingleNode("name")?.Value ?? string.Empty));
             }
 
             string strLimbSlot = _objCharacterOptions.LimbCount.ToString(GlobalOptions.InvariantCultureInfo);
@@ -894,50 +882,38 @@ namespace Chummer
         {
             List<ListItem> lstGrades = new List<ListItem>();
 
-            using (XmlNodeList objXmlNodeList = XmlManager.Load("bioware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
-                .SelectNodes("/chummer/grades/grade[not(hide)]"))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("bioware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
+                .Select("/chummer/grades/grade[not(hide)]"))
             {
-                if (objXmlNodeList != null)
+                string strName = objXmlNode.SelectSingleNode("name")?.Value;
+                if (!string.IsNullOrEmpty(strName) && strName != "None")
                 {
-                    foreach (XmlNode objXmlNode in objXmlNodeList)
-                    {
-                        string strName = objXmlNode["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName) && strName != "None")
-                        {
-                            string strBook = objXmlNode["source"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
-                                continue;
-                            if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
-                                continue;
-                            ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
-                            if (objExistingCoveredGrade.Value != null)
-                                lstGrades.Remove(objExistingCoveredGrade);
-                            lstGrades.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strBook = objXmlNode.SelectSingleNode("source")?.Value;
+                    if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
+                        continue;
+                    if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
+                        continue;
+                    ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
+                    if (objExistingCoveredGrade.Value != null)
+                        lstGrades.Remove(objExistingCoveredGrade);
+                    lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNode("translate")?.Value ?? strName));
                 }
             }
-            using (XmlNodeList objXmlNodeList = XmlManager.Load("cyberware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
-                .SelectNodes("/chummer/grades/grade[not(hide)]"))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("cyberware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
+                .Select("/chummer/grades/grade[not(hide)]"))
             {
-                if (objXmlNodeList != null)
+                string strName = objXmlNode.SelectSingleNode("name")?.Value;
+                if (!string.IsNullOrEmpty(strName) && strName != "None")
                 {
-                    foreach (XmlNode objXmlNode in objXmlNodeList)
-                    {
-                        string strName = objXmlNode["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName) && strName != "None" && lstGrades.All(x => x.Value.ToString() != strName))
-                        {
-                            string strBook = objXmlNode["source"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
-                                continue;
-                            if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
-                                continue;
-                            ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
-                            if (objExistingCoveredGrade.Value != null)
-                                lstGrades.Remove(objExistingCoveredGrade);
-                            lstGrades.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strBook = objXmlNode.SelectSingleNode("source")?.Value;
+                    if (!string.IsNullOrEmpty(strBook) && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
+                        continue;
+                    if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
+                        continue;
+                    ListItem objExistingCoveredGrade = lstGrades.FirstOrDefault(x => x.Value.ToString().Contains(strName));
+                    if (objExistingCoveredGrade.Value != null)
+                        lstGrades.Remove(objExistingCoveredGrade);
+                    lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNode("translate")?.Value ?? strName));
                 }
             }
 

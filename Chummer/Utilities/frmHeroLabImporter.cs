@@ -342,21 +342,21 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
-                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
+                XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
+                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
                 if (objMetatypeNode == null)
                 {
-                    objMetatypeDoc = XmlManager.Load("critters.xml");
+                    objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
                 }
 
-                string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;
+                string strMetatype = objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metatype;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
 
-                    strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
+                    strMetatype += " (" + (objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
                 if (string.IsNullOrEmpty(lblMetatype.Text))

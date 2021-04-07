@@ -1422,9 +1422,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadData("weapons.xml", strLanguage)
-                       .SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText
-                   ?? Category;
+            return _objCharacter.LoadDataXPath("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -1436,7 +1434,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoCategory;
 
-            return _objCharacter.LoadData("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.InnerText ?? AmmoCategory;
+            return _objCharacter.LoadDataXPath("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.Value ?? AmmoCategory;
         }
 
         /// <summary>
@@ -3592,20 +3590,20 @@ namespace Chummer.Backend.Equipment
                 strRange = Category;
             if (!string.IsNullOrWhiteSpace(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml",  strLanguage);
-                XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
-                XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
+                XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml",  strLanguage);
+                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("translate");
                 if (xmlTranslateNode != null)
                 {
-                    strRange = xmlTranslateNode.InnerText;
+                    strRange = xmlTranslateNode.Value;
                 }
                 else
                 {
-                    objXmlDocument = _objCharacter.LoadData("weapons.xml", strLanguage);
+                    objXmlDocument = _objCharacter.LoadDataXPath("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
-                    xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
+                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("@translate");
                     if (xmlTranslateNode != null)
-                        strRange = xmlTranslateNode.InnerText;
+                        strRange = xmlTranslateNode.Value;
                 }
             }
             return strRange;
@@ -3621,20 +3619,20 @@ namespace Chummer.Backend.Equipment
             string strRange = AlternateRange.Trim();
             if (!string.IsNullOrEmpty(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml", strLanguage);
-                XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
-                XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
+                XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml", strLanguage);
+                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("translate");
                 if (xmlTranslateNode != null)
                 {
-                    strRange = xmlTranslateNode.InnerText;
+                    strRange = xmlTranslateNode.Value;
                 }
                 else
                 {
-                    objXmlDocument = _objCharacter.LoadData("weapons.xml", strLanguage);
+                    objXmlDocument = _objCharacter.LoadDataXPath("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
-                    xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
+                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("@translate");
                     if (xmlTranslateNode != null)
-                        strRange = xmlTranslateNode.InnerText;
+                        strRange = xmlTranslateNode.Value;
                 }
             }
             return strRange;
@@ -3658,13 +3656,13 @@ namespace Chummer.Backend.Equipment
                 strRangeCategory = Range;
 
 
-            XmlDocument objXmlDocument = _objCharacter.LoadData("ranges.xml");
-            XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRangeCategory + "\"]");
-            if (objXmlCategoryNode?[strFindRange] == null)
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml");
+            XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRangeCategory + "\"]");
+            if (objXmlCategoryNode?.SelectSingleNode(strFindRange) == null)
             {
                 return -1;
             }
-            string strRange = objXmlCategoryNode[strFindRange].InnerText;
+            string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
             StringBuilder objRange = new StringBuilder(strRange);
 
             int intUseSTR = 0;
@@ -3811,9 +3809,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
-            int i = Convert.ToInt32(_objCharacter.LoadData("ranges.xml")
-                .SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")
-                ?.InnerText, GlobalOptions.InvariantCultureInfo);
+            int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")?.ValueAsInt ?? 0;
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
             i = Math.Min(0, i);
             return string.Format(GlobalOptions.InvariantCultureInfo, LanguageManager.GetString("Label_Range" + strRange), i);
@@ -4127,9 +4123,7 @@ namespace Chummer.Backend.Equipment
                 string strGunnerySpec = GetNode()?.SelectSingleNode("category/@gunneryspec")?.InnerText;
                 if (string.IsNullOrEmpty(strGunnerySpec))
                 {
-                    strGunnerySpec = _objCharacter.LoadData("weapons.xml")
-                        .SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@gunneryspec")?.InnerText
-                                     ?? "None";
+                    strGunnerySpec = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@gunneryspec")?.Value ?? "None";
                 }
 
                 _strRelevantSpec = strGunnerySpec;

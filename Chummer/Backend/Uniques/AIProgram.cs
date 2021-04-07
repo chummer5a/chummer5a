@@ -244,8 +244,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.Language)
                 return RequiresProgram;
 
-            return _objCharacter.LoadData("programs.xml", strLanguage)
-                .SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]/translate")?.InnerText ?? RequiresProgram;
+            return _objCharacter.LoadDataXPath("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
         }
 
         /// <summary>

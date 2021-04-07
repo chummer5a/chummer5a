@@ -19,7 +19,7 @@
  using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Xml;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -30,7 +30,7 @@ namespace Chummer
 
         public string WeaponType { get; set; }
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
         public frmSelectWeaponCategory(Character objCharacter)
@@ -38,29 +38,27 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("weapons.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
+            _objXmlDocument = XmlManager.LoadXPath("weapons.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
         {
             // Build a list of Weapon Categories found in the Weapons file.
             List<ListItem> lstCategory = new List<ListItem>();
-            using (XmlNodeList objXmlCategoryList = !string.IsNullOrEmpty(_strForceCategory)
-                ? _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
-                : _objXmlDocument.SelectNodes("/chummer/categories/category"))
-                if (objXmlCategoryList != null)
-                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
-                    {
-                        if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
-                        {
-                            string strType = objXmlCategory.Attributes?["type"]?.Value;
-                            if (string.IsNullOrEmpty(strType) || strType != WeaponType)
-                                continue;
-                        }
+            foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
+                ? _objXmlDocument.Select("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
+                : _objXmlDocument.Select("/chummer/categories/category"))
+            {
+                if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
+                {
+                    string strType = objXmlCategory.SelectSingleNode("@type")?.Value;
+                    if (string.IsNullOrEmpty(strType) || strType != WeaponType)
+                        continue;
+                }
 
-                        string strInnerText = objXmlCategory.InnerText;
-                        lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
+                string strInnerText = objXmlCategory.Value;
+                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+            }
 
             // Add the Cyberware Category.
             if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
@@ -68,9 +66,10 @@ namespace Chummer
                 lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
             }
             cboCategory.BeginUpdate();
+            cboCategory.DataSource = null;
+            cboCategory.DataSource = lstCategory;
             cboCategory.ValueMember = nameof(ListItem.Value);
             cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstCategory;
 
             // Select the first Skill in the list.
             if (cboCategory.Items.Count > 0)

@@ -258,7 +258,7 @@ namespace Chummer
                 int intPos = strPowerName.IndexOf('(');
                 if (intPos != -1)
                     strPowerName = strPowerName.Substring(0, intPos - 1);
-                _strAdeptWayDiscount = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
+                _strAdeptWayDiscount = CharacterObject.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.Value ?? string.Empty;
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);

@@ -513,9 +513,9 @@ namespace Chummer
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
                     strQualityType =
-                        _objCharacter.LoadData("qualities.xml", strLanguageToPrint)
+                        _objCharacter.LoadDataXPath("qualities.xml", strLanguageToPrint)
                             .SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate")
-                            ?.InnerText ?? strQualityType;
+                            ?.Value ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", Type.ToString());

@@ -579,7 +579,7 @@ namespace Chummer.Backend.Skills
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
-            return _objCharacter.LoadData("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]/@translate")?.InnerText ?? Name;
+            return _objCharacter.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value ?? Name;
         }
 
         public string DisplayRating

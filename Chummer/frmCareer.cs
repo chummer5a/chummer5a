@@ -354,7 +354,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadData("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
                         List<ListItem> lstTraditions = new List<ListItem>(30);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -516,7 +516,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadData("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
                         List<ListItem> lstStreams = new List<ListItem>(5);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -553,22 +553,22 @@ namespace Chummer
                         cboAttributeCategory.Visible = CharacterObject.MetatypeCategory == "Shapeshifter";
                         if (CharacterObject.MetatypeCategory == "Shapeshifter")
                         {
-                            XmlDocument objDoc = CharacterObject.LoadData("metatypes.xml");
-                            XmlNode node =
+                            XPathNavigator objDoc = CharacterObject.LoadDataXPath("metatypes.xml");
+                            XPathNavigator node =
                                 objDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
                             List<ListItem> lstAttributeCategories = new List<ListItem>(2)
-                        {
-                            new ListItem("Standard",
-                                node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
-                        };
+                            {
+                                new ListItem("Standard",
+                                    node?.SelectSingleNode("name/@translate")?.Value ?? CharacterObject.Metatype)
+                            };
 
                             node = node?.SelectSingleNode(
                                 "metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]/name/@translate");
 
                             //The Shapeshifter attribute category is treated as the METAHUMAN form of a shapeshifter.
                             lstAttributeCategories.Add(new ListItem("Shapeshifter",
-                                node?.InnerText ?? CharacterObject.Metavariant));
+                                node?.Value ?? CharacterObject.Metavariant));
 
                             lstAttributeCategories.Sort(CompareListItems.CompareNames);
                             cboAttributeCategory.BeginUpdate();
@@ -1919,7 +1919,7 @@ namespace Chummer
                     treCritterPowers.SortCustomOrder();
 
                     XPathNavigator xmlTraditionsBaseChummerNode =
-                        CharacterObject.LoadData("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                        CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
                     List<ListItem> lstTraditions = new List<ListItem>(30);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -2033,7 +2033,7 @@ namespace Chummer
 
                     // Populate the Technomancer Streams list.
                     xmlTraditionsBaseChummerNode =
-                        CharacterObject.LoadData("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                        CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
                     List<ListItem> lstStreams = new List<ListItem>(5);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -5326,26 +5326,20 @@ namespace Chummer
             // Remove any Critter Powers that are gained through the Quality (Infected).
             if (objXmlDeleteQuality.SelectNodes("powers/power")?.Count > 0)
             {
-                using (XmlNodeList xmlPowerList = CharacterObject.LoadData("critterpowers.xml").SelectNodes("optionalpowers/optionalpower"))
+                foreach (XPathNavigator objXmlPower in CharacterObject.LoadDataXPath("critterpowers.xml").Select("optionalpowers/optionalpower"))
                 {
-                    if (xmlPowerList?.Count > 0)
+                    string strExtra = objXmlPower.SelectSingleNode("@select")?.Value;
+
+                    foreach (CritterPower objPower in CharacterObject.CritterPowers)
                     {
-                        foreach (XmlNode objXmlPower in xmlPowerList)
-                        {
-                            string strExtra = objXmlPower.Attributes?["select"]?.InnerText;
+                        if (objPower.Name != objXmlPower.Value || objPower.Extra != strExtra)
+                            continue;
+                        // Remove any Improvements created by the Critter Power.
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
 
-                            foreach (CritterPower objPower in CharacterObject.CritterPowers)
-                            {
-                                if (objPower.Name != objXmlPower.InnerText || objPower.Extra != strExtra)
-                                    continue;
-                                // Remove any Improvements created by the Critter Power.
-                                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
-
-                                // Remove the Critter Power from the character.
-                                CharacterObject.CritterPowers.Remove(objPower);
-                                break;
-                            }
-                        }
+                        // Remove the Critter Power from the character.
+                        CharacterObject.CritterPowers.Remove(objPower);
+                        break;
                     }
                 }
             }

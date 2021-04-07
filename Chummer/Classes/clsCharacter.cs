@@ -281,8 +281,8 @@ namespace Chummer
 
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false, string strLanguage = "")
         {
-            XmlDocument xmlDoc = LoadData(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
-            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator()?.SelectSingleNode(MetatypeGuid == Guid.Empty
+            XPathNavigator xmlDoc = LoadDataXPath(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
+            XPathNavigator xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
                 ? "/chummer/metatypes/metatype[name = \"" + Metatype + "\"]"
                 : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
             if (blnReturnMetatypeOnly)
@@ -5441,16 +5441,16 @@ namespace Chummer
                 case Improvement.ImprovementSource.Quality:
                     if(objImprovement.SourceName == "SEEKER_WIL")
                     {
-                        return LoadData("qualities.xml")
+                        return LoadDataXPath("qualities.xml")
                                    .SelectSingleNode(
                                        "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
-                                   ?.InnerText ?? "Cyber-Singularity Seeker";
+                                   ?.Value ?? "Cyber-Singularity Seeker";
                     }
                     else if(objImprovement.SourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                     {
-                        return LoadData("qualities.xml")
+                        return LoadDataXPath("qualities.xml")
                                    .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
-                                   ?.InnerText ?? "Redliner";
+                                   ?.Value ?? "Redliner";
                     }
 
                     foreach(Quality objQuality in Qualities)
@@ -5498,10 +5498,10 @@ namespace Chummer
                 case Improvement.ImprovementSource.AstralReputation:
                     return LanguageManager.GetString("String_AstralReputation", strLanguage);
                 case Improvement.ImprovementSource.CyberadeptDaemon:
-                    return LoadData("qualities.xml", strLanguage)
+                    return LoadDataXPath("qualities.xml", strLanguage)
                         .SelectSingleNode(
                             "/chummer/qualities/quality[name = \"Resonant Stream: Cyberadept\"]/translate")
-                        ?.InnerText ?? "Resonant Stream: Cyberadept";
+                        ?.Value ?? "Resonant Stream: Cyberadept";
                 default:
                     if(objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
@@ -5996,52 +5996,11 @@ namespace Chummer
         /// <summary>
         /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
         /// </summary>
-        public HashSet<string> GenerateBlackMarketMappings(XmlDocument xmlCategoryDocument)
-        {
-            if (xmlCategoryDocument == null)
-                throw new ArgumentNullException(nameof(xmlCategoryDocument));
-            HashSet<string> setBlackMarketMaps = new HashSet<string>();
-            // Character has no Black Market discount qualities. Fail out early.
-            if(BlackMarketDiscount)
-            {
-                // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
-                HashSet<string> setNames = new HashSet<string>();
-                foreach(Improvement objImprovement in Improvements)
-                {
-                    if(objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount &&
-                        objImprovement.Enabled)
-                        setNames.Add(objImprovement.ImprovedName);
-                }
-
-                using (XmlNodeList xmlCategoryList = xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
-                {
-                    if (xmlCategoryList != null)
-                    {
-                        // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                        foreach (XmlNode xmlCategoryNode in xmlCategoryList)
-                        {
-                            string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBlackMarketAttribute) &&
-                                strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(x => setNames.Contains(x)))
-                            {
-                                setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return setBlackMarketMaps;
-        }
-
-        /// <summary>
-        /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
-        /// </summary>
         public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList)
         {
             HashSet<string> setBlackMarketMaps = new HashSet<string>();
             // Character has no Black Market discount qualities. Fail out early.
-            if(BlackMarketDiscount)
+            if (BlackMarketDiscount)
             {
                 if (xmlCategoryList == null)
                 {
@@ -10304,13 +10263,10 @@ namespace Chummer
                             ?.DisplayNameShort(GlobalOptions.Language);
                         if(string.IsNullOrEmpty(strErasedString))
                         {
-                            XmlNode xmlErasedQuality = LoadData("qualities.xml")
-                                .SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
+                            XPathNavigator xmlErasedQuality = LoadDataXPath("qualities.xml").SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
                             if(xmlErasedQuality != null)
                             {
-                                strErasedString = xmlErasedQuality["translate"]?.InnerText
-                                                  ?? xmlErasedQuality["name"]?.InnerText
-                                                  ?? string.Empty;
+                                strErasedString = xmlErasedQuality.SelectSingleNode("translate")?.Value ?? "Erased";
                             }
                         }
 

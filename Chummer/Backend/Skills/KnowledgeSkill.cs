@@ -36,18 +36,12 @@ namespace Chummer.Backend.Skills
                 if (GlobalOptions.LiveCustomData || _dicCategoriesSkillMap == null)
                 {
                     Dictionary<string, string> dicReturn = new Dictionary<string, string>();
-                    using (XmlNodeList xmlSkillList = CharacterObject.LoadData("skills.xml").SelectNodes("/chummer/knowledgeskills/skill"))
+                    foreach (XPathNavigator objXmlSkill in CharacterObject.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill"))
                     {
-                        if (xmlSkillList != null)
+                        string strCategory = objXmlSkill.SelectSingleNode("category")?.Value;
+                        if (!string.IsNullOrWhiteSpace(strCategory))
                         {
-                            foreach (XmlNode objXmlSkill in xmlSkillList)
-                            {
-                                string strCategory = objXmlSkill["category"]?.InnerText;
-                                if (!string.IsNullOrWhiteSpace(strCategory))
-                                {
-                                    dicReturn[strCategory] = objXmlSkill["attribute"]?.InnerText;
-                                }
-                            }
+                            dicReturn[strCategory] = objXmlSkill.SelectSingleNode("attribute")?.Value;
                         }
                     }
                     return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
@@ -188,7 +182,7 @@ namespace Chummer.Backend.Skills
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XmlNode xmlSkillNode = CharacterObject.LoadData("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[name = \"{ strSkillName }\"]");
+            XPathNavigator xmlSkillNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath() + "]");
 
             if (xmlSkillNode == null)
             {
@@ -200,14 +194,14 @@ namespace Chummer.Backend.Skills
                 ? guidTemp
                 : Guid.Empty;
 
-            string strCategory = xmlSkillNode["category"]?.InnerText;
+            string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value;
 
             if (!string.IsNullOrEmpty(strCategory))
             {
                 Type = strCategory;
             }
 
-            string strAttribute = xmlSkillNode["attribute"]?.InnerText;
+            string strAttribute = xmlSkillNode.SelectSingleNode("attribute")?.Value;
 
             if (!string.IsNullOrEmpty(strAttribute))
             {
@@ -222,14 +216,14 @@ namespace Chummer.Backend.Skills
                 return strInputSkillName;
             }
 
-            XmlNode xmlSkillTranslationNode = CharacterObject.LoadData("skills.xml").SelectSingleNode($"/chummer/knowledgeskills/skill[translate = \"{ strInputSkillName }\"]");
+            XPathNavigator xmlSkillTranslationNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() + "]");
 
             if (xmlSkillTranslationNode == null)
             {
                 return CharacterObject.ReverseTranslateExtra(strInputSkillName);
             }
 
-            return xmlSkillTranslationNode["name"]?.InnerText ?? strInputSkillName;
+            return xmlSkillTranslationNode.SelectSingleNode("name")?.Value ?? strInputSkillName;
         }
 
         public override string SkillCategory => Type;
@@ -562,7 +556,7 @@ namespace Chummer.Backend.Skills
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XmlNode objDataNode = CharacterObject.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                XPathNavigator objDataNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + Name.CleanXPath() + "]");
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }

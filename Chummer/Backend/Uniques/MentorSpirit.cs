@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer
@@ -235,8 +236,7 @@ namespace Chummer
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
-                    XmlNode objNewNode = _objCharacter.LoadData("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
-                    objNewNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + "]")?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))

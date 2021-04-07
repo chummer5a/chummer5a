@@ -20,7 +20,7 @@
 using System.Collections.Generic;
  using System.Text;
  using System.Windows.Forms;
-using System.Xml;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -30,7 +30,7 @@ namespace Chummer
         private string _strForceValue = string.Empty;
         private string _strExcludeCategory = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
         public frmSelectSkillGroup(Character objCharacter)
@@ -38,7 +38,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
+            _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectSkillGroup_Load(object sender, EventArgs e)
@@ -48,30 +48,22 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strForceValue))
             {
                 // Build the list of Skill Groups found in the Skills file.
-                using (XmlNodeList objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skillgroups/name"))
+                foreach (XPathNavigator objXmlSkill in _objXmlDocument.Select("/chummer/skillgroups/name"))
                 {
-                    if (objXmlSkillList != null)
+                    if (!string.IsNullOrEmpty(_strExcludeCategory))
                     {
-                        foreach (XmlNode objXmlSkill in objXmlSkillList)
-                        {
-                            if (!string.IsNullOrEmpty(_strExcludeCategory))
-                            {
-                                StringBuilder sbdExclude = new StringBuilder();
-                                foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                                    sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
-                                // Remove the trailing " and ";
-                                if (sbdExclude.Length > 0)
-                                    sbdExclude.Length -= 5;
-
-                                XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + sbdExclude + " and skillgroup = " + objXmlSkill.InnerText.CleanXPath() + "]");
-                                if (objXmlNodeList == null || objXmlNodeList.Count == 0)
-                                    continue;
-                            }
-
-                            string strInnerText = objXmlSkill.InnerText;
-                            lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
-                        }
+                        StringBuilder sbdExclude = new StringBuilder();
+                        foreach (string strCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                            sbdExclude.Append("category != ").Append(strCategory.CleanXPath()).Append(" and ");
+                        // Remove the trailing " and ";
+                        if (sbdExclude.Length > 0)
+                            sbdExclude.Length -= 5;
+                        if (_objXmlDocument.SelectSingleNode("/chummer/skills/skill[" + sbdExclude + " and skillgroup = " + objXmlSkill.Value.CleanXPath() + "]") == null)
+                            continue;
                     }
+
+                    string strInnerText = objXmlSkill.Value;
+                    lstGroups.Add(new ListItem(strInnerText, objXmlSkill.SelectSingleNode("@translate")?.Value ?? strInnerText));
                 }
             }
             else

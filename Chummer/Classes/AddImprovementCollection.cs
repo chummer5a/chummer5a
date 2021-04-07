@@ -1822,7 +1822,7 @@ namespace Chummer.Classes
 
             Log.Info("Adding Weapon");
             string strName = bonusNode["name"]?.InnerText ?? throw new AbortedException();
-            XmlNode node = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]") ?? throw new AbortedException();
+            XmlNode node = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + "]") ?? throw new AbortedException();
 
             // Create the new piece of Gear.
             List<Weapon> lstWeapons = new List<Weapon>(1);
