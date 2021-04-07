@@ -1124,6 +1124,10 @@ namespace Chummer.Backend.Equipment
             {
                 Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
                 reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
+                if (reloadClipGear.Location != null)
+                    reload.AmmoLocation = reloadClipGear.Location.Name;
+                else
+                    reload.AmmoLocation = "available or loaded";
                 reload.Save(objWriter);
                 //reloadClipGear.Save(objWriter);
             }
@@ -5898,6 +5902,8 @@ namespace Chummer.Backend.Equipment
             internal int Ammo { get; set; }
             public string AmmoName { get; internal set; }
             public Gear AmmoType { get; set; }
+            public string AmmoLocation { get; set; }
+            
 
             internal static Clip Load(XmlNode node)
             {
@@ -5922,6 +5928,7 @@ namespace Chummer.Backend.Equipment
                     writer.WriteElementString("name", AmmoName);
                     writer.WriteElementString("id", Guid.ToString("D", GlobalOptions.InvariantCultureInfo));
                     writer.WriteElementString("count", Ammo.ToString(GlobalOptions.InvariantCultureInfo));
+                    writer.WriteElementString("location", AmmoLocation);
                     if (this.AmmoType != null)
                     {
                         writer.WriteStartElement("ammotype");
@@ -5937,6 +5944,7 @@ namespace Chummer.Backend.Equipment
             {
                 Guid = guid;
                 Ammo = ammo;
+                AmmoLocation = "loaded";
             }
         }
 
