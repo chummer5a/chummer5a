@@ -1119,6 +1119,14 @@ namespace Chummer.Backend.Equipment
                 objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
                 objClip.Save(objWriter);
             }
+            var ammoreloadable = this.GetAmmoReloadable(lstGearToSearch, false);
+            foreach (var reloadClipGear in ammoreloadable)
+            {
+                Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
+                reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
+                reload.Save(objWriter);
+                //reloadClipGear.Save(objWriter);
+            }
             objWriter.WriteEndElement();
 
             //Don't seem to be used
@@ -5230,48 +5238,15 @@ namespace Chummer.Backend.Equipment
                 lstCount.Add(strAmmo);
             }
 
-            if (!RequireAmmo)
+            try
             {
-                // If the Weapon does not require Ammo, just use External Source.
-                lstAmmo.Add(objExternalSource);
+                var ammoToReload = GetAmmoReloadable(lstGears);
+                lstAmmo.AddRange(ammoToReload);
             }
-            else
+            catch(ArgumentException ae)
             {
-                // Find all of the Ammo for the current Weapon that the character is carrying.
-                if (AmmoCategory == "Gear")
-                    lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && Name == x.Name
-                        && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)));
-                else if (Damage.Contains("(f)"))
-                    lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && x.IsFlechetteAmmo
-                        && x.AmmoForWeaponType == WeaponType
-                        && (string.IsNullOrEmpty(x.Extra)
-                            || x.Extra == AmmoCategory
-                            || (UseSkill == "Throwing Weapons" && Name == x.Name))));
-                else
-                    lstAmmo.AddRange(lstGears.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && x.AmmoForWeaponType == WeaponType
-                        && (string.IsNullOrEmpty(x.Extra)
-                            || x.Extra == AmmoCategory
-                            || (UseSkill == "Throwing Weapons" && Name == x.Name))));
-                // If the Weapon is allowed to use an External Source, put in an External Source item.
-                if (blnExternalSource)
-                {
-                    lstAmmo.Add(objExternalSource);
-                }
-
-                // Make sure the character has some form of Ammunition for this Weapon.
-                if (lstAmmo.Count == 0)
-                {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutOfAmmoType"), DisplayNameShort(GlobalOptions.Language)),
-                        LanguageManager.GetString("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK,
-                        MessageBoxIcon.Exclamation);
-                    return;
-                }
+                Program.MainForm.ShowMessageBox(ae.Message, "", MessageBoxButtons.OK);
+                return;
             }
 
             // Show the Ammunition Selection window.
@@ -5380,6 +5355,57 @@ namespace Chummer.Backend.Equipment
                 AmmoRemaining = decQty.ToInt32();
                 AmmoLoaded = objSelectedAmmo.InternalId;
             }
+        }
+
+        public List<Gear> GetAmmoReloadable(ICollection<Gear> lstGears, bool throwExceptions = true)
+        {
+            bool blnExternalSource = false;
+            Gear objExternalSource = new Gear(_objCharacter)
+            {
+                Name = "External Source"
+            };
+            List<Gear> ammoToReload = new List<Gear>();
+            if (!RequireAmmo)
+            {
+                // If the Weapon does not require Ammo, just use External Source.
+                ammoToReload.Add(objExternalSource);
+            }
+            else
+            {
+                // Find all of the Ammo for the current Weapon that the character is carrying.
+                if (AmmoCategory == "Gear")
+                    ammoToReload.AddRange(lstGears.DeepWhere(x => x.Children, x =>
+                        x.Quantity > 0
+                        && Name == x.Name
+                        && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)));
+                else if (Damage.Contains("(f)"))
+                    ammoToReload.AddRange(lstGears.DeepWhere(x => x.Children, x =>
+                        x.Quantity > 0
+                        && x.IsFlechetteAmmo
+                        && x.AmmoForWeaponType == WeaponType
+                        && (string.IsNullOrEmpty(x.Extra)
+                            || x.Extra == AmmoCategory
+                            || (UseSkill == "Throwing Weapons" && Name == x.Name))));
+                else
+                    ammoToReload.AddRange(lstGears.DeepWhere(x => x.Children, x =>
+                        x.Quantity > 0
+                        && x.AmmoForWeaponType == WeaponType
+                        && (string.IsNullOrEmpty(x.Extra)
+                            || x.Extra == AmmoCategory
+                            || (UseSkill == "Throwing Weapons" && Name == x.Name))));
+                // If the Weapon is allowed to use an External Source, put in an External Source item.
+                if (blnExternalSource)
+                {
+                    ammoToReload.Add(objExternalSource);
+                }
+
+                // Make sure the character has some form of Ammunition for this Weapon.
+                if (ammoToReload.Count == 0 && throwExceptions)
+                {
+                    throw new ArgumentException(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutOfAmmoType"), DisplayNameShort(GlobalOptions.Language)));
+                }
+            }
+            return ammoToReload;
         }
 
         #region UI Methods
