@@ -339,9 +339,8 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
                 return;
             var objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
-            var objLifestyleQualityNode = GetNode() ??
-                                          objXmlDocument.SelectSingleNode(
-                                              "/chummer/qualities/quality[name = \"" + _strName + "\"]");
+            var objLifestyleQualityNode = GetNode()
+                                          ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
             if (objLifestyleQualityNode == null)
             {
                 List<ListItem> lstQualities = new List<ListItem>(1);
@@ -366,8 +365,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     objLifestyleQualityNode =
-                        objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelect.SelectedItem +
-                                                        "\"]");
+                        objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelect.SelectedItem.CleanXPath() + "]");
                 }
             }
 
@@ -418,7 +416,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
                 XmlNode objNode = _objCharacter.LoadData("lifestyles.xml", strLanguageToPrint)
-                    .SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
+                    .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + "]");
                 strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
 

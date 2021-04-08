@@ -503,7 +503,7 @@ namespace Chummer
                         return;
                     blnAddAgain = frmSelectLifestyleQuality.AddAgain;
 
-                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
+                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.SelectedQuality.CleanXPath() + "]");
 
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
@@ -626,7 +626,7 @@ namespace Chummer
             }
 
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
-            XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
+            XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + strBaseLifestyle.CleanXPath() + "]");
             if (objXmlLifestyle == null)
                 return;
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;

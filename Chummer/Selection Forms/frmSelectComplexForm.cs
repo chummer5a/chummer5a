@@ -50,9 +50,9 @@ namespace Chummer
             if (_xmlOptionalComplexFormNode == null) return;
             if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
-                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = \""
-                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
-                                                                                                 + "\"]");
+                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = "
+                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
+                                                                                                 + "]");
                 if (xmlMetavariantNode != null)
                     _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
@@ -79,7 +79,7 @@ namespace Chummer
             }
 
             // Display the Complex Form information.
-            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = \"" + strSelectedComplexFormId + "\"]");
+            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + "]");
             if (xmlComplexForm != null)
             {
                 switch (xmlComplexForm.SelectSingleNode("duration")?.Value)
@@ -258,7 +258,7 @@ namespace Chummer
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null)
                 {
-                    if (_xmlOptionalComplexFormNode.SelectSingleNode("complexform[text() = \"" + strName + "\"]") == null)
+                    if (_xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + "]") == null)
                         continue;
                 }
 

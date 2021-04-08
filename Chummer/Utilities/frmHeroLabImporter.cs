@@ -343,18 +343,18 @@ namespace Chummer
 
                 // Populate character information fields.
                 XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
-                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
+                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
                 if (objMetatypeNode == null)
                 {
                     objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
+                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
                 }
 
                 string strMetatype = objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metatype;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
-                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
+                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
 
                     strMetatype += " (" + (objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metavariant) + ')';
                 }

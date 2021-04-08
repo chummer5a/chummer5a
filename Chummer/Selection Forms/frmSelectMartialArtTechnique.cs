@@ -48,7 +48,7 @@ namespace Chummer
             // Load the Martial Art information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNode("/chummer");
             // Populate the Martial Art Technique list.
-            XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = \"" + _objMartialArt.Name + "\"]");
+            XPathNavigator xmlMartialArtNode = _xmlBaseChummerNode?.SelectSingleNode("martialarts/martialart[name = " + _objMartialArt.Name.CleanXPath() + "]");
             if (xmlMartialArtNode != null)
             {
                 if (!xmlMartialArtNode.NodeExists("alltechniques"))
@@ -115,7 +115,7 @@ namespace Chummer
             string strSelectedId = lstTechniques.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator xmlTechnique = _xmlBaseChummerNode.SelectSingleNode("/chummer/techniques/technique[id = \"" + strSelectedId + "\"]");
+                XPathNavigator xmlTechnique = _xmlBaseChummerNode.SelectSingleNode("/chummer/techniques/technique[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (xmlTechnique != null)
                 {

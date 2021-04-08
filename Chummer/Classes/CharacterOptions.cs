@@ -1654,7 +1654,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
                 {
-                    sbdBookXPath.Append("source = \"").Append(strBook).Append("\" or ");
+                    sbdBookXPath.Append("source = " + strBook.CleanXPath() + " or ");
                 }
             }
             if (sbdBookXPath.Length >= 4)

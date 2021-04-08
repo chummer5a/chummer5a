@@ -58,7 +58,7 @@ namespace Chummer
             //Sort the list (Crude way, but have to do)
             for (int i = 0; i < modules.Count; i++)
             {
-                string stageName = xdoc.SelectSingleNode(i <= 4 ? "chummer/stages/stage[@order = \"" + (i + 1).ToString(GlobalOptions.InvariantCultureInfo) + "\"]" : "chummer/stages/stage[@order = \"5\"]")?.Value;
+                string stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = " + (i <= 4 ? (i + 1).ToString(GlobalOptions.InvariantCultureInfo).CleanXPath() : "\"5\"") + "]")?.Value;
                 int j;
                 for (j = i; j < modules.Count; j++)
                 {

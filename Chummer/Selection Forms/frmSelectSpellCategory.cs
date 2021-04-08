@@ -44,7 +44,7 @@ namespace Chummer
             // Build the list of Spell Categories from the Spells file.
             List<ListItem> lstCategory = new List<ListItem>();
             foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
-                ? _objXmlDocument.Select("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
+                ? _objXmlDocument.Select("/chummer/categories/category[. = " + _strForceCategory.CleanXPath() + "]")
                 : _objXmlDocument.Select("/chummer/categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;

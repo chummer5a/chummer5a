@@ -730,7 +730,7 @@ namespace Chummer.UI.Skills
                 if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)
                     return;
 
-                XmlNode xmlSkillNode = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
+                XmlNode xmlSkillNode = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + frmPickExoticSkill.SelectedExoticSkill.CleanXPath() + "]");
 
                 objSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
                 {

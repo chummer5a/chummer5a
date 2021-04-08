@@ -108,7 +108,7 @@ namespace Chummer
             Grade objGrade = null;
             if (strSelectedSuite != null)
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = \"" + strSelectedSuite + "\"]");
+                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + strSelectedSuite.CleanXPath() + "]");
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
@@ -235,7 +235,7 @@ namespace Chummer
                         xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
 
                         // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
-                        XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = \"" + strName + "\"]");
+                        XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = " + strName.CleanXPath() + "]");
 
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<Vehicle> lstVehicles = new List<Vehicle>();

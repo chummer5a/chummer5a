@@ -6419,7 +6419,7 @@ namespace Chummer
                         blnAddAgain = frmPickGear.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + "]");
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);

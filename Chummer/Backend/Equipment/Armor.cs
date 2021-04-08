@@ -362,7 +362,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // Locate the selected piece.
-                            XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
+                            XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + "]");
 
                             if (objXmlMod != null)
                             {
@@ -411,7 +411,7 @@ namespace Chummer.Backend.Equipment
                         intRating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                         string strForceValue = objXmlAttributes?["select"]?.InnerText ?? string.Empty;
 
-                        XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlArmorMod.InnerText + "\"]");
+                        XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlArmorMod.InnerText.CleanXPath() + "]");
                         if (objXmlMod != null)
                         {
                             ArmorMod objMod = new ArmorMod(_objCharacter);
@@ -495,8 +495,8 @@ namespace Chummer.Backend.Equipment
             {
                 string strLoopID = objXmlAddWeapon.InnerText;
                 XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
+                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
 
                 int intAddWeaponRating = 0;
                 if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
@@ -822,7 +822,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -1617,16 +1617,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
+            string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (!string.IsNullOrEmpty(CustomName))
-                sbdReturn.Append(strSpace).Append("(\"").Append(CustomName).Append("\")");
+                strReturn += strSpace + "(\"" + CustomName + "\")";
             if (Rating > 0)
-                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString(RatingLabel, strLanguage))
-                    .Append(strSpace).Append(Rating.ToString(objCulture)).Append(')');
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                sbdReturn.Append(strSpace).Append('(').Append(_objCharacter.TranslateExtra(Extra, strLanguage)).Append(')');
-            return sbdReturn.ToString();
+                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+            return strReturn;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);

@@ -413,7 +413,7 @@ namespace Chummer.Backend.Attributes
             XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
             foreach (string strAttribute in AttributeStrings)
             {
-                XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
+                XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = " + strAttribute.CleanXPath() + "]");
                 // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
                 if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version(5, 200, 25))
                 {
@@ -738,7 +738,7 @@ namespace Chummer.Backend.Attributes
                 }
                 else
                 {
-                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = \"" + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = " + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
                     objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
             }

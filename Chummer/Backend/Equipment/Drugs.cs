@@ -333,7 +333,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -959,7 +959,7 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
-                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
                     if (objXmlSelectedQuality == null)
                         continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
@@ -1288,7 +1288,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>

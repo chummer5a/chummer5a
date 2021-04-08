@@ -56,10 +56,10 @@ namespace Chummer
             }
             XPathNavigator xmlParentSkill;
             if (Mode == "Knowledge")
-                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + _objSkill.Name + "\"]") ??
-                    _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + _objSkill.Name + "\"]");
+                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + _objSkill.Name.CleanXPath() + "]")
+                                 ?? _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + "]");
             else
-                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and (" + _objCharacter.Options.BookXPath() + ")]");
             // Populate the Skill's Specializations (if any).
             XPathNodeIterator xmlSpecList = xmlParentSkill?.Select("specs/spec");
             if (xmlSpecList?.Count > 0)
@@ -74,7 +74,7 @@ namespace Chummer
                     // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
                     XPathNavigator objXmlWeaponDocument = _objCharacter.LoadDataXPath("weapons.xml");
                     //Might need to include skill name or might miss some values?
-                    foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+                    foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select("/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = " + strInnerText.CleanXPath() + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
                     {
                         string strName = objXmlWeapon.SelectSingleNode("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))

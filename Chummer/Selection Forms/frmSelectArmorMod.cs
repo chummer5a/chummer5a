@@ -210,7 +210,7 @@ namespace Chummer
             string strSelectedId = lstMod.SelectedValue?.ToString();
             XPathNavigator objXmlMod = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = \"" + strSelectedId + "\"]");
+                objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = " + strSelectedId.CleanXPath() + "]");
             if (objXmlMod == null)
             {
                 lblALabel.Visible = false;

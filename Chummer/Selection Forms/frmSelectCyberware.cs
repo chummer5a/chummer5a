@@ -153,7 +153,7 @@ namespace Chummer
             string strSelectedGrade = cboGrade.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedGrade))
             {
-                XPathNavigator xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = \"" + strSelectedGrade + "\"]");
+                XPathNavigator xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = " + strSelectedGrade.CleanXPath() + "]");
 
                 // Update the Essence and Cost multipliers based on the Grade that has been selected.
                 if (xmlGrade != null)
@@ -184,7 +184,7 @@ namespace Chummer
             if (cboGrade.Enabled && strSelectedGrade != null)
                 _strOldSelectedGrade = strSelectedGrade;
             if (!string.IsNullOrEmpty(strSelectedGrade))
-                xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = \"" + strSelectedGrade + "\"]");
+                xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = " + strSelectedGrade.CleanXPath() + "]");
 
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
             if (xmlGrade != null)
@@ -246,7 +246,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Cyberware.
-                xmlCyberware = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+                xmlCyberware = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             }
             string strForceGrade;
             if (xmlCyberware != null)
@@ -679,7 +679,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Cyberware.
-                objXmlCyberware = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+                objXmlCyberware = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             }
             if (objXmlCyberware == null)
             {
@@ -956,12 +956,10 @@ namespace Chummer
                 }
             }
             if (sbdCategoryFilter.Length > 0)
-                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
 
             if (ParentVehicle == null && _objCharacter.IsAI)
-                sbdFilter.Append(" and (id = ")
-                    .Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath()).Append(" or id = ")
-                    .Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath()).Append(" or mountsto)");
+                sbdFilter.Append(" and (id = " + Cyberware.EssenceHoleGUID.ToString().CleanXPath() + " or id = " + Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath() + " or mountsto)");
             else if (_objParentNode != null)
                 sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
             else
@@ -970,13 +968,12 @@ namespace Chummer
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceIDString == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
-                    .Append(objCurrentGrade.Name.CleanXPath()).Append(")");
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = " + objCurrentGrade.Name.CleanXPath() + ")");
                 if (objCurrentGrade.SecondHand)
                     sbdFilter.Append(" and not(nosecondhand)");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             XPathNodeIterator node = null;
             try
             {
@@ -1229,7 +1226,7 @@ namespace Chummer
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            XPathNavigator objCyberwareNode = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+            XPathNavigator objCyberwareNode = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             if (objCyberwareNode == null)
                 return;
 
@@ -1390,7 +1387,7 @@ namespace Chummer
             if (_strSubsystems.Length > 0)
             {
                 // Populate the Cyberware Category list.
-                string strSubsystem = "categories/category[. = \"" + _strSubsystems.Replace(",", "\" or . = \"") + "\"]";
+                string strSubsystem = "categories/category[. = " + _strSubsystems.CleanXPath().Replace(",", "\" or . = \"") + "]";
                 objXmlCategoryList = _xmlBaseCyberwareDataNode.Select(strSubsystem);
             }
             else

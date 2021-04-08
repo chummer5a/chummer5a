@@ -1415,7 +1415,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -2603,25 +2603,21 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
+            string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Quantity != 1.0m || Category == "Currency")
-                sbdReturn.Insert(0, strSpace).Insert(0, Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal)
+                strReturn = Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal)
                     ? _objCharacter.Options.NuyenFormat
                     : Category == "Currency"
                         ? "#,0.00"
-                        : "#,0.##", objCulture));
+                        : "#,0.##", objCulture) + strSpace + strReturn;
             if (Rating > 0)
-                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString(RatingLabel, strLanguage)).Append(strSpace).Append(Rating.ToString(objCulture)).Append(')');
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                sbdReturn.Append(strSpace).Append('(').Append(_objCharacter.TranslateExtra(Extra, strLanguage)).Append(')');
-
+                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
-            {
-                sbdReturn.Append(strSpace).Append("(\"").Append(GearName).Append("\")");
-            }
-
-            return sbdReturn.ToString();
+                strReturn += strSpace + "(\"" + GearName + "\")";
+            return strReturn;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -3303,7 +3299,7 @@ namespace Chummer.Backend.Equipment
                 XmlDocument xmlGearDocument = _objCharacter.LoadData("gear.xml");
                 string strForceValue = string.Empty;
                 XmlNode xmlGearDataNode = null;
-                using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strOriginalName + "\")]"))
+                using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, " + strOriginalName.CleanXPath() + ")]"))
                 {
                     if (xmlGearDataList?.Count > 0)
                     {
@@ -3361,7 +3357,7 @@ namespace Chummer.Backend.Equipment
                     if (astrOriginalNameSplit.Length > 1)
                     {
                         string strName = astrOriginalNameSplit[0].Trim();
-                        using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                        using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, " + strName.CleanXPath() + ")]"))
                         {
                             if (xmlGearDataList?.Count > 0)
                             {
@@ -3422,7 +3418,7 @@ namespace Chummer.Backend.Equipment
                         if (astrOriginalNameSplit.Length > 1)
                         {
                             string strName = astrOriginalNameSplit[0].Trim();
-                            using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                            using (XmlNodeList xmlGearDataList = xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, " + strName.CleanXPath() + ")]"))
                             {
                                 if (xmlGearDataList?.Count > 0)
                                 {

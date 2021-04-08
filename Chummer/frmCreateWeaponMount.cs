@@ -167,16 +167,16 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedVisibility))
                 return;
 
-            XmlNode xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedMount + "\"]");
+            XmlNode xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + "]");
             if (xmlSelectedMount == null)
                 return;
-            XmlNode xmlSelectedControl = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedControl + "\"]");
+            XmlNode xmlSelectedControl = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedControl.CleanXPath() + "]");
             if (xmlSelectedControl == null)
                 return;
-            XmlNode xmlSelectedFlexibility = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedFlexibility + "\"]");
+            XmlNode xmlSelectedFlexibility = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedFlexibility.CleanXPath() + "]");
             if (xmlSelectedFlexibility == null)
                 return;
-            XmlNode xmlSelectedVisibility = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedVisibility + "\"]");
+            XmlNode xmlSelectedVisibility = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedVisibility.CleanXPath() + "]");
             if (xmlSelectedVisibility == null)
                 return;
 
@@ -357,7 +357,7 @@ namespace Chummer
                 cmdOK.Enabled = false;
             else
             {
-                xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedMount + "\"]");
+                xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + "]");
                 if (xmlSelectedMount == null)
                     cmdOK.Enabled = false;
                 else
@@ -365,21 +365,21 @@ namespace Chummer
                     string strSelectedControl = cboControl.SelectedValue?.ToString();
                     if (string.IsNullOrEmpty(strSelectedControl))
                         cmdOK.Enabled = false;
-                    else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedControl + "\"]") == null)
+                    else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedControl.CleanXPath() + "]") == null)
                         cmdOK.Enabled = false;
                     else
                     {
                         string strSelectedFlexibility = cboFlexibility.SelectedValue?.ToString();
                         if (string.IsNullOrEmpty(strSelectedFlexibility))
                             cmdOK.Enabled = false;
-                        else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedFlexibility + "\"]") == null)
+                        else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedFlexibility.CleanXPath() + "]") == null)
                             cmdOK.Enabled = false;
                         else
                         {
                             string strSelectedVisibility = cboVisibility.SelectedValue?.ToString();
                             if (string.IsNullOrEmpty(strSelectedVisibility))
                                 cmdOK.Enabled = false;
-                            else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedVisibility + "\"]") == null)
+                            else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedVisibility.CleanXPath() + "]") == null)
                                 cmdOK.Enabled = false;
                             else
                                 cmdOK.Enabled = true;
@@ -412,7 +412,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strSelectedId))
                             {
-                                XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedId + "\"]");
+                                XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
                                 if (xmlLoopNode != null)
                                 {
                                     intTotalSlots += Convert.ToInt32(xmlLoopNode["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
@@ -460,7 +460,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedId + "\"]");
+                    XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
                     if (xmlLoopNode != null)
                     {
                         if (!chkFreeItem.Checked)
@@ -532,7 +532,7 @@ namespace Chummer
             XmlNode xmlSelectedMount = null;
             string strSelectedMount = cboSize.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMount))
-                xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedMount + "\"]");
+                xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + "]");
 
             int intSlots = Convert.ToInt32(xmlSelectedMount?["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 
@@ -541,7 +541,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedId + "\"]");
+                    XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
                     if (xmlLoopNode != null)
                     {
                         intSlots += Convert.ToInt32(xmlLoopNode["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
@@ -572,7 +572,7 @@ namespace Chummer
 
                     blnAddAgain = frmPickVehicleMod.AddAgain;
                     XmlDocument objXmlDocument = _objCharacter.LoadData("vehicles.xml");
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = " + frmPickVehicleMod.SelectedMod.CleanXPath() + "]");
 
                     VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
@@ -713,7 +713,7 @@ namespace Chummer
             string strSelectedMount = cboSize.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMount))
             {
-                XmlNode xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedMount + "\"]");
+                XmlNode xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + "]");
                 if (xmlSelectedMount != null)
                 {
                     xmlForbiddenNode = xmlSelectedMount.SelectSingleNode("forbidden/weaponmountdetails");

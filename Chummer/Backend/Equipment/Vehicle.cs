@@ -324,7 +324,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlVehicleMod in objXmlModList)
                             {
-                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod.InnerText + "\"]");
+                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlVehicleMod.InnerText.CleanXPath() + "]");
                                 if (objXmlMod != null)
                                 {
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
@@ -348,7 +348,10 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlVehicleMod in objXmlModList)
                             {
-                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod["name"].InnerText + "\"]");
+                                string strName = objXmlVehicleMod["name"]?.InnerText;
+                                if (string.IsNullOrEmpty(strName))
+                                    continue;
+                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = " + strName.CleanXPath() + "]");
                                 if (objXmlMod != null)
                                 {
                                     VehicleMod objMod = new VehicleMod(_objCharacter);
@@ -371,9 +374,11 @@ namespace Chummer.Backend.Equipment
                                                 XmlDocument objXmlWareDocument = _objCharacter.LoadData("cyberware.xml");
                                                 foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                                                 {
+                                                    string strSubsystemName = objXmlSubsystemNode["name"]?.InnerText;
+                                                    if (string.IsNullOrEmpty(strSubsystemName))
+                                                        continue;
                                                     XmlNode objXmlSubsystem = objXmlWareDocument.SelectSingleNode(
-                                                        "/chummer/cyberwares/cyberware[name = \"" + objXmlSubsystemNode["name"]?.InnerText + "\"]");
-
+                                                        "/chummer/cyberwares/cyberware[name = " + strSubsystemName.CleanXPath() + "]");
                                                     if (objXmlSubsystem == null) continue;
                                                     Cyberware objSubsystem = new Cyberware(_objCharacter);
                                                     int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
@@ -452,11 +457,14 @@ namespace Chummer.Backend.Equipment
 
                     foreach (XmlNode objXmlWeapon in xmlWeapons.SelectNodes("weapon"))
                     {
+                        string strWeaponName = objXmlWeapon["name"]?.InnerText;
+                        if (string.IsNullOrEmpty(strWeaponName))
+                            continue;
                         bool blnAttached = false;
                         Weapon objWeapon = new Weapon(_objCharacter);
 
                         List<Weapon> objSubWeapons = new List<Weapon>(1);
-                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strWeaponName.CleanXPath() + "]");
                         objWeapon.ParentVehicle = this;
                         objWeapon.Create(objXmlWeaponNode, objSubWeapons);
                         objWeapon.ParentID = InternalId;
@@ -510,7 +518,10 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
                             {
-                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                string strAccessoryName = objXmlWeapon["name"]?.InnerText;
+                                if (string.IsNullOrEmpty(strAccessoryName))
+                                    continue;
+                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strAccessoryName.CleanXPath() + "]");
                                 WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                 string strMount = "Internal";
                                 objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
@@ -809,11 +820,14 @@ namespace Chummer.Backend.Equipment
 
                                     foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
                                     {
+                                        string strWeaponName = objXmlWeapon["name"]?.InnerText;
+                                        if (string.IsNullOrEmpty(strWeaponName))
+                                            continue;
                                         bool blnAttached = false;
                                         Weapon objWeapon = new Weapon(_objCharacter);
 
                                         List<Weapon> objSubWeapons = new List<Weapon>(1);
-                                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strWeaponName.CleanXPath() + "]");
                                         objWeapon.ParentVehicle = this;
                                         objWeapon.Create(objXmlWeaponNode, objSubWeapons);
                                         objWeapon.ParentID = InternalId;
@@ -869,7 +883,10 @@ namespace Chummer.Backend.Equipment
                                         {
                                             foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
                                             {
-                                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                                string strAccessoryName = objXmlWeapon["name"]?.InnerText;
+                                                if (string.IsNullOrEmpty(strAccessoryName))
+                                                    continue;
+                                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strAccessoryName.CleanXPath() + "]");
                                                 WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                                 string strMount = "Internal";
                                                 objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
@@ -1072,7 +1089,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -1558,7 +1575,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(CustomName))
             {
-                strReturn += " (\"" + CustomName + "\")";
+                strReturn += LanguageManager.GetString("String_Space") + "(\"" + CustomName + "\")";
             }
 
             return strReturn;

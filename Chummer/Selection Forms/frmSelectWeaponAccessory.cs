@@ -91,11 +91,11 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (string strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
-                sbdFilter.Append(" or contains(mount,").Append(strAllowedMount.CleanXPath()).Append(")");
+                sbdFilter.Append(" or contains(mount, " + strAllowedMount.CleanXPath() + ")");
             }
             sbdFilter.Append(')');
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             int intOverLimit = 0;
             foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[" + sbdFilter + "]"))
             {
@@ -245,7 +245,7 @@ namespace Chummer
                 _lstAllowedMounts.Clear();
                 if (value != null)
                 {
-                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = \"" + value.SourceIDString + "\"]/accessorymounts/mount"))
+                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = " + value.SourceIDString.CleanXPath() + "]/accessorymounts/mount"))
                     {
                         string strLoopMount = objXmlMount.Value;
                         // Run through the Weapon's current Accessories and filter out any used up Mount points.
@@ -321,7 +321,7 @@ namespace Chummer
             string strSelectedId = lstAccessory.SelectedValue?.ToString();
             // Retrieve the information for the selected Accessory.
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = \"" + strSelectedId + "\"]");
+                xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath() + "]");
             if (xmlAccessory == null)
             {
                 lblRC.Visible = false;

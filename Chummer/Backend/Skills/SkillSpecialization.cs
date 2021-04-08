@@ -141,7 +141,7 @@ namespace Chummer.Backend.Skills
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[text() = \"" + Name + "\"]");
+                _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + "]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -229,8 +229,8 @@ namespace Chummer
                     {
                         string strLoopID = objXmlAddWeapon.InnerText;
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
-                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                            ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
+                            : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
@@ -514,7 +514,7 @@ namespace Chummer
                 {
                     strQualityType =
                         _objCharacter.LoadDataXPath("qualities.xml", strLanguageToPrint)
-                            .SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate")
+                            .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath() + "]/@translate")
                             ?.Value ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
@@ -1237,7 +1237,7 @@ namespace Chummer
         {
             if (xmlDoc == null)
                 throw new ArgumentNullException(nameof(xmlDoc));
-            var node = xmlDoc.SelectSingleNode("//*[id = \"" + id + "\"]");
+            var node = xmlDoc.SelectSingleNode("//*[id = " + id.CleanXPath() + "]");
             if (node == null)
                 throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + ".");
             return GetNodeOverrideable(node);

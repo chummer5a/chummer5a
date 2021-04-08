@@ -83,11 +83,11 @@ namespace Chummer
             }
 
             // Populate the Vehicle Category list.
-            string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
+            string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and category = ";
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
+                if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
                         objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
@@ -278,7 +278,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected Vehicle.
-                objXmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = \"" + strSelectedId + "\"]");
+                objXmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = " + strSelectedId.CleanXPath() + "]");
             }
             if (objXmlVehicle == null)
             {
@@ -501,7 +501,7 @@ namespace Chummer
             XPathNavigator xmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = \"" + strSelectedId + "\"]");
+                xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = " + strSelectedId.CleanXPath() + "]");
             }
             if (xmlVehicle == null)
                 return;

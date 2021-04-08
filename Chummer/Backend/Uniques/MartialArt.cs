@@ -456,7 +456,7 @@ namespace Chummer
                     // Open the Martial Arts XML file and locate the selected piece.
                     XmlDocument objXmlDocument = objCharacter.LoadData("martialarts.xml");
 
-                    XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+                    XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = " + frmPickMartialArt.SelectedMartialArt.CleanXPath() + "]");
 
                     MartialArt objMartialArt = new MartialArt(objCharacter);
                     objMartialArt.Create(objXmlArt);

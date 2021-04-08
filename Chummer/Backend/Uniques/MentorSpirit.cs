@@ -116,7 +116,7 @@ namespace Chummer
             {
                 _strExtra = strForceValue;
             }
-            _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = \"" + strForceValueChoice1 + "\"]/bonus");
+            _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = " + strForceValueChoice1.CleanXPath() + "]/bonus");
             if (_nodChoice1 != null)
             {
                 string strOldForce = ImprovementManager.ForcedValue;
@@ -138,7 +138,7 @@ namespace Chummer
             {
                 _strExtra = strForceValueChoice1;
             }
-            _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = \"" + strForceValueChoice2 + "\"]/bonus");
+            _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = " + strForceValueChoice2.CleanXPath() + "]/bonus");
             if (_nodChoice2 != null)
             {
                 string strOldForce = ImprovementManager.ForcedValue;

@@ -679,8 +679,8 @@ namespace Chummer.Backend.Equipment
             {
                 string strLoopID = objXmlAddWeapon.InnerText;
                 XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + "]")
+                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
 
                 if (objXmlWeapon != null)
                 {
@@ -711,8 +711,8 @@ namespace Chummer.Backend.Equipment
             {
                 string strLoopID = xmlAddVehicle.InnerText;
                 XmlNode xmlVehicle = strLoopID.IsGuid()
-                    ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strLoopID + "\"]")
-                    : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + strLoopID + "\"]");
+                    ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strLoopID.CleanXPath() + "]")
+                    : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = " + strLoopID.CleanXPath() + "]");
 
                 if (xmlVehicle != null)
                 {
@@ -1021,9 +1021,10 @@ namespace Chummer.Backend.Equipment
                         XmlDocument objXmlDocument = _objCharacter.LoadData("cyberware.xml");
                         foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                         {
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode(
-                                "/chummer/cyberwares/cyberware[name = \"" + objXmlSubsystemNode["name"]?.InnerText +
-                                "\"]");
+                            string strName = objXmlSubsystemNode["name"]?.InnerText;
+                            if (string.IsNullOrEmpty(strName))
+                                continue;
+                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = " + strName.CleanXPath() + "]");
 
                             if (objXmlSubsystem != null)
                             {
@@ -1050,8 +1051,10 @@ namespace Chummer.Backend.Equipment
                         XmlDocument objXmlDocument = _objCharacter.LoadData("bioware.xml");
                         foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                         {
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode(
-                                "/chummer/biowares/bioware[name = \"" + objXmlSubsystemNode["name"]?.InnerText + "\"]");
+                            string strName = objXmlSubsystemNode["name"]?.InnerText;
+                            if (string.IsNullOrEmpty(strName))
+                                continue;
+                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = " + strName.CleanXPath() + "]");
 
                             if (objXmlSubsystem != null)
                             {
@@ -1897,7 +1900,7 @@ namespace Chummer.Backend.Equipment
                 return Category;
 
             return _objCharacter.LoadDataXPath(SourceType == Improvement.ImprovementSource.Cyberware ? "cyberware.xml" : "bioware.xml", strLanguage)
-                .SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+                .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -4727,9 +4730,7 @@ namespace Chummer.Backend.Equipment
                 XmlDocument xmlBiowareDocument = _objCharacter.LoadData("bioware.xml");
                 string strForceValue = string.Empty;
                 XmlNode xmlCyberwareDataNode = null;
-                XmlNodeList xmlCyberwareNodeList =
-                    xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, \"" +
-                                                     strOriginalName + "\")]");
+                XmlNodeList xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, " + strOriginalName.CleanXPath() + ")]");
                 if (xmlCyberwareNodeList != null)
                 {
                     foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
@@ -4762,9 +4763,7 @@ namespace Chummer.Backend.Equipment
                 if (xmlCyberwareDataNode == null)
                 {
                     blnCyberware = false;
-                    xmlCyberwareNodeList =
-                        xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, \"" + strOriginalName +
-                                                       "\")]");
+                    xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, " + strOriginalName.CleanXPath() + ")]");
                     if (xmlCyberwareNodeList != null)
                     {
                         foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
@@ -4802,9 +4801,7 @@ namespace Chummer.Backend.Equipment
                     {
                         string strName = astrOriginalNameSplit[0].Trim();
                         blnCyberware = true;
-                        xmlCyberwareNodeList =
-                            xmlCyberwareDocument.SelectNodes(
-                                "/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                        xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, " + strName.CleanXPath() + ")]");
                         if (xmlCyberwareNodeList != null)
                         {
                             foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
@@ -4838,9 +4835,7 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 blnCyberware = false;
-                                xmlCyberwareNodeList =
-                                    xmlBiowareDocument.SelectNodes(
-                                        "/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                                xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, " + strName.CleanXPath() + ")]");
                                 if (xmlCyberwareNodeList != null)
                                     foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                                     {
@@ -4881,9 +4876,7 @@ namespace Chummer.Backend.Equipment
                         {
                             string strName = astrOriginalNameSplit[0].Trim();
                             blnCyberware = true;
-                            xmlCyberwareNodeList =
-                                xmlCyberwareDocument.SelectNodes(
-                                    "/chummer/cyberwares/cyberware[contains(name, \"" + strName + "\")]");
+                            xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, " + strName.CleanXPath() + ")]");
                             if (xmlCyberwareNodeList != null)
                             {
                                 foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
@@ -4917,9 +4910,7 @@ namespace Chummer.Backend.Equipment
                                 else
                                 {
                                     blnCyberware = false;
-                                    xmlCyberwareNodeList =
-                                        xmlBiowareDocument.SelectNodes(
-                                            "/chummer/biowares/bioware[contains(name, \"" + strName + "\")]");
+                                    xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, " + strName.CleanXPath() + ")]");
                                     if (xmlCyberwareNodeList != null)
                                         foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                                         {
@@ -4928,8 +4919,7 @@ namespace Chummer.Backend.Equipment
                                             if (xmlTestNode != null)
                                             {
                                                 // Assumes topmost parent is an AND node
-                                                if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode,
-                                                    false))
+                                                if (xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                                 {
                                                     continue;
                                                 }
@@ -4939,8 +4929,7 @@ namespace Chummer.Backend.Equipment
                                             if (xmlTestNode != null)
                                             {
                                                 // Assumes topmost parent is an AND node
-                                                if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode,
-                                                    false))
+                                                if (!xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                                 {
                                                     continue;
                                                 }

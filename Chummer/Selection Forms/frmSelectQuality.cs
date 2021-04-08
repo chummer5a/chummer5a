@@ -111,7 +111,7 @@ namespace Chummer
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedQuality))
             {
-                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = \"" + strSelectedQuality + "\"]");
+                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
             }
 
             if (xmlQuality != null)
@@ -359,7 +359,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
             {
-                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
+                sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             }
             else
             {
@@ -367,12 +367,12 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        objCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
                 }
                 if (objCategoryFilter.Length > 0)
                 {
                     objCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(objCategoryFilter).Append(')');
+                    sbdFilter.Append(" and (" + objCategoryFilter + ')');
                 }
             }
             if (chkMetagenic.Checked)
@@ -387,15 +387,12 @@ namespace Chummer
             {
                 if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && nudValueBP.Value > 0)
                 {
-                    sbdFilter.Append(" and ((doublecareer = 'False' and karma = ")
-                        .Append(nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                        .Append(") or (not(doublecareer = 'False') and karma = ")
-                        .Append((nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)).Append("))");
+                    sbdFilter.Append(" and ((doublecareer = 'False' and karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                        + ") or (not(doublecareer = 'False') and karma = " + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo) + "))");
                 }
                 else
                 {
-                    sbdFilter.Append(" and karma = ")
-                        .Append(nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    sbdFilter.Append(" and karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 }
             }
             else
@@ -404,15 +401,12 @@ namespace Chummer
                 {
                     if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                     {
-                        sbdFilter.Append(" and (((doublecareer = 'False' or karma < 0) and karma >= ")
-                            .Append(nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                            .Append(") or (not(doublecareer = 'False' or karma < 0) and karma >= ")
-                            .Append((nudMinimumBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)).Append("))");
+                        sbdFilter.Append(" and (((doublecareer = 'False' or karma < 0) and karma >= " + nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                            + ") or (not(doublecareer = 'False' or karma < 0) and karma >= " + (nudMinimumBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo) + "))");
                     }
                     else
                     {
-                        sbdFilter.Append(" and karma >= ")
-                            .Append(nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                        sbdFilter.Append(" and karma >= " + nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     }
                 }
 
@@ -420,20 +414,17 @@ namespace Chummer
                 {
                     if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && nudMaximumBP.Value > 0)
                     {
-                        sbdFilter.Append(" and (((doublecareer = 'False' or karma < 0) and karma <= ")
-                            .Append(nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo))
-                            .Append(") or (not(doublecareer = 'False' or karma < 0) and karma <= ")
-                            .Append((nudMaximumBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)).Append("))");
+                        sbdFilter.Append(" and (((doublecareer = 'False' or karma < 0) and karma <= " + nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                            + ") or (not(doublecareer = 'False' or karma < 0) and karma <= " + (nudMaximumBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo) + "))");
                     }
                     else
                     {
-                        sbdFilter.Append(" and karma <= ")
-                            .Append(nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                        sbdFilter.Append(" and karma <= " + nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     }
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
             List <ListItem> lstQuality = new List<ListItem>();
@@ -442,7 +433,7 @@ namespace Chummer
                 string strLoopName = objXmlQuality.SelectSingleNode("name")?.Value;
                 if (!string.IsNullOrEmpty(strLoopName))
                 {
-                    if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = \"" + strLoopName + "\"]") == null)
+                    if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
                     {
                         continue;
                     }
@@ -477,7 +468,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedQuality))
                 return;
 
-            XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = \"" + strSelectedQuality + "\"]");
+            XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
 
             if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality))
                 return;

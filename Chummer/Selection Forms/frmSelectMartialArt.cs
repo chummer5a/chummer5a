@@ -56,7 +56,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
                 _blnAddAgain = false;
-                string strSelectedId = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[name = \"" + _strForcedValue + "\"]/id")?.Value;
+                string strSelectedId = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[name = " + _strForcedValue.CleanXPath() + "]/id")?.Value;
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     _strSelectedMartialArt = strSelectedId;
@@ -94,7 +94,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Populate the Martial Arts list.
-                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlArt != null)
                 {
@@ -213,9 +213,9 @@ namespace Chummer
         {
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (ShowQualities)
-                strFilter += " and isquality = \"" + bool.TrueString + '\"';
+                strFilter += " and isquality = " + bool.TrueString.CleanXPath();
             else
-                strFilter += " and not(isquality = \"" + bool.TrueString + "\")";
+                strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ")";
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 

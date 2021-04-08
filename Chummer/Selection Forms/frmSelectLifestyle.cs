@@ -199,7 +199,7 @@ namespace Chummer
             string strSourceIDString = treQualities.SelectedNode?.Tag.ToString();
             if (!string.IsNullOrEmpty(strSourceIDString))
             {
-                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSourceIDString + "\"]");
+                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSourceIDString.CleanXPath() + "]");
                 if (objXmlQuality != null)
                 {
                     strSource = objXmlQuality["source"]?.InnerText ?? string.Empty;
@@ -251,7 +251,7 @@ namespace Chummer
             string strSelectedId = cboLifestyle.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + strSelectedId + "\"]");
+                XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + "]");
                 if (objXmlLifestyle == null)
                     return;
 
@@ -280,7 +280,7 @@ namespace Chummer
                 foreach (TreeNode objNode in treQualities.Nodes)
                 {
                     if (!objNode.Checked) continue;
-                    XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + objNode.Tag + "\"]");
+                    XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + objNode.Tag.ToString().CleanXPath() + "]");
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                     objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
                     _objLifestyle.LifestyleQualities.Add(objQuality);
@@ -304,7 +304,7 @@ namespace Chummer
             string strSelectedId = cboLifestyle.SelectedValue?.ToString();
             if (strSelectedId != null)
             {
-                XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + strSelectedId + "\"]");
+                XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlAspect != null)
                 {
@@ -330,7 +330,7 @@ namespace Chummer
                     {
                         if (objNode.Checked)
                         {
-                            string strCost = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + objNode.Tag + "\"]/cost")?.InnerText;
+                            string strCost = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + objNode.Tag.ToString().CleanXPath() + "]/cost")?.InnerText;
                             if (!string.IsNullOrEmpty(strCost))
                             {
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
@@ -348,7 +348,7 @@ namespace Chummer
                         {
                             if (!objNode.Checked)
                                 continue;
-                            objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + objNode.Tag + "\"]");
+                            objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + objNode.Tag.ToString().CleanXPath() + "]");
                             if (objXmlAspect == null)
                                 continue;
                             string strMultiplier = objXmlAspect["multiplier"]?.InnerText;

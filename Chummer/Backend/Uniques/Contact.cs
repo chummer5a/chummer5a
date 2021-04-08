@@ -550,7 +550,7 @@ namespace Chummer
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                     return strReturn;
                 objMetatypeNode = objMetatypeNode
-                    .SelectSingleNode("metavariants/metavariant[id = \"" + LinkedCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+                    .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
 
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNode("translate")?.Value;
                 strReturn += LanguageManager.GetString("String_Space", strLanguage)
@@ -605,7 +605,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Gender;
 
-            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/genders/gender[text() = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
+            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
         }
 
         public string DisplayGender
@@ -640,7 +640,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Age;
 
-            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[text() = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
+            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
         }
 
         public string DisplayAge
@@ -675,7 +675,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Type;
 
-            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[text() = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
+            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
         }
 
         public string DisplayType
@@ -706,7 +706,7 @@ namespace Chummer
                 return PreferredPayment;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage)
-                .SelectSingleNode("/chummer/preferredpayments/preferredpayment[text() = " + PreferredPayment.CleanXPath() + "]/@translate")?.Value ?? PreferredPayment;
+                .SelectSingleNode("/chummer/preferredpayments/preferredpayment[. = " + PreferredPayment.CleanXPath() + "]/@translate")?.Value ?? PreferredPayment;
         }
 
         public string DisplayPreferredPayment
@@ -738,7 +738,8 @@ namespace Chummer
 
             try
             {
-                return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]/@translate")?.InnerText ?? HobbiesVice;
+                return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.InnerText
+                       ?? HobbiesVice;
             }
             catch (Exception e)
             {
@@ -776,7 +777,8 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return PersonalLife;
 
-            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[text() = " + PersonalLife.CleanXPath() + "]/@translate")?.Value ?? PersonalLife;
+            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
+                   ?? PersonalLife;
         }
 
         public string DisplayPersonalLife

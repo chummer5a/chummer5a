@@ -50,7 +50,7 @@ namespace Chummer
 
         private void frmSelectLifeModule_Load(object sender, EventArgs e)
         {
-            string strSelectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
+            string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalOptions.InvariantCultureInfo).CleanXPath() + "]";
 
             XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
             if (xmlStageNode != null)
@@ -144,7 +144,7 @@ namespace Chummer
             else
             {
                 //Select any node that have an id node equal to tag
-                string selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
+                string selectString = "//*[id = " + e.Node.Tag.ToString().CleanXPath() + "]/selectable";
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
@@ -256,16 +256,15 @@ namespace Chummer
             string strSelected = (string) cboStage.SelectedValue;
             if (strSelected == "0")
             {
-                _strWorkStage = null;
-                BuildTree(GetSelectString());
+                _strWorkStage = string.Empty;
             }
             else
             {
-                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = \"" + strSelected + "\"]")?.InnerText;
-                BuildTree(GetSelectString());
+                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = " + strSelected.CleanXPath() + "]")?.InnerText ?? string.Empty;
             }
-
+            BuildTree(GetSelectString());
         }
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtSearch.Text))
@@ -301,7 +300,7 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                strReturn += ") and (stage = \"" + _strWorkStage + '\"';
+                strReturn += ") and (stage = " + _strWorkStage.CleanXPath();
             }
             strReturn += ")]";
 

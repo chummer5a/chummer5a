@@ -3208,9 +3208,8 @@ namespace Chummer
                         sbdFilter.Append('(');
                         foreach (string strCategory in setAllowedCategories)
                         {
-                            sbdFilter.Append("category = \"" + strCategory + "\" or ");
+                            sbdFilter.Append("category = " + strCategory.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3221,9 +3220,8 @@ namespace Chummer
                         sbdFilter.Append("not(");
                         foreach (string strCategory in setForbiddenCategories)
                         {
-                            sbdFilter.Append("category = \"" + strCategory + "\" or ");
+                            sbdFilter.Append("category = " + strCategory.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3234,9 +3232,8 @@ namespace Chummer
                         sbdFilter.Append('(');
                         foreach (string strName in setAllowedNames)
                         {
-                            sbdFilter.Append("name = \"" + strName + "\" or ");
+                            sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3247,9 +3244,8 @@ namespace Chummer
                         sbdFilter.Append("not(");
                         foreach (string strName in setProcessedSkillNames)
                         {
-                            sbdFilter.Append("name = \"" + strName + "\" or ");
+                            sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3260,9 +3256,8 @@ namespace Chummer
                         sbdFilter.Append('(');
                         foreach (string strAttribute in setAllowedLinkedAttributes)
                         {
-                            sbdFilter.Append("attribute = \"" + strAttribute + "\" or ");
+                            sbdFilter.Append("attribute = " + strAttribute.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }

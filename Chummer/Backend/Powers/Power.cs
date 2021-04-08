@@ -240,7 +240,7 @@ namespace Chummer
                     if (intPos != -1)
                         strPowerName = strPowerName.Substring(0, intPos - 1);
                     XmlDocument objXmlDocument = CharacterObject.LoadData("powers.xml");
-                    XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
+                    XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name, " + strPowerName.CleanXPath() + ")]");
                     if (xmlPower.TryGetField("id", Guid.TryParse, out _guiSourceID))
                     {
                         _objCachedMyXmlNode = null;
@@ -258,7 +258,8 @@ namespace Chummer
                 int intPos = strPowerName.IndexOf('(');
                 if (intPos != -1)
                     strPowerName = strPowerName.Substring(0, intPos - 1);
-                _strAdeptWayDiscount = CharacterObject.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.Value ?? string.Empty;
+                _strAdeptWayDiscount = CharacterObject.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name, " + strPowerName.CleanXPath() + ")]/adeptway")?.Value
+                                       ?? string.Empty;
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);

@@ -446,7 +446,7 @@ namespace Chummer
             // Code from frmMetatype.
             XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
 
-            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strCritterName + "\"]");
+            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + "]");
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
@@ -629,7 +629,7 @@ namespace Chummer
                     // Create the Qualities that come with the Metatype.
                     foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
                     {
-                        XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                        XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + "]");
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         Quality objQuality = new Quality(objCharacter);
                         string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -643,12 +643,12 @@ namespace Chummer
                     }
 
                     // Add any Critter Powers the Metatype/Critter should have.
-                    XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCharacter.Metatype + "\"]");
+                    XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCharacter.Metatype.CleanXPath() + "]");
 
                     objXmlDocument = _objSpirit.CharacterObject.LoadData("critterpowers.xml");
                     foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                     {
-                        XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+                        XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
                         CritterPower objPower = new CritterPower(objCharacter);
                         string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
                         int intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes?["rating"]?.InnerText, intForce, 0, 0);
@@ -678,7 +678,7 @@ namespace Chummer
                     foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                     {
                         string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                        XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
+                        XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + objXmlComplexForm.InnerText.CleanXPath() + "]");
                         ComplexForm objComplexForm = new ComplexForm(objCharacter);
                         objComplexForm.Create(objXmlComplexFormData, strForceValue);
                         objCharacter.ComplexForms.Add(objComplexForm);

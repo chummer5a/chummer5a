@@ -88,14 +88,14 @@ namespace Chummer
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
 
             // Populate the Armor Category list.
-            string strFilterPrefix = "/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
+            string strFilterPrefix = "/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() + ") and category = ";
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             if (objXmlCategoryList != null)
             {
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
                     string strInnerText = objXmlCategory.InnerText;
-                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
+                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText,
                             objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
@@ -152,7 +152,7 @@ namespace Chummer
             XmlNode xmlArmor = null;
             string strSelectedId = lstArmor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]");
+                xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + "]");
             if (xmlArmor != null)
             {
                 // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
@@ -525,7 +525,9 @@ namespace Chummer
             }
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]/category")?.InnerText;
+                s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                    ? cboCategory.SelectedValue?.ToString()
+                    : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + "]/category")?.InnerText;
                 _strSelectedArmor = strSelectedId;
                 _decMarkup = nudMarkup.Value;
                 _intRating = nudRating.ValueAsInt;

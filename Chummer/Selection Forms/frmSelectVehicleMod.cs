@@ -88,12 +88,12 @@ namespace Chummer
             // Populate the Category list.
             string strFilterPrefix = (VehicleMountMods
                 ? "weaponmountmods/mod[("
-                : "mods/mod[(") + _objCharacter.Options.BookXPath() + ") and category = \"";
+                : "mods/mod[(") + _objCharacter.Options.BookXPath() + ") and category = ";
             foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.Select("modcategories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == strInnerText))
-                    && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText + "\"]") != null)
+                    && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                 {
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
                 }
@@ -267,7 +267,7 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || GlobalOptions.SearchInCategoryOnly))
-                strFilter += " and category = \"" + strCategory + '\"';
+                strFilter += " and category = " + strCategory.CleanXPath();
             /*
             else if (!string.IsNullOrEmpty(AllowedCategories))
             {
@@ -275,11 +275,12 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        objCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEndOnce(" or ") + ')';
+                    objCategoryFilter.Length -= 4;
+                    strFilter += " and (" + objCategoryFilter.ToString() + ')';
                 }
             }
             */
@@ -434,7 +435,7 @@ namespace Chummer
             string strSelectedId = lstMod.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator xmlVehicleMod = _xmlBaseVehicleDataNode.SelectSingleNode((VehicleMountMods ? "weaponmountmods" : "mods") + "/mod[id = \"" + strSelectedId + "\"]");
+                XPathNavigator xmlVehicleMod = _xmlBaseVehicleDataNode.SelectSingleNode((VehicleMountMods ? "weaponmountmods" : "mods") + "/mod[id = " + strSelectedId.CleanXPath() + "]");
                 if (xmlVehicleMod != null)
                 {
                     SelectedMod = strSelectedId;
@@ -464,8 +465,8 @@ namespace Chummer
                 // Retireve the information for the selected Mod.
                 // Filtering is also done on the Category in case there are non-unique names across categories.
                 xmlVehicleMod = VehicleMountMods
-                    ? _xmlBaseVehicleDataNode.SelectSingleNode("weaponmountmods/mod[id = \"" + strSelectedId + "\"]")
-                    : _xmlBaseVehicleDataNode.SelectSingleNode("mods/mod[id = \"" + strSelectedId + "\"]");
+                    ? _xmlBaseVehicleDataNode.SelectSingleNode("weaponmountmods/mod[id = " + strSelectedId.CleanXPath() + "]")
+                    : _xmlBaseVehicleDataNode.SelectSingleNode("mods/mod[id = " + strSelectedId.CleanXPath() + "]");
             }
 
             if (xmlVehicleMod != null)
@@ -676,7 +677,7 @@ namespace Chummer
                     // Translate the Category if possible.
                     else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        XPathNavigator objXmlCategoryTranslate = _xmlBaseVehicleDataNode.SelectSingleNode("modcategories/category[. = \"" + strCategory + "\"]/@translate");
+                        XPathNavigator objXmlCategoryTranslate = _xmlBaseVehicleDataNode.SelectSingleNode("modcategories/category[. = " + strCategory.CleanXPath() + "]/@translate");
                         lblCategory.Text = objXmlCategoryTranslate?.Value ?? strCategory;
                     }
                     else
@@ -696,7 +697,7 @@ namespace Chummer
                     // Translate the Limit if possible.
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        XPathNavigator objXmlLimit = _xmlBaseVehicleDataNode.SelectSingleNode("limits/limit[. = \"" + strLimit + "\"/@translate]");
+                        XPathNavigator objXmlLimit = _xmlBaseVehicleDataNode.SelectSingleNode("limits/limit[. = " + strLimit.CleanXPath() + "]/@translate");
                         lblLimit.Text = LanguageManager.GetString("String_Space") + '(' + objXmlLimit?.Value ?? strLimit + ')';
                     }
                     else

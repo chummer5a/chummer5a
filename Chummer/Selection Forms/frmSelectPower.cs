@@ -74,7 +74,7 @@ namespace Chummer
             string strSelectedId = lstPowers.SelectedValue?.ToString();
             XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
+                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + "]");
 
             if (objXmlPower != null)
             {
@@ -265,7 +265,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.
-                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {

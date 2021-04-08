@@ -1212,13 +1212,13 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Clean an XPath string.
+        /// Clean a string for usage inside an XPath filter, also surrounding it with quotation marks in an appropriate way.
         /// </summary>
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
             if(string.IsNullOrEmpty(strSearch))
-                return "\"\"";
+                return "\"\"" ;
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
@@ -1229,10 +1229,10 @@ namespace Chummer
             int intSubStringStart = 0;
             for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"', intSubStringStart))
             {
-                sbdReturn.Append(strSearch.Substring(intSubStringStart, intQuotePos - intSubStringStart)).Append("\", '\"', \"");
+                sbdReturn.Append(strSearch.Substring(intSubStringStart, intQuotePos - intSubStringStart) + "\", '\"', \"");
                 intSubStringStart = intQuotePos + 1;
             }
-            return sbdReturn.Append(strSearch.Substring(intSubStringStart)).Append("\")").ToString();
+            return sbdReturn.Append(strSearch.Substring(intSubStringStart) + "\")").ToString();
         }
 
         /// <summary>

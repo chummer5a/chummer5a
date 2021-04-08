@@ -101,7 +101,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected piece of Cyberware.
-                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
+                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlMetamagic != null)
                 {
@@ -173,9 +173,9 @@ namespace Chummer
                 if (blnIsMagician != _objCharacter.AdeptEnabled)
                 {
                     if (blnIsMagician)
-                        strFilter += "and magician = \"" + bool.TrueString + '\"';
+                        strFilter += "and magician = " + bool.TrueString.CleanXPath();
                     else
-                        strFilter += "and adept = \"" + bool.TrueString + '\"';
+                        strFilter += "and adept = " + bool.TrueString.CleanXPath();
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
@@ -225,7 +225,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
-                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = \"" + strSelectedId + "\"]");
+                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, _strType) != true)
                     return;

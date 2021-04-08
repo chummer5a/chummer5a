@@ -740,7 +740,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strAltCode))
             {
                 XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
+                    .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
                 return xmlOriginalCode?.Value ?? strAltCode;
             }
             return string.Empty;
@@ -757,7 +757,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strCode))
             {
                 XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
+                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
                 return xmlAltCode?.Value ?? strCode;
             }
             return string.Empty;
@@ -774,7 +774,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strCode))
             {
                 XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage)
-                    .SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                    .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]");
                 if (xmlBook != null)
                 {
                     string strReturn = xmlBook.SelectSingleNode("translate")?.Value ?? xmlBook.SelectSingleNode("name")?.Value;

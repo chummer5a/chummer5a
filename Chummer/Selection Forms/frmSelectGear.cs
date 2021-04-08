@@ -117,7 +117,7 @@ namespace Chummer
                 foreach (string strAllowedMount in _setAllowedCategories)
                 {
                     if (!string.IsNullOrEmpty(strAllowedMount))
-                        sbdMount.Append(". = \"" + strAllowedMount + "\" or ");
+                        sbdMount.Append(". = " + strAllowedMount.CleanXPath() + " or ");
                 }
                 sbdMount.Append(". = \"General\"");
                 objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + "]");
@@ -202,7 +202,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected piece of Gear.
-                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlGear != null)
                 {
@@ -1123,7 +1123,7 @@ namespace Chummer
                 _strSelectedGear = strSelectedId;
                 s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                     ? cboCategory.SelectedValue?.ToString()
-                    : _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = \"" + strSelectedId + "\"]/category")?.Value;
+                    : _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + "]/category")?.Value;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 _intSelectedRating = nudRating.ValueAsInt;
                 _decSelectedQty = nudGearQty.Value;

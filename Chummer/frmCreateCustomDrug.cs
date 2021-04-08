@@ -301,7 +301,7 @@ namespace Chummer
 
 			// Update the Essence and Cost multipliers based on the Grade that has been selected.
 			// Retrieve the information for the selected Grade.
-			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
+			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = " + cboGrade.SelectedValue.ToString().CleanXPath() + "]");
 		    if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
 		        _dblCostMultiplier = 1.0;
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))

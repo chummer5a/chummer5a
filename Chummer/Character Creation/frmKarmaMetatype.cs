@@ -193,7 +193,7 @@ namespace Chummer
                     string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
                     string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString() ?? Guid.Empty.ToString();
 
-                    XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
+                    XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = " + strSelectedMetatype.CleanXPath() + "]");
                     if (objXmlMetatype == null)
                     {
                         Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
@@ -293,11 +293,11 @@ namespace Chummer
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
-                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = \"" + strSelectedMetatype + "\"]");
+                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = " + strSelectedMetatype.CleanXPath() + "]");
                 string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
                 if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                 {
-                    objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = \"" + strSelectedMetavariant + "\"]");
+                    objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strSelectedMetavariant.CleanXPath() + "]");
                 }
             }
 
@@ -346,7 +346,7 @@ namespace Chummer
                 {
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = \"" + objXmlQuality.Value + "\"]/translate")?.Value ?? objXmlQuality.Value);
+                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value);
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
@@ -418,7 +418,7 @@ namespace Chummer
                 {
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = \"" + objXmlQuality.Value + "\"]/translate")?.Value ?? objXmlQuality.Value);
+                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value);
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
@@ -482,7 +482,7 @@ namespace Chummer
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             XPathNavigator objXmlMetatype = null;
             if (!string.IsNullOrEmpty(strSelectedMetatype))
-                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = \"" + strSelectedMetatype + "\"]");
+                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = " + strSelectedMetatype.CleanXPath() + "]");
             // Don't attempt to do anything if nothing is selected.
             if (objXmlMetatype != null)
             {

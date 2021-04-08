@@ -46,7 +46,7 @@ namespace Chummer
             // Build a list of Weapon Categories found in the Weapons file.
             List<ListItem> lstCategory = new List<ListItem>();
             foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
-                ? _objXmlDocument.Select("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
+                ? _objXmlDocument.Select("/chummer/categories/category[. = " + _strForceCategory.CleanXPath() + "]")
                 : _objXmlDocument.Select("/chummer/categories/category"))
             {
                 if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")

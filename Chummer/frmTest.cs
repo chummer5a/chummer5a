@@ -752,7 +752,7 @@ namespace Chummer
                             // Create the Qualities that come with the Metatype.
                             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                             {
-                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + "]");
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = string.Empty;
@@ -767,7 +767,7 @@ namespace Chummer
                             }
                             foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                             {
-                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                                XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + "]");
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = string.Empty;

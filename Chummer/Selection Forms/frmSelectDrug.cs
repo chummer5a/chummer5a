@@ -126,7 +126,7 @@ namespace Chummer
             if (cboGrade.Enabled && strSelectedGrade != null)
                 _strOldSelectedGrade = strSelectedGrade;
             if (!string.IsNullOrEmpty(strSelectedGrade))
-                xmlGrade = _xmlBaseDrugDataNode.SelectSingleNode("grades/grade[id = \"" + strSelectedGrade + "\"]");
+                xmlGrade = _xmlBaseDrugDataNode.SelectSingleNode("grades/grade[id = " + strSelectedGrade.CleanXPath() + "]");
 
             // Update the Cost multipliers based on the Grade that has been selected.
             if (xmlGrade != null)
@@ -166,7 +166,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Drug.
-                xmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+                xmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             }
             string strForceGrade;
             if (xmlDrug != null)
@@ -503,7 +503,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Drug.
-                objXmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+                objXmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             }
             if (objXmlDrug == null)
             {
@@ -783,7 +783,7 @@ namespace Chummer
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            XPathNavigator objDrugNode = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+            XPathNavigator objDrugNode = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             if (objDrugNode == null)
                 return;
 

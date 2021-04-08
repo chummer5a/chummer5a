@@ -93,7 +93,7 @@ namespace Chummer
                 {
                     txtSelect.Text = EditImprovementObject.ImprovedName;
                     // get the selection type of improvement and generate translation
-                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]/fields/field");
+                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + "]/fields/field");
                     txtTranslateSelection.Text = TranslateField(objFetchNode?.InnerText, EditImprovementObject.ImprovedName);
                 }
             }
@@ -112,7 +112,7 @@ namespace Chummer
 
         private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
+            XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + "]");
 
             lblVal.Visible = false;
             lblMin.Visible = false;
@@ -351,9 +351,8 @@ namespace Chummer
                             objFilter.Append("not(");
                             foreach (string strName in setProcessedSkillNames)
                             {
-                                objFilter.Append("name = \"" + strName + "\" or ");
+                                objFilter.Append("name = " + strName.CleanXPath() + " or ");
                             }
-
                             objFilter.Length -= 4;
                             objFilter.Append(')');
                         }
@@ -468,7 +467,7 @@ namespace Chummer
 
                         if (frmPickPower.DialogResult == DialogResult.OK)
                         {
-                            txtSelect.Text = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.Value;
+                            txtSelect.Text = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]/name")?.Value;
                             txtTranslateSelection.Text = TranslateField(_strSelect, frmPickPower.SelectedPower);
                         }
                     }
@@ -507,7 +506,7 @@ namespace Chummer
                     using (XmlWriter objWriter = XmlWriter.Create(objStream))
                     {
                         // Build the XML for the Improvement.
-                        XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = \"" + cboImprovemetType.SelectedValue + "\"]");
+                        XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + "]");
                         string strInternal = objFetchNode?["internal"]?.InnerText;
                         if (string.IsNullOrEmpty(strInternal))
                             return;
@@ -621,39 +620,39 @@ namespace Chummer
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
                         astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 
-                        objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + astrToTranslateParts[0] + "\"]");
+                        objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[name = " + astrToTranslateParts[0].CleanXPath() + "]");
                         string strFirstPartTranslated = objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? astrToTranslateParts[0];
 
                         return strFirstPartTranslated + LanguageManager.GetString("String_Space") + '(' + _objCharacter.TranslateExtra(astrToTranslateParts[1]) + ')';
                     }
                     else
                     {
-                        objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strToTranslate + "\"]");
+                        objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[name = " + strToTranslate.CleanXPath() + "]");
                         return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
                     }
 
                 case "SelectKnowSkill":
-                    objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
 
                 case "SelectSkillCategory":
-                    objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
 
                 case "SelectSkillGroup":
-                    objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
 
                 case "SelectWeaponCategory":
-                    objXmlNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
 
                 case "SelectSpellCategory":
-                    objXmlNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/categories/category[. = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("@translate")?.Value ?? objXmlNode?.SelectSingleNode(".")?.Value ?? strToTranslate;
 
                 case "SelectAdeptPower":
-                    objXmlNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + strToTranslate + "\" or name = \"" + strToTranslate + "\"]");
+                    objXmlNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = " + strToTranslate.CleanXPath() + " or name = " + strToTranslate.CleanXPath() + "]");
                     return objXmlNode?.SelectSingleNode("translate")?.Value ?? objXmlNode?.SelectSingleNode("name")?.Value ?? strToTranslate;
 
                 default:

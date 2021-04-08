@@ -297,10 +297,10 @@ namespace Chummer
             string strDisplayAction = string.Empty;
             string strDisplayRange = string.Empty;
             string strDisplayDuration = string.Empty;
-            XPathNavigator objXmlPowerNode = xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[name = \"" + strPowerName + "\"]") ??
-                                             xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(\"" + strPowerName + "\", name)]") ??
-                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[name = \"" + strPowerName + "\"]") ??
-                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(\"" + strPowerName + "\", name)]");
+            XPathNavigator objXmlPowerNode = xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[name = " + strPowerName.CleanXPath() + "]") ??
+                                             xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]") ??
+                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[name = " + strPowerName.CleanXPath() + "]") ??
+                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]");
             if (objXmlPowerNode != null)
             {
                 objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
@@ -322,7 +322,7 @@ namespace Chummer
 
                 objXmlPowerNode.TryGetStringFieldQuickly("category", ref strEnglishCategory);
 
-                strCategory = xmlSpiritPowersBaseChummerNode.SelectSingleNode("categories/category[. = \"" + strEnglishCategory + "\"]/@translate")?.Value ?? strEnglishCategory;
+                strCategory = xmlSpiritPowersBaseChummerNode.SelectSingleNode("categories/category[. = " + strEnglishCategory.CleanXPath() + "]/@translate")?.Value ?? strEnglishCategory;
 
                 switch (objXmlPowerNode.SelectSingleNode("type")?.Value)
                 {

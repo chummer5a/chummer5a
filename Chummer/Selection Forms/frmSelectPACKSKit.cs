@@ -111,14 +111,14 @@ namespace Chummer
             string strFilter = "not(hide)";
             string strCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
-                strFilter += " and category = \"" + cboCategory.SelectedValue + '\"';
+                strFilter += " and category = " + cboCategory.SelectedValue.ToString().CleanXPath();
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        objCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
                 }
                 if (objCategoryFilter.Length > 0)
                 {
@@ -159,7 +159,7 @@ namespace Chummer
             treContents.Nodes.Clear();
             string[] strIdentifiers = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
             cmdDelete.Visible = strIdentifiers[1] == "Custom";
-            XPathNavigator objXmlPack = _xmlBaseChummerNode.SelectSingleNode("packs/pack[name = " + strIdentifiers[0].CleanXPath() + " and category = \"" + strIdentifiers[1] + "\"]");
+            XPathNavigator objXmlPack = _xmlBaseChummerNode.SelectSingleNode("packs/pack[name = " + strIdentifiers[0].CleanXPath() + " and category = " + strIdentifiers[1].CleanXPath() + "]");
             if (objXmlPack == null)
             {
                 return;
@@ -218,7 +218,7 @@ namespace Chummer
                         {
                             if (objXmlQuality.SelectSingleNode("hide") != null)
                                 continue;
-                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlQuality.Value + "\"]");
+                            XPathNavigator objNode = _xmlQualitiesBaseQualitiesNode.SelectSingleNode("quality[(" + _objCharacter.Options.BookXPath() + ") and name = " + objXmlQuality.Value.CleanXPath() + "]");
                             if (objNode == null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -271,7 +271,7 @@ namespace Chummer
                             if (objXmlSkill.SelectSingleNode("hide") != null)
                                 continue;
                             string strName = objXmlSkill.SelectSingleNode("name").Value;
-                            XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("skillgroups/name[. = \"" + strName + "\"]");
+                            XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("skillgroups/name[. = " + strName.CleanXPath() + "]");
                             if (objNode.SelectSingleNode("hide") != null)
                                 continue;
                             TreeNode objChild = new TreeNode
@@ -990,7 +990,7 @@ namespace Chummer
             string strName = xmlNameNode?.Value ?? string.Empty;
             string strCategory = objXmlGear.SelectSingleNode("category")?.Value;
             XPathNavigator objNode = !string.IsNullOrEmpty(strCategory)
-                ? _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + " and category = \"" + strCategory + "\"]")
+                ? _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + " and category = " + strCategory.CleanXPath() + "]")
                 : _xmlGearsBaseGearsNode.SelectSingleNode("gear[(" + _objCharacter.Options.BookXPath() + ") and name = " + strName.CleanXPath() + "]");
 
             if (objNode != null)

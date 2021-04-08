@@ -84,7 +84,7 @@ namespace Chummer
             string strSelectedId = lstOptions.SelectedValue?.ToString();
             XmlNode xmlOption = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + strSelectedId + "\"]");
+                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = " + strSelectedId.CleanXPath() + "]");
 
             if (xmlOption != null)
             {

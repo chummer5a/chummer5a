@@ -345,37 +345,53 @@ namespace Chummer.Backend.Equipment
                 throw new ArgumentNullException(nameof(xmlNode));
             XmlDocument xmlDoc = _objCharacter.LoadData("vehicles.xml");
             WeaponMount objMount = this;
-            XmlNode xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["size"]?.InnerText + "\" and category = \"Size\"]");
+            string strSize = xmlNode["size"]?.InnerText;
+            if (string.IsNullOrEmpty(strSize))
+                return;
+            XmlNode xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = " + strSize.CleanXPath() + " and category = \"Size\"]");
             if (xmlDataNode != null)
             {
                 objMount.Create(xmlDataNode);
 
-                xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["flexibility"]?.InnerText + "\" and category = \"Flexibility\"]");
-                if (xmlDataNode != null)
+                string strFlexibility = xmlNode["flexibility"]?.InnerText;
+                if (!string.IsNullOrEmpty(strFlexibility))
                 {
-                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
-                    objWeaponMountOption.Create(xmlDataNode);
-                    objWeaponMountOption.IncludedInParent = true;
-                    objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                    xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = " + strFlexibility.CleanXPath() + " and category = \"Flexibility\"]");
+                    if (xmlDataNode != null)
+                    {
+                        WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                        objWeaponMountOption.Create(xmlDataNode);
+                        objWeaponMountOption.IncludedInParent = true;
+                        objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                    }
                 }
 
-                xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["control"]?.InnerText + "\" and category = \"Control\"]");
-                if (xmlDataNode != null)
+                string strControl = xmlNode["control"]?.InnerText;
+                if (!string.IsNullOrEmpty(strControl))
                 {
-                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
-                    objWeaponMountOption.Create(xmlDataNode);
-                    objWeaponMountOption.IncludedInParent = true;
-                    objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                    xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = " + strControl.CleanXPath() + " and category = \"Control\"]");
+                    if (xmlDataNode != null)
+                    {
+                        WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                        objWeaponMountOption.Create(xmlDataNode);
+                        objWeaponMountOption.IncludedInParent = true;
+                        objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                    }
                 }
 
-                xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + xmlNode["visibility"]?.InnerText + "\" and category = \"Visibility\"]");
-                if (xmlDataNode != null)
+                string strVisibility = xmlNode["visibility"]?.InnerText;
+                if (!string.IsNullOrEmpty(strVisibility))
                 {
-                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
-                    objWeaponMountOption.Create(xmlDataNode);
-                    objWeaponMountOption.IncludedInParent = true;
-                    objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                    xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = " + strVisibility.CleanXPath() + " and category = \"Visibility\"]");
+                    if (xmlDataNode != null)
+                    {
+                        WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                        objWeaponMountOption.Create(xmlDataNode);
+                        objWeaponMountOption.IncludedInParent = true;
+                        objMount.WeaponMountOptions.Add(objWeaponMountOption);
+                    }
                 }
+
                 _strLocation = xmlNode["location"]?.InnerText ?? string.Empty;
                 _strAllowedWeapons = xmlNode["allowedweapons"]?.InnerText ?? string.Empty;
                 xmlDataNode = xmlNode["mods"];
@@ -392,7 +408,7 @@ namespace Chummer.Backend.Equipment
                                 Parent = Parent,
                                 WeaponMountParent = this
                             };
-                            xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = \"" + xmlModNode.InnerText + "\"]");
+                            xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = " + xmlModNode.InnerText.CleanXPath() + "]");
                             objMod.Load(xmlDataNode);
                             _lstMods.Add(objMod);
                         }
@@ -457,7 +473,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -1313,7 +1329,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>

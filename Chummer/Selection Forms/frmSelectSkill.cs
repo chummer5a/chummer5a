@@ -63,7 +63,7 @@ namespace Chummer
             XmlNodeList objXmlSkillList;
             if (!string.IsNullOrEmpty(_strForceSkill))
             {
-                objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[name = \"" + _strForceSkill + "\" and not(exotic) and (" + _objCharacter.Options.BookXPath() + ")]");
+                objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[name = " + _strForceSkill.CleanXPath() + " and not(exotic) and (" + _objCharacter.Options.BookXPath() + ")]");
             }
             else if (!string.IsNullOrEmpty(_strLimitToCategories))
                 objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
@@ -74,7 +74,7 @@ namespace Chummer
                 {
                     strFilter += " and (";
                     foreach (string strSkillCategory in _strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        strFilter += "category = \"" + strSkillCategory.Trim() + "\" or ";
+                        strFilter += "category = " + strSkillCategory.Trim().CleanXPath() + " or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     strFilter += ')';
@@ -83,7 +83,7 @@ namespace Chummer
                 {
                     strFilter += " and (";
                     foreach (string strSkillCategory in _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        strFilter += "category != \"" + strSkillCategory.Trim() + "\" and ";
+                        strFilter += "category != " + strSkillCategory.Trim().CleanXPath() + " and ";
                     // Remove the trailing " and ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 5);
                     strFilter += ')';
@@ -92,7 +92,7 @@ namespace Chummer
                 {
                     strFilter += " and (";
                     foreach (string strSkillGroup in _strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        strFilter += "skillgroup = \"" + strSkillGroup.Trim() + "\" or ";
+                        strFilter += "skillgroup = " + strSkillGroup.Trim().CleanXPath() + " or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     strFilter += ')';
@@ -101,7 +101,7 @@ namespace Chummer
                 {
                     strFilter += " and (";
                     foreach (string strSkillGroup in _strExcludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        strFilter += "skillgroup != \"" + strSkillGroup.Trim() + "\" and ";
+                        strFilter += "skillgroup != " + strSkillGroup.Trim().CleanXPath() + " and ";
                     // Remove the trailing " and ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 5);
                     strFilter += ')';
@@ -110,7 +110,7 @@ namespace Chummer
                 {
                     strFilter += " and (";
                     foreach (string strAttribute in LinkedAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        strFilter += "attribute = \"" + strAttribute.Trim() + "\" or ";
+                        strFilter += "attribute = " + strAttribute.Trim().CleanXPath() + " or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     strFilter += ')';
@@ -119,7 +119,7 @@ namespace Chummer
                 {
                     strFilter += " and (";
                     foreach (string strSkill in _strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        strFilter += "name = \"" + strSkill.Trim() + "\" or ";
+                        strFilter += "name = " + strSkill.Trim().CleanXPath() + " or ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     strFilter += ')';
@@ -128,7 +128,7 @@ namespace Chummer
                 {
                     strFilter += " and (";
                     foreach (string strSkill in _strExcludeSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                        strFilter += "name != \"" + strSkill.Trim() + "\" and ";
+                        strFilter += "name != " + strSkill.Trim().CleanXPath() + " and ";
                     // Remove the trailing " or ".
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     strFilter += ')';
@@ -186,7 +186,7 @@ namespace Chummer
                     if (blnAddSkill)
                     {
                         // Use the translated Exotic Skill name if available.
-                        XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"True\" and name = \"" + objExoticSkill.Name + "\"]");
+                        XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + " and name = " + objExoticSkill.Name.CleanXPath() + "]");
                         lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ')',
                             (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + LanguageManager.GetString("String_Space") + '(' + objExoticSkill.CurrentDisplaySpecialization + ')'));
                     }

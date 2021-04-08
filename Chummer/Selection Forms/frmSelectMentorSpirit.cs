@@ -68,7 +68,7 @@ namespace Chummer
             XPathNavigator objXmlMentor = null;
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
+                objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + lstMentor.SelectedValue.ToString().CleanXPath() + "]");
             if (objXmlMentor != null)
             {
                 cboChoice1.BeginUpdate();
@@ -205,7 +205,7 @@ namespace Chummer
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + strSelectedId.CleanXPath() + "]");
                 if (objXmlMentor == null)
                     return;
 
