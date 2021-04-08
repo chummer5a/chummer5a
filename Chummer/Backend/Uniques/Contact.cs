@@ -736,7 +736,17 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return HobbiesVice;
 
-            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = " + HobbiesVice + "]/@translate")?.Value ?? HobbiesVice;
+            try
+            {
+                return _objCharacter.LoadData("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]/@translate")?.InnerText ?? HobbiesVice;
+            }
+            catch (Exception e)
+            {
+                string msg = "Could not LoadData for " + strLanguage + " of hobbiesvices " + HobbiesVice + ". Is it missing in contacts.xml?";
+                Log.Exception(e, msg);
+                return msg;
+            }
+
         }
 
         public string DisplayHobbiesVice
