@@ -238,7 +238,7 @@ namespace Chummer.UI.Skills
                 lblKnowledgeSkillPointsTitle.Visible = false;
             }
 
-            btnExotic.Visible = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
+            btnExotic.Visible = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
 
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;

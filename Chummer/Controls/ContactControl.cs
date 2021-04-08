@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Properties;
 
 namespace Chummer
@@ -775,79 +776,43 @@ namespace Chummer
                 ListItem.Blank
             };
 
-            XmlNode xmlContactsBaseNode = _objContact.CharacterObject.LoadData("contacts.xml").SelectSingleNode("/chummer");
+            XPathNavigator xmlContactsBaseNode = _objContact.CharacterObject.LoadDataXPath("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("genders/gender"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("genders/gender"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstGenders.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstGenders.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("ages/age"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("ages/age"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstAges.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstAges.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("personallives/personallife"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("personallives/personallife"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstPersonalLives.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstPersonalLives.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("types/type"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("types/type"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstTypes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstTypes.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("preferredpayments/preferredpayment"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("preferredpayments/preferredpayment"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstPreferredPayments.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstPreferredPayments.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("hobbiesvices/hobbyvice"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("hobbiesvices/hobbyvice"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstHobbiesVices.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstHobbiesVices.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
             }
 

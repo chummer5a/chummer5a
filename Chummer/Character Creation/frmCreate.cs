@@ -367,7 +367,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadData("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
                         List<ListItem> lstTraditions = new List<ListItem>(20);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -539,7 +539,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadData("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
                         List<ListItem> lstStreams = new List<ListItem>(3);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -1588,7 +1588,7 @@ namespace Chummer
                     treCritterPowers.SortCustomOrder();
 
                     XPathNavigator xmlTraditionsBaseChummerNode =
-                        CharacterObject.LoadData("traditions.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                        CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
                     List<ListItem> lstTraditions = new List<ListItem>(30);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -1706,7 +1706,7 @@ namespace Chummer
 
                     // Populate the Technomancer Streams list.
                     xmlTraditionsBaseChummerNode =
-                        CharacterObject.LoadData("streams.xml").GetFastNavigator().SelectSingleNode("/chummer");
+                        CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
                     List<ListItem> lstStreams = new List<ListItem>(5);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -12879,7 +12879,7 @@ namespace Chummer
                 //if (frmPickPACKSKit.SelectedCategory == "Custom")
                 //blnCreateChildren = false;
 
-                objXmlKit = CharacterObject.LoadData("packs.xml").SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmSelectPACKSKit.SelectedCategory + "\"]");
+                objXmlKit = CharacterObject.LoadData("packs.xml").SelectSingleNode("/chummer/packs/pack[name = " + frmPickPACKSKit.SelectedKit.CleanXPath() + " and category = " + frmSelectPACKSKit.SelectedCategory.CleanXPath() + "]");
                 blnAddAgain = frmPickPACKSKit.AddAgain;
             }
 

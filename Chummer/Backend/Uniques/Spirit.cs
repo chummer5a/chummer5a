@@ -229,7 +229,7 @@ namespace Chummer
                 xmlPowersNode = objXmlCritterNode["skills"];
                 if (xmlPowersNode != null)
                 {
-                    XmlDocument xmlSkillsDocument = CharacterObject.LoadData("skills.xml", strLanguageToPrint);
+                    XPathNavigator xmlSkillsDocument = CharacterObject.LoadDataXPath("skills.xml", strLanguageToPrint);
                     objWriter.WriteStartElement("skills");
                     foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
                     {
@@ -239,8 +239,8 @@ namespace Chummer
                         int intDicepool = intAttrValue + _intForce;
 
                         string strEnglishName = xmlSkillNode.InnerText;
-                        string strTranslatedName = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strEnglishName + "\"]/translate")?.InnerText ??
-                                                   xmlSkillsDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strEnglishName + "\"]/translate")?.InnerText ?? strEnglishName;
+                        string strTranslatedName = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ??
+                                                   xmlSkillsDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ?? strEnglishName;
                         objWriter.WriteStartElement("skill");
                         objWriter.WriteElementString("name", strTranslatedName);
                         objWriter.WriteElementString("name_english", strEnglishName);
@@ -759,7 +759,7 @@ namespace Chummer
             {
                 _objCachedMyXmlNode = CharacterObject
                     .LoadData(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage)
-                    .SelectSingleNode($"/chummer/spirits/spirit[name = \"{Name}\"]");
+                    .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + "]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -22,7 +22,6 @@ using System.Collections.Generic;
  using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml;
  using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
@@ -58,9 +57,8 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             // Load the Weapon information.
-            XmlDocument objXmlDocument = _objCharacter.LoadData("weapons.xml");
-            _xmlBaseChummerNode = objXmlDocument.GetFastNavigator().SelectSingleNode("/chummer");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(objXmlDocument);
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer");
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode);
         }
 
         private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)

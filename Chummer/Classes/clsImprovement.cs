@@ -3268,17 +3268,11 @@ namespace Chummer
                     }
 
                     string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
-                    using (XmlNodeList xmlSkillList = objCharacter.LoadData("skills.xml").SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    foreach (XPathNavigator xmlSkill in objCharacter.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
                     {
-                        if (xmlSkillList?.Count > 0)
-                        {
-                            foreach (XmlNode xmlSkill in xmlSkillList)
-                            {
-                                string strName = xmlSkill["name"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
-                            }
-                        }
+                        string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstDropdownItems.Add(new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
                     }
                 }
 
@@ -3478,7 +3472,7 @@ namespace Chummer
                                 Log.Debug("CreateImprovements exit");
                                 return false;
                             }
-                            XPathNavigator xmlDoc = objCharacter.LoadData(nodBonus["selecttext"].Attributes["xml"]?.InnerText).GetFastNavigator();
+                            XPathNavigator xmlDoc = objCharacter.LoadDataXPath(nodBonus.SelectSingleNode("selecttext/@xml")?.Value);
                             List<ListItem> lstItems = new List<ListItem>(5);
                             foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                             {

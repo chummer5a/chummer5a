@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Equipment
 {
@@ -64,7 +65,7 @@ namespace Chummer.Backend.Equipment
             }
             if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                var xmlDataNode = _objCharacter.LoadData(_eSource == Improvement.ImprovementSource.Bioware
+                XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(_eSource == Improvement.ImprovementSource.Bioware
                         ? "bioware.xml"
                         : _eSource == Improvement.ImprovementSource.Drug
                             ? "drugcomponents.xml"

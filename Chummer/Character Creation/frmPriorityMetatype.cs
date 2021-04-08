@@ -59,14 +59,12 @@ namespace Chummer
             this.TranslateWinForm();
 
             _lstPrioritySkills = new List<string>(objCharacter.PriorityBonusSkillList);
-            XmlDocument xmlMetatypeDoc = _objCharacter.LoadData(strXmlFile);
-            _xmlMetatypeDocumentMetatypesNode = xmlMetatypeDoc.SelectSingleNode("/chummer/metatypes");
-            _xmlBaseMetatypeDataNode = xmlMetatypeDoc.GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlMetatypeDocumentMetatypesNode = _objCharacter.LoadData(strXmlFile).SelectSingleNode("/chummer/metatypes");
+            _xmlBaseMetatypeDataNode = _objCharacter.LoadDataXPath(strXmlFile).SelectSingleNode("/chummer");
             _xmlBasePriorityDataNode = _objCharacter.LoadDataXPath("priorities.xml").SelectSingleNode("/chummer");
             _xmlBaseSkillDataNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer");
-            XmlDocument xmlQualityDoc = _objCharacter.LoadData("qualities.xml");
-            _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
-            _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlQualityDocumentQualitiesNode = _objCharacter.LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
+            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer");
             _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
             _dicSumtoTenValues = new Dictionary<string, int>(5);
             if (_xmlBasePriorityDataNode != null)

@@ -1015,8 +1015,7 @@ namespace Chummer.Backend.Equipment
                 int intResult = _objCharacter.LastSavedVersion.CompareTo(new Version(5, 193, 5));
                 if (intResult == -1)
                 {
-                    XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
-                    XmlNode gear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + "]");
+                    XmlNode gear = _objCharacter.LoadData("gear.xml").SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + "]");
                     if (gear != null)
                     {
                         Equipped = false;
@@ -1416,7 +1415,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadData("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadDataXPath("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
