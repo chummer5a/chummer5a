@@ -24,6 +24,7 @@ Data Changes:
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.
 - Smartlink from the Shadowrun 2050 ruleset now properly gives a +2 dicepool bonus when using smartguns.
 - When creating spirit critters with forces not divisible by 3, the number of optional powers they get is now properly based on rounding the result of the division down instead of up. Fixes #4356.
+- All spirits now properly have a starting and maximum Essence equal to their Force instead of to 6. Fixes #4358.
 
 Changed/New Strings:
 - String_ContactPoints
