@@ -1078,7 +1078,7 @@ namespace Chummer.Backend.Equipment
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/lifestyles/lifestyle[id = {0} or id = \{1}]",
+                            "/chummer/lifestyles/lifestyle[id = {0} or id = {1}]",
                             SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
