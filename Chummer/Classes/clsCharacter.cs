@@ -18901,7 +18901,13 @@ namespace Chummer
                 Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
                 Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
                 string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
-                SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound") : strSettings;
+                if (!string.IsNullOrEmpty(strSettings))
+                    SettingsFile = OptionsManager.LoadedCharacterOptions.ContainsKey(strSettings)
+                        ? OptionsManager.LoadedCharacterOptions[strSettings].DisplayName
+                        : LanguageManager.GetString("MessageTitle_FileNotFound") +
+                          LanguageManager.GetString("String_Space") + '[' + strSettings + ']';
+                else
+                    SettingsFile = string.Empty;
                 MugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value ?? string.Empty;
                 if (string.IsNullOrEmpty(MugshotBase64))
                 {
