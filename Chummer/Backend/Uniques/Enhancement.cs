@@ -330,8 +330,8 @@ namespace Chummer
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/enhancements/enhancement[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/enhancements/enhancement[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/enhancements/enhancement[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

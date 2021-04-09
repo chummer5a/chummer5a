@@ -594,8 +594,8 @@ namespace Chummer
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/powers/power[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/powers/power[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/powers/power[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

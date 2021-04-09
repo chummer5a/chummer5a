@@ -1379,11 +1379,11 @@ namespace Chummer.Backend.Equipment
             {
                 XmlDocument objDoc = _objCharacter.LoadData("vehicles.xml", strLanguage);
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
-                                          "/chummer/mods/mod[id = \"{0}\" or id = \"{1}\"]",
-                                          SourceIDString, SourceIDString.ToUpperInvariant()))
+                                          "/chummer/mods/mod[id = {0} or id = {1}]",
+                                          SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()))
                                       ?? objDoc.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
-                                          "/chummer/weaponmountmods/mod[id = \"{0}\" or id = \"{1}\"]",
-                                          SourceIDString, SourceIDString.ToUpperInvariant()))
+                                          "/chummer/weaponmountmods/mod[id = {0} or id = {1}]",
+                                          SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()))
                                       ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
                                       ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
                 _strCachedXmlNodeLanguage = strLanguage;

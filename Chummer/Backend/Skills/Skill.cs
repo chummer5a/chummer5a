@@ -1395,10 +1395,10 @@ namespace Chummer.Backend.Skills
                 _objCachedMyXmlNode = CharacterObject.LoadData("skills.xml", strLanguage)
                     .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
                         IsKnowledgeSkill
-                            ? "/chummer/knowledgeskills/skill[id = \"{0}\" or id = \"{1}\"]"
-                            : "/chummer/skills/skill[id = \"{0}\" or id = \"{1}\"]",
-                        SkillId.ToString("D", GlobalOptions.InvariantCultureInfo),
-                        SkillId.ToString("D", GlobalOptions.InvariantCultureInfo).ToUpperInvariant()));
+                            ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
+                            : "/chummer/skills/skill[id = {0} or id = {1}]",
+                        SkillId.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath(),
+                        SkillId.ToString("D", GlobalOptions.InvariantCultureInfo).ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

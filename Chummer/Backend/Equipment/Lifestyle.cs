@@ -324,8 +324,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             XmlDocument xmlLifestyles = _objCharacter.LoadData("lifestyles.xml");
-            if (xmlLifestyles.SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strBaseLifestyle}\"]") == null
-                && xmlLifestyles.SelectSingleNode($"/chummer/lifestyles/lifestyle[name =\"{_strName}\"]") != null)
+            if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]") == null
+                && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + "]") != null)
             {
                 string baselifestyle = _strName;
                 _strName = _strBaseLifestyle;
@@ -1078,8 +1078,8 @@ namespace Chummer.Backend.Equipment
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/lifestyles/lifestyle[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/lifestyles/lifestyle[id = {0} or id = \{1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

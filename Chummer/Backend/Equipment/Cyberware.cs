@@ -3003,8 +3003,8 @@ namespace Chummer.Backend.Equipment
             {
                 objDoc = _objCharacter.LoadData("bioware.xml", strLanguage);
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
-                    "/chummer/biowares/bioware[id = \"{0}\" or id = \"{1}\"]",
-                    SourceIDString, SourceIDString.ToUpperInvariant()));
+                    "/chummer/biowares/bioware[id = {0} or id = {1}]",
+                    SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = " + Name.CleanXPath() + ']');
@@ -3015,8 +3015,8 @@ namespace Chummer.Backend.Equipment
             {
                 objDoc = _objCharacter.LoadData("cyberware.xml", strLanguage);
                 _objCachedMyXmlNode = objDoc.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
-                    "/chummer/cyberwares/cyberware[id = \"{0}\" or id = \"{1}\"]",
-                    SourceIDString, SourceIDString.ToUpperInvariant()));
+                    "/chummer/cyberwares/cyberware[id = {0} or id = {1}]",
+                    SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath());
                 if (_objCachedMyXmlNode == null)
                 {
                     _objCachedMyXmlNode =

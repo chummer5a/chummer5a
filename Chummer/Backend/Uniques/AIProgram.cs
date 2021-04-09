@@ -319,8 +319,8 @@ namespace Chummer
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/programs/program[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/programs/program[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/programs/program[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

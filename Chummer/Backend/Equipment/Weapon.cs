@@ -1296,8 +1296,8 @@ namespace Chummer.Backend.Equipment
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0)
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
-            if (!string.IsNullOrEmpty(_strWeaponName))
-                strReturn += strSpace + "(\"" + _strWeaponName + "\")";
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
         }
 
@@ -1965,8 +1965,8 @@ namespace Chummer.Backend.Equipment
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/weapons/weapon[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/weapons/weapon[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/weapons/weapon[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

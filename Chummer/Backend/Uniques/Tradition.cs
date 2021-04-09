@@ -918,8 +918,8 @@ namespace Chummer.Backend.Uniques
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/traditions/tradition[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/traditions/tradition[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _xmlCachedMyXmlNode;

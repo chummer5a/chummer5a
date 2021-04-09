@@ -1169,7 +1169,7 @@ namespace Chummer
                         if (blnShowMessage)
                         {
                             // Check for a specific Spell.
-                            string strTranslate = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode(string.Format("/chummer/spells/spell[name = {0}]/translate", strNodeInnerText.CleanXPath()))?.Value;
+                            string strTranslate = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells/spell[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
                                 Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_DescSpell"));
                         }
@@ -1180,7 +1180,7 @@ namespace Chummer
                         // Check for a specified amount of a particular Spell category.
                         if (blnShowMessage)
                         {
-                            string strTranslate = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode(string.Format("/chummer/categories/category[. = \"{0}\"]/@translate", strNodeName))?.Value;
+                            string strTranslate = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/categories/category[. = " + strNodeName.CleanXPath() + "]/@translate")?.Value;
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
                                 Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_SpellCategory"));
                         }

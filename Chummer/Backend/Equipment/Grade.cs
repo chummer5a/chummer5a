@@ -116,8 +116,8 @@ namespace Chummer.Backend.Equipment
                         ? "drugcomponents.xml"
                         : "cyberware.xml", strLanguage)
                 .SelectSingleNode(SourceId == Guid.Empty
-                    ? $"/chummer/grades/grade[name = \"{Name}\"]"
-                    : $"/chummer/grades/grade[id = \"{SourceId}\"]");
+                    ? "/chummer/grades/grade[name = " + Name.CleanXPath() + "]"
+                    : "/chummer/grades/grade[id = " + SourceIDString.CleanXPath() + "]");
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;

@@ -758,8 +758,8 @@ namespace Chummer.Backend.Equipment
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/qualities/quality[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/qualities/quality[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/qualities/quality[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
                 return _objCachedMyXmlNode;
             }

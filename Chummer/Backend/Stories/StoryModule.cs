@@ -421,8 +421,8 @@ namespace Chummer
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = _objCharacter.LoadData("stories.xml", strLanguage)
-                .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/stories/story[id = \"{0}\" or id = \"{1}\"]",
-                    SourceIDString, SourceIDString.ToUpperInvariant()));
+                .SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/stories/story[id = {0} or id = {1}]",
+                    SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }

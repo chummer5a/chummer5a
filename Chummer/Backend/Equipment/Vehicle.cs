@@ -2841,8 +2841,8 @@ namespace Chummer.Backend.Equipment
                 .SelectSingleNode(SourceID == Guid.Empty
                     ? "/chummer/vehicles/vehicle[name = " + Name.CleanXPath() + ']'
                     : string.Format(GlobalOptions.InvariantCultureInfo,
-                        "/chummer/vehicles/vehicle[id = \"{0}\" or id = \"{1}\"]",
-                        SourceIDString, SourceIDString.ToUpperInvariant()));
+                        "/chummer/vehicles/vehicle[id = {0} or id = {1}]",
+                        SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }

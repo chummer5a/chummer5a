@@ -362,8 +362,8 @@ namespace Chummer
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? path + "[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "{0}[id = \"{1}\" or id = \"{2}\"]",
-                            path, SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "{0}[id = {1} or id = {2}]",
+                            path, SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }

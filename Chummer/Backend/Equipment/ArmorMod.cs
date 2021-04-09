@@ -1133,8 +1133,8 @@ namespace Chummer.Backend.Equipment
                 .SelectSingleNode(SourceID == Guid.Empty
                     ? "/chummer/mods/mod[name = " + Name.CleanXPath() + ']'
                     : string.Format(GlobalOptions.InvariantCultureInfo,
-                        "/chummer/mods/mod[id = \"{0}\" or id = \"{1}\"]",
-                        SourceIDString, SourceIDString.ToUpperInvariant()));
+                        "/chummer/mods/mod[id = {0} or id = {1}]",
+                        SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
             return _objCachedMyXmlNode;
         }
         #endregion
