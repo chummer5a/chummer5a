@@ -162,8 +162,25 @@ namespace Chummer.Backend.Attributes
         {
             if (objWriter == null)
                 return;
-            if (Abbrev == "MAGAdept" && (!_objCharacter.Options.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept))
-                return;
+            switch (Abbrev)
+            {
+                case "MAGAdept":
+                    if (!_objCharacter.Options.MysAdeptSecondMAGAttribute || !_objCharacter.IsMysticAdept)
+                        return;
+                    goto case "MAG";
+                case "MAG":
+                    if (!_objCharacter.MAGEnabled)
+                        return;
+                    break;
+                case "RES":
+                    if (!_objCharacter.RESEnabled)
+                        return;
+                    break;
+                case "DEP":
+                    if (!_objCharacter.DEPEnabled)
+                        return;
+                    break;
+            }
             objWriter.WriteStartElement("attribute");
             objWriter.WriteElementString("name_english", Abbrev);
             objWriter.WriteElementString("name", GetDisplayAbbrev(strLanguageToPrint));
@@ -1050,23 +1067,26 @@ namespace Chummer.Backend.Attributes
 
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.Karma))
+            switch (e.PropertyName)
             {
-                OnPropertyChanged(nameof(CanUpgradeCareer));
-            }
-            else if (e.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
-            {
-                OnPropertyChanged(nameof(BaseUnlocked));
-            }
-            else if (e.PropertyName == nameof(Character.LimbCount))
-            {
-                if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
-                    (Abbrev == "AGI" || Abbrev == "STR") &&
-                    CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                  && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                  && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                case nameof(Character.Karma):
+                    OnPropertyChanged(nameof(CanUpgradeCareer));
+                    break;
+                case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
+                    OnPropertyChanged(nameof(BaseUnlocked));
+                    break;
+                case nameof(Character.LimbCount):
                 {
-                    OnPropertyChanged(nameof(TotalValue));
+                    if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
+                        (Abbrev == "AGI" || Abbrev == "STR") &&
+                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                    {
+                        OnPropertyChanged(nameof(TotalValue));
+                    }
+
+                    break;
                 }
             }
         }
