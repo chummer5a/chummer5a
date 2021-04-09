@@ -852,13 +852,13 @@ namespace Chummer
                                 if (xmlMetamagicNode != null)
                                 {
                                     if (xmlMetamagicNode.SelectSingleNode(
-                                        "required/art[text() = " + strNodeInnerText.CleanXPath() + ']') != null)
+                                        "required/art[. = " + strNodeInnerText.CleanXPath() + ']') != null)
                                     {
                                         return true;
                                     }
 
                                     if (xmlMetamagicNode.SelectSingleNode(
-                                        "forbidden/art[text() = " + strNodeInnerText.CleanXPath() + ']') != null)
+                                        "forbidden/art[. = " + strNodeInnerText.CleanXPath() + ']') != null)
                                     {
                                         return false;
                                     }
@@ -933,7 +933,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strXPathFilter = "/chummer/categories/category[text() = " + strNodeInnerText.CleanXPath() + "]/@translate";
+                            string strXPathFilter = "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/@translate";
                             // Check the Metatype Category restriction.
                             string strTranslate = objCharacter.LoadDataXPath("metatypes.xml").SelectSingleNode(strXPathFilter)?.Value ??
                                                     objCharacter.LoadDataXPath("critters.xml").SelectSingleNode(strXPathFilter)?.Value;

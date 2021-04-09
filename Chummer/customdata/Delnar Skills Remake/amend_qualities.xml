@@ -38,7 +38,7 @@
           <name>Computers</name>
         </skillgroup>
         <skillcategory xpathfilter="exclude">
-          <exclude xpathfilter="text() = 'Intimidation'" amendoperation="remove" />
+          <exclude xpathfilter=". = 'Intimidation'" amendoperation="remove" />
         </skillcategory>
         <specificskill xpathfilter="name = 'Etiquette'" >
           <name>Socialize</name>
@@ -54,27 +54,27 @@
         </weaponcategorydv>
       </bonus>
       <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
-        <unlockskills xpathfilter="text() = 'Adept' or text() = 'Aware' or text() = 'Explorer'" amendoperation="remove" />
+        <unlockskills xpathfilter=". = 'Adept' or . = 'Aware' or . = 'Explorer'" amendoperation="remove" />
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Astral">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Ritual Spellcasting">Name</unlockskills>
       </bonus>
       <bonus xpathfilter="unlockskills = 'Sorcery,Conjuring,Enchanting'">
-        <unlockskills xpathfilter="text() = 'Sorcery,Conjuring,Enchanting'" amendoperation="remove" />
+        <unlockskills xpathfilter=". = 'Sorcery,Conjuring,Enchanting'" amendoperation="remove" />
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Astral">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Ritual Spellcasting">Name</unlockskills>
         <unlockskills amendoperation="addnode" >Sorcery,Conjuring</unlockskills>
       </bonus>
       <bonus xpathfilter="not(unlockskills = 'Magician') and unlockskills = 'Sorcery' and unlockskills = 'Conjuring'">
-        <unlockskills xpathfilter="text() = 'Sorcery' or text() = 'Conjuring'" amendoperation="remove" />
+        <unlockskills xpathfilter=". = 'Sorcery' or . = 'Conjuring'" amendoperation="remove" />
         <unlockskills amendoperation="addnode" >Magician</unlockskills>
       </bonus>
       <required>
         <allof>
           <skill xpathfilter="name = 'Assensing'" >
             <name>Astral</name>
-            <spec xpathfilter="text() = 'Aura Reading'" addifnotfound="False" >Assensing</spec>
+            <spec xpathfilter=". = 'Aura Reading'" addifnotfound="False" >Assensing</spec>
           </skill>
           <skill xpathfilter="name = 'Industrial Mechanic' or name = 'Artisan'" amendoperation="remove" />
           <skill xpathfilter="name = 'Leadership'" >
@@ -93,11 +93,11 @@
           </skill>
           <skill xpathfilter="name = 'Assensing'" >
             <name>Astral</name>
-            <spec xpathfilter="text() = 'Aura Reading'" addifnotfound="False" >Assensing</spec>
+            <spec xpathfilter=". = 'Aura Reading'" addifnotfound="False" >Assensing</spec>
           </skill>
           <skill xpathfilter="name = 'Astral Combat'" >
             <name>Astral</name>
-            <spec xpathfilter="text() = 'Astral Barriers' or text() = 'Spirits'" addifnotfound="False" >Astral Combat</spec>
+            <spec xpathfilter=". = 'Astral Barriers' or . = 'Spirits'" addifnotfound="False" >Astral Combat</spec>
           </skill>
           <skill xpathfilter="(name = 'Alchemy' or name = 'Spellcasting') and spec" amendoperation="remove" />
           <group  xpathfilter="skill[(name = 'Alchemy' or name = 'Spellcasting') and spec]" amendoperation="remove" />
@@ -107,7 +107,7 @@
             </skill>
             <skill xpathfilter="name = 'Assensing'" >
               <name>Astral</name>
-              <spec xpathfilter="text() = 'Aura Reading'" addifnotfound="False" >Assensing</spec>
+              <spec xpathfilter=". = 'Aura Reading'" addifnotfound="False" >Assensing</spec>
             </skill>
           </group>
         </oneof>

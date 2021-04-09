@@ -78,7 +78,7 @@
           <edgaug>7</edgaug>
           <qualities>
             <negative>
-              <quality xpathfilter="text() = 'Allergy (Common, Mild)'" amendoperation="remove" />
+              <quality xpathfilter=". = 'Allergy (Common, Mild)'" amendoperation="remove" />
             </negative>
           </qualities>
           <bonus>
@@ -166,7 +166,7 @@
           <bodaug>12</bodaug>
           <qualities>
             <positive>
-              <quality xpathfilter="text() = 'Resistance to Pathogens'" amendoperation="remove" />
+              <quality xpathfilter=". = 'Resistance to Pathogens'" amendoperation="remove" />
               <quality amendoperation="addnode">Resistance to Pathogens/Toxins</quality>
               <quality amendoperation="addnode">Dermal Alteration (Blubber)</quality>
             </positive>

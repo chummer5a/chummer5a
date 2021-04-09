@@ -1672,7 +1672,7 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(strChildInnerText))
                                         {
                                             // The item does not have a name which means it should have a translate CharacterAttribute instead.
-                                            XPathNavigator objNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[text() =" + strChildInnerText.CleanXPath() + "]");
+                                            XPathNavigator objNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[. =" + strChildInnerText.CleanXPath() + "]");
                                             if (objNode != null)
                                             {
                                                 // Make sure the translate attribute is populated.

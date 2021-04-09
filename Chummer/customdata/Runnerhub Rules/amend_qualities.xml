@@ -854,8 +854,8 @@
       <name>Cyber-snob</name>
       <karma>-6</karma>
       <bonus>
-        <disablebiowaregrade xpathfilter="contains(text(),'Alphaware')" amendoperation="remove" />
-        <disablecyberwaregrade xpathfilter="contains(text(),'Alphaware')" amendoperation="remove" />
+        <disablebiowaregrade xpathfilter="contains(., 'Alphaware')" amendoperation="remove" />
+        <disablecyberwaregrade xpathfilter="contains(., 'Alphaware')" amendoperation="remove" />
       </bonus>
       <required>
         <oneof>
@@ -877,7 +877,7 @@
       <name>Pacifist Adept</name>
       <required>
         <oneof>
-          <quality xpathfilter="text() = 'Pacifist II'" amendoperation="remove" />
+          <quality xpathfilter=". = 'Pacifist II'" amendoperation="remove" />
         </oneof>
       </required>
       <forbidden amendoperation="replace" addifnotfound="True">
