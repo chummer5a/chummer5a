@@ -745,7 +745,7 @@ namespace Chummer
             {
                 string msg = "Could not LoadData for " + strLanguage + " of hobbiesvices " + HobbiesVice + ". Is it missing in contacts.xml?";
                 Log.Exception(e, msg);
-                return msg;
+                throw;
             }
 
         }
