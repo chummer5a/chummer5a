@@ -16566,16 +16566,16 @@ namespace Chummer
                                     XPathNavigator objSprintNode = xmlMetatype.SelectSingleNode("sprint");
 
                                     _strMovement = xmlMetatype.SelectSingleNode("movement")?.Value ?? string.Empty;
-                                    _strRun = objRunNode?.InnerText ?? string.Empty;
-                                    _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                                    _strSprint = objSprintNode?.InnerText ?? string.Empty;
+                                    _strRun = objRunNode?.Value ?? string.Empty;
+                                    _strWalk = objWalkNode?.Value ?? string.Empty;
+                                    _strSprint = objSprintNode?.Value ?? string.Empty;
 
                                     objRunNode = objRunNode?.SelectSingleNode("@alt");
                                     objWalkNode = objWalkNode?.SelectSingleNode("@alt");
                                     objSprintNode = objSprintNode?.SelectSingleNode("@alt");
-                                    _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                                    _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                                    _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+                                    _strRunAlt = objRunNode?.Value ?? string.Empty;
+                                    _strWalkAlt = objWalkNode?.Value ?? string.Empty;
+                                    _strSprintAlt = objSprintNode?.Value ?? string.Empty;
                                     break;
                                 }
 
@@ -16594,16 +16594,16 @@ namespace Chummer
 
                                         _strMovement = xmlMetavariant?.SelectSingleNode("movement")?.Value ??
                                                        xmlMetatype?.SelectSingleNode("movement")?.Value ?? string.Empty;
-                                        _strRun = objRunNode?.InnerText ?? string.Empty;
-                                        _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                                        _strSprint = objSprintNode?.InnerText ?? string.Empty;
+                                        _strRun = objRunNode?.Value ?? string.Empty;
+                                        _strWalk = objWalkNode?.Value ?? string.Empty;
+                                        _strSprint = objSprintNode?.Value ?? string.Empty;
 
                                         objRunNode = objRunNode?.SelectSingleNode("@alt");
                                         objWalkNode = objWalkNode?.SelectSingleNode("@alt");
                                         objSprintNode = objSprintNode?.SelectSingleNode("@alt");
-                                        _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                                        _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                                        _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+                                        _strRunAlt = objRunNode?.Value ?? string.Empty;
+                                        _strWalkAlt = objWalkNode?.Value ?? string.Empty;
+                                        _strSprintAlt = objSprintNode?.Value ?? string.Empty;
                                         break;
                                     }
                                 }
