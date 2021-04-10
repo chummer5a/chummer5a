@@ -1056,7 +1056,7 @@ namespace Chummer
                 if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false).ConfigureAwait(true);
+                    _objLinkedCharacter = objOpenCharacter ?? await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false).ConfigureAwait(false);
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }

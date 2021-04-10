@@ -102,6 +102,7 @@ Changed/New Strings:
 - Message_Insufficient_Permissions_Warning_Registry
 - Message_MergeIdentical
 - MessageTitle_MergeIdentical
+- Message_Load_Error_Warning
 
 Build 214
 Application Fixes:

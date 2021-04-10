@@ -9362,7 +9362,7 @@ namespace Chummer
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();
-                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true);
+                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(false);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
                     // Select the Magician's Tradition.
@@ -10641,7 +10641,7 @@ namespace Chummer
                 if (!CharacterObject.Save())
                     return;
                 IsDirty = false;
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(CharacterObject.FileName).ConfigureAwait(true);
+                Character objOpenCharacter = await Program.MainForm.LoadCharacter(CharacterObject.FileName).ConfigureAwait(false);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
             }

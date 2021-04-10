@@ -2825,17 +2825,36 @@ namespace Chummer
                         {
                             frmLoadingForm.Reset(77);
                             frmLoadingForm.Show();
-                            await objVessel.Load(frmLoadingForm).ConfigureAwait(true);
+                            bool blnSuccess = await objVessel.Load(frmLoadingForm).ConfigureAwait(false);
+                            if (!blnSuccess)
+                            {
+                                Program.MainForm.ShowMessageBox(this,
+                                    LanguageManager.GetString("Message_Load_Error_Warning"),
+                                    LanguageManager.GetString("String_Error"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                                return;
+                            }
                             // Make sure the Vessel is in Career Mode.
                             if (!objVessel.Created)
                             {
-                                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_VesselInCareerMode"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Program.MainForm.ShowMessageBox(this,
+                                    LanguageManager.GetString("Message_VesselInCareerMode"),
+                                    LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
                                 return;
                             }
 
                             // Load the Spirit's save file into a new Merge character.
                             frmLoadingForm.CharacterFile = objMerge.FileName;
-                            await objMerge.Load(frmLoadingForm).ConfigureAwait(true);
+                            blnSuccess = await objMerge.Load(frmLoadingForm).ConfigureAwait(false);
+                            if (!blnSuccess)
+                            {
+                                Program.MainForm.ShowMessageBox(this,
+                                    LanguageManager.GetString("Message_Load_Error_Warning"),
+                                    LanguageManager.GetString("String_Error"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                                return;
+                            }
                             objMerge.Possessed = true;
                             objMerge.Alias = objVessel.CharacterName + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
 
@@ -2852,7 +2871,7 @@ namespace Chummer
 
                             if (!blnHasImmunity)
                             {
-                                XmlDocument objPowerDoc = CharacterObject.LoadData("critterpowers.xml");
+                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml").ConfigureAwait(false);
                                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
@@ -2959,7 +2978,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(true);
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(false);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
@@ -3010,7 +3029,7 @@ namespace Chummer
                     {
                         frmLoadingForm.Reset(36);
                         frmLoadingForm.Show();
-                        await objMerge.Load().ConfigureAwait(true);
+                        await objMerge.Load().ConfigureAwait(false);
                         frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
@@ -12993,7 +13012,7 @@ namespace Chummer
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();
-                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true);
+                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(false);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
                     IsCharacterUpdateRequested = true;

@@ -251,7 +251,7 @@ namespace Chummer
                                         XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
                                     _frmLoading.PerformStep(Application.ProductName);
                                 });
-                            });
+                            }).ConfigureAwait(false);
                             //Timekeeper.Finish("cache_load");
                         }
 
@@ -878,7 +878,7 @@ namespace Chummer
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
             using (new CursorWait(this))
             {
-                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
+                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(false);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -900,7 +900,7 @@ namespace Chummer
                 return;
             using (new CursorWait(this))
             {
-                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
+                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(false);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -1571,7 +1571,7 @@ namespace Chummer
                         _frmLoading.Show();
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
-                        bool blnLoaded = await objCharacter.Load(_frmLoading).ConfigureAwait(true);
+                        bool blnLoaded = await objCharacter.Load(_frmLoading).ConfigureAwait(false);
                         //Timekeeper.Finish("load_file");
                         if (!blnLoaded)
                         {
@@ -1584,7 +1584,7 @@ namespace Chummer
                 {
                     OpenCharacters.Add(objCharacter);
                     //Timekeeper.Start("load_file");
-                    bool blnLoaded = await objCharacter.Load(blnShowErrors && _frmLoading?.IsDisposed == false ? _frmLoading : null).ConfigureAwait(true);
+                    bool blnLoaded = await objCharacter.Load(blnShowErrors && _frmLoading?.IsDisposed == false ? _frmLoading : null).ConfigureAwait(false);
                     //Timekeeper.Finish("load_file");
                     if (!blnLoaded)
                     {

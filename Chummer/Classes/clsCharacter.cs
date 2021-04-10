@@ -18827,7 +18827,7 @@ namespace Chummer
 
             if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
             {
-                objOpenCharacter = await Program.MainForm.LoadCharacter(FilePath).ConfigureAwait(true);
+                objOpenCharacter = await Program.MainForm.LoadCharacter(FilePath).ConfigureAwait(false);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
