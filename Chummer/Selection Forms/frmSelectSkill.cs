@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
 using System.Text;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -42,7 +43,7 @@ namespace Chummer
 
         public string LinkedAttribute { get; set; } = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlDocument;
         private readonly Character _objCharacter;
 
         #region Control Events
@@ -53,20 +54,20 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = _objCharacter.LoadData("skills.xml");
+            _objXmlDocument = _objCharacter.LoadDataXPath("skills.xml");
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)
         {
             List<ListItem> lstSkills = new List<ListItem>();
             // Build the list of non-Exotic Skills from the Skills file.
-            XmlNodeList objXmlSkillList;
+            XPathNodeIterator objXmlSkillList;
             if (!string.IsNullOrEmpty(_strForceSkill))
             {
-                objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[name = " + _strForceSkill.CleanXPath() + " and not(exotic) and (" + _objCharacter.Options.BookXPath() + ")]");
+                objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = " + _strForceSkill.CleanXPath() + " and not(exotic) and (" + _objCharacter.Options.BookXPath() + ")]");
             }
             else if (!string.IsNullOrEmpty(_strLimitToCategories))
-                objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[" + _strLimitToCategories + " and (" + _objCharacter.Options.BookXPath() + ")]");
             else
             {
                 string strFilter = "not(exotic)";
@@ -133,15 +134,15 @@ namespace Chummer
                     strFilter = strFilter.Substring(0, strFilter.Length - 4);
                     strFilter += ')';
                 }
-                objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
+                objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[" + strFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
             }
 
             // Add the Skills to the list.
-            if (objXmlSkillList?.Count > 0)
+            if (objXmlSkillList.Count > 0)
             {
-                foreach (XmlNode objXmlSkill in objXmlSkillList)
+                foreach (XPathNavigator objXmlSkill in objXmlSkillList)
                 {
-                    string strXmlSkillName = objXmlSkill["name"]?.InnerText;
+                    string strXmlSkillName = objXmlSkill.SelectSingleNode("name")?.Value;
                     Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
                     if (objExistingSkill == null)
                     {
@@ -155,7 +156,7 @@ namespace Chummer
                         continue;
                     }
 
-                    lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill["translate"]?.InnerText ?? strXmlSkillName));
+                    lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill.SelectSingleNode("translate")?.Value ?? strXmlSkillName));
                 }
             }
 
@@ -186,9 +187,10 @@ namespace Chummer
                     if (blnAddSkill)
                     {
                         // Use the translated Exotic Skill name if available.
-                        XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + " and name = " + objExoticSkill.Name.CleanXPath() + "]");
+                        XPathNavigator objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath()
+                            + " and name = " + objExoticSkill.Name.CleanXPath() + "]");
                         lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ')',
-                            (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + LanguageManager.GetString("String_Space") + '(' + objExoticSkill.CurrentDisplaySpecialization + ')'));
+                            (objXmlSkill.SelectSingleNode("translate")?.Value ?? objExoticSkill.Name) + LanguageManager.GetString("String_Space") + '(' + objExoticSkill.CurrentDisplaySpecialization + ')'));
                     }
                 }
             }

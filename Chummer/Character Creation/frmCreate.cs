@@ -2760,8 +2760,7 @@ namespace Chummer
 
         private void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = CharacterObject.LoadData("critterpowers.xml");
-            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
+            XmlNode objXmlPower = CharacterObject.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
             CritterPower objPower = new CritterPower(CharacterObject);
             objPower.Create(objXmlPower);
             objPower.CountTowardsLimit = false;
@@ -3855,10 +3854,10 @@ namespace Chummer
                     }
                 }
 
-            if (objSelectedQuality.Type == QualityType.LifeModule)
-            {
-                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString, CharacterObject.LoadData("lifemodules.xml"));
-            }
+                if (objSelectedQuality.Type == QualityType.LifeModule)
+                {
+                    objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString, CharacterObject.LoadData("lifemodules.xml"));
+                }
 
                 // Fix for legacy characters with old addqualities improvements.
                 RemoveAddedQualities(objXmlDeleteQuality?.SelectNodes("addqualities/addquality"));
@@ -4296,6 +4295,8 @@ namespace Chummer
                 return;
             }
 
+            XmlDocument xmlDocument = CharacterObject.LoadData("weapons.xml");
+
             bool blnAddAgain;
             do
             {
@@ -4319,8 +4320,8 @@ namespace Chummer
                             break;
                         blnAddAgain = frmPickWeaponAccessory.AddAgain;
 
-                    // Locate the selected piece.
-                    objXmlWeapon = CharacterObject.LoadData("weapons.xml").SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.SelectedAccessory.CleanXPath() + "]");
+                        // Locate the selected piece.
+                        objXmlWeapon = xmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.SelectedAccessory.CleanXPath() + "]");
 
                         WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                         objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
@@ -4637,6 +4638,8 @@ namespace Chummer
                 return;
             }
 
+            XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
+
             bool blnAddAgain;
             do
             {
@@ -4653,8 +4656,6 @@ namespace Chummer
                             return;
 
                         // Open the Weapons XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
-
                         XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + "]");
 
                         List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -4705,14 +4706,14 @@ namespace Chummer
             }
 
             // Open the Weapons XML file and locate the selected Weapon.
-            XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
-
             XmlNode objXmlWeapon = objWeapon.GetNode();
             if (objXmlWeapon == null)
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotFindWeapon"), LanguageManager.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+
+            XmlDocument objXmlDocument = CharacterObject.LoadData("weapons.xml");
 
             bool blnAddAgain;
 
@@ -4847,6 +4848,8 @@ namespace Chummer
                 return;
             }
 
+            XmlDocument xmlDocument = CharacterObject.LoadData("martialarts.xml");
+
             bool blnAddAgain;
             do
             {
@@ -4862,9 +4865,9 @@ namespace Chummer
 
                         blnAddAgain = frmPickMartialArtTechnique.AddAgain;
 
-                    // Open the Martial Arts XML file and locate the selected piece.
-                    xmlTechnique = CharacterObject.LoadData("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = " + frmPickMartialArtTechnique.SelectedTechnique.CleanXPath() + "]");
-                }
+                        // Open the Martial Arts XML file and locate the selected piece.
+                        xmlTechnique = xmlDocument.SelectSingleNode("/chummer/techniques/technique[id = " + frmPickMartialArtTechnique.SelectedTechnique.CleanXPath() + "]");
+                    }
 
                     // Create the Improvements for the Technique if there are any.
                     MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);

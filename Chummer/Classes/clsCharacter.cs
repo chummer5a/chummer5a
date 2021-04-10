@@ -14235,17 +14235,17 @@ namespace Chummer
                 return string.Empty;
             StringBuilder sbdReturn = new StringBuilder();
             // Load the Sourcebook information.
-            XmlDocument objXmlDocument = LoadData("books.xml", strLanguage);
+            XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
 
             foreach(string strBook in strInput.TrimEndOnce(';').SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
             {
-                XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + "]");
+                XPathNavigator objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + "]");
                 if(objXmlBook != null)
                 {
-                    sbdReturn.Append(objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", strLanguage))
+                    sbdReturn.Append(objXmlBook.SelectSingleNode("translate")?.Value ?? objXmlBook.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", strLanguage))
                         .Append(LanguageManager.GetString("String_Space", strLanguage))
                         .Append('(')
-                        .Append(objXmlBook["altcode"]?.InnerText ?? strBook)
+                        .Append(objXmlBook.SelectSingleNode("altcode")?.Value ?? strBook)
                         .AppendLine(")");
                 }
                 else
@@ -16552,56 +16552,55 @@ namespace Chummer
                         {
                             if (strRaceString == "Metasapient")
                                 strRaceString = "A.I.";
-                            foreach (XmlNode xmlMetatype in LoadData("metatypes.xml")
-                                .SelectNodes("/chummer/metatypes/metatype"))
+                            foreach (XPathNavigator xmlMetatype in LoadDataXPath("metatypes.xml").Select("/chummer/metatypes/metatype"))
                             {
-                                string strMetatypeName = xmlMetatype["name"].InnerText;
+                                string strMetatypeName = xmlMetatype.SelectSingleNode("name").Value;
                                 if (strMetatypeName == strRaceString)
                                 {
                                     _strMetatype = strMetatypeName;
-                                    _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                                    _strMetatypeCategory = xmlMetatype.SelectSingleNode("category").Value;
                                     _strMetavariant = "None";
 
-                                    XmlNode objRunNode = xmlMetatype?["run"];
-                                    XmlNode objWalkNode = xmlMetatype?["walk"];
-                                    XmlNode objSprintNode = xmlMetatype?["sprint"];
+                                    XPathNavigator objRunNode = xmlMetatype.SelectSingleNode("run");
+                                    XPathNavigator objWalkNode = xmlMetatype.SelectSingleNode("walk");
+                                    XPathNavigator objSprintNode = xmlMetatype.SelectSingleNode("sprint");
 
-                                    _strMovement = xmlMetatype?["movement"]?.InnerText ?? string.Empty;
+                                    _strMovement = xmlMetatype.SelectSingleNode("movement")?.Value ?? string.Empty;
                                     _strRun = objRunNode?.InnerText ?? string.Empty;
                                     _strWalk = objWalkNode?.InnerText ?? string.Empty;
                                     _strSprint = objSprintNode?.InnerText ?? string.Empty;
 
-                                    objRunNode = objRunNode?.Attributes?["alt"];
-                                    objWalkNode = objWalkNode?.Attributes?["alt"];
-                                    objSprintNode = objSprintNode?.Attributes?["alt"];
+                                    objRunNode = objRunNode?.SelectSingleNode("@alt");
+                                    objWalkNode = objWalkNode?.SelectSingleNode("@alt");
+                                    objSprintNode = objSprintNode?.SelectSingleNode("@alt");
                                     _strRunAlt = objRunNode?.InnerText ?? string.Empty;
                                     _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
                                     _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
                                     break;
                                 }
 
-                                foreach (XmlNode xmlMetavariant in xmlMetatype.SelectNodes("metavariants/metavariant"))
+                                foreach (XPathNavigator xmlMetavariant in xmlMetatype.Select("metavariants/metavariant"))
                                 {
-                                    string strMetavariantName = xmlMetavariant["name"].InnerText;
+                                    string strMetavariantName = xmlMetavariant.SelectSingleNode("name").Value;
                                     if (strMetavariantName == strRaceString)
                                     {
                                         _strMetatype = strMetatypeName;
-                                        _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                                        _strMetatypeCategory = xmlMetatype.SelectSingleNode("category").Value;
                                         _strMetavariant = strMetavariantName;
 
-                                        XmlNode objRunNode = xmlMetavariant?["run"] ?? xmlMetatype?["run"];
-                                        XmlNode objWalkNode = xmlMetavariant?["walk"] ?? xmlMetatype?["walk"];
-                                        XmlNode objSprintNode = xmlMetavariant?["sprint"] ?? xmlMetatype?["sprint"];
+                                        XPathNavigator objRunNode = xmlMetavariant?.SelectSingleNode("run") ?? xmlMetatype?.SelectSingleNode("run");
+                                        XPathNavigator objWalkNode = xmlMetavariant?.SelectSingleNode("walk") ?? xmlMetatype?.SelectSingleNode("walk");
+                                        XPathNavigator objSprintNode = xmlMetavariant?.SelectSingleNode("sprint") ?? xmlMetatype?.SelectSingleNode("sprint");
 
-                                        _strMovement = xmlMetavariant?["movement"]?.InnerText ??
-                                                       xmlMetatype?["movement"]?.InnerText ?? string.Empty;
+                                        _strMovement = xmlMetavariant?.SelectSingleNode("movement")?.Value ??
+                                                       xmlMetatype?.SelectSingleNode("movement")?.Value ?? string.Empty;
                                         _strRun = objRunNode?.InnerText ?? string.Empty;
                                         _strWalk = objWalkNode?.InnerText ?? string.Empty;
                                         _strSprint = objSprintNode?.InnerText ?? string.Empty;
 
-                                        objRunNode = objRunNode?.Attributes?["alt"];
-                                        objWalkNode = objWalkNode?.Attributes?["alt"];
-                                        objSprintNode = objSprintNode?.Attributes?["alt"];
+                                        objRunNode = objRunNode?.SelectSingleNode("@alt");
+                                        objWalkNode = objWalkNode?.SelectSingleNode("@alt");
+                                        objSprintNode = objSprintNode?.SelectSingleNode("@alt");
                                         _strRunAlt = objRunNode?.InnerText ?? string.Empty;
                                         _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
                                         _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;

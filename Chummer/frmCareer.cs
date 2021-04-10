@@ -2972,21 +2972,14 @@ namespace Chummer
                 return;
 
             // Prompt the user to select an inanimate Vessel.
-            XmlDocument objVesselDoc = CharacterObject.LoadData("vessels.xml");
             List<ListItem> lstMetatype = new List<ListItem>(10);
-            using (XmlNodeList xmlMetatypeList = objVesselDoc.SelectNodes("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatype in CharacterObject.LoadDataXPath("vessels.xml").Select("/chummer/metatypes/metatype"))
             {
-                if (xmlMetatypeList?.Count > 0)
+                string strName = xmlMetatype.SelectSingleNode("name")?.Value;
+                if (!string.IsNullOrEmpty(strName))
                 {
-                    foreach (XmlNode xmlMetatype in xmlMetatypeList)
-                    {
-                        string strName = xmlMetatype["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
-                        {
-                            ListItem objItem = new ListItem(strName, xmlMetatype["translate"]?.InnerText ?? strName);
-                            lstMetatype.Add(objItem);
-                        }
-                    }
+                    ListItem objItem = new ListItem(strName, xmlMetatype.SelectSingleNode("translate")?.Value ?? strName);
+                    lstMetatype.Add(objItem);
                 }
             }
 
@@ -3003,7 +2996,7 @@ namespace Chummer
             }
 
             // Get the Node for the selected Vessel.
-            XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + "]");
+            XmlNode objSelected = CharacterObject.LoadData("vessels.xml").SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + "]");
             if (objSelected == null)
                 return;
 

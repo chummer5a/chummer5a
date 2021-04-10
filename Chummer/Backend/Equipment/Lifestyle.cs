@@ -168,21 +168,21 @@ namespace Chummer.Backend.Equipment
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
-            XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
-            XmlNode xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
+            XPathNavigator xmlLifestyleXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
+            XPathNavigator xmlLifestyleNode =
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
             // Area.
             xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
             // Security.
             xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             if (_objCharacter.Options.BookEnabled("HT") || _objCharacter.Options.AllowFreeGrids)
@@ -198,11 +198,12 @@ namespace Chummer.Backend.Equipment
                     }
 
                     FreeGrids.Clear();
+                    XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {
                         XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = " + xmlNode.InnerText.CleanXPath() + "]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        string strPush = xmlNode.Attributes?["select"]?.InnerText;
+                        string strPush = xmlNode.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrWhiteSpace(strPush))
                         {
                             _objCharacter.Pushtext.Push(strPush);
@@ -323,7 +324,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-            XmlDocument xmlLifestyles = _objCharacter.LoadData("lifestyles.xml");
+            XPathNavigator xmlLifestyles = _objCharacter.LoadDataXPath("lifestyles.xml");
             if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]") == null
                 && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + "]") != null)
             {
@@ -337,16 +338,10 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
                     List<ListItem> lstQualities = new List<ListItem>(1);
-                    using (XmlNodeList xmlLifestyleList = xmlLifestyles.SelectNodes("/chummer/lifestyles/lifestyle"))
+                    foreach (XmlNode xmlLifestyle in xmlLifestyles.Select("/chummer/lifestyles/lifestyle"))
                     {
-                        if (xmlLifestyleList != null)
-                        {
-                            foreach (XmlNode xmlLifestyle in xmlLifestyleList)
-                            {
-                                string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error");
-                                lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
-                            }
-                        }
+                        string strName = xmlLifestyle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Error");
+                        lstQualities.Add(new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));
                     }
 
                     using (frmSelectItem frmSelect = new frmSelectItem
@@ -386,13 +381,13 @@ namespace Chummer.Backend.Equipment
 
             if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
             {
-                XmlNode xmlLifestyleNode =
+                XPathNavigator xmlLifestyleNode =
                     xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             }
             if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
             {
-                XmlNode xmlLifestyleNode =
+                XPathNavigator xmlLifestyleNode =
                     xmlLifestyles.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
@@ -429,23 +424,31 @@ namespace Chummer.Backend.Equipment
 
             // Lifestyle Qualities
             using (XmlNodeList xmlQualityList = objNode.SelectNodes("lifestylequalities/lifestylequality"))
+            {
                 if (xmlQualityList != null)
+                {
                     foreach (XmlNode xmlQuality in xmlQualityList)
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
                         LifestyleQualities.Add(objQuality);
                     }
+                }
+            }
 
             // Free Grids provided by the Lifestyle
             using (XmlNodeList xmlQualityList = objNode.SelectNodes("freegrids/lifestylequality"))
+            {
                 if (xmlQualityList != null)
+                {
                     foreach (XmlNode xmlQuality in xmlQualityList)
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
                         _lstFreeGrids.Add(objQuality);
                     }
+                }
+            }
 
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 

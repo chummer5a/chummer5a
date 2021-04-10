@@ -444,7 +444,7 @@ namespace Chummer
         private async void CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
+            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadData("critters.xml");
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + "]");
 

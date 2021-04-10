@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -37,7 +38,7 @@ namespace Chummer
 
         private readonly Character _objCharacter;
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlDocument;
 
         private readonly List<KeyValuePair<string, int>> _lstMetamagicLimits = new List<KeyValuePair<string, int>>();
         private readonly Mode _objMode;
@@ -72,12 +73,12 @@ namespace Chummer
             {
                 case Mode.Metamagic:
                     _strRootXPath = "/chummer/metamagics/metamagic";
-                    _objXmlDocument = _objCharacter.LoadData("metamagic.xml");
+                    _objXmlDocument = _objCharacter.LoadDataXPath("metamagic.xml");
                     _strType = LanguageManager.GetString("String_Metamagic");
                     break;
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
-                    _objXmlDocument = _objCharacter.LoadData("echoes.xml");
+                    _objXmlDocument = _objCharacter.LoadDataXPath("echoes.xml");
                     _strType = LanguageManager.GetString("String_Echo");
                     break;
             }
@@ -101,12 +102,12 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected piece of Cyberware.
-                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlMetamagic != null)
                 {
-                    string strSource = objXmlMetamagic["source"]?.InnerText;
-                    string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
+                    string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value;
+                    string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                 }
@@ -181,26 +182,24 @@ namespace Chummer
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             List<ListItem> lstMetamagics = new List<ListItem>();
-            using (XmlNodeList objXmlMetamagicList = _objXmlDocument.SelectNodes(_strRootXPath + '[' + strFilter + ']'))
-                if (objXmlMetamagicList?.Count > 0)
-                    foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
+            foreach (XPathNavigator objXmlMetamagic in _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
+            {
+                string strId = objXmlMetamagic.SelectSingleNode("id")?.Value;
+                if (!string.IsNullOrEmpty(strId))
+                {
+                    if (_lstMetamagicLimits.Count > 0 && (_objMode == Mode.Metamagic && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic.SelectSingleNode("name")?.Value && (item.Value == -1 || item.Value == _objCharacter.InitiateGrade)) ||
+                                                          _objMode == Mode.Echo && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic.SelectSingleNode("name")?.Value && (item.Value == -1 || item.Value == _objCharacter.SubmersionGrade))))
                     {
-                        string strId = objXmlMetamagic["id"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strId))
-                        {
-                            if (_lstMetamagicLimits.Count > 0 && (_objMode == Mode.Metamagic && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic["name"]?.InnerText && (item.Value == -1 || item.Value == _objCharacter.InitiateGrade)) ||
-                                                                  _objMode == Mode.Echo && !_lstMetamagicLimits.Any(item => item.Key == objXmlMetamagic["name"]?.InnerText && (item.Value == -1 || item.Value == _objCharacter.SubmersionGrade))))
-                            {
-                                continue;
-                            }
-                            if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
-                            {
-                                lstMetamagics.Add(new ListItem(strId,
-                                    objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"]?.InnerText ??
-                                    LanguageManager.GetString("String_Unknown")));
-                            }
-                        }
+                        continue;
                     }
+                    if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
+                    {
+                        lstMetamagics.Add(new ListItem(strId,
+                            objXmlMetamagic.SelectSingleNode("translate")?.Value ?? objXmlMetamagic.SelectSingleNode("name")?.Value ??
+                            LanguageManager.GetString("String_Unknown")));
+                    }
+                }
+            }
             lstMetamagics.Sort(CompareListItems.CompareNames);
             string strOldSelected = lstMetamagic.SelectedValue?.ToString();
             _blnLoading = true;
@@ -225,9 +224,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
-                XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
 
-                if (objXmlMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, _strType) != true)
+                if (objXmlMetamagic?.RequirementsMet(_objCharacter, _strType) != true)
                     return;
 
                 _strSelectedMetamagic = strSelectedId;
