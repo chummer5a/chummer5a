@@ -8086,6 +8086,18 @@
       <key>Label_SelectLifestyle_Roommates</key>
       <text>Roommates:</text>
     </string>
+    <string>
+      <key>Label_SelectLifestyle_City</key>
+      <text>City:</text>
+    </string>
+    <string>
+      <key>Label_SelectLifestyle_District</key>
+      <text>District:</text>
+    </string>
+    <string>
+      <key>Label_SelectLifestyle_Borough</key>
+      <text>Borough:</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Martial Art Window -->
     <string>

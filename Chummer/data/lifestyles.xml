@@ -1525,4 +1525,33 @@
     </quality>
     <!-- End Region -->
   </qualities>
+  <cities>
+    <city>
+      <name>Seattle</name>
+      <district>
+        <name>Auburn</name>
+        <borough>
+          <name>Black Diamond</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Bolse</name>
+          <secRating>D</secRating>
+        </borough>
+      </district>
+    </city>
+    <city>
+      <name>Pretoria-Witwatersrand-Vaal</name>
+      <district>
+        <name>West End</name>
+        <borough>
+          <name>Test</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Not West End</name>
+      </district>
+    </city>
+  </cities>
 </chummer>
