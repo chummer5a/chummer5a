@@ -95,9 +95,12 @@ namespace Chummer
                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
-                    Parallel.ForEach(_lstFileNames, strFileName =>
+                    Task.WhenAll(_lstFileNames.Select<string, Task>(strFileName => LoadFile(strFileName)));
+
+                    async void LoadFile(string strFileName)
                     {
-                        XPathNavigator xmlBaseNode = XmlManager.LoadXPath(strFileName).SelectSingleNode("/chummer");
+                        XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName);
+                        xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
                         if (xmlBaseNode != null)
                         {
                             bool blnLoopFileNameHasItems = false;
@@ -134,7 +137,7 @@ namespace Chummer
                             if (blnLoopFileNameHasItems)
                                 lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
                         }
-                    });
+                    }
                 }
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
