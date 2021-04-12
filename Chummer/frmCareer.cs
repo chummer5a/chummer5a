@@ -14692,6 +14692,44 @@ namespace Chummer
                 lblLifestyleQualitiesLabel.Visible = false;
                 lblLifestyleQualities.Visible = false;
             }
+
+            //Controls Visibility and content of the City, District and Borough Labels
+            if (!string.IsNullOrEmpty(objLifestyle.City))
+            {
+                lblLifestyleCity.Text = objLifestyle.City;
+                lblLifestyleCity.Visible = true;
+                lblLifestyleCityLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleCity.Visible = false;
+                lblLifestyleCityLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.District))
+            {
+                lblLifestyleDistrict.Text = objLifestyle.District;
+                lblLifestyleDistrict.Visible = true;
+                lblLifestyleDistrictLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleDistrict.Visible = false;
+                lblLifestyleDistrictLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.Borough))
+            {
+                lblLifestyleBorough.Text = objLifestyle.Borough;
+                lblLifestyleBorough.Visible = true;
+                lblLifestyleBoroughLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleBorough.Visible = false;
+                lblLifestyleBoroughLabel.Visible = false;
+            }
+
             IsRefreshing = false;
             flpLifestyleDetails.ResumeLayout();
         }

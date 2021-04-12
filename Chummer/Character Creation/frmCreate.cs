@@ -11072,6 +11072,7 @@ namespace Chummer
                 lblLifestyleQualities.Visible = false;
             }
 
+            //Controls Visibility and content of the City, District and Borough Labels
             if (!string.IsNullOrEmpty(objLifestyle.City))
             {
                 lblLifestyleCity.Text = objLifestyle.City;
