@@ -333,55 +333,47 @@ namespace Chummer
                     string[] strArgs = Environment.GetCommandLineArgs();
                     try
                     {
-                        // Hacky, but necessary because innards of Parallel.For would end up invoking
-                        // a UI function that would wait for Parallel.For to finish, causing the program
-                        // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                        bool blnIsCompleted = Task.Run(() =>
+                        // Process plugin args synchronously because plugin load order can end up mattering
+                        foreach (string strArg in strArgs)
                         {
-                            var loopResult = Parallel.For(1, strArgs.Length, i =>
+                            if (strArg.Contains("/plugin"))
                             {
-                                if (strArgs[i].Contains("/plugin"))
+                                if (!GlobalOptions.PluginsEnabled)
                                 {
-                                    if (!GlobalOptions.PluginsEnabled)
+                                    string msg =
+                                        "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                    Log.Warn(msg);
+                                    MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                }
+                                else
+                                {
+                                    string whatplugin = strArg.Substring(strArg.IndexOf("/plugin", StringComparison.Ordinal) + 8);
+                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                    whatplugin = whatplugin.TrimStart(':');
+                                    int endplugin = whatplugin.IndexOf(':');
+                                    string parameter = whatplugin.Substring(endplugin + 1);
+                                    whatplugin = whatplugin.Substring(0, endplugin);
+                                    var plugin =
+                                        PluginLoader.MyActivePlugins.FirstOrDefault(a =>
+                                            a.ToString() == whatplugin);
+                                    if (plugin == null)
                                     {
-                                        string msg =
-                                            "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
-                                        Log.Warn(msg);
-                                        MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
+                                        {
+                                            string msg = new StringBuilder("Plugin ").Append(whatplugin)
+                                                .AppendLine(" is not enabled in the options!")
+                                                .Append("If you want to use command-line arguments, please enable this plugin and restart the program.").ToString();
+                                            Log.Warn(msg);
+                                            MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        }
                                     }
                                     else
                                     {
-                                        string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin", StringComparison.Ordinal) + 8);
-                                        //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                        whatplugin = whatplugin.TrimStart(':');
-                                        int endplugin = whatplugin.IndexOf(':');
-                                        string parameter = whatplugin.Substring(endplugin + 1);
-                                        whatplugin = whatplugin.Substring(0, endplugin);
-                                        var plugin =
-                                            PluginLoader.MyActivePlugins.FirstOrDefault(a =>
-                                                a.ToString() == whatplugin);
-                                        if (plugin == null)
-                                        {
-                                            if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
-                                            {
-                                                string msg = new StringBuilder("Plugin ").Append(whatplugin)
-                                                    .AppendLine(" is not enabled in the options!")
-                                                    .Append("If you want to use command-line arguments, please enable this plugin and restart the program.").ToString();
-                                                Log.Warn(msg);
-                                                MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            showMainForm &= plugin.ProcessCommandLine(parameter);
-                                        }
+                                        showMainForm &= plugin.ProcessCommandLine(parameter);
                                     }
                                 }
-                            });
-                            return loopResult.IsCompleted;
-                        }).Result;
-                        if (!blnIsCompleted)
-                            Utils.BreakIfDebug();
+                            }
+                        }
                     }
                     catch (Exception e)
                     {
