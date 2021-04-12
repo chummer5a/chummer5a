@@ -91,6 +91,11 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private readonly Character _objCharacter;
 
+        private string _strCity;
+        private string _strDistrict;
+        private string _strBorough;
+
+
         #region Helper Methods
         /// <summary>
         /// Convert a string to a LifestyleType.
@@ -261,6 +266,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("type", _eType.ToString());
             objWriter.WriteElementString("increment", _eIncrement.ToString());
             objWriter.WriteElementString("sourceid", SourceIDString);
+
+            objWriter.WriteElementString("city", _strCity);
+            objWriter.WriteElementString("district", _strDistrict);
+            objWriter.WriteElementString("borough", _strBorough);
+
+
+
             objWriter.WriteStartElement("lifestylequalities");
             foreach (LifestyleQuality objQuality in LifestyleQualities)
             {
@@ -310,6 +322,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("dice", ref _intDice);
             objNode.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
+
+            objNode.TryGetStringFieldQuickly("city", ref _strCity);
+            objNode.TryGetStringFieldQuickly("district", ref _strDistrict);
+            objNode.TryGetStringFieldQuickly("borough", ref _strBorough);
+
 
             objNode.TryGetInt32FieldQuickly("area", ref _intArea);
             objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts);
@@ -1086,6 +1103,24 @@ namespace Chummer.Backend.Equipment
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
+        }
+
+        public string City
+        {
+            get => _strCity;
+            set => _strCity = value;
+        }
+
+        public string District
+        {
+            get => _strDistrict;
+            set => _strDistrict = value;
+        }
+
+        public string Borough
+        {
+            get => _strBorough;
+            set => _strBorough = value;
         }
         #endregion
 
