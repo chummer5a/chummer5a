@@ -167,7 +167,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName).ConfigureAwait(true);
+                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName).ConfigureAwait(false);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -444,7 +444,7 @@ namespace Chummer
         private async void CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
+            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml").ConfigureAwait(false);
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + "]");
 
@@ -473,9 +473,7 @@ namespace Chummer
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
                         Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                        FileName = new StringBuilder(strCritterName)
-                            .Append(strSpace).Append('(').Append(LanguageManager.GetString(_objSpirit.RatingLabel))
-                            .Append(strSpace).Append(_objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo)).Append(").chum5").ToString()
+                        FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
                     })
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
@@ -694,7 +692,7 @@ namespace Chummer
                 imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
                 ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(true);
+                Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(false);
 
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }

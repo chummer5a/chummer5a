@@ -94,6 +94,23 @@ namespace Chummer.Tests
         public FileInfo[] TestFiles { get; set; }
         
 
+
+        // "B" will load before all other unit tests, this one tests basic startup (just starting Chummer without any characters
+        [TestMethod]
+        public void BasicStartup()
+        {
+            Debug.WriteLine("Unit test initialized for: BasicStartup()");
+            frmChummerMain frmOldMainForm = Program.MainForm;
+            Program.MainForm = MainForm; // Set program Main form to Unit test version
+            FormWindowState eOldWindowState = MainForm.WindowState;
+            MainForm.WindowState = FormWindowState.Normal;
+            MainForm.Show(); // Show the main form so that we know the UI can load in properly
+            MainForm.Close();
+            MainForm.WindowState = eOldWindowState;
+            Program.MainForm = frmOldMainForm;
+        }
+
+
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
         public void Load1ThenSave()

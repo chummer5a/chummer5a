@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,6 +40,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
 
@@ -49,7 +51,6 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
-        private frmLoading _frmLoading;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
@@ -214,10 +215,10 @@ namespace Chummer
 
                     Program.MainForm = this;
 
-                    using (_frmLoading = new frmLoading { CharacterFile = Text })
+                    using (frmLoading frmProgressBar = new frmLoading { CharacterFile = Text })
                     {
-                        _frmLoading.Reset((GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length);
-                        _frmLoading.Show();
+                        frmProgressBar.Reset((GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length);
+                        frmProgressBar.Show();
 
 #if DEBUG
                         if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Minor < 215)
@@ -239,23 +240,27 @@ namespace Chummer
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
-                            // Hacky, but necessary because innards of Parallel.ForEach would end up invoking
-                            // a UI function that would wait for Parallel.ForEach to finish, causing the program
-                            // to lock up. Task.Run() delegates Parallel.ForEach to a new thread, preventing this.
-                            await Task.Run(() =>
+                            await Task.WhenAll(s_astrPreloadFileNames.Select(x =>
                             {
-                                Parallel.ForEach(s_astrPreloadFileNames, x =>
-                                {
-                                    XmlManager.Load(x);
-                                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                                        XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
-                                    _frmLoading.PerformStep(Application.ProductName);
-                                });
-                            });
+                                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
+                                    return XmlManager.LoadAsync(x)
+                                        .ContinueWith(y =>
+                                    {
+                                        frmProgressBar.PerformStep(Application.ProductName);
+                                        return y;
+                                    });
+                                return XmlManager.LoadAsync(x)
+                                    .ContinueWith(y => XmlManager.Load(x, null, GlobalOptions.DefaultLanguage))
+                                    .ContinueWith(y =>
+                                    {
+                                        frmProgressBar.PerformStep(Application.ProductName);
+                                        return y;
+                                    });
+                            }));
                             //Timekeeper.Finish("cache_load");
                         }
 
-                        _frmLoading.PerformStep(LanguageManager.GetString("String_UI"));
+                        frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
 
                         _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                         _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
@@ -266,52 +271,45 @@ namespace Chummer
                         bool blnShowTest = false;
                         if (!Utils.IsUnitTest && strArgs.Length > 1)
                         {
-                            object blnShowTestLock = new object();
+                            HashSet<string> setFilesToLoad = new HashSet<string>();
                             try
                             {
-                                // Hacky, but necessary because innards of Parallel.For would end up invoking
-                                // a UI function that would wait for Parallel.For to finish, causing the program
-                                // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                                await Task.Run(() =>
+                                foreach (string strArg in strArgs)
                                 {
-                                    Parallel.For(1, strArgs.Length, i =>
+                                    if (strArg == "/test")
                                     {
-                                        if (strArgs[i] == "/test")
+                                        blnShowTest = true;
+                                    }
+                                    else if ((strArg == "/help")
+                                             || (strArg == "?")
+                                             || (strArg == "/?"))
+                                    {
+                                        string msg = "Commandline parameters are either " + Environment.NewLine;
+                                        msg += "\t/test" + Environment.NewLine;
+                                        msg += "\t/help" + Environment.NewLine;
+                                        msg += "\t(filename to open)" + Environment.NewLine;
+                                        msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
+                                        Console.WriteLine(msg);
+                                    }
+                                    else if (strArg.Contains("/plugin"))
+                                    {
+                                        Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArg);
+                                    }
+                                    else if (!strArg.StartsWith('/'))
+                                    {
+                                        if (!File.Exists(strArg))
                                         {
-                                            lock (blnShowTestLock)
-                                                blnShowTest = true;
+                                            throw new ArgumentException("Chummer started with unknown command line arguments: " +
+                                                                        strArgs.Aggregate((j, k) => j + " " + k));
                                         }
-                                        else if ((strArgs[i] == "/help")
-                                                 || (strArgs[i] == "?")
-                                                 || (strArgs[i] == "/?"))
-                                        {
-                                            string msg = "Commandline parameters are either " + Environment.NewLine;
-                                            msg += "\t/test" + Environment.NewLine;
-                                            msg += "\t/help" + Environment.NewLine;
-                                            msg += "\t(filename to open)" + Environment.NewLine;
-                                            msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
-                                            Console.WriteLine(msg);
-                                        }
-                                        else if (strArgs[i].Contains("/plugin"))
-                                        {
-                                            Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArgs[i]);
-                                        }
-                                        else if (!strArgs[i].StartsWith('/'))
-                                        {
-                                            if (!File.Exists(strArgs[i]))
-                                            {
-                                                throw new ArgumentException(
-                                                    "Chummer started with unknown command line arguments: " +
-                                                    strArgs.Aggregate((j, k) => j + " " + k));
-                                            }
+                                        if (setFilesToLoad.Contains(strArg))
+                                            continue;
+                                        setFilesToLoad.Add(strArg);
+                                    }
+                                }
 
-                                            if (lstCharactersToLoad.Any(x => x.FileName == strArgs[i]))
-                                                return;
-                                            Character objLoopCharacter = LoadCharacter(strArgs[i]).Result;
-                                            lstCharactersToLoad.Add(objLoopCharacter);
-                                        }
-                                    });
-                                });
+                                await Task.WhenAll(setFilesToLoad.Select(x =>
+                                    LoadCharacter(x).ContinueWith(y => lstCharactersToLoad.Add(y.Result))));
                             }
                             catch (Exception ex)
                             {
@@ -325,7 +323,7 @@ namespace Chummer
                             }
                         }
 
-                        _frmLoading.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
+                        frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
 
                         if (MasterIndex != null)
                         {
@@ -334,7 +332,7 @@ namespace Chummer
                             MasterIndex.Show();
                         }
 
-                        _frmLoading.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
+                        frmProgressBar.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
                         
                         if (CharacterRoster != null)
                         {
@@ -345,7 +343,7 @@ namespace Chummer
 
                         if (GlobalOptions.AllowEasterEggs)
                         {
-                            _frmLoading.PerformStep(LanguageManager.GetString("String_Chummy"));
+                            frmProgressBar.PerformStep(LanguageManager.GetString("String_Chummy"));
                             _mascotChummy = new Chummy(null);
                             _mascotChummy.Show(this);
                         }
@@ -878,7 +876,7 @@ namespace Chummer
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
             using (new CursorWait(this))
             {
-                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
+                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(false);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -900,7 +898,7 @@ namespace Chummer
                 return;
             using (new CursorWait(this))
             {
-                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(true);
+                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(false);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -1093,27 +1091,25 @@ namespace Chummer
 
         private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
-            Character[] lstCharacters;
             using (new CursorWait(this))
             {
                 // Open each file that has been dropped into the window.
                 string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
                 if (s.Length == 0)
                     return;
-                lstCharacters = new Character[s.Length];
-                object lstCharactersLock = new object();
-                // Hacky, but necessary because innards of Parallel.For would end up invoking
-                // a UI function that would wait for Parallel.For to finish, causing the program
-                // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                await Task.Run(() =>
+                Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(s.Length);
+                for (int i = 0; i < s.Length; ++i)
                 {
-                    Parallel.For(0, s.Length, i =>
-                    {
-                        Character objLoopCharacter = LoadCharacter(s[i]).Result;
-                        lock (lstCharactersLock)
-                            lstCharacters[i] = objLoopCharacter;
-                    });
-                });
+                    dicIndexedStrings.Add(i, s[i]);
+                }
+                // Array with locker instead of concurrent bag because we want to preserve order
+                Character[] lstCharacters = new Character[s.Length];
+                object lstCharactersLock = new object();
+                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value).ContinueWith(y =>
+                {
+                    lock (lstCharactersLock)
+                        lstCharacters[x.Key] = y.Result;
+                })));
                 Program.MainForm.OpenCharacterList(lstCharacters);
             }
         }
@@ -1256,7 +1252,7 @@ namespace Chummer
             }
 
             if (owner == null)
-                owner = _frmLoading?.IsDisposed == false ? _frmLoading : this as Control;
+                owner = this;
 
             if (owner.InvokeRequired)
             {
@@ -1293,10 +1289,7 @@ namespace Chummer
                 }
             }
 
-            return CenterableMessageBox.Show(_frmLoading?.IsDisposed == false
-                ? _frmLoading
-                : this as IWin32Window,
-                message, caption, buttons, icon, defaultButton);
+            return CenterableMessageBox.Show(this as IWin32Window, message, caption, buttons, icon, defaultButton);
         }
 
         public delegate DialogResult PassStringStringReturnDialogResultDelegate(
@@ -1396,6 +1389,7 @@ namespace Chummer
                 {
                     if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                         return;
+                    // Array with locker instead of concurrent bag because we want to preserve order
                     Character[] lstCharacters = null;
                     //Timekeeper.Start("load_sum");
                     using (new CursorWait(this))
@@ -1412,32 +1406,30 @@ namespace Chummer
 
                         if (lstFilesToOpen.Count > 0)
                         {
-                            using (_frmLoading = new frmLoading
+                            using (frmLoading frmProgressBar = new frmLoading
                             {
                                 CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"),
                                     lstFilesToOpen)
                             })
                             {
-                                _frmLoading.Reset(35 * lstFilesToOpen.Count);
-                                _frmLoading.Show();
+                                frmProgressBar.Reset(lstFilesToOpen.Count);
+                                frmProgressBar.Show();
                                 lstCharacters = new Character[lstFilesToOpen.Count];
                                 object lstCharactersLock = new object();
-                                // Hacky, but necessary because innards of Parallel.For would end up invoking
-                                // a UI function that would wait for Parallel.For to finish, causing the program
-                                // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
-                                await Task.Run(() =>
+                                Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(lstFilesToOpen.Count);
+                                for (int i = 0; i < lstFilesToOpen.Count; ++i)
                                 {
-                                    Parallel.For(0, lstCharacters.Length, i =>
-                                    {
-                                        Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]).Result;
-                                        lock (lstCharactersLock)
-                                            lstCharacters[i] = objLoopCharacter;
-                                    });
-                                });
+                                    dicIndexedStrings.Add(i, lstFilesToOpen[i]);
+                                }
+                                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value, string.Empty, false, true, false).ContinueWith(y =>
+                                {
+                                    lock (lstCharactersLock)
+                                        lstCharacters[x.Key] = y.Result;
+                                    frmProgressBar.PerformStep();
+                                })));
                             }
                         }
                     }
-
                     Program.MainForm.OpenCharacterList(lstCharacters);
                 }
             }
@@ -1502,7 +1494,8 @@ namespace Chummer
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
-        public async Task<Character> LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true)
+        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
+        public async Task<Character> LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
         {
             if (string.IsNullOrEmpty(strFileName))
                 return null;
@@ -1563,15 +1556,15 @@ namespace Chummer
                         objCharacter.FileName = strFileName;
                     }
                 }
-                if (blnShowErrors && _frmLoading?.IsDisposed != false)
+                if (blnShowProgressBar)
                 {
-                    using (_frmLoading = new frmLoading { CharacterFile = objCharacter.FileName })
+                    using (frmLoading frmProgressBar = new frmLoading { CharacterFile = objCharacter.FileName })
                     {
-                        _frmLoading.Reset(35);
-                        _frmLoading.Show();
+                        frmProgressBar.Reset(35);
+                        frmProgressBar.Show();
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
-                        bool blnLoaded = await objCharacter.Load(_frmLoading).ConfigureAwait(true);
+                        bool blnLoaded = await objCharacter.Load(frmProgressBar, blnShowErrors).ConfigureAwait(false);
                         //Timekeeper.Finish("load_file");
                         if (!blnLoaded)
                         {
@@ -1584,7 +1577,7 @@ namespace Chummer
                 {
                     OpenCharacters.Add(objCharacter);
                     //Timekeeper.Start("load_file");
-                    bool blnLoaded = await objCharacter.Load(blnShowErrors && _frmLoading?.IsDisposed == false ? _frmLoading : null).ConfigureAwait(true);
+                    bool blnLoaded = await objCharacter.Load(null, blnShowErrors).ConfigureAwait(false);
                     //Timekeeper.Finish("load_file");
                     if (!blnLoaded)
                     {

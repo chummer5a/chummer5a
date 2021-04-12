@@ -438,20 +438,15 @@ namespace Chummer.Backend.Skills
                 }
 
                 HashSet<string> hashSkillGuids = new HashSet<string>();
-                XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
-                XmlNodeList xmlSkillList = skillsDoc.SelectNodes(
+                foreach (XPathNavigator node in _objCharacter.LoadDataXPath("skills.xml").Select(
                     string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
-                        _objCharacter.Options.BookXPath(), SkillFilter(FilterOption.NonSpecial)));
-                if (xmlSkillList != null)
+                        _objCharacter.Options.BookXPath(), SkillFilter(FilterOption.NonSpecial))))
                 {
-                    foreach (XmlNode node in xmlSkillList)
-                    {
-                        string strName = node["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
-                            hashSkillGuids.Add(strName);
-                    }
+                    string strName = node.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        hashSkillGuids.Add(strName);
                 }
-
+                XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
                 foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                 {
                     XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');

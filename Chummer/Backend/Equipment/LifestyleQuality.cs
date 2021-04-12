@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -338,19 +339,15 @@ namespace Chummer.Backend.Equipment
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
             if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
                 return;
-            var objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
-            var objLifestyleQualityNode = GetNode()
-                                          ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
+            XPathNavigator objLifestyleQualityNode = GetNode()?.CreateNavigator()
+                                                     ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
             if (objLifestyleQualityNode == null)
             {
                 List<ListItem> lstQualities = new List<ListItem>(1);
-                using (var xmlQualityList = objXmlDocument.SelectNodes("/chummer/qualities/quality"))
-                {
-                    if (xmlQualityList != null)
-                        foreach (XmlNode xmlNode in xmlQualityList)
-                            lstQualities.Add(new ListItem(xmlNode["id"]?.InnerText,
-                                xmlNode["translate"]?.InnerText ?? xmlNode["name"]?.InnerText));
-                }
+                foreach (XPathNavigator xmlNode in objXmlDocument.Select("/chummer/qualities/quality"))
+                    lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
+                        xmlNode.SelectSingleNode("translate")?.Value ?? xmlNode.SelectSingleNode("name")?.Value));
 
                 using (frmSelectItem frmSelect = new frmSelectItem
                 {
@@ -415,9 +412,9 @@ namespace Chummer.Backend.Equipment
             var strLifestyleQualityType = Type.ToString();
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                XmlNode objNode = _objCharacter.LoadData("lifestyles.xml", strLanguageToPrint)
+                XPathNavigator objNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguageToPrint)
                     .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + "]");
-                strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
+                strLifestyleQualityType = objNode?.SelectSingleNode("@translate")?.Value ?? strLifestyleQualityType;
             }
 
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);

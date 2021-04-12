@@ -39,6 +39,10 @@
       <text>Chummer5 is currently not being run with permissions to modify registry values. Please make sure Chummer5 is being run by a user with appropriate access</text>
     </string>
     <string>
+      <key>Message_Load_Error_Warning</key>
+      <text>Chummer5 encountered an error while loading the character.</text>
+    </string>
+    <string>
       <key>Message_Save_Error_Warning</key>
       <text>Chummer5 encountered an error while saving the character.</text>
     </string>
