@@ -4884,6 +4884,18 @@
       <key>String_Roommates</key>
       <text>roommates</text>
     </string>
+    <string>
+      <key>Label_LifestyleCity</key>
+      <text>City:</text>
+    </string>
+    <string>
+      <key>Label_LifestyleDistrict</key>
+      <text>District:</text>
+    </string>
+    <string>
+      <key>Label_LifestyleBorough</key>
+      <text>Borough:</text>
+    </string>
     <!-- End Region-->
     <!-- Region Street Gear/Armor Tab -->
     <string>

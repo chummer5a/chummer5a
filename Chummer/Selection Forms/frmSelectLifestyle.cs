@@ -148,6 +148,7 @@ namespace Chummer
                 txtLifestyleName.Text = _objSourceLifestyle.Name;
                 nudRoommates.Value = _objSourceLifestyle.Roommates;
                 nudPercentage.Value = _objSourceLifestyle.Percentage;
+
                 foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
                 {
                     TreeNode objNode = treQualities.FindNode(objQuality.SourceIDString);
@@ -282,6 +283,25 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
+            string strSelectedCity = "";
+            string strSelectedDistrict = "";
+            string strSelectedBorough = "";
+
+            if (!string.IsNullOrEmpty(cboCity.Text))
+            {
+                strSelectedCity = cboCity.Text;
+            }
+            if (!string.IsNullOrEmpty(cboDistrict.Text))
+            {
+                strSelectedDistrict = cboDistrict.Text;
+            }
+            if (!string.IsNullOrEmpty(cboBorough.Text))
+            {
+                strSelectedBorough = cboBorough.Text;
+            }
+  
+
+
             string strSelectedId = cboLifestyle.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -301,6 +321,9 @@ namespace Chummer
                 _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
+                _objLifestyle.City = strSelectedCity;
+                _objLifestyle.District = strSelectedDistrict;
+                _objLifestyle.Borough = strSelectedBorough;
 
                 if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
                 {
@@ -466,12 +489,12 @@ namespace Chummer
             cboDistrict.Items.Clear();
 
             cboDistrict.BeginUpdate();
-            string strSelectedCity = (string)cboCity.SelectedValue;
+            string strSelectedCityRefresh = (string)cboCity.SelectedValue;
 
             List<ListItem> lstDistrict = new List<ListItem>();
 
 
-            using (XmlNodeList xmlDistrictList = _objXmlDocument.SelectNodes("/chummer/cities/city[name=\"" + strSelectedCity + "\"]/district"))
+            using (XmlNodeList xmlDistrictList = _objXmlDocument.SelectNodes("/chummer/cities/city[name=\"" + strSelectedCityRefresh + "\"]/district"))
                 if (xmlDistrictList?.Count > 0)
                 {
                     foreach (XmlNode objXmlDistrict in xmlDistrictList)
@@ -497,11 +520,11 @@ namespace Chummer
 
             
             cboBorough.BeginUpdate();
-            string strSelectedDistrict = (string)cboDistrict.SelectedValue;
+            string strSelectedDistrictRefresh = (string)cboDistrict.SelectedValue;
 
             List<ListItem> lstBorough = new List<ListItem>();
 
-            using (XmlNodeList xmlBoroughList = _objXmlDocument.SelectNodes("/chummer/cities/city/district[name=\"" + strSelectedDistrict + "\"]/borough"))
+            using (XmlNodeList xmlBoroughList = _objXmlDocument.SelectNodes("/chummer/cities/city/district[name=\"" + strSelectedDistrictRefresh + "\"]/borough"))
                 if (xmlBoroughList?.Count > 0)
                     foreach (XmlNode objXmlDistrict in xmlBoroughList)
                     {
