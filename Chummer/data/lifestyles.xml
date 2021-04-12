@@ -1526,6 +1526,16 @@
     <!-- End Region -->
   </qualities>
   <cities>
+    <!--One empty City at the start to make the default selection empty-->
+    <city>
+      <name> </name>
+      <district>
+        <name> </name>
+        <borough>
+          <name> </name>
+        </borough>
+      </district>
+    </city>
     <city>
       <name>Seattle</name>
       <district>
@@ -1538,19 +1548,369 @@
           <name>Bolse</name>
           <secRating>D</secRating>
         </borough>
+        <borough>
+          <name>Algona</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Berrydale</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Pacifica</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Covington</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Georgetown</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Maple Valley</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Sumner</name>
+          <secRating>B/C</secRating>
+        </borough>
+        <borough>
+          <name>Timberlane</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Auburn</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Lake Wilderness</name>
+          <secRating>AA</secRating>
+        </borough>
+      </district>
+
+      <district>
+        <name>Bellevue</name>
+        <borough>
+          <name>Beaux Arts</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Hunt Point</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Rosemont Beach</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Inglewood</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Juanita</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Medina</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Regency Park</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Yarrow Point</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Bellevue</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Cyde Hill</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Kirkland</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Newport</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Bothell</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Coalfield</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>East Gate</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>May Creek</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Newcastle</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Redmond</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      
+      <district>
+        <name>Downtown</name>
+        <borough>
+          <name>Matthews Beach</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Iverness</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>North Beach</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Richmond Highlands</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Aurora Village</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Central</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Columbia</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Tukwila</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Everett</name>
+        <borough>
+          <name>Maedowdale</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Edmonds</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Darlington</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Lynnwood</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Fairmount</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Pinehurst</name>
+          <secRating>D</secRating>
+        </borough>
+      </district>
+      
+      <district>
+        <name>Fort Lewis</name>
+        <borough>
+          <name>Parkland (non military housing)</name>
+          <secRating>A</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Puyallup</name>
+        <borough>
+          <name>Puyallup City</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Graham Cracker City</name>
+          <secRating>E</secRating>
+        </borough>
+        <borough>
+          <name>Hell's Kitchen</name>
+          <secRating>Z</secRating>
+        </borough>
+        <borough>
+          <name>The Neon Killing</name>
+          <secRating>Z</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Redmond</name>
+        <borough>
+          <name>Touristville</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Barrens</name>
+          <secRating>Z</secRating>
+        </borough>
+        <borough>
+          <name>Plastic Jungle</name>
+          <secRating>E</secRating>
+        </borough>
+        <borough>
+          <name>GLow City</name>
+          <secRating>Z</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Renton</name>
+        <borough>
+          <name>Lake Young</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Four Lakes</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Renton</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Issaquath</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Cristopher</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Snohomish</name>
+        <borough>
+          <name>Bothell</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Mountain Terrace</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Snohomish</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Tuner Corner</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Cathcart</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Tacoma</name>
+        <borough>
+          <name>Rustin</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Dupont</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Fircrest</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Kent</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Fife</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Ork Underground</name>
+      </district>
+      <district>
+        <name>Council Island (Unofficial)</name>
+      </district>
+      <district>
+        <name>Outremer (Unofficial)</name>
       </district>
     </city>
     <city>
       <name>Pretoria-Witwatersrand-Vaal</name>
       <district>
         <name>West End</name>
+      </district>
+      <district>
+        <name>Pretoria</name>
+      </district>
+      <district>
+        <name>Johannesburg</name>
+      </district>
+      <district>
+        <name>Ekurhuleni</name>
+      </district>
+      <district>
+        <name>Tshwane</name>
+      </district>
+      <district>
+        <name>Kungwini</name>
+      </district>
+      <district>
+        <name>Lesedi</name>
+      </district>
+      <district>
+        <name>Midvaal</name>
+      </district>
+      <district>
+        <name>Emfuleni</name>
+      </district>
+      <district>
+        <name>Westonaria</name>
+      </district>
+      <district>
+        <name>Randfontein</name>
+      </district>
+      <district>
+        <name>Mogale</name>
+      </district>
+    </city>
+    <city>
+      <name>Denver</name>
+      <district>
+        <name>Pueblo Sector</name>
+      </district>
+      <district>
+        <name>Sioux Sector</name>
+      </district>
+      <district>
+        <name>UCAS Sector</name>
         <borough>
-          <name>Test</name>
-          <secRating>C</secRating>
+          <name>Aurora</name>
         </borough>
       </district>
       <district>
-        <name>Not West End</name>
+        <name>Aztlan Sector</name>
+      </district>
+      <district>
+        <name>CAS Sector</name>
       </district>
     </city>
   </cities>
