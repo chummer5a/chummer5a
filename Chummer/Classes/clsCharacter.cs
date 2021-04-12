@@ -18821,13 +18821,13 @@ namespace Chummer
         [IgnoreDataMember]
         public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown;
 
-        public async void OnDefaultDoubleClick(object sender, EventArgs e)
+        public void OnDefaultDoubleClick(object sender, EventArgs e)
         {
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == FileName);
 
             if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
             {
-                objOpenCharacter = await Program.MainForm.LoadCharacter(FilePath).ConfigureAwait(false);
+                objOpenCharacter = Program.MainForm.LoadCharacter(FilePath).Result;
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }

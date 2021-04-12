@@ -29,7 +29,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using Chummer.Plugins;
@@ -619,13 +618,10 @@ namespace Chummer
             if(objSelectedNode != null && objSelectedNode.Level > 0)
             {
                 if (objSelectedNode.Tag == null) return;
-                if(objSelectedNode.Tag is CharacterCache objCache)
+                if (objSelectedNode.Tag is CharacterCache objCache)
                 {
                     using (new CursorWait(this))
-                    {
                         objCache.OnMyDoubleClick(sender, e);
-                        objSelectedNode.Text = objCache.CalculatedName();
-                    }
                 }
             }
         }
