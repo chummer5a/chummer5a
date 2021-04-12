@@ -24,7 +24,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -95,9 +94,9 @@ namespace Chummer
                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
-                    Task.WhenAll(_lstFileNames.Select<string, Task>(strFileName => LoadFile(strFileName)));
+                    Task.WhenAll(_lstFileNames.Select(LoadFile));
 
-                    async void LoadFile(string strFileName)
+                    async Task LoadFile(string strFileName)
                     {
                         XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName);
                         xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
