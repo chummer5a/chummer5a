@@ -201,73 +201,80 @@ namespace Chummer
 
                 objWriter.WriteEndElement();
 
-                //Dump skills, (optional)powers if present to output
-
-                XPathNavigator xmlSpiritPowersBaseChummerNode = XmlManager.Load("spiritpowers.xml", strLanguageToPrint).GetFastNavigator().SelectSingleNode("/chummer");
-                XPathNavigator xmlCritterPowersBaseChummerNode = XmlManager.Load("critterpowers.xml", strLanguageToPrint).GetFastNavigator().SelectSingleNode("/chummer");
-                XmlNode xmlPowersNode = objXmlCritterNode["powers"];
-                if (xmlPowersNode != null)
+                
+                if (_objLinkedCharacter != null)
                 {
-                    objWriter.WriteStartElement("powers");
-                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
-                    {
-                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
-                    }
-                    objWriter.WriteEndElement();
-                }
-                xmlPowersNode = objXmlCritterNode["optionalpowers"];
-                if (xmlPowersNode != null)
-                {
-                    objWriter.WriteStartElement("optionalpowers");
-                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
-                    {
-                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
-                    }
-                    objWriter.WriteEndElement();
-                }
+                    //Dump skills, (optional)powers if present to output
 
-                xmlPowersNode = objXmlCritterNode["skills"];
-                if (xmlPowersNode != null)
-                {
-                    XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml", strLanguageToPrint);
-                    objWriter.WriteStartElement("skills");
-                    foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
-                    {
-                        string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value ?? string.Empty;
-                        if (!dicAttributes.TryGetValue(strAttrName, out int intAttrValue))
-                            intAttrValue = _intForce;
-                        int intDicepool = intAttrValue + _intForce;
+                    XPathNavigator xmlSpiritPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
+                    XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
 
-                        string strEnglishName = xmlSkillNode.InnerText;
-                        string strTranslatedName = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strEnglishName + "\"]/translate")?.InnerText ??
-                                                   xmlSkillsDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + strEnglishName + "\"]/translate")?.InnerText ?? strEnglishName;
-                        objWriter.WriteStartElement("skill");
-                        objWriter.WriteElementString("name", strTranslatedName);
-                        objWriter.WriteElementString("name_english", strEnglishName);
-                        objWriter.WriteElementString("attr", strAttrName);
-                        objWriter.WriteElementString("pool", intDicepool.ToString(objCulture));
+
+
+                    XmlNode xmlPowersNode = objXmlCritterNode["powers"];
+                    if (xmlPowersNode != null)
+                    {
+                        objWriter.WriteStartElement("powers");
+                        foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                        {
+                            PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                        }
                         objWriter.WriteEndElement();
                     }
-                    objWriter.WriteEndElement();
-                }
 
-                xmlPowersNode = objXmlCritterNode["weaknesses"];
-                if (xmlPowersNode != null)
-                {
-                    objWriter.WriteStartElement("weaknesses");
-                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                    xmlPowersNode = objXmlCritterNode["optionalpowers"];
+                    if (xmlPowersNode != null)
                     {
-                        PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                        objWriter.WriteStartElement("optionalpowers");
+                        foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                        {
+                            PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                        }
+                        objWriter.WriteEndElement();
                     }
-                    objWriter.WriteEndElement();
-                }
 
+                    xmlPowersNode = objXmlCritterNode["skills"];
+                    if (xmlPowersNode != null)
+                    {
+                        XPathNavigator xmlSkillsDocument = CharacterObject.LoadDataXPath("skills.xml", strLanguageToPrint);
+                        objWriter.WriteStartElement("skills");
+                        foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
+                        {
+                            string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value ?? string.Empty;
+                            if (!dicAttributes.TryGetValue(strAttrName, out int intAttrValue))
+                                intAttrValue = _intForce;
+                            int intDicepool = intAttrValue + _intForce;
+
+                            string strEnglishName = xmlSkillNode.InnerText;
+                            string strTranslatedName = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ??
+                                                       xmlSkillsDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ?? strEnglishName;
+                            objWriter.WriteStartElement("skill");
+                            objWriter.WriteElementString("name", strTranslatedName);
+                            objWriter.WriteElementString("name_english", strEnglishName);
+                            objWriter.WriteElementString("attr", strAttrName);
+                            objWriter.WriteElementString("pool", intDicepool.ToString(objCulture));
+                            objWriter.WriteEndElement();
+                        }
+                        objWriter.WriteEndElement();
+                    }
+
+                    xmlPowersNode = objXmlCritterNode["weaknesses"];
+                    if (xmlPowersNode != null)
+                    {
+                        objWriter.WriteStartElement("weaknesses");
+                        foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                        {
+                            PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                        }
+                        objWriter.WriteEndElement();
+                    }
+                }
                 //Page in book for reference
                 string strSource = string.Empty;
                 string strPage = string.Empty;
 
                 if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
-                    objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(strSource, strLanguageToPrint));
+                    objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
                 if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
                     objWriter.WriteElementString("page", strPage);
             }
@@ -281,12 +288,12 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        private static void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
+        private void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
         {
             StringBuilder strExtra = new StringBuilder();
             string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
             if (!string.IsNullOrEmpty(strSelect))
-                strExtra.Append(LanguageManager.TranslateExtra(strSelect, strLanguageToPrint));
+                strExtra.Append(CharacterObject.TranslateExtra(strSelect, strLanguageToPrint));
             string strSource = string.Empty;
             string strPage = string.Empty;
             string strPowerName = xmlPowerEntryNode.InnerText;
@@ -297,10 +304,10 @@ namespace Chummer
             string strDisplayAction = string.Empty;
             string strDisplayRange = string.Empty;
             string strDisplayDuration = string.Empty;
-            XPathNavigator objXmlPowerNode = xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[name = \"" + strPowerName + "\"]") ??
-                                             xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(\"" + strPowerName + "\", name)]") ??
-                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[name = \"" + strPowerName + "\"]") ??
-                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(\"" + strPowerName + "\", name)]");
+            XPathNavigator objXmlPowerNode = xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[name = " + strPowerName.CleanXPath() + "]") ??
+                                             xmlSpiritPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]") ??
+                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[name = " + strPowerName.CleanXPath() + "]") ??
+                                             xmlCritterPowersBaseChummerNode.SelectSingleNode("powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]");
             if (objXmlPowerNode != null)
             {
                 objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
@@ -312,7 +319,7 @@ namespace Chummer
                 foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     blnExtrasAdded = true;
-                    strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(", ");
+                    strExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(", ");
                 }
                 if (blnExtrasAdded)
                     strExtra.Length -= 2;
@@ -322,7 +329,7 @@ namespace Chummer
 
                 objXmlPowerNode.TryGetStringFieldQuickly("category", ref strEnglishCategory);
 
-                strCategory = xmlSpiritPowersBaseChummerNode.SelectSingleNode("categories/category[. = \"" + strEnglishCategory + "\"]/@translate")?.Value ?? strEnglishCategory;
+                strCategory = xmlSpiritPowersBaseChummerNode.SelectSingleNode("categories/category[. = " + strEnglishCategory.CleanXPath() + "]/@translate")?.Value ?? strEnglishCategory;
 
                 switch (objXmlPowerNode.SelectSingleNode("type")?.Value)
                 {
@@ -394,7 +401,7 @@ namespace Chummer
             objWriter.WriteElementString("action", strDisplayAction);
             objWriter.WriteElementString("range", strDisplayRange);
             objWriter.WriteElementString("duration", strDisplayDuration);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(strSource, strLanguageToPrint));
+            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
             objWriter.WriteElementString("page", strPage);
             objWriter.WriteEndElement();
         }
@@ -640,7 +647,7 @@ namespace Chummer
                     {
                         // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
                         int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
-                        if (!CharacterObject.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , Name
                             , fetteringCost.ToString(GlobalOptions.CultureInfo))))
                         {
@@ -757,8 +764,9 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage)
-                    .SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = CharacterObject
+                    .LoadData(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage)
+                    .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + "]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -798,7 +806,7 @@ namespace Chummer
                 if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
                     Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? (await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false).ConfigureAwait(true));
+                    _objLinkedCharacter = objOpenCharacter ?? (await Program.MainForm.LoadCharacter(strFile, string.Empty, false, false).ConfigureAwait(false));
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }

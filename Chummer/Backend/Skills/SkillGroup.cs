@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using Chummer.Annotations;
 using System.Globalization;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Skills
 {
@@ -141,7 +142,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedBaseUnbroken < 0)
                 {
-                    if (IsDisabled || SkillList.Count == 0 || !_objCharacter.BuildMethodHasSkillPoints)
+                    if (IsDisabled || SkillList.Count == 0 || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                         _intCachedBaseUnbroken = 0;
                     else if (_objCharacter.Options.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
                         _intCachedBaseUnbroken =
@@ -423,14 +424,14 @@ namespace Chummer.Backend.Skills
             xmlNode.TryGetInt32FieldQuickly("base", ref _intSkillFromSp);
         }
 
-        public void LoadFromHeroLab(XmlNode xmlNode)
+        public void LoadFromHeroLab(XPathNavigator xmlNode)
         {
             if (xmlNode == null)
                 return;
-            string strTemp = xmlNode.SelectSingleNode("@name")?.InnerText;
+            string strTemp = xmlNode.SelectSingleNode("@name")?.Value;
             if (!string.IsNullOrEmpty(strTemp))
                 _strGroupName = strTemp.TrimEndOnce("Group").Trim();
-            strTemp = xmlNode.SelectSingleNode("@base")?.InnerText;
+            strTemp = xmlNode.SelectSingleNode("@base")?.Value;
             if (!string.IsNullOrEmpty(strTemp) && int.TryParse(strTemp, out int intTemp))
                 _intSkillFromKarma = intTemp;
         }
@@ -540,13 +541,19 @@ namespace Chummer.Backend.Skills
             _objCharacter = objCharacter;
             _strGroupName = strGroupName;
             if (_objCharacter != null)
-                _objCharacter.PropertyChanged += Character_PropertyChanged;
+            {
+                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged += OnCharacterOptionsPropertyChanged;
+            }
         }
 
         public void UnbindSkillGroup()
         {
             if (_objCharacter != null)
-                _objCharacter.PropertyChanged -= Character_PropertyChanged;
+            {
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged -= OnCharacterOptionsPropertyChanged;
+            }
             foreach (Skill objSkill in _lstAffectedSkills)
                 objSkill.PropertyChanged -= SkillOnPropertyChanged;
         }
@@ -572,7 +579,7 @@ namespace Chummer.Backend.Skills
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
-            return XmlManager.Load("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]/@translate")?.InnerText ?? Name;
+            return _objCharacter.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value ?? Name;
         }
 
         public string DisplayRating
@@ -704,12 +711,32 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.Karma))
-                OnPropertyChanged(nameof(CareerCanIncrease));
-            else if (e.PropertyName == nameof(Character.BuildMethodHasSkillPoints))
-                OnPropertyChanged(nameof(BaseUnbroken));
+            switch (e.PropertyName)
+            {
+                case nameof(Character.Karma):
+                    OnPropertyChanged(nameof(CareerCanIncrease));
+                    break;
+                case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
+                    OnPropertyChanged(nameof(BaseUnbroken));
+                    break;
+            }
+        }
+
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.StrictSkillGroupsInCreateMode):
+                case nameof(CharacterOptions.UsePointsOnBrokenGroups):
+                    OnPropertyChanged(nameof(BaseUnbroken));
+                    break;
+                case nameof(CharacterOptions.KarmaNewSkillGroup):
+                case nameof(CharacterOptions.KarmaImproveSkillGroup):
+                    OnPropertyChanged(nameof(CurrentKarmaCost));
+                    break;
+            }
         }
 
         public int CurrentSpCost

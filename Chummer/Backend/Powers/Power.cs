@@ -74,6 +74,7 @@ namespace Chummer
             if (CharacterObject != null)
             {
                 CharacterObject.PropertyChanged += OnCharacterChanged;
+                CharacterObject.Options.PropertyChanged += OnCharacterOptionsChanged;
                 if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                 {
                     MAGAttributeObject = CharacterObject.MAGAdept;
@@ -87,7 +88,11 @@ namespace Chummer
 
         public void UnbindPower()
         {
-            CharacterObject.PropertyChanged -= OnCharacterChanged;
+            if (CharacterObject != null)
+            {
+                CharacterObject.PropertyChanged -= OnCharacterChanged;
+                CharacterObject.Options.PropertyChanged -= OnCharacterOptionsChanged;
+            }
             MAGAttributeObject = null;
             BoostedSkill = null;
         }
@@ -212,7 +217,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, CharacterObject);
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -234,8 +239,7 @@ namespace Chummer
                     int intPos = strPowerName.IndexOf('(');
                     if (intPos != -1)
                         strPowerName = strPowerName.Substring(0, intPos - 1);
-                    XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                    XmlNode xmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
+                    XPathNavigator xmlPower = CharacterObject.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name, " + strPowerName.CleanXPath() + ")]");
                     if (xmlPower.TryGetField("id", Guid.TryParse, out _guiSourceID))
                     {
                         _objCachedMyXmlNode = null;
@@ -253,7 +257,8 @@ namespace Chummer
                 int intPos = strPowerName.IndexOf('(');
                 if (intPos != -1)
                     strPowerName = strPowerName.Substring(0, intPos - 1);
-                _strAdeptWayDiscount = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
+                _strAdeptWayDiscount = CharacterObject.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name, " + strPowerName.CleanXPath() + ")]/adeptway")?.Value
+                                       ?? string.Empty;
             }
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
@@ -276,7 +281,7 @@ namespace Chummer
             }
             if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
             {
-                XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
+                XmlNode objXmlPower = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                 if (objXmlPower != null)
                 {
                     if (int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
@@ -329,13 +334,13 @@ namespace Chummer
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", CharacterObject.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
             objWriter.WriteElementString("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
             objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
             objWriter.WriteElementString("action", DisplayActionMethod(strLanguageToPrint));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -486,7 +491,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + CharacterObject.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;
@@ -878,7 +883,7 @@ namespace Chummer
                 if (BoostedSkill != null)
                 {
                     // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                    intReturn = Math.Min(intReturn, ( + (BoostedSkill.LearnedRating + 1)) / 2);
+                    intReturn = Math.Min(intReturn, (BoostedSkill.LearnedRating + 1) / 2);
                     if (CharacterObject.Options.IncreasedImprovedAbilityMultiplier)
                     {
                         intReturn += BoostedSkill.LearnedRating;
@@ -1048,17 +1053,33 @@ namespace Chummer
             }
         }
 
-        private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (propertyChangedEventArgs.PropertyName == nameof(Character.IsMysticAdept))
+            if (e.PropertyName == nameof(Character.IsMysticAdept))
             {
-                if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                    ? CharacterObject.MAGAdept
+                    : CharacterObject.MAG;
+            }
+        }
+
+        private void OnCharacterOptionsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(CharacterOptions.MysAdeptSecondMAGAttribute):
                 {
-                    MAGAttributeObject = CharacterObject.MAGAdept;
+                    MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                        ? CharacterObject.MAGAdept
+                        : CharacterObject.MAG;
+                    break;
                 }
-                else
+                case nameof(CharacterOptions.IncreasedImprovedAbilityMultiplier):
                 {
-                    MAGAttributeObject = CharacterObject.MAG;
+                    MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                        ? CharacterObject.MAGAdept
+                        : CharacterObject.MAG;
+                    break;
                 }
             }
         }
@@ -1075,12 +1096,12 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("powers.xml", strLanguage)
+                _objCachedMyXmlNode = CharacterObject.LoadData("powers.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/powers/power[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/powers/power[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/powers/power[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

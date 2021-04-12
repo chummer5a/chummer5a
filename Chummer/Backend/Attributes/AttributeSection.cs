@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -412,7 +413,7 @@ namespace Chummer.Backend.Attributes
             XPathNavigator xmlCharNodeAnimalForm = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created ? _objCharacter.GetNode(true) : null;
             foreach (string strAttribute in AttributeStrings)
             {
-                XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + strAttribute + "\"]");
+                XmlNodeList lstAttributeNodes = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = " + strAttribute.CleanXPath() + "]");
                 // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
                 if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null && _objCharacter.LastSavedVersion < new Version(5, 200, 25))
                 {
@@ -470,7 +471,7 @@ namespace Chummer.Backend.Attributes
             //Timekeeper.Finish("load_char_attrib");
         }
 
-        public void LoadFromHeroLab(XmlNode xmlStatBlockBaseNode, CustomActivity parentActivity)
+        public void LoadFromHeroLab(XPathNavigator xmlStatBlockBaseNode, CustomActivity parentActivity)
         {
             if (xmlStatBlockBaseNode == null)
                 return;
@@ -528,12 +529,12 @@ namespace Chummer.Backend.Attributes
                     if (strAttribute == "ESS"
                     ) // Not Essence though, this will get modified automatically instead of having its value set to the one HeroLab displays
                         continue;
-                    XmlNode xmlHeroLabAttributeNode =
+                    XPathNavigator xmlHeroLabAttributeNode =
                         xmlStatBlockBaseNode.SelectSingleNode(
-                            "attributes/attribute[@name = \"" + GetAttributeEnglishName(strAttribute) + "\"]");
-                    XmlNode xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
+                            "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath() + "]");
+                    XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
                     if (xmlAttributeBaseNode != null &&
-                        int.TryParse(xmlAttributeBaseNode.InnerText, out int intHeroLabAttributeBaseValue))
+                        int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
                     {
                         int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
                         if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
@@ -542,7 +543,7 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                if (!_objCharacter.Created && _objCharacter.BuildMethodHasSkillPoints)
+                if (!_objCharacter.Created && _objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
                     // Allocate Attribute Points
                     int intAttributePointCount = _objCharacter.TotalAttributes;
@@ -737,7 +738,7 @@ namespace Chummer.Backend.Attributes
                 }
                 else
                 {
-                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = \"" + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+                    xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = " + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
                     objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
                 }
             }
@@ -792,6 +793,47 @@ namespace Chummer.Backend.Attributes
 
             objTarget.Base = objSource.Base;
             objTarget.Karma = objSource.Karma;
+        }
+
+        public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            string strReturn = strInput;
+            foreach (string strCharAttributeName in AttributeStrings)
+            {
+                strReturn = strReturn
+                    .CheapReplace('{' + strCharAttributeName + '}', () => (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                            ? dicValueOverrides[strCharAttributeName]
+                            : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalOptions.InvariantCultureInfo))
+                    .CheapReplace('{' + strCharAttributeName + "Unaug}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
+                        ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                        : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalOptions.InvariantCultureInfo))
+                    .CheapReplace('{' + strCharAttributeName + "Base}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                        ? dicValueOverrides[strCharAttributeName + "Base"]
+                        : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalOptions.InvariantCultureInfo));
+            }
+            return strReturn;
+        }
+
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            foreach (string strCharAttributeName in AttributeStrings)
+            {
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () => (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                    ? dicValueOverrides[strCharAttributeName]
+                    : _objCharacter.GetAttribute(strCharAttributeName).TotalValue).ToString(GlobalOptions.InvariantCultureInfo));
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
+                    ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                    : _objCharacter.GetAttribute(strCharAttributeName).Value).ToString(GlobalOptions.InvariantCultureInfo));
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () => (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                    ? dicValueOverrides[strCharAttributeName + "Base"]
+                    : _objCharacter.GetAttribute(strCharAttributeName).TotalBase).ToString(GlobalOptions.InvariantCultureInfo));
+            }
         }
 
         internal void Reset()

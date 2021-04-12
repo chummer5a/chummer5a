@@ -68,7 +68,7 @@ namespace Chummer
 
         private void frmExport_Load(object sender, EventArgs e)
         {
-            cboLanguage = frmViewer.PopulateLanguageList(cboLanguage, GlobalOptions.DefaultCharacterSheet);
+            LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalOptions.DefaultCharacterSheet, _objCharacter.Yield());
             cboXSLT.BeginUpdate();
             cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
@@ -196,10 +196,7 @@ namespace Chummer
         #region Methods
         private void GenerateCharacterXml(object sender, DoWorkEventArgs e)
         {
-            XmlDocument objCharacterXml = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
             // Write the Character information to a MemoryStream so we don't need to create any files.
             MemoryStream objStream = new MemoryStream();
             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))

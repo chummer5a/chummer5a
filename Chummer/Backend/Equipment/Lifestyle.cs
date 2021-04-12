@@ -28,6 +28,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Annotations;
 using NLog;
 
@@ -89,10 +90,6 @@ namespace Chummer.Backend.Equipment
         private string _strNotes = string.Empty;
         private int _intSortOrder;
         private readonly Character _objCharacter;
-
-        private string _strCity;
-        private string _strDistrict;
-        private string _strBorough;
 
         #region Helper Methods
         /// <summary>
@@ -171,21 +168,21 @@ namespace Chummer.Backend.Equipment
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
-            XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
-            XmlNode xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + _strBaseLifestyle + "\"]");
+            XPathNavigator xmlLifestyleXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
+            XPathNavigator xmlLifestyleNode =
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
             // Area.
             xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + _strBaseLifestyle + "\"]");
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
             // Security.
             xmlLifestyleNode =
-                xmlLifestyleDocument.SelectSingleNode("/chummer/securities/security[name = \"" + _strBaseLifestyle + "\"]");
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             if (_objCharacter.Options.BookEnabled("HT") || _objCharacter.Options.AllowFreeGrids)
@@ -201,11 +198,12 @@ namespace Chummer.Backend.Equipment
                     }
 
                     FreeGrids.Clear();
+                    XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {
-                        XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + xmlNode.InnerText + "\"]");
+                        XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = " + xmlNode.InnerText.CleanXPath() + "]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        string strPush = xmlNode.Attributes?["select"]?.InnerText;
+                        string strPush = xmlNode.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrWhiteSpace(strPush))
                         {
                             _objCharacter.Pushtext.Push(strPush);
@@ -220,7 +218,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -263,9 +261,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("type", _eType.ToString());
             objWriter.WriteElementString("increment", _eIncrement.ToString());
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("city", _strCity);
-            objWriter.WriteElementString("district", _strDistrict);
-            objWriter.WriteElementString("borough", _strBorough);
             objWriter.WriteStartElement("lifestylequalities");
             foreach (LifestyleQuality objQuality in LifestyleQualities)
             {
@@ -329,12 +324,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-            objNode.TryGetStringFieldQuickly("city", ref _strCity);
-            objNode.TryGetStringFieldQuickly("district", ref _strDistrict);
-            objNode.TryGetStringFieldQuickly("borough", ref _strBorough);
-            XmlDocument xmlLifestyles = XmlManager.Load("lifestyles.xml");
-            if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =\"" + _strBaseLifestyle + "\"]") == null
-                && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =\"" + _strName + "\"]") != null)
+            XPathNavigator xmlLifestyles = _objCharacter.LoadDataXPath("lifestyles.xml");
+            if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]") == null
+                && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + "]") != null)
             {
                 string baselifestyle = _strName;
                 _strName = _strBaseLifestyle;
@@ -346,16 +338,10 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
                     List<ListItem> lstQualities = new List<ListItem>(1);
-                    using (XmlNodeList xmlLifestyleList = xmlLifestyles.SelectNodes("/chummer/lifestyles/lifestyle"))
+                    foreach (XmlNode xmlLifestyle in xmlLifestyles.Select("/chummer/lifestyles/lifestyle"))
                     {
-                        if (xmlLifestyleList != null)
-                        {
-                            foreach (XmlNode xmlLifestyle in xmlLifestyleList)
-                            {
-                                string strName = xmlLifestyle["name"]?.InnerText ?? LanguageManager.GetString("String_Error");
-                                lstQualities.Add(new ListItem(strName, xmlLifestyle["translate"]?.InnerText ?? strName));
-                            }
-                        }
+                        string strName = xmlLifestyle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Error");
+                        lstQualities.Add(new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));
                     }
 
                     using (frmSelectItem frmSelect = new frmSelectItem
@@ -364,9 +350,11 @@ namespace Chummer.Backend.Equipment
                     })
                     {
                         frmSelect.SetGeneralItemsMode(lstQualities);
-                        frmSelect.ShowDialog(Program.MainForm);
-                        if (frmSelect.DialogResult == DialogResult.Cancel)
+                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        {
+                            _guiID = Guid.Empty;
                             return;
+                        }
                         _strBaseLifestyle = frmSelect.SelectedItem;
                     }
                 }
@@ -393,26 +381,26 @@ namespace Chummer.Backend.Equipment
 
             if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
             {
-                XmlNode xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
+                XPathNavigator xmlLifestyleNode =
+                    xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             }
             if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
             {
-                XmlNode xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/comforts/comfort[name = \"" + _strBaseLifestyle + "\"]");
+                XPathNavigator xmlLifestyleNode =
+                    xmlLifestyles.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
                 // Area.
                 xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + _strBaseLifestyle + "\"]");
+                    xmlLifestyles.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
                 // Security.
                 xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/securities/security[name = \"" + _strBaseLifestyle + "\"]");
+                    xmlLifestyles.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             }
@@ -436,23 +424,31 @@ namespace Chummer.Backend.Equipment
 
             // Lifestyle Qualities
             using (XmlNodeList xmlQualityList = objNode.SelectNodes("lifestylequalities/lifestylequality"))
+            {
                 if (xmlQualityList != null)
+                {
                     foreach (XmlNode xmlQuality in xmlQualityList)
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
                         LifestyleQualities.Add(objQuality);
                     }
+                }
+            }
 
             // Free Grids provided by the Lifestyle
             using (XmlNodeList xmlQualityList = objNode.SelectNodes("freegrids/lifestylequality"))
+            {
                 if (xmlQualityList != null)
+                {
                     foreach (XmlNode xmlQuality in xmlQualityList)
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
                         _lstFreeGrids.Add(objQuality);
                     }
+                }
+            }
 
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
@@ -486,8 +482,8 @@ namespace Chummer.Backend.Equipment
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
             if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
                 xmlLifestyleNode["costforarea"] != null) return;
-            XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
-            XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
+            XPathNavigator objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]");
             if (objLifestyleQualityNode != null)
             {
                 decimal decTemp = 0.0m;
@@ -510,19 +506,19 @@ namespace Chummer.Backend.Equipment
 
             // Calculate the limits of the 3 aspects.
             // Area.
-            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + _strBaseLifestyle + "\"]");
+            XPathNavigator objXmlNode = objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
             objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
             objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
             BaseArea = intMinArea;
             AreaMaximum = Math.Max(intMaxArea, intMinArea);
             // Comforts.
-            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + _strBaseLifestyle + "\"]");
+            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
             objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
             objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
             BaseComforts = intMinComfort;
             ComfortsMaximum = Math.Max(intMaxComfort, intMinComfort);
             // Security.
-            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + _strBaseLifestyle + "\"]");
+            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
             objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
             objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
             BaseSecurity = intMinSec;
@@ -583,7 +579,7 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
             objWriter.WriteElementString("trustfund", TrustFund.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("qualities");
 
@@ -660,7 +656,7 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
 
             if (!string.IsNullOrEmpty(CustomName))
-                strReturn += " (\"" + CustomName + "\")";
+                strReturn += LanguageManager.GetString("String_Space") + "(\"" + CustomName + "\")";
 
             return strReturn;
         }
@@ -766,7 +762,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strBaseLifestyle == value) return;
                 _strBaseLifestyle = value;
-                XmlDocument xmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                 // This needs a handler for translations, will fix later.
                 if (value == "Bolt Hole")
                 {
@@ -787,7 +783,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + value + "\"]");
+                XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + value.CleanXPath() + "]");
                 if (xmlLifestyle != null)
                 {
                     _strBaseLifestyle = string.Empty;
@@ -1081,35 +1077,16 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/lifestyles/lifestyle[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/lifestyles/lifestyle[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
         }
-
-        public string City
-        {
-            get => _strCity;
-            set => _strCity = value;
-        }
-
-        public string District
-        {
-            get => _strDistrict;
-            set => _strDistrict = value;
-        }
-
-        public string Borough
-        {
-            get => _strBorough;
-            set => _strBorough = value;
-        }
-
         #endregion
 
         #region Complex Properties
@@ -1402,8 +1379,9 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (!blnConfirmDelete) return _objCharacter.Lifestyles.Remove(this);
-            return _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")) && _objCharacter.Lifestyles.Remove(this);
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
+                return false;
+            return _objCharacter.Lifestyles.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

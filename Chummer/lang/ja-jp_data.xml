@@ -46635,31 +46635,56 @@
             <hobbyvice translate="Weapons (Military)">Weapons (Military)</hobbyvice>
         </hobbiesvices>
     </chummer>
-    <chummer file="gameplayoptions.xml">
-        <gameplayoptions>
-            <gameplayoption>
-                <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
-                <name>Standard</name>
-                <translate>スタンダード</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
-                <name>Prime Runner</name>
-                <translate>プライムランナー</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
-                <name>Street Level</name>
-                <translate>ストリート・レベル</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
-                <name>Street Scum</name>
-                <translate>Street Scum</translate>
-            </gameplayoption>
-        </gameplayoptions>
+    <chummer file="settings.xml">
+      <settings>
+        <setting>
+          <id>223a11ff-80e0-428b-89a9-6ef1c243b8b6</id>
+          <name>Standard</name>
+          <translate>スタンダード</translate>
+        </setting>
+        <setting>
+          <id>507eef8e-eba8-41ea-84c4-4282258fe669</id>
+          <name>Street Level</name>
+          <translate>ストリート・レベル</translate>
+        </setting>
+        <setting>
+          <id>33e5317f-12aa-416e-816e-3b8b6ad95712</id>
+          <name>Prime Runner</name>
+          <translate>プライムランナー</translate>
+        </setting>
+        <setting>
+          <id>4c34a8ed-2888-410c-afda-024475fa3c76</id>
+          <name>Street Scum (BCDEE)</name>
+          <translate>Street Scum (BCDEE)</translate>
+        </setting>
+        <setting>
+          <id>9da22725-0596-4d68-ba2b-54f701e75e74</id>
+          <name>Street Scum (CCDDE)</name>
+          <translate>Street Scum (CCDDE)</translate>
+        </setting>
+        <setting>
+          <id>9e1c2dec-d2fa-42a0-a842-8bf575943780</id>
+          <name>High Life</name>
+          <translate>High Life</translate>
+        </setting>
+        <setting>
+          <id>3509a807-68ee-4c18-b7d5-b130313b4b77</id>
+          <name>Sum to Ten</name>
+          <translate>Sum to Ten</translate>
+        </setting>
+        <setting>
+          <id>fe7bb0d9-3cd9-4a75-825e-135b95a4f3ef</id>
+          <name>Point Buy</name>
+          <translate>Point Buy</translate>
+        </setting>
+        <setting>
+          <id>8a31af6d-7137-4284-872b-7d8087e156c6</id>
+          <name>Life Modules</name>
+          <translate>Life Modules</translate>
+        </setting>
+      </settings>
     </chummer>
-    <chummer file="paragons.xml">
+  <chummer file="paragons.xml">
         <categories>
             <category translate="Resonance">Resonance</category>
             <category translate="Dissonance">Dissonance</category>

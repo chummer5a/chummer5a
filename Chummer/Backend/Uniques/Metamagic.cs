@@ -100,17 +100,17 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
             }
             */
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -185,7 +185,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
@@ -358,12 +358,12 @@ namespace Chummer
                     doc = "echoes.xml";
                     path = "/chummer/echoes/echo";
                 }
-                _objCachedMyXmlNode = XmlManager.Load(doc, strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData(doc, strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? path + "[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "{0}[id = \"{1}\" or id = \"{2}\"]",
-                            path, SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "{0}[id = {1} or id = {2}]",
+                            path, SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
 
                 _strCachedXmlNodeLanguage = strLanguage;
             }
@@ -423,7 +423,7 @@ namespace Chummer
                     strMessage = LanguageManager.GetString("Message_DeleteEcho");
                 else
                     return false;
-                if (!_objCharacter.ConfirmDelete(strMessage))
+                if (!CommonFunctions.ConfirmDelete(strMessage))
                     return false;
             }
 

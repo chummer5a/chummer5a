@@ -204,7 +204,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
+            if (Grade != null)
+                objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("qty", Quantity.ToString( "#,0.##", objCulture));
             objWriter.WriteElementString("addictionthreshold", AddictionThreshold.ToString(objCulture));
             objWriter.WriteElementString("addictionrating", AddictionRating.ToString(objCulture));
@@ -249,7 +250,7 @@ namespace Chummer.Backend.Equipment
             foreach (XmlNode nodQuality in Qualities)
             {
                 objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("name", LanguageManager.TranslateExtra(nodQuality.InnerText, strLanguageToPrint));
+                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(nodQuality.InnerText, strLanguageToPrint));
                 objWriter.WriteElementString("name_english", nodQuality.InnerText);
                 objWriter.WriteEndElement();
             }
@@ -259,7 +260,7 @@ namespace Chummer.Backend.Equipment
             foreach (string strInfo in Infos)
             {
                 objWriter.WriteStartElement("info");
-                objWriter.WriteElementString("name", LanguageManager.TranslateExtra(strInfo, strLanguageToPrint));
+                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(strInfo, strLanguageToPrint));
                 objWriter.WriteElementString("name_english", strInfo);
                 objWriter.WriteEndElement();
             }
@@ -321,7 +322,7 @@ namespace Chummer.Backend.Equipment
         public string Name
         {
             get => _strName;
-            set => _strName = LanguageManager.ReverseTranslateExtra(value);
+            set => _strName = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -332,7 +333,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -662,7 +663,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return LanguageManager.TranslateExtra(Name, strLanguage);
+            return _objCharacter.TranslateExtra(Name, strLanguage);
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);
@@ -831,9 +832,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 foreach (XmlNode nodQuality in Qualities)
-                    sbdDescription.Append(LanguageManager.TranslateExtra(nodQuality.InnerText, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
+                    sbdDescription.Append(_objCharacter.TranslateExtra(nodQuality.InnerText, strLanguage)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality", strLanguage));
                 foreach (string strInfo in Infos)
-                    sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo, strLanguage));
+                    sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo, strLanguage));
 
                 if (Category == "Custom Drug" || Duration != 0)
                     sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage)).AppendLine(DisplayDuration);
@@ -955,10 +956,10 @@ namespace Chummer.Backend.Equipment
 
             if (Qualities.Count > 0)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
-                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
                     if (objXmlSelectedQuality == null)
                         continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
@@ -1022,12 +1023,12 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("drugcomponents.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/drugcomponents/drugcomponent[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/drugcomponents/drugcomponent[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/drugcomponents/drugcomponent[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1035,8 +1036,7 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete)
         {
-            if (blnConfirmDelete && !_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteDrug",
-                    GlobalOptions.Language)))
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteDrug")))
             {
                 return false;
             }
@@ -1256,7 +1256,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode = GetNode(strLanguage);
             if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
             {
-                return LanguageManager.TranslateExtra(Name, strLanguage);
+                return _objCharacter.TranslateExtra(Name, strLanguage);
             }
 
             return xmlGearDataNode?["translate"]?.InnerText ?? Name;
@@ -1288,7 +1288,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -1545,9 +1545,9 @@ namespace Chummer.Backend.Equipment
                 }
 
                 foreach (XmlNode strQuality in objDrugEffect.Qualities)
-                    sbdDescription.Append(LanguageManager.TranslateExtra(strQuality.InnerText)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
+                    sbdDescription.Append(_objCharacter.TranslateExtra(strQuality.InnerText)).Append(strSpaceString).AppendLine(LanguageManager.GetString("String_Quality"));
                 foreach (string strInfo in objDrugEffect.Infos)
-                    sbdDescription.AppendLine(LanguageManager.TranslateExtra(strInfo));
+                    sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo));
 
                 if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
                     sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColonString).Append(strSpaceString)
@@ -1598,12 +1598,12 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("drugcomponents.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/drugcomponents/drugcomponent[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/drugcomponents/drugcomponent[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/drugcomponents/drugcomponent[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -3555,6 +3555,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Necromancy</metamagicart>
+        </allof>
+      </required>
     </spell>
     <spell>
       <id>3fc55119-a6c3-4b0c-91eb-de107fbdea98</id>

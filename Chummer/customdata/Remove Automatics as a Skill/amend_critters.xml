@@ -22,20 +22,20 @@
   <metatypes>
     <metatype>
       <!-- Replace Automatics with Longarms if the critter doesn't already have Longarms, otherwise just remove Automatics -->
-      <skills xpathfilter="count(skill[text() = 'Automatics']) &gt; 0 and count(skill[text() = 'Longarms']) = 0">
-        <skill xpathfilter="text() = 'Automatics'">Longarms</skill>
+      <skills xpathfilter="count(skill[. = 'Automatics']) &gt; 0 and count(skill[. = 'Longarms']) = 0">
+        <skill xpathfilter=". = 'Automatics'">Longarms</skill>
       </skills>
       <skills>
-        <skill xpathfilter="text() = 'Automatics'" amendoperation="remove" />
+        <skill xpathfilter=". = 'Automatics'" amendoperation="remove" />
       </skills>
       <metavariants>
         <metavariant>
           <!-- Replace Automatics with Longarms if the critter doesn't already have Longarms, otherwise just remove Automatics -->
-          <skills xpathfilter="count(skill[text() = 'Automatics']) &gt; 0 and count(skill[text() = 'Longarms']) = 0">
-            <skill xpathfilter="text() = 'Automatics'">Longarms</skill>
+          <skills xpathfilter="count(skill[. = 'Automatics']) &gt; 0 and count(skill[. = 'Longarms']) = 0">
+            <skill xpathfilter=". = 'Automatics'">Longarms</skill>
           </skills>
           <skills>
-            <skill xpathfilter="text() = 'Automatics'" amendoperation="remove" />
+            <skill xpathfilter=". = 'Automatics'" amendoperation="remove" />
           </skills>
         </metavariant>
       </metavariants>

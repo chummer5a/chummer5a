@@ -77,7 +77,7 @@ namespace Chummer
             // See if a Suite with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (XmlManager.Load(_strType + ".xml").SelectSingleNode("/chummer/suites/suite[name = \"" + strName + "\"]") != null)
+            if (_objCharacter.LoadDataXPath(_strType + ".xml").SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + "]") != null)
             {
                 Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -89,10 +89,7 @@ namespace Chummer
             bool blnNewFile = !File.Exists(strPath);
 
             // If this is not a new file, read in the existing contents.
-            XmlDocument objXmlCurrentDocument = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XmlDocument objXmlCurrentDocument = new XmlDocument { XmlResolver = null };
             if (!blnNewFile)
             {
                 try

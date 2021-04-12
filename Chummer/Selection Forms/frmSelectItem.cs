@@ -22,6 +22,7 @@ using System.Collections.Generic;
  using System.Text;
  using System.Windows.Forms;
 using System.Xml;
+ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -98,16 +99,11 @@ namespace Chummer
                 cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
-                    using (XmlNodeList objXmlList = XmlManager.Load("licenses.xml").SelectNodes("/chummer/licenses/license"))
+                    foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml").Select("/chummer/licenses/license"))
                     {
-                        if (objXmlList != null)
-                        {
-                            foreach (XmlNode objNode in objXmlList)
-                            {
-                                string strInnerText = objNode.InnerText;
-                                lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
-                            }
-                        }
+                        string strInnerText = objNode.Value;
+                        if (!string.IsNullOrEmpty(strInnerText))
+                            lstItems.Add(new ListItem(strInnerText, objNode.SelectSingleNode("@translate")?.Value ?? strInnerText));
                     }
                 }
                 else

@@ -46,7 +46,7 @@ namespace Chummer
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
-            XPathNavigator xmlBaseMartialArtsDocumentNode = XmlManager.Load("martialarts.xml").GetFastNavigator();
+            XPathNavigator xmlBaseMartialArtsDocumentNode = _objCharacter.LoadDataXPath("martialarts.xml");
             _xmlBaseMartialArtsNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/martialarts");
             _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/techniques");
         }
@@ -56,7 +56,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
                 _blnAddAgain = false;
-                string strSelectedId = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[name = \"" + _strForcedValue + "\"]/id")?.Value;
+                string strSelectedId = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[name = " + _strForcedValue.CleanXPath() + "]/id")?.Value;
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     _strSelectedMartialArt = strSelectedId;
@@ -94,7 +94,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Populate the Martial Arts list.
-                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlArt != null)
                 {
@@ -123,7 +123,7 @@ namespace Chummer
 
                     string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 }
@@ -213,9 +213,9 @@ namespace Chummer
         {
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (ShowQualities)
-                strFilter += " and isquality = \"" + bool.TrueString + '\"';
+                strFilter += " and isquality = " + bool.TrueString.CleanXPath();
             else
-                strFilter += " and not(isquality = \"" + bool.TrueString + "\")";
+                strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ")";
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 

@@ -40,7 +40,7 @@ namespace Chummer
         public Story(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _xmlStoryDocumentBaseNode = XmlManager.Load("stories.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNode("/chummer");
             _lstStoryModules.CollectionChanged += LstStoryModulesOnCollectionChanged;
         }
 
@@ -85,7 +85,7 @@ namespace Chummer
 
         public StoryModule GeneratePersistentModule(string strFunction)
         {
-            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = \"" + strFunction + "\"]");
+            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + "]");
             if (xmlStoryPool != null)
             {
                 XPathNodeIterator xmlPossibleStoryList = xmlStoryPool.Select("story");
@@ -120,7 +120,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.SelectSingleNode("stories/story[id = \"" + strSelectedId + "\"]");
+                    XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.SelectSingleNode("stories/story[id = " + strSelectedId.CleanXPath() + "]");
                     if (xmlNewPersistentNode != null)
                     {
                         StoryModule objPersistentStoryModule = new StoryModule(_objCharacter)

@@ -3197,7 +3197,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strPrompt) && !setProcessedSkillNames.Contains(strPrompt))
                 {
-                    lstDropdownItems.Add(new ListItem(strPrompt, LanguageManager.TranslateExtra(strPrompt)));
+                    lstDropdownItems.Add(new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
                     setProcessedSkillNames.Add(strPrompt);
                 }
                 if (intMinimumRating <= 0)
@@ -3208,9 +3208,8 @@ namespace Chummer
                         sbdFilter.Append('(');
                         foreach (string strCategory in setAllowedCategories)
                         {
-                            sbdFilter.Append("category = \"" + strCategory + "\" or ");
+                            sbdFilter.Append("category = " + strCategory.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3221,9 +3220,8 @@ namespace Chummer
                         sbdFilter.Append("not(");
                         foreach (string strCategory in setForbiddenCategories)
                         {
-                            sbdFilter.Append("category = \"" + strCategory + "\" or ");
+                            sbdFilter.Append("category = " + strCategory.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3234,9 +3232,8 @@ namespace Chummer
                         sbdFilter.Append('(');
                         foreach (string strName in setAllowedNames)
                         {
-                            sbdFilter.Append("name = \"" + strName + "\" or ");
+                            sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3247,9 +3244,8 @@ namespace Chummer
                         sbdFilter.Append("not(");
                         foreach (string strName in setProcessedSkillNames)
                         {
-                            sbdFilter.Append("name = \"" + strName + "\" or ");
+                            sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
@@ -3260,25 +3256,18 @@ namespace Chummer
                         sbdFilter.Append('(');
                         foreach (string strAttribute in setAllowedLinkedAttributes)
                         {
-                            sbdFilter.Append("attribute = \"" + strAttribute + "\" or ");
+                            sbdFilter.Append("attribute = " + strAttribute.CleanXPath() + " or ");
                         }
-
                         sbdFilter.Length -= 4;
                         sbdFilter.Append(')');
                     }
 
                     string strFilter = sbdFilter.Length > 0 ? ") and (" + sbdFilter : string.Empty;
-                    using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
+                    foreach (XPathNavigator xmlSkill in objCharacter.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill[(not(hide)" + strFilter + ")]"))
                     {
-                        if (xmlSkillList?.Count > 0)
-                        {
-                            foreach (XmlNode xmlSkill in xmlSkillList)
-                            {
-                                string strName = xmlSkill["name"]?.InnerText;
-                                if (!string.IsNullOrEmpty(strName))
-                                    lstDropdownItems.Add(new ListItem(strName, xmlSkill["translate"]?.InnerText ?? strName));
-                            }
-                        }
+                        string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstDropdownItems.Add(new ListItem(strName, xmlSkill.SelectSingleNode("translate")?.Value ?? strName));
                     }
                 }
 
@@ -3462,7 +3451,7 @@ namespace Chummer
                             s_StrSelectedValue = frmPickText.SelectedValue;
                         }
                     }
-                    else
+                    else if (objCharacter != null)
                     {
                         using (frmSelectItem frmSelect = new frmSelectItem
                         {
@@ -3478,8 +3467,7 @@ namespace Chummer
                                 Log.Debug("CreateImprovements exit");
                                 return false;
                             }
-                            XPathNavigator xmlDoc = XmlManager.Load(nodBonus["selecttext"].Attributes["xml"]?.InnerText)
-                                .GetFastNavigator();
+                            XPathNavigator xmlDoc = objCharacter.LoadDataXPath(nodBonus.SelectSingleNode("selecttext/@xml")?.Value);
                             List<ListItem> lstItems = new List<ListItem>(5);
                             foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                             {
@@ -3499,8 +3487,7 @@ namespace Chummer
                             }
                             //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
                             //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                            lstItems = new List<ListItem>(lstItems.GroupBy(o => new { o.Value, o.Name })
-                                .Select(o => o.FirstOrDefault()));
+                            lstItems = new List<ListItem>(lstItems.GroupBy(o => new { o.Value, o.Name }).Select(o => o.FirstOrDefault()));
 
                             if (lstItems.Count == 0)
                             {

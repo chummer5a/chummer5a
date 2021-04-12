@@ -52,19 +52,25 @@ namespace Chummer
         /// Adapted from https://stackoverflow.com/questions/5063178/counting-bits-set-in-a-net-bitarray-class
         /// and http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel.
         /// </summary>
-        /// <param name="ablnToCount"></param>
+        /// <param name="ablnToCount">Array to process</param>
         /// <returns></returns>
         public static int CountTrues(this BitArray ablnToCount)
         {
+            if (ablnToCount == null)
+                throw new ArgumentNullException(nameof(ablnToCount));
+            int intMaskSize = ablnToCount.Count >> 5;
+            int intArraySizeModulo32 = ablnToCount.Count % 32;
+            if (intArraySizeModulo32 != 0)
+                intMaskSize += 1;
             // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
-            int[] aintToCountMask = new int[(ablnToCount.Count >> 5) + 1];
+            int[] aintToCountMask = new int[intMaskSize];
             ablnToCount.CopyTo(aintToCountMask, 0);
             // Fix for not truncated bits in last integer that may have been set to true with SetAll()
-            aintToCountMask[aintToCountMask.Length - 1] &= ~(-1 << (ablnToCount.Count % 32));
+            aintToCountMask[aintToCountMask.Length - 1] &= ~(-1 << intArraySizeModulo32);
             int intReturn = 0;
-            for (int i = 0; i < aintToCountMask.Length; i++)
+            foreach (int intLoop in aintToCountMask)
             {
-                int intLoopBlock = aintToCountMask[i];
+                int intLoopBlock = intLoop;
                 // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
                 unchecked
                 {
@@ -75,6 +81,20 @@ namespace Chummer
                 intReturn += intLoopBlock;
             }
             return intReturn;
+        }
+
+        /// <summary>
+        /// Check if all bits in a bit array are set or unset.
+        /// </summary>
+        /// <param name="ablnArray">Array to process</param>
+        /// <param name="blnValue">True if we are checking set bits, false if we are checking unset bits.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllValue(this BitArray ablnArray, bool blnValue)
+        {
+            // Interestingly enough, the lazy method of just iterating through all bits in the BitArray is faster in all of our use cases than casting
+            // the array into an int32 array and then doing fancy bit twiddling with it.
+            return ablnArray.FirstMatching(!blnValue) < 0;
         }
     }
 }

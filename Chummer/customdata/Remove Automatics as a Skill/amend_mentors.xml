@@ -22,7 +22,7 @@
   <mentors>
     <mentor>
       <choices>
-        <choice xpathfilter="count(bonus/*/name[text() = 'Automatics']) &gt; 0" amendoperation="remove" />
+        <choice xpathfilter="count(bonus/*/name[. = 'Automatics']) &gt; 0" amendoperation="remove" />
       </choices>
     </mentor>
   </mentors>

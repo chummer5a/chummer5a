@@ -22,7 +22,6 @@ using System.Collections.Generic;
  using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml;
  using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 
@@ -58,9 +57,8 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             // Load the Weapon information.
-            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
-            _xmlBaseChummerNode = objXmlDocument.GetFastNavigator().SelectSingleNode("/chummer");
-            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(objXmlDocument);
+            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer");
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode);
         }
 
         private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
@@ -72,8 +70,8 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -93,13 +91,13 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ") and (contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (string strAllowedMount in _lstAllowedMounts.Where(strAllowedMount => !string.IsNullOrEmpty(strAllowedMount)))
             {
-                sbdFilter.Append(" or contains(mount, \"").Append(strAllowedMount).Append("\")");
+                sbdFilter.Append(" or contains(mount, " + strAllowedMount.CleanXPath() + ")");
             }
             sbdFilter.Append(')');
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             int intOverLimit = 0;
-            foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[" + sbdFilter.ToString() + "]"))
+            foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select("accessories/accessory[" + sbdFilter + "]"))
             {
                 string strId = objXmlAccessory.SelectSingleNode("id")?.Value;
                 if (string.IsNullOrEmpty(strId))
@@ -247,7 +245,7 @@ namespace Chummer
                 _lstAllowedMounts.Clear();
                 if (value != null)
                 {
-                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = \"" + value.SourceIDString + "\"]/accessorymounts/mount"))
+                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = " + value.SourceIDString.CleanXPath() + "]/accessorymounts/mount"))
                     {
                         string strLoopMount = objXmlMount.Value;
                         // Run through the Weapon's current Accessories and filter out any used up Mount points.
@@ -323,7 +321,7 @@ namespace Chummer
             string strSelectedId = lstAccessory.SelectedValue?.ToString();
             // Retrieve the information for the selected Accessory.
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = \"" + strSelectedId + "\"]");
+                xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath() + "]");
             if (xmlAccessory == null)
             {
                 lblRC.Visible = false;
@@ -553,7 +551,7 @@ namespace Chummer
             chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+            SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }

@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Skills;
 
 namespace Chummer
@@ -29,7 +29,7 @@ namespace Chummer
         private readonly Skill _objSkill;
         private readonly Character _objCharacter;
         private readonly string _strForceItem = string.Empty;
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
         public frmSelectSpec(Skill skill)
@@ -39,7 +39,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("skills.xml");
+            _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectSpec_Load(object sender, EventArgs e)
@@ -49,40 +49,36 @@ namespace Chummer
                 new ListItem("Custom", string.Empty)
             };
 
-            if (_objCharacter.Created || _objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+            if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
             {
                 chkKarma.Checked = true;
                 chkKarma.Visible = false;
             }
-            XmlNode xmlParentSkill;
+            XPathNavigator xmlParentSkill;
             if (Mode == "Knowledge")
-                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + _objSkill.Name + "\"]") ??
-                    _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + _objSkill.Name + "\"]");
+                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + _objSkill.Name.CleanXPath() + "]")
+                                 ?? _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + "]");
             else
-                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                xmlParentSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and (" + _objCharacter.Options.BookXPath() + ")]");
             // Populate the Skill's Specializations (if any).
-            using (XmlNodeList xmlSpecList = xmlParentSkill?.SelectNodes("specs/spec"))
+            XPathNodeIterator xmlSpecList = xmlParentSkill?.Select("specs/spec");
+            if (xmlSpecList?.Count > 0)
             {
-                if (xmlSpecList != null)
+                foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
                 {
-                    foreach (XmlNode objXmlSpecialization in xmlSpecList)
-                    {
-                        string strInnerText = objXmlSpecialization.InnerText;
-                        lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    string strInnerText = objXmlSpecialization.Value;
+                    lstItems.Add(new ListItem(strInnerText, objXmlSpecialization.SelectSingleNode("@translate")?.Value ?? strInnerText));
 
-                        if (_objSkill.SkillCategory != "Combat Active")
-                            continue;
-                        // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                        XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-                        //Might need to include skill name or might miss some values?
-                        XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[(spec = \"" + strInnerText + "\" or spec2 = \"" + strInnerText + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
-                        if (objXmlWeaponList == null)
-                            continue;
-                        foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-                        {
-                            string strName = objXmlWeapon["name"]?.InnerText;
-                            lstItems.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
-                        }
+                    if (_objSkill.SkillCategory != "Combat Active")
+                        continue;
+                    // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
+                    XPathNavigator objXmlWeaponDocument = _objCharacter.LoadDataXPath("weapons.xml");
+                    //Might need to include skill name or might miss some values?
+                    foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select("/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = " + strInnerText.CleanXPath() + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
+                    {
+                        string strName = objXmlWeapon.SelectSingleNode("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstItems.Add(new ListItem(strName, objXmlWeapon.SelectSingleNode("translate")?.Value ?? strName));
                     }
                 }
             }

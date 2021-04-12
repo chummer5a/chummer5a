@@ -32,11 +32,13 @@ namespace Chummer.Backend.Skills
         private string _strName;
         private readonly bool _blnFree;
         private readonly bool _blnExpertise;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
-        public SkillSpecialization(string strName, bool blnFree = false, bool blnExpertise = false)
+        public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
-            _strName = LanguageManager.ReverseTranslateExtra(strName);
+            _objCharacter = objCharacter;
+            _strName = _objCharacter.ReverseTranslateExtra(strName);
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
@@ -61,13 +63,14 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Re-create a saved SkillSpecialization from an XmlNode;
         /// </summary>
+        /// <param name="objCharacter">Character to load for.</param>
         /// <param name="xmlNode">XmlNode to load.</param>
-        public static SkillSpecialization Load(XmlNode xmlNode)
+        public static SkillSpecialization Load(Character objCharacter, XmlNode xmlNode)
         {
             if (!xmlNode.TryGetField("guid",Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
+            return new SkillSpecialization(objCharacter, xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
             {
                 _guiID = guiTemp
             };
@@ -88,8 +91,8 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
-            int intSpecializationBonus = Parent.CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
-                && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
+            int intSpecializationBonus = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
+                                                                             && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
                 ? 0
                 : SpecializationBonus;
             objWriter.WriteElementString("specbonus", intSpecializationBonus.ToString(objCulture));
@@ -138,7 +141,7 @@ namespace Chummer.Backend.Skills
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[text() = \"" + Name + "\"]");
+                _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + "]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -173,7 +176,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public int SpecializationBonus => Parent.CharacterObject.Options.SpecializationBonus + (Expertise ? 1 : 0);
+        public int SpecializationBonus => _objCharacter.Options.SpecializationBonus + (Expertise ? 1 : 0);
 
         #endregion
     }

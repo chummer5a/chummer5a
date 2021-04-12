@@ -72,37 +72,13 @@
       </head>
 
       <body>
-        <xsl:for-each select="gears/gear[iscommlink = 'True']">
-          <xsl:call-template name="commlink">
-            <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="armors/armor/gears/gear[iscommlink = 'True']">
-          <xsl:call-template name="commlink">
-            <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="cyberwares/cyberware/gears/gear[iscommlink = 'True']">
-          <xsl:call-template name="commlink">
-            <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']">
-          <xsl:call-template name="commlink">
-            <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
-          </xsl:call-template>
-        </xsl:for-each>
-        <xsl:for-each select="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']">
+        <xsl:for-each select="//gears/gear[iscommlink = 'True']">
           <xsl:call-template name="commlink">
             <xsl:with-param name="rendercommlink"><xsl:value-of select="."/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
         <xsl:choose>
-          <xsl:when test="gears/gear[iscommlink = 'True']"/>
-          <xsl:when test="armors/armor/gears/gear[iscommlink = 'True']"/>
-          <xsl:when test="cyberwares/cyberware/gears/gear[iscommlink = 'True']"/>
-          <xsl:when test="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']"/>
-          <xsl:when test="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']"/>
+          <xsl:when test="//gears/gear[iscommlink = 'True']"/>
           <xsl:otherwise>
             <xsl:call-template name="nothing2show">
               <xsl:with-param name="namethesheet" select="$lang.Nothing2Show4Devices"/>

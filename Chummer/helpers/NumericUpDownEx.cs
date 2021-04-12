@@ -88,7 +88,8 @@ namespace Chummer
         }
 
         private bool _blnDoProcessMargins = true;
-        private bool _blnHaveProcessedMarginsOnce = false;
+        private bool _blnHaveProcessedMarginsOnce;
+
         private void OnMarginChanged(object sender, EventArgs e)
         {
             if (!_blnDoProcessMargins)
@@ -131,8 +132,9 @@ namespace Chummer
                     return;
                 if (!_blnHaveProcessedMarginsOnce)
                 {
-                    intMinNonZeroMargin = intMinNonZeroMargin + Math.Max((int) (3 * g.DpiX / 96.0f),
+                    intMinNonZeroMargin += Math.Max((int) (3 * g.DpiX / 96.0f),
                         (int) (3 * g.DpiY / 96.0f));
+                    _blnHaveProcessedMarginsOnce = true;
                 }
 
                 int intNewCommonMarginX = (int) (3 * g.DpiX / 96.0f);

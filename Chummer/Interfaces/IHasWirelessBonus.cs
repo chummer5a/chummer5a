@@ -25,5 +25,7 @@ namespace Chummer
         bool WirelessOn { get; set; }
 
         XmlNode WirelessBonus { get; }
+
+        void RefreshWirelessBonuses();
     }
 }

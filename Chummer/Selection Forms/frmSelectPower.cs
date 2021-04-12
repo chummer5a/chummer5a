@@ -44,7 +44,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             // Load the Powers information.
-            _xmlBasePowerDataNode = XmlManager.Load("powers.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBasePowerDataNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer");
         }
 
         private void frmSelectPower_Load(object sender, EventArgs e)
@@ -74,7 +74,7 @@ namespace Chummer
             string strSelectedId = lstPowers.SelectedValue?.ToString();
             XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
+                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + "]");
 
             if (objXmlPower != null)
             {
@@ -94,8 +94,8 @@ namespace Chummer
 
                 string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
             }
             else
             {
@@ -208,11 +208,11 @@ namespace Chummer
             {
                 StringBuilder sbdFilter = new StringBuilder();
                 foreach (string strPower in _strLimitToPowers.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                    sbdFilter.Append("name = \"").Append(strPower.Trim()).Append("\" or ");
+                    sbdFilter.Append("name = ").Append(strPower.CleanXPath()).Append(" or ");
                 if (sbdFilter.Length > 0)
                 {
                     sbdFilter.Length -= 4;
-                    strFilter += " and (" + sbdFilter.ToString() + ')';
+                    strFilter += " and (" + sbdFilter + ')';
                 }
             }
 
@@ -265,7 +265,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.
-                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + "]");
 
                 if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {

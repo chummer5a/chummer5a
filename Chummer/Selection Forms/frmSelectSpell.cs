@@ -54,7 +54,7 @@ namespace Chummer
             chkExtended.SetToolTip(LanguageManager.GetString("Tip_SelectSpell_ExtendedSpell"));
 
             // Load the Spells information.
-            _xmlBaseSpellDataNode = XmlManager.Load("spells.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseSpellDataNode = _objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer");
         }
 
         private void frmSelectSpell_Load(object sender, EventArgs e)
@@ -78,7 +78,7 @@ namespace Chummer
                 limit.Add(improvement.ImprovedName);
             }
 
-            string strFilterPrefix = "spells/spell[(" + _objCharacter.Options.BookXPath() + ") and category = \"";
+            string strFilterPrefix = "spells/spell[(" + _objCharacter.Options.BookXPath() + ") and category = ";
             foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.Select("categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
@@ -88,7 +88,7 @@ namespace Chummer
                         (x.ImproveType == Improvement.ImprovementType.AllowSpellRange ||
                          x.ImproveType == Improvement.ImprovementType.LimitSpellRange) && x.Enabled))
                     {
-                        if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\" and range = \"" + improvement.ImprovedName + "\"]")
+                        if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory.CleanXPath() + " and range = " + improvement.ImprovedName.CleanXPath() + "]")
                                 != null)
                         {
                             limit.Add(strCategory);
@@ -100,7 +100,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory)
                         continue;
                 }
-                if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory + "\"]") == null)
+                if (_xmlBaseSpellDataNode.SelectSingleNode(strFilterPrefix + strCategory.CleanXPath() + "]") == null)
                     continue;
 
                 _lstCategory.Add(new ListItem(strCategory,
@@ -264,20 +264,20 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             string strCategory = cboCategory.SelectedValue?.ToString();
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                sbdFilter.Append(" and category = \"").Append(strCategory).Append('\"');
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
             else
             {
                 StringBuilder sbdCategoryFilter = new StringBuilder();
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = \"").Append(strItem).Append("\" or ");
+                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
             }
             if (_objCharacter.Options.ExtendAnyDetectionSpell)
@@ -287,7 +287,7 @@ namespace Chummer
 
             // Populate the Spell list.
             List<ListItem> lstSpellItems = new List<ListItem>();
-            foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell[" + sbdFilter.ToString() + "]"))
+            foreach (XPathNavigator objXmlSpell in _xmlBaseSpellDataNode.Select("spells/spell[" + sbdFilter + "]"))
             {
                 string strSpellCategory = objXmlSpell.SelectSingleNode("category")?.Value ?? string.Empty;
                 string strDescriptor = objXmlSpell.SelectSingleNode("descriptor")?.Value ?? string.Empty;
@@ -374,7 +374,7 @@ namespace Chummer
                 string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
                                         objXmlSpell.SelectSingleNode("name")?.Value ??
                                         LanguageManager.GetString("String_Unknown");
-                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0 && !string.IsNullOrEmpty(strSpellCategory))
+                if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0 && !string.IsNullOrEmpty(strSpellCategory))
                 {
                     ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
                     if (!string.IsNullOrEmpty(objFoundItem.Name))
@@ -397,7 +397,7 @@ namespace Chummer
                 return;
 
             // Display the Spell information.
-            XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("spells/spell[id = \"" + strSelectedItem + "\"]");
+            XPathNavigator objXmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("spells/spell[id = " + strSelectedItem.CleanXPath() + "]");
             // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
             // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
             int intSpellCount = 0;
@@ -448,9 +448,9 @@ namespace Chummer
             }
 
             _strSelectedSpell = strSelectedItem;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0)
+            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()
-                : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = \"" + _strSelectedSpell + "\"]/category")?.Value ?? string.Empty;
+                : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + _strSelectedSpell.CleanXPath() + "]/category")?.Value ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;
             DialogResult = DialogResult.OK;
         }
@@ -474,7 +474,7 @@ namespace Chummer
             }
             if (!string.IsNullOrEmpty(strSelectedSpellId))
             {
-                xmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = \"" + strSelectedSpellId + "\"]");
+                xmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + strSelectedSpellId.CleanXPath() + "]");
             }
             if (xmlSpell == null)
             {
@@ -723,8 +723,8 @@ namespace Chummer
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace +
+            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
                                  LanguageManager.GetString("String_Page") + strSpace + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             _blnRefresh = false;

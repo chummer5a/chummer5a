@@ -32,6 +32,16 @@
       <td style="text-align: center">
         <xsl:value-of select="rc"/>
       </td>
+      <xsl:choose>
+        <xsl:when test="skill= 'Throwing Weapons'">
+          <td colspan="2" style="text-align: center">
+            <xsl:value-of select="$lang.Qty"/>:
+            <xsl:call-template name="fnx-fmt-nmbr">
+              <xsl:with-param name="nmbr" select="availableammo"/>
+            </xsl:call-template>
+          </td>
+        </xsl:when>
+      <xsl:otherwise>
       <td style="text-align: center">
         <xsl:choose>
           <xsl:when test="ammo = '0' or ammo = ''">
@@ -58,6 +68,8 @@
           </xsl:otherwise>
         </xsl:choose>
       </td>
+      </xsl:otherwise>
+      </xsl:choose>
       <td style="text-align: center">
         <xsl:value-of select="source"/>
         <xsl:text> </xsl:text>

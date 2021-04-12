@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using NLog;
 
 namespace Chummer
@@ -115,7 +116,7 @@ namespace Chummer
             {
                 _strExtra = strForceValue;
             }
-            _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = \"" + strForceValueChoice1 + "\"]/bonus");
+            _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = " + strForceValueChoice1.CleanXPath() + "]/bonus");
             if (_nodChoice1 != null)
             {
                 string strOldForce = ImprovementManager.ForcedValue;
@@ -137,7 +138,7 @@ namespace Chummer
             {
                 _strExtra = strForceValueChoice1;
             }
-            _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = \"" + strForceValueChoice2 + "\"]/bonus");
+            _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = " + strForceValueChoice2.CleanXPath() + "]/bonus");
             if (_nodChoice2 != null)
             {
                 string strOldForce = ImprovementManager.ForcedValue;
@@ -163,17 +164,17 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
                 }
             }
             */
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -235,8 +236,7 @@ namespace Chummer
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
-                    XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
-                    objNewNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + "]")?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -275,8 +275,8 @@ namespace Chummer
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("advantage", Advantage);
             objWriter.WriteElementString("disadvantage", Disadvantage);
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("mentormask", MentorMask.ToString(GlobalOptions.InvariantCultureInfo));
             if (_objCharacter.Options.PrintNotes)
@@ -377,7 +377,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;
@@ -460,12 +460,12 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/mentors/mentor[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
-                            "/chummer/mentors/mentor[id = \"{0}\" or id = \"{1}\"]",
-                            SourceIDString, SourceIDString.ToUpperInvariant()));
+                            "/chummer/mentors/mentor[id = {0} or id = {1}]",
+                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

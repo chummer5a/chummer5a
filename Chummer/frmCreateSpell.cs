@@ -20,13 +20,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
     public partial class frmCreateSpell : Form
     {
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlDocument;
         private bool _blnLoading;
         private bool _blnSkipRefresh;
         private readonly Spell _objSpell;
@@ -38,7 +38,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("spells.xml");
+            _objXmlDocument = objCharacter.LoadDataXPath("spells.xml");
         }
 
         private void frmCreateSpell_Load(object sender, EventArgs e)
@@ -46,20 +46,13 @@ namespace Chummer
             _blnLoading = true;
             lblDV.Text = 0.ToString(GlobalOptions.CultureInfo);
 
-            List<ListItem> lstCategory;
+            List<ListItem> lstCategory = new List<ListItem>();
 
             // Populate the list of Spell Categories.
-            using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            foreach (XPathNavigator objXmlCategory in _objXmlDocument.Select("/chummer/categories/category"))
             {
-                lstCategory = new List<ListItem>(objXmlCategoryList?.Count ?? 0);
-                if (objXmlCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
-                    {
-                        string strInnerText = objXmlCategory.InnerText;
-                        lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
-                }
+                string strInnerText = objXmlCategory.Value;
+                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
 
             cboCategory.BeginUpdate();

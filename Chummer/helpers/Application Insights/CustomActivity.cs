@@ -79,7 +79,7 @@ namespace Chummer
             if (parentActivity != null)
             {
                 MyOperationType = parentActivity.MyOperationType;
-                SetParentId(parentActivity.Id);
+                SetParentId(parentActivity.Id ?? string.Empty);
                 tc = parentActivity.tc;
                 MyTelemetryTarget = parentActivity.MyTelemetryTarget;
                 switch (MyOperationType)
@@ -121,7 +121,7 @@ namespace Chummer
 
         private bool _blnDisposed;
 
-        public void Dispose()
+        public new void Dispose()
         {
             if (_blnDisposed)
                 return;
@@ -147,6 +147,7 @@ namespace Chummer
             }
 
             _blnDisposed = true;
+            base.Dispose();
         }
     }
 }

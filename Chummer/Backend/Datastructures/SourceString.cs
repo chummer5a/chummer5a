@@ -30,7 +30,7 @@ namespace Chummer
         private readonly int _intPage;
         private readonly int _intHashCode;
 
-        public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null)
+        public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
@@ -43,50 +43,50 @@ namespace Chummer
                     int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
             }
 
-            Code = CommonFunctions.LanguageBookShort(strCode, Language);
+            Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
                 _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                         LanguageManager.GetString("String_Space", Language),
                         LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strCode, Language))
+            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strCode, Language, objCharacter))
                 .Append(strSpace).Append(_dicCachedStrings[Language].Item2)
                 .Append(strSpace).Append(_intPage.ToString(CultureInfo)).ToString();
         }
 
-        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null)
+        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
                 _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language))
+            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language, objCharacter))
                 .Append(strSpace).Append(_dicCachedStrings[Language].Item2)
                 .Append(strSpace).Append(_intPage.ToString(CultureInfo)).ToString();
         }
 
-        public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null)
+        public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             _intPage = intPage;
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language);
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
                 _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language))
+            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language, objCharacter))
                 .Append(strSpace).Append(_dicCachedStrings[Language].Item2)
                 .Append(strSpace).Append(_intPage.ToString(CultureInfo)).ToString();
         }

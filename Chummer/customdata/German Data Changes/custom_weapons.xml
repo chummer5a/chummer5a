@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <weapons>
+    <weapon>
+      <id>e52049c2-35d1-4918-96b6-8c7bbf3010a6</id>
+      <name>Grenade: Painade</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>-</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>12R</avail>
+      <cost>150</cost>
+      <source>CA</source>
+      <page>135</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>78eeb006-e377-4e5a-bf69-adae197bb5d4</id>
+      <name>Underbarrel Flamethrower</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>10P</damage>
+      <ap>-4</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>4(c)</ammo>
+      <avail>16F</avail>
+      <cost>2500</cost>
+      <source>RG</source>
+      <page>53</page>
+      <range>Flamethrowers</range>
+      <useskill>Exotic Ranged Weapon</useskill>
+      <required>
+        <OR>
+          <category>Assault Rifles</category>
+          <category>Sniper Rifles</category>
+          <category>Sporting Rifles</category>
+          <useskill>Longarms</useskill>
+          <useskill>Heavy Weapons</useskill>
+          <AND>
+            <useskill NOT="" operation="exists" />
+            <OR>
+              <category>Shotguns</category>
+              <category>Sporting Rifles</category>
+              <category>Sniper Rifles</category>
+              <category>Light Machine Guns</category>
+              <category>Medium Machine Guns</category>
+              <category>Heavy Machine Guns</category>
+              <category>Assault Cannons</category>
+              <category>Grenade Launchers</category>
+              <category>Missile Launchers</category>
+            </OR>
+          </AND>
+        </OR>
+      </required>
+    </weapon>
+    <weapon>
+      <id>2845e48b-ce4e-4fd0-af23-41f5aba86f5d</id>
+      <name>Underbarrel Chainsaw</name>
+      <category>Underbarrel Weapons</category>
+      <type>Melee</type>
+      <conceal>6</conceal>
+      <accuracy>5</accuracy>
+      <reach>1</reach>
+      <damage>8P</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>10R</avail>
+      <cost>500</cost>
+      <source>RG</source>
+      <page>53</page>
+      <useskill>Exotic Melee Weapon</useskill>
+      <required>
+        <OR>
+          <category>Assault Rifles</category>
+          <category>Sniper Rifles</category>
+          <category>Sporting Rifles</category>
+          <useskill>Longarms</useskill>
+          <useskill>Heavy Weapons</useskill>
+          <AND>
+            <useskill NOT="" operation="exists" />
+            <OR>
+              <category>Shotguns</category>
+              <category>Sporting Rifles</category>
+              <category>Sniper Rifles</category>
+              <category>Light Machine Guns</category>
+              <category>Medium Machine Guns</category>
+              <category>Heavy Machine Guns</category>
+              <category>Assault Cannons</category>
+              <category>Grenade Launchers</category>
+              <category>Missile Launchers</category>
+            </OR>
+          </AND>
+        </OR>
+      </required>
+    </weapon>
+  </weapons>
+</chummer>

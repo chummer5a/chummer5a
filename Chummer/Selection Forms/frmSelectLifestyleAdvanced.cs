@@ -42,7 +42,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             // Load the Lifestyles information.
-            _xmlDocument = XmlManager.Load("lifestyles.xml");
+            _xmlDocument = _objCharacter.LoadData("lifestyles.xml");
         }
 
         private void frmSelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
@@ -503,7 +503,7 @@ namespace Chummer
                         return;
                     blnAddAgain = frmSelectLifestyleQuality.AddAgain;
 
-                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
+                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.SelectedQuality.CleanXPath() + "]");
 
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
@@ -626,7 +626,7 @@ namespace Chummer
             }
 
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
-            XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
+            XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + strBaseLifestyle.CleanXPath() + "]");
             if (objXmlLifestyle == null)
                 return;
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
@@ -666,8 +666,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                    lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                    lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 }
                 else
                 {

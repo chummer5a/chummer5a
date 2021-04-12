@@ -31,7 +31,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly int _intStage;
         private string _strDefaultStageName;
-        private XmlDocument _xmlDocument;
+        private readonly XmlDocument _xmlDocument;
         private string _strSelectedId;
         private Regex _rgxSearchRegex;
 
@@ -45,12 +45,12 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter;
             _intStage = intStage;
+            _xmlDocument = _objCharacter.LoadData("lifemodules.xml");
         }
 
         private void frmSelectLifeModule_Load(object sender, EventArgs e)
         {
-            _xmlDocument = XmlManager.Load("lifemodules.xml");
-            string strSelectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
+            string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalOptions.InvariantCultureInfo).CleanXPath() + "]";
 
             XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
             if (xmlStageNode != null)
@@ -144,7 +144,7 @@ namespace Chummer
             else
             {
                 //Select any node that have an id node equal to tag
-                string selectString = "//*[id = \"" + e.Node.Tag + "\"]/selectable";
+                string selectString = "//*[id = " + e.Node.Tag.ToString().CleanXPath() + "]/selectable";
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
@@ -152,7 +152,7 @@ namespace Chummer
             }
 
             _strSelectedId = (string)e.Node.Tag;
-            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml"));
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, _objCharacter.LoadData("lifemodules.xml"));
 
             if (xmlSelectedNodeInfo != null)
             {
@@ -175,7 +175,7 @@ namespace Chummer
 
         }
 
-        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, XmlManager.Load("lifemodules.xml"));
+        public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, _objCharacter.LoadData("lifemodules.xml"));
 
         private void treModules_DoubleClick(object sender, EventArgs e)
         {
@@ -256,16 +256,15 @@ namespace Chummer
             string strSelected = (string) cboStage.SelectedValue;
             if (strSelected == "0")
             {
-                _strWorkStage = null;
-                BuildTree(GetSelectString());
+                _strWorkStage = string.Empty;
             }
             else
             {
-                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = \"" + strSelected + "\"]")?.InnerText;
-                BuildTree(GetSelectString());
+                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = " + strSelected.CleanXPath() + "]")?.InnerText ?? string.Empty;
             }
-
+            BuildTree(GetSelectString());
         }
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtSearch.Text))
@@ -301,7 +300,7 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                strReturn += ") and (stage = \"" + _strWorkStage + '\"';
+                strReturn += ") and (stage = " + _strWorkStage.CleanXPath();
             }
             strReturn += ")]";
 

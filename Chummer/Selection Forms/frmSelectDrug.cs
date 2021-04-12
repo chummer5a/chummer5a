@@ -61,7 +61,7 @@ namespace Chummer
 
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
-            _xmlBaseDrugDataNode = XmlManager.Load("drugcomponents.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNode("/chummer");
 
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -88,8 +88,8 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
             }
 
             if (!string.IsNullOrEmpty(DefaultSearchText))
@@ -126,7 +126,7 @@ namespace Chummer
             if (cboGrade.Enabled && strSelectedGrade != null)
                 _strOldSelectedGrade = strSelectedGrade;
             if (!string.IsNullOrEmpty(strSelectedGrade))
-                xmlGrade = _xmlBaseDrugDataNode.SelectSingleNode("grades/grade[id = \"" + strSelectedGrade + "\"]");
+                xmlGrade = _xmlBaseDrugDataNode.SelectSingleNode("grades/grade[id = " + strSelectedGrade.CleanXPath() + "]");
 
             // Update the Cost multipliers based on the Grade that has been selected.
             if (xmlGrade != null)
@@ -166,7 +166,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Drug.
-                xmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+                xmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             }
             string strForceGrade;
             if (xmlDrug != null)
@@ -242,8 +242,8 @@ namespace Chummer
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -503,7 +503,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Drug.
-                objXmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+                objXmlDrug = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             }
             if (objXmlDrug == null)
             {
@@ -661,14 +661,14 @@ namespace Chummer
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"").Append(objCurrentGrade.Name).Append("\")");
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ").Append(objCurrentGrade.Name.CleanXPath()).Append(")");
                 if (objCurrentGrade.SecondHand)
                     sbdFilter.Append(" and not(nosecondhand)");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter.ToString() + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
+            return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
         private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
@@ -783,7 +783,7 @@ namespace Chummer
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            XPathNavigator objDrugNode = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
+            XPathNavigator objDrugNode = _xmlBaseDrugDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + "]");
             if (objDrugNode == null)
                 return;
 

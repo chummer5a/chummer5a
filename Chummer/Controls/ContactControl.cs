@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Properties;
 
 namespace Chummer
@@ -33,7 +34,7 @@ namespace Chummer
     {
         private readonly Contact _objContact;
         private bool _blnLoading = true;
-        private bool _blnStatBlockIsLoaded = false;
+        private bool _blnStatBlockIsLoaded;
         //private readonly int _intLowHeight = 25;
         //private readonly int _intFullHeight = 156;
 
@@ -44,13 +45,11 @@ namespace Chummer
         #region Control Events
         public ContactControl(Contact objContact)
         {
-            if (objContact == null)
-                throw new ArgumentNullException(nameof(objContact));
+            _objContact = objContact ?? throw new ArgumentNullException(nameof(objContact));
+
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            _objContact = objContact;
 
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
@@ -222,7 +221,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(true);
+                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(false);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -364,42 +363,13 @@ namespace Chummer
                     chkGroup.Visible = value;
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
-                    if (_objContact?.CharacterObject.Created == false)
-                        chkFree.Visible = value;
+                    chkFree.Visible = _objContact?.CharacterObject.Created == false && value;
                     chkBlackmail.Visible = value;
                     chkFamily.Visible = value;
                     imgLink.Visible = value;
                     tlpStatBlock.Visible = value;
                     ResumeLayout();
                 }
-            }
-        }
-
-        private static List<ListItem> _lstContactArchetypes;
-
-        public static List<ListItem> ContactArchetypes
-        {
-            get
-            {
-                if (_lstContactArchetypes != null)
-                    return _lstContactArchetypes;
-                _lstContactArchetypes = new List<ListItem>(10) {ListItem.Blank};
-                XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
-                if (xmlContactsBaseNode == null)
-                    return _lstContactArchetypes;
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("contacts/contact"))
-                {
-                    if (xmlNodeList == null)
-                        return _lstContactArchetypes;
-                    foreach (XmlNode xmlNode in xmlNodeList)
-                    {
-                        string strName = xmlNode.InnerText;
-                        _lstContactArchetypes.Add(new ListItem(strName,
-                            xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                    }
-                }
-
-                return _lstContactArchetypes;
             }
         }
         #endregion
@@ -425,12 +395,10 @@ namespace Chummer
             //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
             //        }
 
-            ContactArchetypes.Sort(CompareListItems.CompareNames);
-
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = nameof(ListItem.Value);
             cboContactRole.DisplayMember = nameof(ListItem.Name);
-            cboContactRole.DataSource = new BindingSource { DataSource = ContactArchetypes };
+            cboContactRole.DataSource = new BindingSource { DataSource = Contact.ContactArchetypes(_objContact.CharacterObject) };
             cboContactRole.EndUpdate();
         }
 
@@ -808,103 +776,61 @@ namespace Chummer
                 ListItem.Blank
             };
 
-            XmlNode xmlContactsBaseNode = XmlManager.Load("contacts.xml").SelectSingleNode("/chummer");
+            XPathNavigator xmlContactsBaseNode = _objContact.CharacterObject.LoadDataXPath("contacts.xml").SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("genders/gender"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("genders/gender"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstGenders.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstGenders.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("ages/age"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("ages/age"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstAges.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstAges.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("personallives/personallife"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("personallives/personallife"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstPersonalLives.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstPersonalLives.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("types/type"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("types/type"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstTypes.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstTypes.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("preferredpayments/preferredpayment"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("preferredpayments/preferredpayment"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstPreferredPayments.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstPreferredPayments.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
 
-                using (XmlNodeList xmlNodeList = xmlContactsBaseNode.SelectNodes("hobbiesvices/hobbyvice"))
+                foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("hobbiesvices/hobbyvice"))
                 {
-                    if (xmlNodeList != null)
-                    {
-                        foreach (XmlNode xmlNode in xmlNodeList)
-                        {
-                            string strName = xmlNode.InnerText;
-                            lstHobbiesVices.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
-                        }
-                    }
+                    string strName = xmlNode.Value;
+                    lstHobbiesVices.Add(new ListItem(strName, xmlNode.SelectSingleNode("@translate")?.Value ?? strName));
                 }
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            using (XmlNodeList xmlMetatypeList = XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("metatypes.xml").Select("/chummer/metatypes/metatype"))
             {
-                if (xmlMetatypeList != null)
+                string strName = xmlMetatypeNode.SelectSingleNode("name")?.Value;
+                string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNode("translate")?.Value ?? strName;
+                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                XPathNodeIterator xmlMetavariantsList = xmlMetatypeNode.Select("metavariants/metavariant");
+                if (xmlMetavariantsList?.Count > 0)
                 {
-                    foreach (XmlNode xmlMetatypeNode in xmlMetatypeList)
+                    string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
+                    foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                     {
-                        string strName = xmlMetatypeNode["name"]?.InnerText;
-                        string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
-                        lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
-                        XmlNodeList xmlMetavariantsList = xmlMetatypeNode.SelectNodes("metavariants/metavariant");
-                        if (xmlMetavariantsList != null)
-                        {
-                            string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
-                            foreach (XmlNode objXmlMetavariantNode in xmlMetavariantsList)
-                            {
-                                string strMetavariantName = objXmlMetavariantNode["name"]?.InnerText ?? string.Empty;
-                                if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
-                                    lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalOptions.CultureInfo, strMetavariantFormat, objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName)));
-                            }
-                        }
+                        string strMetavariantName = objXmlMetavariantNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                        if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
+                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalOptions.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNode("translate")?.Value ?? strMetavariantName)));
                     }
                 }
             }

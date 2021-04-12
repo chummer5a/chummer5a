@@ -17,7 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
-﻿using System.Windows.Forms;
+ using System.IO;
+ using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -35,7 +36,8 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (PreventXPathErrors && txtValue.Text.Contains('"'))
+            if ((PreventXPathErrors && txtValue.Text.Contains('"'))
+                || (PreventFileNameCharErrors && txtValue.Text.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -53,10 +55,15 @@ namespace Chummer
 
         private void frmSelectText_Shown(object sender, EventArgs e)
         {
-            if (DefaultString != null)
+            if (!string.IsNullOrEmpty(DefaultString))
             {
                 txtValue.Text = DefaultString;
             }
+        }
+
+        private void txtValue_TextChanged(object sender, EventArgs e)
+        {
+            cmdOK.Enabled = !string.IsNullOrEmpty(txtValue.Text);
         }
         #endregion
 
@@ -79,6 +86,7 @@ namespace Chummer
         }
 
         public bool PreventXPathErrors { get; internal set; }
+        public bool PreventFileNameCharErrors { get; internal set; }
         public string DefaultString { get; internal set; }
         #endregion
     }

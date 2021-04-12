@@ -49,14 +49,6 @@ using Formatting = System.Xml.Formatting;
 
 namespace Chummer
 {
-    public enum CharacterBuildMethod
-    {
-        Karma = 0,
-        Priority = 1,
-        SumtoTen = 2,
-        LifeModule = 3
-    }
-
     /// <summary>
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
@@ -68,8 +60,8 @@ namespace Chummer
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
         private string _strFileName = string.Empty;
+        private string _strCharacterOptionsKey = GlobalOptions.DefaultCharacterOption;
         private DateTime _dateFileLastWriteTime = DateTime.MinValue;
-        private string _strSettingsFileName = "default.xml";
         private bool _blnIgnoreRules;
         private int _intKarma;
         private int _intTotalKarma;
@@ -80,7 +72,6 @@ namespace Chummer
         private decimal _decNuyen;
         private decimal _decStolenNuyen;
         private decimal _decStartingNuyen;
-        private int _intMaxAvail = 12;
         private decimal _decEssenceAtSpecialStart = decimal.MinValue;
         private int _intSpecial;
         private int _intTotalSpecial;
@@ -126,12 +117,7 @@ namespace Chummer
         private bool _blnCreated;
 
         // Build Points
-        private int _intSumtoTen = 10;
-        private decimal _decNuyenMaximumBP = 50;
         private decimal _decNuyenBP;
-        private int _intBuildKarma = 800;
-        private int _intGameplayOptionQualityLimit = 25;
-        private CharacterBuildMethod _objBuildMethod = CharacterBuildMethod.Karma;
 
         // Metatype Information.
         private string _strMetatype = "Human";
@@ -188,17 +174,13 @@ namespace Chummer
         private int _intBaseWildReputation;
 
         // Priority Selections.
-        private string _strGameplayOption = "Standard";
-        private string _strPriorityMetatype = "A,4";
-        private string _strPriorityAttributes = "B,3";
-        private string _strPrioritySpecial = "C,2";
-        private string _strPrioritySkills = "D,1";
-        private string _strPriorityResources = "E,0";
+        private string _strPriorityMetatype = "A";
+        private string _strPriorityAttributes = "B";
+        private string _strPrioritySpecial = "C";
+        private string _strPrioritySkills = "D";
+        private string _strPriorityResources = "E";
         private string _strPriorityTalent = string.Empty;
         private readonly List<string> _lstPrioritySkills = new List<string>(3);
-        private decimal _decMaxNuyen;
-        private int _intMaxKarma;
-        private int _intContactMultiplier;
 
         // Lists.
         private readonly HashSet<string> _setSources = new HashSet<string>(30);
@@ -275,7 +257,7 @@ namespace Chummer
         /// </summary>
         public Character()
         {
-            Options = new CharacterOptions(this);
+            Options.PropertyChanged += OptionsOnPropertyChanged;
             AttributeSection = new AttributeSection(this);
             AttributeSection.Reset();
             AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
@@ -299,21 +281,21 @@ namespace Chummer
 
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false, string strLanguage = "")
         {
-            XmlDocument xmlDoc = XmlManager.Load(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
-            XPathNavigator xmlMetatypeNode = xmlDoc.CreateNavigator()?.SelectSingleNode(MetatypeGuid == Guid.Empty
-                ? "/chummer/metatypes/metatype[name = \"" + Metatype + "\"]"
-                : "/chummer/metatypes/metatype[id = \"" + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+            XPathNavigator xmlDoc = LoadDataXPath(IsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
+            XPathNavigator xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
+                ? "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + "]"
+                : "/chummer/metatypes/metatype[id = " + MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
             if (blnReturnMetatypeOnly)
                 return xmlMetatypeNode;
             if (MetavariantGuid != Guid.Empty && !string.IsNullOrEmpty(Metavariant) && xmlMetatypeNode != null)
             {
                 XPathNavigator xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
-                    ? "metavariants/metavariant[name = \"" + Metavariant + "\"]"
-                    : "metavariants/metavariant[id = \"" + MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+                    ? "metavariants/metavariant[name = " + Metavariant.CleanXPath() + "]"
+                    : "metavariants/metavariant[id = " + MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
                 if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
                 {
                     xmlMetavariantNode =
-                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + Metavariant + "\"]");
+                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() + "]");
                 }
                 if (xmlMetavariantNode != null)
                     return xmlMetavariantNode;
@@ -332,6 +314,7 @@ namespace Chummer
             INT.PropertyChanged += RefreshINTDependentProperties;
             LOG.PropertyChanged += RefreshLOGDependentProperties;
             WIL.PropertyChanged += RefreshWILDependentProperties;
+            EDG.PropertyChanged += RefreshEDGDependentProperties;
             MAG.PropertyChanged += RefreshMAGDependentProperties;
             RES.PropertyChanged += RefreshRESDependentProperties;
             DEP.PropertyChanged += RefreshDEPDependentProperties;
@@ -339,16 +322,102 @@ namespace Chummer
             // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
             AttributeSection.GetAttributeByName("MAGAdept").PropertyChanged += RefreshMAGAdeptDependentProperties;
         }
+        private void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e?.PropertyName)
+            {
+                case nameof(CharacterOptions.UseCalculatedPublicAwareness):
+                    OnPropertyChanged(nameof(CalculatedPublicAwareness));
+                    break;
+                case nameof(CharacterOptions.SpiritForceBasedOnTotalMAG):
+                    OnPropertyChanged(nameof(MaxSpiritForce));
+                    break;
+                case nameof(CharacterOptions.CyberlegMovement):
+                    OnPropertyChanged(nameof(Movement));
+                    break;
+                case nameof(CharacterOptions.AllowInitiationInCreateMode):
+                    OnPropertyChanged(nameof(AddInitiationsAllowed));
+                    break;
+                case nameof(CharacterOptions.MysAdeptAllowPPCareer):
+                    OnPropertyChanged(nameof(MysAdeptAllowPPCareer));
+                    break;
+                case nameof(CharacterOptions.MysAdeptSecondMAGAttribute):
+                    OnMultiplePropertyChanged(nameof(UseMysticAdeptPPs), nameof(AllowAdeptWayPowerDiscount));
+                    break;
+                case nameof(CharacterOptions.ContactPointsExpression):
+                    OnPropertyChanged(nameof(ContactPoints));
+                    break;
+                case nameof(CharacterOptions.SpecialKarmaCostBasedOnShownValue):
+                    RefreshEssenceLossImprovements();
+                    break;
+                case nameof(CharacterOptions.NuyenFormat):
+                    OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen), nameof(DisplayStolenNuyen));
+                    break;
+                case nameof(CharacterOptions.EssenceFormat):
+                case nameof(CharacterOptions.DontRoundEssenceInternally):
+                    OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
+                    break;
+                case nameof(CharacterOptions.NuyenMaximumBP):
+                case nameof(CharacterOptions.UnrestrictedNuyen):
+                    OnPropertyChanged(nameof(TotalNuyenMaximumBP));
+                    break;
+                case nameof(CharacterOptions.KarmaMysticAdeptPowerPoint):
+                    OnPropertyChanged(nameof(CanAffordCareerPP));
+                    break;
+                case nameof(CharacterOptions.BuildMethod):
+                    OnPropertyChanged(nameof(EffectiveBuildMethod));
+                    break;
+                case nameof(CharacterOptions.AutomaticBackstory):
+                    OnPropertyChanged(nameof(EnableAutomaticStoryButton));
+                    break;
+                case nameof(CharacterOptions.NuyenPerBP):
+                    OnPropertyChanged(nameof(TotalStartingNuyen));
+                    break;
+                case nameof(CharacterOptions.LimbCount):
+                    OnPropertyChanged(nameof(LimbCount));
+                    break;
+                case nameof(CharacterOptions.MetatypeCostsKarmaMultiplier):
+                    OnPropertyChanged(nameof(DisplayMetatypeBP));
+                    break;
+                case nameof(CharacterOptions.RedlinerExcludes):
+                    RefreshRedlinerImprovements();
+                    break;
+                case nameof(CharacterOptions.NoArmorEncumbrance):
+                    RefreshEncumbrance();
+                    break;
+                case nameof(CharacterOptions.KarmaQuality):
+                case nameof(CharacterOptions.QualityKarmaLimit):
+                    OnMultiplePropertyChanged(nameof(PositiveQualityKarma), nameof(NegativeQualityKarma));
+                    break;
+                case nameof(CharacterOptions.ExceedPositiveQualitiesCostDoubled):
+                    OnPropertyChanged(nameof(PositiveQualityKarma));
+                    break;
+                case nameof(CharacterOptions.EnemyKarmaQualityLimit):
+                case nameof(CharacterOptions.ExceedNegativeQualitiesLimit):
+                    OnPropertyChanged(nameof(NegativeQualityKarma));
+                    break;
+                case nameof(CharacterOptions.KarmaEnemy):
+                    OnPropertyChanged(nameof(EnemyKarma));
+                    break;
+                case nameof(CharacterOptions.KarmaSpell):
+                    if (FreeSpells > 0)
+                    {
+                        OnPropertyChanged(nameof(PositiveQualityKarma));
+                    }
+                    break;
+            }
+        }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
             {
                 OnMultiplePropertyChanged(nameof(CurrentWalkingRateString),
                     nameof(CurrentRunningRateString),
                     nameof(CurrentSprintingRateString));
             }
         }
+
         private void ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action != NotifyCollectionChangedAction.Move)
@@ -465,8 +534,10 @@ namespace Chummer
         private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            dicChangedProperties.Add(this, new HashSet<string> {nameof(MentorSpirits)});
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
+                {
+                    {this, new HashSet<string> {nameof(MentorSpirits)}}
+                };
             if (e.Action == NotifyCollectionChangedAction.Add && !IsLoading)
             {
                 foreach (MentorSpirit objNewItem in e.NewItems)
@@ -501,8 +572,10 @@ namespace Chummer
         private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties =
-                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>();
-            dicChangedProperties.Add(this, new HashSet<string> { nameof(Qualities) });
+                new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>
+                {
+                    {this, new HashSet<string> {nameof(Qualities)}}
+                };
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 foreach(Power objPower in Powers)
@@ -857,7 +930,10 @@ namespace Chummer
                     dicChangedProperties.Add(this, new HashSet<string>
                     {
                         nameof(RedlinerBonus),
-                        nameof(Essence)
+                        nameof(PrototypeTranshumanEssenceUsed),
+                        nameof(BiowareEssence),
+                        nameof(CyberwareEssence),
+                        nameof(EssenceHole)
                     });
                     break;
             }
@@ -906,7 +982,7 @@ namespace Chummer
             // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
             if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
                 strMetavariantId = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? string.Empty;
-            XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = \"" + strMetavariantId + "\"]");
+            XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strMetavariantId.CleanXPath() + "]");
 
             // Set Metatype information.
             int intMinModifier = 0;
@@ -947,7 +1023,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlQualityItem in xmlQualityList)
                         {
-                            XmlNode objXmlQuality = xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                            XmlNode objXmlQuality = xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + "]");
                             Quality objQuality = new Quality(this);
                             string strForceValue = objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
                             QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
@@ -964,7 +1040,7 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                 {
-                    XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + objXmlPower.InnerText + "\"]");
+                    XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
                     CritterPower objPower = new CritterPower(this);
                     string strForcedValue = objXmlPower.Attributes["select"]?.InnerText ?? string.Empty;
                     int intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerText, intForce, 0, 0);
@@ -1016,7 +1092,7 @@ namespace Chummer
                 if (objSkill == null) continue;
                 string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                 ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization spec = new SkillSpecialization(strSpec, true);
+                SkillSpecialization spec = new SkillSpecialization(this, strSpec, true);
                 objSkill.Specializations.Add(spec);
             }
             //Set the Skill Group Ratings for the Critter.
@@ -1041,7 +1117,7 @@ namespace Chummer
                     {
                         if (SkillsSection.KnowledgeSkills.All(x => x.Name != xmlSkill.InnerText))
                         {
-                            XmlNode objXmlSkillNode = xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = \"" + xmlSkill.InnerText + "\"]");
+                            XmlNode objXmlSkillNode = xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " + xmlSkill.InnerText.CleanXPath() + "]");
                             if (objXmlSkillNode != null)
                             {
                                 KnowledgeSkill objSkill = Skill.FromData(objXmlSkillNode, this) as KnowledgeSkill;
@@ -1065,10 +1141,10 @@ namespace Chummer
             }
 
             // Add any Complex Forms the Critter comes with (typically Sprites)
-            XmlDocument xmlComplexFormDocument = XmlManager.Load("complexforms.xml");
+            XmlDocument xmlComplexFormDocument = LoadData("complexforms.xml");
             foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
             {
-                XmlNode xmlComplexFormData = xmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + xmlComplexForm.InnerText + "\"]");
+                XmlNode xmlComplexFormData = xmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + xmlComplexForm.InnerText.CleanXPath() + "]");
                 if (xmlComplexFormData == null)
                     continue;
 
@@ -1085,10 +1161,10 @@ namespace Chummer
             }
 
             //Load any cyberware the character has.
-            XmlDocument xmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+            XmlDocument xmlCyberwareDocument = LoadData("cyberware.xml");
             foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
             {
-                XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode("chummer/cyberwares/cyberware[name = \"" + node.InnerText + "\"]");
+                XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode("chummer/cyberwares/cyberware[name = " + node.InnerText.CleanXPath() + "]");
                 var objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
@@ -1103,10 +1179,10 @@ namespace Chummer
             }
 
             //Load any bioware the character has.
-            XmlDocument xmlBiowareDocument = XmlManager.Load("bioware.xml");
+            XmlDocument xmlBiowareDocument = LoadData("bioware.xml");
             foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
             {
-                XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode("chummer/biowares/bioware[name = \"" + node.InnerText + "\"]");
+                XmlNode objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode("chummer/biowares/bioware[name = " + node.InnerText.CleanXPath() + "]");
                 var objWare = new Cyberware(this);
                 string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                 int intRating = CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
@@ -1121,10 +1197,10 @@ namespace Chummer
             }
 
             // Add any Advanced Programs the Critter comes with (typically A.I.s)
-            XmlDocument xmlAIProgramDocument = XmlManager.Load("programs.xml");
+            XmlDocument xmlAIProgramDocument = LoadData("programs.xml");
             foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
             {
-                XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + xmlAIProgram.InnerText + "\"]");
+                XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode("/chummer/programs/program[name = " + xmlAIProgram.InnerText.CleanXPath() + "]");
                 if (xmlAIProgramData == null)
                     continue;
 
@@ -1159,7 +1235,7 @@ namespace Chummer
             }
 
             // Add any Gear the Critter comes with (typically Programs for A.I.s)
-            XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+            XmlDocument xmlGearDocument = LoadData("gear.xml");
             foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
             {
                 XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + xmlGear["name"].InnerText.CleanXPath() + " and category = " + xmlGear["category"].InnerText.CleanXPath() + "]");
@@ -1220,22 +1296,19 @@ namespace Chummer
             if (strSelectedMetatypeCategory == "Spirits")
             {
                 XmlNode xmlOptionalPowersNode = charNode["optionalpowers"];
-                if (xmlOptionalPowersNode != null)
+                if (xmlOptionalPowersNode != null && intForce >= 3)
                 {
+                    XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
                     //For every 3 full points of Force a spirit has, it may gain one Optional Power.
                     for (int i = intForce - 3; i >= 0; i -= 3)
                     {
-                        XmlDocument objDummyDocument = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
                         XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
-                        objDummyDocument.AppendChild(bonusNode);
                         XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
-                        objDummyDocument.ImportNode(powerNode, true);
                         bonusNode.AppendChild(powerNode);
-                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, bonusNode, 1, strMetatypeId);
+                        objDummyDocument.AppendChild(bonusNode);
                     }
+                    foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, bonusNode, 1, strMetatypeId);
                 }
                 //If this is a Blood Spirit, add their free Critter Powers.
                 if (blnBloodSpirit && xmlCritterPowerDocumentPowersNode != null)
@@ -1299,7 +1372,7 @@ namespace Chummer
                     if (CritterPowers.All(x => x.Name != strSelectedPossessionMethod))
                     {
                         // Add the selected Power.
-                        XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"" + strSelectedPossessionMethod + "\"]");
+                        XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " + strSelectedPossessionMethod.CleanXPath() + "]");
                         if (objXmlCritterPower != null)
                         {
                             CritterPower objPower = new CritterPower(this);
@@ -1366,13 +1439,17 @@ namespace Chummer
 
                     // <createdversion />
                     objWriter.WriteElementString("createdversion", _strVersionCreated);
+                    // <minimumappversion />
+                    objWriter.WriteElementString("minimumappversion", "5.214.1");
                     // <appversion />
                     objWriter.WriteElementString("appversion", Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
                     // <gameedition />
                     objWriter.WriteElementString("gameedition", "SR5");
 
                     // <settings />
-                    objWriter.WriteElementString("settings", _strSettingsFileName);
+                    objWriter.WriteElementString("settings", _strCharacterOptionsKey);
+                    // <buildmethod />
+                    objWriter.WriteElementString("buildmethod", Options.BuildMethod.ToString());
 
                     // <metatype />
                     objWriter.WriteElementString("metatype", _strMetatype);
@@ -1461,6 +1538,7 @@ namespace Chummer
                     objWriter.WriteElementString("playername", _strPlayerName);
                     // <gamenotes />
                     objWriter.WriteElementString("gamenotes", _strGameNotes);
+                    // <primaryarm />
                     objWriter.WriteElementString("primaryarm", _strPrimaryArm);
 
                     // <ignorerules />
@@ -1507,44 +1585,13 @@ namespace Chummer
                     objWriter.WriteElementString("basewildreputation", _intBaseWildReputation.ToString(GlobalOptions.InvariantCultureInfo));
                     // <created />
                     objWriter.WriteElementString("created", _blnCreated.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <maxavail />
-                    objWriter.WriteElementString("maxavail", _intMaxAvail.ToString(GlobalOptions.InvariantCultureInfo));
                     // <nuyen />
                     objWriter.WriteElementString("nuyen", _decNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <nuyen />
-                    objWriter.WriteElementString("startingnuyen",
-                        _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <sumtoten />
-                    objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <buildkarma />
-                    objWriter.WriteElementString("buildkarma", _intBuildKarma.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <buildmethod />
-                    objWriter.WriteElementString("buildmethod", _objBuildMethod.ToString());
-                    // <gameplayoption />
-                    objWriter.WriteElementString("gameplayoption", _strGameplayOption);
-                    // <gameplayoptionqualitylimit />
-                    objWriter.WriteElementString("gameplayoptionqualitylimit", _intGameplayOptionQualityLimit.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <maxnuyen />
-                    objWriter.WriteElementString("maxnuyen", _decMaxNuyen.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <maxkarma />
-                    objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <contactmultiplier />
-                    objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString(GlobalOptions.InvariantCultureInfo));
-
-                    // <bannedwaregrades >
-                    objWriter.WriteStartElement("bannedwaregrades");
-                    foreach (string g in BannedWareGrades)
-                    {
-                        objWriter.WriteElementString("grade", g);
-                    }
-
-                    // </bannedwaregrades>
-                    objWriter.WriteEndElement();
+                    // <startingnuyen />
+                    objWriter.WriteElementString("startingnuyen", _decStartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <nuyenbp />
                     objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <nuyenmaxbp />
-                    objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <adept />
                     objWriter.WriteElementString("adept", _blnAdeptEnabled.ToString(GlobalOptions.InvariantCultureInfo));
@@ -1562,8 +1609,7 @@ namespace Chummer
                     objWriter.WriteElementString("critter", _blnCritterEnabled.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <prototypetranshuman />
-                    objWriter.WriteElementString("prototypetranshuman",
-                        _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <attributes>
                     objWriter.WriteStartElement("attributes");
@@ -1886,14 +1932,14 @@ namespace Chummer
                     // </locations>
                     objWriter.WriteEndElement();
 
-                    // <armorbundles>
+                    // <armorlocations>
                     objWriter.WriteStartElement("armorlocations");
                     foreach (Location objLocation in _lstArmorLocations)
                     {
                         objLocation.Save(objWriter);
                     }
 
-                    // </armorbundles>
+                    // </armorlocations>
                     objWriter.WriteEndElement();
 
                     // <vehiclelocations>
@@ -1935,28 +1981,6 @@ namespace Chummer
 
                     objWriter.WriteEndElement();
                     // </calendar>
-
-                    // <sources>
-                    objWriter.WriteStartElement("sources");
-                    foreach (string strItem in _setSources)
-                    {
-                        objWriter.WriteElementString("source", strItem);
-                    }
-
-                    objWriter.WriteEndElement();
-                    // </sources>
-
-                    // <sources>
-                    objWriter.WriteStartElement("customdatadirectorynames");
-                    foreach (string strItem in Options.CustomDataDirectoryNames)
-                    {
-                        objWriter.WriteElementString("directoryname", strItem);
-                    }
-
-                    objWriter.WriteEndElement();
-                    // </sources>
-
-
 
                     //Plugins
                     if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
@@ -2004,10 +2028,7 @@ namespace Chummer
                     // Validate that the character can save properly. If there's no error, save the file to the listed file location.
                     try
                     {
-                        XmlDocument objDoc = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objDoc = new XmlDocument { XmlResolver = null };
                         using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalOptions.SafeXmlReaderSettings))
                             objDoc.Load(objXmlReader);
                         objDoc.Save(strFileName);
@@ -2020,6 +2041,7 @@ namespace Chummer
                     }
                     catch (XmlException ex)
                     {
+                        Log.Warn(ex);
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
@@ -2042,9 +2064,66 @@ namespace Chummer
             return blnErrorFree;
         }
 
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadXPath() where we use the current enabled custom data directory list from our options file.
+        /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public XPathNavigator LoadDataXPath(string strFileName, string strLanguage = "", bool blnLoadFile = false)
+        {
+            return XmlManager.LoadXPath(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadXPathAsync() where we use the current enabled custom data directory list from our options file.
+        /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
+        /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false)
+        {
+            return await XmlManager.LoadXPathAsync(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.Load() where we use the current enabled custom data directory list from our options file.
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        [NotNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public XmlDocument LoadData(string strFileName, string strLanguage = "", bool blnLoadFile = false)
+        {
+            return XmlManager.Load(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for XmlManager.LoadAsync() where we use the current enabled custom data directory list from our options file.
+        /// </summary>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        [NotNull]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false)
+        {
+            return await XmlManager.LoadAsync(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile).ConfigureAwait(false);
+        }
+
         public bool IsLoading { get; set; }
 
-        public Queue<Action> PostLoadMethods => new Queue<Action>();
+        /// <summary>
+        /// Queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
+        /// </summary>
+        public Queue<Func<bool>> PostLoadMethods => new Queue<Func<bool>>();
 
         /// <summary>
         /// Load the Character from an XML file.
@@ -2063,10 +2142,7 @@ namespace Chummer
                     {
                         UploadObjectAsMetric.UploadObject(TelemetryClient, Options);
                     }
-                    XmlDocument objXmlDocument = new XmlDocument
-                    {
-                        XmlResolver = null
-                    };
+                    XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                     XmlNode objXmlCharacter;
                     XPathNavigator xmlCharacterNavigator;
                     XmlNodeList objXmlNodeList;
@@ -2086,8 +2162,8 @@ namespace Chummer
                             try
                             {
                                 using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, objSettings))
-                                    objXmlDocument.Load(objXmlReader);
+                                    using (XmlReader objXmlReader = XmlReader.Create(sr, objSettings))
+                                        objXmlDocument.Load(objXmlReader);
                                 errorCaught = false;
                             }
                             catch (XmlException ex)
@@ -2100,7 +2176,7 @@ namespace Chummer
 
                                     if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidTextFound"),
                                                                         LanguageManager.GetString("Message_InvalidTextFound_Title"),
-                                                                        MessageBoxButtons.YesNo) == DialogResult.No)
+                                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                                     {
                                         IsLoading = false;
                                         return false;
@@ -2227,61 +2303,190 @@ namespace Chummer
 #endif
 
                         // Get the name of the settings file in use if possible.
-                        xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsFileName);
+                        xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strCharacterOptionsKey);
 
                         // Load the character's settings file.
-                        if (!Options.Load(_strSettingsFileName))
+                        string strDummy = string.Empty;
+                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("buildmethod", ref strDummy)
+                            || !Enum.TryParse(strDummy, true, out CharacterBuildMethod eSavedBuildMethod))
                         {
-                            IsLoading = false;
-                            return false;
+                            eSavedBuildMethod = OptionsManager.LoadedCharacterOptions.ContainsKey(GlobalOptions.DefaultCharacterOptionDefaultValue)
+                                ? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOptionDefaultValue].BuildMethod
+                                : CharacterBuildMethod.Priority;
                         }
-
-                        // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                        StringBuilder sbdMissingBooks = new StringBuilder();
-                        //Does the list of enabled books contain the current item?
-                        foreach (XPathNavigator xmlSourceNode in xmlCharacterNavigator.Select("sources/source"))
+                        HashSet<string> setSavedBooks = new HashSet<string>();
+                        foreach (XPathNavigator xmlBook in xmlCharacterNavigator.Select("sources/source"))
+                            if (!string.IsNullOrEmpty(xmlBook.Value))
+                                setSavedBooks.Add(xmlBook.Value);
+                        List<string> lstSavedCustomDataDirectoryNames = new List<string>();
+                        foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select("customdatadirectorynames/directoryname"))
+                            if (!string.IsNullOrEmpty(xmlCustomDataDirectoryName.Value))
+                                lstSavedCustomDataDirectoryNames.Add(xmlCustomDataDirectoryName.Value);
+                        decimal decLegacyMaxNuyen = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption].NuyenMaximumBP;
+                        xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref decLegacyMaxNuyen);
+                        int intLegacyMaxKarma = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption].BuildKarma;
+                        xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref intLegacyMaxKarma);
+                        // Calculate a score for a character option that roughly coincides with how suitable it is as a replacement for the current one the character save contains
+                        // Options with a negative score should not be considered suitable at all
+                        int CalculateCharacterOptionsMatchScore(CharacterOptions objOptionsToCheck)
                         {
-                            string strLoopString = xmlSourceNode.Value;
-                            if (strLoopString.Length > 0 && !Options.Books.Contains(strLoopString))
+                            int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
+                            int intDummy = intLegacyMaxKarma - objOptionsToCheck.BuildKarma;
+                            intReturn -= intDummy * intDummy;
+                            intDummy = decLegacyMaxNuyen.StandardRound() - objOptionsToCheck.NuyenMaximumBP.StandardRound();
+                            intReturn -= intDummy * intDummy;
+                            int intBaseline = decLegacyMaxNuyen.StandardRound() * decLegacyMaxNuyen.StandardRound() + intLegacyMaxKarma * intLegacyMaxKarma;
+                            intDummy = Math.Max(setSavedBooks.Count, 1) * lstSavedCustomDataDirectoryNames.Count * intBaseline;
+                            if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
                             {
-                                sbdMissingBooks.Append(strLoopString).Append(';');
+                                intReturn += int.MaxValue / 2 + intDummy * intDummy;
                             }
+                            else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                     eSavedBuildMethod.UsesPriorityTables())
+                            {
+                                intReturn += int.MaxValue / 2 + intDummy * intDummy / 2;
+                            }
+                            for (int i = 0; i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count; ++i)
+                            {
+                                string strLoopCustomDataName =
+                                    objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
+                                int intLoopIndex = lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
+                                if (intLoopIndex < 0)
+                                    intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * intBaseline;
+                                else
+                                    intReturn -= (i - intLoopIndex) * (i - intLoopIndex) * intBaseline;
+                            }
+                            foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
+                                if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
+                                    intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count * intBaseline;
+                            int intBookBaselineScore = (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
+                            HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
+                            setDummyBooks.IntersectWith(objOptionsToCheck.Books);
+                            intReturn -= (setSavedBooks.Count - setDummyBooks.Count) * (setSavedBooks.Count - setDummyBooks.Count) * intBookBaselineScore;
+                            return intReturn;
                         }
 
-                        if (sbdMissingBooks.Length > 0 && !Utils.IsUnitTest && showWarnings)
+                        bool blnShowSelectBP = false;
+                        if (!OptionsManager.LoadedCharacterOptions.ContainsKey(_strCharacterOptionsKey))
                         {
-                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString("Message_MissingSourceBooks"),
-                                        TranslatedBookList(sbdMissingBooks.ToString())),
-                                    LanguageManager.GetString("Message_MissingSourceBooks_Title"),
+                            // Prompt if we want to switch options or leave
+                            if (!Utils.IsUnitTest && showWarnings)
+                            {
+                                if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting"),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
+                                    LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"),
                                     MessageBoxButtons.YesNo) == DialogResult.No)
+                                {
+                                    IsLoading = false;
+                                    return false;
+                                }
+                                blnShowSelectBP = true;
+                            }
+                            // Set up interim options for selection by build method
+                            string strReplacementOptionsKey = string.Empty;
+                            int intMostSuitable = 0;
+                            foreach (KeyValuePair<string, CharacterOptions> kvpLoopOptions in OptionsManager.LoadedCharacterOptions)
                             {
-                                IsLoading = false;
-                                return false;
+                                int intLoopScore = CalculateCharacterOptionsMatchScore(kvpLoopOptions.Value);
+                                if (intLoopScore > intMostSuitable)
+                                {
+                                    intMostSuitable = intLoopScore;
+                                    strReplacementOptionsKey = kvpLoopOptions.Key;
+                                }
+                            }
+                            if (string.IsNullOrEmpty(strReplacementOptionsKey))
+                                strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
+                            _strCharacterOptionsKey = strReplacementOptionsKey;
+                        }
+                        else if (!Created && OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod != eSavedBuildMethod)
+                        {
+                            // Prompt if we want to switch options or leave
+                            if (!Utils.IsUnitTest && showWarnings)
+                            {
+                                if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_CharacterOptions_DesyncBuildMethod"),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey),
+                                        LanguageManager.GetString("String_" + OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod),
+                                        LanguageManager.GetString("String_" + eSavedBuildMethod)),
+                                    LanguageManager.GetString("MessageTitle_CharacterOptions_DesyncBuildMethod"),
+                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                {
+                                    IsLoading = false;
+                                    return false;
+                                }
+                                blnShowSelectBP = true;
+                            }
+                            // Set up interim options for selection by build method
+                            string strReplacementOptionsKey = string.Empty;
+                            int intMostSuitable = 0;
+                            foreach (KeyValuePair<string, CharacterOptions> kvpLoopOptions in OptionsManager.LoadedCharacterOptions)
+                            {
+                                int intLoopScore = CalculateCharacterOptionsMatchScore(kvpLoopOptions.Value);
+                                if (intLoopScore > intMostSuitable)
+                                {
+                                    intMostSuitable = intLoopScore;
+                                    strReplacementOptionsKey = kvpLoopOptions.Key;
+                                }
+                            }
+                            if (string.IsNullOrEmpty(strReplacementOptionsKey))
+                                strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
+                            _strCharacterOptionsKey = strReplacementOptionsKey;
+                        }
+                        // Legacy load stuff
+                        else if (!Utils.IsUnitTest && showWarnings && (setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
+                        {
+                            CharacterOptions objCurrentlyLoadedOptions = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
+                            // More books is fine, so just test if the stored book list is a subset of the current option's book list
+                            bool blnPromptConfirmSetting = !setSavedBooks.IsProperSubsetOf(objCurrentlyLoadedOptions.Books);
+                            if (!blnPromptConfirmSetting)
+                            {
+                                // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
+                                blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos.Count;
+                                if (!blnPromptConfirmSetting)
+                                {
+                                    // Check to make sure all the names are the same
+                                    for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
+                                    {
+                                        if (lstSavedCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos[i].Name)
+                                        {
+                                            blnPromptConfirmSetting = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (blnPromptConfirmSetting)
+                            {
+                                DialogResult eShowBPResult = Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("Message_CharacterOptions_DesyncBooksOrCustomData"),
+                                        Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
+                                    LanguageManager.GetString("MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
+                                    MessageBoxButtons.YesNoCancel);
+                                if (eShowBPResult == DialogResult.Cancel)
+                                {
+                                    IsLoading = false;
+                                    return false;
+                                }
+                                blnShowSelectBP = eShowBPResult == DialogResult.Yes;
                             }
                         }
 
-                        // Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
-                        StringBuilder sbdMissingSourceNames = new StringBuilder();
-                        //Does the list of enabled books contain the current item?
-                        foreach (XPathNavigator xmlDirectoryName in xmlCharacterNavigator.Select(
-                            "customdatadirectorynames/directoryname"))
-                        {
-                            string strLoopString = xmlDirectoryName.Value;
-                            if (strLoopString.Length > 0 &&
-                                !Options.CustomDataDirectoryNames.Contains(strLoopString))
-                            {
-                                sbdMissingSourceNames.Append(strLoopString).AppendLine(";");
-                            }
-                        }
+                        Options = OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
 
-                        if (sbdMissingSourceNames.Length > 0 && !Utils.IsUnitTest && showWarnings)
+                        if (blnShowSelectBP)
                         {
-                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("Message_MissingCustomDataDirectories"),
-                                    sbdMissingSourceNames.ToString()),
-                                LanguageManager.GetString("Message_MissingCustomDataDirectories_Title"),
-                                MessageBoxButtons.YesNo) == DialogResult.No)
+                            DialogResult ePickBPResult = DialogResult.Cancel;
+                            Program.MainForm.DoThreadSafe(() =>
+                            {
+                                using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
+                                {
+                                    frmPickBP.ShowDialog(Program.MainForm);
+                                    ePickBPResult = frmPickBP.DialogResult;
+                                }
+                            });
+                            if (ePickBPResult != DialogResult.OK)
                             {
                                 IsLoading = false;
                                 return false;
@@ -2374,66 +2579,6 @@ namespace Chummer
                         if (!xmlCharacterNavigator.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                             _strPrimaryArm = "Right";
 
-                        if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
-                        {
-                            if (xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) &&
-                                _intBuildKarma == 35)
-                                _strGameplayOption = "Prime Runner";
-                            else
-                                _strGameplayOption = "Standard";
-                        }
-
-                        xmlCharacterNavigator.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-                        if (!xmlCharacterNavigator.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) ||
-                            _decMaxNuyen == 0)
-                            _decMaxNuyen = 25;
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
-                        if (!xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) ||
-                            _intMaxKarma == 0)
-                            _intMaxKarma = _intBuildKarma;
-
-                        //Maximum number of Karma that can be spent/gained on Qualities.
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("gameplayoptionqualitylimit",
-                            ref _intGameplayOptionQualityLimit);
-
-                        xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
-                        xmlCharacterNavigator.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
-
-                        XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-                        XmlNode xmlGameplayOption =
-                            objXmlDocumentGameplayOptions.SelectSingleNode(
-                                "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-                        if (xmlGameplayOption == null && showWarnings)
-                        {
-                            if (Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo,
-                                        LanguageManager.GetString("Message_MissingGameplayOption"), GameplayOption),
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title"),
-                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
-                            {
-                                DialogResult eResult = DialogResult.Cancel;
-                                Program.MainForm.DoThreadSafe(() =>
-                                {
-                                    using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
-                                    {
-                                        frmPickBP.ShowDialog(Program.MainForm);
-                                        eResult = frmPickBP.DialogResult;
-                                    }
-                                });
-                                if (eResult != DialogResult.OK)
-                                {
-                                    IsLoading = false;
-                                    return false;
-                                }
-                            }
-                            else
-                            {
-                                IsLoading = false;
-                                return false;
-                            }
-                        }
-
                         xmlCharacterNavigator.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
                         xmlCharacterNavigator.TryGetStringFieldQuickly("priorityattributes",
                             ref _strPriorityAttributes);
@@ -2447,21 +2592,6 @@ namespace Chummer
                         )
                         {
                             _lstPrioritySkills.Add(xmlSkillName.Value);
-                        }
-
-                        BannedWareGrades.Clear();
-                        XPathNavigator xmlTempNode = xmlCharacterNavigator.SelectSingleNode("bannedwaregrades");
-                        if (xmlTempNode != null)
-                        {
-                            foreach (XPathNavigator xmlNode in xmlTempNode.Select("grade"))
-                                BannedWareGrades.Add(xmlNode.Value);
-                        }
-                        else
-                        {
-                            XmlNodeList xmlBannedGradesList = xmlGameplayOption?.SelectNodes("bannedwaregrades/grade");
-                            if (xmlBannedGradesList?.Count > 0)
-                                foreach (XmlNode xmlNode in xmlBannedGradesList)
-                                    BannedWareGrades.Add(xmlNode.InnerText);
                         }
 
                         string strSkill1 = string.Empty;
@@ -2666,7 +2796,7 @@ namespace Chummer
                         objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
                         bool blnHasOldQualities = false;
                         xmlRootQualitiesNode =
-                            XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");
+                            LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
                         foreach (XmlNode objXmlQuality in objXmlNodeList)
                         {
                             if (objXmlQuality["name"] != null)
@@ -2778,18 +2908,23 @@ namespace Chummer
                                                 lstContacts.Sort(CompareListItems.CompareNames);
                                             }
 
-                                            using (frmSelectItem frmPickItem = new frmSelectItem())
+                                            DialogResult ePickItemResult = DialogResult.Cancel;
+                                            Program.MainForm.DoThreadSafe(() =>
                                             {
-                                                frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                frmPickItem.ShowDialog(Program.MainForm);
-
-                                                // Make sure the dialogue window was not canceled.
-                                                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                                                using (frmSelectItem frmPickItem = new frmSelectItem())
                                                 {
-                                                    return false;
-                                                }
+                                                    frmPickItem.SetDropdownItemsMode(lstContacts);
+                                                    frmPickItem.ShowDialog(Program.MainForm);
 
-                                                selectedContactUniqueId = frmPickItem.SelectedItem;
+                                                    ePickItemResult = frmPickItem.DialogResult;
+                                                    selectedContactUniqueId = frmPickItem.SelectedItem;
+                                                }
+                                            });
+                                            // Make sure the dialogue window was not canceled.
+                                            if (ePickItemResult != DialogResult.OK)
+                                            {
+                                                IsLoading = false;
+                                                return false;
                                             }
                                         }
 
@@ -2893,11 +3028,11 @@ namespace Chummer
                         {
                             // Legacy load a Technomancer tradition
                             XmlNode xmlTraditionListDataNode =
-                                XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
+                                LoadData("streams.xml").SelectSingleNode("/chummer/traditions");
                             if (xmlTraditionListDataNode != null)
                             {
                                 XmlNode xmlTraditionDataNode =
-                                    xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"" + strTemp + "\"]");
+                                    xmlTraditionListDataNode.SelectSingleNode("tradition[name = " + strTemp.CleanXPath() + "]");
                                 if (xmlTraditionDataNode != null)
                                 {
                                     if (!_objTradition.Create(xmlTraditionDataNode, true))
@@ -2940,13 +3075,13 @@ namespace Chummer
                             else if (xpathTraditionNavigator != null && MAGEnabled)
                             {
                                 XmlNode xmlTraditionListDataNode =
-                                    XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions");
+                                    LoadData("traditions.xml").SelectSingleNode("/chummer/traditions");
                                 if (xmlTraditionListDataNode != null)
                                 {
                                     xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref strTemp);
                                     XmlNode xmlTraditionDataNode =
                                         xmlTraditionListDataNode.SelectSingleNode(
-                                            "tradition[name = \"" + strTemp + "\"]");
+                                            "tradition[name = " + strTemp.CleanXPath() + "]");
                                     if (xmlTraditionDataNode != null)
                                     {
                                         if (!_objTradition.Create(xmlTraditionDataNode))
@@ -2956,7 +3091,7 @@ namespace Chummer
                                     {
                                         xmlTraditionDataNode =
                                             xmlTraditionListDataNode.SelectSingleNode(
-                                                "tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
+                                                "tradition[id = " + Tradition.CustomMagicalTraditionGuid.CleanXPath() + "]");
                                         if (xmlTraditionDataNode != null && !_objTradition.Create(xmlTraditionDataNode))
                                         {
                                             _objTradition.ResetTradition();
@@ -3391,7 +3526,7 @@ namespace Chummer
                         {
                             XmlNode objNode =
                                 objXmlCharacter.SelectSingleNode(
-                                    "powers/power[guid = \"" + objItem.Value + "\"]");
+                                    "powers/power[guid = " + objItem.Value.ToString().CleanXPath() + "]");
                             if (objNode != null)
                             {
                                 Power objPower = new Power(this);
@@ -3754,7 +3889,7 @@ namespace Chummer
                         if (!blnFoundUnarmed)
                         {
                             // Add the Unarmed Attack Weapon to the character.
-                            XmlDocument objXmlWeaponDoc = XmlManager.Load("weapons.xml");
+                            XmlDocument objXmlWeaponDoc = LoadData("weapons.xml");
                             XmlNode objXmlWeapon =
                                 objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                             if (objXmlWeapon != null)
@@ -3800,43 +3935,6 @@ namespace Chummer
                         }
 
                         //Timekeeper.Finish("load_char_dwarffix");
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_char_cfix", loadActivity))
-                    {
-                        // load issue where the contact multiplier was set to 0
-                        if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
-                        {
-                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
-                                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
-                                                  _strGameplayOption +
-                                                  "\"]");
-                            if (objXmlGameplayOption != null)
-                            {
-                                string strKarma = objXmlGameplayOption["karma"]?.InnerText;
-                                string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                                string strContactMultiplier = Options.FreeContactsMultiplierEnabled
-                                    ? Options.FreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo)
-                                    : objXmlGameplayOption["contactmultiplier"]?.InnerText;
-                                _intMaxKarma = Convert.ToInt32(strKarma, GlobalOptions.InvariantCultureInfo);
-                                _decMaxNuyen = Convert.ToDecimal(strNuyen, GlobalOptions.InvariantCultureInfo);
-                                _intContactMultiplier = Convert.ToInt32(strContactMultiplier, GlobalOptions.InvariantCultureInfo);
-                                _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
-                            }
-                        }
-
-                        //Timekeeper.Finish("load_char_cfix");
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", loadActivity))
-                    {
-                        //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
-                        if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
-                        {
-                            _intGameplayOptionQualityLimit = _intMaxKarma;
-                        }
-
-                        //Timekeeper.Finish("load_char_maxkarmafix");
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity))
@@ -3982,8 +4080,9 @@ namespace Chummer
 
                         if (!InitiationEnabled || !AddInitiationsAllowed)
                             ClearInitiations();
-                        foreach (Action funcToCall in PostLoadMethods)
-                            funcToCall.Invoke();
+                        foreach (Func<bool> funcToCall in PostLoadMethods)
+                            if (!funcToCall.Invoke())
+                                return false;
                         PostLoadMethods.Clear();
                         //Timekeeper.Finish("load_char_improvementrefreshers");
                     }
@@ -4046,6 +4145,10 @@ namespace Chummer
             // <character>
             objWriter.WriteStartElement("character");
 
+            // <settings />
+            objWriter.WriteElementString("settings", CharacterOptionsKey);
+            // <buildmethod />
+            objWriter.WriteElementString("buildmethod", Options.BuildMethod.ToString());
             // <imageformat />
             objWriter.WriteElementString("imageformat", GlobalOptions.SavedImageQuality == int.MaxValue ? "png" : "jpeg");
             // <metatype />
@@ -4075,14 +4178,6 @@ namespace Chummer
             // <movementfly />
             objWriter.WriteElementString("movementfly", GetFly(objCulture, strLanguageToPrint));
 
-            // <gameplayoption />
-            objWriter.WriteElementString("gameplayoption", GameplayOption);
-            // <maxkarma />
-            objWriter.WriteElementString("maxkarma", MaxKarma.ToString(objCulture));
-            // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", MaxNuyen.ToString(Options.NuyenFormat, objCulture));
-            // <contactmultiplier />
-            objWriter.WriteElementString("contactmultiplier", ContactMultiplier.ToString(objCulture));
             // <prioritymetatype />
             objWriter.WriteElementString("prioritymetatype", MetatypePriority);
             // <priorityattributes />
@@ -4130,33 +4225,19 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("gender",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Gender),
-                    strLanguageToPrint));
+            objWriter.WriteElementString("gender", TranslateExtra(ReverseTranslateExtra(Gender), strLanguageToPrint));
             // <age />
-            objWriter.WriteElementString("age",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Age),
-                    strLanguageToPrint));
+            objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age), strLanguageToPrint));
             // <eyes />
-            objWriter.WriteElementString("eyes",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Eyes),
-                    strLanguageToPrint));
+            objWriter.WriteElementString("eyes", TranslateExtra(ReverseTranslateExtra(Eyes), strLanguageToPrint));
             // <height />
-            objWriter.WriteElementString("height",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Height),
-                    strLanguageToPrint));
+            objWriter.WriteElementString("height", TranslateExtra(ReverseTranslateExtra(Height), strLanguageToPrint));
             // <weight />
-            objWriter.WriteElementString("weight",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Weight),
-                    strLanguageToPrint));
+            objWriter.WriteElementString("weight", TranslateExtra(ReverseTranslateExtra(Weight), strLanguageToPrint));
             // <skin />
-            objWriter.WriteElementString("skin",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Skin),
-                    strLanguageToPrint));
+            objWriter.WriteElementString("skin", TranslateExtra(ReverseTranslateExtra(Skin), strLanguageToPrint));
             // <hair />
-            objWriter.WriteElementString("hair",
-                LanguageManager.TranslateExtra(LanguageManager.ReverseTranslateExtra(Hair),
-                    strLanguageToPrint));
+            objWriter.WriteElementString("hair", TranslateExtra(ReverseTranslateExtra(Hair), strLanguageToPrint));
             // <description />
             objWriter.WriteElementString("description", Description.RtfToHtml());
             // <background />
@@ -4907,10 +4988,6 @@ namespace Chummer
         /// </summary>
         public void ResetCharacter()
         {
-            _intBuildKarma = 800;
-            _intSumtoTen = 10;
-
-            _decNuyenMaximumBP = 50;
             _intFreeSpells = 0;
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
@@ -4931,7 +5008,6 @@ namespace Chummer
             _intTotalSpecial = 0;
             _intAttributes = 0;
             _intTotalAttributes = 0;
-            _intGameplayOptionQualityLimit = 25;
 
             // Reset Metatype Information.
             _strMetatype = string.Empty;
@@ -5365,16 +5441,16 @@ namespace Chummer
                 case Improvement.ImprovementSource.Quality:
                     if(objImprovement.SourceName == "SEEKER_WIL")
                     {
-                        return XmlManager.Load("qualities.xml", strLanguage)
+                        return LoadDataXPath("qualities.xml")
                                    .SelectSingleNode(
                                        "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
-                                   ?.InnerText ?? "Cyber-Singularity Seeker";
+                                   ?.Value ?? "Cyber-Singularity Seeker";
                     }
                     else if(objImprovement.SourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                     {
-                        return XmlManager.Load("qualities.xml", strLanguage)
+                        return LoadDataXPath("qualities.xml")
                                    .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
-                                   ?.InnerText ?? "Redliner";
+                                   ?.Value ?? "Redliner";
                     }
 
                     foreach(Quality objQuality in Qualities)
@@ -5422,10 +5498,10 @@ namespace Chummer
                 case Improvement.ImprovementSource.AstralReputation:
                     return LanguageManager.GetString("String_AstralReputation", strLanguage);
                 case Improvement.ImprovementSource.CyberadeptDaemon:
-                    return XmlManager.Load("qualities.xml", strLanguage)
+                    return LoadDataXPath("qualities.xml", strLanguage)
                         .SelectSingleNode(
                             "/chummer/qualities/quality[name = \"Resonant Stream: Cyberadept\"]/translate")
-                        ?.InnerText ?? "Resonant Stream: Cyberadept";
+                        ?.Value ?? "Resonant Stream: Cyberadept";
                 default:
                     if(objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
@@ -5452,8 +5528,7 @@ namespace Chummer
         {
             if (sbdToolTip == null)
                 return;
-            sbdToolTip.Append(strSpace + '+' + strSpace +
-                              LanguageManager.GetString("Tip_Modifiers"));
+            sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers"));
             bool blnFirstModifier = true;
             foreach (Improvement objLoopImprovement in Improvements.Where(imp => improvements.Contains(imp.ImproveType) && imp.Enabled))
             {
@@ -5478,44 +5553,41 @@ namespace Chummer
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         public List<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
-            StringBuilder strFilter = new StringBuilder();
+            StringBuilder sbdFilter = new StringBuilder();
             if(Options != null)
             {
-                strFilter.Append('(').Append(Options.BookXPath()).Append(") and ");
-            }
-
-            if(!IgnoreRules && !Created && !blnIgnoreBannedGrades)
-            {
-                foreach(string strBannedGrade in BannedWareGrades)
+                sbdFilter.Append('(').Append(Options.BookXPath()).Append(") and ");
+                if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
                 {
-                    strFilter.Append("not(contains(name, \"").Append(strBannedGrade).Append("\")) and ");
+                    foreach (string strBannedGrade in Options.BannedWareGrades)
+                    {
+                        sbdFilter.Append("not(contains(name, " + strBannedGrade.CleanXPath() + ")) and ");
+                    }
                 }
             }
 
             string strXPath;
-            if(strFilter.Length != 0)
+            if(sbdFilter.Length != 0)
             {
-                strFilter.Length -= 5;
-                strXPath = "/chummer/grades/grade[(" + strFilter + ")]";
+                sbdFilter.Length -= 5;
+                strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
             }
             else
                 strXPath = "/chummer/grades/grade";
 
             List<Grade> lstGrades;
-            using (XmlNodeList xmlGradeList = XmlManager
-                .Load(objSource == Improvement.ImprovementSource.Bioware
+            using (XmlNodeList xmlGradeList = LoadData(objSource == Improvement.ImprovementSource.Bioware
                     ? "bioware.xml"
                     : objSource == Improvement.ImprovementSource.Drug
                         ? "drugcomponents.xml"
-                        : "cyberware.xml")
-                .SelectNodes(strXPath))
+                        : "cyberware.xml").SelectNodes(strXPath))
             {
                 lstGrades = new List<Grade>(xmlGradeList?.Count ?? 0);
                 if (xmlGradeList?.Count > 0)
                 {
-                    foreach (XmlNode objNode in xmlGradeList)
+                    foreach(XmlNode objNode in xmlGradeList)
                     {
-                        Grade objGrade = new Grade(objSource);
+                        Grade objGrade = new Grade(this, objSource);
                         objGrade.Load(objNode);
                         lstGrades.Add(objGrade);
                     }
@@ -5634,17 +5706,17 @@ namespace Chummer
             foreach(Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children))
             {
                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount &&
-                    (objLoopCyberware.Location == objModularCyberware.Location ||
-                     string.IsNullOrEmpty(objModularCyberware.Location)) &&
-                    objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name &&
-                    objLoopCyberware != objModularCyberware)
+                if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                   && (objLoopCyberware.Location == objModularCyberware.Location
+                       || string.IsNullOrEmpty(objModularCyberware.Location))
+                   && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                   && objLoopCyberware != objModularCyberware)
                 {
                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
                     if(objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                     {
-                        string strName = objLoopCyberware.Parent?.CurrentDisplayName ??
-                                         objLoopCyberware.CurrentDisplayName;
+                        string strName = objLoopCyberware.Parent?.CurrentDisplayName
+                                         ?? objLoopCyberware.CurrentDisplayName;
                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                         blnMountChangeAllowed = true;
                     }
@@ -5655,23 +5727,20 @@ namespace Chummer
             {
                 foreach(VehicleMod objLoopVehicleMod in objLoopVehicle.Mods)
                 {
-                    foreach(Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(
-                        x => x.Children))
+                    foreach(Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
                     {
                         // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                        if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount &&
-                            objLoopCyberware.Location == objModularCyberware.Location &&
-                            objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name &&
-                            objLoopCyberware != objModularCyberware)
+                        if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                           && objLoopCyberware.Location == objModularCyberware.Location
+                           && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                           && objLoopCyberware != objModularCyberware)
                         {
                             // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                            if(objLoopCyberware.Children.All(x =>
-                               x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
+                            if(objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                             {
-                                string strName = objLoopVehicle.CurrentDisplayName +
-                                                 strSpace +
-                                                 (objLoopCyberware.Parent?.CurrentDisplayName ??
-                                                  objLoopVehicleMod.CurrentDisplayName);
+                                string strName = objLoopVehicle.CurrentDisplayName
+                                                 + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
+                                                               ?? objLoopVehicleMod.CurrentDisplayName);
                                 lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                                 blnMountChangeAllowed = true;
                             }
@@ -5683,23 +5752,20 @@ namespace Chummer
                 {
                     foreach(VehicleMod objLoopVehicleMod in objLoopWeaponMount.Mods)
                     {
-                        foreach(Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(x =>
-                           x.Children))
+                        foreach(Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
                         {
                             // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                            if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount &&
-                                objLoopCyberware.Location == objModularCyberware.Location &&
-                                objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name &&
-                                objLoopCyberware != objModularCyberware)
+                            if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                               && objLoopCyberware.Location == objModularCyberware.Location
+                               && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                               && objLoopCyberware != objModularCyberware)
                             {
                                 // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                if(objLoopCyberware.Children.All(x =>
-                                   x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
+                                if(objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                                 {
-                                    string strName = objLoopVehicle.CurrentDisplayName +
-                                                     strSpace +
-                                                     (objLoopCyberware.Parent?.CurrentDisplayName ??
-                                                      objLoopVehicleMod.CurrentDisplayName);
+                                    string strName = objLoopVehicle.CurrentDisplayName
+                                                     + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
+                                                                   ?? objLoopVehicleMod.CurrentDisplayName);
                                     lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                                     blnMountChangeAllowed = true;
                                 }
@@ -5719,8 +5785,8 @@ namespace Chummer
             StringBuilder sbdMessage = new StringBuilder(LanguageManager.GetString("Message_KarmaValue", strLanguage)).AppendLine();
             string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
             int intExtraKarmaToRemoveForPointBuyComparison = 0;
-            intReturn = BuildKarma;
-            if(BuildMethod != CharacterBuildMethod.Karma)
+            intReturn = Options.BuildKarma;
+            if (EffectiveBuildMethodUsesPriorityTables)
             {
                 // Subtract extra karma cost of a metatype in priority
                 intReturn -= MetatypeBP;
@@ -5729,7 +5795,7 @@ namespace Chummer
             sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_Base", strLanguage)).Append(strColonCharacter)
                 .Append(strSpace).Append(intReturn.ToString(GlobalOptions.CultureInfo)).Append(strSpace).Append(strKarmaString);
 
-            if(BuildMethod != CharacterBuildMethod.Karma)
+            if (EffectiveBuildMethodUsesPriorityTables)
             {
                 // Zeroed to -10 because that's Human's value at default settings
                 int intMetatypeQualitiesValue = -2 * Options.KarmaAttribute;
@@ -5838,7 +5904,7 @@ namespace Chummer
                         {
                             intTemp += Options.KarmaNewActiveSkill;
                             intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Options.KarmaImproveActiveSkill;
-                            if(BuildMethod == CharacterBuildMethod.LifeModule)
+                            if (EffectiveBuildMethodIsLifeModule)
                                 intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) *
                                            Options.KarmaSpecialization;
                             else if(!objLoopActiveSkill.BuyWithKarma)
@@ -5901,7 +5967,7 @@ namespace Chummer
                     intKnowledgePointsValue += Options.KarmaNewKnowledgeSkill;
                     intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
                                                Options.KarmaImproveKnowledgeSkill;
-                    if(BuildMethod == CharacterBuildMethod.LifeModule)
+                    if(EffectiveBuildMethodIsLifeModule)
                         intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) *
                                                    Options.KarmaKnowledgeSpecialization;
                     else if(!objLoopKnowledgeSkill.BuyWithKarma)
@@ -5930,52 +5996,11 @@ namespace Chummer
         /// <summary>
         /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
         /// </summary>
-        public HashSet<string> GenerateBlackMarketMappings(XmlDocument xmlCategoryDocument)
-        {
-            if (xmlCategoryDocument == null)
-                throw new ArgumentNullException(nameof(xmlCategoryDocument));
-            HashSet<string> setBlackMarketMaps = new HashSet<string>();
-            // Character has no Black Market discount qualities. Fail out early.
-            if(BlackMarketDiscount)
-            {
-                // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
-                HashSet<string> setNames = new HashSet<string>();
-                foreach(Improvement objImprovement in Improvements)
-                {
-                    if(objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount &&
-                        objImprovement.Enabled)
-                        setNames.Add(objImprovement.ImprovedName);
-                }
-
-                using (XmlNodeList xmlCategoryList = xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
-                {
-                    if (xmlCategoryList != null)
-                    {
-                        // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                        foreach (XmlNode xmlCategoryNode in xmlCategoryList)
-                        {
-                            string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBlackMarketAttribute) &&
-                                strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Any(x => setNames.Contains(x)))
-                            {
-                                setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return setBlackMarketMaps;
-        }
-
-        /// <summary>
-        /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
-        /// </summary>
         public HashSet<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList)
         {
             HashSet<string> setBlackMarketMaps = new HashSet<string>();
             // Character has no Black Market discount qualities. Fail out early.
-            if(BlackMarketDiscount)
+            if (BlackMarketDiscount)
             {
                 if (xmlCategoryList == null)
                 {
@@ -6012,32 +6037,58 @@ namespace Chummer
             return setBlackMarketMaps;
         }
 
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strAltCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookCodeFromAltCode(strAltCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public string LanguageBookShort(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookShort(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Book name (using the translated version if applicable) using the character's data files.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="strLanguage">Language to load.</param>
+        public string LanguageBookLong(string strCode, string strLanguage = "")
+        {
+            return CommonFunctions.LanguageBookLong(strCode, strLanguage, this);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        public string TranslateExtra(string strExtra, string strIntoLanguage = "")
+        {
+            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "")
+        {
+            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this);
+        }
         #endregion
 
         #region UI Methods
-
-        /// <summary>
-        /// Verify that the user wants to delete an item.
-        /// </summary>
-        public bool ConfirmDelete(string strMessage)
-        {
-            return !Options.ConfirmDelete ||
-                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
-                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-        }
-
-        /// <summary>
-        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
-        /// </summary>
-        public bool ConfirmKarmaExpense(string strMessage)
-        {
-            if(Options.ConfirmKarmaExpense &&
-               Program.MainForm.ShowMessageBox(strMessage,
-                   LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
-                   MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return false;
-            return true;
-        }
 
         #region Move TreeNodes
 
@@ -6645,10 +6696,28 @@ namespace Chummer
 
         #region Basic Properties
 
+        private CharacterOptions _objOptions = Utils.IsDesignerMode ? new CharacterOptions() : OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
+
         /// <summary>
         /// Character Options object.
         /// </summary>
-        public CharacterOptions Options { get; }
+        public CharacterOptions Options
+        {
+            get => _objOptions;
+            private set // Private to make sure this is always in sync with GameplayOption
+            {
+                if (_objOptions != value)
+                {
+                    if (_objOptions != null)
+                        _objOptions.PropertyChanged -= OptionsOnPropertyChanged;
+                    _objOptions = value;
+                    if (_objOptions != null)
+                        _objOptions.PropertyChanged -= OptionsOnPropertyChanged;
+                    if (!IsLoading)
+                        OnPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Name of the file the Character is saved to.
@@ -6670,23 +6739,6 @@ namespace Chummer
         /// Name of the file the Character is saved to.
         /// </summary>
         public DateTime FileLastWriteTime => _dateFileLastWriteTime;
-
-        /// <summary>
-        /// Name of the settings file the Character uses.
-        /// </summary>
-        public string SettingsFile
-        {
-            get => _strSettingsFileName;
-            set
-            {
-                if(_strSettingsFileName != value)
-                {
-                    _strSettingsFileName = value;
-                    Options.Load(_strSettingsFileName);
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         /// <summary>
         /// Whether or not the character has been saved as Created and can no longer be modified using the Build system.
@@ -6855,8 +6907,7 @@ namespace Chummer
                     }
                     catch(UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
-                            GlobalOptions.Language));
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     }
                 }
 
@@ -6904,81 +6955,16 @@ namespace Chummer
         /// Character's Gameplay Option.
         /// </summary>
         [HubTag]
-        public string GameplayOption
+        public string CharacterOptionsKey
         {
-            get => _strGameplayOption;
+            get => _strCharacterOptionsKey;
             set
             {
-                if(_strGameplayOption != value)
+                if(_strCharacterOptionsKey != value)
                 {
-                    _strGameplayOption = value;
+                    _strCharacterOptionsKey = value;
                     OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Quality Limit conferred by the Character's Gameplay Option
-        /// </summary>
-        public int GameplayOptionQualityLimit
-        {
-            get => _intGameplayOptionQualityLimit;
-            set
-            {
-                if(_intGameplayOptionQualityLimit != value)
-                {
-                    _intGameplayOptionQualityLimit = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Character's maximum karma at character creation.
-        /// </summary>
-        [HubTag]
-        public int MaxKarma
-        {
-            get => _intMaxKarma;
-            set
-            {
-                if(_intMaxKarma != value)
-                {
-                    _intMaxKarma = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Character's maximum nuyen at character creation.
-        /// </summary>
-        [HubTag]
-        public decimal MaxNuyen
-        {
-            get => _decMaxNuyen;
-            set
-            {
-                if(_decMaxNuyen != value)
-                {
-                    _decMaxNuyen = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Character's contact point multiplier.
-        /// </summary>
-        public int ContactMultiplier
-        {
-            get => _intContactMultiplier;
-            set
-            {
-                if(_intContactMultiplier != value)
-                {
-                    _intContactMultiplier = value;
-                    OnPropertyChanged();
+                    Options = OptionsManager.LoadedCharacterOptions[value];
                 }
             }
         }
@@ -7114,7 +7100,7 @@ namespace Chummer
             {
                 if(!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
                     return _strCachedCharacterGrammaticGender;
-                switch(LanguageManager.ReverseTranslateExtra(Gender).ToUpperInvariant())
+                switch(ReverseTranslateExtra(Gender).ToUpperInvariant())
                 {
                     case "M":
                     case "MALE":
@@ -7485,17 +7471,17 @@ namespace Chummer
             }
         }
 
-        private void RefreshAstralReputationImprovements()
+        private bool RefreshAstralReputationImprovements()
         {
             if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
             {
                 PostLoadMethods.Enqueue(RefreshAstralReputationImprovements);
-                return;
+                return true;
             }
             int intCurrentTotalAstralReputation = TotalAstralReputation;
             List<Improvement> lstCurrentAstralReputationImprovements = Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.AstralReputation).ToList();
             if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
-                return;
+                return true;
             ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements);
             ImprovementManager.CreateImprovement(this, "Summoning", Improvement.ImprovementSource.AstralReputation,
                 nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.Skill, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
@@ -7510,6 +7496,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(this, "Chain Breaker", Improvement.ImprovementSource.AstralReputation,
                     nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.DisableQuality, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
                     -intCurrentTotalAstralReputation);
+            return true;
         }
 
         /// <summary>
@@ -7691,8 +7678,18 @@ namespace Chummer
             {
                 if(_intCachedContactPoints == int.MinValue)
                 {
-                    _intCachedContactPoints = (Options.UseTotalValueForFreeContacts ? CHA.TotalValue : CHA.Value) *
-                                              ContactMultiplier;
+                    string strExpression = Options.ContactPointsExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        _intCachedContactPoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    }
+                    else
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intCachedContactPoints);
                 }
 
                 return _intCachedContactPoints;
@@ -7961,22 +7958,6 @@ namespace Chummer
                 if(_blnPossessed != value)
                 {
                     _blnPossessed = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Maximum item Availability for new characters.
-        /// </summary>
-        public int MaximumAvailability
-        {
-            get => _intMaxAvail;
-            set
-            {
-                if(_intMaxAvail != value)
-                {
-                    _intMaxAvail = value;
                     OnPropertyChanged();
                 }
             }
@@ -8405,7 +8386,7 @@ namespace Chummer
                         }
                         else
                         {
-                            XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
+                            XmlNode xmlTraditionListDataNode = LoadData("streams.xml").SelectSingleNode("/chummer/traditions");
                             if(xmlTraditionListDataNode != null)
                             {
                                 XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
@@ -8694,7 +8675,7 @@ namespace Chummer
                                 EssenceAtSpecialStart = ESS.MetatypeMaximum;
                         }
 
-                        XmlNode xmlTraditionListDataNode = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions");
+                        XmlNode xmlTraditionListDataNode = LoadData("streams.xml").SelectSingleNode("/chummer/traditions");
                         if(xmlTraditionListDataNode != null)
                         {
                             XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
@@ -8722,10 +8703,10 @@ namespace Chummer
                         }
                         else
                         {
-                            XmlNode xmlTraditionListDataNode = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions");
+                            XmlNode xmlTraditionListDataNode = LoadData("traditions.xml").SelectSingleNode("/chummer/traditions");
                             if(xmlTraditionListDataNode != null)
                             {
-                                XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = \"" + Tradition.CustomMagicalTraditionGuid + "\"]");
+                                XmlNode xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition[id = " + Tradition.CustomMagicalTraditionGuid.CleanXPath() + "]");
                                 if(xmlTraditionDataNode != null)
                                 {
                                     if(!MagicTradition.Create(xmlTraditionDataNode))
@@ -9139,7 +9120,7 @@ namespace Chummer
                 Cyberware objHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID);
                 if(objHole == null)
                 {
-                    XmlNode xmlEssHole = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + Backend.Equipment.Cyberware.EssenceHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+                    XmlNode xmlEssHole = LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware.EssenceHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
                     objHole = new Cyberware(this);
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     List<Vehicle> lstVehicles = new List<Vehicle>(1);
@@ -9197,7 +9178,7 @@ namespace Chummer
                 Cyberware objAntiHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                 if(objAntiHole == null)
                 {
-                    XmlNode xmlEssAntiHole = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + Backend.Equipment.Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo) + "\"]");
+                    XmlNode xmlEssAntiHole = LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath() + "]");
                     objAntiHole = new Cyberware(this);
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     List<Vehicle> lstVehicles = new List<Vehicle>(1);
@@ -10282,13 +10263,10 @@ namespace Chummer
                             ?.DisplayNameShort(GlobalOptions.Language);
                         if(string.IsNullOrEmpty(strErasedString))
                         {
-                            XmlNode xmlErasedQuality = XmlManager.Load("qualities.xml")
-                                .SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
+                            XPathNavigator xmlErasedQuality = LoadDataXPath("qualities.xml").SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
                             if(xmlErasedQuality != null)
                             {
-                                strErasedString = xmlErasedQuality["translate"]?.InnerText
-                                                  ?? xmlErasedQuality["name"]?.InnerText
-                                                  ?? string.Empty;
+                                strErasedString = xmlErasedQuality.SelectSingleNode("translate")?.Value ?? "Erased";
                             }
                         }
 
@@ -12003,53 +11981,13 @@ namespace Chummer
         /// <summary>
         /// Method being used to build the character.
         /// </summary>
-        public CharacterBuildMethod BuildMethod
-        {
-            get => _objBuildMethod;
-            set
-            {
-                if(value != _objBuildMethod)
-                {
-                    _objBuildMethod = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public CharacterBuildMethod EffectiveBuildMethod => IsCritter ? CharacterBuildMethod.Karma : Options.BuildMethod;
 
-        public bool BuildMethodHasSkillPoints => BuildMethod == CharacterBuildMethod.Priority ||
-                                                 BuildMethod == CharacterBuildMethod.SumtoTen;
+        public bool EffectiveBuildMethodUsesPriorityTables => EffectiveBuildMethod.UsesPriorityTables();
 
-        /// <summary>
-        /// Number of Build Points that are used to create the character.
-        /// </summary>
-        public int SumtoTen
-        {
-            get => _intSumtoTen;
-            set
-            {
-                if(_intSumtoTen != value)
-                {
-                    _intSumtoTen = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public bool EffectiveBuildMethodIsLifeModule => EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
 
-        /// <summary>
-        /// Amount of Karma that is used to create the character.
-        /// </summary>
-        public int BuildKarma
-        {
-            get => _intBuildKarma;
-            set
-            {
-                if(_intBuildKarma != value)
-                {
-                    _intBuildKarma = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public bool EnableAutomaticStoryButton => EffectiveBuildMethodIsLifeModule && Options.AutomaticBackstory;
 
         /// <summary>
         /// Amount of Nuyen the character has.
@@ -12126,22 +12064,6 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Maximum number of Build Points that can be spent on Nuyen.
-        /// </summary>
-        public decimal NuyenMaximumBP
-        {
-            get => _decNuyenMaximumBP;
-            set
-            {
-                if(_decNuyenMaximumBP != value)
-                {
-                    _decNuyenMaximumBP = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public decimal TotalNuyenMaximumBP
         {
             get
@@ -12155,7 +12077,7 @@ namespace Chummer
                 }
 
                 return Math.Max(Math.Min(decMaxValue,
-                    NuyenMaximumBP + ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP)), 0);
+                    Options.NuyenMaximumBP + ImprovementManager.ValueOf(this, Improvement.ImprovementType.NuyenMaxBP)), 0);
             }
         }
 
@@ -12169,11 +12091,11 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                return LanguageManager.GetString("Label_Options_Maximum")
-                       + strSpace + '(' + LanguageManager.GetString("String_LimitMentalShort")
-                       + strSpace + '[' + LimitMental.ToString(GlobalOptions.CultureInfo) + "],"
-                       + strSpace + LanguageManager.GetString("String_LimitSocialShort")
-                       + strSpace + '[' + LimitSocial.ToString(GlobalOptions.CultureInfo) + "])";
+                return string.Concat(LanguageManager.GetString("Label_Options_Maximum"),
+                    strSpace, "(", LanguageManager.GetString("String_LimitMentalShort"),
+                    strSpace, "[", LimitMental.ToString(GlobalOptions.CultureInfo), "],",
+                    strSpace, LanguageManager.GetString("String_LimitSocialShort"),
+                    strSpace, "[", LimitSocial.ToString(GlobalOptions.CultureInfo), "])");
             }
         }
 
@@ -12203,8 +12125,8 @@ namespace Chummer
                 if(IsAI)
                 {
                     Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
-                    return LanguageManager.GetString("String_Handling") + strSpace +
-                           '[' + (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalOptions.CultureInfo) + ']';
+                    return string.Concat(LanguageManager.GetString("String_Handling"),
+                        strSpace, "[", (objHomeNodeVehicle?.Handling ?? 0).ToString(GlobalOptions.CultureInfo), "]");
                 }
 
                 StringBuilder sbdToolTip = new StringBuilder("(").Append(STR.DisplayAbbrev)
@@ -12218,8 +12140,8 @@ namespace Chummer
 
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit &&
-                        objLoopImprovement.Enabled)
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit
+                        && objLoopImprovement.Enabled)
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
                             .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -12302,8 +12224,8 @@ namespace Chummer
 
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.MentalLimit &&
-                        objLoopImprovement.Enabled)
+                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.MentalLimit
+                        && objLoopImprovement.Enabled)
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
                             .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -12382,8 +12304,8 @@ namespace Chummer
 
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SocialLimit &&
-                        objLoopImprovement.Enabled)
+                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.SocialLimit
+                       && objLoopImprovement.Enabled)
                     {
                         sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(GetObjectName(objLoopImprovement))
                             .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
@@ -12409,11 +12331,8 @@ namespace Chummer
 
                 MentorSpirit objMentorSpirit = MentorSpirits[0];
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder(LanguageManager.GetString("Label_SelectMentorSpirit_Advantage"))
-                    .Append(strSpace).AppendLine(objMentorSpirit.DisplayAdvantage(GlobalOptions.Language))
-                    .AppendLine().Append(LanguageManager.GetString("Label_SelectMetamagic_Disadvantage"))
-                    .Append(strSpace).AppendLine(objMentorSpirit.Disadvantage);
-                return sbdReturn.ToString().WordWrap();
+                return (LanguageManager.GetString("Label_SelectMentorSpirit_Advantage") + strSpace + objMentorSpirit.DisplayAdvantage(GlobalOptions.Language)
+                        + Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_SelectMetamagic_Disadvantage") + strSpace + objMentorSpirit.Disadvantage).WordWrap();
             }
         }
 
@@ -13013,7 +12932,7 @@ namespace Chummer
             get
             {
                 string s = string.Empty;
-                switch (BuildMethod)
+                switch (EffectiveBuildMethod)
                 {
                     case CharacterBuildMethod.Karma:
                     case CharacterBuildMethod.LifeModule:
@@ -13165,13 +13084,15 @@ namespace Chummer
             }
         }
 
-        public bool AddCyberwareEnabled => !CyberwareDisabled && !Improvements.Any(objImprovement =>
-                                               objImprovement.ImproveType ==
-                                               Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
+        public bool AddCyberwareEnabled => !CyberwareDisabled
+                                           && !Improvements.Any(objImprovement =>
+                                               objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware
+                                               && objImprovement.Enabled);
 
-        public bool AddBiowareEnabled => !CyberwareDisabled && !Improvements.Any(objImprovement =>
-                                             objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware &&
-                                             objImprovement.Enabled);
+        public bool AddBiowareEnabled => !CyberwareDisabled
+                                         && !Improvements.Any(objImprovement =>
+                                             objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware
+                                             && objImprovement.Enabled);
 
         private int _intCachedInitiationEnabled = -1;
 
@@ -13451,25 +13372,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Convert a string to a CharacterBuildMethod.
-        /// </summary>
-        /// <param name="strValue">String value to convert.</param>
-        public static CharacterBuildMethod ConvertToCharacterBuildMethod(string strValue)
-        {
-            switch (strValue)
-            {
-                case "Karma":
-                    return CharacterBuildMethod.Karma;
-                case "SumtoTen":
-                    return CharacterBuildMethod.SumtoTen;
-                case "LifeModule":
-                    return CharacterBuildMethod.LifeModule;
-                default:
-                    return CharacterBuildMethod.Priority;
-            }
-        }
-
-        /// <summary>
         /// Extended Availability Test information for an item based on the character's Negotiate Skill.
         /// </summary>
         /// <param name="decCost">Item's cost.</param>
@@ -13526,22 +13428,18 @@ namespace Chummer
             int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
             // Determine the interval based on the item's price.
             if(decCost <= 100.0m)
-                strInterval = "6" + strSpace +
-                              LanguageManager.GetString("String_Hours");
+                strInterval = "6" + strSpace + LanguageManager.GetString("String_Hours");
             else if(decCost <= 1000.0m)
                 strInterval = "1" + strSpace + LanguageManager.GetString("String_Day");
             else if(decCost <= 10000.0m)
-                strInterval = "2" + strSpace +
-                              LanguageManager.GetString("String_Days");
+                strInterval = "2" + strSpace + LanguageManager.GetString("String_Days");
             else if(decCost <= 100000.0m)
-                strInterval = "1" + strSpace +
-                              LanguageManager.GetString("String_Week");
+                strInterval = "1" + strSpace + LanguageManager.GetString("String_Week");
             else
-                strInterval = "1" + strSpace +
-                              LanguageManager.GetString("String_Month");
+                strInterval = "1" + strSpace + LanguageManager.GetString("String_Month");
 
-            return intPool.ToString(GlobalOptions.CultureInfo) + strSpace + '(' +
-                   intAvailValue.ToString(GlobalOptions.CultureInfo) + ',' + strSpace + strInterval + ')';
+            return string.Concat(intPool.ToString(GlobalOptions.CultureInfo), strSpace, "(",
+                   intAvailValue.ToString(GlobalOptions.CultureInfo), ",", strSpace, strInterval, ")");
         }
 
         /// <summary>
@@ -13584,7 +13482,7 @@ namespace Chummer
         /// </summary>
         private void ConvertOldQualities(XmlNodeList objXmlQualityList)
         {
-            XmlNode xmlRootQualitiesNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");
+            XmlNode xmlRootQualitiesNode = LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
 
             if(xmlRootQualitiesNode != null)
             {
@@ -13597,7 +13495,7 @@ namespace Chummer
 
                         XmlNode objXmlQualityNode =
                             xmlRootQualitiesNode.SelectSingleNode(
-                                "quality[name = \"" + GetQualityName(objXmlQuality.InnerText) + "\"]");
+                                "quality[name = " + GetQualityName(objXmlQuality.InnerText).CleanXPath() + "]");
 
                         if(objXmlQualityNode != null)
                         {
@@ -13626,9 +13524,9 @@ namespace Chummer
                 }
 
                 // Take care of the Metatype information.
-                string strXPath = "/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]";
-                XmlNode objXmlMetatype = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPath) ??
-                                         XmlManager.Load("critters.xml").SelectSingleNode(strXPath);
+                string strXPath = "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + "]";
+                XmlNode objXmlMetatype = LoadData("metatypes.xml").SelectSingleNode(strXPath) ??
+                                         LoadData("critters.xml").SelectSingleNode(strXPath);
 
                 if(objXmlMetatype != null)
                 {
@@ -13660,7 +13558,7 @@ namespace Chummer
 
                                     XmlNode objXmlQuality =
                                         xmlRootQualitiesNode.SelectSingleNode(
-                                            "quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                            "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                     objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                         strForceValue);
                                     _lstQualities.Add(objQuality);
@@ -13697,7 +13595,7 @@ namespace Chummer
 
                                     XmlNode objXmlQuality =
                                         xmlRootQualitiesNode.SelectSingleNode(
-                                            "quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                            "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                     objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                         strForceValue);
                                     _lstQualities.Add(objQuality);
@@ -13710,8 +13608,7 @@ namespace Chummer
                     if(!string.IsNullOrEmpty(_strMetavariant))
                     {
                         objXmlMetatype =
-                            objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant +
-                                                            "\"]");
+                            objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() + "]");
 
                         if (objXmlMetatype != null)
                         {
@@ -13743,7 +13640,7 @@ namespace Chummer
 
                                             XmlNode objXmlQuality =
                                                 xmlRootQualitiesNode.SelectSingleNode(
-                                                    "quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                                    "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                                 strForceValue);
                                             _lstQualities.Add(objQuality);
@@ -13780,7 +13677,7 @@ namespace Chummer
 
                                             XmlNode objXmlQuality =
                                                 xmlRootQualitiesNode.SelectSingleNode(
-                                                    "quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                                                    "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + "]");
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
                                                 strForceValue);
                                             _lstQualities.Add(objQuality);
@@ -14332,23 +14229,23 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput"></param>
         /// <param name="strLanguage">Language to fetch</param>
-        public static string TranslatedBookList(string strInput, string strLanguage = "")
+        public string TranslatedBookList(string strInput, string strLanguage = "")
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             StringBuilder sbdReturn = new StringBuilder();
             // Load the Sourcebook information.
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml", strLanguage);
+            XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
 
             foreach(string strBook in strInput.TrimEndOnce(';').SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
             {
-                XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
+                XPathNavigator objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + "]");
                 if(objXmlBook != null)
                 {
-                    sbdReturn.Append(objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown", strLanguage))
+                    sbdReturn.Append(objXmlBook.SelectSingleNode("translate")?.Value ?? objXmlBook.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown", strLanguage))
                         .Append(LanguageManager.GetString("String_Space", strLanguage))
                         .Append('(')
-                        .Append(objXmlBook["altcode"]?.InnerText ?? strBook)
+                        .Append(objXmlBook.SelectSingleNode("altcode")?.Value ?? strBook)
                         .AppendLine(")");
                 }
                 else
@@ -14423,12 +14320,12 @@ namespace Chummer
             }
         }
 
-        private void RefreshRedlinerImprovements()
+        private bool RefreshRedlinerImprovements()
         {
             if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
             {
                 PostLoadMethods.Enqueue(RefreshRedlinerImprovements);
-                return;
+                return true;
             }
             //Get attributes affected by redliner/cyber singularity seeker
             List<Improvement> lstSeekerImprovements = Improvements.Where(objLoopImprovement =>
@@ -14443,15 +14340,11 @@ namespace Chummer
             if(lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
             {
                 _intCachedRedlinerBonus = 0;
-                return;
+                return true;
             }
-            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
-                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-
-            List<string> excludedLimbs = objXmlGameplayOption?.SelectNodes("redlinerexclusion/limb")?.Cast<XmlNode>().Select(n => n.Value).ToList();
 
             //Calculate bonus from cyberlimbs
-            int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(excludedLimbs));
+            int intCount = Cyberware.Sum(objCyberware => objCyberware.GetCyberlimbCount(Options.RedlinerExcludes));
 
             intCount = Math.Min(intCount / 2, 2);
             _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
@@ -14462,8 +14355,8 @@ namespace Chummer
             {
                 string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
                 Improvement objImprove = lstSeekerImprovements.FirstOrDefault(x =>
-                    x.SourceName == strSeekerAttribute &&
-                    x.Value == (strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount));
+                    x.SourceName == strSeekerAttribute
+                    && x.Value == (strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount));
                 if(objImprove != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
@@ -14498,6 +14391,7 @@ namespace Chummer
 
                 ImprovementManager.Commit(this);
             }
+            return true;
         }
 
         public void RefreshEssenceLossImprovements()
@@ -14586,9 +14480,9 @@ namespace Chummer
                     int intOldMAGAdeptCareerMinimumReduction = 0;
                     foreach(Improvement objImprovement in Improvements)
                     {
-                        if(objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss &&
-                            objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
-                            objImprovement.Enabled)
+                        if(objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss
+                           && objImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                           && objImprovement.Enabled)
                         {
                             // Values get subtracted because negative modifier = positive reduction, positive modifier = negative reduction
                             // Augmented values also get factored in in case the character is switching off the option to treat essence loss as an augmented malus
@@ -14626,8 +14520,10 @@ namespace Chummer
                         intMagMaxReduction + MAGAdept.TotalMaximum - MAGAdept.MaximumNoEssenceLoss();
 
                     // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
-                    if(intMaxReduction > 0 || intMinReduction > 0 || intRESMaximumReduction != 0 ||
-                        intDEPMaximumReduction != 0)
+                    if(intMaxReduction > 0
+                       || intMinReduction > 0
+                       || intRESMaximumReduction != 0
+                       || intDEPMaximumReduction != 0)
                     {
                         // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
                         int intRESMinimumReduction;
@@ -14699,8 +14595,10 @@ namespace Chummer
                                 -intDEPMinimumReduction, -intDEPMaximumReduction);
                     }
 
-                    if(intMagMaxReduction > 0 || intMagMinReduction > 0 || intMAGMaximumReduction != 0 ||
-                        intMAGAdeptMaximumReduction != 0)
+                    if(intMagMaxReduction > 0
+                       || intMagMinReduction > 0
+                       || intMAGMaximumReduction != 0
+                       || intMAGAdeptMaximumReduction != 0)
                     {
                         // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
                         int intMAGMinimumReduction;
@@ -14899,58 +14797,57 @@ namespace Chummer
                                 MAGEnabled = false;
                             }
                         }
-                        else
+                        else if (Options.MysAdeptSecondMAGAttribute && IsMysticAdept)
                         {
-                            if(Options.MysAdeptSecondMAGAttribute && IsMysticAdept)
+                            if (MAG.TotalMaximum < 1)
                             {
-                                if(MAG.TotalMaximum < 1)
-                                {
-                                    MAG.Base = MAGAdept.Base;
-                                    MAG.Karma = MAGAdept.Karma;
-                                    MAG.MetatypeMinimum = MAGAdept.MetatypeMinimum;
-                                    MAG.MetatypeMaximum = MAGAdept.MetatypeMaximum;
-                                    MAG.MetatypeAugmentedMaximum = MAGAdept.MetatypeAugmentedMaximum;
-                                    MAGAdept.Base = 0;
-                                    MAGAdept.Karma = 0;
-                                    MAGAdept.MetatypeMinimum = 0;
-                                    MAGAdept.MetatypeMaximum = 0;
-                                    MAGAdept.MetatypeAugmentedMaximum = 0;
-
-                                    MagicianEnabled = false;
-                                }
-
-                                if(MAGAdept.TotalMaximum < 1)
-                                {
-                                    MAGAdept.Base = 0;
-                                    MAGAdept.Karma = 0;
-                                    MAGAdept.MetatypeMinimum = 0;
-                                    MAGAdept.MetatypeMaximum = 0;
-                                    MAGAdept.MetatypeAugmentedMaximum = 0;
-
-                                    AdeptEnabled = false;
-                                }
-
-                                if(!MagicianEnabled && !AdeptEnabled)
-                                    MAGEnabled = false;
-                            }
-                            else if(MAG.TotalMaximum < 1)
-                            {
-                                MAG.Base = 0;
-                                MAG.Karma = 0;
-                                MAG.MetatypeMinimum = 0;
-                                MAG.MetatypeMaximum = 0;
-                                MAG.MetatypeAugmentedMaximum = 0;
+                                MAG.Base = MAGAdept.Base;
+                                MAG.Karma = MAGAdept.Karma;
+                                MAG.MetatypeMinimum = MAGAdept.MetatypeMinimum;
+                                MAG.MetatypeMaximum = MAGAdept.MetatypeMaximum;
+                                MAG.MetatypeAugmentedMaximum = MAGAdept.MetatypeAugmentedMaximum;
+                                MAGAdept.Base = 0;
+                                MAGAdept.Karma = 0;
+                                MAGAdept.MetatypeMinimum = 0;
+                                MAGAdept.MetatypeMaximum = 0;
+                                MAGAdept.MetatypeAugmentedMaximum = 0;
 
                                 MagicianEnabled = false;
-                                AdeptEnabled = false;
-                                MAGEnabled = false;
                             }
+
+                            if (MAGAdept.TotalMaximum < 1)
+                            {
+                                MAGAdept.Base = 0;
+                                MAGAdept.Karma = 0;
+                                MAGAdept.MetatypeMinimum = 0;
+                                MAGAdept.MetatypeMaximum = 0;
+                                MAGAdept.MetatypeAugmentedMaximum = 0;
+
+                                AdeptEnabled = false;
+                            }
+
+                            if (!MagicianEnabled && !AdeptEnabled)
+                                MAGEnabled = false;
+                        }
+                        else if (MAG.TotalMaximum < 1)
+                        {
+                            MAG.Base = 0;
+                            MAG.Karma = 0;
+                            MAG.MetatypeMinimum = 0;
+                            MAG.MetatypeMaximum = 0;
+                            MAG.MetatypeAugmentedMaximum = 0;
+
+                            MagicianEnabled = false;
+                            AdeptEnabled = false;
+                            MAGEnabled = false;
                         }
                     }
 
-                    if(RESEnabled &&
-                        (Options.SpecialKarmaCostBasedOnShownValue && intMaxReduction >= RES.TotalMaximum ||
-                         !Options.SpecialKarmaCostBasedOnShownValue && RES.TotalMaximum < 1))
+                    if(RESEnabled
+                       && (Options.SpecialKarmaCostBasedOnShownValue
+                           && intMaxReduction >= RES.TotalMaximum
+                           || !Options.SpecialKarmaCostBasedOnShownValue
+                           && RES.TotalMaximum < 1))
                     {
                         RES.Base = 0;
                         RES.Karma = 0;
@@ -15006,7 +14903,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitPhysical),
+                List<string> lstProperties = new List<string>(16)
+                {
+                    nameof(LimitPhysical),
                     nameof(DamageResistancePool),
                     nameof(LiftAndCarry),
                     nameof(FatigueResist),
@@ -15020,7 +14919,20 @@ namespace Chummer
                     nameof(SpellDefenseIndirectSoak),
                     nameof(SpellDefenseDirectSoakPhysical),
                     nameof(SpellDefenseDecreaseBOD),
-                    nameof(SpellDefenseManipulationPhysical));
+                    nameof(SpellDefenseManipulationPhysical)
+                };
+                if (Options.ContactPointsExpression.Contains("{BOD}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{BOD}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{BODUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
@@ -15033,7 +14945,22 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnPropertyChanged(nameof(SpellDefenseDecreaseAGI));
+                List<string> lstProperties = new List<string>(2)
+                {
+                    nameof(SpellDefenseDecreaseAGI)
+                };
+                if (Options.ContactPointsExpression.Contains("{AGI}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{AGI}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{AGIUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15041,11 +14968,26 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitPhysical),
+                List<string> lstProperties = new List<string>(6)
+                {
+                    nameof(LimitPhysical),
                     nameof(InitiativeValue),
                     nameof(Dodge),
                     nameof(SpellDefenseDecreaseREA),
-                    nameof(Surprise));
+                    nameof(Surprise)
+                };
+                if (Options.ContactPointsExpression.Contains("{REA}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{REA}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{REAUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15055,10 +14997,25 @@ namespace Chummer
             {
                 // Encumbrance is only affected by STR.TotalValue when it comes to attributes
                 RefreshEncumbrance();
-                OnMultiplePropertyChanged(nameof(LimitPhysical),
+                List<string> lstProperties = new List<string>(5)
+                {
+                    nameof(LimitPhysical),
                     nameof(LiftAndCarry),
                     nameof(SpellDefenseDecreaseSTR),
-                    nameof(SpellDefenseManipulationPhysical));
+                    nameof(SpellDefenseManipulationPhysical)
+                };
+                if (Options.ContactPointsExpression.Contains("{STR}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{STR}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{STRUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15066,24 +15023,26 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                if(Options.UseTotalValueForFreeContacts)
-                    OnMultiplePropertyChanged(nameof(ContactPoints),
-                        nameof(LimitSocial),
-                        nameof(Composure),
-                        nameof(JudgeIntentions),
-                        nameof(JudgeIntentionsResist),
-                        nameof(SpellDefenseDecreaseCHA));
-                else
-                    OnMultiplePropertyChanged(nameof(LimitSocial),
-                        nameof(Composure),
-                        nameof(JudgeIntentions),
-                        nameof(JudgeIntentionsResist),
-                        nameof(SpellDefenseDecreaseCHA));
+                List<string> lstProperties = new List<string>(6)
+                {
+                    nameof(LimitSocial),
+                    nameof(Composure),
+                    nameof(JudgeIntentions),
+                    nameof(JudgeIntentionsResist),
+                    nameof(SpellDefenseDecreaseCHA)
+                };
+                if (Options.ContactPointsExpression.Contains("{CHA}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{CHA}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.Value))
             {
-                if(!Options.UseTotalValueForFreeContacts)
+                if (Options.ContactPointsExpression.Contains("{CHAUnaug}"))
                     OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15091,7 +15050,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitMental),
+                List<string> lstProperties = new List<string>(12)
+                {
+                    nameof(LimitMental),
                     nameof(JudgeIntentions),
                     nameof(InitiativeValue),
                     nameof(AstralInitiativeValue),
@@ -15101,7 +15062,20 @@ namespace Chummer
                     nameof(Dodge),
                     nameof(SpellDefenseDecreaseINT),
                     nameof(SpellDefenseIllusionPhysical),
-                    nameof(Surprise));
+                    nameof(Surprise)
+                };
+                if (Options.ContactPointsExpression.Contains("{INT}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{INT}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{INTUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15109,7 +15083,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitMental),
+                List<string> lstProperties = new List<string>(10)
+                {
+                    nameof(LimitMental),
                     nameof(Memory),
                     nameof(PsychologicalAddictionResistFirstTime),
                     nameof(PsychologicalAddictionResistAlreadyAddicted),
@@ -15117,7 +15093,20 @@ namespace Chummer
                     nameof(SpellDefenseDecreaseLOG),
                     nameof(SpellDefenseIllusionMana),
                     nameof(SpellDefenseIllusionPhysical),
-                    nameof(SpellDefenseManipulationMental));
+                    nameof(SpellDefenseManipulationMental)
+                };
+                if (Options.ContactPointsExpression.Contains("{LOG}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{LOG}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{LOGUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15125,7 +15114,9 @@ namespace Chummer
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                OnMultiplePropertyChanged(nameof(LimitSocial),
+                List<string> lstProperties = new List<string>(27)
+                {
+                    nameof(LimitSocial),
                     nameof(LimitMental),
                     nameof(Composure),
                     nameof(Memory),
@@ -15150,7 +15141,38 @@ namespace Chummer
                     nameof(SpellDefenseDecreaseLOG),
                     nameof(SpellDefenseDecreaseWIL),
                     nameof(SpellDefenseIllusionMana),
-                    nameof(SpellDefenseManipulationMental));
+                    nameof(SpellDefenseManipulationMental)
+                };
+                if (Options.ContactPointsExpression.Contains("{WIL}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{WIL}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{WILUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+        }
+
+        public void RefreshEDGDependentProperties(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (Options.ContactPointsExpression.Contains("{EDG}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{EDG}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{EDGUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15165,23 +15187,31 @@ namespace Chummer
                         MysticAdeptPowerPoints = intMAGTotalValue;
                 }
 
-                HashSet<string> setPropertiesChanged = new HashSet<string>();
+                List<string> lstProperties = new List<string>(5);
                 if(Options.SpiritForceBasedOnTotalMAG)
-                    setPropertiesChanged.Add(nameof(MaxSpiritForce));
+                    lstProperties.Add(nameof(MaxSpiritForce));
                 if(MysAdeptAllowPPCareer)
-                    setPropertiesChanged.Add(nameof(CanAffordCareerPP));
+                    lstProperties.Add(nameof(CanAffordCareerPP));
                 if(!UseMysticAdeptPPs && MAG == MAGAdept)
-                    setPropertiesChanged.Add(nameof(PowerPointsTotal));
+                    lstProperties.Add(nameof(PowerPointsTotal));
                 if (AnyPowerAdeptWayDiscountEnabled)
-                {
-                    setPropertiesChanged.Add(nameof(AllowAdeptWayPowerDiscount));
-                }
-                OnMultiplePropertyChanged(setPropertiesChanged.ToArray());
+                    lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                if (Options.ContactPointsExpression.Contains("{MAG}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{MAG}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
             else if(e?.PropertyName == nameof(CharacterAttrib.Value))
             {
-                if(!Options.SpiritForceBasedOnTotalMAG)
-                    OnPropertyChanged(nameof(MaxSpiritForce));
+                List<string> lstProperties = new List<string>(2);
+                if (!Options.SpiritForceBasedOnTotalMAG)
+                    lstProperties.Add(nameof(MaxSpiritForce));
+                if (Options.ContactPointsExpression.Contains("{MAGUnaug}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15192,21 +15222,65 @@ namespace Chummer
 
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                if(!UseMysticAdeptPPs)
-                    OnPropertyChanged(nameof(PowerPointsTotal));
+                List<string> lstProperties = new List<string>(2);
+                if (!UseMysticAdeptPPs)
+                    lstProperties.Add(nameof(MaxSpiritForce));
+                if (Options.ContactPointsExpression.Contains("{MAGAdept}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
         public void RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
-                OnPropertyChanged(nameof(MaxSpriteLevel));
+            {
+                List<string> lstProperties = new List<string>(2)
+                {
+                    nameof(MaxSpriteLevel)
+                };
+                if (Options.ContactPointsExpression.Contains("{RES}"))
+                    lstProperties.Add(nameof(ContactPoints));
+                OnMultiplePropertyChanged(lstProperties.ToArray());
+                if (Options.KnowledgePointsExpression.Contains("{RES}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{RESUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
         }
 
         public void RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e)
         {
             if(IsAI && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
+            else if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (Options.ContactPointsExpression.Contains("{DEP}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{DEP}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{DEPUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
         }
 
         public void RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e)
@@ -15214,7 +15288,21 @@ namespace Chummer
             // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
             if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
             {
-                OnPropertyChanged(nameof(Essence));
+                OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            {
+                if (Options.ContactPointsExpression.Contains("{ESS}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{ESS}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+            }
+            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
+            {
+                if (Options.ContactPointsExpression.Contains("{ESSUnaug}"))
+                    OnPropertyChanged(nameof(ContactPoints));
+                if (Options.KnowledgePointsExpression.Contains("{ESSUnaug}"))
+                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
         }
 
@@ -15290,12 +15378,13 @@ namespace Chummer
         /// <summary>
         /// Could this character buy Power Points in career mode if the optional/house rule is enabled
         /// </summary>
-        public bool CanAffordCareerPP => MysAdeptAllowPPCareer && Karma >= Options.KarmaMysticAdeptPowerPoint &&
-                                         MAG.TotalValue > MysticAdeptPowerPoints;
+        public bool CanAffordCareerPP => MysAdeptAllowPPCareer
+                                         && Karma >= Options.KarmaMysticAdeptPowerPoint
+                                         && MAG.TotalValue > MysticAdeptPowerPoints;
         /// <summary>
         /// Whether the character is allowed to gain free spells that are limited to the Touch range.
         /// </summary>
-        public Tuple<bool,bool> AllowFreeSpells
+        public Tuple<bool, bool> AllowFreeSpells
         {
             get
             {
@@ -15304,23 +15393,30 @@ namespace Chummer
                 int intFreeGenericSpells = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpells).StandardRound();
                 int intFreeTouchOnlySpells = 0;
                 foreach (Improvement imp in Improvements.Where(i =>
-                    (i.ImproveType == Improvement.ImprovementType.FreeSpellsATT ||
-                     i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill) && i.Enabled))
+                    (i.ImproveType == Improvement.ImprovementType.FreeSpellsATT
+                     || i.ImproveType == Improvement.ImprovementType.FreeSpellsSkill)
+                    && i.Enabled))
                 {
                     switch (imp.ImproveType)
                     {
                         case Improvement.ImprovementType.FreeSpellsATT:
                             int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
-                            if (imp.UniqueName.Contains("half")) intAttValue = (intAttValue + 1) / 2;
-                            if (imp.UniqueName.Contains("touchonly")) intFreeTouchOnlySpells += intAttValue;
-                            else intFreeGenericSpells += intAttValue;
+                            if (imp.UniqueName.Contains("half"))
+                                intAttValue = (intAttValue + 1) / 2;
+                            if (imp.UniqueName.Contains("touchonly"))
+                                intFreeTouchOnlySpells += intAttValue;
+                            else
+                                intFreeGenericSpells += intAttValue;
                             break;
                         case Improvement.ImprovementType.FreeSpellsSkill:
                             Skill skill = SkillsSection.GetActiveSkill(imp.ImprovedName);
                             int intSkillValue = SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
-                            if (imp.UniqueName.Contains("half")) intSkillValue = (intSkillValue + 1) / 2;
-                            if (imp.UniqueName.Contains("touchonly")) intFreeTouchOnlySpells += intSkillValue;
-                            else intFreeGenericSpells += intSkillValue;
+                            if (imp.UniqueName.Contains("half"))
+                                intSkillValue = (intSkillValue + 1) / 2;
+                            if (imp.UniqueName.Contains("touchonly"))
+                                intFreeTouchOnlySpells += intSkillValue;
+                            else
+                                intFreeGenericSpells += intSkillValue;
                             //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
                             intFreeGenericSpells += skill.Specializations.Count(spec =>
                                 Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus));
@@ -15337,11 +15433,6 @@ namespace Chummer
                     Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
             }
         }
-
-        /// <summary>
-        /// Blocked grades of cyber/bioware in Create mode.
-        /// </summary>
-        public HashSet<string> BannedWareGrades { get; } = new HashSet<string> { "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -15506,8 +15597,15 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(PhysicalCMThresholdOffset)),
                         new DependencyGraphNode<string, Character>(nameof(StunCMThresholdOffset))
                     ),
-                    new DependencyGraphNode<string, Character>(nameof(BuildMethodHasSkillPoints),
-                        new DependencyGraphNode<string, Character>(nameof(BuildMethod))
+                    new DependencyGraphNode<string, Character>(nameof(EffectiveBuildMethodUsesPriorityTables),
+                        new DependencyGraphNode<string, Character>(nameof(EffectiveBuildMethod),
+                            new DependencyGraphNode<string, Character>(nameof(IsCritter))
+                        )
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(EnableAutomaticStoryButton),
+                        new DependencyGraphNode<string, Character>(nameof(EffectiveBuildMethodIsLifeModule),
+                            new DependencyGraphNode<string, Character>(nameof(EffectiveBuildMethod))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DamageResistancePoolToolTip),
                         new DependencyGraphNode<string, Character>(nameof(DamageResistancePool),
@@ -15779,7 +15877,6 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(NuyenBP),
                                 new DependencyGraphNode<string, Character>(nameof(TotalNuyenMaximumBP),
                                     new DependencyGraphNode<string, Character>(nameof(StolenNuyen)),
-                                    new DependencyGraphNode<string, Character>(nameof(NuyenMaximumBP)),
                                     new DependencyGraphNode<string, Character>(nameof(IgnoreRules))
                                 )
                             )
@@ -15790,9 +15887,6 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayCareerKarma),
                         new DependencyGraphNode<string, Character>(nameof(CareerKarma))
-                    ),
-                    new DependencyGraphNode<string, Character>(nameof(ContactPoints),
-                        new DependencyGraphNode<string, Character>(nameof(ContactMultiplier))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(StreetCredTooltip),
                         new DependencyGraphNode<string, Character>(nameof(TotalStreetCred),
@@ -15972,7 +16066,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
+            HashSet<string> lstNamesOfChangedProperties = null;
             foreach(string strPropertyName in lstPropertyNames)
             {
                 if(lstNamesOfChangedProperties == null)
@@ -16166,6 +16260,10 @@ namespace Chummer
             if (lstNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                 RefreshAstralReputationImprovements();
 
+            if (lstNamesOfChangedProperties.Contains(nameof(Options)))
+                foreach (string strProperty in Options.GetType().GetProperties().Select(x => x.Name))
+                    OptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
@@ -16226,14 +16324,14 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public async Task<bool> LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName)
+        public async Task<bool> LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName = "")
         {
             if(!File.Exists(strPorFile))
                 return false;
 
             Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>();
-            XmlDocument xmlStatBlockDocument = null;
-            XmlDocument xmlLeadsDocument = null;
+            XPathNavigator xmlStatBlockDocument = null;
+            XPathNavigator xmlLeadsDocument = null;
             List<string> lstTextStatBlockLines = null;
             using (var op_load = Timekeeper.StartSyncron("LoadFromHeroLabFile", null, CustomActivity.OperationType.DependencyOperation, strPorFile))
             {
@@ -16258,32 +16356,26 @@ namespace Chummer
                                 {
                                     if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        XmlDocument xmlSourceDoc = new XmlDocument
-                                        {
-                                            XmlResolver = null
-                                        };
+                                        XPathDocument xmlSourceDoc;
                                         try
                                         {
                                             using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                                using (XmlReader objXmlReader = XmlReader.Create(sr, new XmlReaderSettings
-                                                {
-                                                    XmlResolver = null,
-                                                    Async = true
-                                                }))
-                                                    xmlSourceDoc.Load(objXmlReader);
+                                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeAsyncXmlReaderSettings))
+                                                    xmlSourceDoc = new XPathDocument(objXmlReader);
+
                                             if (strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
                                             {
-                                                if (xmlSourceDoc.SelectSingleNode(
+                                                XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
+                                                if (objDummy.SelectSingleNode(
                                                     "/document/public/character[@name = " +
                                                     strCharacterId.CleanXPath() + "]") != null)
-                                                    xmlStatBlockDocument = xmlSourceDoc;
+                                                    xmlStatBlockDocument = objDummy;
                                             }
                                             else
                                             {
-                                                strLeadsName = xmlSourceDoc
-                                                    .SelectSingleNode(
+                                                strLeadsName = xmlSourceDoc.CreateNavigator().SelectSingleNode(
                                                         "/document/portfolio/hero[@heroname = " +
-                                                        strCharacterId.CleanXPath() + "]/@leadfile")?.InnerText;
+                                                        strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
                                             }
                                         }
                                         // If we run into any problems loading the character xml files, fail out early.
@@ -16337,20 +16429,13 @@ namespace Chummer
                                     string strEntryFullName = entry.FullName;
                                     if (strEntryFullName.EndsWith(strLeadsName, StringComparison.OrdinalIgnoreCase))
                                     {
-                                        XmlDocument xmlSourceDoc = new XmlDocument
-                                        {
-                                            XmlResolver = null
-                                        };
+                                        XPathDocument xmlSourceDoc;
                                         try
                                         {
                                             using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                                using (XmlReader objXmlReader = XmlReader.Create(sr, new XmlReaderSettings
-                                                {
-                                                    XmlResolver = null,
-                                                    Async = true
-                                                }))
-                                                    xmlSourceDoc.Load(objXmlReader);
-                                            xmlLeadsDocument = xmlSourceDoc;
+                                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeAsyncXmlReaderSettings))
+                                                    xmlSourceDoc = new XPathDocument(objXmlReader);
+                                            xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
                                         }
                                         // If we run into any problems loading the character xml files, fail out early.
                                         catch (IOException)
@@ -16419,8 +16504,8 @@ namespace Chummer
                         return false;
                     }
 
-                    XmlNode xmlStatBlockBaseNode;
-                    XmlNode xmlLeadsBaseNode;
+                    XPathNavigator xmlStatBlockBaseNode;
+                    XPathNavigator xmlLeadsBaseNode;
                     using (_ = Timekeeper.StartSyncron("load_char_misc", op_load))
                     {
                         IsLoading = true;
@@ -16435,16 +16520,16 @@ namespace Chummer
                                                               strCharacterId.CleanXPath() +
                                                               "]");
 
-                        _blnCreated = (xmlStatBlockBaseNode.SelectSingleNode("karma/@total")?.InnerText ?? "0") != "0";
+                        _blnCreated = (xmlStatBlockBaseNode.SelectSingleNode("karma/@total")?.Value ?? "0") != "0";
                         if (!_blnCreated)
                         {
-                            XmlNodeList xmlJournalEntries = xmlStatBlockBaseNode.SelectNodes("journals/journal");
+                            XPathNodeIterator xmlJournalEntries = xmlStatBlockBaseNode.Select("journals/journal");
                             if (xmlJournalEntries.Count > 1)
                             {
                                 _blnCreated = true;
                             }
                             else if (xmlJournalEntries.Count == 1 &&
-                                     xmlJournalEntries[0].Attributes["name"]?.InnerText != "Title")
+                                     xmlJournalEntries.Current.SelectSingleNode("@name")?.Value != "Title")
                             {
                                 _blnCreated = true;
                             }
@@ -16453,71 +16538,72 @@ namespace Chummer
                         ResetCharacter();
 
                         // Get the name of the settings file in use if possible.
-                        _strSettingsFileName = strSettingsName;
+                        if (!string.IsNullOrEmpty(strSettingsName))
+                        {
+                            if (!OptionsManager.LoadedCharacterOptions.ContainsKey(strSettingsName))
+                                return false;
 
-                        // Load the character's settings file.
-                        if (!Options.Load(_strSettingsFileName))
-                            return false;
+                            CharacterOptionsKey = strSettingsName;
+                        }
 
                         // Metatype information.
-                        string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
+                        string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.Value;
                         if (!string.IsNullOrEmpty(strRaceString))
                         {
                             if (strRaceString == "Metasapient")
                                 strRaceString = "A.I.";
-                            foreach (XmlNode xmlMetatype in XmlManager.Load("metatypes.xml")
-                                .SelectNodes("/chummer/metatypes/metatype"))
+                            foreach (XPathNavigator xmlMetatype in LoadDataXPath("metatypes.xml").Select("/chummer/metatypes/metatype"))
                             {
-                                string strMetatypeName = xmlMetatype["name"].InnerText;
+                                string strMetatypeName = xmlMetatype.SelectSingleNode("name").Value;
                                 if (strMetatypeName == strRaceString)
                                 {
                                     _strMetatype = strMetatypeName;
-                                    _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                                    _strMetatypeCategory = xmlMetatype.SelectSingleNode("category").Value;
                                     _strMetavariant = "None";
 
-                                    XmlNode objRunNode = xmlMetatype?["run"];
-                                    XmlNode objWalkNode = xmlMetatype?["walk"];
-                                    XmlNode objSprintNode = xmlMetatype?["sprint"];
+                                    XPathNavigator objRunNode = xmlMetatype.SelectSingleNode("run");
+                                    XPathNavigator objWalkNode = xmlMetatype.SelectSingleNode("walk");
+                                    XPathNavigator objSprintNode = xmlMetatype.SelectSingleNode("sprint");
 
-                                    _strMovement = xmlMetatype?["movement"]?.InnerText ?? string.Empty;
-                                    _strRun = objRunNode?.InnerText ?? string.Empty;
-                                    _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                                    _strSprint = objSprintNode?.InnerText ?? string.Empty;
+                                    _strMovement = xmlMetatype.SelectSingleNode("movement")?.Value ?? string.Empty;
+                                    _strRun = objRunNode?.Value ?? string.Empty;
+                                    _strWalk = objWalkNode?.Value ?? string.Empty;
+                                    _strSprint = objSprintNode?.Value ?? string.Empty;
 
-                                    objRunNode = objRunNode?.Attributes?["alt"];
-                                    objWalkNode = objWalkNode?.Attributes?["alt"];
-                                    objSprintNode = objSprintNode?.Attributes?["alt"];
-                                    _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                                    _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                                    _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+                                    objRunNode = objRunNode?.SelectSingleNode("@alt");
+                                    objWalkNode = objWalkNode?.SelectSingleNode("@alt");
+                                    objSprintNode = objSprintNode?.SelectSingleNode("@alt");
+                                    _strRunAlt = objRunNode?.Value ?? string.Empty;
+                                    _strWalkAlt = objWalkNode?.Value ?? string.Empty;
+                                    _strSprintAlt = objSprintNode?.Value ?? string.Empty;
                                     break;
                                 }
 
-                                foreach (XmlNode xmlMetavariant in xmlMetatype.SelectNodes("metavariants/metavariant"))
+                                foreach (XPathNavigator xmlMetavariant in xmlMetatype.Select("metavariants/metavariant"))
                                 {
-                                    string strMetavariantName = xmlMetavariant["name"].InnerText;
+                                    string strMetavariantName = xmlMetavariant.SelectSingleNode("name").Value;
                                     if (strMetavariantName == strRaceString)
                                     {
                                         _strMetatype = strMetatypeName;
-                                        _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                                        _strMetatypeCategory = xmlMetatype.SelectSingleNode("category").Value;
                                         _strMetavariant = strMetavariantName;
 
-                                        XmlNode objRunNode = xmlMetavariant?["run"] ?? xmlMetatype?["run"];
-                                        XmlNode objWalkNode = xmlMetavariant?["walk"] ?? xmlMetatype?["walk"];
-                                        XmlNode objSprintNode = xmlMetavariant?["sprint"] ?? xmlMetatype?["sprint"];
+                                        XPathNavigator objRunNode = xmlMetavariant?.SelectSingleNode("run") ?? xmlMetatype?.SelectSingleNode("run");
+                                        XPathNavigator objWalkNode = xmlMetavariant?.SelectSingleNode("walk") ?? xmlMetatype?.SelectSingleNode("walk");
+                                        XPathNavigator objSprintNode = xmlMetavariant?.SelectSingleNode("sprint") ?? xmlMetatype?.SelectSingleNode("sprint");
 
-                                        _strMovement = xmlMetavariant?["movement"]?.InnerText ??
-                                                       xmlMetatype?["movement"]?.InnerText ?? string.Empty;
-                                        _strRun = objRunNode?.InnerText ?? string.Empty;
-                                        _strWalk = objWalkNode?.InnerText ?? string.Empty;
-                                        _strSprint = objSprintNode?.InnerText ?? string.Empty;
+                                        _strMovement = xmlMetavariant?.SelectSingleNode("movement")?.Value ??
+                                                       xmlMetatype?.SelectSingleNode("movement")?.Value ?? string.Empty;
+                                        _strRun = objRunNode?.Value ?? string.Empty;
+                                        _strWalk = objWalkNode?.Value ?? string.Empty;
+                                        _strSprint = objSprintNode?.Value ?? string.Empty;
 
-                                        objRunNode = objRunNode?.Attributes?["alt"];
-                                        objWalkNode = objWalkNode?.Attributes?["alt"];
-                                        objSprintNode = objSprintNode?.Attributes?["alt"];
-                                        _strRunAlt = objRunNode?.InnerText ?? string.Empty;
-                                        _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
-                                        _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+                                        objRunNode = objRunNode?.SelectSingleNode("@alt");
+                                        objWalkNode = objWalkNode?.SelectSingleNode("@alt");
+                                        objSprintNode = objSprintNode?.SelectSingleNode("@alt");
+                                        _strRunAlt = objRunNode?.Value ?? string.Empty;
+                                        _strWalkAlt = objWalkNode?.Value ?? string.Empty;
+                                        _strSprintAlt = objSprintNode?.Value ?? string.Empty;
                                         break;
                                     }
                                 }
@@ -16536,127 +16622,155 @@ namespace Chummer
                             _strAlias = strCharacterId;
                         }
 
-                        XmlNode xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNode("personal");
+                        XPathNavigator xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNode("personal");
                         if (xmlPersonalNode != null)
                         {
-                            _strBackground = xmlPersonalNode["description"]?.InnerText;
-                            _strHeight = xmlPersonalNode["charheight"]?.Attributes?["text"]?.InnerText;
-                            _strWeight = xmlPersonalNode["charweight"]?.Attributes?["text"]?.InnerText;
-                            XmlAttributeCollection xmlPersonalNodeAttributes = xmlPersonalNode.Attributes;
-                            if (xmlPersonalNodeAttributes != null)
+                            _strBackground = xmlPersonalNode.SelectSingleNode("description")?.Value;
+                            _strHeight = xmlPersonalNode.SelectSingleNode("charheight/@text")?.Value;
+                            _strWeight = xmlPersonalNode.SelectSingleNode("charweight/@text")?.Value;
+                            if (xmlPersonalNode.HasAttributes)
                             {
-                                _strGender = xmlPersonalNodeAttributes["gender"]?.InnerText;
-                                _strAge = xmlPersonalNodeAttributes["age"]?.InnerText;
-                                _strHair = xmlPersonalNodeAttributes["hair"]?.InnerText;
-                                _strEyes = xmlPersonalNodeAttributes["eyes"]?.InnerText;
-                                _strSkin = xmlPersonalNodeAttributes["skin"]?.InnerText;
+                                _strGender = xmlPersonalNode.SelectSingleNode("@gender")?.Value;
+                                _strAge = xmlPersonalNode.SelectSingleNode("@age")?.Value;
+                                _strHair = xmlPersonalNode.SelectSingleNode("@hair")?.Value;
+                                _strEyes = xmlPersonalNode.SelectSingleNode("@eyes")?.Value;
+                                _strSkin = xmlPersonalNode.SelectSingleNode("@skin")?.Value;
                             }
                         }
 
-                        _strPlayerName = xmlStatBlockBaseNode.Attributes["playername"]?.InnerText;
+                        _strPlayerName = xmlStatBlockBaseNode.SelectSingleNode("@playername")?.Value;
 
-                        foreach (XmlNode xmlImageFileNameNode in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlImageFileNameNode in xmlStatBlockBaseNode.Select(
                             "images/image/@filename"))
                         {
-                            if (dicImages.TryGetValue(xmlImageFileNameNode.InnerText, out Bitmap objOutput))
+                            if (dicImages.TryGetValue(xmlImageFileNameNode.Value, out Bitmap objOutput))
                                 _lstMugshots.Add(objOutput);
                         }
 
                         if (_lstMugshots.Count > 0)
                             _intMainMugshotIndex = 0;
 
-                        string strSettingsSummary =
-                            xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
-                        if (!string.IsNullOrEmpty(strSettingsSummary))
+                        if (string.IsNullOrEmpty(strSettingsName))
                         {
-                            int intCharCreationSystemsIndex =
-                                strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
-                            int intSemicolonIndex = strSettingsSummary.IndexOf(';');
-                            if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex &&
-                                intCharCreationSystemsIndex != -1)
+                            string strSettingsSummary =
+                                xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.Value;
+                            if (!string.IsNullOrEmpty(strSettingsSummary))
                             {
-                                _strGameplayOption = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28,
-                                    strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
-                                if (_strGameplayOption == "Established Runners")
-                                    _strGameplayOption = "Standard";
-                            }
-                        }
-
-                        _intBuildKarma =
-                            Convert.ToInt32(xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.InnerText, GlobalOptions.InvariantCultureInfo);
-
-                        if (_intBuildKarma >= 100)
-                        {
-                            _objBuildMethod = CharacterBuildMethod.Karma;
-                        }
-                        else
-                        {
-                            _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-                            _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
-                                .SelectSingleNode(
-                                    "container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
-                                ?.InnerText);
-
-                            string ConvertPriorityString(string strInput)
-                            {
-                                switch (strInput)
+                                int intCharCreationSystemsIndex =
+                                    strSettingsSummary.IndexOf("Character Creation Systems:", StringComparison.Ordinal);
+                                int intSemicolonIndex = strSettingsSummary.IndexOf(';');
+                                if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex &&
+                                    intCharCreationSystemsIndex != -1)
                                 {
-                                    case "1.":
-                                        return "A,4";
-                                    case "2.":
-                                        return "B,3";
-                                    case "3.":
-                                        return "C,2";
-                                    case "4.":
-                                        return "D,1";
-                                    case "5.":
-                                        return "E,0";
-                                    default:
-                                        return string.Empty;
+                                    string strHeroLabSettingsName = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28,
+                                        strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
+                                    if (strHeroLabSettingsName == "Established Runners")
+                                        strHeroLabSettingsName = "Standard";
+                                    KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.Name == strHeroLabSettingsName);
+                                    if (kvpHeroLabSettings.Value != null)
+                                    {
+                                        CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                        strSettingsName = kvpHeroLabSettings.Key;
+                                    }
                                 }
                             }
-
-                            if (_strPriorityAttributes == _strPrioritySpecial ||
-                                _strPriorityAttributes == _strPriorityMetatype ||
-                                _strPriorityAttributes == _strPriorityResources ||
-                                _strPriorityAttributes == _strPrioritySkills ||
-                                _strPrioritySpecial == _strPrioritySkills ||
-                                _strPrioritySpecial == _strPriorityMetatype ||
-                                _strPrioritySpecial == _strPriorityResources ||
-                                _strPriorityMetatype == _strPriorityResources ||
-                                _strPriorityMetatype == _strPrioritySpecial ||
-                                _strPriorityResources == _strPrioritySkills)
-                                _objBuildMethod = CharacterBuildMethod.SumtoTen;
-                            else
-                                _objBuildMethod = CharacterBuildMethod.Priority;
                         }
 
-                        XmlDocument xmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-                        XmlNode xmlGameplayOption =
-                            xmlDocumentGameplayOptions.SelectSingleNode(
-                                "/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
-                        if (xmlGameplayOption == null)
+                        if (string.IsNullOrEmpty(strSettingsName))
                         {
-                            string strMessage = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_MissingGameplayOption"),
-                                GameplayOption);
-                            if (Program.MainForm.ShowMessageBox(strMessage,
-                                    LanguageManager.GetString("Message_MissingGameplayOption_Title"),
-                                    MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                            int intKarma = xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.ValueAsInt ?? 0;
+
+                            if (intKarma >= 100)
+                            {
+                                KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.BuiltInOption
+                                                                                                                                                      && x.Value.BuildMethod == CharacterBuildMethod.Karma);
+                                if (kvpHeroLabSettings.Value != null)
+                                {
+                                    CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                    strSettingsName = kvpHeroLabSettings.Key;
+                                }
+                            }
+                            else
+                            {
+                                _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.Value);
+                                _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.Value);
+                                _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.Value);
+                                _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.Value);
+                                _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
+                                    .SelectSingleNode(
+                                        "container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
+                                    ?.Value);
+
+                                string ConvertPriorityString(string strInput)
+                                {
+                                    switch (strInput)
+                                    {
+                                        case "1.":
+                                            return "A";
+                                        case "2.":
+                                            return "B";
+                                        case "3.":
+                                            return "C";
+                                        case "4.":
+                                            return "D";
+                                        case "5.":
+                                            return "E";
+                                        default:
+                                            return string.Empty;
+                                    }
+                                }
+
+                                if (_strPriorityAttributes == _strPrioritySpecial ||
+                                    _strPriorityAttributes == _strPriorityMetatype ||
+                                    _strPriorityAttributes == _strPriorityResources ||
+                                    _strPriorityAttributes == _strPrioritySkills ||
+                                    _strPrioritySpecial == _strPrioritySkills ||
+                                    _strPrioritySpecial == _strPriorityMetatype ||
+                                    _strPrioritySpecial == _strPriorityResources ||
+                                    _strPriorityMetatype == _strPriorityResources ||
+                                    _strPriorityMetatype == _strPrioritySpecial ||
+                                    _strPriorityResources == _strPrioritySkills)
+                                {
+                                    KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.BuiltInOption
+                                                                                                                                                          && x.Value.BuildMethod == CharacterBuildMethod.SumtoTen);
+                                    if (kvpHeroLabSettings.Value != null)
+                                    {
+                                        CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                        strSettingsName = kvpHeroLabSettings.Key;
+                                    }
+                                }
+                                else
+                                {
+                                    KeyValuePair<string, CharacterOptions> kvpHeroLabSettings = OptionsManager.LoadedCharacterOptions.FirstOrDefault(x => x.Value.BuiltInOption
+                                                                                                                                                          && x.Value.BuildMethod == CharacterBuildMethod.Priority);
+                                    if (kvpHeroLabSettings.Value != null)
+                                    {
+                                        CharacterOptionsKey = kvpHeroLabSettings.Key;
+                                        strSettingsName = kvpHeroLabSettings.Key;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strSettingsName))
+                        {
+                            if (Program.MainForm.ShowMessageBox(
+                                string.Format(GlobalOptions.CultureInfo,
+                                    LanguageManager.GetString("Message_MissingGameplayOption"), CharacterOptionsKey),
+                                LanguageManager.GetString("Message_MissingGameplayOption_Title"),
+                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                             {
                                 using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                 {
@@ -16666,34 +16780,19 @@ namespace Chummer
                                 }
                             }
                             else
-                            {
-                                BannedWareGrades.Clear();
-                                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
-                                    BannedWareGrades.Add(xmlNode.InnerText);
-
-                                if (!Options.FreeContactsMultiplierEnabled)
-                                    _intContactMultiplier =
-                                        Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
-                                _intGameplayOptionQualityLimit =
-                                    _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText, GlobalOptions.InvariantCultureInfo);
-                                _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(
-                                    xmlGameplayOption["maxnuyen"].InnerText,
-                                    GlobalOptions.InvariantCultureInfo);
-                                _intMaxAvail = Convert.ToInt32(xmlGameplayOption["maxavailability"].InnerText, GlobalOptions.InvariantCultureInfo);
-                            }
+                                return false;
                         }
 
-                        if (_objBuildMethod == CharacterBuildMethod.Priority ||
-                            _objBuildMethod == CharacterBuildMethod.SumtoTen)
+                        if (EffectiveBuildMethodUsesPriorityTables)
                         {
                             if (strRaceString == "A.I.")
                                 _strPriorityTalent = "AI";
-                            XmlNode xmlPriorityTalentPick =
+                            XPathNavigator xmlPriorityTalentPick =
                                 xmlLeadsBaseNode.SelectSingleNode(
                                     "container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]");
                             if (xmlPriorityTalentPick != null)
                             {
-                                switch (xmlPriorityTalentPick.Attributes["thing"]?.InnerText)
+                                switch (xmlPriorityTalentPick.SelectSingleNode("@thing")?.Value)
                                 {
                                     case "quAware":
                                         _strPriorityTalent = "Aware";
@@ -16725,9 +16824,9 @@ namespace Chummer
                                 }
 
                                 _lstPrioritySkills.Clear();
-                                foreach (XmlNode xmlField in xmlPriorityTalentPick.SelectNodes("field"))
+                                foreach (XPathNavigator xmlField in xmlPriorityTalentPick.Select("field"))
                                 {
-                                    string strInnerText = xmlField.InnerText;
+                                    string strInnerText = xmlField.Value;
                                     if (!string.IsNullOrEmpty(strInnerText))
                                     {
                                         _lstPrioritySkills.Add(strInnerText);
@@ -16752,34 +16851,34 @@ namespace Chummer
                             }
                         }
 
-                        XmlNode xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNode("karma");
+                        XPathNavigator xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNode("karma");
                         if (xmlKarmaNode != null)
                         {
-                            int.TryParse(xmlKarmaNode.Attributes["left"]?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intKarma);
-                            int.TryParse(xmlKarmaNode.Attributes["total"]?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intTotalKarma);
+                            int.TryParse(xmlKarmaNode.SelectSingleNode("@left")?.Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intKarma);
+                            int.TryParse(xmlKarmaNode.SelectSingleNode("@total")?.Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intTotalKarma);
                         }
 
-                        XmlNode xmlReputationsNode = xmlStatBlockBaseNode.SelectSingleNode("reputations");
+                        XPathNavigator xmlReputationsNode = xmlStatBlockBaseNode.SelectSingleNode("reputations");
                         if (xmlReputationsNode != null)
                         {
                             int.TryParse(
                                 xmlReputationsNode.SelectSingleNode("reputation[@name = \"Street Cred\"]/@value")
-                                    .InnerText,
+                                    .Value,
                                 NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                                 out _intStreetCred);
                             int.TryParse(
                                 xmlReputationsNode.SelectSingleNode("reputation[@name = \"Notoriety\"]/@value")
-                                    .InnerText,
+                                    .Value,
                                 NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
                                 out _intNotoriety);
                             int.TryParse(
                                 xmlReputationsNode.SelectSingleNode("reputation[@name = \"Public Awareness\"]/@value")
-                                    .InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intPublicAwareness);
+                                    .Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intPublicAwareness);
                         }
 
                         if (Created)
                         {
-                            decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNode("cash/@total")?.InnerText,
+                            decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNode("cash/@total")?.Value,
                                 NumberStyles.Any,
                                 GlobalOptions.InvariantCultureInfo, out _decNuyen);
                         }
@@ -16816,11 +16915,11 @@ namespace Chummer
                             " (15)"
                         };
                         // Qualities
-                        XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
-                        foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes(
+                        XmlDocument xmlQualitiesDocument = LoadData("qualities.xml");
+                        foreach (XPathNavigator xmlQualityToImport in xmlStatBlockBaseNode.Select(
                             "qualities/positive/quality[traitcost/@bp != \"0\"]"))
                         {
-                            string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
+                            string strQualityName = xmlQualityToImport.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strQualityName))
                             {
                                 int intDicepoolLabelIndex =
@@ -16847,7 +16946,7 @@ namespace Chummer
                                 string strForcedValue = string.Empty;
                                 XmlNode xmlQualityDataNode =
                                     xmlQualitiesDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+                                        "/chummer/qualities/quality[name = " + strQualityName.CleanXPath() + "]");
                                 if (xmlQualityDataNode == null)
                                 {
                                     string[] astrOriginalNameSplit = strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -16856,7 +16955,7 @@ namespace Chummer
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlQualityDataNode =
                                             xmlQualitiesDocument.SelectSingleNode(
-                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                                "/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                                         if (xmlQualityDataNode != null)
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
                                     }
@@ -16870,7 +16969,7 @@ namespace Chummer
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlQualityDataNode =
                                             xmlQualitiesDocument.SelectSingleNode(
-                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                                "/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                                         if (xmlQualityDataNode != null)
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
                                     }
@@ -16883,17 +16982,17 @@ namespace Chummer
                                         Quality objQuality = new Quality(this);
                                         objQuality.Create(xmlQualityDataNode, QualitySource.Selected, lstWeapons,
                                             strForcedValue);
-                                        objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
+                                        objQuality.Notes = xmlQualityToImport.SelectSingleNode("description")?.Value ?? string.Empty;
                                         _lstQualities.Add(objQuality);
                                     }
                                 }
                             }
                         }
 
-                        foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlQualityToImport in xmlStatBlockBaseNode.Select(
                             "qualities/negative/quality[traitcost/@bp != \"0\"]"))
                         {
-                            string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
+                            string strQualityName = xmlQualityToImport.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strQualityName))
                             {
                                 int intDicepoolLabelIndex =
@@ -16939,7 +17038,7 @@ namespace Chummer
                                 string strForcedValue = string.Empty;
                                 XmlNode xmlQualityDataNode =
                                     xmlQualitiesDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+                                        "/chummer/qualities/quality[name = " + strQualityName.CleanXPath() + "]");
                                 if (xmlQualityDataNode == null)
                                 {
                                     string[] astrOriginalNameSplit = strQualityName.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -16948,7 +17047,7 @@ namespace Chummer
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlQualityDataNode =
                                             xmlQualitiesDocument.SelectSingleNode(
-                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                                "/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                                         if (xmlQualityDataNode != null)
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
                                     }
@@ -16962,7 +17061,7 @@ namespace Chummer
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlQualityDataNode =
                                             xmlQualitiesDocument.SelectSingleNode(
-                                                "/chummer/qualities/quality[name = \"" + strName + "\"]");
+                                                "/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                                         if (xmlQualityDataNode != null)
                                             strForcedValue = astrOriginalNameSplit[1].Trim();
                                     }
@@ -16975,7 +17074,7 @@ namespace Chummer
                                         Quality objQuality = new Quality(this);
                                         objQuality.Create(xmlQualityDataNode, QualitySource.Selected, lstWeapons,
                                             strForcedValue);
-                                        objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
+                                        objQuality.Notes = xmlQualityToImport.SelectSingleNode("description")?.Value ?? string.Empty;
                                         _lstQualities.Add(objQuality);
                                     }
                                 }
@@ -17005,16 +17104,16 @@ namespace Chummer
                         }
 
                         // Attempt to load Condition Monitor Progress.
-                        XmlNode xmlPhysicalCMFilledNode =
+                        XPathNavigator xmlPhysicalCMFilledNode =
                             xmlLeadsBaseNode.SelectSingleNode(
                                 "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity");
                         if (xmlPhysicalCMFilledNode != null)
-                            int.TryParse(xmlPhysicalCMFilledNode.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intPhysicalCMFilled);
-                        XmlNode xmlStunCMFilledNode =
+                            int.TryParse(xmlPhysicalCMFilledNode.Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intPhysicalCMFilled);
+                        XPathNavigator xmlStunCMFilledNode =
                             xmlLeadsBaseNode.SelectSingleNode(
                                 "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity");
                         if (xmlStunCMFilledNode != null)
-                            int.TryParse(xmlStunCMFilledNode.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intStunCMFilled);
+                            int.TryParse(xmlStunCMFilledNode.Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intStunCMFilled);
                         //Timekeeper.Finish("load_char_misc2");
                     }
 
@@ -17118,20 +17217,18 @@ namespace Chummer
                     {
 
                         // Contacts.
-                        foreach (XmlNode xmlContactToImport in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlContactToImport in xmlStatBlockBaseNode.Select(
                             "contacts/contact[@useradded != \"no\"]"))
                         {
                             Contact objContact = new Contact(this)
                             {
-                                EntityType = ContactType.Contact
+                                EntityType = ContactType.Contact,
+                                Name = xmlContactToImport.SelectSingleNode("@name")?.Value ?? string.Empty,
+                                Role = xmlContactToImport.SelectSingleNode("@type")?.Value ?? string.Empty,
+                                Connection = xmlContactToImport.SelectSingleNode("@connection")?.ValueAsInt ?? 1,
+                                Loyalty = xmlContactToImport.SelectSingleNode("@loyalty")?.ValueAsInt ?? 1
                             };
-                            XmlAttributeCollection xmlImportAttributes = xmlContactToImport.Attributes;
-                            objContact.Name = xmlImportAttributes["name"]?.InnerText ?? string.Empty;
-                            objContact.Role = xmlImportAttributes["type"]?.InnerText ?? string.Empty;
-                            objContact.Connection =
-                                Convert.ToInt32(xmlImportAttributes["connection"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
-                            objContact.Loyalty = Convert.ToInt32(xmlImportAttributes["loyalty"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
-                            string strDescription = xmlContactToImport["description"]?.InnerText;
+                            string strDescription = xmlContactToImport.SelectSingleNode("description")?.Value;
                             StringBuilder sbdNotes = new StringBuilder();
                             foreach (string strLine in strDescription.SplitNoAlloc('\n', StringSplitOptions.RemoveEmptyEntries))
                             {
@@ -17177,17 +17274,17 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
                     {
                         // Armor.
-                        xmlGearDocument = XmlManager.Load("gear.xml");
-                        XmlDocument xmlArmorDocument = XmlManager.Load("armor.xml");
-                        foreach (XmlNode xmlArmorToImport in xmlStatBlockBaseNode.SelectNodes(
+                        xmlGearDocument = LoadData("gear.xml");
+                        XmlDocument xmlArmorDocument = LoadData("armor.xml");
+                        foreach (XPathNavigator xmlArmorToImport in xmlStatBlockBaseNode.Select(
                             "gear/armor/item[@useradded != \"no\"]"))
                         {
-                            string strArmorName = xmlArmorToImport.Attributes["name"]?.InnerText;
+                            string strArmorName = xmlArmorToImport.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strArmorName))
                             {
                                 XmlNode xmlArmorData =
                                     xmlArmorDocument.SelectSingleNode(
-                                        "chummer/armors/armor[name = \"" + strArmorName + "\"]");
+                                        "chummer/armors/armor[name = " + strArmorName.CleanXPath() + "]");
                                 if (xmlArmorData == null)
                                 {
                                     string[] astrOriginalNameSplit = strArmorName.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -17196,7 +17293,7 @@ namespace Chummer
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlArmorData =
                                             xmlArmorDocument.SelectSingleNode(
-                                                "/chummer/armors/armor[name = \"" + strName + "\"]");
+                                                "/chummer/armors/armor[name = " + strName.CleanXPath() + "]");
                                     }
 
                                     if (xmlArmorData == null)
@@ -17206,8 +17303,7 @@ namespace Chummer
                                         {
                                             string strName = astrOriginalNameSplit[0].Trim();
                                             xmlArmorData =
-                                                xmlArmorDocument.SelectSingleNode(
-                                                    "/chummer/armors/armor[name = \"" + strName + "\"]");
+                                                xmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = " + strName.CleanXPath() + "]");
                                         }
                                     }
                                 }
@@ -17215,38 +17311,33 @@ namespace Chummer
                                 if (xmlArmorData != null)
                                 {
                                     Armor objArmor = new Armor(this);
-                                    objArmor.Create(xmlArmorData,
-                                        Convert.ToInt32(xmlArmorToImport.Attributes["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo), lstWeapons);
-                                    objArmor.Notes = xmlArmorToImport["description"]?.InnerText;
+                                    objArmor.Create(xmlArmorData, xmlArmorToImport.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons);
+                                    objArmor.Notes = xmlArmorToImport.SelectSingleNode("description")?.Value;
                                     _lstArmor.Add(objArmor);
 
                                     foreach (string strName in HeroLabPluginNodeNames)
                                     {
-                                        foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(
+                                        foreach (XPathNavigator xmlArmorModToImport in xmlArmorToImport.Select(
                                             strName + "/item[@useradded != \"no\"]"))
                                         {
-                                            string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
+                                            string strArmorModName = xmlArmorModToImport.SelectSingleNode("@name")?.Value;
                                             if (!string.IsNullOrEmpty(strArmorModName))
                                             {
                                                 XmlNode xmlArmorModData =
                                                     xmlArmorDocument.SelectSingleNode(
-                                                        "chummer/mods/mod[name = \"" + strArmorModName + "\"]");
+                                                        "chummer/mods/mod[name = " + strArmorModName.CleanXPath() + "]");
                                                 if (xmlArmorModData != null)
                                                 {
                                                     ArmorMod objArmorMod = new ArmorMod(this);
-                                                    objArmorMod.Create(xmlArmorModData,
-                                                        Convert.ToInt32(xmlArmorModToImport.Attributes["rating"]
-                                                            ?.InnerText, GlobalOptions.InvariantCultureInfo),
-                                                        lstWeapons);
-                                                    objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                                    objArmorMod.Create(xmlArmorModData, xmlArmorModToImport.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons);
+                                                    objArmorMod.Notes = xmlArmorModToImport.SelectSingleNode("description")?.Value;
                                                     objArmorMod.Parent = objArmor;
                                                     objArmor.ArmorMods.Add(objArmorMod);
 
                                                     foreach (string strPluginNodeName in HeroLabPluginNodeNames)
                                                     {
-                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
-                                                            .SelectNodes(
-                                                                strPluginNodeName + "/item[@useradded != \"no\"]"))
+                                                        foreach (XPathNavigator xmlPluginToAdd in xmlArmorModToImport
+                                                            .Select(strPluginNodeName + "/item[@useradded != \"no\"]"))
                                                         {
                                                             Gear objPlugin = new Gear(this);
                                                             if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
@@ -17255,12 +17346,10 @@ namespace Chummer
                                                                 objArmorMod.Gear.Add(objPlugin);
                                                         }
 
-                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
-                                                            .SelectNodes(
-                                                                strPluginNodeName + "/item[@useradded = \"no\"]"))
+                                                        foreach (XPathNavigator xmlPluginToAdd in xmlArmorModToImport
+                                                            .Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                                                         {
-                                                            string strGearName = xmlPluginToAdd.Attributes["name"]
-                                                                ?.InnerText;
+                                                            string strGearName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
                                                             if (!string.IsNullOrEmpty(strGearName))
                                                             {
                                                                 Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x =>
@@ -17269,15 +17358,9 @@ namespace Chummer
                                                                      strGearName.Contains(x.Name)));
                                                                 if (objPlugin != null)
                                                                 {
-                                                                    objPlugin.Quantity =
-                                                                        Convert.ToDecimal(
-                                                                            xmlPluginToAdd.Attributes["quantity"]
-                                                                                ?.InnerText ??
-                                                                            "1", GlobalOptions.InvariantCultureInfo);
-                                                                    objPlugin.Notes = xmlPluginToAdd["description"]
-                                                                        ?.InnerText;
-                                                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
-                                                                        lstWeapons);
+                                                                    objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
+                                                                    objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                                                                 }
                                                             }
                                                         }
@@ -17293,10 +17376,10 @@ namespace Chummer
                                             }
                                         }
 
-                                        foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(
+                                        foreach (XPathNavigator xmlArmorModToImport in xmlArmorToImport.Select(
                                             strName + "/item[@useradded = \"no\"]"))
                                         {
-                                            string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
+                                            string strArmorModName = xmlArmorModToImport.SelectSingleNode("@name")?.Value;
                                             if (!string.IsNullOrEmpty(strArmorModName))
                                             {
                                                 ArmorMod objArmorMod = objArmor.ArmorMods.FirstOrDefault(x =>
@@ -17305,12 +17388,11 @@ namespace Chummer
                                                      strArmorModName.Contains(x.Name)));
                                                 if (objArmorMod != null)
                                                 {
-                                                    objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                                    objArmorMod.Notes = xmlArmorModToImport.SelectSingleNode("description")?.Value;
                                                     foreach (string strPluginNodeName in HeroLabPluginNodeNames)
                                                     {
-                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
-                                                            .SelectNodes(
-                                                                strPluginNodeName + "/item[@useradded != \"no\"]"))
+                                                        foreach (XPathNavigator xmlPluginToAdd in xmlArmorModToImport
+                                                            .Select(strPluginNodeName + "/item[@useradded != \"no\"]"))
                                                         {
                                                             Gear objPlugin = new Gear(this);
                                                             if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
@@ -17318,12 +17400,10 @@ namespace Chummer
                                                                 objArmorMod.Gear.Add(objPlugin);
                                                         }
 
-                                                        foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport
-                                                            .SelectNodes(
-                                                                strPluginNodeName + "/item[@useradded = \"no\"]"))
+                                                        foreach (XPathNavigator xmlPluginToAdd in xmlArmorModToImport
+                                                            .Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                                                         {
-                                                            string strGearName = xmlPluginToAdd.Attributes["name"]
-                                                                ?.InnerText;
+                                                            string strGearName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
                                                             if (!string.IsNullOrEmpty(strGearName))
                                                             {
                                                                 Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x =>
@@ -17332,15 +17412,9 @@ namespace Chummer
                                                                      strGearName.Contains(x.Name)));
                                                                 if (objPlugin != null)
                                                                 {
-                                                                    objPlugin.Quantity =
-                                                                        Convert.ToDecimal(
-                                                                            xmlPluginToAdd.Attributes["quantity"]
-                                                                                ?.InnerText ??
-                                                                            "1", GlobalOptions.InvariantCultureInfo);
-                                                                    objPlugin.Notes = xmlPluginToAdd["description"]
-                                                                        ?.InnerText;
-                                                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd,
-                                                                        lstWeapons);
+                                                                    objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
+                                                                    objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                                                    objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                                                                 }
                                                             }
                                                         }
@@ -17354,13 +17428,9 @@ namespace Chummer
                                                          strArmorModName.Contains(x.Name)));
                                                     if (objPlugin != null)
                                                     {
-                                                        objPlugin.Quantity = Convert.ToDecimal(
-                                                            xmlArmorModToImport.Attributes["quantity"]?.InnerText ??
-                                                            "1",
-                                                            GlobalOptions.InvariantCultureInfo);
-                                                        objPlugin.Notes = xmlArmorModToImport["description"]?.InnerText;
-                                                        objPlugin.ProcessHeroLabGearPlugins(xmlArmorModToImport,
-                                                            lstWeapons);
+                                                        objPlugin.Quantity = xmlArmorModToImport.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
+                                                        objPlugin.Notes = xmlArmorModToImport.SelectSingleNode("description")?.Value;
+                                                        objPlugin.ProcessHeroLabGearPlugins(xmlArmorModToImport, lstWeapons);
                                                     }
                                                 }
                                             }
@@ -17376,7 +17446,7 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_char_weapons", op_load))
                     {
                         // Weapons.
-                        foreach (XmlNode xmlWeaponToImport in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlWeaponToImport in xmlStatBlockBaseNode.Select(
                             "gear/weapons/item[@useradded != \"no\"]"))
                         {
                             Weapon objWeapon = new Weapon(this);
@@ -17384,10 +17454,10 @@ namespace Chummer
                                 _lstWeapons.Add(objWeapon);
                         }
 
-                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                             "gear/weapons/item[@useradded = \"no\"]"))
                         {
-                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 Weapon objWeapon = _lstWeapons.FirstOrDefault(x =>
@@ -17395,7 +17465,7 @@ namespace Chummer
                                     (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                 if (objWeapon != null)
                                 {
-                                    objWeapon.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objWeapon.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
                                     objWeapon.ProcessHeroLabWeaponPlugins(xmlPluginToAdd, lstWeapons);
                                 }
                             }
@@ -17407,7 +17477,7 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_char_ware", op_load))
                     {
                         // Cyberware/Bioware.
-                        foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlCyberwareToImport in xmlStatBlockBaseNode.Select(
                             "gear/augmentations/cyberware/item[@useradded != \"no\"]"))
                         {
                             Cyberware objCyberware = new Cyberware(this);
@@ -17416,10 +17486,10 @@ namespace Chummer
                                 _lstCyberware.Add(objCyberware);
                         }
 
-                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                             "gear/augmentations/cyberware/item[@useradded = \"no\"]"))
                         {
-                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
@@ -17427,7 +17497,7 @@ namespace Chummer
                                     (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                 if (objPlugin != null)
                                 {
-                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
                                     objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objPlugin.Grade,
                                         lstWeapons,
                                         lstVehicles);
@@ -17435,7 +17505,7 @@ namespace Chummer
                             }
                         }
 
-                        foreach (XmlNode xmlCyberwareToImport in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlCyberwareToImport in xmlStatBlockBaseNode.Select(
                             "gear/augmentations/bioware/item[@useradded != \"no\"]"))
                         {
                             Cyberware objCyberware = new Cyberware(this);
@@ -17444,10 +17514,10 @@ namespace Chummer
                                 _lstCyberware.Add(objCyberware);
                         }
 
-                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                             "gear/augmentations/bioware/item[@useradded = \"no\"]"))
                         {
-                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
@@ -17455,7 +17525,7 @@ namespace Chummer
                                     (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                 if (objPlugin != null)
                                 {
-                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
                                     objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objPlugin.Grade,
                                         lstWeapons,
                                         lstVehicles);
@@ -17466,15 +17536,15 @@ namespace Chummer
                         //Timekeeper.Finish("load_char_ware");
                     }
 
-                    XmlNodeList xmlNodeList;
+                    XPathNodeIterator xmlNodeList;
                     using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
                     {
                         // Spells.
-                        xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/spells/spell");
-                        XmlDocument xmlSpellDocument = XmlManager.Load("spells.xml");
-                        foreach (XmlNode xmlHeroLabSpell in xmlNodeList)
+                        xmlNodeList = xmlStatBlockBaseNode.Select("magic/spells/spell");
+                        XmlDocument xmlSpellDocument = LoadData("spells.xml");
+                        foreach (XPathNavigator xmlHeroLabSpell in xmlNodeList)
                         {
-                            string strSpellName = xmlHeroLabSpell.Attributes["name"]?.InnerText;
+                            string strSpellName = xmlHeroLabSpell.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strSpellName))
                             {
                                 bool blnIsLimited = strSpellName.EndsWith(" (limited)", StringComparison.Ordinal);
@@ -17560,7 +17630,7 @@ namespace Chummer
                                     strSpellName != "Detect Life, Extended")
                                 {
                                     strForcedValue = strSpellName.TrimStartOnce("Clean ").TrimEndOnce(", Extended");
-                                    if (xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical")
+                                    if (xmlHeroLabSpell.SelectSingleNode("@type")?.Value == "Physical")
                                         strSpellName = "Detect [Object]";
                                     else if (strSpellName.EndsWith(", Extended", StringComparison.Ordinal))
                                         strSpellName = "Detect [Life Form], Extended";
@@ -17590,7 +17660,7 @@ namespace Chummer
                                 else if (strSpellName.StartsWith("Destroy ", StringComparison.Ordinal))
                                 {
                                     strForcedValue = strSpellName.TrimStartOnce("Destroy ");
-                                    strSpellName = xmlHeroLabSpell.Attributes["type"]?.InnerText == "Physical"
+                                    strSpellName = xmlHeroLabSpell.SelectSingleNode("@type")?.Value == "Physical"
                                         ? "Destroy [Vehicle]"
                                         : "Destroy [Free Spirit]";
                                 }
@@ -17687,10 +17757,9 @@ namespace Chummer
                                     strSpellName = "[Sense] Link";
                                 }
 
-                                string strSpellCategory = xmlHeroLabSpell.Attributes["category"]?.InnerText;
+                                string strSpellCategory = xmlHeroLabSpell.SelectSingleNode("@category")?.Value;
                                 XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                    "chummer/spells/spell[category = \"" + strSpellCategory + "\" and name = \"" +
-                                    strSpellName + "\"]");
+                                    "chummer/spells/spell[category = " + strSpellCategory.CleanXPath() + " and name = " + strSpellName.CleanXPath() + "]");
                                 if (xmlSpellData == null)
                                 {
                                     string[] astrOriginalNameSplit = strSpellName.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -17698,9 +17767,7 @@ namespace Chummer
                                     {
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                            "/chummer/spells/spell[category = \"" + strSpellCategory +
-                                            "\" and name = \"" +
-                                            strName + "\"]");
+                                            "/chummer/spells/spell[category = " + strSpellCategory.CleanXPath() + " and name = " + strName.CleanXPath() + "]");
                                     }
 
                                     if (xmlSpellData == null)
@@ -17710,9 +17777,7 @@ namespace Chummer
                                         {
                                             string strName = astrOriginalNameSplit[0].Trim();
                                             xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                                "/chummer/spells/spell[category = \"" + strSpellCategory +
-                                                "\" and name = \"" +
-                                                strName + "\"]");
+                                                "/chummer/spells/spell[category = " + strSpellCategory.CleanXPath() + " and name = " + strName.CleanXPath() + "]");
                                         }
                                     }
                                 }
@@ -17721,7 +17786,7 @@ namespace Chummer
                                 {
                                     Spell objSpell = new Spell(this);
                                     objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
-                                    objSpell.Notes = xmlHeroLabSpell["description"]?.InnerText;
+                                    objSpell.Notes = xmlHeroLabSpell.SelectSingleNode("description")?.Value;
                                     _lstSpells.Add(objSpell);
                                 }
                             }
@@ -17733,18 +17798,18 @@ namespace Chummer
                     using (var _ = Timekeeper.StartSyncron("load_char_powers", op_load))
                     {
                         // Powers.
-                        xmlNodeList = xmlStatBlockBaseNode.SelectNodes("magic/adeptpowers/adeptpower");
-                        XmlDocument xmlPowersDocument = XmlManager.Load("powers.xml");
-                        foreach (XmlNode xmlHeroLabPower in xmlNodeList)
+                        xmlNodeList = xmlStatBlockBaseNode.Select("magic/adeptpowers/adeptpower");
+                        XmlDocument xmlPowersDocument = LoadData("powers.xml");
+                        foreach (XPathNavigator xmlHeroLabPower in xmlNodeList)
                         {
-                            string strPowerName = xmlHeroLabPower.Attributes["name"]?.InnerText;
+                            string strPowerName = xmlHeroLabPower.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strPowerName))
                             {
                                 int intRating = 1;
                                 string strForcedValue = string.Empty;
                                 XmlNode xmlPowerData =
                                     xmlPowersDocument.SelectSingleNode(
-                                        "chummer/powers/power[contains(name, \"" + strPowerName + "\")]");
+                                        "chummer/powers/power[contains(name, " + strPowerName.CleanXPath() + ")]");
                                 if (xmlPowerData == null)
                                 {
                                     string[] astrOriginalNameSplit = strPowerName.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -17753,7 +17818,7 @@ namespace Chummer
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlPowerData =
                                             xmlPowersDocument.SelectSingleNode(
-                                                "/chummer/powers/power[contains(name, \"" + strName + "\")]");
+                                                "/chummer/powers/power[contains(name, " + strName.CleanXPath() + ")]");
 
                                         strForcedValue = astrOriginalNameSplit[1].Trim();
                                         int intForcedValueParenthesesStart = strForcedValue.IndexOf('(');
@@ -17770,7 +17835,7 @@ namespace Chummer
                                             string strName = astrOriginalNameSplit[0].Trim();
                                             xmlPowerData =
                                                 xmlPowersDocument.SelectSingleNode(
-                                                    "/chummer/powers/power[contains(name, \"" + strName + "\")]");
+                                                    "/chummer/powers/power[contains(name, " + strName.CleanXPath() + ")]");
 
                                             string strSecondPart = astrOriginalNameSplit[1].Trim();
                                             int intSecondPartParenthesesEnd = strSecondPart.IndexOf(')');
@@ -17795,7 +17860,7 @@ namespace Chummer
                                 {
                                     Power objPower = new Power(this) {Extra = strForcedValue};
                                     objPower.Create(xmlPowerData, intRating);
-                                    objPower.Notes = xmlHeroLabPower["description"]?.InnerText;
+                                    objPower.Notes = xmlHeroLabPower.SelectSingleNode("description")?.Value;
                                     _lstPowers.Add(objPower);
                                 }
                             }
@@ -17824,7 +17889,7 @@ namespace Chummer
                             lstTextStatBlockLines?.FirstOrDefault(x => x.StartsWith("Complex Forms:", StringComparison.Ordinal));
                         if (!string.IsNullOrEmpty(strComplexFormsLine))
                         {
-                            XmlDocument xmlComplexFormsDocument = XmlManager.Load("complexforms.xml");
+                            XmlDocument xmlComplexFormsDocument = LoadData("complexforms.xml");
 
                             string[] astrComplexForms =
                                 strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim().Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -17870,7 +17935,7 @@ namespace Chummer
 
                                 XmlNode xmlComplexFormData =
                                     xmlComplexFormsDocument.SelectSingleNode(
-                                        "chummer/complexforms/complexform[name = \"" + strComplexFormName + "\"]");
+                                        "chummer/complexforms/complexform[name = " + strComplexFormName.CleanXPath() + "]");
                                 if (xmlComplexFormData == null)
                                 {
                                     string[] astrOriginalNameSplit = strComplexFormName.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -17879,7 +17944,7 @@ namespace Chummer
                                         string strName = astrOriginalNameSplit[0].Trim();
                                         xmlComplexFormData =
                                             xmlComplexFormsDocument.SelectSingleNode(
-                                                "/chummer/complexforms/complexform[name = \"" + strName + "\"]");
+                                                "/chummer/complexforms/complexform[name = " + strName.CleanXPath() + "]");
                                     }
 
                                     if (xmlComplexFormData == null)
@@ -17890,7 +17955,7 @@ namespace Chummer
                                             string strName = astrOriginalNameSplit[0].Trim();
                                             xmlComplexFormData =
                                                 xmlComplexFormsDocument.SelectSingleNode(
-                                                    "/chummer/complexforms/complexform[name = \"" + strName + "\"]");
+                                                    "/chummer/complexforms/complexform[name = " + strName.CleanXPath() + "]");
                                         }
                                     }
                                 }
@@ -17942,29 +18007,29 @@ namespace Chummer
                             xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake SIN']");
                         XmlNode xmlFakeLicenseDataNode =
                             xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
-                        xmlNodeList = xmlStatBlockBaseNode.SelectNodes("identities/identity");
-                        foreach (XmlNode xmlHeroLabIdentity in xmlNodeList)
+                        xmlNodeList = xmlStatBlockBaseNode.Select("identities/identity");
+                        foreach (XPathNavigator xmlHeroLabIdentity in xmlNodeList)
                         {
-                            string strIdentityName = xmlHeroLabIdentity.Attributes["name"]?.InnerText;
+                            string strIdentityName = xmlHeroLabIdentity.SelectSingleNode("@name")?.Value;
                             int intIdentityNameParenthesesStart = strIdentityName.IndexOf('(');
                             if (intIdentityNameParenthesesStart != -1)
                                 strIdentityName = strIdentityName.Substring(0, intIdentityNameParenthesesStart);
-                            XmlNode xmlHeroLabFakeSINNode =
+                            XPathNavigator xmlHeroLabFakeSINNode =
                                 xmlHeroLabIdentity.SelectSingleNode("license[@name = \"Fake SIN\"]");
                             if (xmlHeroLabFakeSINNode != null)
                             {
                                 Gear objFakeSIN = new Gear(this);
                                 objFakeSIN.Create(xmlFakeSINDataNode,
-                                    Convert.ToInt32(xmlHeroLabFakeSINNode.Attributes["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo), lstWeapons,
+                                    xmlHeroLabFakeSINNode.SelectSingleNode("@rating")?.ValueAsInt ?? 1, lstWeapons,
                                     strIdentityName);
-                                foreach (XmlNode xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity.SelectNodes(
+                                foreach (XPathNavigator xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity.Select(
                                     "license[@name = \"Fake License\"]"))
                                 {
                                     Gear objFakeLicense = new Gear(this);
                                     objFakeLicense.Create(xmlFakeLicenseDataNode,
-                                        Convert.ToInt32(xmlHeroLabFakeLicenseNode.Attributes["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo),
+                                        xmlHeroLabFakeLicenseNode.SelectSingleNode("@rating")?.ValueAsInt ?? 1,
                                         lstWeapons,
-                                        xmlHeroLabFakeLicenseNode.Attributes["for"]?.InnerText);
+                                        xmlHeroLabFakeLicenseNode.SelectSingleNode("@for")?.Value);
                                     objFakeLicense.Parent = objFakeSIN;
                                     objFakeSIN.Children.Add(objFakeLicense);
                                 }
@@ -17972,21 +18037,20 @@ namespace Chummer
                                 _lstGear.Add(objFakeSIN);
                             }
 
-                            XmlNode xmlHeroLabLifestyleNode = xmlHeroLabIdentity.SelectSingleNode("lifestyle");
+                            XPathNavigator xmlHeroLabLifestyleNode = xmlHeroLabIdentity.SelectSingleNode("lifestyle");
                             if (xmlHeroLabLifestyleNode != null)
                             {
-                                string strLifestyleType = xmlHeroLabLifestyleNode.Attributes["name"]?.InnerText
+                                string strLifestyleType = xmlHeroLabLifestyleNode.SelectSingleNode("@name")?.Value
                                     .TrimEndOnce(" Lifestyle");
 
-                                XmlNode xmlLifestyleDataNode = XmlManager.Load("lifestyles.xml")
-                                    .SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strLifestyleType +
-                                                      "\"]");
+                                XmlNode xmlLifestyleDataNode = LoadData("lifestyles.xml")
+                                    .SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + strLifestyleType.CleanXPath() + "]");
 
                                 if (xmlLifestyleDataNode != null)
                                 {
                                     Lifestyle objLifestyle = new Lifestyle(this);
                                     objLifestyle.Create(xmlLifestyleDataNode);
-                                    if (int.TryParse(xmlHeroLabLifestyleNode.Attributes["months"]?.InnerText,
+                                    if (int.TryParse(xmlHeroLabLifestyleNode.SelectSingleNode("@months")?.Value,
                                         out int intMonths))
                                     {
                                         objLifestyle.Increments = intMonths;
@@ -18003,7 +18067,7 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_char_gear", op_load))
                     {
                         // <gears>
-                        foreach (XmlNode xmlGearToImport in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlGearToImport in xmlStatBlockBaseNode.Select(
                             "gear/equipment/item[@useradded != \"no\"]"))
                         {
                             Gear objGear = new Gear(this);
@@ -18011,10 +18075,10 @@ namespace Chummer
                                 _lstGear.Add(objGear);
                         }
 
-                        foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes(
+                        foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                             "gear/equipment/item[@useradded = \"no\"]"))
                         {
-                            string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                            string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                             {
                                 Gear objPlugin = _lstGear.FirstOrDefault(x =>
@@ -18022,9 +18086,9 @@ namespace Chummer
                                 if (objPlugin != null)
                                 {
                                     objPlugin.Quantity =
-                                        Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1",
+                                        Convert.ToDecimal(xmlPluginToAdd.SelectSingleNode("@quantity")?.Value ?? "1",
                                             GlobalOptions.InvariantCultureInfo);
-                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                    objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
                                     objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                                 }
                             }
@@ -18158,7 +18222,7 @@ namespace Chummer
                         if (!blnFoundUnarmed)
                         {
                             // Add the Unarmed Attack Weapon to the character.
-                            XmlDocument objXmlWeaponDoc = XmlManager.Load("weapons.xml");
+                            XmlDocument objXmlWeaponDoc = LoadData("weapons.xml");
                             XmlNode objXmlWeapon =
                                 objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                             if (objXmlWeapon != null)
@@ -18171,43 +18235,6 @@ namespace Chummer
                         }
 
                         //Timekeeper.Finish("load_char_unarmed");
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_char_cfix", op_load))
-                    {
-                        // load issue where the contact multiplier was set to 0
-                        if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
-                        {
-                            XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")
-                                .SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" +
-                                                  _strGameplayOption +
-                                                  "\"]");
-                            if (objXmlGameplayOption != null)
-                            {
-                                string strKarma = objXmlGameplayOption["karma"]?.InnerText;
-                                string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
-                                string strContactMultiplier = Options.FreeContactsMultiplierEnabled
-                                    ? Options.FreeContactsMultiplier.ToString(GlobalOptions.InvariantCultureInfo)
-                                    : objXmlGameplayOption["contactmultiplier"]?.InnerText;
-                                _intMaxKarma = Convert.ToInt32(strKarma, GlobalOptions.InvariantCultureInfo);
-                                _decMaxNuyen = Convert.ToDecimal(strNuyen, GlobalOptions.InvariantCultureInfo);
-                                _intContactMultiplier = Convert.ToInt32(strContactMultiplier, GlobalOptions.InvariantCultureInfo);
-                                _intCachedContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
-                            }
-                        }
-
-                        //Timekeeper.Finish("load_char_cfix");
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_char_maxkarmafix", op_load))
-                    {
-                        //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
-                        if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
-                        {
-                            _intGameplayOptionQualityLimit = _intMaxKarma;
-                        }
-
-                        //Timekeeper.Finish("load_char_maxkarmafix");
                     }
 
                     // Refresh certain improvements
@@ -18284,7 +18311,7 @@ namespace Chummer
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)
                     {
-                        int intPositiveQualityExcess = _intCachedPositiveQualities - GameplayOptionQualityLimit;
+                        int intPositiveQualityExcess = _intCachedPositiveQualities - Options.QualityKarmaLimit;
                         if (intPositiveQualityExcess > 0)
                         {
                             _intCachedPositiveQualities += intPositiveQualityExcess;
@@ -18320,7 +18347,7 @@ namespace Chummer
                     // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
                     if (Options.ExceedPositiveQualitiesCostDoubled)
                     {
-                        int intPositiveQualityExcess = _intCachedPositiveQualitiesTotal - GameplayOptionQualityLimit;
+                        int intPositiveQualityExcess = _intCachedPositiveQualitiesTotal - Options.QualityKarmaLimit;
                         if (intPositiveQualityExcess > 0)
                         {
                             _intCachedPositiveQualitiesTotal += intPositiveQualityExcess;
@@ -18343,14 +18370,14 @@ namespace Chummer
                 {
                     return string.Format(GlobalOptions.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
                         PositiveQualityKarma,
-                        GameplayOptionQualityLimit,
+                        Options.QualityKarmaLimit,
                         LanguageManager.GetString("String_Space"),
                         PositiveQualityKarmaTotal,
                         LanguageManager.GetString("String_Karma"));
                 }
                 return string.Format(GlobalOptions.CultureInfo, "{0}/{1}{2}{3}",
                     PositiveQualityKarma,
-                    GameplayOptionQualityLimit,
+                    Options.QualityKarmaLimit,
                     LanguageManager.GetString("String_Space"),
                     LanguageManager.GetString("String_Karma"));
             }
@@ -18376,7 +18403,7 @@ namespace Chummer
                     // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
                     if (Options.ExceedNegativeQualitiesLimit)
                     {
-                        int intNegativeQualityLimit = -GameplayOptionQualityLimit;
+                        int intNegativeQualityLimit = -Options.QualityKarmaLimit;
                         if (_intCachedNegativeQualities < intNegativeQualityLimit)
                         {
                             _intCachedNegativeQualities = intNegativeQualityLimit;
@@ -18414,7 +18441,7 @@ namespace Chummer
                     // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
                     if (Options.ExceedNegativeQualitiesLimit)
                     {
-                        int intNegativeQualityLimit = -GameplayOptionQualityLimit;
+                        int intNegativeQualityLimit = -Options.QualityKarmaLimit;
                         if (_intCachedNegativeQualityLimitKarma < intNegativeQualityLimit)
                         {
                             _intCachedNegativeQualityLimitKarma = intNegativeQualityLimit;
@@ -18435,14 +18462,14 @@ namespace Chummer
                 {
                     return string.Format(GlobalOptions.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
                         NegativeQualityLimitKarma,
-                        GameplayOptionQualityLimit,
+                        Options.QualityKarmaLimit,
                         LanguageManager.GetString("String_Space"),
                         NegativeQualityKarma,
                         LanguageManager.GetString("String_Karma"));
                 }
                 return string.Format(GlobalOptions.CultureInfo, "{0}/{1}{2}{3}",
                     NegativeQualityKarma,
-                    GameplayOptionQualityLimit,
+                    Options.QualityKarmaLimit,
                     LanguageManager.GetString("String_Space"),
                     LanguageManager.GetString("String_Karma"));
             }
@@ -18525,7 +18552,7 @@ namespace Chummer
         #region Source
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, this);
 
         /// <summary>
         /// Character's Sourcebook.
@@ -18545,7 +18572,6 @@ namespace Chummer
             set => _strPage = value;
         }
 
-        public string PriorityArray { get; set; } = string.Empty;
         public bool AllowAdeptWayPowerDiscount
         {
             get
@@ -18668,7 +18694,7 @@ namespace Chummer
             // Add the Cyberzombie Lifestyle if it is not already taken.
             if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
             {
-                XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument objXmlLifestyleDocument = LoadData("lifestyles.xml");
                 XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
 
                 if (objXmlLifestyle != null)
@@ -18688,7 +18714,7 @@ namespace Chummer
             // Gain the Dual Natured Critter Power if it does not yet exist.
             if (CritterPowers.All(x => x.Name != "Dual Natured"))
             {
-                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
+                XmlNode objXmlPowerNode = LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
 
                 if (objXmlPowerNode != null)
                 {
@@ -18701,7 +18727,7 @@ namespace Chummer
             // Gain the Immunity (Normal Weapons) Critter Power if it does not yet exist.
             if (!CritterPowers.Any(x => x.Name == "Immunity" && x.Extra == "Normal Weapons"))
             {
-                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                XmlNode objXmlPowerNode = LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                 if (objXmlPowerNode != null)
                 {
@@ -18795,13 +18821,13 @@ namespace Chummer
         [IgnoreDataMember]
         public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown;
 
-        public async void OnDefaultDoubleClick(object sender, EventArgs e)
+        public void OnDefaultDoubleClick(object sender, EventArgs e)
         {
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == FileName);
 
             if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
             {
-                objOpenCharacter = await Program.MainForm.LoadCharacter(FilePath).ConfigureAwait(true);
+                objOpenCharacter = Program.MainForm.LoadCharacter(FilePath).Result;
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -18839,14 +18865,16 @@ namespace Chummer
                 // If we run into any problems loading the character cache, fail out early.
                 try
                 {
-                    XmlDocument xmlDoc = new XmlDocument
-                    {
-                        XmlResolver = null
-                    };
+                    XPathDocument xmlDoc;
                     using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlDoc.Load(objXmlReader);
-                    xmlSourceNode = xmlDoc.CreateNavigator()?.SelectSingleNode("/character");
+                    {
+                        using (XmlReader objXmlReader =
+                            XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        {
+                            xmlDoc = new XPathDocument(objXmlReader);
+                        }
+                    }
+                    xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
                 }
                 catch (Exception ex)
                 {
@@ -18872,7 +18900,13 @@ namespace Chummer
                 Created = xmlSourceNode.SelectSingleNode("created")?.Value == bool.TrueString;
                 Essence = xmlSourceNode.SelectSingleNode("totaless")?.Value;
                 string strSettings = xmlSourceNode.SelectSingleNode("settings")?.Value ?? string.Empty;
-                SettingsFile = !File.Exists(Path.Combine(Utils.GetStartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound") : strSettings;
+                if (!string.IsNullOrEmpty(strSettings))
+                    SettingsFile = OptionsManager.LoadedCharacterOptions.ContainsKey(strSettings)
+                        ? OptionsManager.LoadedCharacterOptions[strSettings].DisplayName
+                        : LanguageManager.GetString("MessageTitle_FileNotFound") +
+                          LanguageManager.GetString("String_Space") + '[' + strSettings + ']';
+                else
+                    SettingsFile = string.Empty;
                 MugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value ?? string.Empty;
                 if (string.IsNullOrEmpty(MugshotBase64))
                 {

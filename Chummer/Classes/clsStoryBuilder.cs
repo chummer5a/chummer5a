@@ -41,7 +41,8 @@ namespace Chummer
         public string GetStory(string strLanguage)
         {
             //Little bit of data required for following steps
-            XmlDocument xdoc = XmlManager.Load("lifemodules.xml", strLanguage);
+            XmlDocument xmlDoc = _objCharacter.LoadData("lifemodules.xml", strLanguage);
+            XPathNavigator xdoc = _objCharacter.LoadDataXPath("lifemodules.xml", strLanguage);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
             List<XmlNode> modules = new List<XmlNode>(10);
@@ -50,14 +51,14 @@ namespace Chummer
             {
                 if (quality.Type == QualityType.LifeModule)
                 {
-                    modules.Add(Quality.GetNodeOverrideable(quality.SourceIDString, xdoc));
+                    modules.Add(Quality.GetNodeOverrideable(quality.SourceIDString, xmlDoc));
                 }
             }
 
             //Sort the list (Crude way, but have to do)
             for (int i = 0; i < modules.Count; i++)
             {
-                string stageName = xdoc.SelectSingleNode(i <= 4 ? "chummer/stages/stage[@order = \"" + (i + 1).ToString(GlobalOptions.InvariantCultureInfo) + "\"]" : "chummer/stages/stage[@order = \"5\"]")?.InnerText;
+                string stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = " + (i <= 4 ? (i + 1).ToString(GlobalOptions.InvariantCultureInfo).CleanXPath() : "\"5\"") + "]")?.Value;
                 int j;
                 for (j = i; j < modules.Count; j++)
                 {
@@ -74,7 +75,7 @@ namespace Chummer
 
             string[] story = new string[modules.Count];
             object storyLock = new object();
-            XPathNavigator xmlBaseMacrosNode = xdoc.GetFastNavigator().SelectSingleNode("/chummer/storybuilder/macros");
+            XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNode("/chummer/storybuilder/macros");
             //Actually "write" the story
             Parallel.For(0, modules.Count, i =>
             {

@@ -19,7 +19,7 @@
  using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Xml;
+ using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -28,30 +28,28 @@ namespace Chummer
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
-        public frmSelectSkillCategory()
+        public frmSelectSkillCategory(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.Load("skills.xml");
+            _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectSkillCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Skill Categories found in the Skills file.
             List<ListItem> lstCategory = new List<ListItem>();
-            using (XmlNodeList objXmlCategoryList = !string.IsNullOrEmpty(_strForceCategory)
-                ? _objXmlDocument.SelectNodes("/chummer/categories/category[. = \"" + _strForceCategory + "\"]")
-                : _objXmlDocument.SelectNodes("/chummer/categories/category"))
-                if (objXmlCategoryList != null)
-                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
-                    {
-                        string strInnerText = objXmlCategory.InnerText;
-                        lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-                    }
+            foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
+                ? _objXmlDocument.Select("/chummer/categories/category[. = " + _strForceCategory.CleanXPath() + "]")
+                : _objXmlDocument.Select("/chummer/categories/category"))
+            {
+                string strInnerText = objXmlCategory.Value;
+                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+            }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = nameof(ListItem.Value);
             cboCategory.DisplayMember = nameof(ListItem.Name);

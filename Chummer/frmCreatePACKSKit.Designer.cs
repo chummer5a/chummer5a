@@ -29,20 +29,20 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.chkAttributes = new Chummer.ColorableCheckBox();
-            this.chkQualities = new Chummer.ColorableCheckBox();
-            this.chkStartingNuyen = new Chummer.ColorableCheckBox();
-            this.chkActiveSkills = new Chummer.ColorableCheckBox();
-            this.chkKnowledgeSkills = new Chummer.ColorableCheckBox();
-            this.chkMartialArts = new Chummer.ColorableCheckBox();
-            this.chkSpells = new Chummer.ColorableCheckBox();
-            this.chkComplexForms = new Chummer.ColorableCheckBox();
-            this.chkCyberware = new Chummer.ColorableCheckBox();
-            this.chkLifestyle = new Chummer.ColorableCheckBox();
-            this.chkArmor = new Chummer.ColorableCheckBox();
-            this.chkWeapons = new Chummer.ColorableCheckBox();
-            this.chkGear = new Chummer.ColorableCheckBox();
-            this.chkVehicles = new Chummer.ColorableCheckBox();
+            this.chkAttributes = new Chummer.ColorableCheckBox(this.components);
+            this.chkQualities = new Chummer.ColorableCheckBox(this.components);
+            this.chkStartingNuyen = new Chummer.ColorableCheckBox(this.components);
+            this.chkActiveSkills = new Chummer.ColorableCheckBox(this.components);
+            this.chkKnowledgeSkills = new Chummer.ColorableCheckBox(this.components);
+            this.chkMartialArts = new Chummer.ColorableCheckBox(this.components);
+            this.chkSpells = new Chummer.ColorableCheckBox(this.components);
+            this.chkComplexForms = new Chummer.ColorableCheckBox(this.components);
+            this.chkCyberware = new Chummer.ColorableCheckBox(this.components);
+            this.chkLifestyle = new Chummer.ColorableCheckBox(this.components);
+            this.chkArmor = new Chummer.ColorableCheckBox(this.components);
+            this.chkWeapons = new Chummer.ColorableCheckBox(this.components);
+            this.chkGear = new Chummer.ColorableCheckBox(this.components);
+            this.chkVehicles = new Chummer.ColorableCheckBox(this.components);
             this.lblNameLabel = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.txtFileName = new System.Windows.Forms.TextBox();
@@ -61,6 +61,7 @@ namespace Chummer
             // 
             this.chkAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAttributes.AutoSize = true;
+            this.chkAttributes.DefaultColorScheme = true;
             this.chkAttributes.Location = new System.Drawing.Point(3, 55);
             this.chkAttributes.Name = "chkAttributes";
             this.chkAttributes.Size = new System.Drawing.Size(70, 17);
@@ -73,6 +74,7 @@ namespace Chummer
             // 
             this.chkQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkQualities.AutoSize = true;
+            this.chkQualities.DefaultColorScheme = true;
             this.chkQualities.Location = new System.Drawing.Point(3, 78);
             this.chkQualities.Name = "chkQualities";
             this.chkQualities.Size = new System.Drawing.Size(66, 17);
@@ -85,6 +87,7 @@ namespace Chummer
             // 
             this.chkStartingNuyen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkStartingNuyen.AutoSize = true;
+            this.chkStartingNuyen.DefaultColorScheme = true;
             this.chkStartingNuyen.Location = new System.Drawing.Point(3, 101);
             this.chkStartingNuyen.Name = "chkStartingNuyen";
             this.chkStartingNuyen.Size = new System.Drawing.Size(96, 17);
@@ -97,6 +100,7 @@ namespace Chummer
             // 
             this.chkActiveSkills.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkActiveSkills.AutoSize = true;
+            this.chkActiveSkills.DefaultColorScheme = true;
             this.chkActiveSkills.Location = new System.Drawing.Point(3, 124);
             this.chkActiveSkills.Name = "chkActiveSkills";
             this.chkActiveSkills.Size = new System.Drawing.Size(83, 17);
@@ -104,23 +108,27 @@ namespace Chummer
             this.chkActiveSkills.Tag = "Checkbox_CreatePACKSKit_ActiveSkills";
             this.chkActiveSkills.Text = "Active Skills";
             this.chkActiveSkills.UseVisualStyleBackColor = true;
+            this.chkActiveSkills.Visible = false;
             // 
             // chkKnowledgeSkills
             // 
             this.chkKnowledgeSkills.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkKnowledgeSkills.AutoSize = true;
-            this.chkKnowledgeSkills.Location = new System.Drawing.Point(3, 147);
+            this.chkKnowledgeSkills.DefaultColorScheme = true;
+            this.chkKnowledgeSkills.Location = new System.Drawing.Point(166, 124);
             this.chkKnowledgeSkills.Name = "chkKnowledgeSkills";
             this.chkKnowledgeSkills.Size = new System.Drawing.Size(106, 17);
             this.chkKnowledgeSkills.TabIndex = 8;
             this.chkKnowledgeSkills.Tag = "Checkbox_CreatePACKSKit_KnowledgeSkills";
             this.chkKnowledgeSkills.Text = "Knowledge Skills";
             this.chkKnowledgeSkills.UseVisualStyleBackColor = true;
+            this.chkKnowledgeSkills.Visible = false;
             // 
             // chkMartialArts
             // 
             this.chkMartialArts.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMartialArts.AutoSize = true;
+            this.chkMartialArts.DefaultColorScheme = true;
             this.chkMartialArts.Location = new System.Drawing.Point(3, 170);
             this.chkMartialArts.Name = "chkMartialArts";
             this.chkMartialArts.Size = new System.Drawing.Size(78, 17);
@@ -133,6 +141,7 @@ namespace Chummer
             // 
             this.chkSpells.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSpells.AutoSize = true;
+            this.chkSpells.DefaultColorScheme = true;
             this.chkSpells.Location = new System.Drawing.Point(3, 193);
             this.chkSpells.Name = "chkSpells";
             this.chkSpells.Size = new System.Drawing.Size(54, 17);
@@ -145,6 +154,7 @@ namespace Chummer
             // 
             this.chkComplexForms.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkComplexForms.AutoSize = true;
+            this.chkComplexForms.DefaultColorScheme = true;
             this.chkComplexForms.Location = new System.Drawing.Point(166, 55);
             this.chkComplexForms.Name = "chkComplexForms";
             this.chkComplexForms.Size = new System.Drawing.Size(97, 17);
@@ -157,6 +167,7 @@ namespace Chummer
             // 
             this.chkCyberware.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCyberware.AutoSize = true;
+            this.chkCyberware.DefaultColorScheme = true;
             this.chkCyberware.Location = new System.Drawing.Point(166, 78);
             this.chkCyberware.Name = "chkCyberware";
             this.chkCyberware.Size = new System.Drawing.Size(119, 17);
@@ -169,6 +180,7 @@ namespace Chummer
             // 
             this.chkLifestyle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLifestyle.AutoSize = true;
+            this.chkLifestyle.DefaultColorScheme = true;
             this.chkLifestyle.Location = new System.Drawing.Point(166, 101);
             this.chkLifestyle.Name = "chkLifestyle";
             this.chkLifestyle.Size = new System.Drawing.Size(64, 17);
@@ -181,7 +193,8 @@ namespace Chummer
             // 
             this.chkArmor.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkArmor.AutoSize = true;
-            this.chkArmor.Location = new System.Drawing.Point(166, 124);
+            this.chkArmor.DefaultColorScheme = true;
+            this.chkArmor.Location = new System.Drawing.Point(3, 147);
             this.chkArmor.Name = "chkArmor";
             this.chkArmor.Size = new System.Drawing.Size(53, 17);
             this.chkArmor.TabIndex = 14;
@@ -193,6 +206,7 @@ namespace Chummer
             // 
             this.chkWeapons.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkWeapons.AutoSize = true;
+            this.chkWeapons.DefaultColorScheme = true;
             this.chkWeapons.Location = new System.Drawing.Point(166, 147);
             this.chkWeapons.Name = "chkWeapons";
             this.chkWeapons.Size = new System.Drawing.Size(72, 17);
@@ -205,6 +219,7 @@ namespace Chummer
             // 
             this.chkGear.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkGear.AutoSize = true;
+            this.chkGear.DefaultColorScheme = true;
             this.chkGear.Location = new System.Drawing.Point(166, 170);
             this.chkGear.Name = "chkGear";
             this.chkGear.Size = new System.Drawing.Size(49, 17);
@@ -217,6 +232,7 @@ namespace Chummer
             // 
             this.chkVehicles.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkVehicles.AutoSize = true;
+            this.chkVehicles.DefaultColorScheme = true;
             this.chkVehicles.Location = new System.Drawing.Point(166, 193);
             this.chkVehicles.Name = "chkVehicles";
             this.chkVehicles.Size = new System.Drawing.Size(66, 17);
@@ -314,12 +330,12 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.chkWeapons, 1, 5);
             this.tlpMain.Controls.Add(this.chkMartialArts, 0, 6);
             this.tlpMain.Controls.Add(this.chkCyberware, 1, 2);
-            this.tlpMain.Controls.Add(this.chkArmor, 1, 4);
             this.tlpMain.Controls.Add(this.chkStartingNuyen, 0, 3);
-            this.tlpMain.Controls.Add(this.chkKnowledgeSkills, 0, 5);
             this.tlpMain.Controls.Add(this.chkLifestyle, 1, 3);
             this.tlpMain.Controls.Add(this.chkActiveSkills, 0, 4);
             this.tlpMain.Controls.Add(this.tlpButtons, 0, 8);
+            this.tlpMain.Controls.Add(this.chkArmor, 0, 5);
+            this.tlpMain.Controls.Add(this.chkKnowledgeSkills, 1, 4);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";

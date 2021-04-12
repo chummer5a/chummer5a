@@ -35,7 +35,7 @@ namespace Chummer
 		private readonly List<ListItem> _lstGrade = new List<ListItem>(10);
 		private readonly Character _objCharacter;
 	    private Drug _objDrug;
-	    readonly XmlDocument _objXmlDocument = XmlManager.Load("drugcomponents.xml");
+	    private readonly XmlDocument _objXmlDocument;
 		private double _dblCostMultiplier;
 		private int _intAddictionThreshold;
 
@@ -49,6 +49,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            _objXmlDocument = objCharacter.LoadData("drugcomponents.xml");
             LoadData();
 
             _lstSelectedDrugComponents = new List<clsNodeData>(5);
@@ -300,7 +301,7 @@ namespace Chummer
 
 			// Update the Essence and Cost multipliers based on the Grade that has been selected.
 			// Retrieve the information for the selected Grade.
-			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = \"" + cboGrade.SelectedValue + "\"]");
+			XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = " + cboGrade.SelectedValue.ToString().CleanXPath() + "]");
 		    if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
 		        _dblCostMultiplier = 1.0;
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))

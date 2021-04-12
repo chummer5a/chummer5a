@@ -19,7 +19,7 @@
 -->
 <chummer>
   <armors>
-    <armor xpathfilter="mods/name[text() = 'Custom Fit (Stack)']">
+    <armor xpathfilter="mods/name[. = 'Custom Fit (Stack)']">
       <encumbrance>False</encumbrance>
     </armor>
   </armors>

@@ -66,7 +66,8 @@ namespace Chummer
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (XmlManager.Load("packs.xml").SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
+            if (XmlManager.LoadXPath("packs.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+                .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
                 Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -81,10 +82,7 @@ namespace Chummer
             {
                 try
                 {
-                    objXmlCurrentDocument = new XmlDocument
-                    {
-                        XmlResolver = null
-                    };
+                    objXmlCurrentDocument = new XmlDocument { XmlResolver = null };
                     using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
                             objXmlCurrentDocument.Load(objXmlReader);
@@ -244,47 +242,47 @@ namespace Chummer
                     if (chkStartingNuyen.Checked)
                     {
                         decimal decNuyenBP = _objCharacter.NuyenBP;
-                        if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                        if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                             decNuyenBP /= 2.0m;
                         objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
                     }
 
+                    /* TODO: Add support for active and knowledge skills and skill groups
                     // Export Active Skills.
                     if (chkActiveSkills.Checked)
                     {
                         // <skills>
                         objWriter.WriteStartElement("skills");
 
-                        //TODO: Figure out what this did?
                         // Active Skills.
-                        //foreach (Skill objSkill in _objCharacter.Skills)
-                        //{
-                        //    if (!objSkill.KnowledgeSkill && !objSkill.IsGrouped && objSkill.Rating > 0)
-                        //    {
-                        //        // <skill>
-                        //        objWriter.WriteStartElement("skill");
-                        //        objWriter.WriteElementString("name", objSkill.Name);
-                        //        objWriter.WriteElementString("rating", objSkill.Rating.ToString());
-                        //        if (!string.IsNullOrEmpty(objSkill.Specialization))
-                        //            objWriter.WriteElementString("spec", objSkill.Specialization);
-                        //        // </skill>
-                        //        objWriter.WriteEndElement();
-                        //    }
-                        //}
+                        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            if (!objSkill.IsKnowledgeSkill && objSkill.Rating > 0)
+                            {
+                                // <skill>
+                                objWriter.WriteStartElement("skill");
+                                objWriter.WriteElementString("name", objSkill.Name);
+                                objWriter.WriteElementString("rating", objSkill.Rating.ToString());
+                                if (!string.IsNullOrEmpty(objSkill.Specialization))
+                                    objWriter.WriteElementString("spec", objSkill.Specialization);
+                                // </skill>
+                                objWriter.WriteEndElement();
+                            }
+                        }
 
                         // Skill Groups.
-                        //foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-                        //{
-                        //    if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
-                        //    {
-                        //        // <skillgroup>
-                        //        objWriter.WriteStartElement("skillgroup");
-                        //        objWriter.WriteElementString("name", objSkillGroup.Name);
-                        //        objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
-                        //        // </skillgroup>
-                        //        objWriter.WriteEndElement();
-                        //    }
-                        //}
+                        foreach (SkillGroup objSkillGroup in _objCharacter.SkillsSection.SkillGroups)
+                        {
+                            if (objSkillGroup.BaseUnbroken && objSkillGroup.Rating > 0)
+                            {
+                                // <skillgroup>
+                                objWriter.WriteStartElement("skillgroup");
+                                objWriter.WriteElementString("name", objSkillGroup.Name);
+                                objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
+                                // </skillgroup>
+                                objWriter.WriteEndElement();
+                            }
+                        }
                         // </skills>
                         objWriter.WriteEndElement();
                     }
@@ -310,6 +308,7 @@ namespace Chummer
                         // </knowledgeskills>
                         objWriter.WriteEndElement();
                     }
+                    */
 
                     // Export Martial Arts.
                     if (chkMartialArts.Checked)

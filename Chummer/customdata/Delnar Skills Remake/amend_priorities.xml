@@ -24,7 +24,7 @@
       <talents>
         <talent xpathfilter="value = 'Aspected Magician'" >
           <skillgroupchoices>
-            <skillgroup xpathfilter="text() = 'Enchanting'" amendoperation="remove" />
+            <skillgroup xpathfilter=". = 'Enchanting'" amendoperation="remove" />
           </skillgroupchoices>
         </talent>
         <talent xpathfilter="value = 'Aware' or value = 'Explorer'" >

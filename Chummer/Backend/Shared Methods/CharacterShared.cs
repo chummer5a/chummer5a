@@ -1933,8 +1933,7 @@ namespace Chummer
             {
                 if (e.PropertyName == nameof(Quality.Suppressed))
                 {
-                    Quality objQuality = sender as Quality;
-                    if (objQuality == null)
+                    if (!(sender is Quality objQuality))
                         return;
                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                     if (objNode == null)
@@ -1948,8 +1947,7 @@ namespace Chummer
                 }
                 else if (e.PropertyName == nameof(Quality.Notes))
                 {
-                    Quality objQuality = sender as Quality;
-                    if (objQuality == null)
+                    if (!(sender is Quality objQuality))
                         return;
                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                     if (objNode == null)
@@ -5219,10 +5217,7 @@ namespace Chummer
             {
                 case Armor objCopyArmor:
                     {
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         MemoryStream objStream = new MemoryStream();
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
@@ -5264,7 +5259,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5275,10 +5270,7 @@ namespace Chummer
                 case ArmorMod objCopyArmorMod:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
@@ -5329,10 +5321,7 @@ namespace Chummer
                 case Cyberware objCopyCyberware:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
@@ -5397,10 +5386,7 @@ namespace Chummer
                 case Gear objCopyGear:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
@@ -5440,7 +5426,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5451,10 +5437,7 @@ namespace Chummer
                 case Lifestyle objCopyLifestyle:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
@@ -5493,10 +5476,7 @@ namespace Chummer
                 case Vehicle objCopyVehicle:
                     {
                         MemoryStream objStream = new MemoryStream();
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
@@ -5522,9 +5502,9 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
-                                // Put the stream into an XmlDocument
-                                objCharacterXML.Load(objXmlReader);
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                    // Put the stream into an XmlDocument
+                                    objCharacterXML.Load(objXmlReader);
                         }
 
                         GlobalOptions.Clipboard = objCharacterXML;
@@ -5539,10 +5519,7 @@ namespace Chummer
                             return;
 
                         MemoryStream objStream = new MemoryStream();
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
@@ -5568,7 +5545,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5584,10 +5561,7 @@ namespace Chummer
                             return;
 
                         MemoryStream objStream = new MemoryStream();
-                        XmlDocument objCharacterXML = new XmlDocument
-                        {
-                            XmlResolver = null
-                        };
+                        XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
                         using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                         {
                             Formatting = Formatting.Indented,
@@ -5613,7 +5587,7 @@ namespace Chummer
                             objStream.Position = 0;
 
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, new XmlReaderSettings { XmlResolver = null }))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXML.Load(objXmlReader);
                         }
@@ -5648,7 +5622,7 @@ namespace Chummer
         {
             if (sender is ContactControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5679,7 +5653,7 @@ namespace Chummer
         {
             if (sender is PetControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5711,7 +5685,7 @@ namespace Chummer
         {
             if (sender is ContactControl objSender)
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
@@ -5726,10 +5700,7 @@ namespace Chummer
         #region Additional Relationships Tab Control Events
         protected void AddContactsFromFile()
         {
-            XmlDocument xmlDoc = new XmlDocument
-            {
-                XmlResolver = null
-            };
+            XPathDocument xmlDoc;
             // Displays an OpenFileDialog so the user can select the XML to read.
             using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
             {
@@ -5744,8 +5715,8 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, new XmlReaderSettings { XmlResolver = null }))
-                            xmlDoc.Load(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            xmlDoc = new XPathDocument(objXmlReader);
                 }
                 catch (IOException ex)
                 {
@@ -5759,7 +5730,7 @@ namespace Chummer
                 }
             }
 
-            foreach (XPathNavigator xmlContact in xmlDoc.GetFastNavigator().Select("/chummer/contacts/contact"))
+            foreach (XPathNavigator xmlContact in xmlDoc.CreateNavigator().Select("/chummer/contacts/contact"))
             {
                 Contact objContact = new Contact(CharacterObject);
                 objContact.Load(xmlContact);
@@ -6068,7 +6039,7 @@ namespace Chummer
             {
                 Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
                     return;
                 objSpirit.Fettered = false; // Fettered spirits consume MAG.
                 CharacterObject.Spirits.Remove(objSpirit);
@@ -6087,9 +6058,9 @@ namespace Chummer
         {
             using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
             {
-                if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.RecentImageFolder) && Directory.Exists(GlobalOptions.RecentImageFolder))
                 {
-                    dlgOpenFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
+                    dlgOpenFileDialog.InitialDirectory = GlobalOptions.RecentImageFolder;
                 }
                 // Prompt the user to select an image to associate with this character.
 
@@ -6114,7 +6085,7 @@ namespace Chummer
                 }
 
                 // Convert the image to a string using Base64.
-                _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
+                GlobalOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
                 using (Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
                 {
@@ -6432,7 +6403,7 @@ namespace Chummer
 
         public void PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
             bool blnAddAgain;
 
             do
@@ -6448,7 +6419,7 @@ namespace Chummer
                         blnAddAgain = frmPickGear.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + frmPickGear.SelectedGear + "\"]");
+                        XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " + frmPickGear.SelectedGear.CleanXPath() + "]");
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);

@@ -378,7 +378,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>75</cost>
       <costfor>10</costfor>
-      <ammoforweapontype>dartgun</ammoforweapontype>
+      <ammoforweapontype noextra="True">dartgun</ammoforweapontype>
     </gear>
     <gear>
       <id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
@@ -718,6 +718,7 @@
         <ap>6</ap>
         <damage>-2</damage>
         <damagetype>S</damagetype>
+        <accuracy>-2</accuracy>
       </weaponbonus>
       <ammoforweapontype>bow</ammoforweapontype>
     </gear>
@@ -10127,7 +10128,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <specificskill>
-          <name>Alchemy, Individualized, Partial</name>
+          <name>Alchemy</name>
           <bonus>Rating</bonus>
         </specificskill>
         <selecttradition />
@@ -10149,7 +10150,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <specificskill>
-          <name>Disenchanting, Individualized, Partial</name>
+          <name>Disenchanting</name>
           <bonus>Rating</bonus>
         </specificskill>
         <selecttradition />
@@ -10243,7 +10244,7 @@
       <avail>(Rating * 4)R</avail>
       <bonus>
         <skillattribute>
-          <name precedence="0">MAG, Individualized, Partial</name>
+          <name precedence="0">MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
@@ -10326,7 +10327,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Combat, Individualized, Partial</name>
+          <name>Combat</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -10402,7 +10403,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Detection, Individualized, Partial</name>
+          <name>Detection</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -10478,7 +10479,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Health, Individualized, Partial</name>
+          <name>Health</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -10554,7 +10555,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Illusion, Individualized, Partial</name>
+          <name>Illusion</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -10630,7 +10631,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Manipulation, Individualized, Partial</name>
+          <name>Manipulation</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -10742,7 +10743,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <specificskill>
-          <name>Alchemy, Individualized, Complete</name>
+          <name>Alchemy</name>
           <bonus>Rating</bonus>
         </specificskill>
         <selecttradition />
@@ -10759,7 +10760,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <specificskill>
-          <name>Disenchanting, Individualized, Complete</name>
+          <name>Disenchanting</name>
           <bonus>Rating</bonus>
         </specificskill>
         <selecttradition />
@@ -10828,7 +10829,7 @@
       <avail>(Rating * 4)R</avail>
       <bonus>
         <skillattribute>
-          <name precedence="0">MAG, Individualized, Complete</name>
+          <name precedence="0">MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
@@ -10891,7 +10892,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Combat, Individualized, Complete</name>
+          <name>Combat</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -10947,7 +10948,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Detection, Individualized, Complete</name>
+          <name>Detection</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -11003,7 +11004,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Health, Individualized, Complete</name>
+          <name>Health</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -11059,7 +11060,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Illusion, Individualized, Complete</name>
+          <name>Illusion</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
@@ -11115,7 +11116,7 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <spellcategory>
-          <name>Manipulation, Individualized, Complete</name>
+          <name>Manipulation</name>
           <val>Rating</val>
         </spellcategory>
         <selecttradition />

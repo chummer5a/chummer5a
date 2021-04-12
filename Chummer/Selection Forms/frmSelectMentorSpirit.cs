@@ -36,13 +36,13 @@ namespace Chummer
         {
             InitializeComponent();
 
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Mentor information.
-            _xmlBaseMentorSpiritDataNode = XmlManager.Load(strXmlFile).GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNode("/chummer");
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
@@ -68,7 +68,7 @@ namespace Chummer
             XPathNavigator objXmlMentor = null;
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
+                objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + lstMentor.SelectedValue.ToString().CleanXPath() + "]");
             if (objXmlMentor != null)
             {
                 cboChoice1.BeginUpdate();
@@ -138,7 +138,7 @@ namespace Chummer
 
                 string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language);
+                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 cmdOK.Enabled = true;
@@ -205,7 +205,7 @@ namespace Chummer
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = \"" + strSelectedId + "\"]");
+                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + strSelectedId.CleanXPath() + "]");
                 if (objXmlMentor == null)
                     return;
 

@@ -27722,14 +27722,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -27812,7 +27812,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/2/2</walk>
@@ -27826,7 +27826,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower select="Air">Elemental Attack</optionalpower>
           <optionalpower>Energy Aura</optionalpower>
           <optionalpower>Fear</optionalpower>
@@ -27897,14 +27897,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -27920,7 +27920,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -27988,14 +27988,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28011,7 +28011,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Engulf</optionalpower>
@@ -28078,14 +28078,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>5/5/5</sprint>
@@ -28101,7 +28101,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Fear</optionalpower>
           <optionalpower>Guard</optionalpower>
           <optionalpower>Noxious Breath</optionalpower>
@@ -28170,14 +28170,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28193,7 +28193,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Fear</optionalpower>
           <optionalpower>Innate Spell</optionalpower>
           <optionalpower>Movement</optionalpower>
@@ -28262,14 +28262,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28285,7 +28285,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Binding</optionalpower>
           <optionalpower select="Water">Elemental Attack</optionalpower>
@@ -28355,14 +28355,14 @@
       <magmax>1</magmax>
       <magaug>1</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>0/0/0</walk>
       <run>0/0/0</run>
       <sprint>0/0/0</sprint>
@@ -28431,14 +28431,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28454,7 +28454,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Animal Control</optionalpower>
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Elemental Attack</optionalpower>
@@ -28525,14 +28525,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28548,7 +28548,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Engulf</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -28620,14 +28620,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28643,7 +28643,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Movement</optionalpower>
@@ -28713,14 +28713,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28736,7 +28736,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -28812,7 +28812,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/1/0</walk>
@@ -28830,7 +28830,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -28902,7 +28902,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/1/0</walk>
@@ -28920,7 +28920,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Corrosive Spit</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -29000,7 +29000,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/1/0</walk>
@@ -29018,7 +29018,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>

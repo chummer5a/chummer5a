@@ -43,7 +43,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Programs information.
-            _objXmlDocument = XmlManager.Load("complexforms.xml");
+            _objXmlDocument = XmlManager.Load("complexforms.xml", objCharacter.Options.CustomDataDictionary);
         }
 
         private void frmSelectProgramOption_Load(object sender, EventArgs e)
@@ -84,7 +84,7 @@ namespace Chummer
             string strSelectedId = lstOptions.SelectedValue?.ToString();
             XmlNode xmlOption = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + strSelectedId + "\"]");
+                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = " + strSelectedId.CleanXPath() + "]");
 
             if (xmlOption != null)
             {

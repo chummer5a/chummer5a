@@ -24,6 +24,7 @@ using System.Linq;
  using System.Text;
  using System.Windows.Forms;
 using System.Xml;
+ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 using Chummer.Backend.Uniques;
 
@@ -166,7 +167,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName).ConfigureAwait(true);
+                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName).ConfigureAwait(false);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -317,7 +318,9 @@ namespace Chummer
                 return;
             string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
 
-            XmlDocument objXmlDocument = _objSpirit.EntityType == SpiritType.Spirit ? XmlManager.Load("traditions.xml") : XmlManager.Load("streams.xml");
+            XPathNavigator objXmlDocument = _objSpirit.CharacterObject.LoadDataXPath(_objSpirit.EntityType == SpiritType.Spirit
+                    ? "traditions.xml"
+                    : "streams.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
             foreach (Improvement objImprovement in _objSpirit.CharacterObject.Improvements)
@@ -337,32 +340,32 @@ namespace Chummer
 
                 if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritCombat)) && !string.IsNullOrWhiteSpace(strSpiritCombat))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritCombat + "\"]");
-                    lstCritters.Add(new ListItem(strSpiritCombat, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritCombat));
+                    XPathNavigator objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + "]");
+                    lstCritters.Add(new ListItem(strSpiritCombat, objXmlCritterNode?.SelectSingleNode("translate")?.Value ?? strSpiritCombat));
                 }
 
                 if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritDetection)) && !string.IsNullOrWhiteSpace(strSpiritDetection))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritDetection + "\"]");
-                    lstCritters.Add(new ListItem(strSpiritDetection, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritDetection));
+                    XPathNavigator objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + "]");
+                    lstCritters.Add(new ListItem(strSpiritDetection, objXmlCritterNode?.SelectSingleNode("translate")?.Value ?? strSpiritDetection));
                 }
 
                 if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritHealth)) && !string.IsNullOrWhiteSpace(strSpiritHealth))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritHealth + "\"]");
-                    lstCritters.Add(new ListItem(strSpiritHealth, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritHealth));
+                    XPathNavigator objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + "]");
+                    lstCritters.Add(new ListItem(strSpiritHealth, objXmlCritterNode?.SelectSingleNode("translate")?.Value ?? strSpiritHealth));
                 }
 
                 if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritIllusion)) && !string.IsNullOrWhiteSpace(strSpiritIllusion))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritIllusion + "\"]");
-                    lstCritters.Add(new ListItem(strSpiritIllusion, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritIllusion));
+                    XPathNavigator objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + "]");
+                    lstCritters.Add(new ListItem(strSpiritIllusion, objXmlCritterNode?.SelectSingleNode("translate")?.Value ?? strSpiritIllusion));
                 }
 
                 if ((lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritManipulation)) && !string.IsNullOrWhiteSpace(strSpiritManipulation))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritManipulation + "\"]");
-                    lstCritters.Add(new ListItem(strSpiritManipulation, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritManipulation));
+                    XPathNavigator objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + "]");
+                    lstCritters.Add(new ListItem(strSpiritManipulation, objXmlCritterNode?.SelectSingleNode("translate")?.Value ?? strSpiritManipulation));
                 }
             }
             else
@@ -371,24 +374,18 @@ namespace Chummer
                 {
                     if (lstLimitCategories.Count == 0)
                     {
-                        using (XmlNodeList xmlSpiritList = objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
+                        foreach (XmlNode objXmlCritterNode in objXmlDocument.Select("/chummer/spirits/spirit"))
                         {
-                            if (xmlSpiritList != null)
-                            {
-                                foreach (XmlNode objXmlCritterNode in xmlSpiritList)
-                                {
-                                    string strSpiritName = objXmlCritterNode["name"]?.InnerText;
-                                    lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode["translate"]?.InnerText ?? strSpiritName));
-                                }
-                            }
+                            string strSpiritName = objXmlCritterNode["name"]?.InnerText;
+                            lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode["translate"]?.InnerText ?? strSpiritName));
                         }
                     }
                     else
                     {
                         foreach (string strSpiritName in lstLimitCategories)
                         {
-                            XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritName + "\"]");
-                            lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
+                            XPathNavigator objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + "]");
+                            lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?.SelectSingleNode("translate")?.Value ?? strSpiritName));
                         }
                     }
                 }
@@ -403,8 +400,8 @@ namespace Chummer
                                 string strSpiritName = objXmlSpirit.InnerText;
                                 if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritName))
                                 {
-                                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritName + "\"]");
-                                    lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
+                                    XPathNavigator objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + "]");
+                                    lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?.SelectSingleNode("translate")?.Value ?? strSpiritName));
                                 }
                             }
                         }
@@ -422,7 +419,7 @@ namespace Chummer
                         && !string.IsNullOrEmpty(objImprovement.ImprovedName) && objImprovement.Enabled)
                     {
                         lstCritters.Add(new ListItem(objImprovement.ImprovedName,
-                            objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]/translate")?.InnerText
+                            objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = " + objImprovement.ImprovedName.CleanXPath() + "]/translate")?.Value
                             ?? objImprovement.ImprovedName));
                     }
                 }
@@ -447,9 +444,9 @@ namespace Chummer
         private async void CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
+            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml").ConfigureAwait(false);
 
-            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strCritterName + "\"]");
+            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + "]");
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
@@ -463,12 +460,10 @@ namespace Chummer
                 // The Critter should use the same settings file as the character.
                 using (Character objCharacter = new Character
                 {
-                    SettingsFile = _objSpirit.CharacterObject.SettingsFile,
-
+                    CharacterOptionsKey = _objSpirit.CharacterObject.CharacterOptionsKey,
                     // Override the defaults for the setting.
                     IgnoreRules = true,
-                    IsCritter = true,
-                    BuildMethod = CharacterBuildMethod.Karma
+                    IsCritter = true
                 })
                 {
                     if (!string.IsNullOrEmpty(txtCritterName.Text))
@@ -478,9 +473,7 @@ namespace Chummer
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
                         Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                        FileName = new StringBuilder(strCritterName)
-                            .Append(strSpace).Append('(').Append(LanguageManager.GetString(_objSpirit.RatingLabel))
-                            .Append(strSpace).Append(_objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo)).Append(").chum5").ToString()
+                        FileName = strCritterName + strSpace + '(' + LanguageManager.GetString(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalOptions.InvariantCultureInfo) + ").chum5"
                     })
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
@@ -625,7 +618,7 @@ namespace Chummer
                     if (objXmlMetatype["movement"] != null)
                         objCharacter.Movement = objXmlMetatype["movement"].InnerText;
                     // Load the Qualities file.
-                    XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
+                    XmlDocument objXmlQualityDocument = _objSpirit.CharacterObject.LoadData("qualities.xml");
 
                     // Determine if the Metatype has any bonuses.
                     if (objXmlMetatype.InnerXml.Contains("bonus"))
@@ -634,7 +627,7 @@ namespace Chummer
                     // Create the Qualities that come with the Metatype.
                     foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
                     {
-                        XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
+                        XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + "]");
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         Quality objQuality = new Quality(objCharacter);
                         string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -648,12 +641,12 @@ namespace Chummer
                     }
 
                     // Add any Critter Powers the Metatype/Critter should have.
-                    XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCharacter.Metatype + "\"]");
+                    XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCharacter.Metatype.CleanXPath() + "]");
 
-                    objXmlDocument = XmlManager.Load("critterpowers.xml");
+                    objXmlDocument = _objSpirit.CharacterObject.LoadData("critterpowers.xml");
                     foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                     {
-                        XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+                        XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
                         CritterPower objPower = new CritterPower(objCharacter);
                         string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
                         int intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes?["rating"]?.InnerText, intForce, 0, 0);
@@ -661,81 +654,45 @@ namespace Chummer
                         objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                         objCharacter.CritterPowers.Add(objPower);
                     }
-
-                    if (objXmlCritter["optionalpowers"] != null)
+                    
+                    XmlNode xmlOptionalPowersNode = objXmlCritter["optionalpowers"];
+                    if (xmlOptionalPowersNode != null && intForce >= 3)
                     {
+                        XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
                         //For every 3 full points of Force a spirit has, it may gain one Optional Power.
                         for (int i = intForce - 3; i >= 0; i -= 3)
                         {
-                            XmlDocument objDummyDocument = new XmlDocument
-                            {
-                                XmlResolver = null
-                            };
                             XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
-                            objDummyDocument.AppendChild(bonusNode);
-                            XmlNode powerNode = objDummyDocument.ImportNode(objXmlMetatype["optionalpowers"].CloneNode(true), true);
-                            objDummyDocument.ImportNode(powerNode, true);
+                            XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
                             bonusNode.AppendChild(powerNode);
-                            ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
+                            objDummyDocument.AppendChild(bonusNode);
                         }
+                        foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
+                            ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
                     }
 
                     // Add any Complex Forms the Critter comes with (typically Sprites)
-                    XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
+                    XmlDocument objXmlProgramDocument = _objSpirit.CharacterObject.LoadData("complexforms.xml");
                     foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                     {
                         string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                        XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
+                        XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + objXmlComplexForm.InnerText.CleanXPath() + "]");
                         ComplexForm objComplexForm = new ComplexForm(objCharacter);
                         objComplexForm.Create(objXmlComplexFormData, strForceValue);
                         objCharacter.ComplexForms.Add(objComplexForm);
                     }
 
-                    // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                    XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                    foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
-                    {
-                        int intRating = 0;
-                        if (objXmlGear.Attributes["rating"] != null)
-                            intRating = CommonFunctions.ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, intForce, 0, 0);
-                        string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                        XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " + objXmlGear.InnerText.CleanXPath() + "]");
-                        Gear objGear = new Gear(objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        objGear.Create(objXmlGearItem, intRating, lstWeapons, strForceValue);
-                        objGear.Cost = "0";
-                        objCharacter.Gear.Add(objGear);
-                    }
-
-                    // Add the Unarmed Attack Weapon to the character.
-                    objXmlDocument = XmlManager.Load("weapons.xml");
-                    XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-                    if (objXmlWeapon != null)
-                    {
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Weapon objWeapon = new Weapon(objCharacter);
-                        objWeapon.Create(objXmlWeapon, lstWeapons);
-                        objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
-                        objCharacter.Weapons.Add(objWeapon);
-                        foreach (Weapon objLoopWeapon in lstWeapons)
-                            objCharacter.Weapons.Add(objLoopWeapon);
-                    }
-
                     objCharacter.Alias = strCritterName;
                     objCharacter.Created = true;
                     if (!objCharacter.Save())
-                    {
                         return;
-                    }
-
-                    _objSpirit.FileName = objCharacter.FileName;
                 }
 
                 // Link the newly-created Critter to the Spirit.
                 imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
                 ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(true);
+                Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(false);
 
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }

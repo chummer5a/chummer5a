@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
  using System.Text;
+ using Chummer.Backend.Attributes;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -47,15 +49,13 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            XmlDocument xmlMetatypeDoc = XmlManager.Load(strXmlFile);
-            _xmlMetatypeDocumentMetatypesNode = xmlMetatypeDoc.SelectSingleNode("/chummer/metatypes");
-            _xmlBaseMetatypeDataNode = xmlMetatypeDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlSkillsDocumentKnowledgeSkillsNode = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
-            XmlDocument xmlQualityDoc = XmlManager.Load("qualities.xml");
-            _xmlQualityDocumentQualitiesNode = xmlQualityDoc.SelectSingleNode("/chummer/qualities");
-            _xmlBaseQualityDataNode = xmlQualityDoc.GetFastNavigator().SelectSingleNode("/chummer");
-            _xmlCritterPowerDocumentPowersNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers");
+            
+            _xmlMetatypeDocumentMetatypesNode = _objCharacter.LoadData(strXmlFile).SelectSingleNode("/chummer/metatypes");
+            _xmlBaseMetatypeDataNode = _objCharacter.LoadDataXPath(strXmlFile).SelectSingleNode("/chummer");
+            _xmlSkillsDocumentKnowledgeSkillsNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
+            _xmlQualityDocumentQualitiesNode = _objCharacter.LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
+            _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer");
+            _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
         }
 
         private void frmMetatype_Load(object sender, EventArgs e)
@@ -193,13 +193,16 @@ namespace Chummer
                     string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
                     string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString() ?? Guid.Empty.ToString();
 
-                    XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = \"" + strSelectedMetatype + "\"]");
+                    XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = " + strSelectedMetatype.CleanXPath() + "]");
                     if (objXmlMetatype == null)
                     {
                         Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
+
+                    // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
+                    _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Heritage);
 
                     int intForce = 0;
                     if (nudForce.Visible)
@@ -208,10 +211,69 @@ namespace Chummer
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                     if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
                         strSelectedMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ?? "None";
-                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetatype
-                        || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) != strSelectedMetavariant)
-                        _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant, objXmlMetatype,
-                            intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode);
+                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo) !=
+                        strSelectedMetatype
+                        || _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo) !=
+                        strSelectedMetavariant)
+                    {
+                        // Remove qualities that require the old metatype
+                        List<Quality> lstQualitiesToCheck = new List<Quality>(_objCharacter.Qualities.Count);
+                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        {
+                            if (objQuality.OriginSource == QualitySource.Improvement
+                                || objQuality.OriginSource == QualitySource.Metatype
+                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                continue;
+                            XmlNode xmlRestrictionNode = objQuality.GetNode()?["required"];
+                            if (xmlRestrictionNode != null &&
+                                (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                            {
+                                lstQualitiesToCheck.Add(objQuality);
+                            }
+                            else
+                            {
+                                xmlRestrictionNode = objQuality.GetNode()?["forbidden"];
+                                if (xmlRestrictionNode != null &&
+                                    (xmlRestrictionNode.SelectSingleNode("//metatype") != null || xmlRestrictionNode.SelectSingleNode("//metavariant") != null))
+                                {
+                                    lstQualitiesToCheck.Add(objQuality);
+                                }
+                            }
+                        }
+                        _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant,
+                            objXmlMetatype,
+                            intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode,
+                            _xmlSkillsDocumentKnowledgeSkillsNode);
+                        foreach (Quality objQuality in lstQualitiesToCheck)
+                        {
+                            if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
+                                _objCharacter.Qualities.Remove(objQuality);
+                        }
+                    }
+
+                    // Flip all attribute, skill, and skill group points to karma levels (relevant when switching from Priority/Sum-to-Ten to Karma)
+                    foreach (CharacterAttrib objAttrib in _objCharacter.AttributeSection.Attributes)
+                    {
+                        // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
+                        int intBase = objAttrib.Base;
+                        objAttrib.Base = 0;
+                        objAttrib.Karma += intBase;
+                    }
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
+                        int intBase = objSkill.BasePoints;
+                        objSkill.BasePoints = 0;
+                        objSkill.KarmaPoints += intBase;
+                    }
+                    foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                    {
+                        // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
+                        int intBase = objGroup.BasePoints;
+                        objGroup.BasePoints = 0;
+                        objGroup.KarmaPoints += intBase;
+                    }
 
                     DialogResult = DialogResult.OK;
                     Close();
@@ -231,11 +293,11 @@ namespace Chummer
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
-                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = \"" + strSelectedMetatype + "\"]");
+                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = " + strSelectedMetatype.CleanXPath() + "]");
                 string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
                 if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                 {
-                    objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = \"" + strSelectedMetavariant + "\"]");
+                    objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strSelectedMetavariant.CleanXPath() + "]");
                 }
             }
 
@@ -284,13 +346,13 @@ namespace Chummer
                 {
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = \"" + objXmlQuality.Value + "\"]/translate")?.Value ?? objXmlQuality.Value);
+                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value);
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect));
+                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
                             sbdQualities.Append(')');
                         }
                     }
@@ -356,13 +418,13 @@ namespace Chummer
                 {
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = \"" + objXmlQuality.Value + "\"]/translate")?.Value ?? objXmlQuality.Value);
+                        sbdQualities.Append(_xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value);
 
                         string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                         {
                             sbdQualities.Append(LanguageManager.GetString("String_Space") + '(');
-                            sbdQualities.Append(LanguageManager.TranslateExtra(strSelect));
+                            sbdQualities.Append(_objCharacter.TranslateExtra(strSelect));
                             sbdQualities.Append(')');
                         }
                     }
@@ -420,7 +482,7 @@ namespace Chummer
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             XPathNavigator objXmlMetatype = null;
             if (!string.IsNullOrEmpty(strSelectedMetatype))
-                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = \"" + strSelectedMetatype + "\"]");
+                objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = " + strSelectedMetatype.CleanXPath() + "]");
             // Don't attempt to do anything if nothing is selected.
             if (objXmlMetatype != null)
             {

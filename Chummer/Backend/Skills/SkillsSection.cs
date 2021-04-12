@@ -26,6 +26,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 
@@ -41,8 +42,8 @@ namespace Chummer.Backend.Skills
             _objCharacter = character;
             if (_objCharacter != null)
             {
-                _objCharacter.LOG.PropertyChanged += UpdateKnowledgePointsFromAttributes;
-                _objCharacter.INT.PropertyChanged += UpdateKnowledgePointsFromAttributes;
+                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged += OnCharacterOptionsPropertyChanged;
             }
             KnowledgeSkills.BeforeRemove += KnowledgeSkillsOnBeforeRemove;
             KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
@@ -82,10 +83,22 @@ namespace Chummer.Backend.Skills
         {
             if (_objCharacter != null)
             {
-                _objCharacter.LOG.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
-                _objCharacter.INT.PropertyChanged -= UpdateKnowledgePointsFromAttributes;
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                _objCharacter.Options.PropertyChanged -= OnCharacterOptionsPropertyChanged;
             }
             _dicSkillBackups.Clear();
+        }
+
+        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
+                OnPropertyChanged(nameof(SkillPointsSpentOnKnoskills));
+        }
+
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(CharacterOptions.KnowledgePointsExpression))
+                OnPropertyChanged(nameof(KnowledgeSkillPoints));
         }
 
         [NotifyPropertyChangedInvocator]
@@ -110,6 +123,8 @@ namespace Chummer.Backend.Skills
 
             if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
+            if (lstNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
+                _intCachedKnowledgePoints = int.MinValue;
 
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
@@ -418,25 +433,20 @@ namespace Chummer.Backend.Skills
                             _dicSkills.Add(objSkill.DictionaryKey, objSkill);
                         }
 
-                        UpdateUndoList(xmlSkillNode);
+                        UpdateUndoList(xmlSkillNode.OwnerDocument);
                     }
                 }
 
                 HashSet<string> hashSkillGuids = new HashSet<string>();
-                XmlDocument skillsDoc = XmlManager.Load("skills.xml");
-                XmlNodeList xmlSkillList = skillsDoc.SelectNodes(
+                foreach (XPathNavigator node in _objCharacter.LoadDataXPath("skills.xml").Select(
                     string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
-                        _objCharacter.Options.BookXPath(), SkillFilter(FilterOption.NonSpecial)));
-                if (xmlSkillList != null)
+                        _objCharacter.Options.BookXPath(), SkillFilter(FilterOption.NonSpecial))))
                 {
-                    foreach (XmlNode node in xmlSkillList)
-                    {
-                        string strName = node["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
-                            hashSkillGuids.Add(strName);
-                    }
+                    string strName = node.SelectSingleNode("name")?.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        hashSkillGuids.Add(strName);
                 }
-
+                XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
                 foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                 {
                     XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
@@ -481,23 +491,16 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void LoadFromHeroLab(XmlNode xmlSkillNode, CustomActivity parentActivity)
+        internal void LoadFromHeroLab(XPathNavigator xmlSkillNode, CustomActivity parentActivity)
         {
             using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
             {
-                List<SkillGroup> lstLoadingSkillGroups;
-                using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/skill"))
+                List<SkillGroup> lstLoadingSkillGroups = new List<SkillGroup>();
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("groups/skill"))
                 {
-                    lstLoadingSkillGroups = new List<SkillGroup>(xmlGroupsList?.Count ?? 0);
-                    if (xmlGroupsList?.Count > 0)
-                    {
-                        foreach (XmlNode xmlNode in xmlGroupsList)
-                        {
-                            SkillGroup objGroup = new SkillGroup(_objCharacter);
-                            objGroup.LoadFromHeroLab(xmlNode);
-                            lstLoadingSkillGroups.Add(objGroup);
-                        }
-                    }
+                    SkillGroup objGroup = new SkillGroup(_objCharacter);
+                    objGroup.LoadFromHeroLab(xmlNode);
+                    lstLoadingSkillGroups.Add(objGroup);
                 }
 
                 lstLoadingSkillGroups.Sort((i1, i2) =>
@@ -512,38 +515,26 @@ namespace Chummer.Backend.Skills
 
             using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
             {
-                List<Skill> lstTempSkillList;
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("active/skill"))
+                List<Skill> lstTempSkillList = new List<Skill>();
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("active/skill"))
                 {
-                    lstTempSkillList = new List<Skill>(2 * xmlSkillsList?.Count ?? 0);
-                    if (xmlSkillsList?.Count > 0)
-                    {
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
-                            if (objSkill != null)
-                                lstTempSkillList.Add(objSkill);
-                        }
-                    }
+                    Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
+                    if (objSkill != null)
+                        lstTempSkillList.Add(objSkill);
+                }
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("knowledge/skill"))
+                {
+                    Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
+                    if (objSkill != null)
+                        lstTempSkillList.Add(objSkill);
+                }
+                foreach (XPathNavigator xmlNode in xmlSkillNode.Select("language/skill"))
+                {
+                    Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
+                    if (objSkill != null)
+                        lstTempSkillList.Add(objSkill);
                 }
 
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knowledge/skill"))
-                    if (xmlSkillsList?.Count > 0)
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
-                            if (objSkill != null)
-                                lstTempSkillList.Add(objSkill);
-                        }
-
-                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("language/skill"))
-                    if (xmlSkillsList?.Count > 0)
-                        foreach (XmlNode xmlNode in xmlSkillsList)
-                        {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
-                            if (objSkill != null)
-                                lstTempSkillList.Add(objSkill);
-                        }
 
                 List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
 
@@ -598,8 +589,6 @@ namespace Chummer.Backend.Skills
                         _dicSkills.Add(strName, objSkill);
                 }
 
-                UpdateUndoList(xmlSkillNode);
-
                 //This might give subtle bugs in the future,
                 //but right now it needs to be run once when upgrading or it might crash.
                 //As some didn't they crashed on loading skills.
@@ -618,7 +607,7 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    if (_objCharacter.BuildMethodHasSkillPoints)
+                    if (_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                     {
                         // Allocate Skill Points
                         int intSkillPointCount = SkillPointsMaximum;
@@ -754,10 +743,10 @@ namespace Chummer.Backend.Skills
 
         }
 
-        private void UpdateUndoList(XmlNode skillNode)
+        private void UpdateUndoList(XmlDocument xmlSkillOwnerDocument)
         {
             //Hacky way of converting Expense entries to guid based skill identification
-            //specs allready did?
+            //specs already did?
             //First create dictionary mapping name=>guid
             Dictionary<string, Guid> dicGroups = new Dictionary<string, Guid>();
             ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
@@ -791,8 +780,8 @@ namespace Chummer.Backend.Skills
                 }
             );
 
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
-            UpdateUndoSpecific(skillNode.OwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
+            UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
+            UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
         }
 
         private static void UpdateUndoSpecific(XmlDocument doc, IDictionary<string, Guid> map, IEnumerable<KarmaExpenseType> typesRequreingConverting)
@@ -800,7 +789,7 @@ namespace Chummer.Backend.Skills
             //Build a crazy xpath to get everything we want to convert
 
             StringBuilder sbdXPath = new StringBuilder("/character/expenses/expense[type = \'Karma\']/undo[")
-                .Append(string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'")))
+                .AppendJoin(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'"))
                 .Append("]/objectid");
 
             //Find everything
@@ -955,6 +944,8 @@ namespace Chummer.Backend.Skills
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 
         public bool HasAvailableNativeLanguageSlots => KnowledgeSkills.Count(x => x.IsNativeLanguage) < 1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit);
+        
+        private int _intCachedKnowledgePoints = int.MinValue;
 
         /// <summary>
         /// Number of free Knowledge Skill Points the character has.
@@ -963,19 +954,25 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                int fromAttributes = _objCharacter.Options.FreeKnowledgeMultiplier;
-                // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-                if (_objCharacter.Options.UseTotalValueForFreeKnowledge)
+                if (_intCachedKnowledgePoints == int.MinValue)
                 {
-                    fromAttributes *= (_objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue);
-                }
-                else
-                {
-                    fromAttributes *= (_objCharacter.INT.Value + _objCharacter.LOG.Value) ;
+                    string strExpression = _objCharacter.Options.KnowledgePointsExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        _intCachedKnowledgePoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    }
+                    else
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intCachedKnowledgePoints);
+
+                    _intCachedKnowledgePoints += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills).StandardRound();
                 }
 
-                int val = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FreeKnowledgeSkills).StandardRound();
-                return fromAttributes + val;
+                return _intCachedKnowledgePoints;
             }
         }
 
@@ -1005,7 +1002,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 //Even if it is stupid, you can spend real skill points on knoskills...
-                if (!_objCharacter.BuildMethodHasSkillPoints)
+                if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
                     return 0;
                 }
@@ -1081,7 +1078,7 @@ namespace Chummer.Backend.Skills
             //TODO less retarded way please
             // Load the Skills information.
             // Populate the Skills list.
-            using (XmlNodeList xmlSkillList = XmlManager.Load("skills.xml")
+            using (XmlNodeList xmlSkillList = _objCharacter.LoadData("skills.xml")
                 .SelectNodes(string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
                     _objCharacter.Options.BookXPath(), SkillFilter(filter, strName))))
             {
@@ -1214,16 +1211,7 @@ namespace Chummer.Backend.Skills
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private void UpdateKnowledgePointsFromAttributes(object sender, PropertyChangedEventArgs e)
-        {
-            if ((_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.TotalValue)) ||
-                 (!_objCharacter.Options.UseTotalValueForFreeKnowledge && e.PropertyName == nameof(CharacterAttrib.Value)))
-            {
-                OnPropertyChanged(nameof(KnowledgeSkillPoints));
-            }
-        }
-
+        
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             foreach (Skill objSkill in Skills)

@@ -46,13 +46,13 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _xmlBaseCritterPowerDataNode = XmlManager.Load("critterpowers.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNode("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNode();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
-            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("metavariants/metavariant[id = \""
-                                                                                      + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo)
-                                                                                      + "\"]");
+            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.SelectSingleNode("metavariants/metavariant[id = "
+                                                                                      + _objCharacter.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
+                                                                                      + "]");
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }
@@ -129,7 +129,7 @@ namespace Chummer
             string strSelectedPower = trePowers.SelectedNode.Tag?.ToString();
             if (!string.IsNullOrEmpty(strSelectedPower))
             {
-                XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedPower + "\"]");
+                XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + "]");
                 if (objXmlPower != null)
                 {
                     lblCritterPowerCategory.Text = objXmlPower.SelectSingleNode("category")?.Value ?? string.Empty;
@@ -205,8 +205,8 @@ namespace Chummer
                     string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strSpace = LanguageManager.GetString("String_Space");
-                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblCritterPowerSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                    lblCritterPowerSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+                    lblCritterPowerSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
 
                     nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 
@@ -215,7 +215,7 @@ namespace Chummer
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
                     {
-                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = \"" + objXmlPower.SelectSingleNode("name")?.Value + "\"]/@cost");
+                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + objXmlPower.SelectSingleNode("name")?.Value.CleanXPath() + "]/@cost");
                         if (xmlOptionalPowerCostNode != null)
                         {
                             lblPowerPoints.Text = xmlOptionalPowerCostNode.Value;
@@ -308,7 +308,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
-                sbdFilter.Append(" and (contains(category,\"").Append(strCategory).Append("\"))");
+                sbdFilter.Append(" and (contains(category,").Append(strCategory.CleanXPath()).Append("))");
             }
             else
             {
@@ -318,7 +318,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strItem))
                     {
-                        sbdCategoryFilter.Append("(contains(category,\"" + strItem + "\")) or ");
+                        sbdCategoryFilter.Append("(contains(category," + strItem.CleanXPath() + ")) or ");
                         if (strItem == "Toxic Critter Powers")
                         {
                             sbdCategoryFilter.Append("toxic = \"True\" or ");
@@ -329,14 +329,14 @@ namespace Chummer
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(')');
+                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
                 }
                 if (!blnHasToxic)
                     sbdFilter.Append(" and (not(toxic) or toxic != \"True\")");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-            foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter.ToString() + "]"))
+            foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter + "]"))
             {
                 string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
@@ -379,7 +379,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedPower))
                 return;
 
-            XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = \"" + strSelectedPower + "\"]");
+            XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + "]");
             if (objXmlPower == null)
                 return;
 
@@ -392,9 +392,13 @@ namespace Chummer
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
             if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
             {
-                XPathNavigator objXmlOptionalPowerCost = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = \"" + objXmlPower.SelectSingleNode("name")?.Value + "\"]/@cost");
-                if (objXmlOptionalPowerCost != null)
-                    _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalOptions.InvariantCultureInfo);
+                string strName = objXmlPower.SelectSingleNode("name")?.Value;
+                if (!string.IsNullOrEmpty(strName))
+                {
+                    XPathNavigator objXmlOptionalPowerCost = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + strName.CleanXPath() + "]/@cost");
+                    if (objXmlOptionalPowerCost != null)
+                        _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.Value, GlobalOptions.InvariantCultureInfo);
+                }
             }
 
             DialogResult = DialogResult.OK;

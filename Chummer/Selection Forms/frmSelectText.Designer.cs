@@ -70,6 +70,7 @@ namespace Chummer
             this.txtValue.Name = "txtValue";
             this.txtValue.Size = new System.Drawing.Size(320, 20);
             this.txtValue.TabIndex = 1;
+            this.txtValue.TextChanged += new System.EventHandler(this.txtValue_TextChanged);
             // 
             // cmdCancel
             // 

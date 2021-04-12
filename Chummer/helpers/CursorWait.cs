@@ -21,7 +21,6 @@ using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -30,7 +29,7 @@ namespace Chummer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static bool _blnTopMostWaitCursor;
-        private static ConcurrentDictionary<Control, CursorWait> _dicWaitingControls = new ConcurrentDictionary<Control, CursorWait>();
+        private static readonly ConcurrentDictionary<Control, CursorWait> _dicWaitingControls = new ConcurrentDictionary<Control, CursorWait>();
         private readonly bool _blnOldUseWaitCursor;
         private readonly bool _blnControlIsForm;
         private readonly Control _objControl;
@@ -104,8 +103,8 @@ namespace Chummer
             }
             catch(Exception e)
             {
-                Log.WarnException("Exception while creating CursorWait-Object for \"" + objControl + "\":"
-                    + Environment.NewLine + e.ToString(), e);
+                Log.Warn(e, "Exception while creating CursorWait-Object for \"" + objControl + "\":"
+                    + Environment.NewLine + e);
             }
         }
 

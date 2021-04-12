@@ -40,9 +40,9 @@ namespace Chummer
 #endif
         }
 
-        public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
+        public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv"; // Cannot cache this, otherwise it won't fire when the Designer is running
 
-        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
+        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime || IsRunningInVisualStudio;
 
         public static Version CachedGitVersion { get; set; }
 

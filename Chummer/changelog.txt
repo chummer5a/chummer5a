@@ -1,3 +1,109 @@
+Future Build 215
+Application Changes:
+- Properly split apart settings that can be different for individual characters (e.g. karma costs, enabled sourcebooks, enabled custom data) and those that cannot (e.g. PDF paths, UI language, dark mode). The old Options screen now controls the latter, while the former can be managed through a separate, dedicated screen.
+- Settings files that were created for previous versions of Chummer will automatically be converted to character-based settings that use a new format. Characters created for previous versions of Chummer will have their specific entries for certain settings (e.g. character creation karma costs, enabled sourcebooks) converted as well. However, these two changes mean that once settings and/or characters are saved in this version of Chummer, they cannot be opened (properly) with older versions. The Nightlies will therefore show a one-time warning about using the Nightly when one might plan to go back and open up characters with the latest stable (or an earlier build).
+- Properly unhardcoded Sum-to-Ten costs for each priority category. They can now be modified with custom data files.
+- Attempting to add an exotic skill no longer causes Chummer to crash. Fixes #4329.
+- The "Free" checkbox under Contacts no longer remains visible after collapsing a contact control in Career mode.
+- If a character has purchased qualities at character creation that require certain metatypes or metavariants, then instead of the character being restricted from changing their priorities and/or metatype, those qualities now automatically get removed if the character can no longer have them.
+- Characters are no longer stuck in the build method that was chosen when they were first created.
+- The exported English names of qualities no longer contain the quality's rating (which made it behave differently than the regular name).
+- Purchasing a plugin for a stack of gear with more than one item now properly multiplies the expenditure of the purchase by the size of the stack.
+- Fixed issues where cyberlimbs and modular connectors would not properly block competing modular connectors.
+- If Chummer is unable to update registry entries, it will now display a warning that it cannot update registry entries instead of crashing.
+- Cancelling out of number- or text-selection screens when adding some piece of gear, cyberware, weapon, armor, vehicle, lifestyle, or any modifications thereof now properly cancels out of adding the original item.
+- Removed checkboxes for active skills and knowledge skills from the PACKS creator because Chummer's PACKS system does not properly support either.
+- Wireless bonuses now properly respect the wireless status of any parents of a given item (e.g. gear inside of armor or cyberware inside other cyberware) as well as their equipped status. Fixes #4351.
+- Quotation marks in the names of spells, qualities, critter powers, adept powers, cyberware, et al. or any categories thereof should no longer cause Chummer to either crash or not recognize the item in question.
+- Special attributes are no longer exported unless the character in question has them enabled. Fixes #4366.
+
+Data Changes:
+- Consolidated all German Data Changes custom data into a single German Data Changes entry.
+- Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
+- Whisper of Bones now properly requires Necromancy.
+- Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.
+- Smartlink from the Shadowrun 2050 ruleset now properly gives a +2 dicepool bonus when using smartguns.
+- When creating spirit critters with forces not divisible by 3, the number of optional powers they get is now properly based on rounding the result of the division down instead of up. Fixes #4356.
+- All spirits now properly have a starting and maximum Essence equal to their Force instead of to 6. Fixes #4358.
+
+Changed/New Strings:
+- String_ContactPoints
+- String_KnowledgePoints
+- String_Skull
+- String_Torso
+- String_Arms
+- String_Legs
+- Message_CharacterCustomDataWarning
+- MessageTitle_CharacterCustomDataWarning
+- Menu_Main_Options
+- Menu_Main_Character_Options
+- Menu_Main_Update
+- Menu_Main_Restart
+- Menu_Main_ChummerWiki
+- Menu_Main_ChummerDiscord
+- Menu_Main_DumpshockThread
+- Menu_Main_Translator
+- Menu_Main_HeroLabImporter
+- String_Save
+- String_SaveAs
+- Tip_SkillsKnowledgeSkills
+- Title_Options
+- Tab_Options_CustomData
+- Tab_Options_CustomDataDirectories
+- Tab_Options_Basic
+- Label_Options_CustomDataDirectories
+- Checkbox_Options_LiveUpdateCleanCharacterFiles
+- Label_Options_DefaultCharacterOption
+- Title_CharacterOptions
+- String_Rename
+- Label_CharacterOptions_CharacterCreationSettings
+- Label_CharacterOptions_Printing
+- Label_CharacterOptions_OptionsOfficialRules
+- Label_CharacterOptions_Cyberlimbs
+- Label_CharacterOptions_DecimalsAndRounding
+- Label_CharacterOptions_CustomData
+- Button_ChangeCustomDataEntries
+- Label_CharacterOptions_Combat
+- Label_CharacterOptions_MagicAndResonance
+- Label_CharacterOptions_PriorityTable
+- Label_CharacterOptions_AllowedCyberwareGrades
+- Label_CharacterOptions_RedlinerLimbs
+- Message_CharacterOptions_UnsavedDirty
+- MessageTitle_CharacterOptions_UnsavedDirty
+- Message_CharacterOptions_ConfirmDelete
+- MessageTitle_CharacterOptions_ConfirmDelete
+- Message_CharacterOptions_SettingRename
+- Message_CharacterOptions_DuplicateSettingName
+- MessageTitle_CharacterOptions_DuplicateSettingName
+- Message_CharacterOptions_SelectSettingName
+- Message_CharacterOptions_SelectSettingFileName
+- Message_CharacterOptions_SettingFileNameTooLongError
+- MessageTitle_CharacterOptions_SettingFileNameTooLongError
+- Label_SelectBP_BuildMethod
+- Label_SelectBP_Priorities
+- Label_SelectBP_QualityKarmaLimit
+- Label_SelectBP_EnabledBooks
+- Label_SelectBP_CustomData
+- Checkbox_SelectBP_IgnoreRules
+- String_SelectBP_Summary
+- Message_CharacterOptions_DesyncBuildMethod
+- MessageTitle_CharacterOptions_DesyncBuildMethod
+- Message_CharacterOptions_CannotLoadSetting
+- Message_CharacterOptions_DesyncBooksOrCustomData
+- MessageTitle_CharacterOptions_DesyncBooksOrCustomData
+- String_Chummy
+- Message_SelectBP_SwitchBuildMethods
+- MessageTitle_SelectBP_SwitchBuildMethods
+- Message_CharacterOptions_OpenCharacterOnBuildMethodChange
+- MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange
+- Message_Options_ConfirmTelemetry
+- Message_Options_CloseForms
+- Message_Update_CloseForms
+- Message_Insufficient_Permissions_Warning_Registry
+- Message_MergeIdentical
+- MessageTitle_MergeIdentical
+- Message_Load_Error_Warning
+
 Build 214
 Application Fixes:
 - Added a check for xml files storing invalid characters that prevents the file from being saved or loaded. As test issues have been constrained to issues with the notes, it's assumed that this is mostly coming from ingesting PDF documents. If the issue is found, prompt the user whether they want to load with unsafe settings, as this has a small chance of causing application instability. 

@@ -18,10 +18,6 @@
  */
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chummer.helpers.Application_Insights
 {
@@ -50,15 +46,10 @@ namespace Chummer.helpers.Application_Insights
                             operatingSystem = "95";
                             break;
                         case 10:
-                            if (vs.Revision.ToString() == "2222A")
-                                operatingSystem = "98SE";
-                            else
-                                operatingSystem = "98";
+                            operatingSystem = vs.Revision.ToString() == "2222A" ? "98SE" : "98";
                             break;
                         case 90:
                             operatingSystem = "Me";
-                            break;
-                        default:
                             break;
                     }
                 }
@@ -73,25 +64,27 @@ namespace Chummer.helpers.Application_Insights
                             operatingSystem = "NT 4.0";
                             break;
                         case 5:
-                            if (vs.Minor == 0)
-                                operatingSystem = "2000";
-                            else
-                                operatingSystem = "XP";
+                            operatingSystem = vs.Minor == 0 ? "2000" : "XP";
                             break;
                         case 6:
-                            if (vs.Minor == 0)
-                                operatingSystem = "Vista";
-                            else if (vs.Minor == 1)
-                                operatingSystem = "7";
-                            else if (vs.Minor == 2)
-                                operatingSystem = "8";
-                            else
-                                operatingSystem = "8.1";
+                            switch (vs.Minor)
+                            {
+                                case 0:
+                                    operatingSystem = "Vista";
+                                    break;
+                                case 1:
+                                    operatingSystem = "7";
+                                    break;
+                                case 2:
+                                    operatingSystem = "8";
+                                    break;
+                                default:
+                                    operatingSystem = "8.1";
+                                    break;
+                            }
                             break;
                         case 10:
                             operatingSystem = "10";
-                            break;
-                        default:
                             break;
                     }
                 }

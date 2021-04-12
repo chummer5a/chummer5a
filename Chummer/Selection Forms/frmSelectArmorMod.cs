@@ -46,7 +46,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
-            _xmlBaseDataNode = XmlManager.Load("armor.xml").GetFastNavigator().SelectSingleNode("/chummer");
+            _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer");
             _objArmor = objParentNode;
             _objParentNode = (_objArmor as IHasXmlNode)?.GetNode()?.CreateNavigator();
             if (_xmlBaseDataNode != null)
@@ -65,8 +65,8 @@ namespace Chummer
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.MaximumAvailability.ToString(GlobalOptions.CultureInfo));
-                chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
                 lblMarkupLabel.Visible = false;
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
@@ -210,7 +210,7 @@ namespace Chummer
             string strSelectedId = lstMod.SelectedValue?.ToString();
             XPathNavigator objXmlMod = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = \"" + strSelectedId + "\"]");
+                objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = " + strSelectedId.CleanXPath() + "]");
             if (objXmlMod == null)
             {
                 lblALabel.Visible = false;
@@ -397,8 +397,8 @@ namespace Chummer
             string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strSpace = LanguageManager.GetString("String_Space");
-            lblSource.Text = CommonFunctions.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(CommonFunctions.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
@@ -420,19 +420,19 @@ namespace Chummer
             foreach (string strCategory in AllowedCategories.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
                 if (!string.IsNullOrEmpty(strCategory))
-                    sbdCategoryFilter.Append("category = \"" + strCategory + "\" or ");
+                    sbdCategoryFilter.Append("category = " + strCategory.CleanXPath() + " or ");
             }
             if (sbdCategoryFilter.Length > 0)
             {
                 sbdCategoryFilter.Length -= 4;
-                sbdFilter.Append(" and (").Append(sbdCategoryFilter.ToString()).Append(")");
+                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(")");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             int intOverLimit = 0;
             XPathNodeIterator objXmlModList =
-                _xmlBaseDataNode.Select("/chummer/mods/mod[" + sbdFilter.ToString() + ']');
+                _xmlBaseDataNode.Select("/chummer/mods/mod[" + sbdFilter + ']');
             if (objXmlModList.Count > 0)
             {
                 foreach (XPathNavigator objXmlMod in objXmlModList)
