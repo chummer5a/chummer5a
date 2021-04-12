@@ -44,10 +44,13 @@ namespace Chummer
         private string _strExportLanguage;
         private CultureInfo _objExportCulture;
         private bool _blnLoading = true;
+        private string _strExportDestination4UnitTest;
 
         #region Control Events
-        public frmExport(Character objCharacter)
+        public frmExport(Character objCharacter, string ExportDestination4UnitTest = null, CultureInfo ExportCulture = null)
         {
+            _objExportCulture = ExportCulture;
+            _strExportDestination4UnitTest = ExportDestination4UnitTest;
             _objCharacter = objCharacter;
             _workerJsonLoader.WorkerSupportsCancellation = true;
             _workerJsonLoader.WorkerReportsProgress = false;
@@ -68,7 +71,7 @@ namespace Chummer
 
         private void frmExport_Load(object sender, EventArgs e)
         {
-            LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalOptions.DefaultCharacterSheet, _objCharacter.Yield());
+            LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalOptions.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
             cboXSLT.BeginUpdate();
             cboXSLT.Items.Add("Export JSON");
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
@@ -87,6 +90,7 @@ namespace Chummer
                 cboXSLT.SelectedIndex = 0;
             cboXSLT.EndUpdate();
             _blnLoading = false;
+            this.Text = this.Text + " " + _objCharacter?.Name;
             cboLanguage_SelectedIndexChanged(sender, e);
         }
 
@@ -255,33 +259,36 @@ namespace Chummer
         }
 
         #region XML
-        private void ExportNormal()
+        private void ExportNormal(string destination = null)
         {
-            // Look for the file extension information.
-            string strExtension = "xml";
-            string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
-            using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
+            string strSaveFile = destination;
+            if (String.IsNullOrEmpty(destination))
             {
-                string strLine;
-                while ((strLine = objFile.ReadLine()) != null)
+                // Look for the file extension information.
+                string strExtension = "xml";
+                string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
+                using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
                 {
-                    if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
-                        strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                    string strLine;
+                    while ((strLine = objFile.ReadLine()) != null)
+                    {
+                        if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
+                            strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                    }
                 }
+
+                if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
+                    SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml");
+                else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
+                    SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json");
+                else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
+                    SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html");
+                else
+                    SaveFileDialog1.Filter = strExtension.ToUpper(GlobalOptions.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
+                SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
+                SaveFileDialog1.ShowDialog();
+                strSaveFile = SaveFileDialog1.FileName;
             }
-
-            if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
-                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml");
-            else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
-                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json");
-            else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
-                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html");
-            else
-                SaveFileDialog1.Filter = strExtension.ToUpper(GlobalOptions.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
-            SaveFileDialog1.ShowDialog();
-            string strSaveFile = SaveFileDialog1.FileName;
-
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
 
@@ -343,19 +350,26 @@ namespace Chummer
             txtText.Text = strDisplayText;
             cmdOK.Enabled = true;
             UseWaitCursor = false;
+            if(!String.IsNullOrEmpty(_strExportDestination4UnitTest))
+            {
+                ExportJson(Path.Combine(_strExportDestination4UnitTest + ".json"));
+            }
         }
         #endregion
         #region JSON
 
-        private void ExportJson()
+        private void ExportJson(string destination = null)
         {
-            SaveFileDialog1.AddExtension = true;
-            SaveFileDialog1.DefaultExt = "json";
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json") + '|' + LanguageManager.GetString("DialogFilter_All");
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs");
-            SaveFileDialog1.ShowDialog();
-            string strSaveFile = SaveFileDialog1.FileName;
-            
+            string strSaveFile = destination;
+            if (String.IsNullOrEmpty(strSaveFile))
+            {
+                SaveFileDialog1.AddExtension = true;
+                SaveFileDialog1.DefaultExt = "json";
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json") + '|' + LanguageManager.GetString("DialogFilter_All");
+                SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs");
+                SaveFileDialog1.ShowDialog();
+                strSaveFile = SaveFileDialog1.FileName;
+            }
             if (string.IsNullOrWhiteSpace(strSaveFile))
                 return;
 
