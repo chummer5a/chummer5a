@@ -55,7 +55,7 @@ namespace Chummer.Tests
                             ShowInTaskbar = false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used)
                         };
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Debug.WriteLine(e);
                         Console.WriteLine(e);
@@ -65,6 +65,35 @@ namespace Chummer.Tests
                 return _frmMainForm;
             }
         }
+
+        public ChummerTest()
+        {
+
+            string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
+            DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
+            var oldRuns = objPathInfo.GetDirectories("TestRun-*");
+            foreach(var oldDir in oldRuns)
+            {
+                Directory.Delete(oldDir.FullName, true);
+            }
+            strTestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
+            objTestPath = Directory.CreateDirectory(strTestPath);
+            
+            TestFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
+        }
+
+        ~ChummerTest()
+        {
+            if (Directory.Exists(strTestPath))
+                Directory.Delete(strTestPath);
+        }
+
+        private string strTestPath { get; set;}
+        private DirectoryInfo objTestPath { get; set; }
+
+        public FileInfo[] TestFiles { get; set; }
+        
+
 
         // "B" will load before all other unit tests, this one tests basic startup (just starting Chummer without any characters
         [TestMethod]
@@ -81,18 +110,13 @@ namespace Chummer.Tests
             Program.MainForm = frmOldMainForm;
         }
 
+
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
         public void Load1ThenSave()
         {
             Debug.WriteLine("Unit test initialized for: Load1ThenSave()");
-
-            string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
-            string strTestPath = Path.Combine(strPath, nameof(Load1ThenSave) + '-' + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
-            DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
-            DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
-            FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
-            foreach (FileInfo objFileInfo in aobjFiles)
+            foreach (FileInfo objFileInfo in TestFiles)
             {
                 string strDestination = Path.Combine(objTestPath.FullName, objFileInfo.Name);
                 using (Character objCharacter = LoadCharacter(objFileInfo))
@@ -109,13 +133,7 @@ namespace Chummer.Tests
         public void Load2ThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Load2ThenSaveIsDeterministic()");
-
-            string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
-            string strTestPath = Path.Combine(strPath, nameof(Load2ThenSaveIsDeterministic) + '-' + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
-            DirectoryInfo objTestPath = Directory.CreateDirectory(strTestPath);
-            DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
-            FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
-            foreach (FileInfo objBaseFileInfo in aobjFiles)
+            foreach (FileInfo objBaseFileInfo in TestFiles)
             {
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(objTestPath.FullName, "(Control) " + objBaseFileInfo.Name);
@@ -162,18 +180,44 @@ namespace Chummer.Tests
             objTestPath.Delete(true);
         }
 
+        [TestMethod]
+        public void Load3ThenExport()
+        {
+            Debug.WriteLine("Unit test initialized for: Load3ThenExport()");
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+            foreach(var filePath in languageFilePaths)
+            { 
+                string language = Path.GetFileNameWithoutExtension(filePath);
+                if (language.Contains("data"))
+                    continue;
+                var culture = new System.Globalization.CultureInfo(language);
+                Debug.WriteLine("Unit test initialized for: Load3ThenExport() - Exporting for Culture " + culture.Name);
+                foreach (FileInfo objFileInfo in TestFiles)
+                {
+                    string strDestination = Path.Combine(objTestPath.FullName, objFileInfo.Name + language);
+                    using (Character objCharacter = LoadCharacter(objFileInfo))
+                    {
+                        using (frmExport frmExportCharacter = new frmExport(objCharacter, strDestination, culture))
+                            frmExportCharacter.ShowDialog();
+                    }
+
+                }
+            }
+            objTestPath.Delete(true);
+        }
+
+        
+
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Load3CharacterForms()
+        public void Load4CharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Load3CharacterForms()");
+            Debug.WriteLine("Unit test initialized for: Load4CharacterForms()");
             frmChummerMain frmOldMainForm = Program.MainForm;
             Program.MainForm = MainForm; // Set program Main form to Unit test version
             MainForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-            string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
-            DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
-            FileInfo[] aobjFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
-            foreach (FileInfo objFileInfo in aobjFiles)
+            foreach (FileInfo objFileInfo in TestFiles)
             {
                 using (Character objCharacter = LoadCharacter(objFileInfo))
                 {
