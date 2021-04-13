@@ -85,7 +85,7 @@ namespace Chummer.Tests
         ~ChummerTest()
         {
             if (Directory.Exists(strTestPath))
-                Directory.Delete(strTestPath);
+                Directory.Delete(strTestPath, true);
         }
 
         private string strTestPath { get; set;}
