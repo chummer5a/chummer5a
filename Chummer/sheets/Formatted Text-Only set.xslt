@@ -198,7 +198,7 @@
                 <br/>
                 <br/>== <xsl:value-of select="$lang.Attributes"/> ==
                 <br/>
-              <xsl:if test="attributes/attribute[name_english = 'BOD' and (../attributecategory_english != metatypecategory)]">
+              <xsl:if test="attributes/attributecategory">
                 <xsl:value-of select="$lang.CurrentForm"/>: <xsl:value-of select="attributes/attributecategory"/><br/>
               </xsl:if>
         <xsl:variable name="tBOD1">

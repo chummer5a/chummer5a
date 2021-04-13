@@ -486,7 +486,7 @@
   <xsl:template name="print_attributes">
     <table class="stats general">
       <tr><td colspan="4"><div class="bigheader">[<xsl:value-of select="$lang.Attributes" />]</div></td></tr>
-      <xsl:if test="attributes/attribute[name_english = 'BOD' and (../attributecategory_english != metatypecategory)]">
+      <xsl:if test="attributes/attributecategory">
         <tr>
           <td style="white-space: nowrap;">
             <xsl:value-of select="$lang.CurrentForm" />
