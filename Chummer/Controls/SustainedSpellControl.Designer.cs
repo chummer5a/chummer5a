@@ -85,9 +85,10 @@ namespace Chummer
             this.chkSelfSustained.Name = "chkSelfSustained";
             this.chkSelfSustained.Size = new System.Drawing.Size(44, 17);
             this.chkSelfSustained.TabIndex = 8;
-            this.chkSelfSustained.Tag = "Label_Sustained_NotSelf";
+            this.chkSelfSustained.Tag = "Label_SustainedSelf";
             this.chkSelfSustained.Text = "Self";
             this.chkSelfSustained.UseVisualStyleBackColor = true;
+            this.chkSelfSustained.CheckedChanged += new System.EventHandler(this.chkSelf_CheckedChanged);
             // 
             // numericUpDownEx1
             // 
@@ -106,6 +107,7 @@ namespace Chummer
             this.numericUpDownEx1.Name = "numericUpDownEx1";
             this.numericUpDownEx1.Size = new System.Drawing.Size(32, 20);
             this.numericUpDownEx1.TabIndex = 9;
+            this.numericUpDownEx1.ValueChanged += new System.EventHandler(this.nudForce_ValueChanged);
             // 
             // lblForce
             // 
@@ -115,8 +117,9 @@ namespace Chummer
             this.lblForce.Name = "lblForce";
             this.lblForce.Size = new System.Drawing.Size(37, 13);
             this.lblForce.TabIndex = 10;
-            this.lblForce.Tag = "Label_Sustained_Force";
+            this.lblForce.Tag = "Label_SustainedSelf";
             this.lblForce.Text = "Force:";
+            this.lblForce.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblSustainedSpell
             // 

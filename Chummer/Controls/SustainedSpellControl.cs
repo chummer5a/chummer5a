@@ -33,14 +33,30 @@ namespace Chummer
 
         private void SustainedSpellControl_Load(object sender, EventArgs e)
         {
-            lblSustainedSpell.Text = _objSustainedSpell.Name;
+            lblSustainedSpell.Text = _objSustainedSpell.DisplayName(GlobalOptions.Language);
+            chkSelfSustained.CheckState = CheckState.Checked;
+
+            _blnLoading = false;
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the UnsustainSpell Event when the user has confirmed their desire to Unsustain a Spell
             // The entire SustainedSpellControll is passed as an argument so the handling event can evaluate its contents.
+            if (!_blnLoading)
             UnsustainSpell?.Invoke(this, e);
+        }
+
+        private void nudForce_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                SpellDetailChanged?.Invoke(this, e);
+        }
+
+        private void chkSelf_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                SpellDetailChanged?.Invoke(this, e);
         }
 
         #region Properties

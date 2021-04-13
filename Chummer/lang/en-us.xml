@@ -4602,8 +4602,12 @@
     <!--End Region-->
     <!--Region Sustained Spell Control-->
     <string>
-      <key>Label_Sustained_NotSelf</key>
-      <text>Self</text>
+      <key>Label_SustainedSelf</key>
+      <text>Self:</text>
+    </string>
+    <string>
+      <key>Label_SustainedForce</key>
+      <text>Force:</text>
     </string>
     <!--End Region-->
     <!-- Region Adept Tab -->

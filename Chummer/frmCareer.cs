@@ -11756,7 +11756,8 @@ namespace Chummer
                 if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSustainedSpell")))
                     return;
 
-                CharacterObject.SustainedSpells.Remove(objSustainedSpell);  
+                CharacterObject.SustainedSpells.Remove(objSustainedSpell);
+
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
@@ -16422,12 +16423,13 @@ namespace Chummer
 
                                 if (panSustainedSpells == null)
                                     continue;
+
                                 int intSustainedSpells = panSustainedSpells.Controls.Count;
 
                                 for (int i = 0; i < intSustainedSpells; ++i)
                                 {
                                     Control objLoopControl = panSustainedSpells.Controls[i];
-                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl)
+                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl && objSustainedSpellControl.SustainedSpellObject == objSustainedSpell)
                                     {
                                         intMoveUpAmount = objSustainedSpellControl.Height;
                                         panSustainedSpells.Controls.RemoveAt(i);
@@ -16442,7 +16444,10 @@ namespace Chummer
                                         objLoopControl.Top -= intMoveUpAmount;
                                     }
                                 }
-
+                            }
+                            if (panSustainedSpells.Controls.Count != CharacterObject.SustainedSpells.Count)
+                            {
+                                RefreshSustainedSpells(panSustainedSpells);
                             }
                         }
                         break;
@@ -16460,7 +16465,7 @@ namespace Chummer
                                 for (int i = 0; i < intSustainedSpells; ++i)
                                 {
                                     Control objLoopControl = panSustainedSpells.Controls[i];
-                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl)
+                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl && objSustainedSpellControl.SustainedSpellObject == objSustainedSpell)
                                     {
                                         intMoveUpAmount = objSustainedSpellControl.Height;
                                         panSustainedSpells.Controls.RemoveAt(i);
