@@ -38,7 +38,7 @@ namespace Chummer.Backend.Skills
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter;
-            _strName = _objCharacter.ReverseTranslateExtra(strName);
+            _strName = _objCharacter.ReverseTranslateExtra(strName, GlobalOptions.Language, "skills.xml");
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
