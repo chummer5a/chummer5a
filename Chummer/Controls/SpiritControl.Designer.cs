@@ -92,6 +92,11 @@ namespace Chummer
             -1,
             -1,
             0});
+            this.nudServices.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudServices.Name = "nudServices";
             this.nudServices.Size = new System.Drawing.Size(197, 20);
             this.nudServices.TabIndex = 4;
@@ -119,6 +124,11 @@ namespace Chummer
             this.nudForce.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudForce.Maximum = new decimal(new int[] {
             6,
+            0,
+            0,
+            0});
+            this.nudForce.Minimum = new decimal(new int[] {
+            0,
             0,
             0,
             0});

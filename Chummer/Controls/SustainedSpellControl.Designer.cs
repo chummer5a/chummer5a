@@ -1,4 +1,4 @@
-﻿namespace Chummer.Controls
+namespace Chummer
 {
     partial class SustainedSpellControl
     {
@@ -72,6 +72,7 @@
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // chkSelfSustained
             // 
@@ -121,11 +122,12 @@
             // 
             this.lblSustainedSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSustainedSpell.AutoSize = true;
-            this.lblSustainedSpell.Location = new System.Drawing.Point(3, 2);
+            this.lblSustainedSpell.Location = new System.Drawing.Point(3, 8);
             this.lblSustainedSpell.Name = "lblSustainedSpell";
-            this.lblSustainedSpell.Size = new System.Drawing.Size(76, 26);
+            this.lblSustainedSpell.Size = new System.Drawing.Size(61, 13);
             this.lblSustainedSpell.TabIndex = 11;
-            this.lblSustainedSpell.Text = "Example Spell Name";
+            this.lblSustainedSpell.Text = "Spell Name";
+            this.lblSustainedSpell.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // SustainedSpellControl
             // 
@@ -134,6 +136,7 @@
             this.Controls.Add(this.bufferedTableLayoutPanel1);
             this.Name = "SustainedSpellControl";
             this.Size = new System.Drawing.Size(290, 30);
+            this.Load += new System.EventHandler(this.SustainedSpellControl_Load);
             this.bufferedTableLayoutPanel1.ResumeLayout(false);
             this.bufferedTableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();

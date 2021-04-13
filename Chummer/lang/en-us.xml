@@ -2027,6 +2027,10 @@
       <text>Are you sure you want to delete this Spirit?</text>
     </string>
     <string>
+      <key>Message_DeleteSustainedSpell</key>
+      <text>Are you sure you want to no longer sustain this Spell?</text>
+    </string>
+    <string>
       <key>Message_DeleteSprite</key>
       <text>Are you sure you want to delete this Sprite?</text>
     </string>
@@ -4591,12 +4595,15 @@
       <text>Each Service a Spirit owes costs {0} Karma.</text>
     </string>
     <string>
-      <key>Button_AddSustainedSpell</key>
+      <key>Button_SustainSpell</key>
       <text>Sustain Spell</text>
     </string>
+
+    <!--End Region-->
+    <!--Region Sustained Spell Control-->
     <string>
-      <key>Button_DeleteSustainedSpell</key>
-      <text>Unsustain Spell</text>
+      <key>Label_Sustained_NotSelf</key>
+      <text>Self</text>
     </string>
     <!--End Region-->
     <!-- Region Adept Tab -->

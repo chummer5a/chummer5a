@@ -192,6 +192,9 @@ namespace Chummer
         private readonly ObservableCollection<Contact> _lstContacts = new ObservableCollection<Contact>();
         private readonly ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
         private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
+
+        private readonly ObservableCollection<Spell> _lstSustainedSpells = new ObservableCollection<Spell>();
+
         private readonly List<Focus> _lstFoci = new List<Focus>(5);
         private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>(5);
         private readonly CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
@@ -10309,6 +10312,12 @@ namespace Chummer
         /// </summary>
         [HubTag(true)]
         public ObservableCollection<Spell> Spells => _lstSpells;
+
+        /// <summary>
+        /// Sustained Spells
+        /// </summary>
+        public ObservableCollection<Spell> SustainedSpells => _lstSustainedSpells;
+
 
         /// <summary>
         /// Foci.

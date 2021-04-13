@@ -280,6 +280,7 @@ namespace Chummer
                         RefreshQualities(treQualities, cmsQuality);
                         RefreshSpirits(panSpirits, panSprites);
                         RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                        RefreshSustainedSpells(panSustainedSpells);
                         RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                         RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                         RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -348,6 +349,7 @@ namespace Chummer
                         CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
                         CharacterObjectOptions.PropertyChanged += OptionsChanged;
                         CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
+                        CharacterObject.SustainedSpells.CollectionChanged += SustainedSpellCollectionChanged;
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_magictradition", op_load_frm_career))
@@ -1033,6 +1035,11 @@ namespace Chummer
             RefreshSpirits(panSpirits, panSprites, notifyCollectionChangedEventArgs);
         }
 
+        private void SustainedSpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshSustainedSpells(panSustainedSpells, notifyCollectionChangedEventArgs);
+        }
+
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs, lblAttributes, -1, lblAttributesAug.PreferredWidth, lblAttributesMetatype.PreferredWidth);
@@ -1155,6 +1162,7 @@ namespace Chummer
                 CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
                 CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
+                CharacterObject.SustainedSpells.CollectionChanged -= SustainedSpellCollectionChanged;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -1211,6 +1219,12 @@ namespace Chummer
                 {
                     objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                     objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                }
+
+                foreach (SustainedSpellControl objSustainedSpellControl in panSustainedSpells.Controls.OfType<SustainedSpellControl>())
+                {
+                    objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
+                    objSustainedSpellControl.UnsustainSpell -= UnsustainSpell;
                 }
 
                 // Trash the global variables and dispose of the Form.
@@ -1890,6 +1904,7 @@ namespace Chummer
                     RefreshQualities(treQualities, cmsQuality);
                     RefreshSpirits(panSpirits, panSprites);
                     RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                    RefreshSustainedSpells(panSustainedSpells);
                     RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                     RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                     RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -6166,22 +6181,13 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddSustainedSpell_Click(object sender, EventArgs e)
+        private void cmdSustainSpell_Click(object sender, EventArgs e)
         {
-            //Do Nothing if no spell is selected
-            if (treSpells.SelectedNode == null || treSpells.SelectedNode.Level != 1)
-                return;
-
-
-        }
-
-        private void cmdRemoveSustainedSpell_Cick(object sender, EventArgs e)
-        {
-
+            AddSustainedSpell();
         }
 #endregion
 
-#region ContextMenu Events
+        #region ContextMenu Events
         private void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
         {
             // Enable and disable menu items
@@ -11741,6 +11747,20 @@ namespace Chummer
             cboDrain.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
                                CharacterObject.MagicTradition.CanChooseDrainAttribute;
         }
+
+        private void UnsustainSpell(object sender, EventArgs e)
+        {
+            if (sender is SustainedSpellControl objSender)
+            {
+                Spell objSustainedSpell = objSender.SustainedSpellObject;
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSustainedSpell")))
+                    return;
+
+                CharacterObject.SustainedSpells.Remove(objSustainedSpell);  
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+        }
 #endregion
 
 #region Additional Sprites and Complex Forms Tab Control Events
@@ -12962,7 +12982,7 @@ namespace Chummer
         }
 #endregion
 
-#region Custom Methods
+        #region Custom Methods
         /// <summary>
         /// Refresh the currently-selected Drug.
         /// </summary>
@@ -16343,6 +16363,153 @@ namespace Chummer
 
             IsDirty = true;
         }
+
+        /// <summary>
+        /// Refreshes the Sustained Spells Panel
+        /// </summary>
+        /// <param name="panSustainedSpells"></param>
+        /// <param name="notifyCollectionChangedEventArgs"></param>
+        private void RefreshSustainedSpells(Panel panSustainedSpells, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            if (panSustainedSpells == null)
+                return;
+
+            if(notifyCollectionChangedEventArgs == null)
+            {
+                panSustainedSpells.SuspendLayout();
+                panSustainedSpells.Controls.Clear();
+                int intSustainedSpells = -1;
+
+                foreach (Spell objSustainedSpell in CharacterObject.SustainedSpells)
+                {
+                    SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
+
+                    objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
+                    objSustainedSpellControl.UnsustainSpell += UnsustainSpell;
+
+                    intSustainedSpells += 1;
+                    objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
+                    panSustainedSpells.Controls.Add(objSustainedSpellControl);
+                }
+                panSustainedSpells.ResumeLayout();
+            }
+            else
+            {
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            int intSustainedSpells = panSustainedSpells?.Controls.Count ?? 0;
+
+                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
+
+                                objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objSustainedSpellControl.UnsustainSpell += UnsustainSpell;
+
+                                objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
+                                panSustainedSpells.Controls.Add(objSustainedSpellControl);
+                                intSustainedSpells += 1;
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                int intMoveUpAmount = 0;
+
+                                if (panSustainedSpells == null)
+                                    continue;
+                                int intSustainedSpells = panSustainedSpells.Controls.Count;
+
+                                for (int i = 0; i < intSustainedSpells; ++i)
+                                {
+                                    Control objLoopControl = panSustainedSpells.Controls[i];
+                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl)
+                                    {
+                                        intMoveUpAmount = objSustainedSpellControl.Height;
+                                        panSustainedSpells.Controls.RemoveAt(i);
+                                        objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                        objSustainedSpellControl.UnsustainSpell -= UnsustainSpell;
+                                        objSustainedSpellControl.Dispose();
+                                        i -= 1;
+                                        intSustainedSpells -= 1;
+                                    }
+                                    else if (intMoveUpAmount != 0)
+                                    {
+                                        objLoopControl.Top -= intMoveUpAmount;
+                                    }
+                                }
+
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            int intSustainedSpells = panSustainedSpells?.Controls.Count ?? 0;
+
+                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                int intMoveUpAmount = 0;
+
+                                if (panSustainedSpells == null)
+                                    continue;
+
+                                for (int i = 0; i < intSustainedSpells; ++i)
+                                {
+                                    Control objLoopControl = panSustainedSpells.Controls[i];
+                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl)
+                                    {
+                                        intMoveUpAmount = objSustainedSpellControl.Height;
+                                        panSustainedSpells.Controls.RemoveAt(i);
+                                        objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                        objSustainedSpellControl.UnsustainSpell -= UnsustainSpell;
+                                        objSustainedSpellControl.Dispose();
+                                        i -= 1;
+                                        intSustainedSpells -= 1;
+                                    }
+                                    else if (intMoveUpAmount != 0)
+                                    {
+                                        objLoopControl.Top -= intMoveUpAmount;
+                                    }
+                                }
+                            }
+                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
+
+                                objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objSustainedSpellControl.UnsustainSpell += UnsustainSpell;
+
+                                objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
+                                panSustainedSpells.Controls.Add(objSustainedSpellControl);
+                            }
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshSustainedSpells(panSustainedSpells);
+                        }
+                        break;
+                }
+            }
+        }
+
+        protected void AddSustainedSpell()
+        {
+
+            if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0 && treSpells.SelectedNode.Tag is Spell objSpell)
+            {
+                CharacterObject.SustainedSpells.Add(objSpell);
+            }
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+
         #endregion
 
         private void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
@@ -17323,6 +17490,7 @@ namespace Chummer
 
             IsDirty = true;
         }
+
         #region Wireless Toggles
 
         private void chkGearWireless_CheckedChanged(object sender, EventArgs e)
