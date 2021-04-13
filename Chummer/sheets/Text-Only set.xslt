@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Text-Only Character Sheet -->
-<!-- Created by Keith Rudolph, krudolph@gmail.com -->
-<!-- Version -497 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xt.MovementRate.xslt"/>
   <xsl:include href="xt.PreserveHtml.xslt"/>
@@ -23,26 +22,7 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <style type="text/css">
-          * {
-            font-family: 'courier new', courier;
-            font-size: 9pt;
-            margin: 0;
-          }
-          html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
-          }
-        </style>
-        <style media="print">
-           @page {
-            size: auto;
-            margin-top: 0.5in;
-            margin-left: 0.5in;
-            margin-right: 0.5in;
-            margin-bottom: 0.75in;
-          }
-        </style>
+        <xsl:call-template name="Chummer5CSS" />
       </head>
 
       <body>
@@ -174,39 +154,57 @@
           <br/>== <xsl:value-of select="$lang.DerivedAttributes"/> ==
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Essence,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="26"/>
             </xsl:call-template>
             <xsl:value-of select="totaless"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Initiative,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="init"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="init"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.RiggerInitiative,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="riggerinit"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="riggerinit"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.AstralInitiative,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="astralinit"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="astralinit"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.MatrixAR,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-          <xsl:value-of select="matrixarinit"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="matrixinit"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.MatrixCold,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-          <xsl:value-of select="matrixcoldinit"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="matrixcoldinit"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.MatrixHot,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-          <xsl:value-of select="matrixhotinit"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="matrixhotinit"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
           <xsl:variable name="PhysicalTrackTitle">
             <xsl:choose>
               <xsl:when test="physicalcmiscorecm = 'True'">
@@ -219,9 +217,12 @@
           </xsl:variable>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($PhysicalTrackTitle,': ')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="physicalcm"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="physicalcm"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
           <br/>
           <xsl:choose>
             <xsl:when test="physicalcmiscorecm != 'True' or stuncmismatrixcm = 'True'">
@@ -237,44 +238,58 @@
               </xsl:variable>
               <xsl:call-template name="fnx-pad-r">
                 <xsl:with-param name="string" select="concat($StunTrackTitle,': ')"/>
-                <xsl:with-param name="length" select="40"/>
+                <xsl:with-param name="length" select="25"/>
               </xsl:call-template>
-              <xsl:value-of select="stuncm"/>
+              <xsl:call-template name="fnx-pad-l">
+                <xsl:with-param name="string" select="stuncm"/>
+                <xsl:with-param name="length" select="2"/>
+              </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
               <xsl:call-template name="fnx-pad-r">
                 <xsl:with-param name="string" select="' '"/>
-                <xsl:with-param name="length" select="40"/>
+                <xsl:with-param name="length" select="25"/>
               </xsl:call-template>
               <xsl:value-of select="stuncm"/>
             </xsl:otherwise>
           </xsl:choose>
           <br/>
           <br/>== <xsl:value-of select="$lang.Limits"/> ==
-          <xsl:call-template name="limitmodifiersphys"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Physical,':')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="limitphysical"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="limitphysical"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
             <xsl:call-template name="limitmodifiersphys"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Mental,':')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="limitmental"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="limitmental"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
             <xsl:call-template name="limitmodifiersment"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Social,':')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="limitsocial"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="limitsocial"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
             <xsl:call-template name="limitmodifierssoc"/>
           <br/><xsl:call-template name="fnx-pad-r">
               <xsl:with-param name="string" select="concat($lang.Astral,':')"/>
-              <xsl:with-param name="length" select="40"/>
+              <xsl:with-param name="length" select="25"/>
             </xsl:call-template>
-            <xsl:value-of select="limitastral"/>
+            <xsl:call-template name="fnx-pad-l">
+              <xsl:with-param name="string" select="limitastral"/>
+              <xsl:with-param name="length" select="2"/>
+            </xsl:call-template>
             <xsl:call-template name="limitmodifiersast"/>
 
           <br/>
@@ -496,22 +511,39 @@
         <xsl:value-of select="name"/>
         <xsl:if test="spec != ''"> (<xsl:value-of select="spec"/>) </xsl:if>
       </xsl:variable>
-      <xsl:call-template name="fnx-pad-r">
-        <xsl:with-param name="string" select="$snme"/>
-        <xsl:with-param name="length" select="40"/>
-      </xsl:call-template>
+      <xsl:choose>
+        <xsl:when test="string-length($snme) &gt; 29">
+          <xsl:value-of select="$snme"/>
+		  <br/>
+          <xsl:call-template name="fnx-repeat">
+            <xsl:with-param name="count" select="30"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="fnx-pad-r">
+            <xsl:with-param name="string" select="$snme"/>
+            <xsl:with-param name="length" select="30"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:choose>
         <xsl:when test="isnativelanguage = 'True'">
           <xsl:value-of select="$lang.Native"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="$lang.Base"/>:
-          <xsl:value-of select="base"/>
+          <xsl:value-of select="$lang.Rtg"/>:
+          <xsl:call-template name="fnx-pad-l">
+            <xsl:with-param name="string" select="base + karma"/>
+            <xsl:with-param name="length" select="2"/>
+          </xsl:call-template>
           <xsl:call-template name="fnx-repeat">
-            <xsl:with-param name="count" select="10"/>
+            <xsl:with-param name="count" select="3"/>
           </xsl:call-template>
           <xsl:value-of select="$lang.Pool"/>:
-          <xsl:value-of select="total"/>
+          <xsl:call-template name="fnx-pad-l">
+            <xsl:with-param name="string" select="total"/>
+            <xsl:with-param name="length" select="2"/>
+          </xsl:call-template>
           <xsl:if test="spec != '' and exotic = 'False'">
             (<xsl:value-of select="specializedrating"/>)
           </xsl:if>
@@ -541,7 +573,7 @@
           <xsl:if test="role != ''">
             <xsl:value-of select="role"/>
           </xsl:if>
-          (<xsl:value-of select="connection"/>, <xsl:value-of select="loyalty"/>)
+          (<xsl:value-of select="connection"/>,<xsl:value-of select="loyalty"/>)
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
@@ -575,7 +607,7 @@
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
         <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-        <xsl:if test="rating &gt; 0"> <xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/></xsl:if>
+        <xsl:if test="rating &gt; 0">&#160;<xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/></xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -584,7 +616,7 @@
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
         <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-        <xsl:if test="rating &gt; 0"> <xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/></xsl:if>
+        <xsl:if test="rating &gt; 0">&#160;<xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/></xsl:if>
     </xsl:for-each>
   </xsl:template>
 
@@ -593,7 +625,7 @@
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
       <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-      <xsl:if test="rating &gt; 0"> <xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/></xsl:if>
+      <xsl:if test="rating &gt; 0">&#160;<xsl:value-of select="$lang.Rating"/>: <xsl:value-of select="rating"/></xsl:if>
       <xsl:if test="programoptions/programoption">
         (<xsl:for-each select="programoptions/programoption">
           <xsl:sort select="name"/>
@@ -640,7 +672,7 @@
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
         (<xsl:value-of select="baselifestyle"/>)
-        <xsl:value-of select="months"/>&#160;
+        <xsl:value-of select="months"/><xsl:text> </xsl:text>
       <xsl:choose>
         <xsl:when test="increment = 'Day'">
           <xsl:choose>
@@ -689,7 +721,7 @@
         <xsl:if test="children/cyberware">
           <xsl:for-each select="children/cyberware">
             <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
-            <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+            <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
           </xsl:for-each>
         </xsl:if>
     </xsl:for-each>
@@ -741,7 +773,7 @@
       <xsl:value-of select="$lang.DP"/>: <xsl:value-of select="dataprocessing"/>,
       <xsl:value-of select="$lang.FWL"/>: <xsl:value-of select="firewall"/>)
       <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-      <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+      <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
       <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
       <xsl:if test="children/gear">
         <xsl:for-each select="children/gear">
@@ -834,7 +866,7 @@
       <xsl:value-of select="$lang.DP"/>: <xsl:value-of select="dataprocessing"/>,
       <xsl:value-of select="$lang.FWL"/>: <xsl:value-of select="firewall"/>)
       <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-      <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+      <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
       <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
       <xsl:if test="children/gear">
         <xsl:for-each select="children/gear">
@@ -880,7 +912,7 @@
       <xsl:value-of select="$lang.DP"/>: <xsl:value-of select="dataprocessing"/>,
       <xsl:value-of select="$lang.FWL"/>: <xsl:value-of select="firewall"/>)
       <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-      <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+      <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
       <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
       <xsl:if test="children/gear">
         <xsl:for-each select="children/gear">
@@ -932,7 +964,7 @@
         <xsl:for-each select="children/gear">
           <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
           <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-          <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+          <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
           <xsl:if test="children/gear">
             [<xsl:for-each select="children/gear">
               <xsl:sort select="name"/>
@@ -1015,13 +1047,13 @@
           <xsl:sort select="name"/>
           <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
             <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-            <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+            <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
             <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty"/></xsl:if>
             <xsl:if test="children/gear">
               <xsl:for-each select="children/gear">
                 <br/>&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name"/>
                 <xsl:if test="extra != ''"> (<xsl:value-of select="extra"/>)</xsl:if>
-                <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+                <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
                 <xsl:if test="children/gear">
                   [<xsl:for-each select="children/gear">
                     <xsl:sort select="name"/>
@@ -1060,7 +1092,7 @@
               (<xsl:for-each select="cyberwares/cyberware">
                 <xsl:sort select="name"/>
                 <br/>&#160;&#160;&#160;&#160;&#160;&#160;+ <xsl:value-of select="name"/>
-                <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
+                <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating"/></xsl:if>
               </xsl:for-each>)
             </xsl:if>
         </xsl:for-each>
@@ -1123,8 +1155,8 @@
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
       <xsl:for-each select="martialarttechniques/martialarttechnique">
-        <xsl:sort select="."/>
-        <br/>&#160;&#160;&#160;+ <xsl:value-of select="."/>
+        <xsl:sort select="name"/>
+        <br/>&#160;&#160;&#160;+ <xsl:value-of select="name"/>
       </xsl:for-each>
     </xsl:for-each>
   </xsl:template>
@@ -1134,7 +1166,7 @@
       <br/>
       <xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="date"/>
-        <xsl:with-param name="length" select="20"/>
+        <xsl:with-param name="length" select="22"/>
       </xsl:call-template>
       <xsl:call-template name="fnx-pad-l">
         <xsl:with-param name="string" select="amount"/>
@@ -1152,7 +1184,7 @@
       <br/>
       <xsl:call-template name="fnx-pad-r">
         <xsl:with-param name="string" select="date"/>
-        <xsl:with-param name="length" select="20"/>
+        <xsl:with-param name="length" select="22"/>
       </xsl:call-template>
       <xsl:call-template name="fnx-pad-l">
         <xsl:with-param name="string" select="amount"/>
