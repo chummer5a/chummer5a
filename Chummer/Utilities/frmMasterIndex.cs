@@ -74,7 +74,7 @@ namespace Chummer
             _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
         }
 
-        private void frmMasterIndex_Load(object sender, EventArgs e)
+        private async void frmMasterIndex_Load(object sender, EventArgs e)
         {
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
@@ -94,7 +94,7 @@ namespace Chummer
                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
-                    Task.WhenAll(_lstFileNames.Select(LoadFile));
+                    await Task.WhenAll(_lstFileNames.Select(LoadFile));
 
                     async Task LoadFile(string strFileName)
                     {

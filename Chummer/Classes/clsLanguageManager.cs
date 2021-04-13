@@ -24,7 +24,8 @@ using System.IO;
 using System.Linq;
  using System.Runtime.CompilerServices;
  using System.Text;
-using System.Threading.Tasks;
+ using System.Threading;
+ using System.Threading.Tasks;
  using System.Windows.Forms;
 using System.Xml;
  using System.Xml.XPath;
@@ -484,79 +485,73 @@ namespace Chummer
         {
             ConcurrentBag<string> lstEnglish = new ConcurrentBag<string>();
             ConcurrentBag<string> lstLanguage = new ConcurrentBag<string>();
-            Parallel.Invoke(
-                () =>
+            Task.WaitAll(new Task(() =>
+            {
+                // Load the English version.
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                try
                 {
-                    // Load the English version.
-                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
-                    try
+                    XPathDocument objEnglishDocument;
+                    using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            objEnglishDocument = new XPathDocument(objXmlReader);
+                    foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
                     {
-                        XPathDocument objEnglishDocument;
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                objEnglishDocument = new XPathDocument(objXmlReader);
-                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
-                        {
-                            string strKey = objNode.SelectSingleNode("key")?.Value;
-                            if (!string.IsNullOrEmpty(strKey))
-                                lstEnglish.Add(strKey);
-                        }
-                    }
-                    catch (IOException)
-                    {
-                    }
-                    catch (XmlException)
-                    {
-                    }
-                },
-                () =>
-                {
-                    // Load the selected language version.
-                    string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
-                    try
-                    {
-                        XPathDocument objLanguageDocument;
-                        using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                objLanguageDocument = new XPathDocument(objXmlReader);
-                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().Select("/chummer/strings/string"))
-                        {
-                            string strKey = objNode.SelectSingleNode("key")?.Value;
-                            if (!string.IsNullOrEmpty(strKey))
-                                lstLanguage.Add(strKey);
-                        }
-                    }
-                    catch (IOException)
-                    {
-                    }
-                    catch (XmlException)
-                    {
+                        string strKey = objNode.SelectSingleNode("key")?.Value;
+                        if (!string.IsNullOrEmpty(strKey))
+                            lstEnglish.Add(strKey);
                     }
                 }
-            );
+                catch (IOException)
+                {
+                }
+                catch (XmlException)
+                {
+                }
+            }), new Task(() =>
+            {
+                // Load the selected language version.
+                string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+                try
+                {
+                    XPathDocument objLanguageDocument;
+                    using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        objLanguageDocument = new XPathDocument(objXmlReader);
+                    foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().Select("/chummer/strings/string"))
+                    {
+                        string strKey = objNode.SelectSingleNode("key")?.Value;
+                        if (!string.IsNullOrEmpty(strKey))
+                            lstLanguage.Add(strKey);
+                    }
+                }
+                catch (IOException)
+                {
+                }
+                catch (XmlException)
+                {
+                }
+            }));
 
             StringBuilder sbdMissingMessage = new StringBuilder();
             StringBuilder sbdUnusedMessage = new StringBuilder();
-            Parallel.Invoke(
-                () =>
+            Task.WaitAll(new Task(() =>
+            {
+                // Check for strings that are in the English file but not in the selected language file.
+                foreach (string strKey in lstEnglish)
                 {
-                    // Check for strings that are in the English file but not in the selected language file.
-                    foreach (string strKey in lstEnglish)
-                    {
-                        if (!lstLanguage.Contains(strKey))
-                            sbdMissingMessage.AppendLine("Missing String: " + strKey);
-                    }
-                },
-                () =>
-                {
-                    // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
-                    foreach (string strKey in lstLanguage)
-                    {
-                        if (!lstEnglish.Contains(strKey))
-                            sbdUnusedMessage.AppendLine("Unused String: " + strKey);
-                    }
+                    if (!lstLanguage.Contains(strKey))
+                        sbdMissingMessage.AppendLine("Missing String: " + strKey);
                 }
-            );
+            }), new Task(() =>
+            {
+                // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
+                foreach (string strKey in lstLanguage)
+                {
+                    if (!lstEnglish.Contains(strKey))
+                        sbdUnusedMessage.AppendLine("Unused String: " + strKey);
+                }
+            }));
 
             string strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
@@ -729,26 +724,27 @@ namespace Chummer
                         break;
                     default:
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
-
+                        CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
+                        CancellationToken objCancellationToken = objCancellationTokenSource.Token;
                         object strReturnLock = new object();
-                        Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
+                        Task.WaitAll(s_LstXPathsToSearch.Select(objXPathPair => new Task(() =>
                         {
-                            Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>> objXPathPair = s_LstXPathsToSearch[i];
-                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1, objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage).Select(objXPathPair.Item2))
+                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
+                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
+                                .Select(objXPathPair.Item2))
                             {
-                                if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
-                                {
-                                    string strTranslate = objXPathPair.Item4(objNode);
-                                    if (!string.IsNullOrEmpty(strTranslate))
-                                    {
-                                        lock (strReturnLock)
-                                            strReturn = strTranslate;
-                                        state.Stop();
-                                        break;
-                                    }
-                                }
+                                if (objCancellationToken.IsCancellationRequested)
+                                    return;
+                                if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                    continue;
+                                string strTranslate = objXPathPair.Item4(objNode);
+                                if (string.IsNullOrEmpty(strTranslate))
+                                    continue;
+                                objCancellationTokenSource.Cancel();
+                                lock (strReturnLock)
+                                    strReturn = strTranslate;
                             }
-                        });
+                        })).ToArray(), objCancellationToken);
                         break;
                 }
             }
@@ -878,26 +874,27 @@ namespace Chummer
                 }
 
                 string strExtraNoQuotes = strExtra.FastEscape('\"');
-
+                CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
+                CancellationToken objCancellationToken = objCancellationTokenSource.Token;
                 object strReturnLock = new object();
-                Parallel.For((long) 0, s_LstXPathsToSearch.Length, (i, state) =>
+                Task.WaitAll(s_LstXPathsToSearch.Select(objXPathPair => new Task(() =>
                 {
-                    Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>> objXPathPair = s_LstXPathsToSearch[i];
-                    foreach (XPathNavigator xmlNode in XmlManager.LoadXPath(objXPathPair.Item1, objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage).Select(objXPathPair.Item2))
+                    foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
+                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
+                        .Select(objXPathPair.Item2))
                     {
-                        if (objXPathPair.Item4(xmlNode) == strExtraNoQuotes)
-                        {
-                            string strOriginal = objXPathPair.Item3(xmlNode);
-                            if (!string.IsNullOrEmpty(strOriginal))
-                            {
-                                lock (strReturnLock)
-                                    strReturn = strOriginal;
-                                state.Stop();
-                                break;
-                            }
-                        }
+                        if (objCancellationToken.IsCancellationRequested)
+                            return;
+                        if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                            continue;
+                        string strOriginal = objXPathPair.Item3(objNode);
+                        if (string.IsNullOrEmpty(strOriginal))
+                            continue;
+                        objCancellationTokenSource.Cancel();
+                        lock (strReturnLock)
+                            strReturn = strOriginal;
                     }
-                });
+                })).ToArray(), objCancellationToken);
             }
 
             return strReturn;

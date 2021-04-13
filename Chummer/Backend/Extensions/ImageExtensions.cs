@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using NLog;
 
 namespace Chummer
@@ -28,6 +29,7 @@ namespace Chummer
     public static class ImageExtensions
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Converts a Base64 String into an Image.
         /// </summary>
@@ -67,6 +69,60 @@ namespace Chummer
         public static Bitmap ToImage(this string strBase64String, PixelFormat eFormat)
         {
             using (Image imgInput = strBase64String.ToImage())
+            {
+                Bitmap bmpInput = new Bitmap(imgInput);
+                if (bmpInput.PixelFormat == eFormat)
+                    return bmpInput;
+                try
+                {
+                    return bmpInput.ConvertPixelFormat(eFormat);
+                }
+                finally
+                {
+                    bmpInput.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Converts a Base64 String into an Image.
+        /// </summary>
+        /// <param name="strBase64String">String to convert.</param>
+        /// <returns>Image from the Base64 string.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<Image> ToImageAsync(this string strBase64String)
+        {
+            Image imgReturn = null;
+            try
+            {
+                byte[] bytImage = Convert.FromBase64String(strBase64String);
+                if (bytImage.Length > 0)
+                {
+                    using (MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length))
+                    {
+                        await objStream.WriteAsync(bytImage, 0, bytImage.Length)
+                            .ContinueWith(x => imgReturn = Image.FromStream(objStream, true));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+            }
+
+            return imgReturn;
+        }
+
+        /// <summary>
+        /// Converts a Base64 String into a Bitmap with a specific format.
+        /// </summary>
+        /// <param name="strBase64String">String to convert.</param>
+        /// <param name="eFormat">Pixel format in which the Bitmap is returned.</param>
+        /// <returns>Image from the Base64 string.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat)
+        {
+            using (Image imgInput = await strBase64String.ToImageAsync())
             {
                 Bitmap bmpInput = new Bitmap(imgInput);
                 if (bmpInput.PixelFormat == eFormat)
