@@ -4,7 +4,6 @@
   <xsl:import href="xz.language.xslt"/>
   
   <xsl:import href="Shadowrun 5 set.xslt"/>
-  <xsl:import href="xs.Chummer5CSS.xslt"/>
   <xsl:import href="xs.SkillsGroupedAssorted.xslt"/>
 
   <!-- Set global control variables -->

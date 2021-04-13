@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- Contacts List -->
-<!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
@@ -22,68 +22,20 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <style type="text/css">
-            * {
-            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
-            font-size: 10pt;
-            margin: 0;
-            text-align: center;
-            vertical-align: top;
-            }
-            html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
-            }
-            body {
-            color-adjust: exact !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            }
-            .tablestyle {
-            border-collapse: collapse;
-            border-color: #1c4a2d;
-            border-style: solid;
-            border-width: 0.5mm;
-            width: 100%;
-            }
-            .upper {
-            text-transform: uppercase;
-            }
-            .title {
-            font-weight: bold;
-            text-transform: uppercase;
-            }
-        </style>
-        <style media="print">
-           @page {
-            size: auto;
-            margin-top: 0.5in;
-            margin-left: 0.5in;
-            margin-right: 0.5in;
-            margin-bottom: 0.75in;
-          }
-        </style>
+        <xsl:call-template name="Chummer5CSS" />
       </head>
 
       <body>
         <div id="ContactsBlock">
           <table class="tablestyle">
             <tr class="title" style="font-weight: bold; text-decoration: underline;">
-              <td width="25%" style="text-align: left">
+              <th width="25%" style="text-align: left">
                 <xsl:value-of select="$lang.Name"/>
-              </td>
-              <td width="25%">
-                <xsl:value-of select="$lang.Location"/>
-              </td>
-              <td width="25%">
-                <xsl:value-of select="$lang.Archetype"/>
-              </td>
-              <td width="15%">
-                <xsl:value-of select="$lang.Connection"/>
-              </td>
-              <td width="10%">
-                <xsl:value-of select="$lang.Loyalty"/>
-              </td>
+              </th>
+              <th width="25%"><xsl:value-of select="$lang.Location"/></th>
+              <th width="25%"><xsl:value-of select="$lang.Archetype"/></th>
+              <th width="15%"><xsl:value-of select="$lang.Connection"/></th>
+              <th width="10%"><xsl:value-of select="$lang.Loyalty"/></th>
             </tr>
             <xsl:call-template name="Contacts"/>
           </table>
