@@ -748,38 +748,23 @@ namespace Chummer.Backend.Skills
             //Hacky way of converting Expense entries to guid based skill identification
             //specs already did?
             //First create dictionary mapping name=>guid
-            Dictionary<string, Guid> dicGroups = new Dictionary<string, Guid>();
+            ConcurrentDictionary<string, Guid> dicGroups = new ConcurrentDictionary<string, Guid>();
             ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
-            Parallel.Invoke(
-                () =>
-                {
-                    foreach (SkillGroup objLoopSkillGroup in SkillGroups)
-                    {
-                        if (objLoopSkillGroup.Rating > 0 && !dicGroups.ContainsKey(objLoopSkillGroup.Name))
-                        {
-                            dicGroups.Add(objLoopSkillGroup.Name, objLoopSkillGroup.Id);
-                        }
-                    }
-                },
-                () =>
-                {
-                    foreach (Skill objLoopSkill in Skills)
-                    {
-                        if (objLoopSkill.TotalBaseRating > 0)
-                        {
-                            dicSkills.TryAdd(objLoopSkill.Name, objLoopSkill.Id);
-                        }
-                    }
-                },
-                () =>
-                {
-                    foreach (KnowledgeSkill objLoopSkill in KnowledgeSkills)
-                    {
-                        dicSkills.TryAdd(objLoopSkill.Name, objLoopSkill.Id);
-                    }
-                }
-            );
-
+            Task.WaitAll(SkillGroups.Select(x =>
+            {
+                if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
+                    dicGroups.TryAdd(x.Name, x.Id);
+                return Task.CompletedTask;
+            }).Concat(Skills.Select(x =>
+            {
+                if (x.TotalBaseRating > 0)
+                    dicSkills.TryAdd(x.Name, x.Id);
+                return Task.CompletedTask;
+            })).Concat(KnowledgeSkills.Select(x =>
+            {
+                dicSkills.TryAdd(x.Name, x.Id);
+                return Task.CompletedTask;
+            })).ToArray());
             UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
             UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
         }

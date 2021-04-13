@@ -2237,13 +2237,13 @@ namespace Chummer
                 int[] aintDummy = new int[intClones];
                 for (int i = 0; i < intClones; ++i)
                     aintDummy[i] = i;
-                Task.WhenAll(aintDummy.Select(x => Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + x.ToString(GlobalOptions.CultureInfo), true)
+                Task.WaitAll(aintDummy.Select(x => Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + x.ToString(GlobalOptions.CultureInfo), true)
                     .ContinueWith(y =>
                 {
                     lock (lstClonesLock)
                         lstClones[x] = y.Result;
                     return y;
-                })));
+                })).ToArray());
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }
