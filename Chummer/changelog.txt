@@ -16,6 +16,7 @@ Application Changes:
 - Wireless bonuses now properly respect the wireless status of any parents of a given item (e.g. gear inside of armor or cyberware inside other cyberware) as well as their equipped status. Fixes #4351.
 - Quotation marks in the names of spells, qualities, critter powers, adept powers, cyberware, et al. or any categories thereof should no longer cause Chummer to either crash or not recognize the item in question.
 - Special attributes are no longer exported unless the character in question has them enabled. Fixes #4366.
+- When using Chummer in a non-English language, the way custom text is recorded and translated is now slightly smarter about which translation to use when one English word has multiple different translations. Fixes #4378.
 
 Data Changes:
 - Consolidated all German Data Changes custom data into a single German Data Changes entry.

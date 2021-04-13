@@ -4225,9 +4225,9 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("gender", TranslateExtra(ReverseTranslateExtra(Gender), strLanguageToPrint));
+            objWriter.WriteElementString("gender", TranslateExtra(ReverseTranslateExtra(Gender, GlobalOptions.Language, "contacts.xml"), strLanguageToPrint, "contacts.xml"));
             // <age />
-            objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age), strLanguageToPrint));
+            objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age, GlobalOptions.Language, "contacts.xml"), strLanguageToPrint, "contacts.xml"));
             // <eyes />
             objWriter.WriteElementString("eyes", TranslateExtra(ReverseTranslateExtra(Eyes), strLanguageToPrint));
             // <height />
@@ -6072,9 +6072,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
-        public string TranslateExtra(string strExtra, string strIntoLanguage = "")
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public string TranslateExtra(string strExtra, string strIntoLanguage = "", string strPreferFile = "")
         {
-            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this);
+            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this, strPreferFile);
         }
 
         /// <summary>
@@ -6082,9 +6083,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
-        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "")
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", string strPreferFile = "")
         {
-            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this);
+            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this, strPreferFile);
         }
         #endregion
 

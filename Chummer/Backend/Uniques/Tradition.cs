@@ -443,7 +443,17 @@ namespace Chummer.Backend.Uniques
             {
                 if(GlobalOptions.Language != strLanguage)
                 {
-                    string strReturnEnglish = strLanguage == GlobalOptions.DefaultLanguage ? Name : _objCharacter.ReverseTranslateExtra(Name);
+                    string strFile = string.Empty;
+                    switch (Type)
+                    {
+                        case TraditionType.MAG:
+                            strFile = "traditions.xml";
+                            break;
+                        case TraditionType.RES:
+                            strFile = "streams.xml";
+                            break;
+                    }
+                    string strReturnEnglish = strLanguage == GlobalOptions.DefaultLanguage ? Name : _objCharacter.ReverseTranslateExtra(Name, GlobalOptions.DefaultLanguage, strFile);
                     return _objCharacter.TranslateExtra(strReturnEnglish, strLanguage);
                 }
 
@@ -486,7 +496,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritForm(string strLanguage)
         {
-            return _objCharacter.TranslateExtra(SpiritForm, strLanguage);
+            return _objCharacter.TranslateExtra(SpiritForm, strLanguage, "critterpowers.xml");
         }
 
         /// <summary>
@@ -601,18 +611,15 @@ namespace Chummer.Backend.Uniques
                 if(Type == TraditionType.None)
                     return string.Empty;
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder objToolTip = new StringBuilder(DrainExpression);
+                StringBuilder sbdToolTip = new StringBuilder(DrainExpression);
 
                 // Update the Fading CharacterAttribute Value.
                 foreach(string strAttribute in AttributeSection.AttributeStrings)
                 {
-                    objToolTip.CheapReplace(strAttribute, () =>
+                    sbdToolTip.CheapReplace(strAttribute, () =>
                     {
                         CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        return new StringBuilder(objAttrib.DisplayAbbrev)
-                            .Append(strSpace).Append('(')
-                            .Append(objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo))
-                            .Append(')').ToString();
+                        return objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
                     });
                 }
 
@@ -622,13 +629,12 @@ namespace Chummer.Backend.Uniques
                         Type == TraditionType.MAG && objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance) &&
                         objLoopImprovement.Enabled)
                     {
-                        objToolTip.Append(strSpace).Append('+')
-                            .Append(strSpace).Append(_objCharacter.GetObjectName(objLoopImprovement))
-                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
+                        sbdToolTip.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objLoopImprovement)
+                                          + strSpace + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
-                return objToolTip.ToString();
+                return sbdToolTip.ToString();
             }
         }
 
@@ -674,7 +680,7 @@ namespace Chummer.Backend.Uniques
         {
             if(string.IsNullOrEmpty(SpiritCombat))
                 return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritCombat, strLanguage);
+            return _objCharacter.TranslateExtra(SpiritCombat, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -686,7 +692,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritCombat = _objCharacter.ReverseTranslateExtra(value);
+                    SpiritCombat = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
 
@@ -718,7 +724,7 @@ namespace Chummer.Backend.Uniques
         {
             if(string.IsNullOrEmpty(SpiritDetection))
                 return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritDetection, strLanguage);
+            return _objCharacter.TranslateExtra(SpiritDetection, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -730,7 +736,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritDetection = _objCharacter.ReverseTranslateExtra(value);
+                    SpiritDetection = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
 
@@ -762,7 +768,7 @@ namespace Chummer.Backend.Uniques
         {
             if(string.IsNullOrEmpty(SpiritHealth))
                 return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritHealth, strLanguage);
+            return _objCharacter.TranslateExtra(SpiritHealth, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -774,7 +780,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritHealth = _objCharacter.ReverseTranslateExtra(value);
+                    SpiritHealth = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
 
@@ -806,7 +812,7 @@ namespace Chummer.Backend.Uniques
         {
             if(string.IsNullOrEmpty(SpiritIllusion))
                 return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritIllusion, strLanguage);
+            return _objCharacter.TranslateExtra(SpiritIllusion, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -818,7 +824,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritIllusion = _objCharacter.ReverseTranslateExtra(value);
+                    SpiritIllusion = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
 
@@ -850,7 +856,7 @@ namespace Chummer.Backend.Uniques
         {
             if(string.IsNullOrEmpty(SpiritManipulation))
                 return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritManipulation, strLanguage);
+            return _objCharacter.TranslateExtra(SpiritManipulation, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -862,7 +868,7 @@ namespace Chummer.Backend.Uniques
             set
             {
                 if(Type != TraditionType.None)
-                    SpiritManipulation = _objCharacter.ReverseTranslateExtra(value);
+                    SpiritManipulation = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
 

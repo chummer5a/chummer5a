@@ -220,7 +220,7 @@ namespace Chummer.Backend.Skills
 
             if (xmlSkillTranslationNode == null)
             {
-                return CharacterObject.ReverseTranslateExtra(strInputSkillName);
+                return CharacterObject.ReverseTranslateExtra(strInputSkillName, GlobalOptions.Language, "skills.xml");
             }
 
             return xmlSkillTranslationNode.SelectSingleNode("name")?.Value ?? strInputSkillName;

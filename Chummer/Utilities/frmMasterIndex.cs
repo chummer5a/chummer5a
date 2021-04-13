@@ -142,6 +142,7 @@ namespace Chummer
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
+                    string strFormat = "{0}" + strSpace + "[{1}]";
                     Dictionary<string, List<ListItem>> dicHelper = new Dictionary<string, List<ListItem>>(lstItemsForLoading.Count);
                     foreach (ListItem objItem in lstItemsForLoading)
                     {
@@ -165,9 +166,8 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    ListItem objItemToAdd = new ListItem(objItem.Value,
-                                        new StringBuilder(objItem.Name)
-                                            .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objEntry.FileNames).Append(']').ToString());
+                                    ListItem objItemToAdd = new ListItem(objItem.Value, string.Format(GlobalOptions.CultureInfo,
+                                        strFormat, objItem.Name, string.Join(',' + strSpace, objEntry.FileNames)));
                                     _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                     lstExistingItems.Add(objItemToAdd);
 
@@ -176,10 +176,9 @@ namespace Chummer
                                         _lstItems.Remove(objToRename);
                                         lstExistingItems.Remove(objToRename);
 
-                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
-                                        objItemToAdd = new ListItem(objToRename.Value,
-                                            new StringBuilder(objExistingEntry.DisplayName)
-                                                .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objExistingEntry.FileNames).Append(']').ToString());
+                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry) objToRename.Value;
+                                        objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalOptions.CultureInfo,
+                                            strFormat, objExistingEntry.DisplayName, string.Join(',' + strSpace, objExistingEntry.FileNames)));
                                         _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                         lstExistingItems.Add(objItemToAdd);
                                     }
