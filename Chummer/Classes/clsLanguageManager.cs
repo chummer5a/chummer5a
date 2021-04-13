@@ -129,11 +129,15 @@ namespace Chummer
         {
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                if (!s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objNewLanguage))
+                s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objNewLanguage);
+                if (objNewLanguage == null)
                 {
+                    if (s_DictionaryLanguages.ContainsKey(strLanguage))
+                        s_DictionaryLanguages.Remove(strLanguage);
                     objNewLanguage = new LanguageData(strLanguage);
                     s_DictionaryLanguages.Add(strLanguage, objNewLanguage);
                 }
+
                 if (objNewLanguage.ErrorMessage.Length > 0)
                 {
                     if (!objNewLanguage.ErrorAlreadyShown)
