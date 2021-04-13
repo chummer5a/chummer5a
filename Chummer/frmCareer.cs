@@ -6165,6 +6165,20 @@ namespace Chummer
 
             IsDirty = true;
         }
+
+        private void cmdAddSustainedSpell_Click(object sender, EventArgs e)
+        {
+            //Do Nothing if no spell is selected
+            if (treSpells.SelectedNode == null || treSpells.SelectedNode.Level != 1)
+                return;
+
+
+        }
+
+        private void cmdRemoveSustainedSpell_Cick(object sender, EventArgs e)
+        {
+
+        }
 #endregion
 
 #region ContextMenu Events

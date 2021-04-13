@@ -363,6 +363,12 @@
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\TooltipFactory.cs" />
+    <Compile Include="Controls\SustainedSpellControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SustainedSpellControl.Designer.cs">
+      <DependentUpon>SustainedSpellControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1261,6 +1267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SustainedSpellControl.resx">
+      <DependentUpon>SustainedSpellControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterRoster.resx">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>

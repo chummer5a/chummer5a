@@ -4590,7 +4590,15 @@
       <key>Tip_SpellsSpirits</key>
       <text>Each Service a Spirit owes costs {0} Karma.</text>
     </string>
-    <!-- End Region -->
+    <string>
+      <key>Button_AddSustainedSpell</key>
+      <text>Sustain Spell</text>
+    </string>
+    <string>
+      <key>Button_DeleteSustainedSpell</key>
+      <text>Unsustain Spell</text>
+    </string>
+    <!--End Region-->
     <!-- Region Adept Tab -->
     <string>
       <key>Label_PowerPoints</key>

@@ -423,6 +423,11 @@ namespace Chummer
             this.cmdAddMartialArt = new SplitButton();
             this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
             this.tabMagician = new System.Windows.Forms.TabPage();
+            this.tblSustainedSpells = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tblSustainedSpellButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdDeleteSustainedSpell = new Chummer.ButtonWithToolTip();
+            this.cmdAddSustainedSpell = new Chummer.ButtonWithToolTip();
+            this.panSustainedSpells = new System.Windows.Forms.Panel();
             this.tlpMagician = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddSpirit = new System.Windows.Forms.Button();
             this.panSpirits = new System.Windows.Forms.Panel();
@@ -1376,6 +1381,8 @@ namespace Chummer
             this.tlpMartialArts.SuspendLayout();
             this.tlpMartialArtsButtons.SuspendLayout();
             this.tabMagician.SuspendLayout();
+            this.tblSustainedSpells.SuspendLayout();
+            this.tblSustainedSpellButtons.SuspendLayout();
             this.tlpMagician.SuspendLayout();
             this.flpMagician.SuspendLayout();
             this.gpbMagicianSpell.SuspendLayout();
@@ -4070,7 +4077,7 @@ namespace Chummer
             this.tabOtherInfo.Location = new System.Drawing.Point(4, 22);
             this.tabOtherInfo.Name = "tabOtherInfo";
             this.tabOtherInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOtherInfo.Size = new System.Drawing.Size(267, 607);
+            this.tabOtherInfo.Size = new System.Drawing.Size(267, 631);
             this.tabOtherInfo.TabIndex = 1;
             this.tabOtherInfo.Tag = "Tab_OtherInfo";
             this.tabOtherInfo.Text = "Other Info";
@@ -4154,7 +4161,7 @@ namespace Chummer
             this.tlpInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpInfo.Size = new System.Drawing.Size(261, 601);
+            this.tlpInfo.Size = new System.Drawing.Size(261, 625);
             this.tlpInfo.TabIndex = 89;
             // 
             // lblFlyLabel
@@ -4458,7 +4465,7 @@ namespace Chummer
             this.tabDefenses.Location = new System.Drawing.Point(4, 22);
             this.tabDefenses.Name = "tabDefenses";
             this.tabDefenses.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDefenses.Size = new System.Drawing.Size(267, 607);
+            this.tabDefenses.Size = new System.Drawing.Size(267, 631);
             this.tabDefenses.TabIndex = 4;
             this.tabDefenses.Tag = "String_SpellDefense";
             this.tabDefenses.Text = "Spell Defense";
@@ -4528,7 +4535,7 @@ namespace Chummer
             this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSpellDefense.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpSpellDefense.Size = new System.Drawing.Size(261, 601);
+            this.tlpSpellDefense.Size = new System.Drawing.Size(261, 625);
             this.tlpSpellDefense.TabIndex = 63;
             // 
             // nudCounterspellingDice
@@ -5957,7 +5964,7 @@ namespace Chummer
             this.tabSkills.Controls.Add(this.tabSkillsUc);
             this.tabSkills.Location = new System.Drawing.Point(4, 22);
             this.tabSkills.Name = "tabSkills";
-            this.tabSkills.Size = new System.Drawing.Size(977, 607);
+            this.tabSkills.Size = new System.Drawing.Size(977, 631);
             this.tabSkills.TabIndex = 17;
             this.tabSkills.Tag = "Tab_Skills";
             this.tabSkills.Text = "Skills";
@@ -5972,7 +5979,7 @@ namespace Chummer
             this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
             this.tabSkillsUc.Name = "tabSkillsUc";
             this.tabSkillsUc.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.tabSkillsUc.Size = new System.Drawing.Size(977, 607);
+            this.tabSkillsUc.Size = new System.Drawing.Size(192, 74);
             this.tabSkillsUc.TabIndex = 0;
             // 
             // tabLimits
@@ -5982,7 +5989,7 @@ namespace Chummer
             this.tabLimits.Location = new System.Drawing.Point(4, 22);
             this.tabLimits.Name = "tabLimits";
             this.tabLimits.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLimits.Size = new System.Drawing.Size(977, 607);
+            this.tabLimits.Size = new System.Drawing.Size(977, 631);
             this.tabLimits.TabIndex = 16;
             this.tabLimits.Tag = "Tab_Limits";
             this.tabLimits.Text = "Limits";
@@ -5998,7 +6005,7 @@ namespace Chummer
             this.lmtControl.Location = new System.Drawing.Point(3, 3);
             this.lmtControl.MinimumSize = new System.Drawing.Size(480, 0);
             this.lmtControl.Name = "lmtControl";
-            this.lmtControl.Size = new System.Drawing.Size(971, 601);
+            this.lmtControl.Size = new System.Drawing.Size(971, 625);
             this.lmtControl.TabIndex = 0;
             // 
             // tabMartialArts
@@ -6008,7 +6015,7 @@ namespace Chummer
             this.tabMartialArts.Location = new System.Drawing.Point(4, 22);
             this.tabMartialArts.Name = "tabMartialArts";
             this.tabMartialArts.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMartialArts.Size = new System.Drawing.Size(977, 607);
+            this.tabMartialArts.Size = new System.Drawing.Size(977, 631);
             this.tabMartialArts.TabIndex = 8;
             this.tabMartialArts.Tag = "Tab_MartialArts";
             this.tabMartialArts.Text = "Martial Arts";
@@ -6033,7 +6040,7 @@ namespace Chummer
             this.tlpMartialArts.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMartialArts.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMartialArts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMartialArts.Size = new System.Drawing.Size(971, 613);
+            this.tlpMartialArts.Size = new System.Drawing.Size(971, 625);
             this.tlpMartialArts.TabIndex = 67;
             // 
             // treMartialArts
@@ -6055,7 +6062,7 @@ namespace Chummer
             this.treMartialArts.ShowNodeToolTips = true;
             this.treMartialArts.ShowPlusMinus = false;
             this.treMartialArts.ShowRootLines = false;
-            this.treMartialArts.Size = new System.Drawing.Size(295, 578);
+            this.treMartialArts.Size = new System.Drawing.Size(295, 590);
             this.treMartialArts.TabIndex = 2;
             this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
             this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
@@ -6137,14 +6144,81 @@ namespace Chummer
             // tabMagician
             // 
             this.tabMagician.BackColor = System.Drawing.SystemColors.Control;
+            this.tabMagician.Controls.Add(this.tblSustainedSpells);
             this.tabMagician.Controls.Add(this.tlpMagician);
             this.tabMagician.Location = new System.Drawing.Point(4, 22);
             this.tabMagician.Name = "tabMagician";
             this.tabMagician.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMagician.Size = new System.Drawing.Size(977, 607);
+            this.tabMagician.Size = new System.Drawing.Size(977, 631);
             this.tabMagician.TabIndex = 1;
             this.tabMagician.Tag = "Tab_Magician";
             this.tabMagician.Text = "Spells and Spirits";
+            // 
+            // tblSustainedSpells
+            // 
+            this.tblSustainedSpells.ColumnCount = 1;
+            this.tblSustainedSpells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblSustainedSpells.Controls.Add(this.tblSustainedSpellButtons, 0, 0);
+            this.tblSustainedSpells.Controls.Add(this.panSustainedSpells, 0, 1);
+            this.tblSustainedSpells.Location = new System.Drawing.Point(3, 307);
+            this.tblSustainedSpells.Name = "tblSustainedSpells";
+            this.tblSustainedSpells.RowCount = 2;
+            this.tblSustainedSpells.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblSustainedSpells.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblSustainedSpells.Size = new System.Drawing.Size(301, 128);
+            this.tblSustainedSpells.TabIndex = 171;
+            // 
+            // tblSustainedSpellButtons
+            // 
+            this.tblSustainedSpellButtons.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.tblSustainedSpellButtons.ColumnCount = 2;
+            this.tblSustainedSpellButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.15909F));
+            this.tblSustainedSpellButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 52.84091F));
+            this.tblSustainedSpellButtons.Controls.Add(this.cmdDeleteSustainedSpell, 1, 0);
+            this.tblSustainedSpellButtons.Controls.Add(this.cmdAddSustainedSpell, 0, 0);
+            this.tblSustainedSpellButtons.Location = new System.Drawing.Point(59, 3);
+            this.tblSustainedSpellButtons.Name = "tblSustainedSpellButtons";
+            this.tblSustainedSpellButtons.RowCount = 1;
+            this.tblSustainedSpellButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblSustainedSpellButtons.Size = new System.Drawing.Size(182, 27);
+            this.tblSustainedSpellButtons.TabIndex = 172;
+            // 
+            // cmdDeleteSustainedSpell
+            // 
+            this.cmdDeleteSustainedSpell.Location = new System.Drawing.Point(88, 3);
+            this.cmdDeleteSustainedSpell.Name = "cmdDeleteSustainedSpell";
+            this.cmdDeleteSustainedSpell.Size = new System.Drawing.Size(89, 21);
+            this.cmdDeleteSustainedSpell.TabIndex = 1;
+            this.cmdDeleteSustainedSpell.Tag = "Button_DeleteSustainedSpell";
+            this.cmdDeleteSustainedSpell.Text = "Unsustain Spell";
+            this.cmdDeleteSustainedSpell.ToolTipText = "";
+            this.cmdDeleteSustainedSpell.UseVisualStyleBackColor = true;
+            this.cmdDeleteSustainedSpell.Click += new System.EventHandler(this.cmdRemoveSustainedSpell_Cick);
+            // 
+            // cmdAddSustainedSpell
+            // 
+            this.cmdAddSustainedSpell.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddSustainedSpell.Name = "cmdAddSustainedSpell";
+            this.cmdAddSustainedSpell.Size = new System.Drawing.Size(76, 21);
+            this.cmdAddSustainedSpell.TabIndex = 0;
+            this.cmdAddSustainedSpell.Tag = "Button_AddSustainedSpell";
+            this.cmdAddSustainedSpell.Text = "Sustain Spell";
+            this.cmdAddSustainedSpell.ToolTipText = "";
+            this.cmdAddSustainedSpell.UseVisualStyleBackColor = true;
+            this.cmdAddSustainedSpell.Click += new System.EventHandler(this.cmdAddSustainedSpell_Click);
+            // 
+            // panSustainedSpells
+            // 
+            this.panSustainedSpells.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panSustainedSpells.AutoScroll = true;
+            this.panSustainedSpells.AutoSize = true;
+            this.panSustainedSpells.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panSustainedSpells.Location = new System.Drawing.Point(3, 36);
+            this.panSustainedSpells.Name = "panSustainedSpells";
+            this.panSustainedSpells.Size = new System.Drawing.Size(295, 89);
+            this.panSustainedSpells.TabIndex = 173;
             // 
             // tlpMagician
             // 
@@ -6165,7 +6239,7 @@ namespace Chummer
             this.tlpMagician.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMagician.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMagician.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMagician.Size = new System.Drawing.Size(971, 601);
+            this.tlpMagician.Size = new System.Drawing.Size(971, 625);
             this.tlpMagician.TabIndex = 170;
             // 
             // cmdAddSpirit
@@ -6191,12 +6265,12 @@ namespace Chummer
             this.panSpirits.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panSpirits.Location = new System.Drawing.Point(3, 467);
             this.panSpirits.Name = "panSpirits";
-            this.panSpirits.Size = new System.Drawing.Size(965, 131);
+            this.panSpirits.Size = new System.Drawing.Size(965, 155);
             this.panSpirits.TabIndex = 4;
             // 
             // treSpells
             // 
-            this.treSpells.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treSpells.Dock = System.Windows.Forms.DockStyle.Top;
             this.treSpells.HideSelection = false;
             this.treSpells.Location = new System.Drawing.Point(3, 32);
             this.treSpells.Name = "treSpells";
@@ -6231,7 +6305,7 @@ namespace Chummer
             treeNode11});
             this.treSpells.ShowNodeToolTips = true;
             this.treSpells.ShowRootLines = false;
-            this.treSpells.Size = new System.Drawing.Size(295, 400);
+            this.treSpells.Size = new System.Drawing.Size(295, 270);
             this.treSpells.TabIndex = 70;
             this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
             this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treSpells_KeyDown);
@@ -7696,7 +7770,7 @@ namespace Chummer
             this.tabCritter.Location = new System.Drawing.Point(4, 22);
             this.tabCritter.Name = "tabCritter";
             this.tabCritter.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCritter.Size = new System.Drawing.Size(977, 607);
+            this.tabCritter.Size = new System.Drawing.Size(977, 631);
             this.tabCritter.TabIndex = 12;
             this.tabCritter.Tag = "Tab_Critter";
             this.tabCritter.Text = "Critter Powers";
@@ -7747,7 +7821,7 @@ namespace Chummer
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpCritter.Size = new System.Drawing.Size(971, 613);
+            this.tlpCritter.Size = new System.Drawing.Size(971, 625);
             this.tlpCritter.TabIndex = 37;
             // 
             // treCritterPowers
@@ -7769,7 +7843,7 @@ namespace Chummer
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
             this.treCritterPowers.ShowRootLines = false;
-            this.treCritterPowers.Size = new System.Drawing.Size(295, 578);
+            this.treCritterPowers.Size = new System.Drawing.Size(295, 590);
             this.treCritterPowers.TabIndex = 15;
             this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
             this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
@@ -8056,7 +8130,7 @@ namespace Chummer
             this.tabInitiation.Location = new System.Drawing.Point(4, 22);
             this.tabInitiation.Name = "tabInitiation";
             this.tabInitiation.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInitiation.Size = new System.Drawing.Size(977, 607);
+            this.tabInitiation.Size = new System.Drawing.Size(977, 631);
             this.tabInitiation.TabIndex = 10;
             this.tabInitiation.Tag = "Tab_Initiation";
             this.tabInitiation.Text = "Initiation & Submersion";
@@ -8081,7 +8155,7 @@ namespace Chummer
             this.tlpInitiation.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpInitiation.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpInitiation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpInitiation.Size = new System.Drawing.Size(971, 601);
+            this.tlpInitiation.Size = new System.Drawing.Size(971, 625);
             this.tlpInitiation.TabIndex = 129;
             // 
             // treMetamagic
@@ -8092,7 +8166,7 @@ namespace Chummer
             this.treMetamagic.Name = "treMetamagic";
             this.tlpInitiation.SetRowSpan(this.treMetamagic, 2);
             this.treMetamagic.ShowNodeToolTips = true;
-            this.treMetamagic.Size = new System.Drawing.Size(295, 566);
+            this.treMetamagic.Size = new System.Drawing.Size(295, 590);
             this.treMetamagic.TabIndex = 96;
             this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
             this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
@@ -8136,7 +8210,7 @@ namespace Chummer
             this.flpInitiation.Location = new System.Drawing.Point(301, 54);
             this.flpInitiation.Margin = new System.Windows.Forms.Padding(0);
             this.flpInitiation.Name = "flpInitiation";
-            this.flpInitiation.Size = new System.Drawing.Size(670, 547);
+            this.flpInitiation.Size = new System.Drawing.Size(670, 571);
             this.flpInitiation.TabIndex = 132;
             this.flpInitiation.WrapContents = false;
             // 
@@ -8362,7 +8436,7 @@ namespace Chummer
             this.tabCyberware.Location = new System.Drawing.Point(4, 22);
             this.tabCyberware.Name = "tabCyberware";
             this.tabCyberware.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCyberware.Size = new System.Drawing.Size(977, 607);
+            this.tabCyberware.Size = new System.Drawing.Size(977, 631);
             this.tabCyberware.TabIndex = 4;
             this.tabCyberware.Tag = "Tab_Cyberware";
             this.tabCyberware.Text = "Cyberware and Bioware";
@@ -8383,7 +8457,7 @@ namespace Chummer
             this.tlpCyberware.RowCount = 2;
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCyberware.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpCyberware.Size = new System.Drawing.Size(971, 601);
+            this.tlpCyberware.Size = new System.Drawing.Size(971, 625);
             this.tlpCyberware.TabIndex = 246;
             // 
             // treCyberware
@@ -8408,7 +8482,7 @@ namespace Chummer
             treeNode18});
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
-            this.treCyberware.Size = new System.Drawing.Size(295, 566);
+            this.treCyberware.Size = new System.Drawing.Size(295, 590);
             this.treCyberware.TabIndex = 28;
             this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
             this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
@@ -8426,7 +8500,7 @@ namespace Chummer
             this.flpCyberware.Location = new System.Drawing.Point(301, 29);
             this.flpCyberware.Margin = new System.Windows.Forms.Padding(0);
             this.flpCyberware.Name = "flpCyberware";
-            this.flpCyberware.Size = new System.Drawing.Size(670, 572);
+            this.flpCyberware.Size = new System.Drawing.Size(670, 596);
             this.flpCyberware.TabIndex = 230;
             this.flpCyberware.WrapContents = false;
             // 
@@ -10900,7 +10974,7 @@ namespace Chummer
             this.tabArmor.Location = new System.Drawing.Point(4, 22);
             this.tabArmor.Name = "tabArmor";
             this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArmor.Size = new System.Drawing.Size(969, 605);
+            this.tabArmor.Size = new System.Drawing.Size(184, 48);
             this.tabArmor.TabIndex = 1;
             this.tabArmor.Tag = "Tab_Armor";
             this.tabArmor.Text = "Armor";
@@ -10921,7 +10995,7 @@ namespace Chummer
             this.tlpArmor.RowCount = 2;
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmor.Size = new System.Drawing.Size(963, 599);
+            this.tlpArmor.Size = new System.Drawing.Size(178, 42);
             this.tlpArmor.TabIndex = 186;
             // 
             // treArmor
@@ -10937,7 +11011,7 @@ namespace Chummer
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode20});
             this.treArmor.ShowNodeToolTips = true;
-            this.treArmor.Size = new System.Drawing.Size(295, 564);
+            this.treArmor.Size = new System.Drawing.Size(295, 7);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
@@ -10955,7 +11029,7 @@ namespace Chummer
             this.flpArmor.Location = new System.Drawing.Point(301, 29);
             this.flpArmor.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmor.Name = "flpArmor";
-            this.flpArmor.Size = new System.Drawing.Size(662, 570);
+            this.flpArmor.Size = new System.Drawing.Size(1, 13);
             this.flpArmor.TabIndex = 186;
             this.flpArmor.WrapContents = false;
             // 
@@ -11511,7 +11585,7 @@ namespace Chummer
             this.tlpArmorButtons.Name = "tlpArmorButtons";
             this.tlpArmorButtons.RowCount = 1;
             this.tlpArmorButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmorButtons.Size = new System.Drawing.Size(324, 29);
+            this.tlpArmorButtons.Size = new System.Drawing.Size(178, 29);
             this.tlpArmorButtons.TabIndex = 187;
             // 
             // cmdAddArmor
@@ -11522,7 +11596,7 @@ namespace Chummer
             this.cmdAddArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddArmor.Location = new System.Drawing.Point(3, 3);
             this.cmdAddArmor.Name = "cmdAddArmor";
-            this.cmdAddArmor.Size = new System.Drawing.Size(102, 23);
+            this.cmdAddArmor.Size = new System.Drawing.Size(53, 23);
             this.cmdAddArmor.SplitMenuStrip = this.cmsArmor;
             this.cmdAddArmor.TabIndex = 86;
             this.cmdAddArmor.Tag = "Button_AddArmor";
@@ -11535,9 +11609,9 @@ namespace Chummer
             this.cmdAddArmorBundle.AutoSize = true;
             this.cmdAddArmorBundle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddArmorBundle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdAddArmorBundle.Location = new System.Drawing.Point(219, 3);
+            this.cmdAddArmorBundle.Location = new System.Drawing.Point(121, 3);
             this.cmdAddArmorBundle.Name = "cmdAddArmorBundle";
-            this.cmdAddArmorBundle.Size = new System.Drawing.Size(102, 23);
+            this.cmdAddArmorBundle.Size = new System.Drawing.Size(54, 23);
             this.cmdAddArmorBundle.TabIndex = 105;
             this.cmdAddArmorBundle.Tag = "Button_AddBundle";
             this.cmdAddArmorBundle.Text = "Add Armor Bundle";
@@ -11550,9 +11624,9 @@ namespace Chummer
             this.cmdDeleteArmor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteArmor.ContextMenuStrip = this.cmsDeleteArmor;
             this.cmdDeleteArmor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteArmor.Location = new System.Drawing.Point(111, 3);
+            this.cmdDeleteArmor.Location = new System.Drawing.Point(62, 3);
             this.cmdDeleteArmor.Name = "cmdDeleteArmor";
-            this.cmdDeleteArmor.Size = new System.Drawing.Size(102, 23);
+            this.cmdDeleteArmor.Size = new System.Drawing.Size(53, 23);
             this.cmdDeleteArmor.SplitMenuStrip = this.cmsDeleteArmor;
             this.cmdDeleteArmor.TabIndex = 83;
             this.cmdDeleteArmor.Tag = "String_Delete";
@@ -11567,7 +11641,7 @@ namespace Chummer
             this.tabWeapons.Location = new System.Drawing.Point(4, 22);
             this.tabWeapons.Name = "tabWeapons";
             this.tabWeapons.Padding = new System.Windows.Forms.Padding(3);
-            this.tabWeapons.Size = new System.Drawing.Size(969, 605);
+            this.tabWeapons.Size = new System.Drawing.Size(184, 48);
             this.tabWeapons.TabIndex = 2;
             this.tabWeapons.Tag = "Tab_Weapons";
             this.tabWeapons.Text = "Weapons";
@@ -11587,7 +11661,7 @@ namespace Chummer
             this.tlpWeapons.RowCount = 2;
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWeapons.Size = new System.Drawing.Size(963, 599);
+            this.tlpWeapons.Size = new System.Drawing.Size(178, 42);
             this.tlpWeapons.TabIndex = 227;
             // 
             // treWeapons
@@ -11603,7 +11677,7 @@ namespace Chummer
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
             this.treWeapons.ShowNodeToolTips = true;
-            this.treWeapons.Size = new System.Drawing.Size(295, 564);
+            this.treWeapons.Size = new System.Drawing.Size(295, 7);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
             this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
@@ -11622,7 +11696,7 @@ namespace Chummer
             this.flpWeapons.Location = new System.Drawing.Point(301, 29);
             this.flpWeapons.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeapons.Name = "flpWeapons";
-            this.flpWeapons.Size = new System.Drawing.Size(662, 570);
+            this.flpWeapons.Size = new System.Drawing.Size(1, 13);
             this.flpWeapons.TabIndex = 229;
             this.flpWeapons.WrapContents = false;
             // 
@@ -13188,7 +13262,7 @@ namespace Chummer
             this.tlpWeaponsButtons.Name = "tlpWeaponsButtons";
             this.tlpWeaponsButtons.RowCount = 1;
             this.tlpWeaponsButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWeaponsButtons.Size = new System.Drawing.Size(312, 29);
+            this.tlpWeaponsButtons.Size = new System.Drawing.Size(178, 29);
             this.tlpWeaponsButtons.TabIndex = 230;
             // 
             // cmdAddWeapon
@@ -13199,7 +13273,7 @@ namespace Chummer
             this.cmdAddWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddWeapon.Location = new System.Drawing.Point(3, 3);
             this.cmdAddWeapon.Name = "cmdAddWeapon";
-            this.cmdAddWeapon.Size = new System.Drawing.Size(98, 23);
+            this.cmdAddWeapon.Size = new System.Drawing.Size(53, 23);
             this.cmdAddWeapon.SplitMenuStrip = this.cmsWeapon;
             this.cmdAddWeapon.TabIndex = 103;
             this.cmdAddWeapon.Tag = "Button_AddWeapon";
@@ -13212,9 +13286,9 @@ namespace Chummer
             this.cmdAddWeaponLocation.AutoSize = true;
             this.cmdAddWeaponLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddWeaponLocation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdAddWeaponLocation.Location = new System.Drawing.Point(211, 3);
+            this.cmdAddWeaponLocation.Location = new System.Drawing.Point(121, 3);
             this.cmdAddWeaponLocation.Name = "cmdAddWeaponLocation";
-            this.cmdAddWeaponLocation.Size = new System.Drawing.Size(98, 23);
+            this.cmdAddWeaponLocation.Size = new System.Drawing.Size(54, 23);
             this.cmdAddWeaponLocation.TabIndex = 118;
             this.cmdAddWeaponLocation.Tag = "Button_AddLocation";
             this.cmdAddWeaponLocation.Text = "Add Location";
@@ -13227,9 +13301,9 @@ namespace Chummer
             this.cmdDeleteWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteWeapon.ContextMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteWeapon.Location = new System.Drawing.Point(107, 3);
+            this.cmdDeleteWeapon.Location = new System.Drawing.Point(62, 3);
             this.cmdDeleteWeapon.Name = "cmdDeleteWeapon";
-            this.cmdDeleteWeapon.Size = new System.Drawing.Size(98, 23);
+            this.cmdDeleteWeapon.Size = new System.Drawing.Size(53, 23);
             this.cmdDeleteWeapon.SplitMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.TabIndex = 55;
             this.cmdDeleteWeapon.Tag = "String_Delete";
@@ -13244,7 +13318,7 @@ namespace Chummer
             this.tabDrugs.Location = new System.Drawing.Point(4, 22);
             this.tabDrugs.Name = "tabDrugs";
             this.tabDrugs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDrugs.Size = new System.Drawing.Size(969, 605);
+            this.tabDrugs.Size = new System.Drawing.Size(184, 48);
             this.tabDrugs.TabIndex = 7;
             this.tabDrugs.Tag = "Tab_Drugs";
             this.tabDrugs.Text = "Drugs";
@@ -13265,7 +13339,7 @@ namespace Chummer
             this.tlpDrugDescription.RowCount = 2;
             this.tlpDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpDrugDescription.Size = new System.Drawing.Size(963, 599);
+            this.tlpDrugDescription.Size = new System.Drawing.Size(178, 42);
             this.tlpDrugDescription.TabIndex = 109;
             // 
             // treCustomDrugs
@@ -13278,7 +13352,7 @@ namespace Chummer
             treeNode22.Text = "Selected Drugs";
             this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode22});
-            this.treCustomDrugs.Size = new System.Drawing.Size(295, 564);
+            this.treCustomDrugs.Size = new System.Drawing.Size(295, 7);
             this.treCustomDrugs.TabIndex = 2;
             this.treCustomDrugs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDrugs_AfterSelect);
             // 
@@ -13291,7 +13365,7 @@ namespace Chummer
             this.flpDrugs.Location = new System.Drawing.Point(301, 29);
             this.flpDrugs.Margin = new System.Windows.Forms.Padding(0);
             this.flpDrugs.Name = "flpDrugs";
-            this.flpDrugs.Size = new System.Drawing.Size(662, 570);
+            this.flpDrugs.Size = new System.Drawing.Size(1, 13);
             this.flpDrugs.TabIndex = 100;
             this.flpDrugs.WrapContents = false;
             // 
@@ -13636,7 +13710,7 @@ namespace Chummer
             this.tlpDrugDescriptionButtons.Name = "tlpDrugDescriptionButtons";
             this.tlpDrugDescriptionButtons.RowCount = 1;
             this.tlpDrugDescriptionButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpDrugDescriptionButtons.Size = new System.Drawing.Size(236, 29);
+            this.tlpDrugDescriptionButtons.Size = new System.Drawing.Size(178, 29);
             this.tlpDrugDescriptionButtons.TabIndex = 101;
             // 
             // btnCreateCustomDrug
@@ -13646,7 +13720,7 @@ namespace Chummer
             this.btnCreateCustomDrug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCreateCustomDrug.Location = new System.Drawing.Point(3, 3);
             this.btnCreateCustomDrug.Name = "btnCreateCustomDrug";
-            this.btnCreateCustomDrug.Size = new System.Drawing.Size(112, 23);
+            this.btnCreateCustomDrug.Size = new System.Drawing.Size(83, 23);
             this.btnCreateCustomDrug.TabIndex = 1;
             this.btnCreateCustomDrug.Tag = "Button_CreateCustomDrug";
             this.btnCreateCustomDrug.Text = "Create Custom Drug";
@@ -13658,9 +13732,9 @@ namespace Chummer
             this.btnDeleteCustomDrug.AutoSize = true;
             this.btnDeleteCustomDrug.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnDeleteCustomDrug.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(121, 3);
+            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(92, 3);
             this.btnDeleteCustomDrug.Name = "btnDeleteCustomDrug";
-            this.btnDeleteCustomDrug.Size = new System.Drawing.Size(112, 23);
+            this.btnDeleteCustomDrug.Size = new System.Drawing.Size(83, 23);
             this.btnDeleteCustomDrug.TabIndex = 3;
             this.btnDeleteCustomDrug.Tag = "String_Delete";
             this.btnDeleteCustomDrug.Text = "Delete";
@@ -13674,7 +13748,7 @@ namespace Chummer
             this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
             this.tabLifestyle.Name = "tabLifestyle";
             this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLifestyle.Size = new System.Drawing.Size(969, 605);
+            this.tabLifestyle.Size = new System.Drawing.Size(184, 48);
             this.tabLifestyle.TabIndex = 0;
             this.tabLifestyle.Tag = "Tab_Lifestyle";
             this.tabLifestyle.Text = "Lifestyle";
@@ -13695,7 +13769,7 @@ namespace Chummer
             this.tlpLifestyleDetails.RowCount = 2;
             this.tlpLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLifestyleDetails.Size = new System.Drawing.Size(963, 599);
+            this.tlpLifestyleDetails.Size = new System.Drawing.Size(178, 42);
             this.tlpLifestyleDetails.TabIndex = 118;
             // 
             // treLifestyles
@@ -13712,7 +13786,7 @@ namespace Chummer
             treeNode23});
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
-            this.treLifestyles.Size = new System.Drawing.Size(295, 564);
+            this.treLifestyles.Size = new System.Drawing.Size(295, 7);
             this.treLifestyles.TabIndex = 80;
             this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
             this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
@@ -13729,7 +13803,7 @@ namespace Chummer
             this.flpLifestyleDetails.Location = new System.Drawing.Point(301, 29);
             this.flpLifestyleDetails.Margin = new System.Windows.Forms.Padding(0);
             this.flpLifestyleDetails.Name = "flpLifestyleDetails";
-            this.flpLifestyleDetails.Size = new System.Drawing.Size(662, 570);
+            this.flpLifestyleDetails.Size = new System.Drawing.Size(1, 13);
             this.flpLifestyleDetails.TabIndex = 119;
             this.flpLifestyleDetails.WrapContents = false;
             // 
@@ -13951,7 +14025,7 @@ namespace Chummer
             this.tlpLifestyleButtons.Name = "tlpLifestyleButtons";
             this.tlpLifestyleButtons.RowCount = 1;
             this.tlpLifestyleButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpLifestyleButtons.Size = new System.Drawing.Size(202, 29);
+            this.tlpLifestyleButtons.Size = new System.Drawing.Size(178, 29);
             this.tlpLifestyleButtons.TabIndex = 120;
             // 
             // cmdAddLifestyle
@@ -13962,7 +14036,7 @@ namespace Chummer
             this.cmdAddLifestyle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddLifestyle.Location = new System.Drawing.Point(3, 3);
             this.cmdAddLifestyle.Name = "cmdAddLifestyle";
-            this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
+            this.cmdAddLifestyle.Size = new System.Drawing.Size(83, 23);
             this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
             this.cmdAddLifestyle.TabIndex = 91;
             this.cmdAddLifestyle.Tag = "Button_AddLifestyle";
@@ -13975,9 +14049,9 @@ namespace Chummer
             this.cmdDeleteLifestyle.AutoSize = true;
             this.cmdDeleteLifestyle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteLifestyle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(104, 3);
+            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(92, 3);
             this.cmdDeleteLifestyle.Name = "cmdDeleteLifestyle";
-            this.cmdDeleteLifestyle.Size = new System.Drawing.Size(95, 23);
+            this.cmdDeleteLifestyle.Size = new System.Drawing.Size(83, 23);
             this.cmdDeleteLifestyle.TabIndex = 81;
             this.cmdDeleteLifestyle.Tag = "String_Delete";
             this.cmdDeleteLifestyle.Text = "Delete";
@@ -16629,8 +16703,8 @@ namespace Chummer
             this.rtfDescription.Location = new System.Drawing.Point(3, 16);
             this.rtfDescription.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfDescription.Name = "rtfDescription";
-            this.rtfDescription.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
+            this.rtfDescription.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1031{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfDescription.Size = new System.Drawing.Size(712, 118);
             this.rtfDescription.TabIndex = 0;
@@ -16659,8 +16733,8 @@ namespace Chummer
             this.rtfBackground.Location = new System.Drawing.Point(3, 16);
             this.rtfBackground.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfBackground.Name = "rtfBackground";
-            this.rtfBackground.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
+            this.rtfBackground.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1031{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfBackground.Size = new System.Drawing.Size(712, 118);
             this.rtfBackground.TabIndex = 0;
@@ -16689,8 +16763,8 @@ namespace Chummer
             this.rtfConcept.Location = new System.Drawing.Point(3, 16);
             this.rtfConcept.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfConcept.Name = "rtfConcept";
-            this.rtfConcept.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
+            this.rtfConcept.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1031{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfConcept.Size = new System.Drawing.Size(712, 118);
             this.rtfConcept.TabIndex = 0;
@@ -16719,8 +16793,8 @@ namespace Chummer
             this.rtfNotes.Location = new System.Drawing.Point(3, 16);
             this.rtfNotes.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfNotes.Name = "rtfNotes";
-            this.rtfNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
+            this.rtfNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1031{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfNotes.Size = new System.Drawing.Size(712, 119);
             this.rtfNotes.TabIndex = 0;
@@ -17737,7 +17811,7 @@ namespace Chummer
             this.tabNotes.Location = new System.Drawing.Point(4, 22);
             this.tabNotes.Name = "tabNotes";
             this.tabNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabNotes.Size = new System.Drawing.Size(977, 607);
+            this.tabNotes.Size = new System.Drawing.Size(977, 631);
             this.tabNotes.TabIndex = 13;
             this.tabNotes.Tag = "Tab_Notes";
             this.tabNotes.Text = "Notes";
@@ -17753,10 +17827,10 @@ namespace Chummer
             this.rtfGameNotes.Location = new System.Drawing.Point(3, 3);
             this.rtfGameNotes.MinimumSize = new System.Drawing.Size(0, 120);
             this.rtfGameNotes.Name = "rtfGameNotes";
-            this.rtfGameNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.18362}\\viewkind4\\uc1 \r\n\\par" +
+            this.rtfGameNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1031{\\fonttbl{\\f0\\fnil\\fcharset0 " +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfGameNotes.Size = new System.Drawing.Size(971, 601);
+            this.rtfGameNotes.Size = new System.Drawing.Size(971, 625);
             this.rtfGameNotes.TabIndex = 0;
             // 
             // tabImprovements
@@ -18151,7 +18225,7 @@ namespace Chummer
             this.tabEnemies.Location = new System.Drawing.Point(4, 22);
             this.tabEnemies.Name = "tabEnemies";
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(969, 605);
+            this.tabEnemies.Size = new System.Drawing.Size(184, 48);
             this.tabEnemies.TabIndex = 1;
             this.tabEnemies.Tag = "Label_Enemies";
             this.tabEnemies.Text = "Enemies";
@@ -18170,7 +18244,7 @@ namespace Chummer
             this.tlpEnemies.RowCount = 2;
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpEnemies.Size = new System.Drawing.Size(963, 599);
+            this.tlpEnemies.Size = new System.Drawing.Size(178, 42);
             this.tlpEnemies.TabIndex = 50;
             // 
             // panEnemies
@@ -18182,7 +18256,7 @@ namespace Chummer
             this.panEnemies.Location = new System.Drawing.Point(0, 29);
             this.panEnemies.Margin = new System.Windows.Forms.Padding(0);
             this.panEnemies.Name = "panEnemies";
-            this.panEnemies.Size = new System.Drawing.Size(963, 570);
+            this.panEnemies.Size = new System.Drawing.Size(178, 13);
             this.panEnemies.TabIndex = 41;
             this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
             // 
@@ -18206,7 +18280,7 @@ namespace Chummer
             this.tabPets.Location = new System.Drawing.Point(4, 22);
             this.tabPets.Name = "tabPets";
             this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(969, 605);
+            this.tabPets.Size = new System.Drawing.Size(184, 48);
             this.tabPets.TabIndex = 4;
             this.tabPets.Tag = "Tab_Pets";
             this.tabPets.Text = "Pets and Cohorts";
@@ -18226,7 +18300,7 @@ namespace Chummer
             this.tlpPets.RowCount = 2;
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpPets.Size = new System.Drawing.Size(963, 599);
+            this.tlpPets.Size = new System.Drawing.Size(178, 42);
             this.tlpPets.TabIndex = 26;
             // 
             // panPets
@@ -18238,7 +18312,7 @@ namespace Chummer
             this.panPets.Location = new System.Drawing.Point(0, 29);
             this.panPets.Margin = new System.Windows.Forms.Padding(0);
             this.panPets.Name = "panPets";
-            this.panPets.Size = new System.Drawing.Size(963, 570);
+            this.panPets.Size = new System.Drawing.Size(178, 13);
             this.panPets.TabIndex = 25;
             // 
             // cmdAddPet
@@ -18790,6 +18864,9 @@ namespace Chummer
             this.tlpMartialArtsButtons.PerformLayout();
             this.tabMagician.ResumeLayout(false);
             this.tabMagician.PerformLayout();
+            this.tblSustainedSpells.ResumeLayout(false);
+            this.tblSustainedSpells.PerformLayout();
+            this.tblSustainedSpellButtons.ResumeLayout(false);
             this.tlpMagician.ResumeLayout(false);
             this.tlpMagician.PerformLayout();
             this.flpMagician.ResumeLayout(false);
@@ -20400,5 +20477,10 @@ namespace Chummer
         private Label lblQualitySourceLabel;
         private Label lblQualityBPLabel;
         private ToolStripMenuItem mnuSpecialChangeOptions;
+        private BufferedTableLayoutPanel tblSustainedSpells;
+        private BufferedTableLayoutPanel tblSustainedSpellButtons;
+        private ButtonWithToolTip cmdAddSustainedSpell;
+        private ButtonWithToolTip cmdDeleteSustainedSpell;
+        private Panel panSustainedSpells;
     }
 }
