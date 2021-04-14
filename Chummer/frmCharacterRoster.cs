@@ -255,19 +255,13 @@ namespace Chummer
 
                 lstRecentsNodes = new TreeNode[lstRecents.Count];
             }
+
             Parallel.Invoke(
                 () =>
                 {
                     if (lstFavoritesNodes == null || lstFavorites.Count <= 0)
                         return;
-                    object lstFavoritesNodesLock = new object();
-                    Parallel.For(0, lstFavorites.Count, i =>
-                    {
-                        string strFile = lstFavorites[i];
-                        TreeNode objNode = CacheCharacter(strFile);
-                        lock(lstFavoritesNodesLock)
-                            lstFavoritesNodes[i] = objNode;
-                    });
+                    Parallel.For(0, lstFavorites.Count, i => lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]).Result);
                     if(blnAddFavoriteNode && objFavoriteNode != null)
                     {
                         foreach (TreeNode objNode in lstFavoritesNodes)
@@ -281,14 +275,7 @@ namespace Chummer
                 {
                     if (lstRecentsNodes == null || lstRecents.Count <= 0)
                         return;
-                    object lstRecentsNodesLock = new object();
-                    Parallel.For(0, lstRecents.Count, i =>
-                    {
-                        string strFile = lstRecents[i];
-                        TreeNode objNode = CacheCharacter(strFile);
-                        lock(lstRecentsNodesLock)
-                            lstRecentsNodes[i] = objNode;
-                    });
+                    Parallel.For(0, lstRecents.Count, i => lstRecentsNodes[i] = CacheCharacter(lstRecents[i]).Result);
                     if(blnAddRecentNode && objRecentNode != null)
                     {
                         foreach (TreeNode objNode in lstRecentsNodes)
@@ -303,7 +290,7 @@ namespace Chummer
                     if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count <= 0)
                         return;
                     ConcurrentDictionary<TreeNode, string> dicWatchNodes = new ConcurrentDictionary<TreeNode, string>();
-                    Parallel.ForEach(dicWatch, i => dicWatchNodes.TryAdd(CacheCharacter(i.Key), i.Value));
+                    Parallel.ForEach(dicWatch, kvpLoop => dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key).Result, kvpLoop.Value));
                     foreach (string s in dicWatchNodes.Values.Distinct())
                     {
                         if (s == "Watch")
@@ -462,22 +449,30 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        private static TreeNode CacheCharacter(string strFile)
+        private static async Task<TreeNode> CacheCharacter(string strFile)
         {
-            CharacterCache objCache = new CharacterCache(strFile);
-            TreeNode objNode = new TreeNode
+            TreeNode objReturn = await Task.Run(() =>
             {
-                Text = objCache.CalculatedName(),
-                ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'),
-                Tag = objCache
-            };
-            if (!string.IsNullOrEmpty(objCache.ErrorText))
-            {
-                objNode.ForeColor = ColorManager.ErrorColor;
-                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error")
-                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
-            }
-            return objNode;
+                CharacterCache objCache = new CharacterCache(strFile);
+                TreeNode objNode = new TreeNode
+                {
+                    Text = objCache.CalculatedName(),
+                    ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
+                        () => '<' + Application.ProductName + '>'),
+                    Tag = objCache
+                };
+                if (!string.IsNullOrEmpty(objCache.ErrorText))
+                {
+                    objNode.ForeColor = ColorManager.ErrorColor;
+                    objNode.ToolTipText += Environment.NewLine + Environment.NewLine +
+                                           LanguageManager.GetString("String_Error")
+                                           + LanguageManager.GetString("String_Colon") + Environment.NewLine +
+                                           objCache.ErrorText;
+                }
+
+                return objNode;
+            });
+            return objReturn;
         }
 
 

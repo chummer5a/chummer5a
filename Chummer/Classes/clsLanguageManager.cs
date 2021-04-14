@@ -481,73 +481,77 @@ namespace Chummer
         {
             ConcurrentBag<string> lstEnglish = new ConcurrentBag<string>();
             ConcurrentBag<string> lstLanguage = new ConcurrentBag<string>();
-            Task.WaitAll(new Task(() =>
-            {
-                // Load the English version.
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
-                try
+            Parallel.Invoke(
+                () =>
                 {
-                    XPathDocument objEnglishDocument;
-                    using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                    // Load the English version.
+                    string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                    try
+                    {
+                        XPathDocument objEnglishDocument;
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                                objEnglishDocument = new XPathDocument(objXmlReader);
+                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
+                        {
+                            string strKey = objNode.SelectSingleNode("key")?.Value;
+                            if (!string.IsNullOrEmpty(strKey))
+                                lstEnglish.Add(strKey);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                    }
+                    catch (XmlException)
+                    {
+                    }
+                },
+                () =>
+                {
+                    // Load the selected language version.
+                    string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+                    try
+                    {
+                        XPathDocument objLanguageDocument;
+                        using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objEnglishDocument = new XPathDocument(objXmlReader);
-                    foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
-                    {
-                        string strKey = objNode.SelectSingleNode("key")?.Value;
-                        if (!string.IsNullOrEmpty(strKey))
-                            lstEnglish.Add(strKey);
+                            objLanguageDocument = new XPathDocument(objXmlReader);
+                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().Select("/chummer/strings/string"))
+                        {
+                            string strKey = objNode.SelectSingleNode("key")?.Value;
+                            if (!string.IsNullOrEmpty(strKey))
+                                lstLanguage.Add(strKey);
+                        }
                     }
-                }
-                catch (IOException)
-                {
-                }
-                catch (XmlException)
-                {
-                }
-            }), new Task(() =>
-            {
-                // Load the selected language version.
-                string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
-                try
-                {
-                    XPathDocument objLanguageDocument;
-                    using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                        objLanguageDocument = new XPathDocument(objXmlReader);
-                    foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator().Select("/chummer/strings/string"))
+                    catch (IOException)
                     {
-                        string strKey = objNode.SelectSingleNode("key")?.Value;
-                        if (!string.IsNullOrEmpty(strKey))
-                            lstLanguage.Add(strKey);
                     }
-                }
-                catch (IOException)
-                {
-                }
-                catch (XmlException)
-                {
-                }
-            }));
+                    catch (XmlException)
+                    {
+                    }
+                });
 
             StringBuilder sbdMissingMessage = new StringBuilder();
             StringBuilder sbdUnusedMessage = new StringBuilder();
-            Task.WaitAll(new Task(() =>
-            {
-                // Check for strings that are in the English file but not in the selected language file.
-                foreach (string strKey in lstEnglish)
+            Parallel.Invoke(
+                () =>
                 {
-                    if (!lstLanguage.Contains(strKey))
-                        sbdMissingMessage.AppendLine("Missing String: " + strKey);
-                }
-            }), new Task(() =>
-            {
-                // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
-                foreach (string strKey in lstLanguage)
+                    // Check for strings that are in the English file but not in the selected language file.
+                    foreach (string strKey in lstEnglish)
+                    {
+                        if (!lstLanguage.Contains(strKey))
+                            sbdMissingMessage.AppendLine("Missing String: " + strKey);
+                    }
+                },
+                () =>
                 {
-                    if (!lstEnglish.Contains(strKey))
-                        sbdUnusedMessage.AppendLine("Unused String: " + strKey);
-                }
-            }));
+                    // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
+                    foreach (string strKey in lstLanguage)
+                    {
+                        if (!lstEnglish.Contains(strKey))
+                            sbdUnusedMessage.AppendLine("Unused String: " + strKey);
+                    }
+                });
 
             string strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.

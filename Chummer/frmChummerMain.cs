@@ -1102,12 +1102,7 @@ namespace Chummer
                 }
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
-                object lstCharactersLock = new object();
-                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value).ContinueWith(y =>
-                {
-                    lock (lstCharactersLock)
-                        lstCharacters[x.Key] = y.Result;
-                })));
+                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value).ContinueWith(y => lstCharacters[x.Key] = y.Result)));
                 Program.MainForm.OpenCharacterList(lstCharacters);
             }
         }
@@ -1413,7 +1408,6 @@ namespace Chummer
                                 frmProgressBar.Reset(lstFilesToOpen.Count);
                                 frmProgressBar.Show();
                                 lstCharacters = new Character[lstFilesToOpen.Count];
-                                object lstCharactersLock = new object();
                                 Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(lstFilesToOpen.Count);
                                 for (int i = 0; i < lstFilesToOpen.Count; ++i)
                                 {
@@ -1421,8 +1415,7 @@ namespace Chummer
                                 }
                                 await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value, string.Empty, false, true, false).ContinueWith(y =>
                                 {
-                                    lock (lstCharactersLock)
-                                        lstCharacters[x.Key] = y.Result;
+                                    lstCharacters[x.Key] = y.Result;
                                     frmProgressBar.PerformStep();
                                 })));
                             }
