@@ -52,8 +52,6 @@ namespace Chummer
             if (!_blnLoading)
             {
                 SpellDetailChanged?.Invoke(this, e);
-
-                _objSustainedSpell.Force = (int)nudForce.Value;
             }
                 
         }
