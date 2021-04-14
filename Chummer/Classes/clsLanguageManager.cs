@@ -19,8 +19,7 @@
  using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+ using System.IO;
 using System.Linq;
  using System.Runtime.CompilerServices;
  using System.Text;
@@ -50,8 +49,8 @@ namespace Chummer
                     {
                         XPathDocument xmlEnglishDocument;
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlEnglishDocument = new XPathDocument(objXmlReader);
+                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                                xmlEnglishDocument = new XPathDocument(objXmlReader);
                         XPathNodeIterator xmlStringList =
                             xmlEnglishDocument.CreateNavigator().Select("/chummer/strings/string");
                         if (xmlStringList.Count > 0)
@@ -78,7 +77,7 @@ namespace Chummer
                     }
                     catch (IOException ex)
                     {
-                        ManagerErrorMessage.Append("Language strings for the default language (")
+                        ManagerErrorMessage.Append( "Language strings for the default language (")
                             .Append(GlobalOptions.DefaultLanguage).AppendLine(") could not be loaded:").AppendLine().Append(ex);
                     }
                     catch (XmlException ex)
@@ -96,7 +95,6 @@ namespace Chummer
         #endregion
 
         #region Methods
-       
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
@@ -903,13 +901,11 @@ namespace Chummer
             return strReturn;
         }
 
-        public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null, CultureInfo defaultCulture = null)
+        public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null)
         {
             if (cboLanguage == null)
                 throw new ArgumentNullException(nameof(cboLanguage));
             string strDefaultSheetLanguage = GlobalOptions.Language;
-            if (defaultCulture != null)
-                strDefaultSheetLanguage = defaultCulture.Name.ToLowerInvariant();
             int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
             if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
             {
@@ -924,12 +920,7 @@ namespace Chummer
             cboLanguage.DataSource = GetSheetLanguageList(lstCharacters);
             cboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (cboLanguage.SelectedIndex == -1)
-            {
-                if (defaultCulture != null)
-                    cboLanguage.SelectedValue = defaultCulture.Name.ToLowerInvariant();
-                else
-                    cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
-            }
+                cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
             cboLanguage.EndUpdate();
         }
 
