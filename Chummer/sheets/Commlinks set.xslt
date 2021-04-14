@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Character sheet for Commlinks based on the ones created by ChinaGreenElvis -->
-<!-- Created by Keith Rudolph, krudolph@gmail.com -->
-<!-- Version -500 -->
+<!-- Commlinks List -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
@@ -25,48 +24,25 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
+        <xsl:call-template name="Chummer5CSS" />
+<!-- ** Override default style type definitions ** -->
         <style type="text/css">
-            * {
-            font-family: segoe condensed, tahoma, trebuchet ms, arial;
-            font-size: 8pt;
-            margin: 0;
-            text-align: left;
-            }
-            html {
-            height: 100%;
-            margin: 0px;  /* this affects the margin on the html before sending to printer */
-            }
-            body {
-            color-adjust: exact !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            }
-            .commlinkcategory {
-            font-family: segoe condensed, tahoma, trebuchet ms, arial;
-            font-size: 8pt;
-            text-align: right;
-            }
-            .tableborder {
-            border: solid 2px #1c4a2d;
-            border-collapse: collapse;
-            padding: 5px;
-            }
-            .block {
-            page-break-inside: avoid;
-            }
-        </style>
-        <style media="print">
-           @page {
-            size: auto;
-            margin-top: 0.5in;
-            margin-left: 0.5in;
-            margin-right: 0.5in;
-            margin-bottom: 0.75in;
+          * {
+          font-family: segoe, tahoma, 'trebuchet ms', arial;
+          font-size: 8pt;
           }
-          .block {
-            bottom-padding: 0.75;
-            page-break-inside: avoid !important;
-            margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+        </style>
+<!-- ** Additional style type definitions ** -->
+        <style type="text/css">
+          .tableborder {
+          border: solid 2px #1c4a2d;
+          border-collapse: collapse;
+          padding: 5px;
+          }
+          .commlinkcategory {
+          font-family: segoe condensed, tahoma, trebuchet ms, arial;
+          font-size: 8pt;
+          text-align: right;
           }
         </style>
       </head>

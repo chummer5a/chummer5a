@@ -928,8 +928,8 @@ namespace Chummer.Backend.Equipment
                     bool blnAllowLeft = true;
                     bool blnAllowRight = true;
                     // Fairly expensive check that can (and therefore should) be parallelized
-                    Parallel.Invoke(
-                        () =>
+                    Task.WhenAll(
+                        new Task(() =>
                         {
                             blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
                                                string.Empty, "Left")
@@ -954,8 +954,8 @@ namespace Chummer.Backend.Equipment
                                                || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
                                                     || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
                                                     dicNumLeftMountBlockers[HasModularMount]));
-                        },
-                        () =>
+                        }),
+                        new Task(() =>
                         {
                             blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
                                                 string.Empty, "Right")
@@ -982,7 +982,7 @@ namespace Chummer.Backend.Equipment
                                                      || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
                                                      dicNumRightMountBlockers[HasModularMount]));
                         }
-                    );
+                    ));
                     // Only one side is allowed.
                     if (blnAllowLeft != blnAllowRight)
                         strForcedSide = blnAllowLeft ? "Left" : "Right";

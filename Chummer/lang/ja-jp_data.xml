@@ -12478,7 +12478,7 @@
             <gear>
                 <id>5de1956f-0ec3-4fad-9e9a-d8b90ac1e3f4</id>
                 <name>Slap Patch, Trauma Patch</name>
-                <translate>組成パッチ</translate>
+                <translate>蘇生パッチ</translate>
                 <altpage>451</altpage>
             </gear>
             <gear>
@@ -13330,7 +13330,7 @@
             <gear>
                 <id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
                 <name>Grenade: Flash-Bang</name>
-                <translate>Grenade: Flash-Bang</translate>
+                <translate>手榴弾: 閃光手榴弾</translate>
                 <altpage>435</altpage>
             </gear>
             <gear>
@@ -28675,12 +28675,6 @@
                 <name>Centaur Body</name>
                 <translate>Centaur Body</translate>
                 <altpage>105</altpage>
-            </quality>
-            <quality>
-                <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
-                <name>Magic Sense</name>
-                <translate>Magic Sense</translate>
-                <altpage>172</altpage>
             </quality>
             <quality>
                 <id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>

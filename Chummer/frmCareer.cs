@@ -2249,14 +2249,16 @@ namespace Chummer
             object lstClonesLock = new object();
             using (new CursorWait(this))
             {
-                Parallel.For(0, intClones, i =>
+                int[] aintDummy = new int[intClones];
+                for (int i = 0; i < intClones; ++i)
+                    aintDummy[i] = i;
+                Task.WaitAll(aintDummy.Select(x => Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + x.ToString(GlobalOptions.CultureInfo), true)
+                    .ContinueWith(y =>
                 {
-                    Character objLoopCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result;
                     lock (lstClonesLock)
-                    {
-                        lstClones[i] = objLoopCharacter;
-                    }
-                });
+                        lstClones[x] = y.Result;
+                    return y;
+                })).ToArray());
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }

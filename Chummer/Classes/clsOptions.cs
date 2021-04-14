@@ -26,7 +26,6 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using iText.Kernel.Pdf;
@@ -141,7 +140,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
 
-        public static StringBuilder ErrorMessage { get; } = new StringBuilder();
+        public static string ErrorMessage { get; }
         public static event TextEventHandler MRUChanged;
         public static event PropertyChangedEventHandler ClipboardChanged;
 
@@ -333,9 +332,9 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                if(ErrorMessage.Length > 0)
-                    ErrorMessage.AppendLine().AppendLine();
-                ErrorMessage.Append(ex);
+                if(!string.IsNullOrEmpty(ErrorMessage))
+                    ErrorMessage += Environment.NewLine + Environment.NewLine;
+                ErrorMessage += ex;
             }
             if (_objBaseChummerKey == null)
                 return;
@@ -1174,7 +1173,6 @@ namespace Chummer
                             else
                                 _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-
                         MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
@@ -1205,7 +1203,6 @@ namespace Chummer
                                     _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                             }
                         }
-
                         MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
@@ -1215,7 +1212,6 @@ namespace Chummer
                         int intNewStartingIndex = e.NewStartingIndex;
                         if(intOldStartingIndex == intNewStartingIndex)
                             break;
-
                         int intUpdateFrom;
                         int intUpdateTo;
                         if(intOldStartingIndex > intNewStartingIndex)
@@ -1228,7 +1224,6 @@ namespace Chummer
                             intUpdateFrom = intOldStartingIndex;
                             intUpdateTo = intNewStartingIndex;
                         }
-
                         for(int i = intUpdateFrom; i <= intUpdateTo; ++i)
                         {
                             _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), _lstFavoritedCharacters[i]);
@@ -1264,7 +1259,6 @@ namespace Chummer
                             else
                                 _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
-
                         MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
@@ -1306,7 +1300,6 @@ namespace Chummer
                         int intNewStartingIndex = e.NewStartingIndex;
                         if(intOldStartingIndex == intNewStartingIndex)
                             break;
-
                         int intUpdateFrom;
                         int intUpdateTo;
                         if(intOldStartingIndex > intNewStartingIndex)
@@ -1319,7 +1312,6 @@ namespace Chummer
                             intUpdateFrom = intOldStartingIndex;
                             intUpdateTo = intNewStartingIndex;
                         }
-
                         for(int i = intUpdateFrom; i <= intUpdateTo; ++i)
                         {
                             _objBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i]);
