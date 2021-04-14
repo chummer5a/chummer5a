@@ -28459,13 +28459,6 @@
                 <translate>Natürliche Waffe: Tritt (Zentaur)</translate>
                 <altpage>81</altpage>
             </quality>
-            <quality translated="True">
-                <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
-                <name>Magic Sense</name>
-                <source>SG</source>
-                <translate>Magiegespühr</translate>
-                <altpage>203</altpage>
-            </quality>
             <quality>
                 <id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
                 <name>Natural Weapon: Bite (Naga)</name>
@@ -28820,7 +28813,7 @@
                 <id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
                 <name>Magic Sense</name>
                 <source>RF</source>
-                <translate>Magiegespür</translate>
+                <translate>Magiegespür (Metagenetisch)</translate>
                 <altpage>93</altpage>
             </quality>
             <quality>

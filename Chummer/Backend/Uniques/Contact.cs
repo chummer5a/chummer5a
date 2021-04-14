@@ -462,7 +462,7 @@ namespace Chummer
         public string DisplayRole
         {
             get => DisplayRoleMethod(GlobalOptions.Language);
-            set => Role = _objCharacter.ReverseTranslateExtra(value);
+            set => Role = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -545,7 +545,7 @@ namespace Chummer
                 // Update character information fields.
                 XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
 
-                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? _objCharacter.TranslateExtra(LinkedCharacter.Metatype, strLanguage);
+                strReturn = objMetatypeNode.SelectSingleNode("translate")?.Value ?? _objCharacter.TranslateExtra(LinkedCharacter.Metatype, strLanguage, "metatypes.xml");
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                     return strReturn;
@@ -557,18 +557,18 @@ namespace Chummer
                              + '('
                              + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                  ? strMetatypeTranslate
-                                 : _objCharacter.TranslateExtra(LinkedCharacter.Metavariant, strLanguage))
+                                 : _objCharacter.TranslateExtra(LinkedCharacter.Metavariant, strLanguage, "metatypes.xml"))
                              + ')';
             }
             else
-                strReturn = _objCharacter.TranslateExtra(strReturn, strLanguage);
+                strReturn = _objCharacter.TranslateExtra(strReturn, strLanguage, "metatypes.xml");
             return strReturn;
         }
 
         public string DisplayMetatype
         {
             get => DisplayMetatypeMethod(GlobalOptions.Language);
-            set => Metatype = _objCharacter.ReverseTranslateExtra(value);
+            set => Metatype = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -611,7 +611,7 @@ namespace Chummer
         public string DisplayGender
         {
             get => DisplayGenderMethod(GlobalOptions.Language);
-            set => Gender = _objCharacter.ReverseTranslateExtra(value);
+            set => Gender = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -646,7 +646,7 @@ namespace Chummer
         public string DisplayAge
         {
             get => DisplayAgeMethod(GlobalOptions.Language);
-            set => Age = _objCharacter.ReverseTranslateExtra(value);
+            set => Age = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -681,7 +681,7 @@ namespace Chummer
         public string DisplayType
         {
             get => DisplayTypeMethod(GlobalOptions.Language);
-            set => Type = _objCharacter.ReverseTranslateExtra(value);
+            set => Type = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -712,7 +712,7 @@ namespace Chummer
         public string DisplayPreferredPayment
         {
             get => DisplayPreferredPaymentMethod(GlobalOptions.Language);
-            set => PreferredPayment = _objCharacter.ReverseTranslateExtra(value);
+            set => PreferredPayment = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -753,7 +753,7 @@ namespace Chummer
         public string DisplayHobbiesVice
         {
             get => DisplayHobbiesViceMethod(GlobalOptions.Language);
-            set => HobbiesVice = _objCharacter.ReverseTranslateExtra(value);
+            set => HobbiesVice = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -784,7 +784,7 @@ namespace Chummer
         public string DisplayPersonalLife
         {
             get => DisplayPersonalLifeMethod(GlobalOptions.Language);
-            set => PersonalLife = _objCharacter.ReverseTranslateExtra(value);
+            set => PersonalLife = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "contacts.xml");
         }
 
         /// <summary>
@@ -1223,11 +1223,19 @@ namespace Chummer
             }
             if (lstMugshotsBase64.Count > 1)
             {
+                object objMugshotImagesLock = new object();
                 Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                Parallel.For(0, lstMugshotsBase64.Count, i =>
+                Task[] atskLoadImage = new Task[lstMugshotsBase64.Count];
+                for (int i = 0; i < lstMugshotsBase64.Count; ++i)
                 {
-                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb);
-                });
+                    int intInnerI = i;
+                    atskLoadImage[i] = lstMugshotsBase64[i].ToImageAsync(PixelFormat.Format32bppPArgb).ContinueWith(x =>
+                    {
+                        lock (objMugshotImagesLock)
+                            objMugshotImages[intInnerI] = x.Result;
+                    });
+                }
+                Task.WaitAll(atskLoadImage);
                 _lstMugshots.AddRange(objMugshotImages);
             }
             else if (lstMugshotsBase64.Count == 1)

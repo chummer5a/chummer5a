@@ -2,34 +2,28 @@
 <!-- CSS stylesheet definitions -->
 
 <!-- These are the common CSS type definitions for the Chummer5a character sheets.
-     They are not used by all the character sheets, just ones that have multiple
-     common definitions such as Notes and the Shadowrun 5* sheets.
 
-     To create a language specific version:
-     1) this member should be copied to the appropriate language sub-folder and changes made.
-     2) The character sheet XSL stylesheets that import these definitions have to be
-        modified, changing the xsl:import statement:
-          from href="../xs.Chummer5CSS.xslt" to href="xs.Chummer5CSS.xslt"
-        (FYI: this tells the processor to import the member from the language sub-folder
-         instead of the parent directory - indicated by the ../ before the member name)
+     They are not used by the Fancy Blocks and Vehicles character sheets - there is so little
+     overlap between those sheets and these common definitions that it is simpler to keep
+	 the separate definitions.
 
-     Changes made to these definitions should also be made to the language specific versions.
-     (Note: currently these are German and Portuguese character sheets.)
+     Note: Individual character sheets may override some of these definitions,
+     e.g. changing font size or font family used, or have additional definitions.
 -->
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:template name="Chummer5CSS">
     <style type="text/css">
       * {
-        font-family: segoe, tahoma, 'trebuchet ms', arial;
-        font-size: 8.25pt;
+        font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+        font-size: 10pt;
         margin: 0;
         text-align: left;
         vertical-align: top;
         }
         html {
         height: 100%;
-        margin: 0em;  /* this affects the margin on the html before sending to printer */
+        margin: 0px;  /* this affects the margin on the html before sending to printer */
         }
         body {
         color-adjust: exact !important;
@@ -75,34 +69,11 @@
         }
         .block {
         bottom-padding: 0;
-        page-break-inside: avoid;
+        page-break-inside: avoid !important;
         margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
-        }
-        .mugshot {
-        width: auto;
-        max-width: 100%;
-        object-fit: scale-down;
-        image-rendering: optimizeQuality;
-        }
-        @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-        .mugshot {
-        width: 100%;
-        max-width: inherit;
-        object-fit: scale-down;
-        image-rendering: optimizeQuality;
         }
       }
     </style>
-    <!--[if IE]
-        <style type="text/css">
-        .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-        </style>
-        -->
     <style media="print">
       @page {
       size: auto;
@@ -111,6 +82,26 @@
       margin-right: 0.5in;
       margin-bottom: 0.5in;
       }
+      .block {
+      bottom-padding: 0.75;
+      page-break-inside: avoid !important;
+      margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+      }
     </style>
+<!-- ** remove use of uppercase in titles ** -->
+    <xsl:if test="lang = 'de' or lang = 'pt'">
+      <style type="text/css">
+        * {
+          th {
+          text-align: center;
+          }
+          .title {
+          font-weight: bold;
+          }
+          .upper {
+          }
+        }
+      </style>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>

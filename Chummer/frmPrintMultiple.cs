@@ -20,6 +20,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+ using System.Linq;
+ using System.Threading;
  using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -123,13 +125,22 @@ namespace Chummer
             }
 
             // Parallelized load because this is one major bottleneck.
-            Parallel.ForEach(lstCharacters, objCharacter =>
-            {
-                if (_workerPrinter.CancellationPending)
-                    throw new OperationCanceledException();
-                objCharacter.Load().RunSynchronously();
-                prgProgress.Invoke((Action) FuncIncreaseProgress);
-            });
+            CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+
+            Task.WaitAll(lstCharacters.Select(objCharacter => new Task(() =>
+                {
+                    if (_workerPrinter.CancellationPending)
+                        objCancellationTokenSource.Cancel();
+                })
+                .ContinueWith(x => objCharacter.Load(), objCancellationToken)
+                .ContinueWith(x =>
+                {
+                    if (_workerPrinter.CancellationPending)
+                        objCancellationTokenSource.Cancel();
+                    if (x.Result.Result)
+                        prgProgress.Invoke((Action) FuncIncreaseProgress);
+                }, objCancellationToken)).ToArray(), objCancellationToken);
 
             if (_workerPrinter.CancellationPending)
                 e.Cancel = true;
