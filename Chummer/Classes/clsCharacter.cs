@@ -4228,9 +4228,9 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("gender", TranslateExtra(ReverseTranslateExtra(Gender, GlobalOptions.Language, "contacts.xml"), strLanguageToPrint, "contacts.xml"));
+            objWriter.WriteElementString("gender", TranslateExtra(ReverseTranslateExtra(Gender), strLanguageToPrint));
             // <age />
-            objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age, GlobalOptions.Language, "contacts.xml"), strLanguageToPrint, "contacts.xml"));
+            objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age), strLanguageToPrint));
             // <eyes />
             objWriter.WriteElementString("eyes", TranslateExtra(ReverseTranslateExtra(Eyes), strLanguageToPrint));
             // <height />
@@ -6075,10 +6075,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
-        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public string TranslateExtra(string strExtra, string strIntoLanguage = "", string strPreferFile = "")
+        public string TranslateExtra(string strExtra, string strIntoLanguage = "")
         {
-            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this, strPreferFile);
+            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this);
         }
 
         /// <summary>
@@ -6086,10 +6085,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
-        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", string strPreferFile = "")
+        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "")
         {
-            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this, strPreferFile);
+            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this);
         }
         #endregion
 
@@ -6869,19 +6867,11 @@ namespace Chummer
 
             if(lstMugshotsBase64.Count > 1)
             {
-                object objMugshotImagesLock = new object();
                 Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                Task[] atskLoadImage = new Task[lstMugshotsBase64.Count];
-                for (int i = 0; i < lstMugshotsBase64.Count; ++i)
+                Parallel.For(0, lstMugshotsBase64.Count, i =>
                 {
-                    int intInnerI = i;
-                    atskLoadImage[i] = lstMugshotsBase64[i].ToImageAsync(PixelFormat.Format32bppPArgb).ContinueWith(x =>
-                    {
-                        lock (objMugshotImagesLock)
-                            objMugshotImages[intInnerI] = x.Result;
-                    });
-                }
-                Task.WaitAll(atskLoadImage);
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb);
+                });
                 _lstMugshots.AddRange(objMugshotImages);
             }
             else if(lstMugshotsBase64.Count == 1)

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Character notes -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.fnxTests.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
@@ -37,6 +36,12 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <xsl:call-template name="Chummer5CSS" />
+<!-- ** Override default style type definitions ** -->
+        <style type="text/css">
+          * {
+          font-size: 10pt;
+          }
+        </style>
       </head>
 
       <body>
@@ -385,10 +390,10 @@
               </tr>
               <xsl:for-each select="//gears/gear[(iscommlink = 'True' and (notes != '' or //notes != '')) or //*[iscommlink = 'True']/notes != '']">
                 <xsl:sort select="name"/>
-                <xsl:call-template name="gearnotes">
-                  <xsl:with-param name="excludeCommlinks" select="False"/>
-                  <xsl:with-param name="level" select="0"/>
-                </xsl:call-template>
+                  <xsl:call-template name="gearnotes">
+                    <xsl:with-param name="excludeCommlinks" select="False"/>
+                    <xsl:with-param name="level" select="0"/>
+                  </xsl:call-template>
               </xsl:for-each>
             </table>
           </div>
@@ -493,9 +498,9 @@
     </xsl:if>
     <xsl:for-each select="children/cyberware[notes != '' or //*[iscommlink != 'True']/notes != '']">
       <xsl:sort select="name"/>
-      <xsl:call-template name="cybernotes">
-        <xsl:with-param name="level" select="$level + 1"></xsl:with-param>
-      </xsl:call-template>
+        <xsl:call-template name="cybernotes">
+            <xsl:with-param name="level" select="$level + 1"></xsl:with-param>
+        </xsl:call-template>
     </xsl:for-each>
     <xsl:for-each select="gears/gear[iscommlink != 'True' and (notes != '' or //*[iscommlink != 'True']/notes != '')]">
       <xsl:sort select="name"/>
@@ -546,16 +551,16 @@
         <td/>
       </tr>
       <xsl:if test="notes != ''">
-        <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100" style="padding: 0 4%; text-align: justify;">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
-            </xsl:call-template>
-          </td>
-        </tr>
+          <tr>
+              <xsl:if test="position() mod 2 != 1">
+                  <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+              </xsl:if>
+              <td colspan="100" style="padding: 0 4%; text-align: justify;">
+                  <xsl:call-template name="PreserveLineBreaks">
+                      <xsl:with-param name="text" select="notes"/>
+                  </xsl:call-template>
+              </td>
+          </tr>
       </xsl:if>
       <xsl:for-each select="gears/gear[iscommlink != 'True' and (notes != '' or //*[iscommlink != 'True']/notes != '')]">
         <xsl:sort select="name"/>
@@ -579,7 +584,7 @@
   </xsl:template>
 
   <xsl:template name="weaponnotes">
-      <xsl:param name="level"/>
+    <xsl:param name="level"/>
     <tr style="text-align: left" valign="top">
       <xsl:if test="position() mod 2 != 1"><xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute></xsl:if>
       <td style="padding: 0 {$level * 2}%;">
@@ -615,14 +620,14 @@
       </tr>
       <xsl:if test="notes != ''">
         <tr>
-          <xsl:if test="position() mod 2 != 1">
-            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
-          </xsl:if>
-          <td colspan="100" style="padding: 0 {($level + 2) * 2}%; text-align: justify;">
-            <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
-            </xsl:call-template>
-          </td>
+            <xsl:if test="position() mod 2 != 1">
+                <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+            </xsl:if>
+            <td colspan="100" style="padding: 0 {($level + 2) * 2}%; text-align: justify;">
+                <xsl:call-template name="PreserveLineBreaks">
+                    <xsl:with-param name="text" select="notes"/>
+                </xsl:call-template>
+            </td>
         </tr>
       </xsl:if>
       <xsl:for-each select="gears/gear[iscommlink != 'True' and (notes != '' or //*[iscommlink != 'True']/notes != '')]">
@@ -649,7 +654,7 @@
   <xsl:template name="gearnotes">
     <xsl:param name="level"/>
     <xsl:param name="excludeCommlinks"/>
-<!--
+    <!--
     <xsl:choose>
       <xsl:when test="location = ''" />
       <xsl:when test="position() = 1 or location != preceding-sibling::gear[1]/location">

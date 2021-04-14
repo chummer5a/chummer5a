@@ -965,19 +965,11 @@ namespace Chummer
             }
             if (lstMugshotsBase64.Count > 1)
             {
-                object objMugshotImagesLock = new object();
                 Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                Task[] atskLoadImage = new Task[lstMugshotsBase64.Count];
-                for (int i = 0; i < lstMugshotsBase64.Count; ++i)
+                Parallel.For(0, lstMugshotsBase64.Count, i =>
                 {
-                    int intInnerI = i;
-                    atskLoadImage[i] = lstMugshotsBase64[i].ToImageAsync(PixelFormat.Format32bppPArgb).ContinueWith(x =>
-                    {
-                        lock (objMugshotImagesLock)
-                            objMugshotImages[intInnerI] = x.Result;
-                    });
-                }
-                Task.WaitAll(atskLoadImage);
+                    objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb);
+                });
                 _lstMugshots.AddRange(objMugshotImages);
             }
             else if (lstMugshotsBase64.Count == 1)

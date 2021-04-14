@@ -222,10 +222,7 @@ namespace Chummer.Plugins
                     throw new ArgumentException(msg);
                 }
                 catalog = new AggregateCatalog();
-                //delete old NeonJungleLC-Plugin
-                string neon = Path.Combine(path, "NeonJungleLC");
-                if (Directory.Exists(neon))
-                    Directory.Delete(neon, true);
+
                 var plugindirectories = Directory.GetDirectories(path);
                 if (plugindirectories.Length == 0)
                 {

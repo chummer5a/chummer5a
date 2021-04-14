@@ -1534,27 +1534,38 @@ namespace Chummer.Backend.Equipment
                 if (strArmorCapacity != "0" && !string.IsNullOrEmpty(strArmorCapacity)) // && _objCharacter.Options.ArmorSuitCapacity)
                 {
                     // Run through its Armor Mods and deduct the Capacity costs. Mods that confer capacity (ie negative values) are excluded, as they're processed in TotalArmorCapacity.
-                    if (ArmorMods.Count > 0)
-                        decCapacity -= ArmorMods.Where(x => !x.IncludedInArmor).AsParallel().Sum(x => Math.Max(x.TotalCapacity, 0));
+                    decCapacity = ArmorMods.Where(mod => !mod.IncludedInArmor && mod.TotalCapacity > 0).Aggregate(decCapacity, (current, objMod) => current - objMod.TotalCapacity);
+
                     // Run through its Gear and deduct the Armor Capacity costs.
-                    if (Gear.Count > 0)
-                        decCapacity -= Gear.Where(x => !x.IncludedInParent).AsParallel().Sum(x => x.PluginArmorCapacity * x.Quantity);
+                    if (Gear.Count <= 0) return decCapacity;
+                    object decCapacityLock = new object();
+                    // Run through its Children and deduct the Capacity costs.
+                    Parallel.ForEach(Gear.Where(gear => !gear.IncludedInParent), objChildGear =>
+                    {
+                        decimal decLoop = objChildGear.PluginArmorCapacity * objChildGear.Quantity;
+                        lock (decCapacityLock)
+                            decCapacity -= decLoop;
+                    });
                 }
                 // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
                 else // if (_objCharacter.Options.MaximumArmorModifications)
                 {
                     // Run through its Armor Mods and deduct the Rating (or 1 if it has no Rating).
-                    foreach (ArmorMod objMod in ArmorMods)
+                    foreach (ArmorMod objMod in ArmorMods.Where(mod => !mod.IncludedInArmor))
                     {
-                        if (!objMod.IncludedInArmor)
-                            decCapacity -= objMod.Rating > 0 ? objMod.Rating : 1;
+                        if (objMod.Rating > 0)
+                            decCapacity -= objMod.Rating;
+                        else
+                            decCapacity -= 1;
                     }
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                    foreach (Gear objGear in Gear)
+                    foreach (Gear objGear in Gear.Where(gear => !gear.IncludedInParent))
                     {
-                        if (!objGear.IncludedInParent)
-                            decCapacity -= objGear.Rating > 0 ? objGear.Rating : 1;
+                        if (objGear.Rating > 0)
+                            decCapacity -= objGear.Rating;
+                        else
+                            decCapacity -= 1;
                     }
                 }
 

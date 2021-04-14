@@ -2363,7 +2363,13 @@ namespace Chummer.Backend.Equipment
                 decimal decTotalChildrenCost = 0;
                 if (Children.Count > 0 && strCostExpression.Contains("Children Cost"))
                 {
-                    decTotalChildrenCost += Children.AsParallel().Sum(x => x.CalculatedCost);
+                    object decTotalChildrenCostLock = new object();
+                    Parallel.ForEach(Children, loopGear =>
+                    {
+                        decimal decLoop = loopGear.CalculatedCost;
+                        lock (decTotalChildrenCostLock)
+                            decTotalChildrenCost += decLoop;
+                    });
                 }
 
                 if (string.IsNullOrEmpty(strCostExpression))
@@ -2415,7 +2421,13 @@ namespace Chummer.Backend.Equipment
                 if (Children.Count > 0)
                 {
                     // Add in the cost of all child components.
-                    decPlugin += Children.AsParallel().Sum(x => x.TotalCost);
+                    object decPluginLock = new object();
+                    Parallel.ForEach(Children, objChild =>
+                    {
+                        decimal decLoop = objChild.TotalCost;
+                        lock (decPluginLock)
+                            decPlugin += decLoop;
+                    });
                 }
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
@@ -2445,7 +2457,13 @@ namespace Chummer.Backend.Equipment
                 if (Children.Count > 0)
                 {
                     // Add in the cost of all child components.
-                    decPlugin += Children.AsParallel().Sum(x => x.StolenTotalCost);
+                    object decPluginLock = new object();
+                    Parallel.ForEach(Children, objChild =>
+                    {
+                        decimal decLoop = objChild.StolenTotalCost;
+                        lock (decPluginLock)
+                            decPlugin += decLoop;
+                    });
                 }
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
@@ -2535,8 +2553,14 @@ namespace Chummer.Backend.Equipment
 
                     if (Children.Count > 0)
                     {
+                        object decCapacityLock = new object();
                         // Run through its Children and deduct the Capacity costs.
-                        decCapacity -= Children.AsParallel().Sum(x => x.PluginCapacity * x.Quantity);
+                        Parallel.ForEach(Children, objChildGear =>
+                        {
+                            decimal decLoop = objChildGear.PluginCapacity * objChildGear.Quantity;
+                            lock (decCapacityLock)
+                                decCapacity -= decLoop;
+                        });
                     }
                 }
 

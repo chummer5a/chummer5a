@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,6 +40,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
 

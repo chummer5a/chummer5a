@@ -3706,7 +3706,7 @@ namespace Chummer.Classes
                             foreach (XmlNode objXmlCategory in xmlCategoryList)
                             {
                                 string strInnerText = objXmlCategory.InnerText;
-                                lstGeneralItems.Add(new ListItem(strInnerText, _objCharacter.TranslateExtra(strInnerText, GlobalOptions.Language, "weapons.xml")));
+                                lstGeneralItems.Add(new ListItem(strInnerText, _objCharacter.TranslateExtra(strInnerText)));
                             }
                         }
 
@@ -6684,7 +6684,7 @@ namespace Chummer.Classes
                         foreach (XmlNode objXmlGroup in objXmlGroups)
                         {
                             lstSkills.Add(new ListItem(objXmlGroup.InnerText,
-                                _objCharacter.TranslateExtra(objXmlGroup.InnerText, GlobalOptions.Language, "skills.xml")));
+                                _objCharacter.TranslateExtra(objXmlGroup.InnerText)));
                         }
                     }
                 }
@@ -7443,7 +7443,7 @@ namespace Chummer.Classes
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
                     frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
-                        .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalOptions.Language, "skills.xml"))));
+                        .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x))));
                 else
                     frmPickItem.SetGeneralItemsMode(objSkill.CGLSpecializations);
                 if (!string.IsNullOrEmpty(ForcedValue))

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Game Master character summary sheet -->
+<!-- Created by Keith Rudolph, krudolph@gmail.com -->
+<!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
@@ -21,12 +22,28 @@
         <title><xsl:value-of select="$TitleName"/></title>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <xsl:call-template name="Chummer5CSS" />
-<!-- ** Override default style type definitions ** -->
         <style type="text/css">
-          * {
+            * {
             font-family: tahoma, 'trebuchet ms', arial;
             font-size: 8pt;
+            margin: 0;
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .indent {
+            padding-left: 0.5em;
+            }
+        </style>
+        <style media="print">
+           @page {
+            size: auto;
+            margin-top: 0.5in;
+            margin-left: 0.5in;
+            margin-right: 0.5in;
+            margin-bottom: 0.75in;
           }
         </style>
       </head>
@@ -358,7 +375,7 @@
                               (<xsl:for-each select="armormods/armormod">
                                 <xsl:sort select="name" />
                                 <xsl:value-of select="name" />
-                                <xsl:if test="rating != 0">&#160;<xsl:value-of select="rating"/></xsl:if>
+                                <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating"/></xsl:if>
                                 <xsl:if test="position() != last()">, </xsl:if>
                               </xsl:for-each>)
                             </td>
@@ -374,7 +391,7 @@
                                 <xsl:sort select="name" />
                                 <xsl:value-of select="name" />
                                 <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                                <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating"/>&#160;<xsl:value-of select="rating" /></xsl:if>
+                                <xsl:if test="rating != 0"> <xsl:value-of select="$lang.Rating"/> <xsl:value-of select="rating" /></xsl:if>
                                 <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
                                 <xsl:if test="children/gear">
                                   (<xsl:for-each select="children/gear">
@@ -409,10 +426,11 @@
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
                   <xsl:if test="martialarttechniques/martialarttechnique">
-                   (<xsl:for-each select="martialarttechniques/martialarttechnique">
-                      <xsl:value-of select="name" />
-					  <xsl:if test="position() != last()">, </xsl:if>
-                    </xsl:for-each>)
+                  (
+                  <xsl:for-each select="martialarttechniques/martialarttechnique">
+                    <xsl:value-of select="." /><xsl:if test="position() != last()">, </xsl:if>
+                  </xsl:for-each>
+                  )
                   </xsl:if>
                 </xsl:for-each></p>
               </xsl:if>

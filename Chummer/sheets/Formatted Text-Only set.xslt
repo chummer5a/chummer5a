@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Formatted Text-Only Character Sheet -->
+<!-- Created by Adam Schmidt, srchummer5@gmail.com -->
+<!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
@@ -23,7 +24,21 @@
             <head>
                 <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
               <meta charset="UTF-8" />
-              <xsl:call-template name="Chummer5CSS" />
+                <style type="text/css">
+                    * {
+                        font-family: 'courier new', courier;
+                        font-size: 9pt;
+                    }
+        </style>
+         <style media="print">
+           @page {
+            size: auto;
+            margin-top: 0.5in;
+            margin-left: 0.5in;
+            margin-right: 0.5in;
+            margin-bottom: 0.75in;
+          }
+        </style>
            </head>
             <body>
         == <xsl:value-of select="$lang.PersonalData"/> ==
@@ -704,21 +719,10 @@
         <xsl:value-of select="name"/>
         <xsl:if test="spec != ''"> (<xsl:value-of select="spec"/>) </xsl:if>
       </xsl:variable>
-      <xsl:choose>
-        <xsl:when test="string-length($snme) &gt; 29">
-          <xsl:value-of select="$snme"/>
-		  <br/>
-          <xsl:call-template name="fnx-repeat">
-            <xsl:with-param name="count" select="30"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:call-template name="fnx-pad-r">
-            <xsl:with-param name="string" select="$snme"/>
-            <xsl:with-param name="length" select="30"/>
-          </xsl:call-template>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:call-template name="fnx-pad-r">
+        <xsl:with-param name="string" select="$snme"/>
+        <xsl:with-param name="length" select="40"/>
+      </xsl:call-template>
       <xsl:choose>
         <xsl:when test="isnativelanguage = 'True'">
           <xsl:value-of select="$lang.Native"/>
@@ -1224,7 +1228,7 @@
         <br/>
         <xsl:call-template name="fnx-pad-r">
           <xsl:with-param name="string" select="date"/>
-          <xsl:with-param name="length" select="22"/>
+          <xsl:with-param name="length" select="20"/>
         </xsl:call-template>
         <xsl:call-template name="fnx-pad-l">
           <xsl:with-param name="string" select="amount"/>
@@ -1242,7 +1246,7 @@
         <br/>
         <xsl:call-template name="fnx-pad-r">
           <xsl:with-param name="string" select="date"/>
-          <xsl:with-param name="length" select="22"/>
+          <xsl:with-param name="length" select="20"/>
         </xsl:call-template>
         <xsl:call-template name="fnx-pad-l">
           <xsl:with-param name="string" select="amount"/>

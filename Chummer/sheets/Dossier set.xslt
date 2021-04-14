@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Dossier character summary sheet -->
+<!-- Created by Jeff Halket, modified by Keith Rudolph, krudolph@gmail.com -->
+<!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.PreserveHtml.xslt"/>
@@ -22,11 +23,56 @@
       <head>
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
-        <xsl:call-template name="Chummer5CSS" />
-<!-- ** Override default style type definitions ** -->
         <style type="text/css">
-          * {
-          font-size: 9pt;
+            * {
+            font-family: 'courier new', tahoma, 'trebuchet ms', arial;
+            font-size: 9pt;
+            margin: 0;
+            vertical-align: top;
+            }
+            html {
+            height: 100%;
+            margin: 0px;  /* this affects the margin on the html before sending to printer */
+            }
+            body {
+            color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            }
+            .label {
+            font-weight: bold;
+            width: 15%;
+            }
+            .mugshot {
+            width: auto;
+            max-width: 100%;
+            object-fit: scale-down;
+            image-rendering: optimizeQuality;
+            }
+            @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+            .mugshot {
+            width: 100%;
+            max-width: inherit;
+            object-fit: scale-down;
+            }
+            }
+        </style>
+        <!--[if IE]
+        <style type="text/css">
+        .mugshot {
+          width: 100%;
+          max-width: inherit;
+          object-fit: scale-down;
+          }
+        </style>
+        -->
+        <style media="print">
+           @page {
+            size: auto;
+            margin-top: 0.5in;
+            margin-left: 0.5in;
+            margin-right: 0.5in;
+            margin-bottom: 0.5in;
           }
         </style>
       </head>

@@ -26,7 +26,9 @@ using System.Linq;
  using System.Reflection;
  using System.Runtime;
  using System.Runtime.InteropServices;
+ using System.Text;
  using System.Threading;
+ using System.Threading.Tasks;
  using System.Windows.Forms;
  using Chummer.Backend;
  using Chummer.Plugins;
@@ -49,8 +51,8 @@ namespace Chummer
         internal static readonly Process MyProcess = Process.GetCurrentProcess();
 
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
-        private static PluginControl _objPluginLoader;
-        public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();
+        private static PluginControl _pluginLoader;
+        public static PluginControl PluginLoader => _pluginLoader = _pluginLoader ?? new PluginControl();
 
 
         /// <summary>
@@ -169,17 +171,17 @@ namespace Chummer
 
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
+                if (LanguageManager.ManagerErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    MessageBox.Show(LanguageManager.ManagerErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.ManagerErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(GlobalOptions.ErrorMessage))
+                if (GlobalOptions.ErrorMessage.Length > 0)
                 {
                     // MainForm is null at the moment, so we have to show error box manually
-                    MessageBox.Show(GlobalOptions.ErrorMessage, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(GlobalOptions.ErrorMessage.ToString(), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -206,16 +208,19 @@ namespace Chummer
                     Log = LogManager.GetCurrentClassLogger();
                     if (GlobalOptions.UseLogging)
                     {
-                        foreach (LoggingRule objRule in LogManager.Configuration.LoggingRules)
+                        foreach (var rule in LogManager.Configuration.LoggingRules.ToList())
                         {
 #if DEBUG
                             //enable logging to EventLog when Debugging
-                            if (objRule.Levels.Count == 0 && objRule.RuleName == "ELChummer")
-                                objRule.EnableLoggingForLevels(LogLevel.Trace, LogLevel.Fatal);
+                            if (rule.Levels.Count == 0 && (rule.RuleName == "ELChummer"))
+                                rule.EnableLoggingForLevels(LogLevel.Trace, LogLevel.Fatal);
 #endif
+
                             //only change the loglevel, if it's off - otherwise it has been changed manually
-                            if (objRule.Levels.Count == 0)
-                                objRule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
+                            if (rule.Levels.Count == 0)
+                                rule.EnableLoggingForLevels(LogLevel.Debug, LogLevel.Fatal);
+
+
                         }
                     }
 
@@ -225,7 +230,7 @@ namespace Chummer
                         Properties.Settings.Default.Save();
                     }
 
-                    if (!Utils.IsUnitTest && GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
+                    if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
 
 #if DEBUG
@@ -235,33 +240,34 @@ namespace Chummer
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
 #endif
                         TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
-                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use(next => new TranslateExceptionTelemetryProcessor(next));
-                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use(next => new DropUserdataTelemetryProcessor(next, Environment.UserName));
+                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) => new TranslateExceptionTelemetryProcessor(next));
+                        var replacePath = Environment.UserName;
+                        TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use((next) => new DropUserdataTelemetryProcessor(next, replacePath));
                         TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Build();
                         //for now lets disable live view.We may make another GlobalOption to enable it at a later stage...
                         //var live = new LiveStreamProvider(ApplicationInsightsConfig);
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-                        MetricIdentifier objMetricIdentifier = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting", dimension4Name:"OSVersion");
-                        string strOSVersion = helpers.Application_Insights.OSVersion.GetOSInfo();
-                        Metric objMetric = ChummerTelemetryClient.GetMetric(objMetricIdentifier);
-                        objMetric.TrackValue(1,
+                        MetricIdentifier mi = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting", dimension4Name:"OSVersion");
+                        string osversion = helpers.Application_Insights.OSVersion.GetOSInfo();
+                        var metric = ChummerTelemetryClient.GetMetric(mi);
+                        metric.TrackValue(1,
                             Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                             CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
                             GlobalOptions.UseLoggingApplicationInsights.ToString(),
-                            strOSVersion);
+                            osversion);
 
                         //Log a page view:
                         pvt = new PageViewTelemetry("frmChummerMain()")
                         {
                             Name = "Chummer Startup: " +
                                    Assembly.GetExecutingAssembly().GetName().Version,
-                            Id = Properties.Settings.Default.UploadClientId.ToString(),
-                            Timestamp = startTime
+                            Id = Properties.Settings.Default.UploadClientId.ToString()
                         };
                         pvt.Context.Operation.Name = "Operation Program.Main()";
                         pvt.Properties.Add("parameters", Environment.CommandLine);
+                        pvt.Timestamp = startTime;
 
                         UploadObjectAsMetric.UploadObject(ChummerTelemetryClient, typeof(GlobalOptions));
                     }
@@ -269,11 +275,17 @@ namespace Chummer
                     {
                         TelemetryConfiguration.Active.DisableTelemetry = true;
                     }
+                    if (Utils.IsUnitTest)
+                        TelemetryConfiguration.Active.DisableTelemetry = true;
 
                     Log.Info(strInfo);
-                    Log.Info("Logging options are set to " + GlobalOptions.UseLogging + " and Upload-Options are set to "
-                             + GlobalOptions.UseLoggingApplicationInsights + " (Installation-Id: "
-                             + Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo) + ").");
+                    Log.Info(new StringBuilder("Logging options are set to ")
+                        .Append(GlobalOptions.UseLogging)
+                        .Append(" and Upload-Options are set to ")
+                        .Append(GlobalOptions.UseLoggingApplicationInsights)
+                        .Append(" (Installation-Id: ")
+                        .Append(Properties.Settings.Default.UploadClientId.ToString("D", GlobalOptions.InvariantCultureInfo))
+                        .Append(").").ToString());
 
                     //make sure the Settings are upgraded/preserved after an upgrade
                     //see for details: https://stackoverflow.com/questions/534261/how-do-you-keep-user-config-settings-across-different-assembly-versions-in-net/534335#534335
@@ -321,43 +333,55 @@ namespace Chummer
                     string[] strArgs = Environment.GetCommandLineArgs();
                     try
                     {
-                        // Process plugin args synchronously because plugin load order can end up mattering
-                        foreach (string strArg in strArgs)
+                        // Hacky, but necessary because innards of Parallel.For would end up invoking
+                        // a UI function that would wait for Parallel.For to finish, causing the program
+                        // to lock up. Task.Run() delegates Parallel.For to a new thread, preventing this.
+                        bool blnIsCompleted = Task.Run(() =>
                         {
-                            if (strArg.Contains("/plugin"))
+                            var loopResult = Parallel.For(1, strArgs.Length, i =>
                             {
-                                if (!GlobalOptions.PluginsEnabled)
+                                if (strArgs[i].Contains("/plugin"))
                                 {
-                                    string strMessage = "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
-                                    Log.Warn(strMessage);
-                                    MainForm.ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                }
-                                else
-                                {
-                                    string strWhatPlugin = strArg.Substring(strArg.IndexOf("/plugin", StringComparison.Ordinal) + 8);
-                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                    strWhatPlugin = strWhatPlugin.TrimStart(':');
-                                    int intEndPlugin = strWhatPlugin.IndexOf(':');
-                                    string strParameter = strWhatPlugin.Substring(intEndPlugin + 1);
-                                    strWhatPlugin = strWhatPlugin.Substring(0, intEndPlugin);
-                                    IPlugin objActivePlugin = PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == strWhatPlugin);
-                                    if (objActivePlugin == null)
+                                    if (!GlobalOptions.PluginsEnabled)
                                     {
-                                        if (PluginLoader.MyPlugins.All(a => a.ToString() != strWhatPlugin))
-                                        {
-                                            string strMessage = "Plugin " + strWhatPlugin + " is not enabled in the options!" + Environment.NewLine
-                                                                + "If you want to use command-line arguments, please enable this plugin and restart the program.";
-                                            Log.Warn(strMessage);
-                                            MainForm.ShowMessageBox(strMessage, strWhatPlugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                        }
+                                        string msg =
+                                            "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                        Log.Warn(msg);
+                                        MainForm.ShowMessageBox(msg, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                     }
                                     else
                                     {
-                                        showMainForm &= objActivePlugin.ProcessCommandLine(strParameter);
+                                        string whatplugin = strArgs[i].Substring(strArgs[i].IndexOf("/plugin", StringComparison.Ordinal) + 8);
+                                        //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                        whatplugin = whatplugin.TrimStart(':');
+                                        int endplugin = whatplugin.IndexOf(':');
+                                        string parameter = whatplugin.Substring(endplugin + 1);
+                                        whatplugin = whatplugin.Substring(0, endplugin);
+                                        var plugin =
+                                            PluginLoader.MyActivePlugins.FirstOrDefault(a =>
+                                                a.ToString() == whatplugin);
+                                        if (plugin == null)
+                                        {
+                                            if (PluginLoader.MyPlugins.All(a => a.ToString() != whatplugin))
+                                            {
+                                                string msg = new StringBuilder("Plugin ").Append(whatplugin)
+                                                    .AppendLine(" is not enabled in the options!")
+                                                    .Append("If you want to use command-line arguments, please enable this plugin and restart the program.").ToString();
+                                                Log.Warn(msg);
+                                                MainForm.ShowMessageBox(msg, whatplugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            showMainForm &= plugin.ProcessCommandLine(parameter);
+                                        }
                                     }
                                 }
-                            }
-                        }
+                            });
+                            return loopResult.IsCompleted;
+                        }).Result;
+                        if (!blnIsCompleted)
+                            Utils.BreakIfDebug();
                     }
                     catch (Exception e)
                     {
@@ -391,45 +415,48 @@ namespace Chummer
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool DeleteFile(string name);
 
-        public static bool UnblockPath(string strPath)
+        public static bool UnblockPath(string path)
         {
-            bool blnAllUnblocked = true;
+            bool allUnblocked = true;
+            string[] files = Directory.GetFiles(path);
+            string[] dirs = Directory.GetDirectories(path);
 
-            foreach (string strFile in Directory.GetFiles(strPath))
+            foreach (string file in files)
             {
-                if (!UnblockFile(strFile))
+                if (!UnblockFile(file))
                 {
                     // Get the last error and display it.
-                    int intError = Marshal.GetLastWin32Error();
-                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + ".");
+                    int error = Marshal.GetLastWin32Error();
+                    Win32Exception exception = new Win32Exception(error, "Error while unblocking " + file + ".");
                     switch (exception.NativeErrorCode)
                     {
                         case 2://file not found - that means the alternate data-stream is not present.
                             break;
                         case 5:
                             Log.Warn(exception);
-                            blnAllUnblocked = false;
+                            allUnblocked = false;
                             break;
                         default:
                             Log.Error(exception);
-                            blnAllUnblocked = false;
+                            allUnblocked = false;
                             break;
                     }
                 }
             }
 
-            foreach (string strDir in Directory.GetDirectories(strPath))
+            foreach (string dir in dirs)
             {
-                if (!UnblockPath(strDir))
-                    blnAllUnblocked = false;
+                if (!UnblockPath(dir))
+                    allUnblocked = false;
             }
 
-            return blnAllUnblocked;
+            return allUnblocked;
+
         }
 
-        public static bool UnblockFile(string strFileName)
+        public static bool UnblockFile(string fileName)
         {
-            return DeleteFile(strFileName + ":Zone.Identifier");
+            return DeleteFile(fileName + ":Zone.Identifier");
         }
 
 

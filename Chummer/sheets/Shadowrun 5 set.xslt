@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Character sheet based on the Shadowrun 5th Edition Character Sheet -->
 <!-- Created by Keith Rudolph, krudolph@gmail.com -->
+<!-- Version -496 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-  <xsl:include href="xs.Chummer5CSS.xslt"/>
   <xsl:include href="xs.fnx.xslt"/>
   <xsl:include href="xs.fnxTests.xslt"/>
   <xsl:include href="xs.TitleName.xslt"/>
@@ -61,29 +61,6 @@
         <meta http-equiv="x-ua-compatible" content="IE=Edge"/>
         <meta charset="UTF-8" />
         <xsl:call-template name="Chummer5CSS" />
-<!-- ** Override default style type definitions ** -->
-        <style type="text/css">
-          * {
-          font-family: segoe, tahoma, 'trebuchet ms', arial;
-          font-size: 8.25pt;
-        </style>
-<!-- ** Additional style type definitions ** -->
-        <style type="text/css">
-          }
-          .mugshot {
-          width: auto;
-          max-width: 100%;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-          @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-          .mugshot {
-          width: 100%;
-          max-width: inherit;
-          object-fit: scale-down;
-          image-rendering: optimizeQuality;
-          }
-        </style>
       </head>
       <body>
         <div class="block" style="width: 100%; text-align: center; vertical-align: center; border-bottom: thick solid #1c4a2d; margin: 0; padding-top: 0.9em; padding-bottom: 0.1em; font-weight: bold; font-variant: small-caps; font-size: 17pt; letter-spacing: 0.05em; text-shadow: 0 0 0.05em #fffff, 0 0 0.1em #1c4a2d;">

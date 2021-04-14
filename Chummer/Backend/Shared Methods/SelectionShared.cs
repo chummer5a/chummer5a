@@ -1128,13 +1128,26 @@ namespace Chummer
                 case "specialmodificationlimit":
                 {
                     // Add in the cost of all child components.
-                    int intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
-                    intMods += objCharacter.Vehicles.AsParallel().Sum(objVehicle =>
+                    int intMods = 0;
+                    object intLock = new object();
+                    Parallel.ForEach(objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons), objChild =>
                     {
-                        IEnumerable<Weapon> lstWeapons = objVehicle.Weapons
-                            .Concat<Weapon>(objVehicle.WeaponMounts.SelectMany(objMount => objMount.Weapons))
-                            .GetAllDescendants(x => x.UnderbarrelWeapons);
-                        return lstWeapons.AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
+                        int i = objChild.WeaponAccessories.Count(y => y.SpecialModification);
+                        lock (intLock)
+                            intMods += i;
+                    });
+                    Parallel.ForEach(objCharacter.Vehicles, objVehicle =>
+                    {
+                        int i = objVehicle.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                        lock (intLock)
+                            intMods += i;
+
+                        Parallel.ForEach(objVehicle.WeaponMounts, objMount =>
+                        {
+                            int j = objMount.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).SelectMany(x => x.WeaponAccessories).Count(y => y.SpecialModification);
+                            lock (intLock)
+                                intMods += j;
+                        });
                     });
                     if (blnShowMessage)
                     {

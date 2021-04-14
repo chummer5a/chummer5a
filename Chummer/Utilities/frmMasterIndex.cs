@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -74,7 +75,7 @@ namespace Chummer
             _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
         }
 
-        private async void frmMasterIndex_Load(object sender, EventArgs e)
+        private void frmMasterIndex_Load(object sender, EventArgs e)
         {
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
@@ -94,12 +95,9 @@ namespace Chummer
                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
-                    await Task.WhenAll(_lstFileNames.Select(LoadFile));
-
-                    async Task LoadFile(string strFileName)
+                    Parallel.ForEach(_lstFileNames, strFileName =>
                     {
-                        XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName);
-                        xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
+                        XPathNavigator xmlBaseNode = XmlManager.LoadXPath(strFileName).SelectSingleNode("/chummer");
                         if (xmlBaseNode != null)
                         {
                             bool blnLoopFileNameHasItems = false;
@@ -136,13 +134,12 @@ namespace Chummer
                             if (blnLoopFileNameHasItems)
                                 lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
                         }
-                    }
+                    });
                 }
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    string strFormat = "{0}" + strSpace + "[{1}]";
                     Dictionary<string, List<ListItem>> dicHelper = new Dictionary<string, List<ListItem>>(lstItemsForLoading.Count);
                     foreach (ListItem objItem in lstItemsForLoading)
                     {
@@ -166,8 +163,9 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    ListItem objItemToAdd = new ListItem(objItem.Value, string.Format(GlobalOptions.CultureInfo,
-                                        strFormat, objItem.Name, string.Join(',' + strSpace, objEntry.FileNames)));
+                                    ListItem objItemToAdd = new ListItem(objItem.Value,
+                                        new StringBuilder(objItem.Name)
+                                            .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objEntry.FileNames).Append(']').ToString());
                                     _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                     lstExistingItems.Add(objItemToAdd);
 
@@ -176,9 +174,10 @@ namespace Chummer
                                         _lstItems.Remove(objToRename);
                                         lstExistingItems.Remove(objToRename);
 
-                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry) objToRename.Value;
-                                        objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalOptions.CultureInfo,
-                                            strFormat, objExistingEntry.DisplayName, string.Join(',' + strSpace, objExistingEntry.FileNames)));
+                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
+                                        objItemToAdd = new ListItem(objToRename.Value,
+                                            new StringBuilder(objExistingEntry.DisplayName)
+                                                .Append(strSpace).Append('[').AppendJoin(',' + strSpace, objExistingEntry.FileNames).Append(']').ToString());
                                         _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                         lstExistingItems.Add(objItemToAdd);
                                     }
