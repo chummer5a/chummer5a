@@ -193,7 +193,7 @@ namespace Chummer
         private readonly ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
         private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
 
-        private readonly ObservableCollection<Spell> _lstSustainedSpells = new ObservableCollection<Spell>();
+        private readonly ObservableCollection<SustainedSpell> _lstSustainedSpells = new ObservableCollection<SustainedSpell>();
 
         private readonly List<Focus> _lstFoci = new List<Focus>(5);
         private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>(5);
@@ -1686,9 +1686,9 @@ namespace Chummer
 
                     // <sustainedspells>
                     objWriter.WriteStartElement("sustainedspells");
-                    foreach (Spell objSustainedSpell in _lstSustainedSpells)
+                    foreach (SustainedSpell objSustainedSpell in _lstSustainedSpells)
                     {
-                        objSustainedSpell.SaveSustained(objWriter);
+                        objSustainedSpell.Save(objWriter);
                     }
                     // </sustainedspells>
                     objWriter.WriteEndElement();
@@ -3506,8 +3506,8 @@ namespace Chummer
                             objXmlNodeList = objXmlCharacter.SelectNodes("sustainedspells/sustainedspell");
                             foreach (XmlNode objXmlSustainedSpell in objXmlNodeList)
                             {
-                                Spell objSustainedSpell = new Spell(this);
-                                objSustainedSpell.LoadSustained(objXmlSustainedSpell);
+                                SustainedSpell objSustainedSpell = new SustainedSpell(this);
+                                objSustainedSpell.Load(objXmlSustainedSpell);
                                 _lstSustainedSpells.Add(objSustainedSpell);
                             }
                         }
@@ -4726,9 +4726,9 @@ namespace Chummer
 
             // <sustainedspells>
             objWriter.WriteStartElement("sustainedspells");
-            foreach(Spell objSustainedSpell in SustainedSpells)
+            foreach(SustainedSpell objSustainedSpell in SustainedSpells)
             {
-                objSustainedSpell.PrintSustained(objWriter, objCulture, strLanguageToPrint);
+                objSustainedSpell.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             //</sustainedspells>
@@ -6586,7 +6586,7 @@ namespace Chummer
             {
                 if(i < SustainedSpells.Count)
                 {
-                    Spell objToRemove = SustainedSpells[i];
+                    SustainedSpell objToRemove = SustainedSpells[i];
 
                     SustainedSpells.RemoveAt(i);
                 }
@@ -10368,7 +10368,7 @@ namespace Chummer
         /// <summary>
         /// Sustained Spells
         /// </summary>
-        public ObservableCollection<Spell> SustainedSpells => _lstSustainedSpells;
+        public ObservableCollection<SustainedSpell> SustainedSpells => _lstSustainedSpells;
 
 
         /// <summary>

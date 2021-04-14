@@ -59,8 +59,6 @@ namespace Chummer
         private bool _blnFreeBonus;
         private bool _blnUsesUnarmed;
         private int _intGrade;
-        private int _intForce = 0;
-        private bool _blnSelfSustained = true;
 
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
@@ -165,23 +163,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Save the objects xml to the XmlWriter, used for Sustained spells only!
-        /// </summary>
-        /// <param name="objWriter"></param>
-        public void SaveSustained(XmlTextWriter objWriter)
-        {
-            if (objWriter == null)
-                return;
-            objWriter.WriteStartElement("sustainedspell");
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo);
-            objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteEndElement();
-        }
-
-        /// <summary>
         /// Load the Spell from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
@@ -226,27 +207,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
-        /// <summary>
-        /// Load the Spell from the XmlNode.
-        /// </summary>
-        /// <param name="objNode"></param>
-        public void LoadSustained(XmlNode objNode)
-        {
-            if (objNode == null)
-                return;
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
-            {
-                _guiID = Guid.NewGuid();
-            }
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
-            {
-                XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-            }
-            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
-            objNode.TryGetBoolFieldQuickly("self", ref _blnSelfSustained);
-        }
+
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -287,32 +248,7 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        /// <summary>
-        /// Print the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter"></param>
-        /// <param name="objCulture"></param>
-        /// <param name="strLanguageToPrint"></param>
-        public void PrintSustained(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
-        {
-            if (objWriter == null)
-                return;
-            objWriter.WriteStartElement("sustainedspell");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            if (Limited)
-                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
-                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellLimited", strLanguageToPrint)));
-            else if (Alchemical)
-                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
-                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint)));
-            else
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo);
-            objWriter.WriteEndElement();
-        }
+
         #endregion
 
         #region Properties
@@ -769,14 +705,6 @@ namespace Chummer
             set => _blnLimited = value;
         }
 
-        /// <summary>
-        /// Whether the spell is self sustained of not.
-        /// </summary>
-        public bool SelfSustained
-        {
-            get => _blnSelfSustained;
-            set => _blnSelfSustained = value;
-        }
 
         /// <summary>
         /// Whether or not the Spell is Extended.
@@ -848,11 +776,6 @@ namespace Chummer
         }
 
 
-        public int Force
-        {
-            get => _intForce;
-            set => _intForce = value;
-        }
         /// <summary>
         /// Does the spell use Unarmed in place of Spellcasting for its casting test?
         /// </summary>

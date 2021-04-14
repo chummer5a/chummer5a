@@ -15,7 +15,7 @@ namespace Chummer
 {
     public partial class SustainedSpellControl : UserControl
     {
-        private readonly Spell _objSustainedSpell;
+        private readonly SustainedSpell _objSustainedSpell;
         private bool _blnLoading = true;
 
         //Events
@@ -23,7 +23,7 @@ namespace Chummer
         public event EventHandler UnsustainSpell;
 
 
-        public SustainedSpellControl(Spell objSustainedSpell)
+        public SustainedSpellControl(SustainedSpell objSustainedSpell)
         {
             _objSustainedSpell = objSustainedSpell;
             InitializeComponent();
@@ -64,7 +64,7 @@ namespace Chummer
             
         }
         #region Properties
-        public Spell SustainedSpellObject => _objSustainedSpell;
+        public SustainedSpell SustainedSpellObject => _objSustainedSpell;
         #endregion
     }
 }

@@ -11754,7 +11754,7 @@ namespace Chummer
         {
             if (sender is SustainedSpellControl objSender)
             {
-                Spell objSustainedSpell = objSender.SustainedSpellObject;
+                SustainedSpell objSustainedSpell = objSender.SustainedSpellObject;
                 if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSustainedSpell")))
                     return;
 
@@ -16383,7 +16383,7 @@ namespace Chummer
                 panSustainedSpells.Controls.Clear();
                 int intSustainedSpells = -1;
 
-                foreach (Spell objSustainedSpell in CharacterObject.SustainedSpells)
+                foreach (SustainedSpell objSustainedSpell in CharacterObject.SustainedSpells)
                 {
                     SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
 
@@ -16404,7 +16404,7 @@ namespace Chummer
                         {
                             int intSustainedSpells = panSustainedSpells?.Controls.Count ?? 0;
 
-                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (SustainedSpell objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
 
@@ -16419,7 +16419,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (SustainedSpell objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 int intMoveUpAmount = 0;
 
@@ -16457,7 +16457,7 @@ namespace Chummer
                         {
                             int intSustainedSpells = panSustainedSpells?.Controls.Count ?? 0;
 
-                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (SustainedSpell objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 int intMoveUpAmount = 0;
 
@@ -16483,7 +16483,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            foreach (Spell objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (SustainedSpell objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
 
@@ -16509,18 +16509,15 @@ namespace Chummer
 
             if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0 && treSpells.SelectedNode.Tag is Spell objSpell)
             {
-                XmlDocument objXmlDocument = CharacterObject.LoadData("spells.xml");
-                XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + objSpell.SourceIDString.CleanXPath() + "]");
+                SustainedSpell objNewSustainedSpell = new SustainedSpell(CharacterObject);
 
-                Spell objNewSpell = new Spell(CharacterObject);
+                objNewSustainedSpell.Create(objSpell);
 
-                objNewSpell.Create(objXmlSpell);
+                CharacterObject.SustainedSpells.Add(objNewSustainedSpell);
 
-                CharacterObject.SustainedSpells.Add(objNewSpell);
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
             }
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
         }
 
 
