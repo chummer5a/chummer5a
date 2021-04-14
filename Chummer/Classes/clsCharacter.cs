@@ -278,7 +278,6 @@ namespace Chummer
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
             _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
             _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
-
             _objTradition = new Tradition(this);
         }
 
@@ -1683,6 +1682,15 @@ namespace Chummer
                     }
 
                     // </spells>
+                    objWriter.WriteEndElement();
+
+                    // <sustainedspells>
+                    objWriter.WriteStartElement("sustainedspells");
+                    foreach (Spell objSustainedSpell in _lstSustainedSpells)
+                    {
+                        objSustainedSpell.SaveSustained(objWriter);
+                    }
+                    // </sustainedspells>
                     objWriter.WriteEndElement();
 
                     // <foci>
@@ -3492,6 +3500,18 @@ namespace Chummer
                             _lstSpells.Add(objSpell);
                         }
 
+                        //Loading sustained spells. Added here to not having to fuck around with load orders or timekeepers. Maybe change into an own loading step?
+                        if (Created)
+                        {
+                            objXmlNodeList = objXmlCharacter.SelectNodes("sustainedspells/sustainedspell");
+                            foreach (XmlNode objXmlSustainedSpell in objXmlNodeList)
+                            {
+                                Spell objSustainedSpell = new Spell(this);
+                                objSustainedSpell.LoadSustained(objXmlSustainedSpell);
+                                _lstSustainedSpells.Add(objSustainedSpell);
+                            }
+                        }
+
                         //Timekeeper.Finish("load_char_spells");
                     }
 
@@ -4704,6 +4724,17 @@ namespace Chummer
             // </spells>
             objWriter.WriteEndElement();
 
+            // <sustainedspells>
+            objWriter.WriteStartElement("sustainedspells");
+            foreach(Spell objSustainedSpell in SustainedSpells)
+            {
+                objSustainedSpell.PrintSustained(objWriter, objCulture, strLanguageToPrint);
+            }
+
+            //</sustainedspells>
+            objWriter.WriteEndElement();
+
+
             // <powers>
             objWriter.WriteStartElement("powers");
             foreach(Power objPower in Powers)
@@ -5058,6 +5089,7 @@ namespace Chummer
             ImprovementManager.ClearCachedValues(this);
             _lstImprovements.Clear();
             _lstSpells.Clear();
+            _lstSustainedSpells.Clear();
             _lstFoci.Clear();
             _lstStackedFoci.Clear();
             _lstPowers.Clear();
@@ -6547,6 +6579,16 @@ namespace Chummer
                     {
                         Spirits.RemoveAt(i);
                     }
+                }
+            }
+
+            for(int i = SustainedSpells.Count -1; i>=0; --i)
+            {
+                if(i < SustainedSpells.Count)
+                {
+                    Spell objToRemove = SustainedSpells[i];
+
+                    SustainedSpells.RemoveAt(i);
                 }
             }
         }

@@ -16509,7 +16509,14 @@ namespace Chummer
 
             if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0 && treSpells.SelectedNode.Tag is Spell objSpell)
             {
-                CharacterObject.SustainedSpells.Add(objSpell);
+                XmlDocument objXmlDocument = CharacterObject.LoadData("spells.xml");
+                XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + objSpell.SourceIDString.CleanXPath() + "]");
+
+                Spell objNewSpell = new Spell(CharacterObject);
+
+                objNewSpell.Create(objXmlSpell);
+
+                CharacterObject.SustainedSpells.Add(objNewSpell);
             }
 
             IsCharacterUpdateRequested = true;

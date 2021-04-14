@@ -34,7 +34,8 @@ namespace Chummer
         private void SustainedSpellControl_Load(object sender, EventArgs e)
         {
             lblSustainedSpell.Text = _objSustainedSpell.DisplayName(GlobalOptions.Language);
-            chkSelfSustained.CheckState = CheckState.Checked;
+            chkSelfSustained.DoDatabinding("Checked", _objSustainedSpell, nameof(_objSustainedSpell.SelfSustained));
+            nudForce.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.Force));
 
             _blnLoading = false;
         }
