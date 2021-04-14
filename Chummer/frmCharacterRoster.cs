@@ -26,7 +26,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -257,80 +256,73 @@ namespace Chummer
                 lstRecentsNodes = new TreeNode[lstRecents.Count];
             }
             Parallel.Invoke(
-                () => {
-                    if(objFavoriteNode != null && lstFavoritesNodes != null)
+                () =>
+                {
+                    if (lstFavoritesNodes == null || lstFavorites.Count <= 0)
+                        return;
+                    object lstFavoritesNodesLock = new object();
+                    Parallel.For(0, lstFavorites.Count, i =>
                     {
-                        object lstFavoritesNodesLock = new object();
-
-                        Parallel.For(0, lstFavorites.Count, i =>
-                        {
-                            string strFile = lstFavorites[i];
-                            TreeNode objNode = CacheCharacter(strFile);
-                            lock(lstFavoritesNodesLock)
-                                lstFavoritesNodes[i] = objNode;
-                        });
-
-                        if(blnAddFavoriteNode)
-                        {
-                            foreach (TreeNode objNode in lstFavoritesNodes)
-                            {
-                                if(objNode != null)
-                                    objFavoriteNode.Nodes.Add(objNode);
-                            }
-                        }
-                    }
-                },
-                () => {
-                    if(objRecentNode != null && lstRecentsNodes != null)
+                        string strFile = lstFavorites[i];
+                        TreeNode objNode = CacheCharacter(strFile);
+                        lock(lstFavoritesNodesLock)
+                            lstFavoritesNodes[i] = objNode;
+                    });
+                    if(blnAddFavoriteNode && objFavoriteNode != null)
                     {
-                        object lstRecentsNodesLock = new object();
-
-                        Parallel.For(0, lstRecents.Count, i =>
+                        foreach (TreeNode objNode in lstFavoritesNodes)
                         {
-                            string strFile = lstRecents[i];
-                            TreeNode objNode = CacheCharacter(strFile);
-                            lock(lstRecentsNodesLock)
-                                lstRecentsNodes[i] = objNode;
-                        });
-
-                        if(blnAddRecentNode)
-                        {
-                            foreach (TreeNode objNode in lstRecentsNodes)
-                            {
-                                if(objNode != null)
-                                    objRecentNode.Nodes.Add(objNode);
-                            }
+                            if(objNode != null)
+                                objFavoriteNode.Nodes.Add(objNode);
                         }
                     }
                 },
                 () =>
                 {
-                    if(objWatchNode != null && lstWatchNodes != null)
+                    if (lstRecentsNodes == null || lstRecents.Count <= 0)
+                        return;
+                    object lstRecentsNodesLock = new object();
+                    Parallel.For(0, lstRecents.Count, i =>
                     {
-                        ConcurrentBag<KeyValuePair<TreeNode,string>> bagNodes = new ConcurrentBag<KeyValuePair<TreeNode, string>>();
-                        Parallel.ForEach(dicWatch, i => bagNodes.Add(new KeyValuePair<TreeNode, string>(CacheCharacter(i.Key), i.Value)));
-                        if(blnAddWatchNode)
+                        string strFile = lstRecents[i];
+                        TreeNode objNode = CacheCharacter(strFile);
+                        lock(lstRecentsNodesLock)
+                            lstRecentsNodes[i] = objNode;
+                    });
+                    if(blnAddRecentNode && objRecentNode != null)
+                    {
+                        foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            foreach (string s in dicWatch.Values.Distinct())
+                            if(objNode != null)
+                                objRecentNode.Nodes.Add(objNode);
+                        }
+                    }
+                },
+                () =>
+                {
+                    if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count <= 0)
+                        return;
+                    ConcurrentDictionary<TreeNode, string> dicWatchNodes = new ConcurrentDictionary<TreeNode, string>();
+                    Parallel.ForEach(dicWatch, i => dicWatchNodes.TryAdd(CacheCharacter(i.Key), i.Value));
+                    foreach (string s in dicWatchNodes.Values.Distinct())
+                    {
+                        if (s == "Watch")
+                            continue;
+                        objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
+                    }
+                    foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes)
+                    {
+                        if (kvtNode.Value == "Watch")
+                        {
+                            objWatchNode.Nodes.Add(kvtNode.Key);
+                        }
+                        else
+                        {
+                            foreach (TreeNode objNode in objWatchNode.Nodes)
                             {
-                                if (s == "Watch") continue;
-                                objWatchNode.Nodes.Add(new TreeNode(s){Tag = s});
-                            }
-                            foreach (KeyValuePair<TreeNode, string> kvtNode in bagNodes)
-                            {
-                                if (kvtNode.Value == "Watch")
+                                if (objNode.Tag.ToString() == kvtNode.Value)
                                 {
-                                    objWatchNode.Nodes.Add(kvtNode.Key);
-                                }
-                                else
-                                {
-                                    foreach (TreeNode objNode in objWatchNode.Nodes)
-                                    {
-                                        if (objNode.Tag.ToString() == kvtNode.Value)
-                                        {
-                                            objNode.Nodes.Add(kvtNode.Key);
-                                        }
-                                    }
+                                    objNode.Nodes.Add(kvtNode.Key);
                                 }
                             }
                         }
