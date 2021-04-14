@@ -1224,7 +1224,7 @@ namespace Chummer
                 foreach (SustainedSpellControl objSustainedSpellControl in panSustainedSpells.Controls.OfType<SustainedSpellControl>())
                 {
                     objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objSustainedSpellControl.UnsustainSpell -= UnsustainSpell;
+                    objSustainedSpellControl.UnsustainSpell -= DeleteSustainedSpell;
                 }
 
                 // Trash the global variables and dispose of the Form.
@@ -11748,7 +11748,7 @@ namespace Chummer
                                CharacterObject.MagicTradition.CanChooseDrainAttribute;
         }
 
-        private void UnsustainSpell(object sender, EventArgs e)
+        private void DeleteSustainedSpell(object sender, EventArgs e)
         {
             if (sender is SustainedSpellControl objSender)
             {
@@ -16386,7 +16386,7 @@ namespace Chummer
                     SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
 
                     objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
-                    objSustainedSpellControl.UnsustainSpell += UnsustainSpell;
+                    objSustainedSpellControl.UnsustainSpell += DeleteSustainedSpell;
 
                     intSustainedSpells += 1;
                     objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
@@ -16407,7 +16407,7 @@ namespace Chummer
                                 SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
 
                                 objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
-                                objSustainedSpellControl.UnsustainSpell += UnsustainSpell;
+                                objSustainedSpellControl.UnsustainSpell += DeleteSustainedSpell;
 
                                 objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
                                 panSustainedSpells.Controls.Add(objSustainedSpellControl);
@@ -16434,7 +16434,7 @@ namespace Chummer
                                         intMoveUpAmount = objSustainedSpellControl.Height;
                                         panSustainedSpells.Controls.RemoveAt(i);
                                         objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                        objSustainedSpellControl.UnsustainSpell -= UnsustainSpell;
+                                        objSustainedSpellControl.UnsustainSpell -= DeleteSustainedSpell;
                                         objSustainedSpellControl.Dispose();
                                         i -= 1;
                                         intSustainedSpells -= 1;
@@ -16470,7 +16470,7 @@ namespace Chummer
                                         intMoveUpAmount = objSustainedSpellControl.Height;
                                         panSustainedSpells.Controls.RemoveAt(i);
                                         objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                        objSustainedSpellControl.UnsustainSpell -= UnsustainSpell;
+                                        objSustainedSpellControl.UnsustainSpell -= DeleteSustainedSpell;
                                         objSustainedSpellControl.Dispose();
                                         i -= 1;
                                         intSustainedSpells -= 1;
@@ -16486,7 +16486,7 @@ namespace Chummer
                                 SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
 
                                 objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
-                                objSustainedSpellControl.UnsustainSpell += UnsustainSpell;
+                                objSustainedSpellControl.UnsustainSpell += DeleteSustainedSpell;
 
                                 objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
                                 panSustainedSpells.Controls.Add(objSustainedSpellControl);

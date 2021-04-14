@@ -50,15 +50,20 @@ namespace Chummer
         private void nudForce_ValueChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
+            {
                 SpellDetailChanged?.Invoke(this, e);
+
+                _objSustainedSpell.Force = (int)nudForce.Value;
+            }
+                
         }
 
         private void chkSelf_CheckedChanged(object sender, EventArgs e)
         {
             if (!_blnLoading)
                 SpellDetailChanged?.Invoke(this, e);
+            
         }
-
         #region Properties
         public Spell SustainedSpellObject => _objSustainedSpell;
         #endregion

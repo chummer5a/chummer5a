@@ -4603,7 +4603,7 @@
     <!--Region Sustained Spell Control-->
     <string>
       <key>Label_SustainedSelf</key>
-      <text>Self:</text>
+      <text>Self</text>
     </string>
     <string>
       <key>Label_SustainedForce</key>

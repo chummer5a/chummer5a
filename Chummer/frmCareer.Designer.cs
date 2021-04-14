@@ -6161,7 +6161,7 @@ namespace Chummer
             this.tblSustainedSpells.RowCount = 2;
             this.tblSustainedSpells.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblSustainedSpells.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblSustainedSpells.Size = new System.Drawing.Size(301, 128);
+            this.tblSustainedSpells.Size = new System.Drawing.Size(301, 133);
             this.tblSustainedSpells.TabIndex = 171;
             // 
             // panSustainedSpells
@@ -6170,11 +6170,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panSustainedSpells.AutoScroll = true;
-            this.panSustainedSpells.AutoSize = true;
             this.panSustainedSpells.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panSustainedSpells.Location = new System.Drawing.Point(3, 3);
             this.panSustainedSpells.Name = "panSustainedSpells";
-            this.panSustainedSpells.Size = new System.Drawing.Size(295, 122);
+            this.panSustainedSpells.Size = new System.Drawing.Size(295, 127);
             this.panSustainedSpells.TabIndex = 173;
             // 
             // tlpMagician
@@ -6307,7 +6306,7 @@ namespace Chummer
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 61.32315F));
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.67685F));
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 92F));
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 94F));
             this.tlpMagicianSpell.Controls.Add(this.cmdSustainSpell, 4, 4);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptors, 1, 0);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptorsLabel, 0, 0);
@@ -6342,7 +6341,7 @@ namespace Chummer
             // 
             // cmdSustainSpell
             // 
-            this.cmdSustainSpell.Location = new System.Drawing.Point(519, 103);
+            this.cmdSustainSpell.Location = new System.Drawing.Point(517, 103);
             this.cmdSustainSpell.Name = "cmdSustainSpell";
             this.cmdSustainSpell.Size = new System.Drawing.Size(76, 21);
             this.cmdSustainSpell.TabIndex = 0;
@@ -6381,7 +6380,7 @@ namespace Chummer
             this.cmdQuickenSpell.AutoSize = true;
             this.cmdQuickenSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMagicianSpell.SetColumnSpan(this.cmdQuickenSpell, 2);
-            this.cmdQuickenSpell.Location = new System.Drawing.Point(312, 103);
+            this.cmdQuickenSpell.Location = new System.Drawing.Point(311, 103);
             this.cmdQuickenSpell.Name = "cmdQuickenSpell";
             this.cmdQuickenSpell.Size = new System.Drawing.Size(83, 23);
             this.cmdQuickenSpell.TabIndex = 108;
@@ -6430,7 +6429,7 @@ namespace Chummer
             // 
             this.lblSpellTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellTypeLabel.AutoSize = true;
-            this.lblSpellTypeLabel.Location = new System.Drawing.Point(328, 6);
+            this.lblSpellTypeLabel.Location = new System.Drawing.Point(327, 6);
             this.lblSpellTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellTypeLabel.Name = "lblSpellTypeLabel";
             this.lblSpellTypeLabel.Size = new System.Drawing.Size(34, 13);
@@ -6443,7 +6442,7 @@ namespace Chummer
             this.lblSpellType.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellType.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellType, 2);
-            this.lblSpellType.Location = new System.Drawing.Point(368, 6);
+            this.lblSpellType.Location = new System.Drawing.Point(367, 6);
             this.lblSpellType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellType.Name = "lblSpellType";
             this.lblSpellType.Size = new System.Drawing.Size(37, 13);
@@ -6454,7 +6453,7 @@ namespace Chummer
             // 
             this.lblSpellDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDamageLabel.AutoSize = true;
-            this.lblSpellDamageLabel.Location = new System.Drawing.Point(312, 31);
+            this.lblSpellDamageLabel.Location = new System.Drawing.Point(311, 31);
             this.lblSpellDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDamageLabel.Name = "lblSpellDamageLabel";
             this.lblSpellDamageLabel.Size = new System.Drawing.Size(50, 13);
@@ -6467,7 +6466,7 @@ namespace Chummer
             this.lblSpellDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDamage.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDamage, 2);
-            this.lblSpellDamage.Location = new System.Drawing.Point(368, 31);
+            this.lblSpellDamage.Location = new System.Drawing.Point(367, 31);
             this.lblSpellDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDamage.Name = "lblSpellDamage";
             this.lblSpellDamage.Size = new System.Drawing.Size(53, 13);
@@ -6514,7 +6513,7 @@ namespace Chummer
             // 
             this.lblSpellDVLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDVLabel.AutoSize = true;
-            this.lblSpellDVLabel.Location = new System.Drawing.Point(337, 56);
+            this.lblSpellDVLabel.Location = new System.Drawing.Point(336, 56);
             this.lblSpellDVLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDVLabel.Name = "lblSpellDVLabel";
             this.lblSpellDVLabel.Size = new System.Drawing.Size(25, 13);
@@ -6527,7 +6526,7 @@ namespace Chummer
             this.lblSpellDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDuration.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDuration, 2);
-            this.lblSpellDuration.Location = new System.Drawing.Point(368, 81);
+            this.lblSpellDuration.Location = new System.Drawing.Point(367, 81);
             this.lblSpellDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDuration.Name = "lblSpellDuration";
             this.lblSpellDuration.Size = new System.Drawing.Size(53, 13);
@@ -6538,7 +6537,7 @@ namespace Chummer
             // 
             this.lblSpellDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDurationLabel.AutoSize = true;
-            this.lblSpellDurationLabel.Location = new System.Drawing.Point(312, 81);
+            this.lblSpellDurationLabel.Location = new System.Drawing.Point(311, 81);
             this.lblSpellDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDurationLabel.Name = "lblSpellDurationLabel";
             this.lblSpellDurationLabel.Size = new System.Drawing.Size(50, 13);
@@ -6563,7 +6562,7 @@ namespace Chummer
             this.lblSpellDV.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDV.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDV, 2);
-            this.lblSpellDV.Location = new System.Drawing.Point(368, 56);
+            this.lblSpellDV.Location = new System.Drawing.Point(367, 56);
             this.lblSpellDV.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDV.Name = "lblSpellDV";
             this.lblSpellDV.Size = new System.Drawing.Size(28, 13);
@@ -18840,7 +18839,6 @@ namespace Chummer
             this.tabMagician.ResumeLayout(false);
             this.tabMagician.PerformLayout();
             this.tblSustainedSpells.ResumeLayout(false);
-            this.tblSustainedSpells.PerformLayout();
             this.tlpMagician.ResumeLayout(false);
             this.tlpMagician.PerformLayout();
             this.flpMagician.ResumeLayout(false);

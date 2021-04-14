@@ -32,11 +32,11 @@ namespace Chummer
             this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdDelete = new System.Windows.Forms.Button();
             this.chkSelfSustained = new Chummer.ColorableCheckBox(this.components);
-            this.numericUpDownEx1 = new Chummer.NumericUpDownEx();
+            this.nudForce = new Chummer.NumericUpDownEx();
             this.lblForce = new System.Windows.Forms.Label();
             this.lblSustainedSpell = new System.Windows.Forms.Label();
             this.bufferedTableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.SuspendLayout();
             // 
             // bufferedTableLayoutPanel1
@@ -49,7 +49,7 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.bufferedTableLayoutPanel1.Controls.Add(this.cmdDelete, 4, 0);
             this.bufferedTableLayoutPanel1.Controls.Add(this.chkSelfSustained, 3, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.numericUpDownEx1, 2, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.nudForce, 2, 0);
             this.bufferedTableLayoutPanel1.Controls.Add(this.lblForce, 1, 0);
             this.bufferedTableLayoutPanel1.Controls.Add(this.lblSustainedSpell, 0, 0);
             this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -90,24 +90,24 @@ namespace Chummer
             this.chkSelfSustained.UseVisualStyleBackColor = true;
             this.chkSelfSustained.CheckedChanged += new System.EventHandler(this.chkSelf_CheckedChanged);
             // 
-            // numericUpDownEx1
+            // nudForce
             // 
-            this.numericUpDownEx1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDownEx1.Location = new System.Drawing.Point(151, 5);
-            this.numericUpDownEx1.Maximum = new decimal(new int[] {
+            this.nudForce.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudForce.Location = new System.Drawing.Point(151, 5);
+            this.nudForce.Maximum = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.numericUpDownEx1.Minimum = new decimal(new int[] {
+            this.nudForce.Minimum = new decimal(new int[] {
             0,
             0,
             0,
             0});
-            this.numericUpDownEx1.Name = "numericUpDownEx1";
-            this.numericUpDownEx1.Size = new System.Drawing.Size(32, 20);
-            this.numericUpDownEx1.TabIndex = 9;
-            this.numericUpDownEx1.ValueChanged += new System.EventHandler(this.nudForce_ValueChanged);
+            this.nudForce.Name = "nudForce";
+            this.nudForce.Size = new System.Drawing.Size(32, 20);
+            this.nudForce.TabIndex = 9;
+            this.nudForce.ValueChanged += new System.EventHandler(this.nudForce_ValueChanged);
             // 
             // lblForce
             // 
@@ -117,7 +117,7 @@ namespace Chummer
             this.lblForce.Name = "lblForce";
             this.lblForce.Size = new System.Drawing.Size(37, 13);
             this.lblForce.TabIndex = 10;
-            this.lblForce.Tag = "Label_SustainedSelf";
+            this.lblForce.Tag = "Label_SustainedForce";
             this.lblForce.Text = "Force:";
             this.lblForce.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -142,7 +142,7 @@ namespace Chummer
             this.Load += new System.EventHandler(this.SustainedSpellControl_Load);
             this.bufferedTableLayoutPanel1.ResumeLayout(false);
             this.bufferedTableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudForce)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -151,7 +151,7 @@ namespace Chummer
 
         private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
         private ColorableCheckBox chkSelfSustained;
-        private NumericUpDownEx numericUpDownEx1;
+        private NumericUpDownEx nudForce;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblForce;
         private System.Windows.Forms.Label lblSustainedSpell;

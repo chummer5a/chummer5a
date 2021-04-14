@@ -59,6 +59,7 @@ namespace Chummer
         private bool _blnFreeBonus;
         private bool _blnUsesUnarmed;
         private int _intGrade;
+        private int _intForce;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -778,6 +779,12 @@ namespace Chummer
         {
             get => _blnUsesUnarmed;
             set => _blnUsesUnarmed = value;
+        }
+
+        public int Force
+        {
+            get => _intForce;
+            set => _intForce = value;
         }
         #endregion
 
