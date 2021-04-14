@@ -229,7 +229,6 @@ namespace Chummer
             }
 
             string[] lstOutputStrings = new string[lstSubstrings.Count];
-            object objProcessingLock = new object();
             Task[] atskProcessingToDo = new Task[lstSubstrings.Count];
             for (int i = 0; i < lstSubstrings.Count; ++i)
             {
@@ -237,12 +236,8 @@ namespace Chummer
                 if (objLoopItem.Item2)
                 {
                     int intInnerI = i;
-                    atskProcessingToDo[i] = ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage, blnGeneratePersistents).ContinueWith(
-                        x =>
-                        {
-                            lock (objProcessingLock)
-                                lstOutputStrings[intInnerI] = x.Result;
-                        });
+                    atskProcessingToDo[i] = ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage, blnGeneratePersistents)
+                        .ContinueWith(x => lstOutputStrings[intInnerI] = x.Result);
                 }
                 else
                 {

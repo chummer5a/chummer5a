@@ -158,18 +158,13 @@ namespace Chummer
         {
             if (_blnNeedToRegeneratePersistents)
                 await GeneratePersistents(objCulture, strLanguage);
-            object objOutputLock = new object();
             string[] strModuleOutputStrings = new string[Modules.Count];
             Task[] atskProcessingToDo = new Task[Modules.Count];
             for (int i = 0; i < Modules.Count; ++i)
             {
                 int intInnerI = i;
-                atskProcessingToDo[i] = Modules[i].PrintModule(objCulture, strLanguage).ContinueWith(
-                    x =>
-                    {
-                        lock (objOutputLock)
-                            strModuleOutputStrings[intInnerI] = x.Result;
-                    });
+                atskProcessingToDo[i] = Modules[i].PrintModule(objCulture, strLanguage)
+                    .ContinueWith(x => strModuleOutputStrings[intInnerI] = x.Result);
             }
             await Task.WhenAll(atskProcessingToDo);
             return string.Concat(strModuleOutputStrings);

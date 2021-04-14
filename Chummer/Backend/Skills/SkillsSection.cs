@@ -750,21 +750,30 @@ namespace Chummer.Backend.Skills
             //First create dictionary mapping name=>guid
             ConcurrentDictionary<string, Guid> dicGroups = new ConcurrentDictionary<string, Guid>();
             ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
-            Task.WaitAll(SkillGroups.Select(x =>
-            {
-                if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
-                    dicGroups.TryAdd(x.Name, x.Id);
-                return Task.CompletedTask;
-            }).Concat(Skills.Select(x =>
-            {
-                if (x.TotalBaseRating > 0)
-                    dicSkills.TryAdd(x.Name, x.Id);
-                return Task.CompletedTask;
-            })).Concat(KnowledgeSkills.Select(x =>
-            {
-                dicSkills.TryAdd(x.Name, x.Id);
-                return Task.CompletedTask;
-            })).ToArray());
+            Parallel.Invoke(
+                () =>
+                {
+                    Parallel.ForEach(SkillGroups, x =>
+                    {
+                        if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
+                            dicGroups.TryAdd(x.Name, x.Id);
+                    });
+                },
+                () =>
+                {
+                    Parallel.ForEach(Skills, x =>
+                    {
+                        if (x.TotalBaseRating > 0)
+                            dicSkills.TryAdd(x.Name, x.Id);
+                    });
+                },
+                () =>
+                {
+                    Parallel.ForEach(KnowledgeSkills, x =>
+                    {
+                        dicSkills.TryAdd(x.Name, x.Id);
+                    });
+                });
             UpdateUndoSpecific(xmlSkillOwnerDocument, dicSkills, EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
             UpdateUndoSpecific(xmlSkillOwnerDocument, dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
         }
