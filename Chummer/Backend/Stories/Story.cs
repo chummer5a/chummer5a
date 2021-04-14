@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
@@ -138,7 +139,7 @@ namespace Chummer
             return null;
         }
 
-        public void GeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public async Task GeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
             List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
@@ -150,26 +151,27 @@ namespace Chummer
             foreach (string strKey in lstPersistentKeysToRemove)
                 _dicPersistentModules.TryRemove(strKey, out StoryModule _);
 
-            Parallel.ForEach(Modules, x =>
-            {
-                x.TestRunToGeneratePersistents(objCulture, strLanguage);
-            });
-            _blnNeedToRegeneratePersistents = false;
+            await Task.WhenAll(Modules.Select(x => x.TestRunToGeneratePersistents(objCulture, strLanguage)).ToArray()).ContinueWith(x => _blnNeedToRegeneratePersistents = false);
         }
 
-        public string PrintStory(CultureInfo objCulture, string strLanguage)
+        public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage)
         {
             if (_blnNeedToRegeneratePersistents)
-                GeneratePersistents(objCulture, strLanguage);
-
+                await GeneratePersistents(objCulture, strLanguage);
             object objOutputLock = new object();
             string[] strModuleOutputStrings = new string[Modules.Count];
-            Parallel.For(0, strModuleOutputStrings.Length, i =>
+            Task[] atskProcessingToDo = new Task[Modules.Count];
+            for (int i = 0; i < Modules.Count; ++i)
             {
-                string strModuleOutput = Modules[i].PrintModule(objCulture, strLanguage);
-                lock (objOutputLock)
-                    strModuleOutputStrings[i] = strModuleOutput;
-            });
+                int intInnerI = i;
+                atskProcessingToDo[i] = Modules[i].PrintModule(objCulture, strLanguage).ContinueWith(
+                    x =>
+                    {
+                        lock (objOutputLock)
+                            strModuleOutputStrings[intInnerI] = x.Result;
+                    });
+            }
+            await Task.WhenAll(atskProcessingToDo);
             return string.Concat(strModuleOutputStrings);
         }
     }

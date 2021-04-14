@@ -98,7 +98,6 @@ namespace Chummer
             SetMyEventHandlers();
             LoadCharacters();
             UpdateCharacter(null);
-            _blnSkipUpdate = false;
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
@@ -112,9 +111,7 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            _blnSkipUpdate = true;
             LoadCharacters(false, false, true, false);
-            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -124,7 +121,6 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            _blnSkipUpdate = true;
             if (e?.Text != "mru")
             {
                 try
@@ -135,13 +131,13 @@ namespace Chummer
                 catch (ObjectDisposedException)
                 {
                     //swallow this
+                    _blnSkipUpdate = false;
                 }
             }
             else
             {
                 LoadCharacters(false, true, true, false);
             }
-            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -154,24 +150,22 @@ namespace Chummer
                     if (!(objCharacterNode.Tag is CharacterCache objCache))
                         continue;
                     objCharacterNode.Text = objCache.CalculatedName();
-                    StringBuilder sbdTooltip = new StringBuilder(objCache.FilePath);
-                    sbdTooltip.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
+                    string strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
                     if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
-                        sbdTooltip.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
-                            .AppendLine(LanguageManager.GetString("String_Colon"))
-                            .Append(objCache.ErrorText);
+                        strTooltip += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error") + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
                     }
                     else
                         objCharacterNode.ForeColor = ColorManager.WindowText;
-                    objCharacterNode.ToolTipText = sbdTooltip.ToString();
+                    objCharacterNode.ToolTipText = strTooltip;
                 }
             }
         }
 
         public void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true, bool blnRefreshPlugins = true)
         {
+            _blnSkipUpdate = true;
             ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = null;
@@ -405,7 +399,8 @@ namespace Chummer
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
-            if(objFavoriteNode != null)
+            treCharacterList.SuspendLayout();
+            if (objFavoriteNode != null)
             {
                 if(blnAddFavoriteNode)
                 {
@@ -466,7 +461,9 @@ namespace Chummer
                 }
             }
             treCharacterList.ExpandAll();
+            treCharacterList.ResumeLayout();
             UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache);
+            _blnSkipUpdate = false;
         }
 
         /// <summary>
@@ -485,13 +482,11 @@ namespace Chummer
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = ColorManager.ErrorColor;
-                objNode.ToolTipText += new StringBuilder()
-                    .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
-                    .AppendLine(LanguageManager.GetString("String_Colon")).Append(objCache.ErrorText);
+                objNode.ToolTipText += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error")
+                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
             }
             return objNode;
         }
-
 
 
         /// <summary>
@@ -502,6 +497,7 @@ namespace Chummer
         {
             if (IsDisposed) // Safety check for external calls
                 return;
+            tlpCharacterRoster.SuspendLayout();
             if(objCache != null)
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");
@@ -597,6 +593,7 @@ namespace Chummer
             lblFilePathLabel.Visible = !string.IsNullOrEmpty(lblFilePath.Text);
             lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
             ProcessMugshotSizeMode();
+            tlpCharacterRoster.ResumeLayout();
         }
 
         #region Form Methods
