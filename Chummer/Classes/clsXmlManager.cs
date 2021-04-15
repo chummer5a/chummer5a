@@ -306,6 +306,12 @@ namespace Chummer
                     XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, strLanguage).ConfigureAwait(false);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
+                else if (strLanguage != GlobalOptions.DefaultLanguage)
+                {
+                    // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
+                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage).ConfigureAwait(false);
+                    xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
+                }
                 if (xmlReturn == null) // Not an else in case something goes wrong in safe cast in the line above
                 {
                     xmlReturn = new XmlDocument { XmlResolver = null };
