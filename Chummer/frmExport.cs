@@ -44,13 +44,10 @@ namespace Chummer
         private string _strExportLanguage;
         private CultureInfo _objExportCulture;
         private bool _blnLoading = true;
-        private string _strExportDestination4UnitTest;
 
         #region Control Events
-        public frmExport(Character objCharacter, string ExportDestination4UnitTest = null, CultureInfo ExportCulture = null)
+        public frmExport(Character objCharacter)
         {
-            _objExportCulture = ExportCulture;
-            _strExportDestination4UnitTest = ExportDestination4UnitTest;
             _objCharacter = objCharacter;
             _workerJsonLoader.WorkerSupportsCancellation = true;
             _workerJsonLoader.WorkerReportsProgress = false;
@@ -350,10 +347,6 @@ namespace Chummer
             txtText.Text = strDisplayText;
             cmdOK.Enabled = true;
             UseWaitCursor = false;
-            if(!String.IsNullOrEmpty(_strExportDestination4UnitTest))
-            {
-                ExportJson(Path.Combine(_strExportDestination4UnitTest + ".json"));
-            }
         }
         #endregion
         #region JSON

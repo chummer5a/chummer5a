@@ -2036,18 +2036,27 @@ namespace Chummer
                     catch (IOException e)
                     {
                         Log.Error(e);
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                        if (Utils.IsUnitTest)
+                            throw e;
+                        else
+                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
                     catch (XmlException ex)
                     {
                         Log.Warn(ex);
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                        if (Utils.IsUnitTest)
+                            throw ex;
+                        else
+                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
-                    catch (UnauthorizedAccessException)
+                    catch (UnauthorizedAccessException e)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                        if (Utils.IsUnitTest)
+                            throw e;
+                        else
+                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
                 }
