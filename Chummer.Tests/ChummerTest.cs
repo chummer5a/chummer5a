@@ -18,8 +18,11 @@
  */
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.XmlUnit.Builder;
@@ -71,28 +74,19 @@ namespace Chummer.Tests
 
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
-            var oldRuns = objPathInfo.GetDirectories("TestRun-*");
-            foreach(var oldDir in oldRuns)
+            foreach (DirectoryInfo objOldDir in objPathInfo.GetDirectories("TestRun-*"))
             {
-                Directory.Delete(oldDir.FullName, true);
+                Directory.Delete(objOldDir.FullName, true);
             }
-            strTestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
-            objTestPath = Directory.CreateDirectory(strTestPath);
-            
+            TestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalOptions.InvariantCultureInfo));
+            TestPathInfo = Directory.CreateDirectory(TestPath);
             TestFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
         }
 
-        ~ChummerTest()
-        {
-            if (Directory.Exists(strTestPath))
-                Directory.Delete(strTestPath, true);
-        }
-
-        private string strTestPath { get; set;}
-        private DirectoryInfo objTestPath { get; set; }
+        private string TestPath { get; }
+        private DirectoryInfo TestPathInfo { get; }
 
         public FileInfo[] TestFiles { get; set; }
-        
 
 
         // "B" will load before all other unit tests, this one tests basic startup (just starting Chummer without any characters
@@ -118,14 +112,13 @@ namespace Chummer.Tests
             Debug.WriteLine("Unit test initialized for: Load1ThenSave()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
-                string strDestination = Path.Combine(objTestPath.FullName, objFileInfo.Name);
+                string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
                 using (Character objCharacter = LoadCharacter(objFileInfo))
                     SaveCharacter(objCharacter, strDestination);
                 using (Character _ = LoadCharacter(new FileInfo(strDestination)))
                 { // Assert on failed load will already happen inside LoadCharacter
                 }
             }
-            objTestPath.Delete(true);
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
@@ -136,11 +129,11 @@ namespace Chummer.Tests
             foreach (FileInfo objBaseFileInfo in TestFiles)
             {
                 // First Load-Save cycle
-                string strDestinationControl = Path.Combine(objTestPath.FullName, "(Control) " + objBaseFileInfo.Name);
+                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + objBaseFileInfo.Name);
                 using (Character objCharacter = LoadCharacter(objBaseFileInfo))
                     SaveCharacter(objCharacter, strDestinationControl);
                 // Second Load-Save cycle
-                string strDestinationTest = Path.Combine(objTestPath.FullName, "(Test) " + objBaseFileInfo.Name);
+                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
                 using (Character objCharacter = LoadCharacter(new FileInfo(strDestinationControl)))
                     SaveCharacter(objCharacter, strDestinationTest);
                 // Check to see that character after first load cycle is consistent with character after second
@@ -177,34 +170,59 @@ namespace Chummer.Tests
                     }
                 }
             }
-            objTestPath.Delete(true);
         }
 
         [TestMethod]
-        public void Load3ThenExport()
+        public void Load3ThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Load3ThenExport()");
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-            foreach(var filePath in languageFilePaths)
+            string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+            foreach(string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
             { 
-                string language = Path.GetFileNameWithoutExtension(filePath);
-                if (language.Contains("data"))
+                string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                if (strExportLanguage.Contains("data"))
                     continue;
-                var culture = new System.Globalization.CultureInfo(language);
-                Debug.WriteLine("Unit test initialized for: Load3ThenExport() - Exporting for Culture " + culture.Name);
+                CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
+                Debug.WriteLine("Unit test initialized for: Load3ThenExport() - Exporting for Culture " + objExportCultureInfo.Name);
                 foreach (FileInfo objFileInfo in TestFiles)
                 {
-                    string strDestination = Path.Combine(objTestPath.FullName, objFileInfo.Name + language);
+                    string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
                     using (Character objCharacter = LoadCharacter(objFileInfo))
                     {
-                        using (frmExport frmExportCharacter = new frmExport(objCharacter, strDestination, culture))
-                            frmExportCharacter.ShowDialog();
-                    }
+                        XmlDocument xmlCharacter = new XmlDocument { XmlResolver = null };
+                        // Write the Character information to a MemoryStream so we don't need to create any files.
+                        MemoryStream objStream = new MemoryStream();
+                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+                        {
+                            // Being the document.
+                            objWriter.WriteStartDocument();
 
+                            // </characters>
+                            objWriter.WriteStartElement("characters");
+
+#if DEBUG
+                            objCharacter.PrintToStream(objStream, objWriter, objExportCultureInfo, strExportLanguage);
+#else
+                            objCharacter.PrintToStream(objWriter, objExportCultureInfo, strExportLanguage);
+#endif
+
+                            // </characters>
+                            objWriter.WriteEndElement();
+
+                            // Finish the document and flush the Writer and Stream.
+                            objWriter.WriteEndDocument();
+                            objWriter.Flush();
+
+                            // Read the stream.
+                            objStream.Position = 0;
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                                    xmlCharacter.Load(objXmlReader);
+                            xmlCharacter.Save(strDestination);
+                        }
+                    }
                 }
             }
-            objTestPath.Delete(true);
         }
 
         
