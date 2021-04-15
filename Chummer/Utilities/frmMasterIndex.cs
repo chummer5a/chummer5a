@@ -74,7 +74,7 @@ namespace Chummer
             _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
         }
 
-        private async void frmMasterIndex_Load(object sender, EventArgs e)
+        private void frmMasterIndex_Load(object sender, EventArgs e)
         {
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
@@ -94,16 +94,15 @@ namespace Chummer
                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
-                    await Task.WhenAll(_lstFileNames.Select(LoadFile));
-
-                    async Task LoadFile(string strFileName)
+                    Parallel.ForEach(_lstFileNames, async strFileName =>
                     {
                         XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName);
                         xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
                         if (xmlBaseNode != null)
                         {
                             bool blnLoopFileNameHasItems = false;
-                            foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " + strSourceFilter + ']'))
+                            foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " +
+                                strSourceFilter + ']'))
                             {
                                 blnLoopFileNameHasItems = true;
                                 string strName = xmlItemNode.SelectSingleNode("name")?.Value;
@@ -124,8 +123,10 @@ namespace Chummer
                                 MasterIndexEntry objEntry = new MasterIndexEntry(
                                     strDisplayName,
                                     strFileName,
-                                    new SourceString(strSource, strPage, GlobalOptions.DefaultLanguage, GlobalOptions.InvariantCultureInfo),
-                                    new SourceString(strSource, strDisplayPage, GlobalOptions.Language, GlobalOptions.CultureInfo),
+                                    new SourceString(strSource, strPage, GlobalOptions.DefaultLanguage,
+                                        GlobalOptions.InvariantCultureInfo),
+                                    new SourceString(strSource, strDisplayPage, GlobalOptions.Language,
+                                        GlobalOptions.CultureInfo),
                                     strEnglishNameOnPage,
                                     strTranslatedNameOnPage);
                                 lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
@@ -136,7 +137,7 @@ namespace Chummer
                             if (blnLoopFileNameHasItems)
                                 lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
                         }
-                    }
+                    });
                 }
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))

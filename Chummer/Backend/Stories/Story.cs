@@ -139,7 +139,7 @@ namespace Chummer
             return null;
         }
 
-        public async Task GeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public void GeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
             List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
@@ -151,22 +151,16 @@ namespace Chummer
             foreach (string strKey in lstPersistentKeysToRemove)
                 _dicPersistentModules.TryRemove(strKey, out StoryModule _);
 
-            await Task.WhenAll(Modules.Select(x => x.TestRunToGeneratePersistents(objCulture, strLanguage)).ToArray()).ContinueWith(x => _blnNeedToRegeneratePersistents = false);
+            Parallel.ForEach(Modules, x => x.TestRunToGeneratePersistents(objCulture, strLanguage));
+            _blnNeedToRegeneratePersistents = false;
         }
 
-        public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage)
+        public string PrintStory(CultureInfo objCulture, string strLanguage)
         {
             if (_blnNeedToRegeneratePersistents)
-                await GeneratePersistents(objCulture, strLanguage);
+                GeneratePersistents(objCulture, strLanguage);
             string[] strModuleOutputStrings = new string[Modules.Count];
-            Task[] atskProcessingToDo = new Task[Modules.Count];
-            for (int i = 0; i < Modules.Count; ++i)
-            {
-                int intInnerI = i;
-                atskProcessingToDo[i] = Modules[i].PrintModule(objCulture, strLanguage)
-                    .ContinueWith(x => strModuleOutputStrings[intInnerI] = x.Result);
-            }
-            await Task.WhenAll(atskProcessingToDo);
+            Parallel.For(0, Modules.Count, i => strModuleOutputStrings[i] = Modules[i].PrintModule(objCulture, strLanguage));
             return string.Concat(strModuleOutputStrings);
         }
     }

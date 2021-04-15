@@ -261,7 +261,7 @@ namespace Chummer
                 {
                     if (lstFavoritesNodes == null || lstFavorites.Count <= 0)
                         return;
-                    Parallel.For(0, lstFavorites.Count, i => lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]).Result);
+                    Parallel.For(0, lstFavorites.Count, i => lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]));
                     if(blnAddFavoriteNode && objFavoriteNode != null)
                     {
                         foreach (TreeNode objNode in lstFavoritesNodes)
@@ -275,7 +275,7 @@ namespace Chummer
                 {
                     if (lstRecentsNodes == null || lstRecents.Count <= 0)
                         return;
-                    Parallel.For(0, lstRecents.Count, i => lstRecentsNodes[i] = CacheCharacter(lstRecents[i]).Result);
+                    Parallel.For(0, lstRecents.Count, i => lstRecentsNodes[i] = CacheCharacter(lstRecents[i]));
                     if(blnAddRecentNode && objRecentNode != null)
                     {
                         foreach (TreeNode objNode in lstRecentsNodes)
@@ -290,7 +290,7 @@ namespace Chummer
                     if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count <= 0)
                         return;
                     ConcurrentDictionary<TreeNode, string> dicWatchNodes = new ConcurrentDictionary<TreeNode, string>();
-                    Parallel.ForEach(dicWatch, kvpLoop => dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key).Result, kvpLoop.Value));
+                    Parallel.ForEach(dicWatch, kvpLoop => dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value));
                     foreach (string s in dicWatchNodes.Values.Distinct())
                     {
                         if (s == "Watch")
@@ -449,30 +449,26 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        private static async Task<TreeNode> CacheCharacter(string strFile)
+        private static TreeNode CacheCharacter(string strFile)
         {
-            TreeNode objReturn = await Task.Run(() =>
+            CharacterCache objCache = new CharacterCache(strFile);
+            TreeNode objNode = new TreeNode
             {
-                CharacterCache objCache = new CharacterCache(strFile);
-                TreeNode objNode = new TreeNode
-                {
-                    Text = objCache.CalculatedName(),
-                    ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
-                        () => '<' + Application.ProductName + '>'),
-                    Tag = objCache
-                };
-                if (!string.IsNullOrEmpty(objCache.ErrorText))
-                {
-                    objNode.ForeColor = ColorManager.ErrorColor;
-                    objNode.ToolTipText += Environment.NewLine + Environment.NewLine +
-                                           LanguageManager.GetString("String_Error")
-                                           + LanguageManager.GetString("String_Colon") + Environment.NewLine +
-                                           objCache.ErrorText;
-                }
+                Text = objCache.CalculatedName(),
+                ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
+                    () => '<' + Application.ProductName + '>'),
+                Tag = objCache
+            };
+            if (!string.IsNullOrEmpty(objCache.ErrorText))
+            {
+                objNode.ForeColor = ColorManager.ErrorColor;
+                objNode.ToolTipText += Environment.NewLine + Environment.NewLine +
+                                       LanguageManager.GetString("String_Error")
+                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine +
+                                       objCache.ErrorText;
+            }
 
-                return objNode;
-            });
-            return objReturn;
+            return objNode;
         }
 
 
