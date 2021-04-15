@@ -757,59 +757,58 @@ namespace Chummer
                         object strReturnLock = new object();
                         if (!string.IsNullOrEmpty(strPreferFile))
                         {
-                            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]
-                                aobjPaths in s_LstAXPathsToSearch)
+                            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
+                                in s_LstAXPathsToSearch)
                             {
-                                Task.WaitAll(aobjPaths.Where(x => x.Item1 == strPreferFile).Select(objXPathPair => new Task(() =>
+                                Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
                                 {
                                     foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
                                             objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
                                         .Select(objXPathPair.Item2))
                                     {
-                                        if (objCancellationToken.IsCancellationRequested)
+                                        if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                             return;
                                         if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
                                             continue;
                                         string strTranslate = objXPathPair.Item4(objNode);
                                         if (string.IsNullOrEmpty(strTranslate))
                                             continue;
+                                        objState.Break();
                                         objCancellationTokenSource.Cancel();
                                         lock (strReturnLock)
                                             strReturn = strTranslate;
+                                        break;
                                     }
-                                })).ToArray(), objCancellationToken);
-                                if (objCancellationToken.IsCancellationRequested)
-                                    break;
+                                });
                             }
                         }
                         if (!objCancellationToken.IsCancellationRequested)
                         {
-                            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]
-                                aobjPaths in s_LstAXPathsToSearch)
+                            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
+                                in s_LstAXPathsToSearch)
                             {
-                                Task.WaitAll(aobjPaths.Select(objXPathPair => new Task(() =>
+                                Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
                                 {
                                     foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
                                             objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
                                         .Select(objXPathPair.Item2))
                                     {
-                                        if (objCancellationToken.IsCancellationRequested)
+                                        if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                             return;
                                         if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
                                             continue;
                                         string strTranslate = objXPathPair.Item4(objNode);
                                         if (string.IsNullOrEmpty(strTranslate))
                                             continue;
+                                        objState.Break();
                                         objCancellationTokenSource.Cancel();
                                         lock (strReturnLock)
                                             strReturn = strTranslate;
+                                        break;
                                     }
-                                })).ToArray(), objCancellationToken);
-                                if (objCancellationToken.IsCancellationRequested)
-                                    break;
+                                });
                             }
                         }
-
                         break;
                 }
             }
@@ -894,24 +893,26 @@ namespace Chummer
                 foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
                     in s_LstAXPathsToSearch)
                 {
-                    Task.WaitAll(aobjPaths.Where(x => x.Item1 == strPreferFile).Select(objXPathPair => new Task(() =>
+                    Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
                     {
                         foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
                                 objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
                             .Select(objXPathPair.Item2))
                         {
-                            if (objCancellationToken.IsCancellationRequested)
+                            if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                 return;
                             if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
                                 continue;
                             string strOriginal = objXPathPair.Item3(objNode);
                             if (string.IsNullOrEmpty(strOriginal))
                                 continue;
+                            objState.Break();
                             objCancellationTokenSource.Cancel();
                             lock (strReturnLock)
                                 strReturn = strOriginal;
+                            break;
                         }
-                    })).ToArray(), objCancellationToken);
+                    });
                 }
             }
             if (!objCancellationToken.IsCancellationRequested)
@@ -919,24 +920,26 @@ namespace Chummer
                 foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
                     in s_LstAXPathsToSearch)
                 {
-                    Task.WaitAll(aobjPaths.Select(objXPathPair => new Task(() =>
+                    Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
                     {
                         foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
                                 objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
                             .Select(objXPathPair.Item2))
                         {
-                            if (objCancellationToken.IsCancellationRequested)
+                            if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                 return;
                             if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
                                 continue;
                             string strOriginal = objXPathPair.Item3(objNode);
                             if (string.IsNullOrEmpty(strOriginal))
                                 continue;
+                            objState.Break();
                             objCancellationTokenSource.Cancel();
                             lock (strReturnLock)
                                 strReturn = strOriginal;
+                            break;
                         }
-                    })).ToArray(), objCancellationToken);
+                    });
                 }
             }
             return strReturn;

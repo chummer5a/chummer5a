@@ -152,18 +152,17 @@ namespace Chummer
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
-        public async Task TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public void TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
-            await ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true);
+            ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true);
         }
 
-        public async Task<string> PrintModule(CultureInfo objCulture, string strLanguage)
+        public string PrintModule(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = await ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage);
-            return strReturn.NormalizeWhiteSpace();
+            return ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage).NormalizeWhiteSpace();
         }
 
-        public async Task<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
+        public string ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
@@ -229,30 +228,25 @@ namespace Chummer
             }
 
             string[] lstOutputStrings = new string[lstSubstrings.Count];
-            Task[] atskProcessingToDo = new Task[lstSubstrings.Count];
-            for (int i = 0; i < lstSubstrings.Count; ++i)
+            Parallel.For(0, lstSubstrings.Count, i =>
             {
                 Tuple<string, bool> objLoopItem = lstSubstrings[i];
                 if (objLoopItem.Item2)
                 {
-                    int intInnerI = i;
-                    atskProcessingToDo[i] = ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage, blnGeneratePersistents)
-                        .ContinueWith(x => lstOutputStrings[intInnerI] = x.Result);
+                    lstOutputStrings[i] = ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage, blnGeneratePersistents);
                 }
                 else
                 {
                     lstOutputStrings[i] = objLoopItem.Item1;
-                    atskProcessingToDo[i] = Task.CompletedTask;
                 }
-            }
-            await Task.WhenAll(atskProcessingToDo);
+            });
             return string.Concat(lstOutputStrings);
         }
 
-        public async Task<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
+        public string ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
         {
             // Process Macros nested inside of single macro
-            strInput = await ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents);
+            strInput = ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents);
 
             int intPipeIndex = strInput.IndexOf('|');
             string strFunction = intPipeIndex == -1 ? strInput : strInput.Substring(0, intPipeIndex);
@@ -399,13 +393,13 @@ namespace Chummer
             if (blnGeneratePersistents)
             {
                 if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
-                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+                    return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
                 StoryModule objPersistentStoryModule = ParentStory.GeneratePersistentModule(strFunction);
                 if (objPersistentStoryModule != null)
-                    return await ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+                    return ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
             }
             else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
-                return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+                return ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
 
             return LanguageManager.GetString("String_Error", strLanguage);
         }

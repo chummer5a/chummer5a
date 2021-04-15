@@ -238,23 +238,17 @@ namespace Chummer
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
-                            await Task.WhenAll(s_astrPreloadFileNames.Select(x =>
+                            Parallel.ForEach(s_astrPreloadFileNames, async x =>
                             {
-                                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
-                                    return XmlManager.LoadAsync(x)
-                                        .ContinueWith(y =>
-                                    {
-                                        frmProgressBar.PerformStep(Application.ProductName);
-                                        return y;
-                                    });
-                                return XmlManager.LoadAsync(x)
-                                    .ContinueWith(y => XmlManager.Load(x, null, GlobalOptions.DefaultLanguage))
-                                    .ContinueWith(y =>
-                                    {
-                                        frmProgressBar.PerformStep(Application.ProductName);
-                                        return y;
-                                    });
-                            }));
+                                Task tskMainLoad = XmlManager.LoadAsync(x);
+                                Task tskEnglishLoad = null;
+                                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                    tskEnglishLoad = XmlManager.LoadAsync(x, null, GlobalOptions.DefaultLanguage);
+                                await tskMainLoad;
+                                if (tskEnglishLoad != null)
+                                    await tskEnglishLoad;
+                                frmProgressBar.PerformStep(Application.ProductName);
+                            });
                             //Timekeeper.Finish("cache_load");
                         }
 
@@ -306,8 +300,11 @@ namespace Chummer
                                     }
                                 }
 
-                                await Task.WhenAll(setFilesToLoad.Select(x =>
-                                    LoadCharacter(x).ContinueWith(y => lstCharactersToLoad.Add(y.Result))));
+                                Parallel.ForEach(setFilesToLoad, async x =>
+                                {
+                                    Character objCharacter = await LoadCharacter(x);
+                                    lstCharactersToLoad.Add(objCharacter);
+                                });
                             }
                             catch (Exception ex)
                             {
@@ -1087,7 +1084,7 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
 
-        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
             using (new CursorWait(this))
             {
@@ -1102,7 +1099,7 @@ namespace Chummer
                 }
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
-                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value).ContinueWith(y => lstCharacters[x.Key] = y.Result)));
+                Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value));
                 Program.MainForm.OpenCharacterList(lstCharacters);
             }
         }
@@ -1413,11 +1410,11 @@ namespace Chummer
                                 {
                                     dicIndexedStrings.Add(i, lstFilesToOpen[i]);
                                 }
-                                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value, string.Empty, false, true, false).ContinueWith(y =>
+                                Parallel.ForEach(dicIndexedStrings, async x =>
                                 {
-                                    lstCharacters[x.Key] = y.Result;
+                                    lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false, true, false);
                                     frmProgressBar.PerformStep();
-                                })));
+                                });
                             }
                         }
                     }
