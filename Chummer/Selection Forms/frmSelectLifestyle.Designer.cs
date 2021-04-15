@@ -407,6 +407,7 @@ namespace Chummer
             // 
             // cboCity
             // 
+            this.cboCity.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboCity.FormattingEnabled = true;
             this.cboCity.Location = new System.Drawing.Point(376, 156);
             this.cboCity.Name = "cboCity";
@@ -417,6 +418,7 @@ namespace Chummer
             // 
             // cboDistrict
             // 
+            this.cboDistrict.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboDistrict.FormattingEnabled = true;
             this.cboDistrict.Location = new System.Drawing.Point(376, 183);
             this.cboDistrict.Name = "cboDistrict";
@@ -427,6 +429,7 @@ namespace Chummer
             // 
             // cboBorough
             // 
+            this.cboBorough.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboBorough.FormattingEnabled = true;
             this.cboBorough.Location = new System.Drawing.Point(376, 210);
             this.cboBorough.Name = "cboBorough";
