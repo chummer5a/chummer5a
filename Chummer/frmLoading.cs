@@ -18,7 +18,6 @@
  */
 
 using System.Diagnostics;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -68,12 +67,11 @@ namespace Chummer
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
         public void PerformStep(string strStepName = "")
         {
-            string strNewText = new StringBuilder(string.IsNullOrEmpty(strStepName)
+            string strNewText = string.IsNullOrEmpty(strStepName)
                     ? LanguageManager.GetString("String_Loading")
-                    : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName))
-                .Append(LanguageManager.GetString("String_Space"))
-                .Append('(').Append((pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo))
-                .Append('/').Append(pgbLoadingProgress.Maximum.ToString(GlobalOptions.CultureInfo)).Append(')').ToString();
+                    : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
+            strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo)
+                          + '/' + pgbLoadingProgress.Maximum.ToString(GlobalOptions.CultureInfo) + ')';
             this.DoThreadSafe(() =>
             {
                 pgbLoadingProgress.PerformStep();
