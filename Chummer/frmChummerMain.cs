@@ -238,17 +238,16 @@ namespace Chummer
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
-                            Parallel.ForEach(s_astrPreloadFileNames, async x =>
-                            {
-                                Task tskMainLoad = XmlManager.LoadAsync(x);
-                                Task tskEnglishLoad = null;
-                                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                                    tskEnglishLoad = XmlManager.LoadAsync(x, null, GlobalOptions.DefaultLanguage);
-                                await tskMainLoad;
-                                if (tskEnglishLoad != null)
-                                    await tskEnglishLoad;
-                                frmProgressBar.PerformStep(Application.ProductName);
-                            });
+                            // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                            await Task.Run(() =>
+                                Parallel.ForEach(s_astrPreloadFileNames, x =>
+                                {
+                                    // Load default language data first for performance reasons
+                                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                        XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
+                                    XmlManager.Load(x);
+                                    frmProgressBar.PerformStep(Application.ProductName);
+                                }));
                             //Timekeeper.Finish("cache_load");
                         }
 
@@ -300,11 +299,13 @@ namespace Chummer
                                     }
                                 }
 
-                                Parallel.ForEach(setFilesToLoad, async x =>
-                                {
-                                    Character objCharacter = await LoadCharacter(x);
-                                    lstCharactersToLoad.Add(objCharacter);
-                                });
+                                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                                await Task.Run(() =>
+                                    Parallel.ForEach(setFilesToLoad, async x =>
+                                    {
+                                        Character objCharacter = await LoadCharacter(x);
+                                        lstCharactersToLoad.Add(objCharacter);
+                                    }));
                             }
                             catch (Exception ex)
                             {
@@ -1084,7 +1085,7 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
 
-        private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
             using (new CursorWait(this))
             {
@@ -1099,7 +1100,8 @@ namespace Chummer
                 }
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
-                Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value));
+                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value)));
                 Program.MainForm.OpenCharacterList(lstCharacters);
             }
         }
@@ -1410,11 +1412,13 @@ namespace Chummer
                                 {
                                     dicIndexedStrings.Add(i, lstFilesToOpen[i]);
                                 }
-                                Parallel.ForEach(dicIndexedStrings, async x =>
-                                {
-                                    lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false, true, false);
-                                    frmProgressBar.PerformStep();
-                                });
+                                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                                await Task.Run(() =>
+                                    Parallel.ForEach(dicIndexedStrings, async x =>
+                                    {
+                                        lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false, true, false);
+                                        frmProgressBar.PerformStep();
+                                    }));
                             }
                         }
                     }
