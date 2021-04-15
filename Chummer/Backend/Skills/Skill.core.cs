@@ -236,11 +236,11 @@ namespace Chummer.Backend.Skills
                 : CharacterObject.AttributeSection.GetAttributeByName(strAttribute).TotalValue;
             if (intRating > 0)
             {
-                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
+                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
             }
             if (Default)
             {
-                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
+                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
             }
             return 0;
         }

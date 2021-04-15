@@ -15,13 +15,11 @@ namespace Chummer
     /// <summary>
     /// A Sustained Magician Spell
     /// </summary>
-
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
 
-    public class SustainedSpell
+    public class SustainedSpell : IHasInternalId, IHasName, IHasXmlNode
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
@@ -77,6 +75,7 @@ namespace Chummer
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
@@ -100,6 +99,7 @@ namespace Chummer
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetInt32FieldQuickly("force", ref _intForce);
+            objNode.TryGetInt32FieldQuickly("nethits", ref _intNetHits);
             objNode.TryGetBoolFieldQuickly("self", ref _blnSelfSustained);
         }
 
@@ -117,6 +117,7 @@ namespace Chummer
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -169,7 +170,12 @@ namespace Chummer
         public bool SelfSustained
         {
             get => _blnSelfSustained;
-            set => _blnSelfSustained = value;
+            set
+            {
+                _blnSelfSustained = value;
+                _objCharacter.OnPropertyChanged("SustainingPenalty");
+            }
+            
         }
 
         /// <summary>

@@ -483,6 +483,10 @@
       <text>Delete</text>
     </string>
     <string>
+      <key>String_DeleteShort</key>
+      <text>X</text>
+    </string>
+    <string>
       <key>String_AddMore</key>
       <text>&amp;Add &amp;&amp; More</text>
     </string>
@@ -4603,11 +4607,15 @@
     <!--Region Sustained Spell Control-->
     <string>
       <key>Label_SustainedSelf</key>
-      <text>Self</text>
+      <text>Self Sustained</text>
     </string>
     <string>
       <key>Label_SustainedForce</key>
       <text>Force:</text>
+    </string>
+    <string>
+      <key>Label_NetHits</key>
+      <text>Net Hits:</text>
     </string>
     <!--End Region-->
     <!-- Region Adept Tab -->
@@ -6403,6 +6411,10 @@
     <string>
       <key>Tip_Skill_Wounds</key>
       <text>Wounds</text>
+    </string>
+    <string>
+      <key>Tip_Skill_Sustain</key>
+      <text>Sustaining</text>
     </string>
     <string>
       <key>Tip_Skill_OffHand</key>

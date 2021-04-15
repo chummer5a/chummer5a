@@ -157,6 +157,7 @@ namespace Chummer
         private string _strGroupNotes = string.Empty;
         private int _intInitiateGrade;
         private int _intSubmersionGrade;
+        private bool _blnPsycheActive;
 
         // Pseudo-Attributes use for Mystic Adepts.
         private int _intMAGMagician;
@@ -1654,6 +1655,9 @@ namespace Chummer
                     // <stuncmfilled />
                     objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
 
+                    //<psyche />
+                    objWriter.WriteElementString("psyche", _blnPsycheActive.ToString(GlobalOptions.InvariantCultureInfo));
+
                     ///////////////////////////////////////////SKILLS
 
                     SkillsSection.Save(objWriter);
@@ -3120,6 +3124,7 @@ namespace Chummer
                         // Attempt to load Condition Monitor Progress.
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
+                        xmlCharacterNavigator.TryGetBoolFieldQuickly("psyche", ref _blnPsycheActive);
                         //Timekeeper.Finish("load_char_misc2");
                     }
 
@@ -4091,6 +4096,8 @@ namespace Chummer
                         RefreshEssenceLossImprovements();
                         // Refresh dicepool modifiers due to filled condition monitor boxes
                         RefreshWoundPenalties();
+                        // Refresh dicepool modifiers due to sustained spells
+                        RefreshSustainingPenalties();
                         // Refresh encumbrance penalties
                         RefreshEncumbrance();
                         // Curb Mystic Adept power points if the values that were loaded in would be illegal
@@ -4449,6 +4456,10 @@ namespace Chummer
                 Math.Min(StunCMThresholdOffset, intStunCM).ToString(objCulture));
             // <cmoverflow>
             objWriter.WriteElementString("cmoverflow", CMOverflow.ToString(objCulture));
+
+
+            // <psyhce>
+            objWriter.WriteElementString("psyche", _blnPsycheActive.ToString(GlobalOptions.InvariantCultureInfo));
 
             // Calculate Initiatives.
             // Initiative.
@@ -13092,6 +13103,15 @@ namespace Chummer
             }
         }
 
+
+        /// <summary>
+        /// Whether or not the Drug Psyche is active
+        /// </summary>
+        public bool PsycheActive
+        {
+            get => _blnPsycheActive;
+            set => _blnPsycheActive = value;
+        }
         /// <summary>
         /// Whether or not Advanced Program options are enabled.
         /// </summary>
@@ -15403,10 +15423,32 @@ namespace Chummer
 
         private int _intWoundModifier;
 
+        public void RefreshSustainingPenalties()
+        {
+            if (IsLoading)
+                return;
+            int intSustainedSpells = SustainedSpells.Where(objSustainedSpell => objSustainedSpell.SelfSustained == true).Count();
+
+            if (PsycheActive)
+            {
+                _intSustainingPenalty = -intSustainedSpells;
+            }
+            else
+            {
+                _intSustainingPenalty = intSustainedSpells * -2;
+            }
+        }
+
+        private int _intSustainingPenalty;
         /// <summary>
         /// Dicepool modifier the character has from wounds. Should be a non-positive number because wound modifiers are always penalties if they are not 0.
         /// </summary>
         public int WoundModifier => _intWoundModifier;
+
+        /// <summary>
+        /// Dicepool modifie the character has from sustaining spells. Should be non-positive
+        /// </summary>
+        public int SustainingPenalty => _intSustainingPenalty;
 
         public Version LastSavedVersion => _verSavedVersion;
 
@@ -16286,6 +16328,11 @@ namespace Chummer
                 RefreshWoundPenalties();
             }
 
+            if (lstNamesOfChangedProperties.Contains(nameof(SustainingPenalty)))
+            {
+                RefreshSustainingPenalties();
+            }
+
             if (lstNamesOfChangedProperties.Contains(nameof(EnemyKarma)))
             {
                 _intCachedEnemyKarma = int.MinValue;
@@ -17153,6 +17200,8 @@ namespace Chummer
                             _objTradition.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("magic/tradition"));
                         }
 
+
+
                         // Attempt to load Condition Monitor Progress.
                         XPathNavigator xmlPhysicalCMFilledNode =
                             xmlLeadsBaseNode.SelectSingleNode(
@@ -17164,6 +17213,8 @@ namespace Chummer
                                 "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity");
                         if (xmlStunCMFilledNode != null)
                             int.TryParse(xmlStunCMFilledNode.Value, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intStunCMFilled);
+
+                        
                         //Timekeeper.Finish("load_char_misc2");
                     }
 

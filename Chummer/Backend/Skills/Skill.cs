@@ -1110,6 +1110,13 @@ namespace Chummer.Backend.Skills
                     .Append(strSpace).Append('(').Append(wound.ToString(GlobalOptions.CultureInfo)).Append(')');
             }
 
+            int sustains = CharacterObject.SustainingPenalty;
+            if (sustains != 0)
+            {
+                s.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace).Append('(').Append(sustains.ToString(GlobalOptions.CultureInfo)).Append(')');
+            }
+
             if (att.Abbrev == "STR" || att.Abbrev == "AGI")
             {
                 foreach (Cyberware cyberware in CharacterObject.Cyberware)
@@ -1753,6 +1760,9 @@ namespace Chummer.Backend.Skills
                     OnMultiplePropertyChanged(nameof(CanUpgradeCareer), nameof(CanAffordSpecialization));
                     break;
                 case nameof(Character.WoundModifier):
+                    OnPropertyChanged(nameof(PoolOtherAttribute));
+                    break;
+                case nameof(Character.SustainingPenalty):
                     OnPropertyChanged(nameof(PoolOtherAttribute));
                     break;
                 case nameof(Character.PrimaryArm):

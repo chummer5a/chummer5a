@@ -11754,9 +11754,14 @@ namespace Chummer
                 IsDirty = true;
             }
         }
+
+        private void SustainedPropertyChanged(object sender, EventArgs e)
+        {
+            CharacterObject.OnPropertyChanged("SustainingPenalty");
+        }
 #endregion
 
-#region Additional Sprites and Complex Forms Tab Control Events
+        #region Additional Sprites and Complex Forms Tab Control Events
         private void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedComplexForm();
@@ -16383,7 +16388,9 @@ namespace Chummer
                     intSustainedSpells += 1;
                     objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
                     panSustainedSpells.Controls.Add(objSustainedSpellControl);
+                   
                 }
+                CharacterObject.OnPropertyChanged("SustainingPenalty");
                 panSustainedSpells.ResumeLayout();
             }
             else
@@ -16404,7 +16411,9 @@ namespace Chummer
                                 objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
                                 panSustainedSpells.Controls.Add(objSustainedSpellControl);
                                 intSustainedSpells += 1;
+                               
                             }
+                            CharacterObject.OnPropertyChanged("SustainingPenalty");
                         }
                         break;
                     case NotifyCollectionChangedAction.Remove:
@@ -16441,6 +16450,7 @@ namespace Chummer
                             {
                                 RefreshSustainedSpells(panSustainedSpells);
                             }
+                            CharacterObject.OnPropertyChanged("SustainingPenalty");
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
@@ -16479,10 +16489,12 @@ namespace Chummer
 
                                 objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objSustainedSpellControl.UnsustainSpell += DeleteSustainedSpell;
+                                objSustainedSpellControl.PropertyChanged += SustainedPropertyChanged;
 
                                 objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
                                 panSustainedSpells.Controls.Add(objSustainedSpellControl);
                             }
+                            CharacterObject.OnPropertyChanged("SustainingPenalty");
                         }
                         break;
                     case NotifyCollectionChangedAction.Reset:
