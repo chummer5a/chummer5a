@@ -157,7 +157,7 @@ namespace Chummer
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
-                await Task.Delay(20);
+                await Task.Delay(20).ConfigureAwait(false);
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -210,7 +210,7 @@ namespace Chummer
             }
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
             {
-                await Task.Delay(20);
+                await Task.Delay(20).ConfigureAwait(false);
             }
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
         }
@@ -243,7 +243,7 @@ namespace Chummer
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
-                await Task.Delay(20);
+                await Task.Delay(20).ConfigureAwait(false);
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -383,7 +383,7 @@ namespace Chummer
             {
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
                 {
-                    await Task.Delay(20);
+                    await Task.Delay(20).ConfigureAwait(false);
                 }
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)

@@ -16401,7 +16401,7 @@ namespace Chummer
                                         using (StreamReader objReader = File.OpenText(strEntryFullName))
                                         {
                                             string strLine;
-                                            while ((strLine = await objReader.ReadLineAsync()) != null)
+                                            while ((strLine = await objReader.ReadLineAsync().ConfigureAwait(false)) != null)
                                             {
                                                 // Trim away the newlines and empty spaces at the beginning and end of lines
                                                 strLine = strLine.Trim('\n', '\r', ' ').Trim();
