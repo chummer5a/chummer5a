@@ -328,7 +328,7 @@ namespace Chummer
                                 return task.Result.OrderBy(a => a.Text).ToList();
                             }
                             return new List<TreeNode>();
-                        });
+                        }).ConfigureAwait(false);
                         await Task.Run(() =>
                         {
                             foreach(TreeNode node in lstNodes)
@@ -374,7 +374,7 @@ namespace Chummer
                                 });
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
-                        });
+                        }).ConfigureAwait(false);
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
