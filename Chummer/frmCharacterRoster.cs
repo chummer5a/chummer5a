@@ -26,7 +26,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -98,7 +97,6 @@ namespace Chummer
             SetMyEventHandlers();
             LoadCharacters();
             UpdateCharacter(null);
-            _blnSkipUpdate = false;
         }
 
         private void frmCharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
@@ -112,9 +110,7 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            _blnSkipUpdate = true;
             LoadCharacters(false, false, true, false);
-            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -124,7 +120,6 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            _blnSkipUpdate = true;
             if (e?.Text != "mru")
             {
                 try
@@ -135,13 +130,13 @@ namespace Chummer
                 catch (ObjectDisposedException)
                 {
                     //swallow this
+                    _blnSkipUpdate = false;
                 }
             }
             else
             {
                 LoadCharacters(false, true, true, false);
             }
-            _blnSkipUpdate = false;
             ResumeLayout();
         }
 
@@ -154,24 +149,22 @@ namespace Chummer
                     if (!(objCharacterNode.Tag is CharacterCache objCache))
                         continue;
                     objCharacterNode.Text = objCache.CalculatedName();
-                    StringBuilder sbdTooltip = new StringBuilder(objCache.FilePath);
-                    sbdTooltip.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
+                    string strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
                     if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
-                        sbdTooltip.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
-                            .AppendLine(LanguageManager.GetString("String_Colon"))
-                            .Append(objCache.ErrorText);
+                        strTooltip += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error") + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
                     }
                     else
                         objCharacterNode.ForeColor = ColorManager.WindowText;
-                    objCharacterNode.ToolTipText = sbdTooltip.ToString();
+                    objCharacterNode.ToolTipText = strTooltip;
                 }
             }
         }
 
         public void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true, bool blnRefreshPlugins = true)
         {
+            _blnSkipUpdate = true;
             ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = null;
@@ -262,81 +255,61 @@ namespace Chummer
 
                 lstRecentsNodes = new TreeNode[lstRecents.Count];
             }
+
             Parallel.Invoke(
-                () => {
-                    if(objFavoriteNode != null && lstFavoritesNodes != null)
+                () =>
+                {
+                    if (lstFavoritesNodes == null || lstFavorites.Count <= 0)
+                        return;
+                    Parallel.For(0, lstFavorites.Count, i => lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]));
+                    if(blnAddFavoriteNode && objFavoriteNode != null)
                     {
-                        object lstFavoritesNodesLock = new object();
-
-                        Parallel.For(0, lstFavorites.Count, i =>
+                        foreach (TreeNode objNode in lstFavoritesNodes)
                         {
-                            string strFile = lstFavorites[i];
-                            TreeNode objNode = CacheCharacter(strFile);
-                            lock(lstFavoritesNodesLock)
-                                lstFavoritesNodes[i] = objNode;
-                        });
-
-                        if(blnAddFavoriteNode)
-                        {
-                            foreach (TreeNode objNode in lstFavoritesNodes)
-                            {
-                                if(objNode != null)
-                                    objFavoriteNode.Nodes.Add(objNode);
-                            }
-                        }
-                    }
-                },
-                () => {
-                    if(objRecentNode != null && lstRecentsNodes != null)
-                    {
-                        object lstRecentsNodesLock = new object();
-
-                        Parallel.For(0, lstRecents.Count, i =>
-                        {
-                            string strFile = lstRecents[i];
-                            TreeNode objNode = CacheCharacter(strFile);
-                            lock(lstRecentsNodesLock)
-                                lstRecentsNodes[i] = objNode;
-                        });
-
-                        if(blnAddRecentNode)
-                        {
-                            foreach (TreeNode objNode in lstRecentsNodes)
-                            {
-                                if(objNode != null)
-                                    objRecentNode.Nodes.Add(objNode);
-                            }
+                            if(objNode != null)
+                                objFavoriteNode.Nodes.Add(objNode);
                         }
                     }
                 },
                 () =>
                 {
-                    if(objWatchNode != null && lstWatchNodes != null)
+                    if (lstRecentsNodes == null || lstRecents.Count <= 0)
+                        return;
+                    Parallel.For(0, lstRecents.Count, i => lstRecentsNodes[i] = CacheCharacter(lstRecents[i]));
+                    if(blnAddRecentNode && objRecentNode != null)
                     {
-                        ConcurrentBag<KeyValuePair<TreeNode,string>> bagNodes = new ConcurrentBag<KeyValuePair<TreeNode, string>>();
-                        Parallel.ForEach(dicWatch, i => bagNodes.Add(new KeyValuePair<TreeNode, string>(CacheCharacter(i.Key), i.Value)));
-                        if(blnAddWatchNode)
+                        foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            foreach (string s in dicWatch.Values.Distinct())
+                            if(objNode != null)
+                                objRecentNode.Nodes.Add(objNode);
+                        }
+                    }
+                },
+                () =>
+                {
+                    if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count <= 0)
+                        return;
+                    ConcurrentDictionary<TreeNode, string> dicWatchNodes = new ConcurrentDictionary<TreeNode, string>();
+                    Parallel.ForEach(dicWatch, kvpLoop => dicWatchNodes.TryAdd(CacheCharacter(kvpLoop.Key), kvpLoop.Value));
+                    foreach (string s in dicWatchNodes.Values.Distinct())
+                    {
+                        if (s == "Watch")
+                            continue;
+                        objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
+                    }
+                    foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes)
+                    {
+                        if (kvtNode.Value == "Watch")
+                        {
+                            objWatchNode.Nodes.Add(kvtNode.Key);
+                        }
+                        else
+                        {
+                            foreach (TreeNode objNode in objWatchNode.Nodes)
                             {
-                                if (s == "Watch") continue;
-                                objWatchNode.Nodes.Add(new TreeNode(s){Tag = s});
-                            }
-                            foreach (KeyValuePair<TreeNode, string> kvtNode in bagNodes)
-                            {
-                                if (kvtNode.Value == "Watch")
+                                if (objNode.Tag.ToString() == kvtNode.Value)
                                 {
-                                    objWatchNode.Nodes.Add(kvtNode.Key);
-                                }
-                                else
-                                {
-                                    foreach (TreeNode objNode in objWatchNode.Nodes)
-                                    {
-                                        if (objNode.Tag.ToString() == kvtNode.Value)
-                                        {
-                                            objNode.Nodes.Add(kvtNode.Key);
-                                        }
-                                    }
+                                    objNode.Nodes.Add(kvtNode.Key);
                                 }
                             }
                         }
@@ -405,7 +378,8 @@ namespace Chummer
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
-            if(objFavoriteNode != null)
+            treCharacterList.SuspendLayout();
+            if (objFavoriteNode != null)
             {
                 if(blnAddFavoriteNode)
                 {
@@ -466,7 +440,9 @@ namespace Chummer
                 }
             }
             treCharacterList.ExpandAll();
+            treCharacterList.ResumeLayout();
             UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache);
+            _blnSkipUpdate = false;
         }
 
         /// <summary>
@@ -479,19 +455,21 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Text = objCache.CalculatedName(),
-                ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>'),
+                ToolTipText = objCache.FilePath.CheapReplace(Utils.GetStartupPath,
+                    () => '<' + Application.ProductName + '>'),
                 Tag = objCache
             };
             if (!string.IsNullOrEmpty(objCache.ErrorText))
             {
                 objNode.ForeColor = ColorManager.ErrorColor;
-                objNode.ToolTipText += new StringBuilder()
-                    .AppendLine().AppendLine().Append(LanguageManager.GetString("String_Error"))
-                    .AppendLine(LanguageManager.GetString("String_Colon")).Append(objCache.ErrorText);
+                objNode.ToolTipText += Environment.NewLine + Environment.NewLine +
+                                       LanguageManager.GetString("String_Error")
+                                       + LanguageManager.GetString("String_Colon") + Environment.NewLine +
+                                       objCache.ErrorText;
             }
+
             return objNode;
         }
-
 
 
         /// <summary>
@@ -502,6 +480,7 @@ namespace Chummer
         {
             if (IsDisposed) // Safety check for external calls
                 return;
+            tlpCharacterRoster.SuspendLayout();
             if(objCache != null)
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");
@@ -597,6 +576,7 @@ namespace Chummer
             lblFilePathLabel.Visible = !string.IsNullOrEmpty(lblFilePath.Text);
             lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
             ProcessMugshotSizeMode();
+            tlpCharacterRoster.ResumeLayout();
         }
 
         #region Form Methods

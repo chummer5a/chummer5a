@@ -74,25 +74,16 @@ namespace Chummer
             }
 
             string[] story = new string[modules.Count];
-            object storyLock = new object();
             XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNode("/chummer/storybuilder/macros");
             //Actually "write" the story
-            Parallel.For(0, modules.Count, i =>
-            {
-                XmlNode objStoryModule = modules[i];
-                StringBuilder sbdModuleString = new StringBuilder();
-                Write(sbdModuleString, objStoryModule["story"]?.InnerText ?? string.Empty, 5, xmlBaseMacrosNode);
-                lock (storyLock)
-                    story[i] = sbdModuleString.ToString();
-            });
-
+            Parallel.For(0, modules.Count, i => story[i] = Write(new StringBuilder(), modules[i]["story"]?.InnerText ?? string.Empty, 5, xmlBaseMacrosNode).ToString());
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
 
-        private void Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
+        private StringBuilder Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
         {
-            if (levels <= 0) return;
-
+            if (levels <= 0)
+                return story;
             int startingLength = story.Length;
 
             IEnumerable<string> words;
@@ -104,7 +95,6 @@ namespace Chummer
             {
                 words = innerText.SplitNoAlloc(' ', '\n', '\r', '\t');
             }
-
             bool mfix = false;
             foreach (string word in words)
             {
@@ -138,6 +128,8 @@ namespace Chummer
                     story.Append(trim);
                 }
             }
+
+            return story;
         }
 
         public string Macro(string innerText, XPathNavigator xmlBaseMacrosNode)

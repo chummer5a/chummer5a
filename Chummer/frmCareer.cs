@@ -2244,21 +2244,11 @@ namespace Chummer
                 return;
             }
 
-            string strSpace = LanguageManager.GetString("String_Space");
-            Character[] lstClones = new Character[intClones];
-            object lstClonesLock = new object();
             using (new CursorWait(this))
             {
-                int[] aintDummy = new int[intClones];
-                for (int i = 0; i < intClones; ++i)
-                    aintDummy[i] = i;
-                Task.WaitAll(aintDummy.Select(x => Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + x.ToString(GlobalOptions.CultureInfo), true)
-                    .ContinueWith(y =>
-                {
-                    lock (lstClonesLock)
-                        lstClones[x] = y.Result;
-                    return y;
-                })).ToArray());
+                string strSpace = LanguageManager.GetString("String_Space");
+                Character[] lstClones = new Character[intClones];
+                Parallel.For(0, intClones, i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result);
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }

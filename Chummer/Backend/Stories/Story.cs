@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
@@ -150,10 +151,7 @@ namespace Chummer
             foreach (string strKey in lstPersistentKeysToRemove)
                 _dicPersistentModules.TryRemove(strKey, out StoryModule _);
 
-            Parallel.ForEach(Modules, x =>
-            {
-                x.TestRunToGeneratePersistents(objCulture, strLanguage);
-            });
+            Parallel.ForEach(Modules, x => x.TestRunToGeneratePersistents(objCulture, strLanguage));
             _blnNeedToRegeneratePersistents = false;
         }
 
@@ -161,15 +159,8 @@ namespace Chummer
         {
             if (_blnNeedToRegeneratePersistents)
                 GeneratePersistents(objCulture, strLanguage);
-
-            object objOutputLock = new object();
             string[] strModuleOutputStrings = new string[Modules.Count];
-            Parallel.For(0, strModuleOutputStrings.Length, i =>
-            {
-                string strModuleOutput = Modules[i].PrintModule(objCulture, strLanguage);
-                lock (objOutputLock)
-                    strModuleOutputStrings[i] = strModuleOutput;
-            });
+            Parallel.For(0, Modules.Count, i => strModuleOutputStrings[i] = Modules[i].PrintModule(objCulture, strLanguage));
             return string.Concat(strModuleOutputStrings);
         }
     }

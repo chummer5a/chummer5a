@@ -228,23 +228,18 @@ namespace Chummer
             }
 
             string[] lstOutputStrings = new string[lstSubstrings.Count];
-            object objProcessingLock = new object();
             Parallel.For(0, lstSubstrings.Count, i =>
             {
                 Tuple<string, bool> objLoopItem = lstSubstrings[i];
                 if (objLoopItem.Item2)
                 {
-                    string strOutput = ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage, blnGeneratePersistents);
-                    lock (objProcessingLock)
-                        lstOutputStrings[i] = strOutput;
+                    lstOutputStrings[i] = ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage, blnGeneratePersistents);
                 }
                 else
                 {
-                    lock (objProcessingLock)
-                        lstOutputStrings[i] = objLoopItem.Item1;
+                    lstOutputStrings[i] = objLoopItem.Item1;
                 }
             });
-
             return string.Concat(lstOutputStrings);
         }
 

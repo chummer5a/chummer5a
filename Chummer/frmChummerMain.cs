@@ -238,23 +238,16 @@ namespace Chummer
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                         {
-                            await Task.WhenAll(s_astrPreloadFileNames.Select(x =>
-                            {
-                                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
-                                    return XmlManager.LoadAsync(x)
-                                        .ContinueWith(y =>
-                                    {
-                                        frmProgressBar.PerformStep(Application.ProductName);
-                                        return y;
-                                    });
-                                return XmlManager.LoadAsync(x)
-                                    .ContinueWith(y => XmlManager.Load(x, null, GlobalOptions.DefaultLanguage))
-                                    .ContinueWith(y =>
-                                    {
-                                        frmProgressBar.PerformStep(Application.ProductName);
-                                        return y;
-                                    });
-                            }));
+                            // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                            await Task.Run(() =>
+                                Parallel.ForEach(s_astrPreloadFileNames, x =>
+                                {
+                                    // Load default language data first for performance reasons
+                                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                        XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
+                                    XmlManager.Load(x);
+                                    frmProgressBar.PerformStep(Application.ProductName);
+                                }));
                             //Timekeeper.Finish("cache_load");
                         }
 
@@ -306,8 +299,13 @@ namespace Chummer
                                     }
                                 }
 
-                                await Task.WhenAll(setFilesToLoad.Select(x =>
-                                    LoadCharacter(x).ContinueWith(y => lstCharactersToLoad.Add(y.Result))));
+                                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                                await Task.Run(() =>
+                                    Parallel.ForEach(setFilesToLoad, async x =>
+                                    {
+                                        Character objCharacter = await LoadCharacter(x);
+                                        lstCharactersToLoad.Add(objCharacter);
+                                    }));
                             }
                             catch (Exception ex)
                             {
@@ -1102,12 +1100,8 @@ namespace Chummer
                 }
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
-                object lstCharactersLock = new object();
-                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value).ContinueWith(y =>
-                {
-                    lock (lstCharactersLock)
-                        lstCharacters[x.Key] = y.Result;
-                })));
+                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value)));
                 Program.MainForm.OpenCharacterList(lstCharacters);
             }
         }
@@ -1413,18 +1407,18 @@ namespace Chummer
                                 frmProgressBar.Reset(lstFilesToOpen.Count);
                                 frmProgressBar.Show();
                                 lstCharacters = new Character[lstFilesToOpen.Count];
-                                object lstCharactersLock = new object();
                                 Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(lstFilesToOpen.Count);
                                 for (int i = 0; i < lstFilesToOpen.Count; ++i)
                                 {
                                     dicIndexedStrings.Add(i, lstFilesToOpen[i]);
                                 }
-                                await Task.WhenAll(dicIndexedStrings.Select(x => LoadCharacter(x.Value, string.Empty, false, true, false).ContinueWith(y =>
-                                {
-                                    lock (lstCharactersLock)
-                                        lstCharacters[x.Key] = y.Result;
-                                    frmProgressBar.PerformStep();
-                                })));
+                                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                                await Task.Run(() =>
+                                    Parallel.ForEach(dicIndexedStrings, async x =>
+                                    {
+                                        lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false, true, false);
+                                        frmProgressBar.PerformStep();
+                                    }));
                             }
                         }
                     }
