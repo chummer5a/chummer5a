@@ -43,35 +43,8 @@ namespace Chummer.Tests
     [TestClass]
     public class ChummerTest
     {
-        private static frmChummerMain _frmMainForm;
-        public static frmChummerMain MainForm
-        {
-            get
-            {
-                if (_frmMainForm == null)
-                {
-                    try
-                    {
-                        _frmMainForm = new frmChummerMain(true)
-                        {
-                            WindowState = FormWindowState.Minimized,
-                            ShowInTaskbar = false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used)
-                        };
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e);
-                        Console.WriteLine(e);
-                    }
-                }
-                Assert.IsNotNull(_frmMainForm);
-                return _frmMainForm;
-            }
-        }
-
         public ChummerTest()
         {
-
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             foreach (DirectoryInfo objOldDir in objPathInfo.GetDirectories("TestRun-*"))
@@ -95,12 +68,12 @@ namespace Chummer.Tests
         {
             Debug.WriteLine("Unit test initialized for: BasicStartup()");
             frmChummerMain frmOldMainForm = Program.MainForm;
-            Program.MainForm = MainForm; // Set program Main form to Unit test version
-            FormWindowState eOldWindowState = MainForm.WindowState;
-            MainForm.WindowState = FormWindowState.Normal;
-            MainForm.Show(); // Show the main form so that we know the UI can load in properly
-            MainForm.Close();
-            MainForm.WindowState = eOldWindowState;
+            // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used)
+            using (frmChummerMain frmTestForm = new frmChummerMain(true) { ShowInTaskbar = false })
+            {
+                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
+                frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
+            }
             Program.MainForm = frmOldMainForm;
         }
 
@@ -233,33 +206,40 @@ namespace Chummer.Tests
         {
             Debug.WriteLine("Unit test initialized for: Load4CharacterForms()");
             frmChummerMain frmOldMainForm = Program.MainForm;
-            Program.MainForm = MainForm; // Set program Main form to Unit test version
-            MainForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
-            foreach (FileInfo objFileInfo in TestFiles)
+            using (frmChummerMain frmTestForm = new frmChummerMain(true)
             {
-                using (Character objCharacter = LoadCharacter(objFileInfo))
+                WindowState = FormWindowState.Minimized,
+                ShowInTaskbar = false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used)
+            })
+            {
+                Program.MainForm = frmTestForm; // Set program Main form to Unit test version
+                frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                foreach (FileInfo objFileInfo in TestFiles)
                 {
-                    try
+                    using (Character objCharacter = LoadCharacter(objFileInfo))
                     {
-                        using (CharacterShared frmCharacterForm = objCharacter.Created ? (CharacterShared) new frmCareer(objCharacter) : new frmCreate(objCharacter))
+                        try
                         {
-                            frmCharacterForm.MdiParent = MainForm;
-                            frmCharacterForm.WindowState = FormWindowState.Minimized;
-                            frmCharacterForm.Show();
-                            frmCharacterForm.Close();
+                            using (CharacterShared frmCharacterForm = objCharacter.Created
+                                ? (CharacterShared) new frmCareer(objCharacter)
+                                : new frmCreate(objCharacter))
+                            {
+                                frmCharacterForm.MdiParent = frmTestForm;
+                                frmCharacterForm.WindowState = FormWindowState.Minimized;
+                                frmCharacterForm.Show();
+                            }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        string strErrorMessage = "Exception while loading form for " + objFileInfo.FullName + ":";
-                        strErrorMessage += Environment.NewLine + e;
-                        Debug.WriteLine(strErrorMessage);
-                        Console.WriteLine(strErrorMessage);
-                        Assert.Fail(strErrorMessage);
+                        catch (Exception e)
+                        {
+                            string strErrorMessage = "Exception while loading form for " + objFileInfo.FullName + ":";
+                            strErrorMessage += Environment.NewLine + e;
+                            Debug.WriteLine(strErrorMessage);
+                            Console.WriteLine(strErrorMessage);
+                            Assert.Fail(strErrorMessage);
+                        }
                     }
                 }
             }
-            MainForm.Close();
             Program.MainForm = frmOldMainForm;
         }
 
