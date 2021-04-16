@@ -14442,7 +14442,7 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (Disposing || picMugshot.Disposing || picMugshot.IsDisposed)
+            if (Disposing || IsDisposed || picMugshot.Disposing || picMugshot.IsDisposed)
                 return;
             try
             {

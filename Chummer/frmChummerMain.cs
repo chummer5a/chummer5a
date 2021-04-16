@@ -800,7 +800,7 @@ namespace Chummer
 
 		private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
-            if(PrintMultipleCharactersForm == null || PrintMultipleCharactersForm.IsDisposed)
+            if(PrintMultipleCharactersForm?.Disposing != false || PrintMultipleCharactersForm.IsDisposed)
                 PrintMultipleCharactersForm = new frmPrintMultiple();
             else
                 PrintMultipleCharactersForm.Activate();

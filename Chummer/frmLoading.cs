@@ -31,11 +31,12 @@ namespace Chummer
             get => _strCharacterFile;
             set
             {
-                if (_strCharacterFile != value)
-                {
-                    _strCharacterFile = value;
-                    Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), _strCharacterFile);
-                }
+                if (_strCharacterFile == value)
+                    return;
+                _strCharacterFile = value;
+                if (Disposing || IsDisposed)
+                    return;
+                this.DoThreadSafe(() => Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), _strCharacterFile));
             }
         }
 
@@ -53,6 +54,8 @@ namespace Chummer
         /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
         public void Reset(int intMaxProgressBarValue = 100)
         {
+            if (Disposing || IsDisposed)
+                return;
             this.DoThreadSafe(() =>
             {
                 pgbLoadingProgress.Value = 0;
@@ -67,6 +70,8 @@ namespace Chummer
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
         public void PerformStep(string strStepName = "")
         {
+            if (Disposing || IsDisposed)
+                return;
             string strNewText = string.IsNullOrEmpty(strStepName)
                     ? LanguageManager.GetString("String_Loading")
                     : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
