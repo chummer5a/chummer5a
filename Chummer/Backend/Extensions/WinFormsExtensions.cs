@@ -40,6 +40,8 @@ namespace Chummer
         {
             if (objControl == null || funcToRun == null)
                 return;
+            if (objControl.Disposing || objControl.IsDisposed)
+                return;
             try
             {
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads

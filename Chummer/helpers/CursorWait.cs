@@ -53,7 +53,7 @@ namespace Chummer
                 if (objControl != null)
                     _dicWaitingControls.TryAdd(objControl, this);
                 _objControl = objControl;
-                if (_objControl?.IsDisposed != false)
+                if (_objControl?.Disposing != false && !_objControl.IsDisposed)
                 {
                     if (!_blnTopMostWaitCursor)
                     {
@@ -116,7 +116,7 @@ namespace Chummer
             if (_blnDisposed)
                 return;
 
-            if (_objControlTopParent?.IsDisposed == false)
+            if (_objControlTopParent?.Disposing == false && !_objControlTopParent.IsDisposed)
             {
                 _objControlTopParent.DoThreadSafe(() =>
                 {
@@ -125,7 +125,7 @@ namespace Chummer
                 });
             }
 
-            if (_objControl?.IsDisposed != false)
+            if (_objControl?.Disposing == false && !_objControl.IsDisposed)
             {
                 _objControl.DoThreadSafe(() =>
                 {
