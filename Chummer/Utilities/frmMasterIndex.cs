@@ -96,7 +96,7 @@ namespace Chummer
                 {
                     Parallel.ForEach(_lstFileNames, async strFileName =>
                     {
-                        XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName);
+                        XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName).ConfigureAwait(false);
                         xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
                         if (xmlBaseNode != null)
                         {

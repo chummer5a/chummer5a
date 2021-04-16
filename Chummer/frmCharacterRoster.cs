@@ -328,7 +328,7 @@ namespace Chummer
                                 return task.Result.OrderBy(a => a.Text).ToList();
                             }
                             return new List<TreeNode>();
-                        });
+                        }).ConfigureAwait(false);
                         await Task.Run(() =>
                         {
                             foreach(TreeNode node in lstNodes)
@@ -346,7 +346,7 @@ namespace Chummer
                                         if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
                                             || node.Tag != null)
                                         {
-                                            if (treCharacterList.IsDisposed)
+                                            if (treCharacterList.Disposing || treCharacterList.IsDisposed)
                                                 return;
                                             if (treCharacterList.Nodes.ContainsKey(node.Name))
                                                 treCharacterList.Nodes.RemoveByKey(node.Name);
@@ -374,7 +374,7 @@ namespace Chummer
                                 });
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
-                        });
+                        }).ConfigureAwait(false);
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
@@ -478,7 +478,7 @@ namespace Chummer
         /// <param name="objCache"></param>
         public void UpdateCharacter(CharacterCache objCache)
         {
-            if (IsDisposed) // Safety check for external calls
+            if (Disposing || IsDisposed) // Safety check for external calls
                 return;
             tlpCharacterRoster.SuspendLayout();
             if(objCache != null)
@@ -698,18 +698,17 @@ namespace Chummer
 
         private void ProcessMugshotSizeMode()
         {
-            if (!Disposing && !picMugshot.Disposing && !picMugshot.IsDisposed)
+            if (Disposing || IsDisposed || picMugshot.Disposing || picMugshot.IsDisposed)
+                return;
+            try
             {
-                try
-                {
-                    picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                        ? PictureBoxSizeMode.CenterImage
-                        : PictureBoxSizeMode.Zoom;
-                }
-                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
-                {
-                    picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
-                }
+                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
+                    ? PictureBoxSizeMode.CenterImage
+                    : PictureBoxSizeMode.Zoom;
+            }
+            catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+            {
+                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
             }
         }
         #endregion

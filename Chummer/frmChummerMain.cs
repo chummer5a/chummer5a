@@ -247,7 +247,7 @@ namespace Chummer
                                         XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
                                     XmlManager.Load(x);
                                     frmProgressBar.PerformStep(Application.ProductName);
-                                }));
+                                })).ConfigureAwait(false);
                             //Timekeeper.Finish("cache_load");
                         }
 
@@ -303,9 +303,9 @@ namespace Chummer
                                 await Task.Run(() =>
                                     Parallel.ForEach(setFilesToLoad, async x =>
                                     {
-                                        Character objCharacter = await LoadCharacter(x);
+                                        Character objCharacter = await LoadCharacter(x).ConfigureAwait(false);
                                         lstCharactersToLoad.Add(objCharacter);
-                                    }));
+                                    })).ConfigureAwait(false);
                             }
                             catch (Exception ex)
                             {
@@ -800,7 +800,7 @@ namespace Chummer
 
 		private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
-            if(PrintMultipleCharactersForm == null || PrintMultipleCharactersForm.IsDisposed)
+            if(PrintMultipleCharactersForm?.Disposing != false || PrintMultipleCharactersForm.IsDisposed)
                 PrintMultipleCharactersForm = new frmPrintMultiple();
             else
                 PrintMultipleCharactersForm.Activate();
@@ -1101,7 +1101,7 @@ namespace Chummer
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
                 // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
-                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value)));
+                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value).ConfigureAwait(false))).ConfigureAwait(false);
                 Program.MainForm.OpenCharacterList(lstCharacters);
             }
         }
@@ -1281,7 +1281,7 @@ namespace Chummer
                 }
             }
 
-            return CenterableMessageBox.Show(this as IWin32Window, message, caption, buttons, icon, defaultButton);
+            return CenterableMessageBox.Show(this, message, caption, buttons, icon, defaultButton);
         }
 
         public delegate DialogResult PassStringStringReturnDialogResultDelegate(
@@ -1416,9 +1416,9 @@ namespace Chummer
                                 await Task.Run(() =>
                                     Parallel.ForEach(dicIndexedStrings, async x =>
                                     {
-                                        lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false, true, false);
+                                        lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false, true, false).ConfigureAwait(false);
                                         frmProgressBar.PerformStep();
-                                    }));
+                                    })).ConfigureAwait(false);
                             }
                         }
                     }
