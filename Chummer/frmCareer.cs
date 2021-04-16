@@ -256,6 +256,8 @@ namespace Chummer
                             nameof(Character.AddInitiationsAllowed));
                         lblPossessed.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
+
+                        chkPsycheActive.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
                     }
 
                     if (!CharacterObjectOptions.BookEnabled("RF"))
@@ -16372,6 +16374,13 @@ namespace Chummer
             if (panSustainedSpells == null)
                 return;
 
+            if (CharacterObject.SustainedSpells.Count != 0 && !chkPsycheActive.Visible)
+            {
+                //Sets up the Psyche Active Checkbox
+                chkPsycheActive.Visible = true;
+
+            }
+
             if(notifyCollectionChangedEventArgs == null)
             {
                 panSustainedSpells.SuspendLayout();
@@ -16503,6 +16512,12 @@ namespace Chummer
                         }
                         break;
                 }
+            }
+
+            if (CharacterObject.SustainedSpells.Count == 0)
+            {
+                CharacterObject.PsycheActive = false;
+                chkPsycheActive.Visible = false;
             }
         }
 

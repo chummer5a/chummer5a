@@ -4602,6 +4602,10 @@
       <key>Button_SustainSpell</key>
       <text>Sustain Spell</text>
     </string>
+    <string>
+      <key>Label_PsycheActive</key>
+      <text>Psyche</text>
+    </string>
 
     <!--End Region-->
     <!--Region Sustained Spell Control-->

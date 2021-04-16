@@ -13110,7 +13110,14 @@ namespace Chummer
         public bool PsycheActive
         {
             get => _blnPsycheActive;
-            set => _blnPsycheActive = value;
+            set
+            {
+                if (_blnPsycheActive != value)
+                {
+                    _blnPsycheActive = value;
+                    OnPropertyChanged("SustainingPenalty");
+                } 
+            }
         }
         /// <summary>
         /// Whether or not Advanced Program options are enabled.
