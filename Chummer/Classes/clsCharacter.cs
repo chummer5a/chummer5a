@@ -6607,7 +6607,9 @@ namespace Chummer
                 if(i < SustainedSpells.Count)
                 {
                     SustainedSpell objToRemove = SustainedSpells[i];
-
+                    // Remove the Improvements created by the Spell.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
+                        objToRemove.InternalId);
                     SustainedSpells.RemoveAt(i);
                 }
             }
@@ -13124,10 +13126,11 @@ namespace Chummer
                 if (_blnPsycheActive != value)
                 {
                     _blnPsycheActive = value;
-                    OnPropertyChanged("SustainingPenalty");
+                    OnPropertyChanged();
                 } 
             }
         }
+
         /// <summary>
         /// Whether or not Advanced Program options are enabled.
         /// </summary>
@@ -15441,18 +15444,13 @@ namespace Chummer
 
         public void RefreshSustainingPenalties()
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
                 return;
-            int intSustainedSpells = SustainedSpells.Where(objSustainedSpell => objSustainedSpell.SelfSustained == true).Count();
-
-            if (PsycheActive)
-            {
-                _intSustainingPenalty = -intSustainedSpells;
-            }
-            else
-            {
-                _intSustainingPenalty = intSustainedSpells * -2;
-            }
+            int intSustainedSpells = SustainedSpells.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
+            int intModifierPerSpell = PsycheActive ? -1 : -2; // TODO: Unhardcode this
+            // TODO: Add support for Focused Concentration and possibly Heightened Concentration
+            _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
         }
 
         private int _intSustainingPenalty;
@@ -15673,6 +15671,10 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(StunCMLabelText),
                         new DependencyGraphNode<string, Character>(nameof(IsAI)),
                         new DependencyGraphNode<string, Character>(nameof(HomeNode))
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(SustainingPenalty),
+                        new DependencyGraphNode<string, Character>(nameof(SustainedSpells)),
+                        new DependencyGraphNode<string, Character>(nameof(PsycheActive))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(WoundModifier),
                         new DependencyGraphNode<string, Character>(nameof(PhysicalCMFilled),
@@ -18362,6 +18364,8 @@ namespace Chummer
                         RefreshEssenceLossImprovements();
                         // Refresh dicepool modifiers due to filled condition monitor boxes
                         RefreshWoundPenalties();
+                        // Refresh dicepool modifiers due to sustained spells
+                        RefreshSustainingPenalties()
                         // Refresh encumbrance penalties
                         RefreshEncumbrance();
                         // Curb Mystic Adept power points if the values that were loaded in would be illegal
