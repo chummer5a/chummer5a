@@ -162,9 +162,10 @@
       <adept>False</adept>
       <magician>True</magician>
       <required>
-        <allof>
+        <oneof>
           <metamagic>Paradigm Shift: Toxic</metamagic>
-        </allof>
+          <tradition>Elder God</tradition>
+        </oneof>
       </required>
       <source>SG</source>
       <page>87</page>
