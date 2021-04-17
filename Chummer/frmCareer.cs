@@ -5153,28 +5153,14 @@ namespace Chummer
                 return;
             string strInternalIDToRemove = objSelectedQuality.InternalId;
             // Can't do a foreach because we're removing items, this is the next best thing
-            bool blnFirstRemoval = true;
-            for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
-            {
-                Quality objLoopQuality = CharacterObject.Qualities.ElementAt(i);
-                if (objLoopQuality.InternalId != strInternalIDToRemove)
-                    continue;
-                if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
-                    break;
-                blnFirstRemoval = false;
-                if (i > CharacterObject.Qualities.Count)
-                {
-                    i = CharacterObject.Qualities.Count;
-                }
-            }
+            Quality objQualityToRemove =
+                CharacterObject.Qualities.LastOrDefault(x => x.InternalId == strInternalIDToRemove);
+            if (!RemoveQuality(objQualityToRemove))
+                return;
 
-            // Only refresh if at least one quality was removed
-            if (!blnFirstRemoval)
-            {
-                IsCharacterUpdateRequested = true;
+            IsCharacterUpdateRequested = true;
 
-                IsDirty = true;
-            }
+            IsDirty = true;
         }
 
         private void cmdSwapQuality_Click(object sender, EventArgs e)
@@ -5317,9 +5303,9 @@ namespace Chummer
 
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intKarmaCost, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + LanguageManager.GetString("String_Space") + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intTotalKarmaCost, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + LanguageManager.GetString("String_Space") + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                CharacterObject.Karma -= intKarmaCost;
+                CharacterObject.Karma -= intTotalKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
@@ -5352,9 +5338,9 @@ namespace Chummer
             RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"));
 
             // Perform removal
-            if (objSelectedQuality.Levels > 1 && blnCompleteDelete)
+            if (blnCompleteDelete && objSelectedQuality.Levels > 1)
             {
-                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; i--)
+                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities[i];
                     if (objLoopQuality.SourceIDString != objSelectedQuality.SourceIDString
