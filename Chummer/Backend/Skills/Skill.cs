@@ -1040,13 +1040,11 @@ namespace Chummer.Backend.Skills
             StringBuilder s = new StringBuilder();
             if (CyberwareRating > TotalBaseRating)
             {
-                s.Append(LanguageManager.GetString("Tip_Skill_SkillsoftRating"))
-                    .Append(strSpace).Append('(').Append(CyberwareRating.ToString(GlobalOptions.CultureInfo)).Append(')');
+                s.Append(LanguageManager.GetString("Tip_Skill_SkillsoftRating") + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
             }
             else
             {
-                s.Append(LanguageManager.GetString("Tip_Skill_SkillRating"))
-                    .Append(strSpace).Append('(').Append(Rating.ToString(GlobalOptions.CultureInfo));
+                s.Append(LanguageManager.GetString("Tip_Skill_SkillRating") + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
                 bool first = true;
                 foreach (Improvement objImprovement in lstRelevantImprovements)
                 {
@@ -1055,14 +1053,10 @@ namespace Chummer.Backend.Skills
                     if (first)
                     {
                         first = false;
-                        s.Append(strSpace).Append("(Base").Append(strSpace).Append('(')
-                            .Append(LearnedRating.ToString(GlobalOptions.CultureInfo)).Append(')');
+                        s.Append(strSpace + "(Base" + strSpace + '(' + LearnedRating.ToString(GlobalOptions.CultureInfo) + ')');
                     }
 
-                    s.Append(strSpace).Append('+').Append(strSpace)
-                        .Append(CharacterObject.GetObjectName(objImprovement))
-                        .Append(strSpace).Append('(')
-                        .Append(objImprovement.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
+                    s.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
                 if (!first)
@@ -1070,9 +1064,8 @@ namespace Chummer.Backend.Skills
                 s.Append(')');
             }
 
-            s.Append(strSpace).Append('+')
-                .Append(strSpace).Append(att.DisplayAbbrev)
-                .Append(strSpace).Append('(').Append(att.TotalValue.ToString(GlobalOptions.CultureInfo)).Append(')');
+            s.Append(strSpace + '+' + strSpace + att.DisplayAbbrev + strSpace + '(' + att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+
             if (Default && !Leveled)
             {
                 s.Append(strSpace);
@@ -1082,9 +1075,8 @@ namespace Chummer.Backend.Skills
                         CharacterObject.Improvements.FirstOrDefault(x =>
                             x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled)));
                 else
-                    s.Append((intDefaultModifier > 0 ? '+' : '-'))
-                        .Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Defaulting"))
-                        .Append(strSpace).Append('(').Append(Math.Abs(intDefaultModifier).ToString(GlobalOptions.CultureInfo)).Append(')');
+                    s.Append((intDefaultModifier > 0 ? '+' : '-') + strSpace + LanguageManager.GetString("Tip_Skill_Defaulting")
+                             + strSpace + '(' + Math.Abs(intDefaultModifier).ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             foreach (Improvement source in lstRelevantImprovements)
@@ -1093,21 +1085,18 @@ namespace Chummer.Backend.Skills
                     || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
                     || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                     continue;
-                s.Append(strSpace).Append('+').Append(strSpace).Append(CharacterObject.GetObjectName(source));
+                s.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(source));
                 if (!string.IsNullOrEmpty(source.Condition))
                 {
-                    s.Append(strSpace).Append('(')
-                        .Append(source.Condition.ToString(GlobalOptions.CultureInfo)).Append(')');
+                    s.Append(strSpace + '(' + source.Condition.ToString(GlobalOptions.CultureInfo) + ')');
                 }
-
-                s.Append(strSpace).Append('(').Append(source.Value.ToString(GlobalOptions.CultureInfo)).Append(')');
+                s.Append(strSpace + '(' + source.Value.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             int wound = CharacterObject.WoundModifier;
             if (wound != 0)
             {
-                s.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Wounds"))
-                    .Append(strSpace).Append('(').Append(wound.ToString(GlobalOptions.CultureInfo)).Append(')');
+                s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds") + strSpace + '(' + wound.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             if (att.Abbrev == "STR" || att.Abbrev == "AGI")
@@ -1116,11 +1105,10 @@ namespace Chummer.Backend.Skills
                 {
                     if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
                         continue;
-                    s.AppendLine().Append(cyberware.Location)
-                        .Append(strSpace).Append(cyberware.DisplayNameShort(GlobalOptions.Language));
+                    s.Append(Environment.NewLine + cyberware.Location + strSpace + cyberware.DisplayNameShort(GlobalOptions.Language));
                     if (cyberware.Grade.Name != "Standard")
                     {
-                        s.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName).Append(')');
+                        s.Append(strSpace + '(' + cyberware.Grade.CurrentDisplayName + ')');
                     }
 
                     int pool = PoolOtherAttribute(att.Abbrev, false, att.Abbrev == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
@@ -1128,12 +1116,11 @@ namespace Chummer.Backend.Skills
                         || CharacterObject.Ambidextrous
                         || cyberware.LimbSlotCount > 1)
                     {
-                        s.Append(strSpace).Append(pool.ToString(GlobalOptions.CultureInfo));
+                        s.Append(strSpace + pool.ToString(GlobalOptions.CultureInfo));
                     }
                     else
                     {
-                        s.Append(strSpace).AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2}{1}{3})",
-                            pool - 2, strSpace, -2, LanguageManager.GetString("Tip_Skill_OffHand"));
+                        s.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2, strSpace, -2, LanguageManager.GetString("Tip_Skill_OffHand"));
                     }
                 }
             }
@@ -1147,8 +1134,8 @@ namespace Chummer.Backend.Skills
                     continue;
                 s.AppendLine();
                 if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                    s.Append(objSwapSkillAttribute.Exclude).Append(LanguageManager.GetString("String_Colon")).Append(strSpace);
-                s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace);
+                    s.Append(objSwapSkillAttribute.Exclude + LanguageManager.GetString("String_Colon") + strSpace);
+                s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace);
                 int intBasePool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false, CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
                 SkillSpecialization objSpecialization = null;
                 if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
@@ -1173,13 +1160,11 @@ namespace Chummer.Backend.Skills
                         continue;
                     s.AppendLine();
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                        s.AppendFormat(GlobalOptions.CultureInfo, "{0}{1}{2}", objSwapSkillAttribute.Exclude, LanguageManager.GetString("String_Colon"), strSpace);
-                    s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute))
-                        .Append(strSpace).Append(cyberware.Location)
-                        .Append(strSpace).Append(cyberware.CurrentDisplayNameShort);
+                        s.Append(objSwapSkillAttribute.Exclude + LanguageManager.GetString("String_Colon") + strSpace);
+                    s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace + cyberware.Location + strSpace + cyberware.CurrentDisplayNameShort);
                     if (cyberware.Grade.Name != "Standard")
                     {
-                        s.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName).Append(')');
+                        s.Append(strSpace + '(' + cyberware.Grade.CurrentDisplayName + ')');
                     }
 
                     int intLoopPool =
@@ -1196,11 +1181,11 @@ namespace Chummer.Backend.Skills
                         || CharacterObject.Ambidextrous
                         || cyberware.LimbSlotCount > 1)
                     {
-                        s.Append(strSpace).Append(intLoopPool.ToString(GlobalOptions.CultureInfo));
+                        s.Append(strSpace + intLoopPool.ToString(GlobalOptions.CultureInfo));
                     }
                     else
                     {
-                        s.Append(strSpace).AppendFormat(GlobalOptions.CultureInfo, "{0}{1}({2}{1}{3})",
+                        s.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}{1}({2}{1}{3})",
                             intLoopPool - 2, strSpace, -2, LanguageManager.GetString("Tip_Skill_OffHand"));
                     }
                 }
@@ -1254,26 +1239,17 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                //v-- hack i guess
-                StringBuilder sbdReturn = new StringBuilder();
-                StringBuilder sbdMiddle = new StringBuilder();
                 string strSpace = LanguageManager.GetString("String_Space");
-                if (!string.IsNullOrWhiteSpace(SkillGroup))
-                {
-                    sbdMiddle.Append(SkillGroupObject.CurrentDisplayName)
-                        .Append(strSpace).AppendLine(LanguageManager.GetString("String_ExpenseSkillGroup"));
-                }
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    sbdReturn.Append(LanguageManager.GetString("Label_Notes"))
-                        .Append(strSpace).AppendLine(Notes).AppendLine();
-                }
-
-                sbdReturn.AppendLine(DisplayCategory(GlobalOptions.Language))
-                    .Append(sbdMiddle).Append(CharacterObject.LanguageBookLong(Source))
-                    .Append(strSpace).Append(LanguageManager.GetString("String_Page"))
-                    .Append(strSpace).Append(DisplayPage(GlobalOptions.Language));
-                return sbdReturn.ToString();
+                string strReturn = !string.IsNullOrEmpty(Notes)
+                    ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine + Environment.NewLine
+                    : string.Empty;
+                string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
+                    ? SkillGroupObject.CurrentDisplayName + strSpace + LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
+                    : string.Empty;
+                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle
+                             + CharacterObject.LanguageBookLong(Source) + strSpace + LanguageManager.GetString("String_Page")
+                             + strSpace + DisplayPage(GlobalOptions.Language);
+                return strReturn;
             }
         }
 

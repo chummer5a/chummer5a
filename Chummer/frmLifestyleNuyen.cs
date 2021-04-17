@@ -57,12 +57,9 @@ namespace Chummer
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            lblResult.Text = new StringBuilder(strSpace).Append('+')
-                .Append(strSpace).Append(Extra.ToString("#,0", GlobalOptions.CultureInfo)).Append(')')
-                .Append(strSpace).Append('×')
-                .Append(strSpace).Append(Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo))
-                .Append(strSpace).Append('=')
-                .Append(strSpace).Append(StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)).ToString();
+            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
+                             + strSpace + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
         #endregion
 

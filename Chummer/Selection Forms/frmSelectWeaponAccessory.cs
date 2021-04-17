@@ -493,9 +493,8 @@ namespace Chummer
                         lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                     }
                     else
-                        lblCost.Text = new StringBuilder(decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo))
-                            .Append(strSpace).Append('-').Append(strSpace)
-                            .Append(decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)).Append('¥').ToString();
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + strSpace + '-'
+                                       + strSpace + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     lblTest.Text = _objCharacter.AvailTest(decMax, lblAvail.Text);
                 }

@@ -438,7 +438,7 @@ namespace Chummer
         {
             get
             {
-                StringBuilder strTip = new StringBuilder(LanguageManager.GetString("Tip_SpellDrainBase"));
+                StringBuilder sbdTip = new StringBuilder(LanguageManager.GetString("Tip_SpellDrainBase"));
                 string strSpace = LanguageManager.GetString("String_Space");
                 int intMAG = _objCharacter.MAG.TotalValue;
                 string strDV = DV;
@@ -454,38 +454,36 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip.AppendLine().Append(LanguageManager.GetString("String_Force"))
-                            .Append(strSpace).Append(i.ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_Colon"))
-                            .Append(strSpace).Append(intDV.ToString(GlobalOptions.CultureInfo));
+                        sbdTip.Append(Environment.NewLine + LanguageManager.GetString("String_Force") + strSpace + i.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Colon") + strSpace + intDV.ToString(GlobalOptions.CultureInfo));
 
                         string strLabelFormat = strSpace + "({0}" + LanguageManager.GetString("String_Colon") + strSpace + "{1})";
                         if (Limited)
                         {
-                            strTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellLimited"), -2);
+                            sbdTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellLimited"), -2);
                         }
                         if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
                         {
-                            strTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellExtended"), '+' + 2.ToString(GlobalOptions.CultureInfo));
+                            sbdTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellExtended"), '+' + 2.ToString(GlobalOptions.CultureInfo));
                         }
                     }
                     else
                     {
-                        strTip.Clear();
-                        strTip.Append(LanguageManager.GetString("Tip_SpellDrainSeeDescription"));
+                        sbdTip.Clear();
+                        sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainSeeDescription"));
                         break;
                     }
                 }
 
                 List<Improvement> lstDrainImprovements = RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).ToList();
-                if (lstDrainImprovements.Count <= 0) return strTip.ToString();
-                strTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
+                if (lstDrainImprovements.Count <= 0)
+                    return sbdTip.ToString();
+                sbdTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
                 foreach (Improvement objLoopImprovement in lstDrainImprovements)
                 {
-                    strTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement))
-                        .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
+                    sbdTip.Append(Environment.NewLine + _objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
                 }
 
-                return strTip.ToString();
+                return sbdTip.ToString();
             }
         }
 

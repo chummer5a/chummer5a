@@ -961,12 +961,12 @@ namespace Chummer
                 foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
                     if (!string.IsNullOrEmpty(strItem))
-                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
+                        sbdCategoryFilter.Append("category = " + strItem.CleanXPath() + " or ");
                 }
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                    sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
                 }
             }
             if (_setAllowedNames.Count > 0)
@@ -974,12 +974,12 @@ namespace Chummer
                 StringBuilder sbdNameFilter = new StringBuilder();
                 foreach (string strItem in _setAllowedNames.Where(strItem => !string.IsNullOrEmpty(strItem)))
                 {
-                    sbdNameFilter.Append("name = ").Append(strItem.CleanXPath()).Append(" or ");
+                    sbdNameFilter.Append("name = " + strItem.CleanXPath() + " or ");
                 }
                 if (sbdNameFilter.Length > 0)
                 {
                     sbdNameFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdNameFilter).Append(')');
+                    sbdFilter.Append(" and (" + sbdNameFilter + ')');
                 }
             }
             if (ShowArmorCapacityOnly)
@@ -993,9 +993,9 @@ namespace Chummer
             if (_objGearParent == null)
                 sbdFilter.Append(" and not(requireparent)");
             if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
-                sbdFilter.Append(" and ammoforweapontype = ").Append(ForceItemAmmoForWeaponType.CleanXPath());
+                sbdFilter.Append(" and ammoforweapontype = " + ForceItemAmmoForWeaponType.CleanXPath());
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }

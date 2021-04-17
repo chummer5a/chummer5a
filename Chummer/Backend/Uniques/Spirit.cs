@@ -290,10 +290,10 @@ namespace Chummer
 
         private void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
         {
-            StringBuilder strExtra = new StringBuilder();
+            StringBuilder sbdExtra = new StringBuilder();
             string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
             if (!string.IsNullOrEmpty(strSelect))
-                strExtra.Append(CharacterObject.TranslateExtra(strSelect, strLanguageToPrint));
+                sbdExtra.Append(CharacterObject.TranslateExtra(strSelect, strLanguageToPrint));
             string strSource = string.Empty;
             string strPage = string.Empty;
             string strPowerName = xmlPowerEntryNode.InnerText;
@@ -319,10 +319,10 @@ namespace Chummer
                 foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(').TrimEndOnce(')').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     blnExtrasAdded = true;
-                    strExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(", ");
+                    sbdExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint) + ", ");
                 }
                 if (blnExtrasAdded)
-                    strExtra.Length -= 2;
+                    sbdExtra.Length -= 2;
 
                 if (!objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName))
                     strPowerName = strEnglishName;
@@ -394,7 +394,7 @@ namespace Chummer
             objWriter.WriteStartElement("critterpower");
             objWriter.WriteElementString("name", strPowerName);
             objWriter.WriteElementString("name_english", strEnglishName);
-            objWriter.WriteElementString("extra", strExtra.ToString());
+            objWriter.WriteElementString("extra", sbdExtra.ToString());
             objWriter.WriteElementString("category", strCategory);
             objWriter.WriteElementString("category_english", strEnglishCategory);
             objWriter.WriteElementString("type", strDisplayType);

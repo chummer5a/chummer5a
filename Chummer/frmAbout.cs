@@ -130,9 +130,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
             txtDescription.Text = strReturn;
-            txtContributors.Text += new StringBuilder(Environment.NewLine)
-                .AppendLine().AppendJoin(Environment.NewLine, Properties.Contributors.Usernames)
-                .AppendLine().Append("/u/Iridios").ToString();
+            txtContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames)
+                                    + Environment.NewLine + "/u/Iridios";
             txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text");
         }
 

@@ -321,7 +321,7 @@ namespace Chummer
         {
             get
             {
-                StringBuilder strTip = new StringBuilder(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
+                StringBuilder sbdTip = new StringBuilder(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
                 int intRES = _objCharacter.RES.TotalValue;
                 string strFV = FV;
                 string strSpace = LanguageManager.GetString("String_Space");
@@ -337,14 +337,13 @@ namespace Chummer
                         // Fading cannot be lower than 2.
                         if (intFV < 2)
                             intFV = 2;
-                        strTip.AppendLine().Append(LanguageManager.GetString("String_Level"))
-                            .Append(strSpace).Append(i.ToString(GlobalOptions.CultureInfo)).Append(LanguageManager.GetString("String_Colon"))
-                            .Append(strSpace).Append(intFV.ToString(GlobalOptions.CultureInfo));
+                        sbdTip.Append(Environment.NewLine + LanguageManager.GetString("String_Level") + strSpace + i.ToString(GlobalOptions.CultureInfo)
+                                      + LanguageManager.GetString("String_Colon") + strSpace + intFV.ToString(GlobalOptions.CultureInfo));
                     }
                     else
                     {
-                        strTip.Clear();
-                        strTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingSeeDescription"));
+                        sbdTip.Clear();
+                        sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingSeeDescription"));
                         break;
                     }
                 }
@@ -352,15 +351,14 @@ namespace Chummer
                 List<Improvement> lstFadingImprovements = _objCharacter.Improvements.Where(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled).ToList();
                 if (lstFadingImprovements.Count > 0)
                 {
-                    strTip.Append(Environment.NewLine).Append(LanguageManager.GetString("Label_Bonus"));
+                    sbdTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
                     foreach (Improvement objLoopImprovement in lstFadingImprovements)
                     {
-                        strTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement))
-                            .Append(strSpace).Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
+                        sbdTip.Append(Environment.NewLine + _objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
                     }
                 }
 
-                return strTip.ToString();
+                return sbdTip.ToString();
             }
         }
 
