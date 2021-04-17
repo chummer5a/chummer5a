@@ -426,7 +426,6 @@ namespace Chummer
             this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkPsycheActive = new Chummer.ColorableCheckBox(this.components);
             this.tblSustainedSpells = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.panSustainedSpells = new System.Windows.Forms.Panel();
             this.tlpMagician = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddSpirit = new System.Windows.Forms.Button();
             this.panSpirits = new System.Windows.Forms.Panel();
@@ -1313,6 +1312,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.flpSustainedSpells = new System.Windows.Forms.FlowLayoutPanel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1612,7 +1612,7 @@ namespace Chummer
             this.tabPowerUc.AutoSize = true;
             this.tabPowerUc.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tabPowerUc.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPowerUc.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tabPowerUc.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabPowerUc.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
@@ -5973,7 +5973,7 @@ namespace Chummer
             // tabSkillsUc
             // 
             this.tabSkillsUc.BackColor = System.Drawing.SystemColors.Control;
-            this.tabSkillsUc.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tabSkillsUc.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSkillsUc.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
@@ -5999,7 +5999,7 @@ namespace Chummer
             this.lmtControl.AutoSize = true;
             this.lmtControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.lmtControl.BackColor = System.Drawing.SystemColors.Control;
-            this.lmtControl.Cursor = System.Windows.Forms.Cursors.Default;
+            this.lmtControl.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.lmtControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lmtControl.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lmtControl.Location = new System.Drawing.Point(3, 3);
@@ -6187,7 +6187,7 @@ namespace Chummer
             // 
             this.tblSustainedSpells.ColumnCount = 1;
             this.tblSustainedSpells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblSustainedSpells.Controls.Add(this.panSustainedSpells, 0, 1);
+            this.tblSustainedSpells.Controls.Add(this.flpSustainedSpells, 0, 1);
             this.tblSustainedSpells.Location = new System.Drawing.Point(3, 307);
             this.tblSustainedSpells.Name = "tblSustainedSpells";
             this.tblSustainedSpells.RowCount = 2;
@@ -6195,18 +6195,6 @@ namespace Chummer
             this.tblSustainedSpells.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblSustainedSpells.Size = new System.Drawing.Size(301, 133);
             this.tblSustainedSpells.TabIndex = 171;
-            // 
-            // panSustainedSpells
-            // 
-            this.panSustainedSpells.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panSustainedSpells.AutoScroll = true;
-            this.panSustainedSpells.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panSustainedSpells.Location = new System.Drawing.Point(3, 3);
-            this.panSustainedSpells.Name = "panSustainedSpells";
-            this.panSustainedSpells.Size = new System.Drawing.Size(295, 127);
-            this.panSustainedSpells.TabIndex = 173;
             // 
             // tlpMagician
             // 
@@ -6338,7 +6326,7 @@ namespace Chummer
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 61.32315F));
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.67685F));
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 106F));
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 107F));
             this.tlpMagicianSpell.Controls.Add(this.cmdSustainSpell, 4, 4);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptors, 1, 0);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptorsLabel, 0, 0);
@@ -6375,7 +6363,7 @@ namespace Chummer
             // 
             this.cmdSustainSpell.AutoSize = true;
             this.cmdSustainSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdSustainSpell.Location = new System.Drawing.Point(505, 103);
+            this.cmdSustainSpell.Location = new System.Drawing.Point(504, 103);
             this.cmdSustainSpell.Name = "cmdSustainSpell";
             this.cmdSustainSpell.Size = new System.Drawing.Size(78, 23);
             this.cmdSustainSpell.TabIndex = 0;
@@ -18758,6 +18746,17 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
+            // flpSustainedSpells
+            // 
+            this.flpSustainedSpells.AutoScroll = true;
+            this.flpSustainedSpells.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpSustainedSpells.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpSustainedSpells.Location = new System.Drawing.Point(3, 3);
+            this.flpSustainedSpells.Name = "flpSustainedSpells";
+            this.flpSustainedSpells.Size = new System.Drawing.Size(295, 127);
+            this.flpSustainedSpells.TabIndex = 0;
+            this.flpSustainedSpells.WrapContents = false;
+            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -20487,8 +20486,8 @@ namespace Chummer
         private ToolStripMenuItem mnuSpecialChangeOptions;
         private BufferedTableLayoutPanel tblSustainedSpells;
         private ButtonWithToolTip cmdSustainSpell;
-        private Panel panSustainedSpells;
         private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
         private ColorableCheckBox chkPsycheActive;
+        private FlowLayoutPanel flpSustainedSpells;
     }
 }

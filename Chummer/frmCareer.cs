@@ -282,7 +282,7 @@ namespace Chummer
                         RefreshQualities(treQualities, cmsQuality);
                         RefreshSpirits(panSpirits, panSprites);
                         RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                        RefreshSustainedSpells(panSustainedSpells);
+                        RefreshSustainedSpells(flpSustainedSpells);
                         RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                         RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                         RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -1039,7 +1039,7 @@ namespace Chummer
 
         private void SustainedSpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshSustainedSpells(panSustainedSpells, notifyCollectionChangedEventArgs);
+            RefreshSustainedSpells(flpSustainedSpells, notifyCollectionChangedEventArgs);
         }
 
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -1223,7 +1223,7 @@ namespace Chummer
                     objSpiritControl.DeleteSpirit -= DeleteSpirit;
                 }
 
-                foreach (SustainedSpellControl objSustainedSpellControl in panSustainedSpells.Controls.OfType<SustainedSpellControl>())
+                foreach (SustainedSpellControl objSustainedSpellControl in flpSustainedSpells.Controls.OfType<SustainedSpellControl>())
                 {
                     objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
                     objSustainedSpellControl.UnsustainSpell -= DeleteSustainedSpell;
@@ -1906,7 +1906,7 @@ namespace Chummer
                     RefreshQualities(treQualities, cmsQuality);
                     RefreshSpirits(panSpirits, panSprites);
                     RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                    RefreshSustainedSpells(panSustainedSpells);
+                    RefreshSustainedSpells(flpSustainedSpells);
                     RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                     RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                     RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -16368,9 +16368,9 @@ namespace Chummer
         /// </summary>
         /// <param name="panSustainedSpells"></param>
         /// <param name="notifyCollectionChangedEventArgs"></param>
-        private void RefreshSustainedSpells(Panel panSustainedSpells, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        private void RefreshSustainedSpells(Panel flpSustainedSpells, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            if (panSustainedSpells == null)
+            if (flpSustainedSpells == null)
                 return;
 
             if (CharacterObject.SustainedCollection.Count != 0 && !chkPsycheActive.Visible)
@@ -16382,8 +16382,8 @@ namespace Chummer
 
             if(notifyCollectionChangedEventArgs == null)
             {
-                panSustainedSpells.SuspendLayout();
-                panSustainedSpells.Controls.Clear();
+                flpSustainedSpells.SuspendLayout();
+                flpSustainedSpells.Controls.Clear();
                 int intSustainedSpells = -1;
 
                 foreach (SustainedSpell objSustainedSpell in CharacterObject.SustainedCollection)
@@ -16395,11 +16395,11 @@ namespace Chummer
 
                     intSustainedSpells += 1;
                     objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
-                    panSustainedSpells.Controls.Add(objSustainedSpellControl);
+                    flpSustainedSpells.Controls.Add(objSustainedSpellControl);
                    
                 }
                 CharacterObject.OnPropertyChanged("SustainingPenalty");
-                panSustainedSpells.ResumeLayout();
+                flpSustainedSpells.ResumeLayout();
             }
             else
             {
@@ -16407,7 +16407,7 @@ namespace Chummer
                 {
                     case NotifyCollectionChangedAction.Add:
                         {
-                            int intSustainedSpells = panSustainedSpells?.Controls.Count ?? 0;
+                            int intSustainedSpells = flpSustainedSpells?.Controls.Count ?? 0;
 
                             foreach (SustainedSpell objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -16417,7 +16417,7 @@ namespace Chummer
                                 objSustainedSpellControl.UnsustainSpell += DeleteSustainedSpell;
 
                                 objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
-                                panSustainedSpells.Controls.Add(objSustainedSpellControl);
+                                flpSustainedSpells.Controls.Add(objSustainedSpellControl);
                                 intSustainedSpells += 1;
                                
                             }
@@ -16430,18 +16430,18 @@ namespace Chummer
                             {
                                 int intMoveUpAmount = 0;
 
-                                if (panSustainedSpells == null)
+                                if (flpSustainedSpells == null)
                                     continue;
 
-                                int intSustainedSpells = panSustainedSpells.Controls.Count;
+                                int intSustainedSpells = flpSustainedSpells.Controls.Count;
 
                                 for (int i = 0; i < intSustainedSpells; ++i)
                                 {
-                                    Control objLoopControl = panSustainedSpells.Controls[i];
+                                    Control objLoopControl = flpSustainedSpells.Controls[i];
                                     if (objLoopControl is SustainedSpellControl objSustainedSpellControl && objSustainedSpellControl.SustainedSpellObject == objSustainedSpell)
                                     {
                                         intMoveUpAmount = objSustainedSpellControl.Height;
-                                        panSustainedSpells.Controls.RemoveAt(i);
+                                        flpSustainedSpells.Controls.RemoveAt(i);
                                         objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
                                         objSustainedSpellControl.UnsustainSpell -= DeleteSustainedSpell;
                                         objSustainedSpellControl.Dispose();
@@ -16454,31 +16454,31 @@ namespace Chummer
                                     }
                                 }
                             }
-                            if (panSustainedSpells.Controls.Count != CharacterObject.SustainedCollection.Count)
+                            if (flpSustainedSpells.Controls.Count != CharacterObject.SustainedCollection.Count)
                             {
-                                RefreshSustainedSpells(panSustainedSpells);
+                                RefreshSustainedSpells(flpSustainedSpells);
                             }
                             CharacterObject.OnPropertyChanged("SustainingPenalty");
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            int intSustainedSpells = panSustainedSpells?.Controls.Count ?? 0;
+                            int intSustainedSpells = flpSustainedSpells?.Controls.Count ?? 0;
 
                             foreach (SustainedSpell objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 int intMoveUpAmount = 0;
 
-                                if (panSustainedSpells == null)
+                                if (flpSustainedSpells == null)
                                     continue;
 
                                 for (int i = 0; i < intSustainedSpells; ++i)
                                 {
-                                    Control objLoopControl = panSustainedSpells.Controls[i];
+                                    Control objLoopControl = flpSustainedSpells.Controls[i];
                                     if (objLoopControl is SustainedSpellControl objSustainedSpellControl && objSustainedSpellControl.SustainedSpellObject == objSustainedSpell)
                                     {
                                         intMoveUpAmount = objSustainedSpellControl.Height;
-                                        panSustainedSpells.Controls.RemoveAt(i);
+                                        flpSustainedSpells.Controls.RemoveAt(i);
                                         objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
                                         objSustainedSpellControl.UnsustainSpell -= DeleteSustainedSpell;
                                         objSustainedSpellControl.Dispose();
@@ -16500,14 +16500,14 @@ namespace Chummer
 
 
                                 objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
-                                panSustainedSpells.Controls.Add(objSustainedSpellControl);
+                                flpSustainedSpells.Controls.Add(objSustainedSpellControl);
                             }
                             CharacterObject.OnPropertyChanged("SustainingPenalty");
                         }
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshSustainedSpells(panSustainedSpells);
+                            RefreshSustainedSpells(flpSustainedSpells);
                         }
                         break;
                 }
