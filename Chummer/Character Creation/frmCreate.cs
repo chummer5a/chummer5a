@@ -4929,7 +4929,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -5511,14 +5511,14 @@ namespace Chummer
                             StringBuilder sbdDisallowedMounts = new StringBuilder();
                             foreach (string strLoop in setDisallowedMounts)
                                 if (!strLoop.EndsWith("Right", StringComparison.Ordinal) && (!strLoop.EndsWith("Left", StringComparison.Ordinal) || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                    sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left") + ',');
                             // Remove trailing ","
                             if (sbdDisallowedMounts.Length > 0)
                                 sbdDisallowedMounts.Length -= 1;
                             frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
                             StringBuilder sbdHasMounts = new StringBuilder();
                             foreach (string strLoop in setHasMounts)
-                                sbdHasMounts.Append(strLoop).Append(',');
+                                sbdHasMounts.Append(strLoop + ',');
                             // Remove trailing ","
                             if (sbdHasMounts.Length > 0)
                                 sbdHasMounts.Length -= 1;
@@ -5564,14 +5564,14 @@ namespace Chummer
                             StringBuilder sbdDisallowedMounts = new StringBuilder();
                             foreach (string strLoop in setDisallowedMounts)
                                 if (!strLoop.EndsWith("Right", StringComparison.Ordinal) && (!strLoop.EndsWith("Left", StringComparison.Ordinal) || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                    sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left") + ',');
                             // Remove trailing ","
                             if (sbdDisallowedMounts.Length > 0)
                                 sbdDisallowedMounts.Length -= 1;
                             frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
                             StringBuilder sbdHasMounts = new StringBuilder();
                             foreach (string strLoop in setHasMounts)
-                                sbdHasMounts.Append(strLoop).Append(',');
+                                sbdHasMounts.Append(strLoop + ',');
                             // Remove trailing ","
                             if (sbdHasMounts.Length > 0)
                                 sbdHasMounts.Length -= 1;
@@ -5809,13 +5809,13 @@ namespace Chummer
                     XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory");
                     if (xmlGearCategoryList != null)
                         foreach (XmlNode objXmlCategory in xmlGearCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerText + ',');
 
                     StringBuilder sbdGearNames = new StringBuilder();
                     XmlNodeList xmlGearNameList = objCyberware.AllowGear?.SelectNodes("gearname");
                     if (xmlGearNameList != null)
                         foreach (XmlNode objXmlName in xmlGearNameList)
-                            sbdGearNames.Append(objXmlName.InnerText).Append(',');
+                            sbdGearNames.Append(objXmlName.InnerText + ',');
 
                     using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, sbdCategories.ToString(), sbdGearNames.ToString()))
                     {
@@ -5892,7 +5892,7 @@ namespace Chummer
                 {
                     StringBuilder sbdCategories = new StringBuilder();
                     foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                        sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                        sbdCategories.Append(objXmlCategory.InnerText + ',');
 
                     using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, sbdCategories.ToString()))
                     {
@@ -5969,7 +5969,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -6054,7 +6054,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -6129,7 +6129,7 @@ namespace Chummer
             bool blnAddAgain;
             StringBuilder sbdCategories = new StringBuilder();
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                sbdCategories.Append(objXmlCategory.InnerText + ',');
             string strCategories = sbdCategories.ToString();
 
             do
@@ -6201,7 +6201,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -6320,7 +6320,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -6400,7 +6400,7 @@ namespace Chummer
             XmlDocument objXmlDocument = CharacterObject.LoadData("gear.xml");
             StringBuilder sbdCategories = new StringBuilder();
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                sbdCategories.Append(objXmlCategory.InnerText + ',');
             string strCategories = sbdCategories.ToString();
             bool blnAddAgain;
 
@@ -8798,9 +8798,8 @@ namespace Chummer
                 if (blnDoUIUpdate)
                 {
                     if (sbdMartialArtsBPToolTip.Length > 0)
-                        sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                    sbdMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName).Append(strSpace)
-                        .Append('(').Append(intLoopCost.ToString(GlobalOptions.CultureInfo)).Append(')');
+                        sbdMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace);
+                    sbdMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName + strSpace + '(' + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
 
                     bool blnIsFirst = true;
                     foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
@@ -8814,8 +8813,8 @@ namespace Chummer
                         intLoopCost = CharacterObjectOptions.KarmaTechnique;
                         intMartialArtsPoints += intLoopCost;
 
-                        sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace).Append(objTechnique.CurrentDisplayName)
-                            .Append(strSpace).Append('(').Append(intLoopCost.ToString(GlobalOptions.CultureInfo)).Append(')');
+                        sbdMartialArtsBPToolTip.Append(Environment.NewLine + strSpace + '+' + strSpace + objTechnique.CurrentDisplayName + strSpace + '('
+                                                       + intLoopCost.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
                 else
@@ -8974,11 +8973,8 @@ namespace Chummer
                         || lblSpellsBP != null
                         || lblBuildRitualsBP != null))
                 {
-                    string strFormat = new StringBuilder("{0}")
-                        .Append(strSpace).Append("×").Append(strSpace).Append("{1}")
-                        .Append(strSpace).Append(LanguageManager.GetString("String_Karma"))
-                        .Append(strSpace).Append("=").Append(strSpace).Append("{2}")
-                        .Append(strSpace).Append(LanguageManager.GetString("String_Karma")).ToString();
+                    string strFormat = "{0}" + strSpace + "×" + strSpace + "{1}" + strSpace + LanguageManager.GetString("String_Karma")
+                                       + strSpace + "=" + strSpace + "{2}" + strSpace + LanguageManager.GetString("String_Karma");
                     lblSpellsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
                     lblBuildRitualsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
                     lblBuildPrepsBP?.SetToolTip(string.Format(GlobalOptions.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
@@ -9021,8 +9017,7 @@ namespace Chummer
                     else
                     {
                         //TODO: Make the costs render better, currently looks wrong as hell
-                        strFormat = new StringBuilder("{0}").Append(strOf).Append(intLimitMod.ToString(GlobalOptions.CultureInfo)).Append(strColon)
-                            .Append(strSpace).Append("{1}").Append(strSpace).Append(strPoints).ToString();
+                        strFormat = "{0}" + strOf + intLimitMod.ToString(GlobalOptions.CultureInfo) + strColon + strSpace + "{1}" + strSpace + strPoints;
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
                                 string.Format(GlobalOptions.CultureInfo, strFormat, prepPoints, intPrepPointsUsed);
@@ -9049,9 +9044,8 @@ namespace Chummer
                 if (!blnDoUIUpdate)
                     continue;
                 if (sbdFociPointsTooltip.Length > 0)
-                    sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                sbdFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName).Append(strSpace)
-                    .Append('(').Append(objFocus.BindingKarmaCost().ToString(GlobalOptions.CultureInfo)).Append(')');
+                    sbdFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
+                sbdFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName + strSpace + '(' + objFocus.BindingKarmaCost().ToString(GlobalOptions.CultureInfo) + ')');
             }
             intKarmaPointsRemain -= intFociPointsUsed;
 
@@ -9067,9 +9061,8 @@ namespace Chummer
                 if (!blnDoUIUpdate)
                     continue;
                 if (sbdFociPointsTooltip.Length > 0)
-                    sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                sbdFociPointsTooltip.Append(objFocus.CurrentDisplayName).Append(strSpace)
-                    .Append('(').Append(intBindingCost.ToString(GlobalOptions.CultureInfo)).Append(')');
+                    sbdFociPointsTooltip.Append(Environment.NewLine + strSpace + '+' + strSpace);
+                sbdFociPointsTooltip.Append(objFocus.CurrentDisplayName + strSpace + '(' + intBindingCost.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             intFreestyleBP += intFociPointsUsed;
@@ -9195,17 +9188,17 @@ namespace Chummer
             StringBuilder sbdContactPoints = new StringBuilder(CharacterObject.ContactPointsUsed.ToString(GlobalOptions.CultureInfo));
             if (CharacterObject.FriendsInHighPlaces)
             {
-                sbdContactPoints.Append('/').Append(Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalOptions.CultureInfo));
+                sbdContactPoints.Append('/' + Math.Max(0, CharacterObject.CHA.Value * 4 - intHighPlacesFriends).ToString(GlobalOptions.CultureInfo));
             }
-            sbdContactPoints.Append(strOf).Append(intContactPoints.ToString(GlobalOptions.CultureInfo));
+            sbdContactPoints.Append(strOf + intContactPoints.ToString(GlobalOptions.CultureInfo));
             if (CharacterObject.FriendsInHighPlaces)
             {
-                sbdContactPoints.Append('/').Append((CharacterObject.CHA.Value * 4).ToString(GlobalOptions.CultureInfo));
+                sbdContactPoints.Append('/' + (CharacterObject.CHA.Value * 4).ToString(GlobalOptions.CultureInfo));
             }
             if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
             {
-                sbdContactPoints.Append(strSpace).Append('(').Append(intPointsInContacts.ToString(GlobalOptions.CultureInfo))
-                    .Append(strSpace).Append(strPoints).Append(')');
+                sbdContactPoints.Append(strSpace + '(' + intPointsInContacts.ToString(GlobalOptions.CultureInfo))
+                    .Append(strSpace + strPoints + ')');
             }
 
             string strContactPoints = sbdContactPoints.ToString();
@@ -9233,18 +9226,18 @@ namespace Chummer
             StringBuilder sbdComplexFormsBP = new StringBuilder();
             if (CharacterObject.CFPLimit > 0)
             {
-                sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalOptions.CultureInfo)).Append(strOf).Append(CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo));
+                sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalOptions.CultureInfo) + strOf + CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo));
                 if (intFormsPointsUsed > CharacterObject.CFPLimit)
                 {
-                    sbdComplexFormsBP.Append(strColon).Append(strSpace)
+                    sbdComplexFormsBP.Append(strColon + strSpace)
                         .Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo))
-                        .Append(strSpace).Append(strPoints);
+                        .Append(strSpace + strPoints);
                 }
             }
             else
             {
                 sbdComplexFormsBP.Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo))
-                    .Append(strSpace).Append(strPoints);
+                    .Append(strSpace + strPoints);
             }
             lblComplexFormsBP.Text = sbdComplexFormsBP.ToString();
 
@@ -9838,7 +9831,7 @@ namespace Chummer
                         {
                             StringBuilder sbdSlotsText = new StringBuilder();
                             foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                                sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                                sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount) + '/');
                             sbdSlotsText.Length -= 1;
                             lblWeaponSlots.Text = sbdSlotsText.ToString();
                         }
@@ -9970,7 +9963,7 @@ namespace Chummer
                     {
                         sbdSlotsText.Clear();
                         foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount) + '/');
                         sbdSlotsText.Length -= 1;
                     }
 
@@ -9981,10 +9974,10 @@ namespace Chummer
                         {
                             if (!boolHaveAddedItem)
                             {
-                                sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
+                                sbdSlotsText.Append(strSpace + '+' + strSpace);
                                 boolHaveAddedItem = true;
                             }
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + '/');
                         }
                         // Remove the trailing /
                         if (boolHaveAddedItem)
@@ -10890,7 +10883,7 @@ namespace Chummer
                             intValue += dicDisallowedMounts[strKey];
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
-                        sbdDisallowedMounts.Append(strKey).Append(',');
+                        sbdDisallowedMounts.Append(strKey + ',');
                 }
                 // Remove trailing ","
                 if (sbdDisallowedMounts.Length > 0)
@@ -10911,7 +10904,7 @@ namespace Chummer
                             intValue += dicHasMounts[strKey];
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
-                        sbdHasMounts.Append(strKey).Append(',');
+                        sbdHasMounts.Append(strKey + ',');
                 }
                 // Remove trailing ","
                 if (sbdHasMounts.Length > 0)
@@ -11002,7 +10995,7 @@ namespace Chummer
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerText + ',');
                         // Remove the trailing comma.
                         sbdCategories.Length -= 1;
                     }
@@ -11123,7 +11116,7 @@ namespace Chummer
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerText + ',');
                         // Remove the trailing comma.
                         if (sbdCategories.Length > 0)
                             sbdCategories.Length -= 1;
@@ -11283,8 +11276,8 @@ namespace Chummer
                         sbdQualities.AppendLine(",");
 
                     sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
-                        .Append(LanguageManager.GetString("String_Space")).Append('[')
-                        .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)).Append("%]");
+                        .Append(LanguageManager.GetString("String_Space") + '[')
+                        .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo) + "%]");
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)
@@ -11605,7 +11598,7 @@ namespace Chummer
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount) + '/');
                         sbdSlotsText.Length -= 1;
                         lblWeaponSlots.Text = sbdSlotsText.ToString();
                     }
@@ -11731,7 +11724,7 @@ namespace Chummer
                 lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 StringBuilder sbdMount = new StringBuilder();
                 foreach (string strCurrentMount in objAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                    sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount)).Append('/');
+                    sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentMount) + '/');
                 // Remove the trailing /
                 if (sbdMount.Length > 0)
                     sbdMount.Length -= 1;
@@ -11742,10 +11735,10 @@ namespace Chummer
                     {
                         if (!boolHaveAddedItem)
                         {
-                            sbdMount.Append(strSpace).Append('+').Append(strSpace);
+                            sbdMount.Append(strSpace + '+' + strSpace);
                             boolHaveAddedItem = true;
                         }
-                        sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
+                        sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + '/');
                     }
                     // Remove the trailing /
                     if (boolHaveAddedItem)
@@ -12174,9 +12167,8 @@ namespace Chummer
                 if (intMartialArts > 1)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidPointExcess"),
-                            intMartialArts - 1)
-                        .Append(LanguageManager.GetString("String_Space")).Append(LanguageManager.GetString("String_MartialArtsCount"));
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidPointExcess"),
+                            intMartialArts - 1) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_MartialArtsCount"));
                 }
 
                 // Check if the character has more than 5 Techniques in a Martial Art
@@ -12188,32 +12180,31 @@ namespace Chummer
                     if (intTechniques > 5)
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidPointExcess"),
-                                intTechniques - 5)
-                            .Append(LanguageManager.GetString("String_Space")).Append(LanguageManager.GetString("String_TechniquesCount"));
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidPointExcess"),
+                                intTechniques - 5) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_TechniquesCount"));
                     }
                 }
 
                 // if positive points > 25
                 if (CharacterObject.PositiveQualityKarma > CharacterObjectOptions.QualityKarmaLimit && !CharacterObjectOptions.ExceedPositiveQualities)
                 {
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit")
-                        , CharacterObjectOptions.QualityKarmaLimit);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit")
+                        , CharacterObjectOptions.QualityKarmaLimit));
                     blnValid = false;
                 }
 
                 // if negative points > 25
                 if (CharacterObject.NegativeQualityLimitKarma > CharacterObjectOptions.QualityKarmaLimit && !CharacterObjectOptions.ExceedNegativeQualities)
                 {
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit")
-                        , CharacterObjectOptions.QualityKarmaLimit);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit")
+                        , CharacterObjectOptions.QualityKarmaLimit));
                     blnValid = false;
                 }
 
                 if (CharacterObject.Contacts.Any(x => (!CharacterObject.FriendsInHighPlaces || x.Connection < 8) && !CharacterObject.FriendsInHighPlaces && Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_HighContact"));
+                    sbdMessage.Append(Environment.NewLine + '\t' + LanguageManager.GetString("Message_HighContact"));
                 }
 
                 // Check if the character has gone over the Build Point total.
@@ -12223,9 +12214,8 @@ namespace Chummer
                 if (intBuildPoints + intStagedPurchaseQualityPoints < 0 && !_blnFreestyle)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidPointExcess"),
-                            -(intBuildPoints + intStagedPurchaseQualityPoints))
-                        .Append(LanguageManager.GetString("String_Space")).Append(LanguageManager.GetString("String_Karma"));
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidPointExcess"),
+                            -(intBuildPoints + intStagedPurchaseQualityPoints)) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma"));
                 }
 
                 // if character has more than permitted Metagenic qualities
@@ -12233,27 +12223,27 @@ namespace Chummer
                 {
                     if (-CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
                     {
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverNegativeMetagenicQualities")
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverNegativeMetagenicQualities")
                             , -CharacterObject.MetagenicNegativeQualityKarma
-                            , CharacterObject.MetagenicLimit);
+                            , CharacterObject.MetagenicLimit));
                         blnValid = false;
                     }
 
                     if (CharacterObject.MetagenicPositiveQualityKarma > CharacterObject.MetagenicLimit)
                     {
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverPositiveMetagenicQualities")
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverPositiveMetagenicQualities")
                             , CharacterObject.MetagenicPositiveQualityKarma
-                            , CharacterObject.MetagenicLimit);
+                            , CharacterObject.MetagenicLimit));
                         blnValid = false;
                     }
 
                     if (-CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma &&
                         -CharacterObject.MetagenicNegativeQualityKarma != CharacterObject.MetagenicPositiveQualityKarma - 1)
                     {
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced")
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced")
                             , -CharacterObject.MetagenicNegativeQualityKarma
                             , CharacterObject.MetagenicPositiveQualityKarma - 1
-                            , CharacterObject.MetagenicPositiveQualityKarma);
+                            , CharacterObject.MetagenicPositiveQualityKarma));
                         blnValid = false;
                     }
                 }
@@ -12264,7 +12254,7 @@ namespace Chummer
                 {
                     //TODO: ATTACH TO ATTRIBUTE SECTION
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidAttributeExcess"), -i);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidAttributeExcess"), -i));
                 }
 
                 i = CharacterObject.TotalSpecial - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
@@ -12273,38 +12263,37 @@ namespace Chummer
                 {
                     //TODO: ATTACH TO ATTRIBUTE SECTION
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidSpecialExcess"), -i);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidSpecialExcess"), -i));
                 }
 
                 // Check if the character has gone over on Skill Groups
                 if (CharacterObject.SkillsSection.SkillGroupPoints < 0)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidSkillGroupExcess"), -CharacterObject.SkillsSection.SkillGroupPoints);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidSkillGroupExcess"), -CharacterObject.SkillsSection.SkillGroupPoints));
                 }
 
                 // Check if the character has gone over on Active Skills
                 if (CharacterObject.SkillsSection.SkillPoints < 0)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidActiveSkillExcess"), -CharacterObject.SkillsSection.SkillPoints);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidActiveSkillExcess"), -CharacterObject.SkillsSection.SkillPoints));
                 }
 
                 // Check if the character has gone over on Knowledge Skills
                 if (CharacterObject.SkillsSection.KnowledgeSkillPointsRemain < 0)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidKnowledgeSkillExcess"), -CharacterObject.SkillsSection.KnowledgeSkillPointsRemain);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidKnowledgeSkillExcess"), -CharacterObject.SkillsSection.KnowledgeSkillPointsRemain));
                 }
 
                 if (CharacterObject.SkillsSection.Skills.Any(s => s.Specializations.Count > 1))
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidActiveSkillExcessSpecializations"), -CharacterObject.SkillsSection.KnowledgeSkillPointsRemain);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidActiveSkillExcessSpecializations"), -CharacterObject.SkillsSection.KnowledgeSkillPointsRemain));
                     foreach (Skill objSkill in CharacterObject.SkillsSection.Skills.Where(s => s.Specializations.Count > 1))
                     {
-                        sbdMessage.AppendLine().Append(objSkill.CurrentDisplayName)
-                            .Append(LanguageManager.GetString("String_Space")).Append('(').AppendJoin(',' + LanguageManager.GetString("String_Space"), objSkill.Specializations.Select(x => x.CurrentDisplayName)).Append(')');
+                        sbdMessage.Append(Environment.NewLine + objSkill.CurrentDisplayName + LanguageManager.GetString("String_Space") + '(' + string.Join(',' + LanguageManager.GetString("String_Space"), objSkill.Specializations.Select(x => x.CurrentDisplayName)) + ')');
                     }
                 }
 
@@ -12313,15 +12302,15 @@ namespace Chummer
                 if (decNuyen < 0)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidNuyenExcess"),
-                        (-decNuyen).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)).Append('¥');
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidNuyenExcess"),
+                        (-decNuyen).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)) + '¥');
                 }
 
                 if (CharacterObject.StolenNuyen < 0)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidStolenNuyenExcess"),
-                        (-CharacterObject.StolenNuyen).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)).Append('¥');
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidStolenNuyenExcess"),
+                        (-CharacterObject.StolenNuyen).ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo)) + '¥');
                 }
 
                 // Check if the character's Essence is above 0.
@@ -12330,31 +12319,31 @@ namespace Chummer
                 if (dblEss < dblMinEss && CharacterObject.ESS.MetatypeMaximum > 0)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), dblMinEss - dblEss);
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), dblMinEss - dblEss));
                 }
 
                 // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
                 if ((CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled) && CharacterObject.MagicTradition.Type != TraditionType.MAG)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_InvalidNoTradition"));
+                    sbdMessage.Append(Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidNoTradition"));
                 }
 
                 // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
                 if (CharacterObject.AdeptEnabled && CharacterObject.PowerPointsUsed > CharacterObject.PowerPointsTotal)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo,
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo,
                         LanguageManager.GetString("Message_InvalidPowerPoints"),
                         CharacterObject.PowerPointsUsed - CharacterObject.PowerPointsTotal,
-                        CharacterObject.PowerPointsTotal);
+                        CharacterObject.PowerPointsTotal));
                 }
 
                 // If the character has the Technomencer Tab enabled, make sure a Stream has been selected.
                 if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_InvalidNoStream"));
+                    sbdMessage.AppendLine( + '\t' + LanguageManager.GetString("Message_InvalidNoStream"));
                 }
 
                 // Check if the character has more than the permitted amount of native languages.
@@ -12365,9 +12354,9 @@ namespace Chummer
                 if (intLanguages != intLanguageLimit)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo,
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo,
                         LanguageManager.GetString(intLanguages > intLanguageLimit ? "Message_OverLanguageLimit" : "Message_UnderLanguageLimit"),
-                        intLanguages, intLanguageLimit);
+                        intLanguages, intLanguageLimit));
                 }
 
 
@@ -12395,9 +12384,9 @@ namespace Chummer
                     if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
                             decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectOptions.EssenceFormat, GlobalOptions.CultureInfo),
-                            decPrototypeTranshumanEssenceMax.ToString(CharacterObjectOptions.EssenceFormat, GlobalOptions.CultureInfo));
+                            decPrototypeTranshumanEssenceMax.ToString(CharacterObjectOptions.EssenceFormat, GlobalOptions.CultureInfo)));
                     }
                 }
 
@@ -12424,26 +12413,26 @@ namespace Chummer
                 if (intRestrictedCount > intRestrictedAllowed)
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidAvail")
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidAvail")
                         , intRestrictedCount - intRestrictedAllowed
-                        , CharacterObjectOptions.MaximumAvailability).Append(strAvailItems);
+                        , CharacterObjectOptions.MaximumAvailability + strAvailItems));
                     if (blnRestrictedGearUsed)
                     {
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_RestrictedGearUsed"),
-                            strRestrictedItem);
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_RestrictedGearUsed"),
+                            strRestrictedItem));
                     }
                 }
 
                 if (!string.IsNullOrWhiteSpace(strExConItems))
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_InvalidExConWare")).Append(strExConItems);
+                    sbdMessage.Append(Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidExConWare") + strExConItems);
                 }
 
                 if (!string.IsNullOrWhiteSpace(strCyberwareGrade))
                 {
                     blnValid = false;
-                    sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_InvalidCyberwareGrades")).Append(strCyberwareGrade);
+                    sbdMessage.Append(Environment.NewLine + '\t' + LanguageManager.GetString("Message_InvalidCyberwareGrades") + strCyberwareGrade);
                 }
 
                 // Check item Capacities if the option is enabled.
@@ -12553,10 +12542,10 @@ namespace Chummer
                     if (blnOverCapacity)
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CapacityReachedValidate"), intCapacityOver);
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CapacityReachedValidate"), intCapacityOver));
                         foreach (string strItem in lstOverCapacity)
                         {
-                            sbdMessage.AppendLine().Append("\t- ").Append(strItem);
+                            sbdMessage.Append(Environment.NewLine + "\t- " + strItem);
                         }
                     }
                 }
@@ -12593,10 +12582,10 @@ namespace Chummer
                     if (blnIllegalDowngrades)
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DroneIllegalDowngrade"), intIllegalDowngrades);
+                        sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_DroneIllegalDowngrade"), intIllegalDowngrades));
                         foreach (string strItem in lstDronesIllegalDowngrades)
                         {
-                            sbdMessage.AppendLine().Append("\t- ").Append(strItem);
+                            sbdMessage.Append(Environment.NewLine + "\t- " + strItem);
                         }
                     }
                 }

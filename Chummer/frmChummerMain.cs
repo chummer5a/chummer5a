@@ -61,13 +61,11 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdTitle = new StringBuilder(Application.ProductName)
-                    .Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("String_Version"))
-                    .Append(strSpace).Append(_strCurrentVersion);
+                string strTitle = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion;
 #if DEBUG
-                sbdTitle.Append(" DEBUG BUILD");
+                strTitle += " DEBUG BUILD";
 #endif
-                return sbdTitle.ToString();
+                return strTitle;
             }
         }
 
@@ -685,13 +683,9 @@ namespace Chummer
                     }
                 }
                 string strSpace = LanguageManager.GetString("String_Space");
-                Text = new StringBuilder(Application.ProductName)
-                    .Append(strSpace).Append('-')
-                    .Append(strSpace).Append(LanguageManager.GetString("String_Version"))
-                    .Append(strSpace).Append(_strCurrentVersion)
-                    .Append(strSpace).Append('-')
-                    .Append(strSpace).AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"),
-                        Utils.CachedGitVersion).ToString();
+                Text = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version")
+                       + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
+                       + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
             }
         }
 

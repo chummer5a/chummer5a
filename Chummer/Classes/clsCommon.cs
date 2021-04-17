@@ -1243,7 +1243,7 @@ namespace Chummer
                                 sbdResultContent.AppendLine(strContentString);
                                 break;
                             default:
-                                sbdResultContent.Append(strContentString).Append(' ');
+                                sbdResultContent.Append(strContentString + ' ');
                                 break;
                         }
                     }
