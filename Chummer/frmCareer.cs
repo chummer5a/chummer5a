@@ -16497,7 +16497,7 @@ namespace Chummer
 
                                 objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objSustainedSpellControl.UnsustainSpell += DeleteSustainedSpell;
-                                objSustainedSpellControl.PropertyChanged += SustainedPropertyChanged;
+
 
                                 objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
                                 panSustainedSpells.Controls.Add(objSustainedSpellControl);

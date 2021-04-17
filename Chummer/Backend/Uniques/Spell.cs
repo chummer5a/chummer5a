@@ -272,7 +272,7 @@ namespace Chummer
         /// <summary>
         /// Spell's name.
         /// </summary>
-        public string Name
+        public virtual string Name
         {
             get => _strName;
             set

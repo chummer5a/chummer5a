@@ -20,33 +20,28 @@ namespace Chummer
 
     public class SustainedSpell : Spell, IHasInternalId, IHasName, IHasXmlNode, ISustainable
     {
-        private Guid _guiID;
+        private Guid _guiIDSustained;
         private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;
         private bool _blnSelfSustained = true;
         private int _intForce = 0;
         private int _intNetHits = 0;
         private readonly Character _objCharacter;
-        private bool _blnLimited;
-        private bool _blnExtended;
-        private bool _blnAlchemical;
+
 
         #region Constructor, Create, Save, Load, and Print Methods
 
         public SustainedSpell(Character objCharacter) : base(objCharacter)
         {
             //Create the GUID for new sustained spells
-            _guiID = Guid.NewGuid();
+            _guiIDSustained = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
 
         public void Create(Spell spellRef)
         {
-            _strName = spellRef.Name;
-            _blnLimited = spellRef.Limited;
-            _blnExtended = spellRef.Extended;
-            _blnAlchemical = spellRef.Alchemical;
             _guiSourceID = spellRef.SourceID;
+            _strName = spellRef.Name;
         }
 
 
@@ -87,9 +82,9 @@ namespace Chummer
         {
             if (objNode == null)
                 return;
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiIDSustained))
             {
-                _guiID = Guid.NewGuid();
+                _guiIDSustained = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
@@ -157,6 +152,18 @@ namespace Chummer
         {
             get => _intNetHits;
             set => _intNetHits = value;
+        }
+
+        public Guid GuiIDSustained
+        {
+            get => _guiIDSustained;
+            set => _guiIDSustained = value;
+        }
+
+        override public string Name
+        {
+            get => _strName;
+            set => _strName = value;
         }
         #endregion
 

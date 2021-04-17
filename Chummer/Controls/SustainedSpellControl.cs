@@ -21,7 +21,6 @@ namespace Chummer
         //Events
         public event EventHandler SpellDetailChanged;
         public event EventHandler UnsustainSpell;
-        public event PropertyChangedEventHandler PropertyChanged;
 
 
         public SustainedSpellControl(SustainedSpell objSustainedSpell)
@@ -34,7 +33,7 @@ namespace Chummer
 
         private void SustainedSpellControl_Load(object sender, EventArgs e)
         {
-            lblSustainedSpell.Text = _objSustainedSpell.DisplayNameShort(GlobalOptions.Language);
+            lblSustainedSpell.Text = _objSustainedSpell.DisplayName(GlobalOptions.Language);
             chkSelfSustained.DoDatabinding("Checked", _objSustainedSpell, nameof(_objSustainedSpell.SelfSustained));
             nudForce.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.Force));
             nudNetHits.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.NetHits));
