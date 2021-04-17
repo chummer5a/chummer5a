@@ -661,12 +661,12 @@ namespace Chummer
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
-                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ").Append(objCurrentGrade.Name.CleanXPath()).Append(")");
+                sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = " + objCurrentGrade.Name.CleanXPath() + ")");
                 if (objCurrentGrade.SecondHand)
                     sbdFilter.Append(" and not(nosecondhand)");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }

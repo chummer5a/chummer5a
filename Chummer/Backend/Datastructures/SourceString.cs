@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -50,9 +49,7 @@ namespace Chummer
                         LanguageManager.GetString("String_Space", Language),
                         LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strCode, Language, objCharacter))
-                .Append(strSpace).Append(_dicCachedStrings[Language].Item2)
-                .Append(strSpace).Append(_intPage.ToString(CultureInfo)).ToString();
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + _intPage.ToString(CultureInfo);
         }
 
         public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
@@ -68,9 +65,7 @@ namespace Chummer
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language, objCharacter))
-                .Append(strSpace).Append(_dicCachedStrings[Language].Item2)
-                .Append(strSpace).Append(_intPage.ToString(CultureInfo)).ToString();
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + _intPage.ToString(CultureInfo);
         }
 
         public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
@@ -86,9 +81,7 @@ namespace Chummer
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language, objCharacter))
-                .Append(strSpace).Append(_dicCachedStrings[Language].Item2)
-                .Append(strSpace).Append(_intPage.ToString(CultureInfo)).ToString();
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + _intPage.ToString(CultureInfo);
         }
 
         public override string ToString()

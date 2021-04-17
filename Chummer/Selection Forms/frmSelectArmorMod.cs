@@ -425,10 +425,10 @@ namespace Chummer
             if (sbdCategoryFilter.Length > 0)
             {
                 sbdCategoryFilter.Length -= 4;
-                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(")");
+                sbdFilter.Append(" and (" + sbdCategoryFilter + ")");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             int intOverLimit = 0;
             XPathNodeIterator objXmlModList =
