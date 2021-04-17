@@ -351,7 +351,7 @@ namespace Chummer
                         CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
                         CharacterObjectOptions.PropertyChanged += OptionsChanged;
                         CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
-                        CharacterObject.SustainedSpells.CollectionChanged += SustainedSpellCollectionChanged;
+                        CharacterObject.SustainedCollection.CollectionChanged += SustainedSpellCollectionChanged;
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_career_magictradition", op_load_frm_career))
@@ -1164,7 +1164,7 @@ namespace Chummer
                 CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
                 CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
-                CharacterObject.SustainedSpells.CollectionChanged -= SustainedSpellCollectionChanged;
+                CharacterObject.SustainedCollection.CollectionChanged -= SustainedSpellCollectionChanged;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
@@ -11750,7 +11750,7 @@ namespace Chummer
                 if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSustainedSpell")))
                     return;
 
-                CharacterObject.SustainedSpells.Remove(objSustainedSpell);
+                CharacterObject.SustainedCollection.Remove(objSustainedSpell);
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -16374,7 +16374,7 @@ namespace Chummer
             if (panSustainedSpells == null)
                 return;
 
-            if (CharacterObject.SustainedSpells.Count != 0 && !chkPsycheActive.Visible)
+            if (CharacterObject.SustainedCollection.Count != 0 && !chkPsycheActive.Visible)
             {
                 //Sets up the Psyche Active Checkbox
                 chkPsycheActive.Visible = true;
@@ -16387,7 +16387,7 @@ namespace Chummer
                 panSustainedSpells.Controls.Clear();
                 int intSustainedSpells = -1;
 
-                foreach (SustainedSpell objSustainedSpell in CharacterObject.SustainedSpells)
+                foreach (SustainedSpell objSustainedSpell in CharacterObject.SustainedCollection)
                 {
                     SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
 
@@ -16455,7 +16455,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            if (panSustainedSpells.Controls.Count != CharacterObject.SustainedSpells.Count)
+                            if (panSustainedSpells.Controls.Count != CharacterObject.SustainedCollection.Count)
                             {
                                 RefreshSustainedSpells(panSustainedSpells);
                             }
@@ -16514,7 +16514,7 @@ namespace Chummer
                 }
             }
 
-            if (CharacterObject.SustainedSpells.Count == 0)
+            if (CharacterObject.SustainedCollection.Count == 0)
             {
                 CharacterObject.PsycheActive = false;
                 chkPsycheActive.Visible = false;
@@ -16530,7 +16530,7 @@ namespace Chummer
 
                 objNewSustainedSpell.Create(objSpell);
 
-                CharacterObject.SustainedSpells.Add(objNewSustainedSpell);
+                CharacterObject.SustainedCollection.Add(objNewSustainedSpell);
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;

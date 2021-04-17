@@ -310,7 +310,7 @@
     <Compile Include="Backend\Uniques\AIProgram.cs" />
     <Compile Include="Backend\Uniques\Art.cs" />
     <Compile Include="Backend\Uniques\CalendarWeek.cs" />
-    <Compile Include="Backend\Uniques\SustainedSpell.cs" />
+    <Compile Include="Backend\Derived\SustainedSpell.cs" />
     <Compile Include="Backend\Uniques\ComplexForm.cs" />
     <Compile Include="Backend\Uniques\Contact.cs" />
     <Compile Include="Backend\Uniques\CritterPower.cs" />
@@ -452,6 +452,7 @@
     <Compile Include="Interfaces\IHasSource.cs" />
     <Compile Include="Interfaces\IHasWirelessBonus.cs" />
     <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
+    <Compile Include="Interfaces\ISustainable.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>

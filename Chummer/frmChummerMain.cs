@@ -383,7 +383,6 @@ namespace Chummer
                         op_frmChummerMain.SetSuccess(false);
                         op_frmChummerMain.tc.TrackException(ex);
                     }
-
                     Log.Error(ex);
                     throw;
                 }

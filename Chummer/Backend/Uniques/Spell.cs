@@ -77,7 +77,7 @@ namespace Chummer
         /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
         /// <param name="blnAlchemical">Whether or not the Spell is one for an alchemical preparation.</param>
         /// <param name="objSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
-        public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
+        public virtual void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
             if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -130,7 +130,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public virtual void Save(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -166,7 +166,7 @@ namespace Chummer
         /// Load the Spell from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public virtual void Load(XmlNode objNode)
         {
             if (objNode == null)
                 return;
@@ -215,7 +215,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public virtual void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;

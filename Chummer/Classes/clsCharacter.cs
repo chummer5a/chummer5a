@@ -194,7 +194,7 @@ namespace Chummer
         private readonly ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
         private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
 
-        private readonly ObservableCollection<SustainedSpell> _lstSustainedSpells = new ObservableCollection<SustainedSpell>();
+        private readonly ObservableCollection<ISustainable> _lstSustained = new ObservableCollection<ISustainable>();
 
         private readonly List<Focus> _lstFoci = new List<Focus>(5);
         private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>(5);
@@ -1690,7 +1690,7 @@ namespace Chummer
 
                     // <sustainedspells>
                     objWriter.WriteStartElement("sustainedspells");
-                    foreach (SustainedSpell objSustainedSpell in _lstSustainedSpells)
+                    foreach (SustainedSpell objSustainedSpell in _lstSustained)
                     {
                         objSustainedSpell.Save(objWriter);
                     }
@@ -3522,7 +3522,7 @@ namespace Chummer
                             {
                                 SustainedSpell objSustainedSpell = new SustainedSpell(this);
                                 objSustainedSpell.Load(objXmlSustainedSpell);
-                                _lstSustainedSpells.Add(objSustainedSpell);
+                                _lstSustained.Add(objSustainedSpell);
                             }
                         }
 
@@ -4746,7 +4746,7 @@ namespace Chummer
 
             // <sustainedspells>
             objWriter.WriteStartElement("sustainedspells");
-            foreach(SustainedSpell objSustainedSpell in SustainedSpells)
+            foreach(SustainedSpell objSustainedSpell in SustainedCollection)
             {
                 objSustainedSpell.Print(objWriter, objCulture, strLanguageToPrint);
             }
@@ -5109,7 +5109,7 @@ namespace Chummer
             ImprovementManager.ClearCachedValues(this);
             _lstImprovements.Clear();
             _lstSpells.Clear();
-            _lstSustainedSpells.Clear();
+            _lstSustained.Clear();
             _lstFoci.Clear();
             _lstStackedFoci.Clear();
             _lstPowers.Clear();
@@ -6602,15 +6602,15 @@ namespace Chummer
                 }
             }
 
-            for(int i = SustainedSpells.Count -1; i>=0; --i)
+            for(int i = SustainedCollection.Count -1; i>=0; --i)
             {
-                if(i < SustainedSpells.Count)
+                if(i < SustainedCollection.Count)
                 {
-                    SustainedSpell objToRemove = SustainedSpells[i];
+                    SustainedSpell objToRemove = (SustainedSpell)SustainedCollection[i];
                     // Remove the Improvements created by the Spell.
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
                         objToRemove.InternalId);
-                    SustainedSpells.RemoveAt(i);
+                    SustainedCollection.RemoveAt(i);
                 }
             }
         }
@@ -10379,7 +10379,7 @@ namespace Chummer
         /// <summary>
         /// Sustained Spells
         /// </summary>
-        public ObservableCollection<SustainedSpell> SustainedSpells => _lstSustainedSpells;
+        public ObservableCollection<ISustainable> SustainedCollection => _lstSustained;
 
 
         /// <summary>
@@ -15447,7 +15447,7 @@ namespace Chummer
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
                 return;
-            int intSustainedSpells = SustainedSpells.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
+            int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
             int intModifierPerSpell = PsycheActive ? -1 : -2; // TODO: Unhardcode this
             // TODO: Add support for Focused Concentration and possibly Heightened Concentration
             _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
@@ -15673,7 +15673,7 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(HomeNode))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(SustainingPenalty),
-                        new DependencyGraphNode<string, Character>(nameof(SustainedSpells)),
+                        new DependencyGraphNode<string, Character>(nameof(SustainedCollection)),
                         new DependencyGraphNode<string, Character>(nameof(PsycheActive))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(WoundModifier),
@@ -18365,7 +18365,7 @@ namespace Chummer
                         // Refresh dicepool modifiers due to filled condition monitor boxes
                         RefreshWoundPenalties();
                         // Refresh dicepool modifiers due to sustained spells
-                        RefreshSustainingPenalties()
+                        RefreshSustainingPenalties();
                         // Refresh encumbrance penalties
                         RefreshEncumbrance();
                         // Curb Mystic Adept power points if the values that were loaded in would be illegal
