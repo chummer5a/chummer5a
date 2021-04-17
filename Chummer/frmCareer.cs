@@ -254,7 +254,7 @@ namespace Chummer
                         nudWildReputation.DoDatabinding("Value", CharacterObject, nameof(Character.WildReputation));
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddInitiationsAllowed));
-                        lblPossessed.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
+                        lblPossessed.DoDatabinding("Visible", CharacterObject, nameof(Character.Possessed));
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
                     }
 

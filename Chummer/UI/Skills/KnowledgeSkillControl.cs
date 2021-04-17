@@ -59,7 +59,7 @@ namespace Chummer.UI.Skills
             lblModifiedRating.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.DisplayPool));
             lblModifiedRating.DoOneWayDataBinding("ToolTipText", _skill, nameof(KnowledgeSkill.PoolToolTip));
 
-            cmdDelete.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowDelete));
+            cmdDelete.DoDatabinding("Visible", _skill, nameof(Skill.AllowDelete));
 
             cboType.BeginUpdate();
             cboType.DataSource = KnowledgeSkill.KnowledgeTypes(_skill.CharacterObject);
@@ -74,7 +74,7 @@ namespace Chummer.UI.Skills
             lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
 
             cboName.BeginUpdate();
-            cboName.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowNameChange));
+            cboName.DoDatabinding("Visible", _skill, nameof(Skill.AllowNameChange));
             cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills(_skill.CharacterObject);
             cboName.DisplayMember = nameof(ListItem.Name);
             cboName.ValueMember = nameof(ListItem.Value);
@@ -114,7 +114,7 @@ namespace Chummer.UI.Skills
                 lblRating.DoOneWayNegatableDatabinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
                 lblRating.DoOneWayDataBinding("Text", _skill, nameof(Skill.Rating));
 
-                btnCareerIncrease.DoOneWayDataBinding("Visible", _skill, nameof(KnowledgeSkill.AllowUpgrade));
+                btnCareerIncrease.DoDatabinding("Visible", _skill, nameof(KnowledgeSkill.AllowUpgrade));
                 btnCareerIncrease.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanUpgradeCareer));
                 btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.UpgradeToolTip));
 
@@ -149,7 +149,7 @@ namespace Chummer.UI.Skills
                 lblSpec.DoOneWayNegatableDatabinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
                 lblSpec.DoOneWayDataBinding("Text", _skill, nameof(Skill.CurrentDisplaySpecialization));
 
-                btnAddSpec.DoOneWayDataBinding("Visible", _skill, nameof(Skill.CanHaveSpecs));
+                btnAddSpec.DoDatabinding("Visible", _skill, nameof(Skill.CanHaveSpecs));
                 btnAddSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanAffordSpecialization));
                 btnAddSpec.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.AddSpecToolTip));
 
@@ -182,7 +182,7 @@ namespace Chummer.UI.Skills
                     Name = "nudKarma"
                 };
 
-                nudSkill.DoOneWayDataBinding("Visible", _skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
+                nudSkill.DoDatabinding("Visible", _skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 nudSkill.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
                 nudSkill.DoDatabinding("Value", _skill, nameof(Skill.Base));
                 nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
@@ -226,7 +226,7 @@ namespace Chummer.UI.Skills
                     UseVisualStyleBackColor = true
                 };
 
-                chkNativeLanguage.DoOneWayDataBinding("Visible", _skill, nameof(Skill.IsLanguage));
+                chkNativeLanguage.DoDatabinding("Visible", _skill, nameof(Skill.IsLanguage));
                 chkNativeLanguage.Enabled = _skill.IsNativeLanguage || _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                 chkNativeLanguage.DoDatabinding("Checked", _skill, nameof(Skill.IsNativeLanguage));
 

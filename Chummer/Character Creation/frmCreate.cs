@@ -215,7 +215,7 @@ namespace Chummer
                         lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplayTotalStartingNuyen));
                         lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayStolenNuyen));
-                        lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                        lblAttributesBase.DoDatabinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
 
                         txtGroupName.DoDatabinding("Text", CharacterObject, nameof(Character.GroupName));
                         txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
@@ -238,8 +238,8 @@ namespace Chummer
                         lblPositiveQualitiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayPositiveQualityKarma));
                         lblNegativeQualitiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayNegativeQualityKarma));
                         lblMetagenicQualities.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayMetagenicQualityKarma));
-                        lblMetagenicQualities.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
-                        lblMetagenicQualitiesLabel.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualities.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualitiesLabel.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
                         tslKarmaLabel.Text = LanguageManager.GetString("Label_Karma");
                         tslKarmaRemainingLabel.Text = LanguageManager.GetString("Label_KarmaRemaining");
@@ -280,8 +280,8 @@ namespace Chummer
 
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
-                        cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
-                        btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EnableAutomaticStoryButton));
+                        cmdLifeModule.DoDatabinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
+                        btnCreateBackstory.DoDatabinding("Visible", CharacterObject, nameof(Character.EnableAutomaticStoryButton));
 
                         if (!CharacterObjectOptions.BookEnabled("RF"))
                         {

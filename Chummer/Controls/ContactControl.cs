@@ -408,7 +408,7 @@ namespace Chummer
             txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
             cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
-            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
+            cmdDelete.DoDatabinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
@@ -531,11 +531,11 @@ namespace Chummer
                     chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
-                    chkFree.DoOneWayDataBinding("Visible", _objContact.CharacterObject, nameof(_objContact.CharacterObject.Created));
+                    chkFree.DoDatabinding("Visible", _objContact.CharacterObject, nameof(_objContact.CharacterObject.Created));
                     chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
-                    chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkFamily.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
                     chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
-                    chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkBlackmail.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
                     nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
                     nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
                     nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
