@@ -2813,11 +2813,11 @@ namespace Chummer
                 {
                     using (Character objVessel = new Character { FileName = strFileName })
                     {
-                        using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = objVessel.FileName })
+                        using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = objVessel.FileName })
                         {
                             frmLoadingForm.Reset(77);
                             frmLoadingForm.Show();
-                            bool blnSuccess = await objVessel.Load(frmLoadingForm).ConfigureAwait(false);
+                            bool blnSuccess = await objVessel.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
@@ -2838,7 +2838,7 @@ namespace Chummer
 
                             // Load the Spirit's save file into a new Merge character.
                             frmLoadingForm.CharacterFile = objMerge.FileName;
-                            blnSuccess = await objMerge.Load(frmLoadingForm).ConfigureAwait(false);
+                            blnSuccess = await objMerge.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
@@ -2863,7 +2863,7 @@ namespace Chummer
 
                             if (!blnHasImmunity)
                             {
-                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml").ConfigureAwait(false);
+                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml").ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);

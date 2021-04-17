@@ -9355,7 +9355,7 @@ namespace Chummer
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();
-                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(false);
+                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
                     // Select the Magician's Tradition.
