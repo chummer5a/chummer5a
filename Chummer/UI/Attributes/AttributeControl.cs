@@ -135,7 +135,7 @@ namespace Chummer.UI.Attributes
                 nudBase.BeforeValueIncrement += nudBase_BeforeValueIncrement;
                 nudBase.ValueChanged += nudBase_ValueChanged;
 
-                nudBase.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                nudBase.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
                 nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
                 nudBase.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Base));
                 nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));

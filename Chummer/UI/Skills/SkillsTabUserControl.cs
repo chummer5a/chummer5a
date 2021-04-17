@@ -216,12 +216,12 @@ namespace Chummer.UI.Skills
 
             if (!_objCharacter.Created)
             {
-                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblGroupsSp.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblActiveSp.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblBuyWithKarma.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
 
-                lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
-                lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
+                lblKnoSp.DoDatabinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
+                lblKnoBwk.DoDatabinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 UpdateKnoSkillRemaining();
             }
             else
