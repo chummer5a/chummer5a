@@ -260,6 +260,7 @@
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Extensions\IntegerExtensions.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />

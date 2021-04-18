@@ -3946,8 +3946,7 @@ namespace Chummer
                                 foreach (InitiationGrade objInitiationGrade in InitiationGrades)
                                 {
                                     if (!objInitiationGrade.Technomancer
-                                        // (x + (n-1)) / n pattern is deliberate, integer division that rounds up instead of down
-                                        || (objInitiationGrade.Grade + 1) / 2 > objCyberadeptImprovement.Value
+                                        || objInitiationGrade.Grade.DivAwayFromZero(2) > objCyberadeptImprovement.Value
                                         || Metamagics.Any(x => x.Grade == objInitiationGrade.Grade)
                                         || lstCyberadeptSweepGrades.All(x => x.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon
                                                                              || x.SourceName != objInitiationGrade.InternalId))
@@ -14402,7 +14401,7 @@ namespace Chummer
                     {
                         int intCyberadeptDaemonBonus = 0;
                         if (TechnomancerEnabled && SubmersionGrade > 0 && Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
-                            intCyberadeptDaemonBonus = (int)Math.Min(Math.Ceiling(0.5m * SubmersionGrade), Math.Ceiling(CyberwareEssence));
+                            intCyberadeptDaemonBonus = Math.Min(SubmersionGrade.DivAwayFromZero(2), (int) Math.Ceiling(CyberwareEssence));
                         ImprovementManager.CreateImprovement(this, "RES", eEssenceLossSource, string.Empty,
                             Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, Math.Min(0, intCyberadeptDaemonBonus - intMaxReduction));
                         ImprovementManager.CreateImprovement(this, "DEP", eEssenceLossSource, string.Empty,
