@@ -2037,26 +2037,23 @@ namespace Chummer
                     {
                         Log.Error(e);
                         if (Utils.IsUnitTest)
-                            throw e;
-                        else
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                            throw;
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
                     catch (XmlException ex)
                     {
                         Log.Warn(ex);
                         if (Utils.IsUnitTest)
-                            throw ex;
-                        else
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                            throw;
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
-                    catch (UnauthorizedAccessException e)
+                    catch (UnauthorizedAccessException)
                     {
                         if (Utils.IsUnitTest)
-                            throw e;
-                        else
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                            throw;
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
                 }
@@ -2165,14 +2162,11 @@ namespace Chummer
                         if (!File.Exists(_strFileName))
                             return false;
                         bool errorCaught = false;
-                        XmlReaderSettings objSettings = GlobalOptions.SafeXmlReaderSettings;
                         do
                         {
                             try
                             {
-                                using (StreamReader sr = new StreamReader(_strFileName, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader = XmlReader.Create(sr, objSettings))
-                                        objXmlDocument.Load(objXmlReader);
+                                await objXmlDocument.LoadAsync(_strFileName, !errorCaught).ConfigureAwait(false);
                                 errorCaught = false;
                             }
                             catch (XmlException ex)
@@ -2190,11 +2184,7 @@ namespace Chummer
                                         IsLoading = false;
                                         return false;
                                     }
-                                    else
-                                    {
-                                        objSettings = GlobalOptions.UnSafeXmlReaderSettings;
-                                        errorCaught = true;
-                                    }
+                                    errorCaught = true;
                                 }
                                 else
                                 {
@@ -2629,7 +2619,6 @@ namespace Chummer
 
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("special", ref _intSpecial);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
-                        //objXmlCharacter.tryGetInt32FieldQuickly("attributes", ref _intAttributes); //wonkey
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("totalattributes", ref _intTotalAttributes);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints", ref _intCachedContactPoints);
                         xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
@@ -16338,26 +16327,28 @@ namespace Chummer
                                 {
                                     if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        XPathDocument xmlSourceDoc;
                                         try
                                         {
-                                            using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeAsyncXmlReaderSettings))
-                                                    xmlSourceDoc = new XPathDocument(objXmlReader);
-
-                                            if (strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
+                                            using (StreamReader objStreamReader = new StreamReader(entry.Open(), true))
                                             {
-                                                XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
-                                                if (objDummy.SelectSingleNode(
-                                                    "/document/public/character[@name = " +
-                                                    strCharacterId.CleanXPath() + "]") != null)
-                                                    xmlStatBlockDocument = objDummy;
-                                            }
-                                            else
-                                            {
-                                                strLeadsName = xmlSourceDoc.CreateNavigator().SelectSingleNode(
-                                                        "/document/portfolio/hero[@heroname = " +
-                                                        strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
+                                                using (XmlReader objReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                                                {
+                                                    XPathDocument xmlSourceDoc = new XPathDocument(objReader);
+                                                    XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
+                                                    if (strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
+                                                    {
+                                                        if (objDummy.SelectSingleNode(
+                                                            "/document/public/character[@name = " +
+                                                            strCharacterId.CleanXPath() + "]") != null)
+                                                            xmlStatBlockDocument = objDummy;
+                                                    }
+                                                    else
+                                                    {
+                                                        strLeadsName = objDummy.SelectSingleNode(
+                                                            "/document/portfolio/hero[@heroname = " +
+                                                            strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
+                                                    }
+                                                }
                                             }
                                         }
                                         // If we run into any problems loading the character xml files, fail out early.
@@ -16411,13 +16402,16 @@ namespace Chummer
                                     string strEntryFullName = entry.FullName;
                                     if (strEntryFullName.EndsWith(strLeadsName, StringComparison.OrdinalIgnoreCase))
                                     {
-                                        XPathDocument xmlSourceDoc;
                                         try
                                         {
-                                            using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeAsyncXmlReaderSettings))
-                                                    xmlSourceDoc = new XPathDocument(objXmlReader);
-                                            xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
+                                            using (StreamReader objStreamReader = new StreamReader(entry.Open(), true))
+                                            {
+                                                using (XmlReader objReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                                                {
+                                                    XPathDocument xmlSourceDoc = new XPathDocument(objReader);
+                                                    xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
+                                                }
+                                            }
                                         }
                                         // If we run into any problems loading the character xml files, fail out early.
                                         catch (IOException)
