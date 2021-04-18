@@ -239,28 +239,14 @@ namespace Translator
                 string strPage = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value.ToString();
                 bool blnHasNameOnPage = cboFile.Text == "qualities.xml";
                 string strNameOnPage = blnHasNameOnPage ? item.Cells["NameOnPage"].Value.ToString() : string.Empty;
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/name[text()=\"" + strEnglish + "\"]/..");
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*/id[text()=\"" + strId + "\"]/..") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*/name[text()=\"" + strEnglish + "\"]/..");
                 if (xmlNodeLocal == null)
                 {
                     xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text()=\"" + strEnglish + "\"]");
                     if (xmlNodeLocal?.Attributes != null)
                     {
                         xmlNodeLocal.Attributes["translate"].InnerText = strTranslated;
-                        XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
-                        if (objAttrib != null)
-                        {
-                            if (!flag)
-                                xmlNodeLocal.Attributes.Remove(objAttrib);
-                            else
-                                objAttrib.InnerText = bool.TrueString;
-                        }
-                        else if (flag)
-                        {
-                            objAttrib = _objDataDoc.CreateAttribute("translated");
-                            objAttrib.InnerText = bool.TrueString;
-                            xmlNodeLocal.Attributes.Append(objAttrib);
-                        }
                     }
                 }
                 else
@@ -286,22 +272,6 @@ namespace Translator
 
                             element.InnerText = strNameOnPage;
                         }
-                    }
-
-
-                    XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
-                    if (objAttrib != null)
-                    {
-                        if (!flag)
-                            xmlNodeLocal.Attributes.Remove(objAttrib);
-                        else
-                            objAttrib.InnerText = bool.TrueString;
-                    }
-                    else if (flag)
-                    {
-                        objAttrib = _objDataDoc.CreateAttribute("translated");
-                        objAttrib.InnerText = bool.TrueString;
-                        xmlNodeLocal.Attributes?.Append(objAttrib);
                     }
                 }
             }
