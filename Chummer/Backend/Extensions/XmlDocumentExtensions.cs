@@ -110,7 +110,8 @@ namespace Chummer
                         case XmlNodeType.Text:
                             {
                                 string strValue = await objReader.GetValueAsync().ConfigureAwait(false);
-                                await objWriter.WriteStringAsync(strValue).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strValue))
+                                    await objWriter.WriteStringAsync(strValue).ConfigureAwait(false);
                                 break;
                             }
                         case XmlNodeType.CDATA:
@@ -133,7 +134,8 @@ namespace Chummer
                         case XmlNodeType.SignificantWhitespace:
                             {
                                 string strValue = await objReader.GetValueAsync().ConfigureAwait(false);
-                                await objWriter.WriteWhitespaceAsync(strValue).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strValue))
+                                    await objWriter.WriteWhitespaceAsync(strValue).ConfigureAwait(false);
                                 break;
                             }
                         case XmlNodeType.EndElement:

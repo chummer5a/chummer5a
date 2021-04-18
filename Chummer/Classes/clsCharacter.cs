@@ -2166,7 +2166,9 @@ namespace Chummer
                         {
                             try
                             {
-                                await objXmlDocument.LoadAsync(_strFileName, !errorCaught).ConfigureAwait(false);
+                                using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
+                                    using (XmlReader objReader = XmlReader.Create(objStreamReader, errorCaught ? GlobalOptions.UnSafeXmlReaderSettings : GlobalOptions.SafeXmlReaderSettings))
+                                        objXmlDocument.Load(objReader);
                                 errorCaught = false;
                             }
                             catch (XmlException ex)
