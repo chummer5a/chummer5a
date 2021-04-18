@@ -24,7 +24,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.XPath;
 using Chummer.Properties;
 
@@ -823,7 +822,7 @@ namespace Chummer
                 string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNode("translate")?.Value ?? strName;
                 lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                 XPathNodeIterator xmlMetavariantsList = xmlMetatypeNode.Select("metavariants/metavariant");
-                if (xmlMetavariantsList?.Count > 0)
+                if (xmlMetavariantsList.Count > 0)
                 {
                     string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                     foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)

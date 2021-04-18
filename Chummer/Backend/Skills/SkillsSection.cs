@@ -28,7 +28,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 using Chummer.Annotations;
-using Chummer.Backend.Attributes;
 
 namespace Chummer.Backend.Skills
 {
@@ -437,8 +436,9 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
+                XPathNavigator skillsDocXPath = await _objCharacter.LoadDataXPathAsync("skills.xml");
                 HashSet<string> hashSkillGuids = new HashSet<string>();
-                foreach (XPathNavigator node in _objCharacter.LoadDataXPath("skills.xml").Select(
+                foreach (XPathNavigator node in skillsDocXPath.Select(
                     string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
                         _objCharacter.Options.BookXPath(), SkillFilter(FilterOption.NonSpecial))))
                 {
@@ -446,7 +446,7 @@ namespace Chummer.Backend.Skills
                     if (!string.IsNullOrEmpty(strName))
                         hashSkillGuids.Add(strName);
                 }
-                XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
+                XmlDocument skillsDoc = await _objCharacter.LoadDataAsync("skills.xml");
                 foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                 {
                     XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
