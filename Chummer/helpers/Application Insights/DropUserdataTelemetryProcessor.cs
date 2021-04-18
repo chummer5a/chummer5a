@@ -47,7 +47,7 @@ namespace Chummer
                 return;
             }
             if (item is PageViewTelemetry
-                    || item is PageViewPerformanceTelemetry)
+                || item is PageViewPerformanceTelemetry)
             {
                 return;
             }
@@ -71,20 +71,9 @@ namespace Chummer
                     return;
                 }
             }
-            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Info)
+            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Info && item is TraceTelemetry traceTelemetry && traceTelemetry.SeverityLevel >= SeverityLevel.Information)
             {
-                if (item is PageViewTelemetry
-                    || item is PageViewPerformanceTelemetry)
-                {
-                    Next.Process(item);
-                }
-                else if (item is TraceTelemetry traceTelemetry)
-                {
-                    if (traceTelemetry.SeverityLevel >= SeverityLevel.Information)
-                    {
-                        Next.Process(item);
-                    }
-                }
+                Next.Process(item);
             }
         }
 
