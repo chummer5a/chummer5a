@@ -4599,8 +4599,8 @@
       <text>Each Service a Spirit owes costs {0} Karma.</text>
     </string>
     <string>
-      <key>Button_SustainSpell</key>
-      <text>Sustain Spell</text>
+      <key>Button_Sustain</key>
+      <text>Sustain</text>
     </string>
     <string>
       <key>Label_PsycheActive</key>

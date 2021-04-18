@@ -426,6 +426,7 @@ namespace Chummer
             this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkPsycheActive = new Chummer.ColorableCheckBox(this.components);
             this.tblSustainedSpells = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpSustainedSpells = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpMagician = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddSpirit = new System.Windows.Forms.Button();
             this.panSpirits = new System.Windows.Forms.Panel();
@@ -1312,7 +1313,10 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.flpSustainedSpells = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpSustainedComplexForms = new System.Windows.Forms.FlowLayoutPanel();
+            this.bufferedTableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkPsycheActiveTechnomancer = new Chummer.ColorableCheckBox(this.components);
+            this.cmdSustainComplexForm = new Chummer.ButtonWithToolTip();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1580,6 +1584,7 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
+            this.bufferedTableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -6196,6 +6201,17 @@ namespace Chummer
             this.tblSustainedSpells.Size = new System.Drawing.Size(301, 133);
             this.tblSustainedSpells.TabIndex = 171;
             // 
+            // flpSustainedSpells
+            // 
+            this.flpSustainedSpells.AutoScroll = true;
+            this.flpSustainedSpells.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpSustainedSpells.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpSustainedSpells.Location = new System.Drawing.Point(3, 3);
+            this.flpSustainedSpells.Name = "flpSustainedSpells";
+            this.flpSustainedSpells.Size = new System.Drawing.Size(295, 127);
+            this.flpSustainedSpells.TabIndex = 0;
+            this.flpSustainedSpells.WrapContents = false;
+            // 
             // tlpMagician
             // 
             this.tlpMagician.AutoSize = true;
@@ -6326,7 +6342,7 @@ namespace Chummer
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 61.32315F));
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.67685F));
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 107F));
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 108F));
             this.tlpMagicianSpell.Controls.Add(this.cmdSustainSpell, 4, 4);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptors, 1, 0);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptorsLabel, 0, 0);
@@ -6363,11 +6379,11 @@ namespace Chummer
             // 
             this.cmdSustainSpell.AutoSize = true;
             this.cmdSustainSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdSustainSpell.Location = new System.Drawing.Point(504, 103);
+            this.cmdSustainSpell.Location = new System.Drawing.Point(503, 103);
             this.cmdSustainSpell.Name = "cmdSustainSpell";
             this.cmdSustainSpell.Size = new System.Drawing.Size(78, 23);
             this.cmdSustainSpell.TabIndex = 0;
-            this.cmdSustainSpell.Tag = "Button_SustainSpell";
+            this.cmdSustainSpell.Tag = "Button_Sustain";
             this.cmdSustainSpell.Text = "Sustain Spell";
             this.cmdSustainSpell.ToolTipText = "";
             this.cmdSustainSpell.UseVisualStyleBackColor = true;
@@ -6402,7 +6418,7 @@ namespace Chummer
             this.cmdQuickenSpell.AutoSize = true;
             this.cmdQuickenSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMagicianSpell.SetColumnSpan(this.cmdQuickenSpell, 2);
-            this.cmdQuickenSpell.Location = new System.Drawing.Point(303, 103);
+            this.cmdQuickenSpell.Location = new System.Drawing.Point(302, 103);
             this.cmdQuickenSpell.Name = "cmdQuickenSpell";
             this.cmdQuickenSpell.Size = new System.Drawing.Size(83, 23);
             this.cmdQuickenSpell.TabIndex = 108;
@@ -6451,7 +6467,7 @@ namespace Chummer
             // 
             this.lblSpellTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellTypeLabel.AutoSize = true;
-            this.lblSpellTypeLabel.Location = new System.Drawing.Point(319, 6);
+            this.lblSpellTypeLabel.Location = new System.Drawing.Point(318, 6);
             this.lblSpellTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellTypeLabel.Name = "lblSpellTypeLabel";
             this.lblSpellTypeLabel.Size = new System.Drawing.Size(34, 13);
@@ -6464,7 +6480,7 @@ namespace Chummer
             this.lblSpellType.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellType.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellType, 2);
-            this.lblSpellType.Location = new System.Drawing.Point(359, 6);
+            this.lblSpellType.Location = new System.Drawing.Point(358, 6);
             this.lblSpellType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellType.Name = "lblSpellType";
             this.lblSpellType.Size = new System.Drawing.Size(37, 13);
@@ -6475,7 +6491,7 @@ namespace Chummer
             // 
             this.lblSpellDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDamageLabel.AutoSize = true;
-            this.lblSpellDamageLabel.Location = new System.Drawing.Point(303, 31);
+            this.lblSpellDamageLabel.Location = new System.Drawing.Point(302, 31);
             this.lblSpellDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDamageLabel.Name = "lblSpellDamageLabel";
             this.lblSpellDamageLabel.Size = new System.Drawing.Size(50, 13);
@@ -6488,7 +6504,7 @@ namespace Chummer
             this.lblSpellDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDamage.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDamage, 2);
-            this.lblSpellDamage.Location = new System.Drawing.Point(359, 31);
+            this.lblSpellDamage.Location = new System.Drawing.Point(358, 31);
             this.lblSpellDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDamage.Name = "lblSpellDamage";
             this.lblSpellDamage.Size = new System.Drawing.Size(53, 13);
@@ -6535,7 +6551,7 @@ namespace Chummer
             // 
             this.lblSpellDVLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDVLabel.AutoSize = true;
-            this.lblSpellDVLabel.Location = new System.Drawing.Point(328, 56);
+            this.lblSpellDVLabel.Location = new System.Drawing.Point(327, 56);
             this.lblSpellDVLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDVLabel.Name = "lblSpellDVLabel";
             this.lblSpellDVLabel.Size = new System.Drawing.Size(25, 13);
@@ -6548,7 +6564,7 @@ namespace Chummer
             this.lblSpellDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDuration.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDuration, 2);
-            this.lblSpellDuration.Location = new System.Drawing.Point(359, 81);
+            this.lblSpellDuration.Location = new System.Drawing.Point(358, 81);
             this.lblSpellDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDuration.Name = "lblSpellDuration";
             this.lblSpellDuration.Size = new System.Drawing.Size(53, 13);
@@ -6559,7 +6575,7 @@ namespace Chummer
             // 
             this.lblSpellDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDurationLabel.AutoSize = true;
-            this.lblSpellDurationLabel.Location = new System.Drawing.Point(303, 81);
+            this.lblSpellDurationLabel.Location = new System.Drawing.Point(302, 81);
             this.lblSpellDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDurationLabel.Name = "lblSpellDurationLabel";
             this.lblSpellDurationLabel.Size = new System.Drawing.Size(50, 13);
@@ -6584,7 +6600,7 @@ namespace Chummer
             this.lblSpellDV.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDV.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDV, 2);
-            this.lblSpellDV.Location = new System.Drawing.Point(359, 56);
+            this.lblSpellDV.Location = new System.Drawing.Point(358, 56);
             this.lblSpellDV.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDV.Name = "lblSpellDV";
             this.lblSpellDV.Size = new System.Drawing.Size(28, 13);
@@ -7094,15 +7110,17 @@ namespace Chummer
             this.tlpTechnomancer.ColumnCount = 2;
             this.tlpTechnomancer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpTechnomancer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTechnomancer.Controls.Add(this.cmdAddSprite, 0, 2);
-            this.tlpTechnomancer.Controls.Add(this.panSprites, 0, 3);
+            this.tlpTechnomancer.Controls.Add(this.panSprites, 0, 4);
             this.tlpTechnomancer.Controls.Add(this.treComplexForms, 0, 1);
             this.tlpTechnomancer.Controls.Add(this.flpTechnomancer, 1, 1);
             this.tlpTechnomancer.Controls.Add(this.tlpTechnomancerButtons, 0, 0);
+            this.tlpTechnomancer.Controls.Add(this.flpSustainedComplexForms, 0, 2);
+            this.tlpTechnomancer.Controls.Add(this.bufferedTableLayoutPanel2, 0, 3);
             this.tlpTechnomancer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpTechnomancer.Location = new System.Drawing.Point(3, 3);
             this.tlpTechnomancer.Name = "tlpTechnomancer";
-            this.tlpTechnomancer.RowCount = 4;
+            this.tlpTechnomancer.RowCount = 5;
+            this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancer.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -7115,7 +7133,7 @@ namespace Chummer
             this.cmdAddSprite.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdAddSprite.AutoSize = true;
             this.cmdAddSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdAddSprite.Location = new System.Drawing.Point(3, 417);
+            this.cmdAddSprite.Location = new System.Drawing.Point(3, 3);
             this.cmdAddSprite.Name = "cmdAddSprite";
             this.cmdAddSprite.Size = new System.Drawing.Size(66, 23);
             this.cmdAddSprite.TabIndex = 26;
@@ -7131,9 +7149,9 @@ namespace Chummer
             this.panSprites.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpTechnomancer.SetColumnSpan(this.panSprites, 2);
             this.panSprites.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panSprites.Location = new System.Drawing.Point(3, 446);
+            this.panSprites.Location = new System.Drawing.Point(3, 456);
             this.panSprites.Name = "panSprites";
-            this.panSprites.Size = new System.Drawing.Size(965, 176);
+            this.panSprites.Size = new System.Drawing.Size(965, 166);
             this.panSprites.TabIndex = 25;
             // 
             // treComplexForms
@@ -7149,7 +7167,7 @@ namespace Chummer
             treeNode12});
             this.treComplexForms.ShowNodeToolTips = true;
             this.treComplexForms.ShowRootLines = false;
-            this.treComplexForms.Size = new System.Drawing.Size(295, 379);
+            this.treComplexForms.Size = new System.Drawing.Size(295, 244);
             this.treComplexForms.TabIndex = 94;
             this.treComplexForms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treComplexForms_AfterSelect);
             this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treComplexForms_KeyDown);
@@ -7166,7 +7184,8 @@ namespace Chummer
             this.flpTechnomancer.Location = new System.Drawing.Point(301, 29);
             this.flpTechnomancer.Margin = new System.Windows.Forms.Padding(0);
             this.flpTechnomancer.Name = "flpTechnomancer";
-            this.flpTechnomancer.Size = new System.Drawing.Size(670, 385);
+            this.tlpTechnomancer.SetRowSpan(this.flpTechnomancer, 2);
+            this.flpTechnomancer.Size = new System.Drawing.Size(670, 389);
             this.flpTechnomancer.TabIndex = 185;
             this.flpTechnomancer.WrapContents = false;
             // 
@@ -7178,7 +7197,7 @@ namespace Chummer
             this.gpbTechnomancerComplexForm.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbTechnomancerComplexForm.Location = new System.Drawing.Point(3, 3);
             this.gpbTechnomancerComplexForm.Name = "gpbTechnomancerComplexForm";
-            this.gpbTechnomancerComplexForm.Size = new System.Drawing.Size(250, 144);
+            this.gpbTechnomancerComplexForm.Size = new System.Drawing.Size(250, 148);
             this.gpbTechnomancerComplexForm.TabIndex = 0;
             this.gpbTechnomancerComplexForm.TabStop = false;
             this.gpbTechnomancerComplexForm.Tag = "String_ExpenseComplexForm";
@@ -7189,9 +7208,10 @@ namespace Chummer
             // 
             this.tlpTechnomancerComplexForm.AutoSize = true;
             this.tlpTechnomancerComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpTechnomancerComplexForm.ColumnCount = 2;
+            this.tlpTechnomancerComplexForm.ColumnCount = 3;
             this.tlpTechnomancerComplexForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpTechnomancerComplexForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTechnomancerComplexForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblTargetLabel, 0, 0);
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblTarget, 1, 0);
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblDurationLabel, 0, 1);
@@ -7202,6 +7222,7 @@ namespace Chummer
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblComplexFormSource, 1, 4);
             this.tlpTechnomancerComplexForm.Controls.Add(this.lblComplexFormDicePoolLabel, 0, 3);
             this.tlpTechnomancerComplexForm.Controls.Add(this.dpcComplexFormDicePool, 1, 3);
+            this.tlpTechnomancerComplexForm.Controls.Add(this.cmdSustainComplexForm, 2, 4);
             this.tlpTechnomancerComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpTechnomancerComplexForm.Location = new System.Drawing.Point(3, 16);
             this.tlpTechnomancerComplexForm.Name = "tlpTechnomancerComplexForm";
@@ -7211,7 +7232,7 @@ namespace Chummer
             this.tlpTechnomancerComplexForm.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancerComplexForm.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpTechnomancerComplexForm.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpTechnomancerComplexForm.Size = new System.Drawing.Size(244, 125);
+            this.tlpTechnomancerComplexForm.Size = new System.Drawing.Size(244, 129);
             this.tlpTechnomancerComplexForm.TabIndex = 0;
             // 
             // lblTargetLabel
@@ -7287,7 +7308,7 @@ namespace Chummer
             // 
             this.lblComplexFormSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblComplexFormSourceLabel.AutoSize = true;
-            this.lblComplexFormSourceLabel.Location = new System.Drawing.Point(15, 106);
+            this.lblComplexFormSourceLabel.Location = new System.Drawing.Point(15, 108);
             this.lblComplexFormSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComplexFormSourceLabel.Name = "lblComplexFormSourceLabel";
             this.lblComplexFormSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -7300,7 +7321,7 @@ namespace Chummer
             this.lblComplexFormSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblComplexFormSource.AutoSize = true;
             this.lblComplexFormSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblComplexFormSource.Location = new System.Drawing.Point(65, 106);
+            this.lblComplexFormSource.Location = new System.Drawing.Point(65, 108);
             this.lblComplexFormSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblComplexFormSource.Name = "lblComplexFormSource";
             this.lblComplexFormSource.Size = new System.Drawing.Size(47, 13);
@@ -7343,7 +7364,7 @@ namespace Chummer
             this.gpbTechnomancerStream.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbTechnomancerStream.Controls.Add(this.tlpTechnomancerStream);
             this.gpbTechnomancerStream.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbTechnomancerStream.Location = new System.Drawing.Point(3, 153);
+            this.gpbTechnomancerStream.Location = new System.Drawing.Point(3, 157);
             this.gpbTechnomancerStream.Name = "gpbTechnomancerStream";
             this.gpbTechnomancerStream.Size = new System.Drawing.Size(250, 71);
             this.gpbTechnomancerStream.TabIndex = 1;
@@ -7455,7 +7476,7 @@ namespace Chummer
             this.gpbTechnomancerParagon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbTechnomancerParagon.Controls.Add(this.tlpTechnomancerParagon);
             this.gpbTechnomancerParagon.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbTechnomancerParagon.Location = new System.Drawing.Point(3, 230);
+            this.gpbTechnomancerParagon.Location = new System.Drawing.Point(3, 234);
             this.gpbTechnomancerParagon.Name = "gpbTechnomancerParagon";
             this.gpbTechnomancerParagon.Size = new System.Drawing.Size(250, 69);
             this.gpbTechnomancerParagon.TabIndex = 2;
@@ -18746,16 +18767,61 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
-            // flpSustainedSpells
+            // flpSustainedComplexForms
             // 
-            this.flpSustainedSpells.AutoScroll = true;
-            this.flpSustainedSpells.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpSustainedSpells.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpSustainedSpells.Location = new System.Drawing.Point(3, 3);
-            this.flpSustainedSpells.Name = "flpSustainedSpells";
-            this.flpSustainedSpells.Size = new System.Drawing.Size(295, 127);
-            this.flpSustainedSpells.TabIndex = 0;
-            this.flpSustainedSpells.WrapContents = false;
+            this.flpSustainedComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpSustainedComplexForms.Location = new System.Drawing.Point(2, 281);
+            this.flpSustainedComplexForms.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSustainedComplexForms.Name = "flpSustainedComplexForms";
+            this.flpSustainedComplexForms.Size = new System.Drawing.Size(297, 135);
+            this.flpSustainedComplexForms.TabIndex = 187;
+            // 
+            // bufferedTableLayoutPanel2
+            // 
+            this.bufferedTableLayoutPanel2.AutoSize = true;
+            this.bufferedTableLayoutPanel2.ColumnCount = 3;
+            this.bufferedTableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel2.Controls.Add(this.cmdAddSprite, 0, 0);
+            this.bufferedTableLayoutPanel2.Controls.Add(this.chkPsycheActiveTechnomancer, 2, 0);
+            this.bufferedTableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bufferedTableLayoutPanel2.Location = new System.Drawing.Point(3, 421);
+            this.bufferedTableLayoutPanel2.Name = "bufferedTableLayoutPanel2";
+            this.bufferedTableLayoutPanel2.RowCount = 1;
+            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel2.Size = new System.Drawing.Size(295, 29);
+            this.bufferedTableLayoutPanel2.TabIndex = 188;
+            // 
+            // chkPsycheActiveTechnomancer
+            // 
+            this.chkPsycheActiveTechnomancer.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.chkPsycheActiveTechnomancer.AutoSize = true;
+            this.chkPsycheActiveTechnomancer.DefaultColorScheme = true;
+            this.chkPsycheActiveTechnomancer.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.chkPsycheActiveTechnomancer.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
+            this.chkPsycheActiveTechnomancer.Location = new System.Drawing.Point(231, 6);
+            this.chkPsycheActiveTechnomancer.Name = "chkPsycheActiveTechnomancer";
+            this.chkPsycheActiveTechnomancer.Size = new System.Drawing.Size(61, 17);
+            this.chkPsycheActiveTechnomancer.TabIndex = 27;
+            this.chkPsycheActiveTechnomancer.Tag = "Label_PsycheActive";
+            this.chkPsycheActiveTechnomancer.Text = "Psyche";
+            this.chkPsycheActiveTechnomancer.UseVisualStyleBackColor = true;
+            this.chkPsycheActiveTechnomancer.Visible = false;
+            // 
+            // cmdSustainComplexForm
+            // 
+            this.cmdSustainComplexForm.AutoSize = true;
+            this.cmdSustainComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSustainComplexForm.Location = new System.Drawing.Point(189, 103);
+            this.cmdSustainComplexForm.Name = "cmdSustainComplexForm";
+            this.cmdSustainComplexForm.Size = new System.Drawing.Size(52, 23);
+            this.cmdSustainComplexForm.TabIndex = 183;
+            this.cmdSustainComplexForm.Tag = "Button_Sustain";
+            this.cmdSustainComplexForm.Text = "Sustain";
+            this.cmdSustainComplexForm.ToolTipText = "";
+            this.cmdSustainComplexForm.UseVisualStyleBackColor = true;
+            this.cmdSustainComplexForm.Click += new System.EventHandler(this.cmdAddSustainedForm_Click);
             // 
             // frmCareer
             // 
@@ -19227,6 +19293,8 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
+            this.bufferedTableLayoutPanel2.ResumeLayout(false);
+            this.bufferedTableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -20489,5 +20557,9 @@ namespace Chummer
         private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
         private ColorableCheckBox chkPsycheActive;
         private FlowLayoutPanel flpSustainedSpells;
+        private ButtonWithToolTip cmdSustainComplexForm;
+        private FlowLayoutPanel flpSustainedComplexForms;
+        private BufferedTableLayoutPanel bufferedTableLayoutPanel2;
+        private ColorableCheckBox chkPsycheActiveTechnomancer;
     }
 }

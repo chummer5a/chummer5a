@@ -127,7 +127,7 @@ namespace Chummer
                 if (_blnSelfSustained != value)
                 {
                     _blnSelfSustained = value;
-                    objCharacter.OnPropertyChanged("SustainingPenalty");
+                    objCharacter.OnPropertyChanged();
                 }
 
             }

@@ -3090,6 +3090,7 @@ namespace Chummer
                 {
                     _intDicePenaltySustaining = value;
                     OnPropertyChanged();
+                    
                 }
             }
         }

@@ -43,7 +43,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("sustainedobject");
-            objWriter.WriteElementString("type", nameof(SustainedSpell));
+            objWriter.WriteElementString("type", nameof(SustainedComplexForm));
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", strName);
