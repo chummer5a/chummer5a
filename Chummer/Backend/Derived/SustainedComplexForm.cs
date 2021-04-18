@@ -13,42 +13,32 @@ using NLog;
 namespace Chummer
 {
     /// <summary>
-    /// A Sustained Magician Spell
+    /// A Sustained Complex Form
     /// </summary>
+    
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-
-    public class SustainedSpell : Spell, IHasInternalId, IHasName, IHasXmlNode, ISustainable
+    public class SustainedComplexForm : ComplexForm, ISustainable, IHasInternalId, IHasName, IHasSource
     {
         private bool _blnSelfSustained = true;
         private int _intForce = 0;
         private int _intNetHits = 0;
-
-
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
-
-        public SustainedSpell(Character objCharacter) : base(objCharacter)
+        public SustainedComplexForm(Character objCharacter) : base(objCharacter)
         {
-            //Create the GUID for new sustained spells
+            //Create the GUID for new sustained Complex Forms
             guiID = Guid.NewGuid();
         }
 
-        public void Create(Spell spellRef)
+        public void Create(ComplexForm formRef)
         {
-            guiSourceID = spellRef.SourceID;
-            Name = spellRef.Name;
+            guiSourceID = formRef.SourceID;
+            Name = formRef.Name;
         }
 
-
-
-        /// <summary>
-        /// Print the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter"></param>
-        /// <param name="objCulture"></param>
-        /// <param name="strLanguageToPrint"></param>
-        public override void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public override void Save(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -56,25 +46,13 @@ namespace Chummer
             objWriter.WriteElementString("type", nameof(SustainedSpell));
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
-            if (Limited)
-                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
-                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellLimited", strLanguageToPrint)));
-            else if (Alchemical)
-                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
-                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint)));
-            else
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
+            objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
-        /// <summary>
-        /// Load the Spell from the XmlNode.
-        /// </summary>
-        /// <param name="objNode"></param>
         public override void Load(XmlNode objNode)
         {
             if (objNode == null)
@@ -95,30 +73,44 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Save the objects xml to the XmlWriter, used for Sustained spells only!
+        /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter"></param>
-        public override void Save(XmlTextWriter objWriter)
+        /// <param name="objCulture">Unused, needed to satisfy the Interface</param>
+        /// <param name="strLanguageToPrint"></param>
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
+            //Do not change the Start Element name!
             objWriter.WriteStartElement("sustainedobject");
             objWriter.WriteElementString("type", nameof(SustainedSpell));
-            objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", Name);
-            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("sourceid", SourceIDString);
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo));
+
             objWriter.WriteEndElement();
         }
-
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Is the spell sustained by yourself?
-        /// </summary>
+        public int NetHits
+        {
+            get => _intNetHits;
+            set => _intNetHits = value;
+        }
+
+        public int Force
+        {
+            get => _intForce;
+            set => _intForce = value;
+        }
+
         public bool SelfSustained
         {
             get => _blnSelfSustained;
@@ -131,30 +123,8 @@ namespace Chummer
                 }
 
             }
-            
+
         }
-
-        /// <summary>
-        /// Force of the sustained spell
-        /// </summary>
-        public int Force
-        {
-            get => _intForce;
-            set => _intForce = value;
-        }
-
-        /// <summary>
-        /// The Net Hits the Sustained Spell has
-        /// </summary>
-        public int NetHits
-        {
-            get => _intNetHits;
-            set => _intNetHits = value;
-        }
-
-        #endregion
-
-        #region Helper Methods
         #endregion
     }
 }

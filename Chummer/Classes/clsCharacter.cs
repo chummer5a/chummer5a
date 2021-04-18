@@ -1688,13 +1688,13 @@ namespace Chummer
                     // </spells>
                     objWriter.WriteEndElement();
 
-                    // <sustainedspells>
-                    objWriter.WriteStartElement("sustainedspells");
-                    foreach (SustainedSpell objSustainedSpell in _lstSustained)
+                    // <sustained>
+                    objWriter.WriteStartElement("sustained");
+                    foreach (ISustainable objSustained in _lstSustained)
                     {
-                        objSustainedSpell.Save(objWriter);
+                        objSustained.Save(objWriter);
                     }
-                    // </sustainedspells>
+                    // </sustained>
                     objWriter.WriteEndElement();
 
                     // <foci>
@@ -3517,12 +3517,29 @@ namespace Chummer
                         //Loading sustained spells. Added here to not having to fuck around with load orders or timekeepers. Maybe change into an own loading step?
                         if (Created)
                         {
-                            objXmlNodeList = objXmlCharacter.SelectNodes("sustainedspells/sustainedspell");
-                            foreach (XmlNode objXmlSustainedSpell in objXmlNodeList)
+                            objXmlNodeList = objXmlCharacter.SelectNodes("sustained/sustainedobject");
+                            foreach (XmlNode objXmlSustained in objXmlNodeList)
                             {
-                                SustainedSpell objSustainedSpell = new SustainedSpell(this);
-                                objSustainedSpell.Load(objXmlSustainedSpell);
-                                _lstSustained.Add(objSustainedSpell);
+                                objXmlSustained.TryGetField<String>("type", out string _strType);
+
+                                //TODO find a way to make the cases smaller
+                                switch (_strType)
+                                {
+                                    case nameof(SustainedSpell):
+                                        ISustainable objSustainedSpell = new SustainedSpell(this);
+                                        objSustainedSpell.Load(objXmlSustained);
+                                        _lstSustained.Add(objSustainedSpell);
+                                        break;
+
+                                    case nameof(SustainedComplexForm):
+                                        ISustainable objSustainedForm = new SustainedComplexForm(this);
+                                        objSustainedForm.Load(objXmlSustained);
+                                        _lstSustained.Add(objSustainedForm);
+                                        break;
+
+                                    default:
+                                        break;
+                                }
                             }
                         }
 
@@ -4744,14 +4761,14 @@ namespace Chummer
             // </spells>
             objWriter.WriteEndElement();
 
-            // <sustainedspells>
-            objWriter.WriteStartElement("sustainedspells");
-            foreach(SustainedSpell objSustainedSpell in SustainedCollection)
+            // <sustained>
+            objWriter.WriteStartElement("sustained");
+            foreach(ISustainable objSustained in SustainedCollection)
             {
-                objSustainedSpell.Print(objWriter, objCulture, strLanguageToPrint);
+                objSustained.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
-            //</sustainedspells>
+            //</sustained>
             objWriter.WriteEndElement();
 
 

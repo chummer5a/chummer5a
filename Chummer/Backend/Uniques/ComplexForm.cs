@@ -37,9 +37,9 @@ namespace Chummer
     public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private Guid _guiID;
-        private Guid _guiSourceID = Guid.Empty;
-        private string _strName = string.Empty;
+        protected Guid guiID;
+        protected Guid guiSourceID = Guid.Empty;
+        protected string strName = string.Empty;
         private string _strTarget = string.Empty;
         private string _strDuration = string.Empty;
         private string _strFV = string.Empty;
@@ -48,15 +48,15 @@ namespace Chummer
         private string _strNotes = string.Empty;
         private string _strExtra = string.Empty;
         private int _intGrade;
-        private readonly Character _objCharacter;
+        protected readonly Character objCharacter;
         private SourceString _objCachedSourceDetail;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public ComplexForm(Character objCharacter)
         {
             // Create the GUID for the new Complex Form.
-            _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            guiID = Guid.NewGuid();
+            this.objCharacter = objCharacter;
         }
 
         /// Create a Complex Form from an XmlNode.
@@ -64,13 +64,13 @@ namespace Chummer
         /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlComplexFormNode, string strExtra = "")
         {
-            if (!objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            if (!objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for complex form xmlnode", objXmlComplexFormNode });
                 Utils.BreakIfDebug();
             }
-            objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
-            objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out guiSourceID);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref strName);
             objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -81,9 +81,9 @@ namespace Chummer
             if (objXmlComplexFormNode["bonus"] != null)
             {
                 ImprovementManager.ForcedValue = strExtra;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), objXmlComplexFormNode["bonus"], 1, CurrentDisplayName))
+                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Spell, guiID.ToString("D", GlobalOptions.InvariantCultureInfo), objXmlComplexFormNode["bonus"], 1, CurrentDisplayName))
                 {
-                    _guiID = Guid.Empty;
+                    guiID = Guid.Empty;
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -102,14 +102,14 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public virtual void Save(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("complexform");
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("duration", _strDuration);
             objWriter.WriteElementString("fv", _strFV);
@@ -121,24 +121,24 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
-                _objCharacter.SourceProcess(_strSource);
+                objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
         /// Load the Complex Form from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public virtual void Load(XmlNode objNode)
         {
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out guiID))
             {
-                _guiID = Guid.NewGuid();
+                guiID = Guid.NewGuid();
             }
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            objNode.TryGetStringFieldQuickly("name", ref strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref guiSourceID);
             }
 
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
@@ -156,7 +156,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        public virtual void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -169,9 +169,9 @@ namespace Chummer
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
             objWriter.WriteElementString("fv", DisplayFV(strLanguageToPrint));
             objWriter.WriteElementString("target", DisplayTarget(strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            if (_objCharacter.Options.PrintNotes)
+            if (objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
@@ -183,11 +183,11 @@ namespace Chummer
         /// </summary>
         public Guid SourceID
         {
-            get => _guiSourceID;
+            get => guiSourceID;
             set
             {
-                if (_guiSourceID == value) return;
-                _guiSourceID = value;
+                if (guiSourceID == value) return;
+                guiSourceID = value;
                 _objCachedMyXmlNode = null;
             }
         }
@@ -195,27 +195,27 @@ namespace Chummer
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string SourceIDString => guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Internal identifier which will be used to identify this Complex Form in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Complex Form's name.
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get => strName;
             set
             {
-                if (_strName != value)
+                if (strName != value)
                     _objCachedMyXmlNode = null;
-                _strName = value;
+                strName = value;
             }
         }
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, objCharacter);
 
         /// <summary>
         /// Complex Form's extra info.
@@ -223,7 +223,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
+            set => _strExtra = objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -240,10 +240,10 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            string strReturn = _strName;
+            string strReturn = strName;
             // Get the translated name if applicable.
             if (strLanguage != GlobalOptions.DefaultLanguage)
-                strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? _strName;
+                strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? strName;
 
             return strReturn;
         }
@@ -256,7 +256,7 @@ namespace Chummer
             {
                 string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
-                    strExtra = _objCharacter.TranslateExtra(Extra, strLanguage);
+                    strExtra = objCharacter.TranslateExtra(Extra, strLanguage);
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
@@ -322,7 +322,7 @@ namespace Chummer
             get
             {
                 StringBuilder sbdTip = new StringBuilder(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
-                int intRES = _objCharacter.RES.TotalValue;
+                int intRES = objCharacter.RES.TotalValue;
                 string strFV = FV;
                 string strSpace = LanguageManager.GetString("String_Space");
                 for (int i = 1; i <= intRES * 2; i++)
@@ -348,13 +348,13 @@ namespace Chummer
                     }
                 }
 
-                List<Improvement> lstFadingImprovements = _objCharacter.Improvements.Where(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled).ToList();
+                List<Improvement> lstFadingImprovements = objCharacter.Improvements.Where(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled).ToList();
                 if (lstFadingImprovements.Count > 0)
                 {
                     sbdTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
                     foreach (Improvement objLoopImprovement in lstFadingImprovements)
                     {
-                        sbdTip.Append(Environment.NewLine + _objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
+                        sbdTip.Append(Environment.NewLine + objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
                     }
                 }
 
@@ -371,7 +371,7 @@ namespace Chummer
             {
                 string strReturn = _strFV;
                 bool force = strReturn.StartsWith('L');
-                if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled))
+                if (objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled))
                 {
                     string strFV = strReturn.TrimStartOnce('L');
                     //Navigator can't do math on a single value, so inject a mathable value.
@@ -395,7 +395,7 @@ namespace Chummer
                             }
                         }
                     }
-                    foreach (Improvement imp in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FadingValue && i.Enabled))
+                    foreach (Improvement imp in objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FadingValue && i.Enabled))
                     {
                         strFV += " + " + imp.Value.ToString("0;-0;0", GlobalOptions.InvariantCultureInfo);
                     }
@@ -494,7 +494,7 @@ namespace Chummer
             set => _strNotes = value;
         }
 
-        public Skill Skill => _objCharacter.SkillsSection.GetActiveSkill("Software");
+        public Skill Skill => objCharacter.SkillsSection.GetActiveSkill("Software");
 
         /// <summary>
         /// The Dice Pool size for the Active Skill required to thread the Complex Form.
@@ -512,7 +512,7 @@ namespace Chummer
                 }
 
                 // Include any Improvements to Threading.
-                intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading").StandardRound();
+                intReturn += ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.ActionDicePool, false, "Threading").StandardRound();
 
                 return intReturn;
             }
@@ -533,12 +533,12 @@ namespace Chummer
                 }
 
                 // Include any Improvements to the Spell Category.
-                foreach (Improvement objImprovement in _objCharacter.Improvements
+                foreach (Improvement objImprovement in objCharacter.Improvements
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
                     && objImprovement.ImprovedName == "Threading"))
                 {
                     strReturn += string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                        strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                        strSpace, objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                 }
 
                 return strReturn;
@@ -557,7 +557,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = _objCharacter.LoadData("complexforms.xml", strLanguage)
+                _objCachedMyXmlNode = objCharacter.LoadData("complexforms.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/complexforms/complexform[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -572,7 +572,7 @@ namespace Chummer
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm)
         {
-            if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            if (Grade != 0 && !string.IsNullOrEmpty(Source) && !objCharacter.Options.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode
@@ -612,9 +612,9 @@ namespace Chummer
                     return false;
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, InternalId);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, InternalId);
 
-            return _objCharacter.ComplexForms.Remove(this);
+            return objCharacter.ComplexForms.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)
