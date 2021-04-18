@@ -1108,6 +1108,8 @@ namespace Chummer
             nudKarmaSustainingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSustainingFocus));
             nudKarmaWeaponFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaWeaponFocus));
 
+            nudDicePenaltySustainedSpell.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.DicePenaltySustaining));
+
             _objCharacterOptions.PropertyChanged += OptionsChanged;
         }
 

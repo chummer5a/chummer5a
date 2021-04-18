@@ -188,6 +188,9 @@ namespace Chummer
         // Weapon
         private int _intKarmaWeaponFocus = 3;
 
+        //Sustaining
+        private int _intDicePenaltySustaining = 2;
+
         // Build settings.
         private CharacterBuildMethod _eBuildMethod = CharacterBuildMethod.Priority;
         private int _intBuildPoints = 25;
@@ -596,6 +599,9 @@ namespace Chummer
                     objWriter.WriteElementString("dronemods", _blnDroneMods.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronemodsmaximumpilot />
                     objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <DicePenaltySustaining />
+                    objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <karmacost>
                     objWriter.WriteStartElement("karmacost");
@@ -1008,6 +1014,9 @@ namespace Chummer
             // Apply maximum drone attribute improvement rule to Pilot, too
             if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
                 GlobalOptions.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
+
+            //House Rule: The DicePenalty per sustained spell or form
+            objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
 
             XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNode("karmacost");
             // Attempt to populate the Karma values.
@@ -3061,8 +3070,25 @@ namespace Chummer
             set
             {
                 if (_intCyberlimbAttributeBonusCap != value)
+                if (_intCyberlimbAttributeBonusCap != value)
                 {
                     _intCyberlimbAttributeBonusCap = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The Dice Penalty per Spell
+        /// </summary>
+        public int DicePenaltySustaining
+        {
+            get => _intDicePenaltySustaining;
+            set
+            {
+                if (_intDicePenaltySustaining != value)
+                {
+                    _intDicePenaltySustaining = value;
                     OnPropertyChanged();
                 }
             }

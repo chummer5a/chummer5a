@@ -402,6 +402,9 @@ namespace Chummer
                 case nameof(CharacterOptions.KarmaEnemy):
                     OnPropertyChanged(nameof(EnemyKarma));
                     break;
+                case nameof(CharacterOptions.DicePenaltySustaining):
+                    RefreshSustainingPenalties();
+                    break;
                 case nameof(CharacterOptions.KarmaSpell):
                     if (FreeSpells > 0)
                     {
@@ -15433,13 +15436,17 @@ namespace Chummer
 
         private int _intWoundModifier;
 
+        /// <summary>
+        /// Recalculates the Dicepoolmodifier for sustaining spells or complex forms
+        /// </summary>
         public void RefreshSustainingPenalties()
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if (IsLoading)
                 return;
+            int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
             int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
-            int intModifierPerSpell = PsycheActive ? -1 : -2; // TODO: Unhardcode this
+            int intModifierPerSpell = PsycheActive ? -1 : - intDicePenaltySustainedSpell ; // TODO: Unhardcode this
             // TODO: Add support for Focused Concentration and possibly Heightened Concentration
             _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
         }

@@ -282,6 +282,8 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
+            this.lblDicePenaltySustaining = new System.Windows.Forms.Label();
+            this.nudDicePenaltySustainedSpell = new Chummer.NumericUpDownEx();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -373,6 +375,7 @@ namespace Chummer
             this.gpbHouseRulesMagicResonance.SuspendLayout();
             this.tlpHouseRulesMagicResonance.SuspendLayout();
             this.tlpButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDicePenaltySustainedSpell)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -3550,13 +3553,13 @@ namespace Chummer
             // 
             // flpHouseRules
             // 
+            this.flpHouseRules.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.flpHouseRules.AutoScroll = true;
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesQualities);
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesAttributes);
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesSkills);
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesCombat);
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesMagicResonance);
-            this.flpHouseRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpHouseRules.Location = new System.Drawing.Point(9, 9);
             this.flpHouseRules.Margin = new System.Windows.Forms.Padding(0);
             this.flpHouseRules.Name = "flpHouseRules";
@@ -4011,7 +4014,7 @@ namespace Chummer
             this.gpbHouseRulesMagicResonance.Controls.Add(this.tlpHouseRulesMagicResonance);
             this.gpbHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 309);
             this.gpbHouseRulesMagicResonance.Name = "gpbHouseRulesMagicResonance";
-            this.gpbHouseRulesMagicResonance.Size = new System.Drawing.Size(440, 249);
+            this.gpbHouseRulesMagicResonance.Size = new System.Drawing.Size(751, 252);
             this.gpbHouseRulesMagicResonance.TabIndex = 0;
             this.gpbHouseRulesMagicResonance.TabStop = false;
             this.gpbHouseRulesMagicResonance.Tag = "Label_CharacterOptions_MagicAndResonance";
@@ -4021,8 +4024,10 @@ namespace Chummer
             // 
             this.tlpHouseRulesMagicResonance.AutoSize = true;
             this.tlpHouseRulesMagicResonance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpHouseRulesMagicResonance.ColumnCount = 1;
+            this.tlpHouseRulesMagicResonance.ColumnCount = 3;
             this.tlpHouseRulesMagicResonance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesMagicResonance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpHouseRulesMagicResonance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkMysAdPp, 0, 2);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkPrioritySpellsAsAdeptPowers, 0, 3);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkExtendAnyDetectionSpell, 0, 4);
@@ -4033,6 +4038,8 @@ namespace Chummer
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkAllowInitiation, 0, 7);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkMysAdeptSecondMAGAttribute, 0, 1);
             this.tlpHouseRulesMagicResonance.Controls.Add(this.chkIgnoreArt, 0, 0);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.lblDicePenaltySustaining, 1, 0);
+            this.tlpHouseRulesMagicResonance.Controls.Add(this.nudDicePenaltySustainedSpell, 2, 0);
             this.tlpHouseRulesMagicResonance.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesMagicResonance.Name = "tlpHouseRulesMagicResonance";
@@ -4048,14 +4055,14 @@ namespace Chummer
             this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpHouseRulesMagicResonance.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpHouseRulesMagicResonance.Size = new System.Drawing.Size(434, 230);
+            this.tlpHouseRulesMagicResonance.Size = new System.Drawing.Size(745, 233);
             this.tlpHouseRulesMagicResonance.TabIndex = 0;
             // 
             // chkMysAdPp
             // 
             this.chkMysAdPp.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMysAdPp.AutoSize = true;
-            this.chkMysAdPp.Location = new System.Drawing.Point(3, 49);
+            this.chkMysAdPp.Location = new System.Drawing.Point(3, 52);
             this.chkMysAdPp.Name = "chkMysAdPp";
             this.chkMysAdPp.Size = new System.Drawing.Size(280, 17);
             this.chkMysAdPp.TabIndex = 29;
@@ -4067,7 +4074,7 @@ namespace Chummer
             // 
             this.chkPrioritySpellsAsAdeptPowers.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
-            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(3, 72);
+            this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(3, 75);
             this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
             this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(325, 17);
             this.chkPrioritySpellsAsAdeptPowers.TabIndex = 31;
@@ -4079,7 +4086,7 @@ namespace Chummer
             // 
             this.chkExtendAnyDetectionSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExtendAnyDetectionSpell.AutoSize = true;
-            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(3, 95);
+            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(3, 98);
             this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
             this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(332, 17);
             this.chkExtendAnyDetectionSpell.TabIndex = 40;
@@ -4091,7 +4098,7 @@ namespace Chummer
             // 
             this.chkIncreasedImprovedAbilityModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIncreasedImprovedAbilityModifier.AutoSize = true;
-            this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(3, 118);
+            this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(3, 121);
             this.chkIncreasedImprovedAbilityModifier.Name = "chkIncreasedImprovedAbilityModifier";
             this.chkIncreasedImprovedAbilityModifier.Size = new System.Drawing.Size(332, 17);
             this.chkIncreasedImprovedAbilityModifier.TabIndex = 44;
@@ -4103,7 +4110,7 @@ namespace Chummer
             // 
             this.chkIgnoreComplexFormLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreComplexFormLimit.AutoSize = true;
-            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(3, 210);
+            this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(3, 213);
             this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
             this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(215, 17);
             this.chkIgnoreComplexFormLimit.TabIndex = 43;
@@ -4115,7 +4122,7 @@ namespace Chummer
             // 
             this.chkSpecialKarmaCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSpecialKarmaCost.AutoSize = true;
-            this.chkSpecialKarmaCost.Location = new System.Drawing.Point(3, 141);
+            this.chkSpecialKarmaCost.Location = new System.Drawing.Point(3, 144);
             this.chkSpecialKarmaCost.Name = "chkSpecialKarmaCost";
             this.chkSpecialKarmaCost.Size = new System.Drawing.Size(373, 17);
             this.chkSpecialKarmaCost.TabIndex = 42;
@@ -4127,7 +4134,7 @@ namespace Chummer
             // 
             this.chkAllowTechnomancerSchooling.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowTechnomancerSchooling.AutoSize = true;
-            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 187);
+            this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 190);
             this.chkAllowTechnomancerSchooling.Name = "chkAllowTechnomancerSchooling";
             this.chkAllowTechnomancerSchooling.Size = new System.Drawing.Size(273, 17);
             this.chkAllowTechnomancerSchooling.TabIndex = 45;
@@ -4139,7 +4146,7 @@ namespace Chummer
             // 
             this.chkAllowInitiation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowInitiation.AutoSize = true;
-            this.chkAllowInitiation.Location = new System.Drawing.Point(3, 164);
+            this.chkAllowInitiation.Location = new System.Drawing.Point(3, 167);
             this.chkAllowInitiation.Name = "chkAllowInitiation";
             this.chkAllowInitiation.Size = new System.Drawing.Size(227, 17);
             this.chkAllowInitiation.TabIndex = 7;
@@ -4151,7 +4158,7 @@ namespace Chummer
             // 
             this.chkMysAdeptSecondMAGAttribute.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
-            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 26);
+            this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 29);
             this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
             this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
             this.chkMysAdeptSecondMAGAttribute.TabIndex = 35;
@@ -4164,7 +4171,7 @@ namespace Chummer
             // 
             this.chkIgnoreArt.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreArt.AutoSize = true;
-            this.chkIgnoreArt.Location = new System.Drawing.Point(3, 3);
+            this.chkIgnoreArt.Location = new System.Drawing.Point(3, 4);
             this.chkIgnoreArt.Name = "chkIgnoreArt";
             this.chkIgnoreArt.Size = new System.Drawing.Size(235, 17);
             this.chkIgnoreArt.TabIndex = 1;
@@ -4299,6 +4306,40 @@ namespace Chummer
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
+            // 
+            // lblDicePenaltySustaining
+            // 
+            this.lblDicePenaltySustaining.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDicePenaltySustaining.AutoSize = true;
+            this.lblDicePenaltySustaining.Location = new System.Drawing.Point(437, 6);
+            this.lblDicePenaltySustaining.Name = "lblDicePenaltySustaining";
+            this.lblDicePenaltySustaining.Size = new System.Drawing.Size(261, 13);
+            this.lblDicePenaltySustaining.TabIndex = 46;
+            this.lblDicePenaltySustaining.Tag = "Label_Options_DicePenaltySustaining";
+            this.lblDicePenaltySustaining.Text = "Dice Penalty for each sustained spell or complex form:";
+            this.lblDicePenaltySustaining.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // nudDicePenaltySustainedSpell
+            // 
+            this.nudDicePenaltySustainedSpell.Location = new System.Drawing.Point(704, 3);
+            this.nudDicePenaltySustainedSpell.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudDicePenaltySustainedSpell.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudDicePenaltySustainedSpell.Name = "nudDicePenaltySustainedSpell";
+            this.nudDicePenaltySustainedSpell.Size = new System.Drawing.Size(38, 20);
+            this.nudDicePenaltySustainedSpell.TabIndex = 47;
+            this.nudDicePenaltySustainedSpell.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             // 
             // frmCharacterOptions
             // 
@@ -4443,6 +4484,7 @@ namespace Chummer
             this.tlpHouseRulesMagicResonance.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDicePenaltySustainedSpell)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4702,5 +4744,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpHouseRulesMagicResonance;
         private System.Windows.Forms.Button cmdGlobalOptionsCustomData;
         private System.Windows.Forms.Button cmdRename;
+        private System.Windows.Forms.Label lblDicePenaltySustaining;
+        private NumericUpDownEx nudDicePenaltySustainedSpell;
     }
 }

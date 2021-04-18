@@ -5700,6 +5700,10 @@
       <text>Custom Time Format</text>
     </string>
     <string>
+      <key>Label_Options_DicePenaltySustaining</key>
+      <text>Dice Penalty for each sustained spell or complex form:</text>
+    </string>
+    <string>
       <key>Label_Options_DateFormat</key>
       <text>Date Format</text>
     </string>
