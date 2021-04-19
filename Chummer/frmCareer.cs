@@ -16575,7 +16575,7 @@ namespace Chummer
         /// </summary>
         private void AddSustainedSpell()
         {
-            //Could be merged with AddSustainedComplex form and create an more or less universal method. Not worth the trouble and probably not better at the moment.
+            //Could be merged with AddSustainedComplex form and create an more or less universal method to add ISustainables from tre viewers. Not worth the trouble and probably not better at the moment.
             if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0 && treSpells.SelectedNode.Tag is Spell objSpell)
             {
                 SustainedSpell objNewSustainedSpell = new SustainedSpell(CharacterObject);
