@@ -149,7 +149,9 @@ namespace Chummer
                     if (!(objCharacterNode.Tag is CharacterCache objCache))
                         continue;
                     objCharacterNode.Text = objCache.CalculatedName();
-                    string strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
+                    string strTooltip = "";
+                    if(!String.IsNullOrEmpty(objCache.FilePath))
+                        strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
                     if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
