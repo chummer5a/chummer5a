@@ -779,6 +779,7 @@ namespace ChummerHub.Controllers.V1
                             sinner.GoogleDriveFileId = dbsinner.GoogleDriveFileId;
                         if (string.IsNullOrEmpty(sinner.DownloadUrl))
                             sinner.DownloadUrl = dbsinner.DownloadUrl;
+                        
                         sinner.MyGroup = oldgroup;
 
 
@@ -790,7 +791,7 @@ namespace ChummerHub.Controllers.V1
                         _context.SINnerMetaData.Remove(dbsinner.SINnerMetaData);
                         _context.SINners.Remove(dbsinner);
                         if (oldgroup != null)
-                            _context.SINnerGroups.Remove(oldgroup);
+                            _context.Entry(oldgroup).State = EntityState.Detached;
 
                         dbsinner.SINnerMetaData.Visibility.UserRights.Clear();
                         dbsinner.SINnerMetaData.Visibility.UserRights = null;
@@ -1192,7 +1193,6 @@ namespace ChummerHub.Controllers.V1
                     .Include(a => a.SINnerMetaData).AsNoTracking()
                     .Include(a => a.SINnerMetaData.Visibility).AsNoTracking()
                     .Include(a => a.SINnerMetaData.Visibility.UserRights).AsNoTracking()
-                    //.Include(a => a.MyExtendedAttributes)
                     .Include(a => a.MyGroup).AsNoTracking().Where(a => a.Id == id).FirstOrDefaultAsync();
             }
             else
