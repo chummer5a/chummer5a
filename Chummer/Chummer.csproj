@@ -261,6 +261,7 @@
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Extensions\IntegerExtensions.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
@@ -268,6 +269,7 @@
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
+    <Compile Include="Backend\Extensions\XmlDocumentExtensions.cs" />
     <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
@@ -1866,6 +1868,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Exclude German sourcebooks\amend_german_books.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Hand-Based Cyberware Can Go Anywhere\amend_cyberware.xml">

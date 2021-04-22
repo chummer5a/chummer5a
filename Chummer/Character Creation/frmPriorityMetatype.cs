@@ -780,7 +780,7 @@ namespace Chummer
                                     // Create the Qualities that come with the Talent.
                                     foreach (XPathNavigator objXmlQualityItem in xmlTalentPriorityNode.Select("qualities/quality"))
                                     {
-                                        XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = " + objXmlQualityItem.Value.ToString().CleanXPath() + "]");
+                                        XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = " + objXmlQualityItem.Value.CleanXPath() + "]");
                                         Quality objQuality = new Quality(_objCharacter);
                                         string strForceValue = objXmlQualityItem.SelectSingleNode("@select")?.Value ?? string.Empty;
                                         objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);

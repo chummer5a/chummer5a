@@ -168,7 +168,7 @@ namespace Chummer.UI.Skills
                 };
                 lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
                 btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
-                btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
+                btnAddSpec.DoDatabinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
                 btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
 
                 lblCareerSpec.UpdateLightDarkMode();
@@ -239,7 +239,7 @@ namespace Chummer.UI.Skills
                 btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
                 btnAttribute.FlatAppearance.MouseOverBackColor = Color.Transparent;
 
-                nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
+                nudSkill.DoDatabinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                 nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
                 nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
                 nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
@@ -301,7 +301,7 @@ namespace Chummer.UI.Skills
                         Name = "chkKarma",
                         UseVisualStyleBackColor = true
                     };
-                    chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
+                    chkKarma.DoDatabinding("Visible", objSkill.CharacterObject, nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                     chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
                     chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                     chkKarma.UpdateLightDarkMode();

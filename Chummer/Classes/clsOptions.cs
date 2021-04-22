@@ -953,8 +953,6 @@ namespace Chummer
 
         private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
 
-        public static XmlReaderSettings SafeAsyncXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null, Async = true };
-
         public static XmlReaderSettings SafeXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null };
         /// <summary>
         /// XmlReaderSettings that should only be used if invalid characters are found. 

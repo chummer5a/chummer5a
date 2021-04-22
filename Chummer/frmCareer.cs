@@ -254,7 +254,7 @@ namespace Chummer
                         nudWildReputation.DoDatabinding("Value", CharacterObject, nameof(Character.WildReputation));
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddInitiationsAllowed));
-                        lblPossessed.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
+                        lblPossessed.DoDatabinding("Visible", CharacterObject, nameof(Character.Possessed));
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
                         chkPsycheActive.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
@@ -3043,14 +3043,15 @@ namespace Chummer
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
 
-                        ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                        ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                        ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                        ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                        int intHalfMAGRoundedUp = CharacterObject.MAG.TotalValue.DivAwayFromZero(2);
+                        ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                        ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                        ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                        ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
                         ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.INT.MetatypeMinimum,
                             CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
                         ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.WIL.MetatypeMinimum,
@@ -5170,28 +5171,14 @@ namespace Chummer
                 return;
             string strInternalIDToRemove = objSelectedQuality.InternalId;
             // Can't do a foreach because we're removing items, this is the next best thing
-            bool blnFirstRemoval = true;
-            for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
-            {
-                Quality objLoopQuality = CharacterObject.Qualities.ElementAt(i);
-                if (objLoopQuality.InternalId != strInternalIDToRemove)
-                    continue;
-                if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
-                    break;
-                blnFirstRemoval = false;
-                if (i > CharacterObject.Qualities.Count)
-                {
-                    i = CharacterObject.Qualities.Count;
-                }
-            }
+            Quality objQualityToRemove =
+                CharacterObject.Qualities.LastOrDefault(x => x.InternalId == strInternalIDToRemove);
+            if (!RemoveQuality(objQualityToRemove))
+                return;
 
-            // Only refresh if at least one quality was removed
-            if (!blnFirstRemoval)
-            {
-                IsCharacterUpdateRequested = true;
+            IsCharacterUpdateRequested = true;
 
-                IsDirty = true;
-            }
+            IsDirty = true;
         }
 
         private void cmdSwapQuality_Click(object sender, EventArgs e)
@@ -5334,9 +5321,9 @@ namespace Chummer
 
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intKarmaCost, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + LanguageManager.GetString("String_Space") + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intTotalKarmaCost, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + LanguageManager.GetString("String_Space") + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                CharacterObject.Karma -= intKarmaCost;
+                CharacterObject.Karma -= intTotalKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
@@ -5369,9 +5356,9 @@ namespace Chummer
             RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"));
 
             // Perform removal
-            if (objSelectedQuality.Levels > 1 && blnCompleteDelete)
+            if (blnCompleteDelete && objSelectedQuality.Levels > 1)
             {
-                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; i--)
+                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities[i];
                     if (objLoopQuality.SourceIDString != objSelectedQuality.SourceIDString
@@ -15071,6 +15058,44 @@ namespace Chummer
                 lblLifestyleQualitiesLabel.Visible = false;
                 lblLifestyleQualities.Visible = false;
             }
+
+            //Controls Visibility and content of the City, District and Borough Labels
+            if (!string.IsNullOrEmpty(objLifestyle.City))
+            {
+                lblLifestyleCity.Text = objLifestyle.City;
+                lblLifestyleCity.Visible = true;
+                lblLifestyleCityLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleCity.Visible = false;
+                lblLifestyleCityLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.District))
+            {
+                lblLifestyleDistrict.Text = objLifestyle.District;
+                lblLifestyleDistrict.Visible = true;
+                lblLifestyleDistrictLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleDistrict.Visible = false;
+                lblLifestyleDistrictLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.Borough))
+            {
+                lblLifestyleBorough.Text = objLifestyle.Borough;
+                lblLifestyleBorough.Visible = true;
+                lblLifestyleBoroughLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleBorough.Visible = false;
+                lblLifestyleBoroughLabel.Visible = false;
+            }
+
             IsRefreshing = false;
             flpLifestyleDetails.ResumeLayout();
         }

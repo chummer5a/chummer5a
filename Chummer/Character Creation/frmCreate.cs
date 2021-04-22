@@ -215,7 +215,7 @@ namespace Chummer
                         lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplayTotalStartingNuyen));
                         lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayStolenNuyen));
-                        lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                        lblAttributesBase.DoDatabinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
 
                         txtGroupName.DoDatabinding("Text", CharacterObject, nameof(Character.GroupName));
                         txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
@@ -238,8 +238,8 @@ namespace Chummer
                         lblPositiveQualitiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayPositiveQualityKarma));
                         lblNegativeQualitiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayNegativeQualityKarma));
                         lblMetagenicQualities.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayMetagenicQualityKarma));
-                        lblMetagenicQualities.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
-                        lblMetagenicQualitiesLabel.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualities.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualitiesLabel.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
                         tslKarmaLabel.Text = LanguageManager.GetString("Label_Karma");
                         tslKarmaRemainingLabel.Text = LanguageManager.GetString("Label_KarmaRemaining");
@@ -280,8 +280,8 @@ namespace Chummer
 
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
-                        cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
-                        btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EnableAutomaticStoryButton));
+                        cmdLifeModule.DoDatabinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
+                        btnCreateBackstory.DoDatabinding("Visible", CharacterObject, nameof(Character.EnableAutomaticStoryButton));
 
                         if (!CharacterObjectOptions.BookEnabled("RF"))
                         {
@@ -11288,6 +11288,8 @@ namespace Chummer
                     sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                 }
 
+
+
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
                 lblLifestyleQualities.Text = sbdQualities.ToString();
                 lblLifestyleQualitiesLabel.Visible = true;
@@ -11298,6 +11300,43 @@ namespace Chummer
                 lblBaseLifestyle.Text = LanguageManager.GetString("String_Error");
                 lblLifestyleQualitiesLabel.Visible = false;
                 lblLifestyleQualities.Visible = false;
+            }
+
+            //Controls Visibility and content of the City, District and Borough Labels
+            if (!string.IsNullOrEmpty(objLifestyle.City))
+            {
+                lblLifestyleCity.Text = objLifestyle.City;
+                lblLifestyleCity.Visible = true;
+                lblLifestyleCityLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleCity.Visible = false;
+                lblLifestyleCityLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.District))
+            {
+                lblLifestyleDistrict.Text = objLifestyle.District;
+                lblLifestyleDistrict.Visible = true;
+                lblLifestyleDistrictLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleDistrict.Visible = false;
+                lblLifestyleDistrictLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.Borough))
+            {
+                lblLifestyleBorough.Text = objLifestyle.Borough;
+                lblLifestyleBorough.Visible = true;
+                lblLifestyleBoroughLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleBorough.Visible = false;
+                lblLifestyleBoroughLabel.Visible = false;
             }
 
             IsRefreshing = false;
