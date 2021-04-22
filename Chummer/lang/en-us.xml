@@ -5310,8 +5310,8 @@
       <key>Label_FiringMode</key>
       <text>Firing Mode:</text>
     </string>
-    <!-- Region Firing Mode Enums-->
     <!-- End Region -->
+    <!-- Region Firing Mode Enums-->
     <string>
       <key>Enum_Skill</key>
       <text>Character Skill</text>
@@ -5981,7 +5981,7 @@
     <string>
       <key>Tip_OtherCareerKarma</key>
       <text>The amount of Karma the character has accumulated over their career.</text>
-    </string>s
+    </string>
     <!-- End Region-->
     <!-- Region Condition Monitor Tab -->
     <string>

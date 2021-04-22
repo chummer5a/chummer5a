@@ -17,62 +17,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer>
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema books.xsd">
   <books>
-    <!-- Region Specifically excluded (designated as Optional) -->
-    <book>
-      <name>Bullets &amp; Bandages</name>
-      <hide />
-    </book>
-    <!-- End Region -->
-    <!-- Region Specifically excluded (not intended for Missions play) -->
-    <book>
-      <name>Splintered State</name>
-      <hide />
-    </book>
-    <book>
-      <name>Bloody Business</name>
-      <hide />
-    </book>
-    <book>
-      <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
-      <hide />
-    </book>
-    <book>
-      <name>Dark Terrors</name>
-      <hide />
-    </book>
-<!--
-    Note: These books are excluded but have no rules/equipment that need to be supported in Chummer5a 
-
-          Serrated Edge, Denver Adventure 1
-          False Flag, Denver Adventure 1
-          Battle of Manhattan
-          Shadows In Focus: Sioux Nation: Starving the Masses
--->
-    <!-- End Region -->
-    <!-- Region Equipment/rules specifically excluded by Missions FAQ -->
-    <book>
-      <name>Data Trails (Dissonant Echoes)</name>
-      <hide />
-    </book>
-    <!-- End Region -->
-    <!-- Region Not specifically included in Missions FAQ -->
-    <book>
-      <name>Hong Kong Sourcebook</name>
-      <hide />
-    </book>
-    <book>
-      <name>Shadowrun 2050 (5th Edition)</name>
-      <hide />
-    </book>
-    <book>
-      <name>No Future</name>
-      <!-- Note: this is for 6e -->
-      <hide />
-    </book>
-    <!-- End Region -->
-    <!-- Region German (not specifically included in Missions FAQ) -->
     <book>
       <name>Shadowrun 5th Edition (German-exclusive Content)</name>
       <hide />
@@ -117,6 +63,5 @@
       <name>Datapuls Verschlusssache (German-exclusive)</name>
       <hide />
     </book>
-    <!-- End Region -->
   </books>
 </chummer>
