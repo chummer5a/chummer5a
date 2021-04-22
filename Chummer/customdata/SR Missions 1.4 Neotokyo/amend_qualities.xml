@@ -19,9 +19,11 @@
 -->
 <chummer>
   <qualities>
+    <!--Region Run Faster Positive Qualities-->
     <quality>
       <name>Made Man</name>
       <hide />
     </quality>
+    <!-- End Region-->
   </qualities>
 </chummer>
