@@ -15431,14 +15431,20 @@ namespace Chummer
         /// </summary>
         public void RefreshSustainingPenalties()
         {
-            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-            if (IsLoading)
-                return;
-            int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
-            int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
-            int intModifierPerSpell = PsycheActive ? -1 : - intDicePenaltySustainedSpell ; // TODO: Unhardcode this
-            // TODO: Add support for Focused Concentration and possibly Heightened Concentration
-            _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
+            Program.MainForm.DoThreadSafe(() =>
+            {
+                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+                if (IsLoading)
+                    return;
+                int intPenaltyWithPsyche = -1;
+                int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
+                int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
+                int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell; // TODO: Unhardcode this
+                                                                                                               // TODO: Add support for Focused Concentration and possibly Heightened Concentration
+                _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
+
+            });
+   
         }
 
         private int _intSustainingPenalty;
@@ -15662,6 +15668,7 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(SustainingPenalty),
                         new DependencyGraphNode<string, Character>(nameof(SustainedCollection)),
+                        new DependencyGraphNode<string, Character>(nameof(ISustainable.SelfSustained)),
                         new DependencyGraphNode<string, Character>(nameof(PsycheActive))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(WoundModifier),
