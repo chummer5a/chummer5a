@@ -15431,20 +15431,18 @@ namespace Chummer
         /// </summary>
         public void RefreshSustainingPenalties()
         {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
             Program.MainForm.DoThreadSafe(() =>
             {
-                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-                if (IsLoading)
-                    return;
                 int intPenaltyWithPsyche = -1;
                 int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
                 int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
-                int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell; // TODO: Unhardcode this
-                                                                                                               // TODO: Add support for Focused Concentration and possibly Heightened Concentration
+                int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell;
+                                                                                                               
                 _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
-
             });
-   
         }
 
         private int _intSustainingPenalty;
