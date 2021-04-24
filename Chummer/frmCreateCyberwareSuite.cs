@@ -94,9 +94,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objXmlCurrentDocument.Load(objXmlReader);
+                    objXmlCurrentDocument.LoadStandard(strPath);
                 }
                 catch (IOException ex)
                 {

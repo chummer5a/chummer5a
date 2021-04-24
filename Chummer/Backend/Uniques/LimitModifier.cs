@@ -21,7 +21,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -270,12 +269,11 @@ namespace Chummer
                 strBonus = _intBonus.ToString(objCulture);
 
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort)
-                .Append(strSpace).Append('[').Append(strBonus).Append(']');
+            string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
             string strCondition = DisplayCondition(strLanguage);
             if (!string.IsNullOrEmpty(strCondition))
-                sbdReturn.Append(strSpace).Append('(').Append(strCondition).Append(')');
-            return sbdReturn.ToString();
+                strReturn += strSpace + '(' + strCondition + ')';
+            return strReturn;
         }
         #endregion
 

@@ -697,12 +697,10 @@ namespace Chummer.Backend.Attributes
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Abbrev == "MAGAdept")
-                return new StringBuilder(LanguageManager.GetString("String_AttributeMAGLong", strLanguage))
-                    .Append(strSpace).Append('(').Append(LanguageManager.GetString("String_AttributeMAGShort", strLanguage)).Append(')')
-                    .Append(strSpace).Append('(').Append(LanguageManager.GetString("String_DescAdept", strLanguage)).Append(')').ToString();
+                return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + strSpace + '(' + LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ')'
+                       + strSpace + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
-            return new StringBuilder(DisplayNameLong(strLanguage))
-                .Append(strSpace).Append('(').Append(DisplayNameShort(strLanguage)).Append(')').ToString();
+            return DisplayNameLong(strLanguage) + strSpace + '(' + DisplayNameShort(strLanguage) + ')';
         }
 
         /// <summary>
@@ -716,9 +714,8 @@ namespace Chummer.Backend.Attributes
         public string AugmentedMetatypeLimits => string.Format(GlobalOptions.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
             LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
 
-        public string CareerRemainingString => new StringBuilder(TotalValue.ToString(GlobalOptions.CultureInfo))
-            .Append(LanguageManager.GetString("String_Of")).Append(Value.ToString(GlobalOptions.CultureInfo))
-            .Append(LanguageManager.GetString("String_Space")).Append(LanguageManager.GetString("String_Remaining")).ToString();
+        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Of")
+            + Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining");
         #endregion
 
         #region Methods
@@ -777,8 +774,8 @@ namespace Chummer.Backend.Attributes
                     else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                     {
                         decimal decValue = objImprovement.Augmented * objImprovement.Rating;
-                        sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language))
-                            .Append(strSpace).Append('(').Append(decValue.ToString(GlobalOptions.CultureInfo)).Append(')');
+                        sbdModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)
+                                           + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                         decBaseValue += decValue;
                     }
                 }
@@ -789,7 +786,7 @@ namespace Chummer.Backend.Attributes
                     // Run through the list of UniqueNames and pick out the highest value for each one.
                     decimal decHighest = decimal.MinValue;
 
-                    StringBuilder strNewModifier = new StringBuilder();
+                    StringBuilder sbdNewModifier = new StringBuilder();
                     foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
                     {
                         if (strValues.Item1 == "precedence0")
@@ -797,8 +794,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > decHighest)
                             {
                                 decHighest = strValues.Item2;
-                                strNewModifier = new StringBuilder(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
-                                    .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
+                                sbdNewModifier = new StringBuilder(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -809,14 +805,13 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item1 == "precedence-1")
                             {
                                 decHighest += strValues.Item2;
-                                strNewModifier.Append(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
-                                    .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
+                                sbdNewModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
 
                     if (decHighest >= decBaseValue)
-                        sbdModifier = strNewModifier;
+                        sbdModifier = sbdNewModifier;
                 }
                 else if (lstUniqueName.Contains("precedence1"))
                 {
@@ -841,8 +836,7 @@ namespace Chummer.Backend.Attributes
                                 if (strValues.Item2 > decHighest)
                                 {
                                     decHighest = strValues.Item2;
-                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
-                                        .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
+                                    sbdModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                                 }
                             }
                         }
@@ -868,8 +862,8 @@ namespace Chummer.Backend.Attributes
                     }
                     else
                     {
-                        sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(_objCharacter.GetObjectName(objImprovement, GlobalOptions.Language))
-                            .Append(strSpace).Append('(').Append((objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo)).Append(')');
+                        sbdModifier.Append(strSpace + '+' + strSpace + _objCharacter.GetObjectName(objImprovement, GlobalOptions.Language)
+                                           + strSpace + '(' + (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -884,8 +878,7 @@ namespace Chummer.Backend.Attributes
                             if (strValues.Item2 > decHighest)
                             {
                                 decHighest = strValues.Item2;
-                                sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strValues.Item3)
-                                    .Append(strSpace).Append('(').Append(strValues.Item2.ToString(GlobalOptions.CultureInfo)).Append(')');
+                                sbdModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -898,12 +891,9 @@ namespace Chummer.Backend.Attributes
                     {
                         if (objCyberware.Category == "Cyberlimb")
                         {
-                            sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName)
-                                .Append(strSpace).Append('(')
-                                .Append(Abbrev == "AGI"
+                            sbdModifier.Append(Environment.NewLine + objCyberware.CurrentDisplayName + strSpace + '(' + (Abbrev == "AGI"
                                     ? objCyberware.TotalAgility.ToString(GlobalOptions.CultureInfo)
-                                    : objCyberware.TotalStrength.ToString(GlobalOptions.CultureInfo))
-                                .Append(')');
+                                    : objCyberware.TotalStrength.ToString(GlobalOptions.CultureInfo)) + ')');
                         }
                     }
                 }

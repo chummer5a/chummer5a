@@ -24,7 +24,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -277,11 +276,10 @@ namespace Chummer.UI.Powers
                 {
                     if (o1 is Power objPower1 && o2 is Power objPower2)
                         return objPower1.Rating - objPower2.Rating;
-                    StringBuilder msg = new StringBuilder("Can't sort an Object of Type ")
-                        .Append(o1.GetType()).Append(" against another one of Type ")
-                        .Append(o2.GetType()).AppendLine(" in the ratingColumn.")
-                        .Append("Both objects SHOULD be of the type \"Power\".");
-                    throw new ArgumentException(msg.ToString(), nameof(o1));
+                    string strMessage = "Can't sort an Object of Type " + o1.GetType() +
+                                        " against another one of Type " + o2.GetType() + " in the ratingColumn." +
+                                        Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
+                    throw new ArgumentException(strMessage, nameof(o1));
                 },
             };
 
@@ -298,11 +296,10 @@ namespace Chummer.UI.Powers
                 {
                     if (o1 is Power objPower1 && o2 is Power objPower2)
                         return objPower1.TotalRating - objPower2.TotalRating;
-                    StringBuilder msg = new StringBuilder("Can't sort an Object of Type ")
-                        .Append(o1.GetType()).Append(" against another one of Type ")
-                        .Append(o2.GetType()).AppendLine(" in the totalRatingColumn.")
-                        .Append("Both objects SHOULD be of the type \"Power\".");
-                    throw new ArgumentException(msg.ToString(), nameof(o1));
+                    string strMessage = "Can't sort an Object of Type " + o1.GetType() +
+                                        " against another one of Type " + o2.GetType() + " in the totalRatingColumn." +
+                                        Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
+                    throw new ArgumentException(strMessage, nameof(o1));
                 },
             };
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));

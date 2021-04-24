@@ -6265,12 +6265,10 @@ namespace Chummer
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space");
-            StringBuilder sbdTitle = new StringBuilder(_objCharacter.CharacterName)
-                .Append(strSpace).Append('-').Append(strSpace).Append(FormMode)
-                .Append(strSpace).Append('(').Append(_objOptions.Name).Append(')');
+            string strTitle = _objCharacter.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' +
+                              _objOptions.Name + ')';
             if (_blnIsDirty)
-                sbdTitle.Append('*');
-            string strTitle = sbdTitle.ToString();
+                strTitle += '*';
             this.DoThreadSafe(() => Text = strTitle);
         }
 

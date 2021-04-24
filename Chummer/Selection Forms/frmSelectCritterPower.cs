@@ -308,7 +308,7 @@ namespace Chummer
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
-                sbdFilter.Append(" and (contains(category,").Append(strCategory.CleanXPath()).Append("))");
+                sbdFilter.Append(" and (contains(category," + strCategory.CleanXPath() + "))");
             }
             else
             {
@@ -329,13 +329,13 @@ namespace Chummer
                 if (sbdCategoryFilter.Length > 0)
                 {
                     sbdCategoryFilter.Length -= 4;
-                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                    sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
                 }
                 if (!blnHasToxic)
                     sbdFilter.Append(" and (not(toxic) or toxic != \"True\")");
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
-                sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter + "]"))
             {
                 string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");

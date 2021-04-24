@@ -157,7 +157,7 @@ namespace Chummer
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
-                await Task.Delay(20).ConfigureAwait(false);
+                await Task.Delay(20);
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -210,7 +210,7 @@ namespace Chummer
             }
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
             {
-                await Task.Delay(20).ConfigureAwait(false);
+                await Task.Delay(20);
             }
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
         }
@@ -243,7 +243,7 @@ namespace Chummer
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
-                await Task.Delay(20).ConfigureAwait(false);
+                await Task.Delay(20);
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -303,13 +303,13 @@ namespace Chummer
                 if (blnHasCustomData)
                 {
                     // If we have any custom data, make sure the base data is already loaded so we can easily just copy it over
-                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, strLanguage).ConfigureAwait(false);
+                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, strLanguage);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
                 else if (strLanguage != GlobalOptions.DefaultLanguage)
                 {
                     // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
-                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage).ConfigureAwait(false);
+                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
                 if (xmlReturn == null) // Not an else in case something goes wrong in safe cast in the line above
@@ -321,9 +321,7 @@ namespace Chummer
                     // Load the base file and retrieve all of the child nodes.
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                xmlScratchpad.Load(objXmlReader);
+                        xmlScratchpad.LoadStandard(strPath);
 
                         if (xmlReturnDocElement != null)
                         {
@@ -383,7 +381,7 @@ namespace Chummer
             {
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
                 {
-                    await Task.Delay(20).ConfigureAwait(false);
+                    await Task.Delay(20);
                 }
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)
@@ -428,20 +426,6 @@ namespace Chummer
             }
 
             return xmlReturn;
-        }
-
-        public static XPathNavigator GetFastNavigator(this XmlDocument xmlDoc)
-        {
-            if (xmlDoc == null)
-                return null;
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                xmlDoc.Save(memStream);
-                memStream.Position = 0;
-                //TODO: Should probably be using GlobalOptions.SafeXmlReaderSettings here but it has some issues.
-                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.UnSafeXmlReaderSettings))
-                    return new XPathDocument(objXmlReader).CreateNavigator();
-            }
         }
 
         private static void CheckIdNodes(XmlNode xmlParentNode, string strFileName)
@@ -660,9 +644,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlFile.Load(objXmlReader);
+                    xmlFile.LoadStandard(strFile);
                 }
                 catch (IOException)
                 {
@@ -684,12 +666,12 @@ namespace Chummer
                                 StringBuilder sbdFilter = new StringBuilder();
                                 XmlNode xmlIdNode = objType["id"];
                                 if (xmlIdNode != null)
-                                    sbdFilter.Append("id = ").Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    sbdFilter.Append("id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
                                 else
                                 {
                                     xmlIdNode = objType["name"];
                                     if (xmlIdNode != null)
-                                        sbdFilter.Append("name = ").Append(xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                        sbdFilter.Append("name = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
                                 }
 
                                 // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -701,17 +683,14 @@ namespace Chummer
                                         {
                                             if (sbdFilter.Length > 0)
                                                 sbdFilter.Append(" and ");
-                                            sbdFilter.Append(objExtraId.Name).Append(" = ")
-                                                .Append(objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                            sbdFilter.Append(objExtraId.Name + " = " + objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
                                         }
                                     }
                                 }
 
                                 if (sbdFilter.Length > 0)
                                 {
-                                    sbdFilter.Insert(0, '[').Append(']')
-                                        .Insert(0, "/chummer/" + objNode.Name + '/' + objType.Name);
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(sbdFilter.ToString());
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objNode.Name + '/' + objType.Name + '[' + sbdFilter + ']');
                                     if (objItem != null)
                                     {
                                         objItem.InnerXml = objType.InnerXml;
@@ -730,9 +709,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlFile.Load(objXmlReader);
+                    xmlFile.LoadStandard(strFile);
                 }
                 catch (IOException)
                 {
@@ -765,7 +742,7 @@ namespace Chummer
                                 {
                                     if (sbdFilter.Length > 0)
                                         sbdFilter.Append(" and ");
-                                    sbdFilter.Append("name = ").Append(xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    sbdFilter.Append("name = " + xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath());
                                 }
 
                                 // Only do this if the child has the name or id field since this is what we must match on.
@@ -779,10 +756,7 @@ namespace Chummer
                                         if (sbdParentNodeFilter.Length > 0)
                                             sbdParentNodeFilter.Insert(0, '[').Append(']');
                                     }
-                                    sbdParentNodeFilter.Insert(0, "/chummer/" + objParentNode.Name).Append('/').Append(objChild.Name);
-                                    sbdFilter.Insert(0, '[').Append(']')
-                                        .Insert(0, sbdParentNodeFilter.ToString());
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(sbdFilter.ToString());
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objParentNode.Name + sbdParentNodeFilter + '/' + objChild.Name + '[' + sbdFilter + ']');
                                     if (objItem != null)
                                         lstDelete.Add(objChild);
                                 }
@@ -833,9 +807,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlFile.Load(objXmlReader);
+                    xmlFile.LoadStandard(strFile);
                 }
                 catch (IOException)
                 {
@@ -903,7 +875,7 @@ namespace Chummer
                     XmlNode objAmendingNodeId = xmlAmendingNode["id"];
                     if (objAmendingNodeId != null)
                     {
-                        sbdFilter.Append("id = ").Append(objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
+                        sbdFilter.Append("id = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                     }
                     else
                     {
@@ -913,7 +885,7 @@ namespace Chummer
                             // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node
                             // if there are other nodes present in the amending node or if a remove operation is specified (since that only requires an id node).
                             if (strOperation == "remove" || xmlAmendingNode.SelectSingleNode("child::*[not(self::name)]") != null)
-                                sbdFilter.Append("name = ").Append(objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                sbdFilter.Append("name = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                         }
                     }
                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -925,7 +897,7 @@ namespace Chummer
                             {
                                 if (sbdFilter.Length > 0)
                                     sbdFilter.Append(" and ");
-                                sbdFilter.Append(objExtraId.Name).Append(" = ").Append(objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
+                                sbdFilter.Append(objExtraId.Name + " = " + objExtraId.InnerText.Replace("&amp;", "&").CleanXPath());
                             }
                         }
                     }
@@ -947,9 +919,6 @@ namespace Chummer
                 }
             }
 
-            if (sbdFilter.Length > 0)
-                sbdFilter.Insert(0, '[').Append(']');
-
             // AddNode operation will always add this node in its current state.
             // This is almost the functionality of "custom_*" (exception: if a custom item already exists, it won't be replaced), but with all the extra bells and whistles of the amend system for targeting where to add the custom item
             if (strOperation == "addnode")
@@ -970,7 +939,7 @@ namespace Chummer
                 return blnReturn;
             }
 
-            string strFilter = sbdFilter.ToString();
+            string strFilter = sbdFilter.Length > 0 ? '[' + sbdFilter.ToString() + ']' : string.Empty;
             string strNewXPath = strXPath + '/' + xmlAmendingNode.Name + strFilter;
 
             using (XmlNodeList objNodesToEdit = xmlDoc.SelectNodes(strNewXPath))

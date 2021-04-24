@@ -1602,11 +1602,11 @@ namespace Chummer
         /// </summary>
         public string BookXPath(bool excludeHidden = true)
         {
-            StringBuilder sbdPath = new StringBuilder();
+            string strPath = string.Empty;
 
             if (excludeHidden)
             {
-                sbdPath.Append("not(hide)");
+                strPath += "not(hide)";
             }
             if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
             {
@@ -1614,9 +1614,9 @@ namespace Chummer
             }
             if (!string.IsNullOrEmpty(_strBookXPath))
             {
-                if (sbdPath.Length != 0)
-                    sbdPath.Append(" and ");
-                sbdPath.Append(_strBookXPath);
+                if (strPath.Length != 0)
+                    strPath += " and ";
+                strPath += _strBookXPath;
             }
             else
             {
@@ -1625,21 +1625,21 @@ namespace Chummer
             }
             if (!DroneMods)
             {
-                if (sbdPath.Length != 0)
-                    sbdPath.Append(" and ");
-                sbdPath.Append("not(optionaldrone)");
+                if (strPath.Length != 0)
+                    strPath += " and ";
+                strPath += "not(optionaldrone)";
             }
 
-            if (sbdPath.Length > 1)
-                sbdPath.Insert(0, '(').Append(')');
+            if (strPath.Length > 1)
+                strPath = '(' + strPath + ')';
             else
             {
                 // We have only the opening parentheses; clear the string builder so that we return an empty string
-                sbdPath.Clear();
+                strPath = string.Empty;
                 // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
                 Utils.BreakIfDebug();
             }
-            return sbdPath.ToString();
+            return strPath;
         }
 
         /// <summary>

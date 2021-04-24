@@ -20,7 +20,6 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
 using NLog;
 
 namespace Chummer

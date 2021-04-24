@@ -1605,14 +1605,10 @@ namespace Chummer.Backend.Equipment
                 string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
                 int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) /
                                3;
-                objWriter.WriteElementString("name",
-                    new StringBuilder(DisplayNameShort(strLanguageToPrint))
-                        .Append(strSpace).Append('(').Append(_objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint))
-                        .Append(strSpace).Append(TotalAgility.ToString(objCulture)).Append(',')
-                        .Append(strSpace).Append(_objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint))
-                        .Append(strSpace).Append(TotalStrength.ToString(objCulture)).Append(',')
-                        .Append(strSpace).Append(LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint))
-                        .Append(strSpace).Append(intLimit.ToString(objCulture)).Append(')').ToString());
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + strSpace + '(' + _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint)
+                                                     + strSpace + TotalAgility.ToString(objCulture) + ',' + strSpace + _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint)
+                                                     + strSpace + TotalStrength.ToString(objCulture) + ',' + strSpace + LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint)
+                                                     + strSpace + intLimit.ToString(objCulture) + ')');
             }
 
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -1860,18 +1856,17 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
+            string strReturn = DisplayNameShort(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
             {
-                sbdReturn.Append(strSpace).Append('(').Append(LanguageManager.GetString(RatingLabel, strLanguage))
-                    .Append(strSpace).Append(Rating.ToString(objCulture)).Append(')');
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                sbdReturn.Append(strSpace).Append('(').Append(_objCharacter.TranslateExtra(Extra, strLanguage)).Append(')');
+                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             if (!string.IsNullOrEmpty(Location))
@@ -1882,10 +1877,10 @@ namespace Chummer.Backend.Equipment
                 else if (Location == "Right")
                     strSide = LanguageManager.GetString("String_Improvement_SideRight", strLanguage);
                 if (!string.IsNullOrEmpty(strSide))
-                    sbdReturn.Append(strSpace + '(' + strSide + ')');
+                    strReturn += strSpace + '(' + strSide + ')';
             }
 
-            return sbdReturn.ToString();
+            return strReturn;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -5236,20 +5231,18 @@ namespace Chummer.Backend.Equipment
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            StringBuilder sbdExpense = new StringBuilder();
-            sbdExpense.Append(LanguageManager.GetString("String_ExpenseUpgradedCyberware"))
-                .Append(strSpace).Append(CurrentDisplayNameShort);
+            string strExpense = LanguageManager.GetString("String_ExpenseUpgradedCyberware") + strSpace +
+                                CurrentDisplayNameShort;
             if (objOldGrade != Grade || intOldRating != intRating)
             {
-                sbdExpense.Append('(').Append(LanguageManager.GetString("String_Grade"))
-                    .Append(strSpace).Append(objOldGrade.CurrentDisplayName).Append(strSpace).Append("->").Append(Grade.CurrentDisplayName)
-                    .Append(strSpace).Append(LanguageManager.GetString(RatingLabel)).Append(intOldRating.ToString(GlobalOptions.CultureInfo))
-                    .Append(strSpace).Append("->").Append(strSpace).Append(Rating.ToString(GlobalOptions.CultureInfo)).Append(')');
+                strExpense += '(' + LanguageManager.GetString("String_Grade") + strSpace + objOldGrade.CurrentDisplayName + strSpace + "->" + Grade.CurrentDisplayName
+                              + strSpace + LanguageManager.GetString(RatingLabel) + intOldRating.ToString(GlobalOptions.CultureInfo)
+                              + strSpace + "->" + strSpace + Rating.ToString(GlobalOptions.CultureInfo) + ')';
             }
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(-decNewCost, sbdExpense.ToString(), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(-decNewCost, strExpense, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen -= decNewCost;
 

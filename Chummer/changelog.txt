@@ -17,6 +17,8 @@ Application Changes:
 - Quotation marks in the names of spells, qualities, critter powers, adept powers, cyberware, et al. or any categories thereof should no longer cause Chummer to either crash or not recognize the item in question.
 - Special attributes are no longer exported unless the character in question has them enabled. Fixes #4366.
 - When using Chummer in a non-English language, the way custom text is recorded and translated is now slightly smarter about which translation to use when one English word has multiple different translations. Fixes #4378.
+- Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
+- The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 
 Data Changes:
 - Consolidated all German Data Changes custom data into a single German Data Changes entry.

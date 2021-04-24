@@ -8,7 +8,7 @@
     <AssemblyVersion>1.1.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <ApplicationInsightsResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsResourceId>
+    <ApplicationInsightsResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourceGroups/ChummerHub/providers/microsoft.insights/components/sinners</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/40a6e5b5-2e4f-4003-8763-099db581b842/resourcegroups/SINners/providers/microsoft.insights/components/SINners</ApplicationInsightsAnnotationResourceId>
     <PackageProjectUrl>https://sinners.azurewebsites.net/</PackageProjectUrl>
     <LangVersion>7.3</LangVersion>

@@ -20,8 +20,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
- using System.Linq;
- using System.Threading;
  using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -125,8 +123,6 @@ namespace Chummer
             }
 
             // Parallelized load because this is one major bottleneck.
-            CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken objCancellationToken = objCancellationTokenSource.Token;
 
             Parallel.ForEach(lstCharacters, async (objCharacter, objState) =>
                 {

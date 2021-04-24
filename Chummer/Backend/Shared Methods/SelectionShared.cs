@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -1132,7 +1131,7 @@ namespace Chummer
                     intMods += objCharacter.Vehicles.AsParallel().Sum(objVehicle =>
                     {
                         IEnumerable<Weapon> lstWeapons = objVehicle.Weapons
-                            .Concat<Weapon>(objVehicle.WeaponMounts.SelectMany(objMount => objMount.Weapons))
+                            .Concat(objVehicle.WeaponMounts.SelectMany(objMount => objMount.Weapons))
                             .GetAllDescendants(x => x.UnderbarrelWeapons);
                         return lstWeapons.AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
                     });

@@ -214,8 +214,8 @@ namespace Chummer
                         {
                             string message = new StringBuilder(LanguageManager.GetString("String_MaximumDrugBlockLevel")).
                                 AppendLine().
-                                Append(objFoundationNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(objItem.Value.ToString("+#;-#;", GlobalOptions.CultureInfo)).AppendLine().
-                                Append(objNodeData.DrugComponent.CurrentDisplayName).Append(strColonString).Append(strSpaceString).Append(objItem.Key).Append(decBlockAttrValue.ToString("+#.#;-#.#;", GlobalOptions.CultureInfo)).
+                                Append(objFoundationNodeData.DrugComponent.CurrentDisplayName + strColonString + strSpaceString + objItem.Key + objItem.Value.ToString("+#;-#;", GlobalOptions.CultureInfo)).AppendLine().
+                                Append(objNodeData.DrugComponent.CurrentDisplayName + strColonString + strSpaceString + objItem.Key + decBlockAttrValue.ToString("+#.#;-#.#;", GlobalOptions.CultureInfo)).
                                 ToString();
                             Program.MainForm.ShowMessageBox(this, message);
                             return;

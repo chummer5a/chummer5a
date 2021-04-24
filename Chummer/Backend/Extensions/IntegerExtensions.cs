@@ -16,30 +16,23 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using System;
+using System.Runtime.CompilerServices;
 
-using System.Text;
-
-namespace Translator
+namespace Chummer
 {
-    public static class StringExtensions
+    public static class IntegerExtensions
     {
         /// <summary>
-        /// Clean an XPath string.
+        /// Syntatic sugar for doing integer division that always rounds away from zero instead of towards zero.
         /// </summary>
-        /// <param name="strSearch">String to clean.</param>
-        public static string CleanXPath(this string strSearch)
+        /// <param name="intA">Dividend integer.</param>
+        /// <param name="intB">Divisor integer.</param>
+        /// <returns><paramref name="intA"/> divided by <paramref name="intB"/>, rounded towards the nearest number away from zero (up if positive, down if negative).</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int DivAwayFromZero(this int intA, int intB)
         {
-            int intQuotePos = strSearch.IndexOf('"');
-            if (intQuotePos == -1)
-                return '\"' + strSearch + '\"';
-            StringBuilder sbdReturn = new StringBuilder("concat(\"");
-            for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"'))
-            {
-                sbdReturn.Append(strSearch.Substring(0, intQuotePos) + "\", '\"', \"");
-                strSearch = strSearch.Substring(intQuotePos + 1);
-            }
-            sbdReturn.Append(strSearch + "\")");
-            return sbdReturn.ToString();
+            return (intA + Math.Sign(intA) * (Math.Abs(intB) - 1)) / intB; // Adding 1 if modulo > 0 would require a separate modulo operation that is as slow as division
         }
     }
 }

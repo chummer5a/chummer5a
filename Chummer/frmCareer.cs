@@ -254,7 +254,7 @@ namespace Chummer
                         nudWildReputation.DoDatabinding("Value", CharacterObject, nameof(Character.WildReputation));
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddInitiationsAllowed));
-                        lblPossessed.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
+                        lblPossessed.DoDatabinding("Visible", CharacterObject, nameof(Character.Possessed));
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
                         chkPsycheActive.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
@@ -2250,7 +2250,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 Character[] lstClones = new Character[intClones];
-                Parallel.For(0, intClones, i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result);
+                Parallel.For(0, intClones, async i => lstClones[i] = await Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true));
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }
@@ -2830,11 +2830,11 @@ namespace Chummer
                 {
                     using (Character objVessel = new Character { FileName = strFileName })
                     {
-                        using (frmLoading frmLoadingForm = new frmLoading {CharacterFile = objVessel.FileName })
+                        using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = objVessel.FileName })
                         {
                             frmLoadingForm.Reset(77);
                             frmLoadingForm.Show();
-                            bool blnSuccess = await objVessel.Load(frmLoadingForm).ConfigureAwait(false);
+                            bool blnSuccess = await objVessel.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
@@ -2855,7 +2855,7 @@ namespace Chummer
 
                             // Load the Spirit's save file into a new Merge character.
                             frmLoadingForm.CharacterFile = objMerge.FileName;
-                            blnSuccess = await objMerge.Load(frmLoadingForm).ConfigureAwait(false);
+                            blnSuccess = await objMerge.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
@@ -2880,7 +2880,7 @@ namespace Chummer
 
                             if (!blnHasImmunity)
                             {
-                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml").ConfigureAwait(false);
+                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml").ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
@@ -3043,14 +3043,15 @@ namespace Chummer
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
 
-                        ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                        ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                        ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
-                        ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, CharacterObject.MAG.TotalValue / 2, 1, 0, 0,
-                            CharacterObject.MAG.TotalValue / 2, CharacterObject.MAG.TotalValue / 2);
+                        int intHalfMAGRoundedUp = CharacterObject.MAG.TotalValue.DivAwayFromZero(2);
+                        ImprovementManager.CreateImprovement(objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                        ImprovementManager.CreateImprovement(objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                        ImprovementManager.CreateImprovement(objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                        ImprovementManager.CreateImprovement(objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
                         ImprovementManager.CreateImprovement(objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.INT.MetatypeMinimum,
                             CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
                         ImprovementManager.CreateImprovement(objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.WIL.MetatypeMinimum,
@@ -5170,28 +5171,14 @@ namespace Chummer
                 return;
             string strInternalIDToRemove = objSelectedQuality.InternalId;
             // Can't do a foreach because we're removing items, this is the next best thing
-            bool blnFirstRemoval = true;
-            for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
-            {
-                Quality objLoopQuality = CharacterObject.Qualities.ElementAt(i);
-                if (objLoopQuality.InternalId != strInternalIDToRemove)
-                    continue;
-                if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
-                    break;
-                blnFirstRemoval = false;
-                if (i > CharacterObject.Qualities.Count)
-                {
-                    i = CharacterObject.Qualities.Count;
-                }
-            }
+            Quality objQualityToRemove =
+                CharacterObject.Qualities.LastOrDefault(x => x.InternalId == strInternalIDToRemove);
+            if (!RemoveQuality(objQualityToRemove))
+                return;
 
-            // Only refresh if at least one quality was removed
-            if (!blnFirstRemoval)
-            {
-                IsCharacterUpdateRequested = true;
+            IsCharacterUpdateRequested = true;
 
-                IsDirty = true;
-            }
+            IsDirty = true;
         }
 
         private void cmdSwapQuality_Click(object sender, EventArgs e)
@@ -5334,9 +5321,9 @@ namespace Chummer
 
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intKarmaCost, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + LanguageManager.GetString("String_Space") + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intTotalKarmaCost, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality") + LanguageManager.GetString("String_Space") + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                CharacterObject.Karma -= intKarmaCost;
+                CharacterObject.Karma -= intTotalKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
@@ -5369,9 +5356,9 @@ namespace Chummer
             RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"));
 
             // Perform removal
-            if (objSelectedQuality.Levels > 1 && blnCompleteDelete)
+            if (blnCompleteDelete && objSelectedQuality.Levels > 1)
             {
-                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; i--)
+                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
                 {
                     Quality objLoopQuality = CharacterObject.Qualities[i];
                     if (objLoopQuality.SourceIDString != objSelectedQuality.SourceIDString
@@ -7223,7 +7210,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -8918,14 +8905,14 @@ namespace Chummer
                         StringBuilder sbdDisallowedMounts = new StringBuilder();
                         foreach (string strLoop in setDisallowedMounts)
                             if (!strLoop.EndsWith("Right", StringComparison.Ordinal) && (!strLoop.EndsWith("Left", StringComparison.Ordinal) || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left") + ',');
                         // Remove trailing ","
                         if (sbdDisallowedMounts.Length > 0)
                             sbdDisallowedMounts.Length -= 1;
                         frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
                         StringBuilder sbdHasMounts = new StringBuilder();
                         foreach (string strLoop in setHasMounts)
-                            sbdHasMounts.Append(strLoop).Append(',');
+                            sbdHasMounts.Append(strLoop + ',');
                         // Remove trailing ","
                         if (sbdHasMounts.Length > 0)
                             sbdHasMounts.Length -= 1;
@@ -8970,14 +8957,14 @@ namespace Chummer
                         StringBuilder sbdDisallowedMounts = new StringBuilder();
                         foreach (string strLoop in setDisallowedMounts)
                             if (!strLoop.EndsWith("Right", StringComparison.Ordinal) && (!strLoop.EndsWith("Left", StringComparison.Ordinal) || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left") + ',');
                         // Remove trailing ","
                         if (sbdDisallowedMounts.Length > 0)
                             sbdDisallowedMounts.Length -= 1;
                         frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
                         StringBuilder sbdHasMounts = new StringBuilder();
                         foreach (string strLoop in setHasMounts)
-                            sbdHasMounts.Append(strLoop).Append(',');
+                            sbdHasMounts.Append(strLoop + ',');
                         // Remove trailing ","
                         if (sbdHasMounts.Length > 0)
                             sbdHasMounts.Length -= 1;
@@ -9492,7 +9479,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(",");
+                    sbdCategories.Append(objXmlCategory.InnerText + ",");
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -9597,7 +9584,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -9805,7 +9792,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -9953,7 +9940,7 @@ namespace Chummer
             if (xmlAddonCategoryList?.Count > 0)
             {
                 foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                    sbdCategories.Append(objXmlCategory.InnerText + ',');
                 // Remove the trailing comma.
                 sbdCategories.Length -= 1;
             }
@@ -13406,7 +13393,7 @@ namespace Chummer
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount) + '/');
                         sbdSlotsText.Length -= 1;
                         lblWeaponSlots.Text = sbdSlotsText.ToString();
                     }
@@ -13636,7 +13623,7 @@ namespace Chummer
                 {
                     sbdSlotsText.Clear();
                     foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount) + '/');
                     sbdSlotsText.Length -= 1;
                 }
 
@@ -13647,10 +13634,10 @@ namespace Chummer
                     {
                         if (!boolHaveAddedItem)
                         {
-                            sbdSlotsText.Append(strSpace).Append('+').Append(strSpace);
+                            sbdSlotsText.Append(strSpace + '+' + strSpace);
                             boolHaveAddedItem = true;
                         }
-                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
+                        sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + '/');
                     }
                     // Remove the trailing /
                     if (boolHaveAddedItem)
@@ -14482,7 +14469,7 @@ namespace Chummer
                             intValue += dicDisallowedMounts[strKey];
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
-                        sbdDisallowedMounts.Append(strKey).Append(',');
+                        sbdDisallowedMounts.Append(strKey + ',');
                 }
                 // Remove trailing ","
                 if (sbdDisallowedMounts.Length > 0)
@@ -14503,7 +14490,7 @@ namespace Chummer
                             intValue += dicHasMounts[strKey];
                     }
                     if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
-                        sbdHasMounts.Append(strKey).Append(',');
+                        sbdHasMounts.Append(strKey + ',');
                 }
                 // Remove trailing ","
                 if (sbdHasMounts.Length > 0)
@@ -14568,7 +14555,7 @@ namespace Chummer
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerText + ',');
                         // Remove the trailing comma.
                         sbdCategories.Length -= 1;
                     }
@@ -14789,7 +14776,7 @@ namespace Chummer
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         foreach (XmlNode objXmlCategory in xmlAddonCategoryList)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            sbdCategories.Append(objXmlCategory.InnerText + ',');
                         // Remove the trailing comma.
                         sbdCategories.Length -= 1;
                     }
@@ -15034,16 +15021,15 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                StringBuilder sbdQualities = new StringBuilder().AppendJoin(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
+                StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(",");
 
-                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
-                        .Append(LanguageManager.GetString("String_Space")).Append('[')
-                        .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo)).Append("%]");
+                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement) + LanguageManager.GetString("String_Space") + '['
+                                        + objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo) + "%]");
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)
@@ -15065,6 +15051,44 @@ namespace Chummer
                 lblLifestyleQualitiesLabel.Visible = false;
                 lblLifestyleQualities.Visible = false;
             }
+
+            //Controls Visibility and content of the City, District and Borough Labels
+            if (!string.IsNullOrEmpty(objLifestyle.City))
+            {
+                lblLifestyleCity.Text = objLifestyle.City;
+                lblLifestyleCity.Visible = true;
+                lblLifestyleCityLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleCity.Visible = false;
+                lblLifestyleCityLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.District))
+            {
+                lblLifestyleDistrict.Text = objLifestyle.District;
+                lblLifestyleDistrict.Visible = true;
+                lblLifestyleDistrictLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleDistrict.Visible = false;
+                lblLifestyleDistrictLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.Borough))
+            {
+                lblLifestyleBorough.Text = objLifestyle.Borough;
+                lblLifestyleBorough.Visible = true;
+                lblLifestyleBoroughLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleBorough.Visible = false;
+                lblLifestyleBoroughLabel.Visible = false;
+            }
+
             IsRefreshing = false;
             flpLifestyleDetails.ResumeLayout();
         }
@@ -15350,7 +15374,7 @@ namespace Chummer
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount)).Append('/');
+                            sbdSlotsText.Append(LanguageManager.GetString("String_Mount" + strMount) + '/');
                         sbdSlotsText.Length -= 1;
                         lblWeaponSlots.Text = sbdSlotsText.ToString();
                     }
@@ -15500,7 +15524,7 @@ namespace Chummer
                                 continue;
                             foreach (Gear objChild in objCurrentAmmo.Children)
                             {
-                                sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language)).Append(',').Append(strSpace);
+                                sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace);
                             }
                         }
 
@@ -15589,10 +15613,10 @@ namespace Chummer
                     {
                         if (!boolHaveAddedItem)
                         {
-                            sbdMount.Append(strSpace).Append('+').Append(strSpace);
+                            sbdMount.Append(strSpace + '+' + strSpace);
                             boolHaveAddedItem = true;
                         }
-                        sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount)).Append('/');
+                        sbdMount.Append(LanguageManager.GetString("String_Mount" + strCurrentExtraMount) + '/');
                     }
                     // Remove the trailing /
                     if (boolHaveAddedItem)
