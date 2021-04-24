@@ -199,19 +199,19 @@ namespace Translator
             if (_blnLoading || e.RowIndex < 0)
                 return;
             DataGridViewRow item = dgvSection.Rows[e.RowIndex];
-            bool flag = Convert.ToBoolean(item.Cells["Translated?"].Value);
             TranslatedIndicator(item);
             string strTranslated = item.Cells["Text"].Value.ToString();
             string strEnglish = item.Cells["English"].Value.ToString();
+            bool blnSetTranslatedAttribute = strTranslated != strEnglish && Convert.ToBoolean(item.Cells["Translated?"].Value);
             string strId = item.Cells["Id"].Value.ToString();
             string strSection = cboSection.Text;
             if (strSection == "[Show All Sections]")
                 strSection = "*";
-            string strBaseXPath = "/chummer/chummer[@file=\"" + cboFile.Text + "\"]/" + strSection;
+            string strBaseXPath = "/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]/" + strSection;
             if (cboFile.Text == "tips.xml")
             {
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/text[text()=\"" + strEnglish + "\"]/..");
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text = " + strEnglish.CleanXPath() + "]");
                 if (xmlNodeLocal != null)
                 {
                     XmlElement element = xmlNodeLocal["translate"];
@@ -221,12 +221,12 @@ namespace Translator
                     XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
                     if (objAttrib != null)
                     {
-                        if (!flag)
+                        if (!blnSetTranslatedAttribute)
                             xmlNodeLocal.Attributes.Remove(objAttrib);
                         else
                             objAttrib.InnerText = bool.TrueString;
                     }
-                    else if (flag)
+                    else if (blnSetTranslatedAttribute)
                     {
                         objAttrib = _objDataDoc.CreateAttribute("translated");
                         objAttrib.InnerText = bool.TrueString;
@@ -239,23 +239,23 @@ namespace Translator
                 string strPage = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value.ToString();
                 bool blnHasNameOnPage = cboFile.Text == "qualities.xml";
                 string strNameOnPage = blnHasNameOnPage ? item.Cells["NameOnPage"].Value.ToString() : string.Empty;
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/name[text()=\"" + strEnglish + "\"]/..");
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[name = " + strEnglish.CleanXPath() + "]");
                 if (xmlNodeLocal == null)
                 {
-                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text()=\"" + strEnglish + "\"]");
+                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + "]");
                     if (xmlNodeLocal?.Attributes != null)
                     {
                         xmlNodeLocal.Attributes["translate"].InnerText = strTranslated;
                         XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
                         if (objAttrib != null)
                         {
-                            if (!flag)
+                            if (!blnSetTranslatedAttribute)
                                 xmlNodeLocal.Attributes.Remove(objAttrib);
                             else
                                 objAttrib.InnerText = bool.TrueString;
                         }
-                        else if (flag)
+                        else if (blnSetTranslatedAttribute)
                         {
                             objAttrib = _objDataDoc.CreateAttribute("translated");
                             objAttrib.InnerText = bool.TrueString;
@@ -292,12 +292,12 @@ namespace Translator
                     XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
                     if (objAttrib != null)
                     {
-                        if (!flag)
+                        if (!blnSetTranslatedAttribute)
                             xmlNodeLocal.Attributes.Remove(objAttrib);
                         else
                             objAttrib.InnerText = bool.TrueString;
                     }
-                    else if (flag)
+                    else if (blnSetTranslatedAttribute)
                     {
                         objAttrib = _objDataDoc.CreateAttribute("translated");
                         objAttrib.InnerText = bool.TrueString;
@@ -336,7 +336,7 @@ namespace Translator
             TranslatedIndicator(item);
             string strText = item.Cells["Text"].Value.ToString();
             string strKey = item.Cells["Key"].Value.ToString();
-            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = \"" + strKey + "\"]");
+            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
             if (xmlNodeLocal != null)
             {
                 XmlElement xmlElement = xmlNodeLocal["text"];
@@ -460,7 +460,7 @@ namespace Translator
                         string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
                         string strTranslated = strEnglish;
                         bool blnTranslated = false;
-                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = \"" + strKey + "\"]");
+                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
                         if (xmlNodeLocal != null)
                         {
                             strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
@@ -582,7 +582,7 @@ namespace Translator
                 return;
             }
 
-            XmlNodeList xmlBaseList = _objDataDoc.SelectNodes("/chummer/chummer[@file=\"" + strFileName + "\"]/" + strSection);
+            XmlNodeList xmlBaseList = _objDataDoc.SelectNodes("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]/" + strSection);
             int intSegmentsToProcess = 0;
             if (xmlBaseList != null)
             {
@@ -653,9 +653,10 @@ namespace Translator
                                     strPage = (strFileName == "books.xml" ? xmlChildNode["altcode"]?.InnerText : xmlChildNode["altpage"]?.InnerText) ?? string.Empty;
                                     // if we have an Id get the Node using it
                                     XmlNode xmlNodeLocal = !string.IsNullOrEmpty(strId)
-                                        ? xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[id=\"" + strId + "\"]")
-                                        : xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
-                                    if (xmlNodeLocal == null) MessageBox.Show(strName);
+                                        ? xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[id = " + strId.CleanXPath() + "]")
+                                        : xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name = " + strName.CleanXPath() + "]");
+                                    if (xmlNodeLocal == null)
+                                        MessageBox.Show(strName);
                                     strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                                     strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;
                                     blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == bool.TrueString;
@@ -818,7 +819,7 @@ namespace Translator
         {
             Cursor = Cursors.WaitCursor;
             List<string> lstSectionStrings = null;
-            XmlNode xmlNode = _objDataDoc.SelectSingleNode("/chummer/chummer[@file=\"" + cboFile.Text + "\"]");
+            XmlNode xmlNode = _objDataDoc.SelectSingleNode("/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]");
             if (xmlNode != null)
             {
                 lstSectionStrings = new List<string>();

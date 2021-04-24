@@ -243,8 +243,10 @@ namespace Chummer
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
             objWriter.WriteElementString("source", objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("extra", objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            if (objCharacter.Options.PrintNotes)
+
+            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
+            if (GlobalOptions.PrintNotes)
+
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }

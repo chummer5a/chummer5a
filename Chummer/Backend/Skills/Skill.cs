@@ -152,7 +152,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("spec", DisplaySpecialization(strLanguageToPrint));
             objWriter.WriteElementString("attribute", Attribute);
             objWriter.WriteElementString("displayattribute", DisplayAttributeMethod(strLanguageToPrint));
-            if (CharacterObject.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));

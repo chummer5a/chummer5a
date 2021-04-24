@@ -456,21 +456,6 @@
       <rating>6</rating>
     </cyberware>
     <cyberware>
-      <id>c533c0db-3a04-4fdd-95f9-d4d9781a3e79</id>
-      <name>Skilljack (German)</name>
-      <category>Headware</category>
-      <ess>0.1</ess>
-      <capacity>0</capacity>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 1000</cost>
-      <source>SR5G</source>
-      <page>452</page>
-      <bonus>
-        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
-      </bonus>
-      <rating>6</rating>
-    </cyberware>
-    <cyberware>
       <id>99128200-57f7-4ea1-ba48-7bae7215d6bb</id>
       <name>Taste Booster</name>
       <category>Headware</category>

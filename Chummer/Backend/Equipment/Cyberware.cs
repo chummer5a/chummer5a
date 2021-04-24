@@ -1649,7 +1649,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objWriter.WriteEndElement();
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));

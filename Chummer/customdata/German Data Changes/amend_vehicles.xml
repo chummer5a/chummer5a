@@ -19,6 +19,13 @@
 -->
 <chummer>
   <vehicles>
+    <vehicle> <!-- Roto-drone stealth errata in German Rigger 5.0 -->
+      <id>1291ab59-2483-42ca-b7a9-503b2c354cee</id>
+      <accel>1</accel>
+      <armor>6</armor>
+      <cost>8000</cost>
+      <speed>2</speed>
+    </vehicle>
     <vehicle> <!-- Changes the Yamaha Kaburaya's Acceleration from 3 to 4 and cost from 17000 to 8500 (see German R5 49 and German R5 189). -->
       <id>006ea45a-cc35-496c-8d01-94eb64d8febb</id>
       <accel>4</accel>

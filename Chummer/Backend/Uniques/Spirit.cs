@@ -282,7 +282,7 @@ namespace Chummer
             objWriter.WriteElementString("bound", Bound.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("type", EntityType.ToString());
 
-            if (CharacterObject.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             PrintMugshots(objWriter);
             objWriter.WriteEndElement();

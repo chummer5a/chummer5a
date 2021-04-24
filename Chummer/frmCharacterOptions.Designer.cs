@@ -63,12 +63,6 @@ namespace Chummer
             this.txtPriorities = new System.Windows.Forms.TextBox();
             this.nudSumToTen = new Chummer.NumericUpDownEx();
             this.lblSumToTen = new System.Windows.Forms.Label();
-            this.gpbBasicOptionsPrinting = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsPrinting = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkPrintSkillsWithZeroRating = new System.Windows.Forms.CheckBox();
-            this.chkPrintExpenses = new System.Windows.Forms.CheckBox();
-            this.chkPrintFreeExpenses = new System.Windows.Forms.CheckBox();
-            this.chkPrintNotes = new System.Windows.Forms.CheckBox();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkEnemyKarmaQualityLimit = new System.Windows.Forms.CheckBox();
@@ -297,8 +291,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
-            this.gpbBasicOptionsPrinting.SuspendLayout();
-            this.tlpBasicOptionsPrinting.SuspendLayout();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
             this.tlpBasicOptionsOfficialRules.SuspendLayout();
             this.gpbBasicOptionsCyberlimbs.SuspendLayout();
@@ -499,7 +491,6 @@ namespace Chummer
             // 
             this.flpBasicOptions.AutoScroll = true;
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCreateSettings);
-            this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsPrinting);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsOfficialRules);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCyberlimbs);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsRounding);
@@ -883,89 +874,6 @@ namespace Chummer
             this.lblSumToTen.Tag = "Label_SelectBP_SumToX";
             this.lblSumToTen.Text = "Sum to Ten";
             this.lblSumToTen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // gpbBasicOptionsPrinting
-            // 
-            this.gpbBasicOptionsPrinting.AutoSize = true;
-            this.gpbBasicOptionsPrinting.Controls.Add(this.tlpBasicOptionsPrinting);
-            this.gpbBasicOptionsPrinting.Location = new System.Drawing.Point(477, 3);
-            this.gpbBasicOptionsPrinting.Name = "gpbBasicOptionsPrinting";
-            this.gpbBasicOptionsPrinting.Size = new System.Drawing.Size(241, 111);
-            this.gpbBasicOptionsPrinting.TabIndex = 0;
-            this.gpbBasicOptionsPrinting.TabStop = false;
-            this.gpbBasicOptionsPrinting.Tag = "Label_CharacterOptions_Printing";
-            this.gpbBasicOptionsPrinting.Text = "Printing";
-            // 
-            // tlpBasicOptionsPrinting
-            // 
-            this.tlpBasicOptionsPrinting.AutoSize = true;
-            this.tlpBasicOptionsPrinting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpBasicOptionsPrinting.ColumnCount = 1;
-            this.tlpBasicOptionsPrinting.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsPrinting.Controls.Add(this.chkPrintSkillsWithZeroRating, 0, 0);
-            this.tlpBasicOptionsPrinting.Controls.Add(this.chkPrintExpenses, 0, 1);
-            this.tlpBasicOptionsPrinting.Controls.Add(this.chkPrintFreeExpenses, 0, 2);
-            this.tlpBasicOptionsPrinting.Controls.Add(this.chkPrintNotes, 0, 3);
-            this.tlpBasicOptionsPrinting.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpBasicOptionsPrinting.Location = new System.Drawing.Point(3, 16);
-            this.tlpBasicOptionsPrinting.Name = "tlpBasicOptionsPrinting";
-            this.tlpBasicOptionsPrinting.RowCount = 4;
-            this.tlpBasicOptionsPrinting.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBasicOptionsPrinting.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBasicOptionsPrinting.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBasicOptionsPrinting.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsPrinting.Size = new System.Drawing.Size(235, 92);
-            this.tlpBasicOptionsPrinting.TabIndex = 0;
-            // 
-            // chkPrintSkillsWithZeroRating
-            // 
-            this.chkPrintSkillsWithZeroRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPrintSkillsWithZeroRating.AutoSize = true;
-            this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(3, 3);
-            this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
-            this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(229, 17);
-            this.chkPrintSkillsWithZeroRating.TabIndex = 11;
-            this.chkPrintSkillsWithZeroRating.Tag = "Checkbox_Options_PrintAllSkills";
-            this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with Rating 0 or higher";
-            this.chkPrintSkillsWithZeroRating.UseVisualStyleBackColor = true;
-            // 
-            // chkPrintExpenses
-            // 
-            this.chkPrintExpenses.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPrintExpenses.AutoSize = true;
-            this.chkPrintExpenses.Location = new System.Drawing.Point(3, 26);
-            this.chkPrintExpenses.Name = "chkPrintExpenses";
-            this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
-            this.chkPrintExpenses.TabIndex = 12;
-            this.chkPrintExpenses.Tag = "Checkbox_Options_PrintExpenses";
-            this.chkPrintExpenses.Text = "Print Karma and Nuyen Expenses";
-            this.chkPrintExpenses.UseVisualStyleBackColor = true;
-            // 
-            // chkPrintFreeExpenses
-            // 
-            this.chkPrintFreeExpenses.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPrintFreeExpenses.AutoSize = true;
-            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(23, 49);
-            this.chkPrintFreeExpenses.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
-            this.chkPrintFreeExpenses.Name = "chkPrintFreeExpenses";
-            this.chkPrintFreeExpenses.Size = new System.Drawing.Size(208, 17);
-            this.chkPrintFreeExpenses.TabIndex = 13;
-            this.chkPrintFreeExpenses.Tag = "Checkbox_Options_PrintFreeExpenses";
-            this.chkPrintFreeExpenses.Text = "Print Free Karma and Nuyen Expenses";
-            this.chkPrintFreeExpenses.UseVisualStyleBackColor = true;
-            // 
-            // chkPrintNotes
-            // 
-            this.chkPrintNotes.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPrintNotes.AutoSize = true;
-            this.chkPrintNotes.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkPrintNotes.Location = new System.Drawing.Point(3, 72);
-            this.chkPrintNotes.Name = "chkPrintNotes";
-            this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
-            this.chkPrintNotes.TabIndex = 14;
-            this.chkPrintNotes.Tag = "Checkbox_Option_PrintNotes";
-            this.chkPrintNotes.Text = "Print Notes";
-            this.chkPrintNotes.UseVisualStyleBackColor = true;
             // 
             // gpbBasicOptionsOfficialRules
             // 
@@ -4377,10 +4285,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
-            this.gpbBasicOptionsPrinting.ResumeLayout(false);
-            this.gpbBasicOptionsPrinting.PerformLayout();
-            this.tlpBasicOptionsPrinting.ResumeLayout(false);
-            this.tlpBasicOptionsPrinting.PerformLayout();
             this.gpbBasicOptionsOfficialRules.ResumeLayout(false);
             this.gpbBasicOptionsOfficialRules.PerformLayout();
             this.tlpBasicOptionsOfficialRules.ResumeLayout(false);
@@ -4499,9 +4403,6 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabBasicOptions;
         private BufferedTableLayoutPanel tlpBasicOptions;
         private System.Windows.Forms.TreeView treSourcebook;
-        private System.Windows.Forms.CheckBox chkPrintNotes;
-        private System.Windows.Forms.CheckBox chkPrintExpenses;
-        private System.Windows.Forms.CheckBox chkPrintSkillsWithZeroRating;
         private System.Windows.Forms.CheckBox chkDontUseCyberlimbCalculation;
         private System.Windows.Forms.CheckBox chkEnforceCapacity;
         private System.Windows.Forms.CheckBox chkLicenseEachRestrictedItem;
@@ -4515,7 +4416,6 @@ namespace Chummer
         private NumericUpDownEx nudNuyenDecimalsMaximum;
         private NumericUpDownEx nudEssenceDecimals;
         private System.Windows.Forms.CheckBox chkDronemodsMaximumPilot;
-        private System.Windows.Forms.CheckBox chkPrintFreeExpenses;
         private System.Windows.Forms.Label lblLimbCount;
         private ElasticComboBox cboLimbCount;
         private System.Windows.Forms.Button cmdEnableSourcebooks;
@@ -4678,8 +4578,6 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpKarmaInitiation;
         private System.Windows.Forms.GroupBox gpbSourcebook;
         private System.Windows.Forms.FlowLayoutPanel flpBasicOptions;
-        private System.Windows.Forms.GroupBox gpbBasicOptionsPrinting;
-        private BufferedTableLayoutPanel tlpBasicOptionsPrinting;
         private System.Windows.Forms.GroupBox gpbBasicOptionsCyberlimbs;
         private System.Windows.Forms.GroupBox gpbBasicOptionsRounding;
         private BufferedTableLayoutPanel tlpBasicOptionsRounding;

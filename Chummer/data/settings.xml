@@ -1482,7 +1482,6 @@
       </karmacost>
       <books>
         <book>SR5</book>
-        <book>SR5G</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
@@ -1637,9 +1636,7 @@
       </karmacost>
       <books>
         <book>SR5</book>
-        <book>SR5G</book>
         <book>RF</book>
-        <book>RFG</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
@@ -1794,9 +1791,7 @@
       </karmacost>
       <books>
         <book>SR5</book>
-        <book>SR5G</book>
         <book>RF</book>
-        <book>RFG</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>

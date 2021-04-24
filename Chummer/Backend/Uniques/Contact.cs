@@ -394,7 +394,7 @@ namespace Chummer
             objWriter.WriteElementString("forcedloyalty", ForcedLoyalty.ToString(objCulture));
             objWriter.WriteElementString("blackmail", Blackmail.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("family", Family.ToString(GlobalOptions.InvariantCultureInfo));
-            if (CharacterObject.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
             PrintMugshots(objWriter);

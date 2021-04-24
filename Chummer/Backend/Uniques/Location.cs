@@ -101,7 +101,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort());
             objWriter.WriteElementString("fullname", DisplayName());
             objWriter.WriteElementString("name_english", Name);
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }

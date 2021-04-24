@@ -18,9 +18,11 @@ Application Changes:
 - Special attributes are no longer exported unless the character in question has them enabled. Fixes #4366.
 - When using Chummer in a non-English language, the way custom text is recorded and translated is now slightly smarter about which translation to use when one English word has multiple different translations. Fixes #4378.
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
+- The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
+- Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
 
 Data Changes:
-- Consolidated all German Data Changes custom data into a single German Data Changes entry.
+- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
 - Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
 - Whisper of Bones now properly requires Necromancy.
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.

@@ -126,7 +126,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("condition", _objCharacter.TranslateExtra(Condition, strLanguageToPrint));
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }

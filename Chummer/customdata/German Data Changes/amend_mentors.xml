@@ -23,16 +23,29 @@
   Set skillwires to R*0.1 ess
 -->
 <chummer>
-  <cyberwares>
-    <cyberware> <!-- Skilljack -->
-      <id>d31497dd-2be9-4b8a-808f-3ced36287c0c</id>
-      <ess>0.1</ess>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 1000</cost>
-    </cyberware>
-    <cyberware> <!-- Skillwires -->
-      <id>60485c4e-042f-44f6-ad89-324003223f73</id>
-      <ess>Rating * 0.1</ess>
-    </cyberware>
-  </cyberwares>
+  <mentors>
+    <mentor>
+      <id>168a0db8-0676-4a7d-86ce-99a43bf0f2bc</id> <!-- Raven -->
+      <choices>
+        <choice xpathfilter="starts-with(name, 'Adept:')" amendoperation="remove"/>
+        <choice amendoperation="addnode">
+          <name>Adept: Free Traceless Walk</name>
+          <bonus>
+            <specificpower>
+              <name>Traceless Walk</name>
+            </specificpower>
+          </bonus>
+        </choice>
+        <choice amendoperation="addnode">
+          <name>Adept: 1 level of Voice Control</name>
+          <bonus>
+            <specificpower>
+              <name>Voice Control</name>
+              <val>1</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+    </mentor>
+  </mentors>
 </chummer>

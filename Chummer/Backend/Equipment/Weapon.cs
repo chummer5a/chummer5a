@@ -1143,7 +1143,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("skill", Skill?.Name);
 
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalOptions.InvariantCultureInfo));
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
             objWriter.WriteEndElement();

@@ -149,8 +149,8 @@ namespace Chummer
                     if (!(objCharacterNode.Tag is CharacterCache objCache))
                         continue;
                     objCharacterNode.Text = objCache.CalculatedName();
-                    string strTooltip = "";
-                    if(!String.IsNullOrEmpty(objCache.FilePath))
+                    string strTooltip = string.Empty;
+                    if (!string.IsNullOrEmpty(objCache.FilePath))
                         strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
                     if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {

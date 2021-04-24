@@ -475,7 +475,7 @@ namespace Chummer.Backend.Equipment
             foreach (Cyberware objCyberware in Cyberware)
                 objCyberware.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }

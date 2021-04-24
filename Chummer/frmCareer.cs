@@ -2250,7 +2250,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 Character[] lstClones = new Character[intClones];
-                Parallel.For(0, intClones, i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result);
+                Parallel.For(0, intClones, async i => lstClones[i] = await Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true));
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }

@@ -542,7 +542,7 @@ namespace Chummer.Backend.Equipment
                 }
                 objWriter.WriteEndElement();
             }
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }

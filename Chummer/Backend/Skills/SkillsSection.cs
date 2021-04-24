@@ -1210,7 +1210,7 @@ namespace Chummer.Backend.Skills
         {
             foreach (Skill objSkill in Skills)
             {
-                if ((_objCharacter.Options.PrintSkillsWithZeroRating || objSkill.Rating > 0) && objSkill.Enabled)
+                if ((GlobalOptions.PrintSkillsWithZeroRating || objSkill.Rating > 0) && objSkill.Enabled)
                 {
                     objSkill.Print(objWriter, objCulture, strLanguageToPrint);
                 }
