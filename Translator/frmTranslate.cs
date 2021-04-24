@@ -239,8 +239,8 @@ namespace Translator
                 string strPage = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value.ToString();
                 bool blnHasNameOnPage = cboFile.Text == "qualities.xml";
                 string strNameOnPage = blnHasNameOnPage ? item.Cells["NameOnPage"].Value.ToString() : string.Empty;
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/name[text()=\"" + strEnglish + "\"]/..");
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*/id[text()=\"" + strId + "\"]/..") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*/name[text()=\"" + strEnglish + "\"]/..");
                 if (xmlNodeLocal == null)
                 {
                     xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text()=\"" + strEnglish + "\"]");
