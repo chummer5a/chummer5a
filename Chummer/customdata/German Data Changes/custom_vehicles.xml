@@ -44,34 +44,6 @@
       <seats>4</seats>
     </vehicle>
     <vehicle>
-      <id>4fbe5cd2-b7b9-11e6-80f5-76304dec7eb7</id>
-      <name>MCT-Nissan Roto-drone (Medium) (German)</name>
-      <page>147</page>
-      <source>R5</source>
-      <accel>1</accel>
-      <armor>6</armor>
-      <avail>6</avail>
-      <body>4</body>
-      <category>Drones: Medium</category>
-      <cost>8000</cost>
-      <handling>4</handling>
-      <pilot>3</pilot>
-      <sensor>3</sensor>
-      <speed>2</speed>
-      <gears>
-        <gear>
-          <name>Sensor Array</name>
-          <rating>3</rating>
-          <maxrating>4</maxrating>
-        </gear>
-      </gears>
-      <mods>
-        <addslots>3</addslots>
-      </mods>
-      <modslots>7</modslots>
-      <weaponmodslots>3</weaponmodslots>
-    </vehicle>
-    <vehicle>
       <id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
       <name>Mercury Cruiser</name>
       <page>51</page>
