@@ -4612,7 +4612,7 @@ namespace Chummer
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
-                if(Options.PrintNotes)
+                if(GlobalOptions.PrintNotes)
                     objWriter.WriteElementString("notes", objImprovement.Notes);
                 objWriter.WriteEndElement();
             }
@@ -4646,7 +4646,7 @@ namespace Chummer
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
-                if(Options.PrintNotes)
+                if(GlobalOptions.PrintNotes)
                     objWriter.WriteElementString("notes", objImprovement.Notes);
                 objWriter.WriteEndElement();
             }
@@ -4680,7 +4680,7 @@ namespace Chummer
 
                 objWriter.WriteStartElement("limitmodifier");
                 objWriter.WriteElementString("name", strName);
-                if(Options.PrintNotes)
+                if(GlobalOptions.PrintNotes)
                     objWriter.WriteElementString("notes", objImprovement.Notes);
                 objWriter.WriteEndElement();
             }
@@ -4936,12 +4936,12 @@ namespace Chummer
             objWriter.WriteStartElement("calendar");
             //Calendar.Sort();
             foreach(CalendarWeek objWeek in Calendar)
-                objWeek.Print(objWriter, objCulture, Options.PrintNotes);
+                objWeek.Print(objWriter, objCulture, GlobalOptions.PrintNotes);
             // </expenses>
             objWriter.WriteEndElement();
 
             // Print the Expense Log Entries if the option is enabled.
-            if(Options.PrintExpenses)
+            if(GlobalOptions.PrintExpenses)
             {
                 // <expenses>
                 objWriter.WriteStartElement("expenses");

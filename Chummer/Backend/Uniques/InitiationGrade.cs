@@ -140,7 +140,7 @@ namespace Chummer
             objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("schooling", Schooling.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("technomancer", Technomancer.ToString(GlobalOptions.InvariantCultureInfo));
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }

@@ -182,6 +182,10 @@ namespace Chummer
         private static bool _blnAllowHoverIncrement;
         private static bool _blnSearchInCategoryOnly = true;
         private static bool _blnAllowSkillDiceRolling;
+        private static bool _blnPrintExpenses;
+        private static bool _blnPrintFreeExpenses = true;
+        private static bool _blnPrintNotes;
+        private static bool _blnPrintSkillsWithZeroRating = true;
 
         public const int MaxStackLimit = 1024;
         private static bool _blnShowCharacterCustomDataWarning;
@@ -400,6 +404,18 @@ namespace Chummer
             // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
+            // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
+            LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills");
+
+            // Print Expenses.
+            LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
+
+            // Print Free Expenses.
+            LoadBoolFromRegistry(ref _blnPrintFreeExpenses, "printfreeexpenses");
+
+            // Print Notes.
+            LoadBoolFromRegistry(ref _blnPrintNotes, "printnotes");
+
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
             LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
 
@@ -596,6 +612,10 @@ namespace Chummer
                     objRegistry.SetValue("defaultsheet", DefaultCharacterSheet);
                     objRegistry.SetValue("datesincludetime", DatesIncludeTime.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("printtofilefirst", PrintToFileFirst.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("printzeroratingskills", PrintSkillsWithZeroRating.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("printexpenses", PrintExpenses.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("printfreeexpenses", PrintFreeExpenses.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("printnotes", PrintNotes.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("emulatedbrowserversion",
                         EmulatedBrowserVersion.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("pdfapppath", PDFAppPath);
@@ -881,6 +901,42 @@ namespace Chummer
         {
             get => _blnPrintToFileFirst;
             set => _blnPrintToFileFirst = value;
+        }
+
+        /// <summary>
+        /// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// </summary>
+        public static bool PrintSkillsWithZeroRating
+        {
+            get => _blnPrintSkillsWithZeroRating;
+            set => _blnPrintSkillsWithZeroRating = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
+        /// </summary>
+        public static bool PrintExpenses
+        {
+            get => _blnPrintExpenses;
+            set => _blnPrintExpenses = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// </summary>
+        public static bool PrintFreeExpenses
+        {
+            get => _blnPrintFreeExpenses;
+            set => _blnPrintFreeExpenses = value;
+        }
+
+        /// <summary>
+        /// Whether or not Notes should be printed.
+        /// </summary>
+        public static bool PrintNotes
+        {
+            get => _blnPrintNotes;
+            set => _blnPrintNotes = value;
         }
 
         /// <summary>

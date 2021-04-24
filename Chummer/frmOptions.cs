@@ -380,6 +380,8 @@ namespace Chummer
             PopulateCustomDataDirectoryListBox();
 
             chkAutomaticUpdate.Checked = GlobalOptions.AutomaticUpdate;
+            chkPreferNightlyBuilds.Enabled = GlobalOptions.AutomaticUpdate;
+            chkPreferNightlyBuilds.Checked = chkPreferNightlyBuilds.Enabled && GlobalOptions.PreferNightlyBuilds;
             chkLiveCustomData.Checked = GlobalOptions.LiveCustomData;
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalOptions.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalOptions.UseLogging;
@@ -388,11 +390,15 @@ namespace Chummer
             PopulateColorModes();
 
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
-            chkPreferNightlyBuilds.Checked = GlobalOptions.PreferNightlyBuilds;
             chkStartupFullscreen.Checked = GlobalOptions.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.SingleDiceRoller;
             chkDatesIncludeTime.Checked = GlobalOptions.DatesIncludeTime;
             chkPrintToFileFirst.Checked = GlobalOptions.PrintToFileFirst;
+            chkPrintExpenses.Checked = GlobalOptions.PrintExpenses;
+            chkPrintFreeExpenses.Enabled = GlobalOptions.PrintExpenses;
+            chkPrintFreeExpenses.Checked = chkPrintFreeExpenses.Enabled && GlobalOptions.PrintFreeExpenses;
+            chkPrintNotes.Checked = GlobalOptions.PrintNotes;
+            chkPrintSkillsWithZeroRating.Checked = GlobalOptions.PrintSkillsWithZeroRating;
             nudBrowserVersion.Value = GlobalOptions.EmulatedBrowserVersion;
             txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
@@ -450,6 +456,10 @@ namespace Chummer
             GlobalOptions.DefaultCharacterSheet = cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue;
             GlobalOptions.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.PrintToFileFirst = chkPrintToFileFirst.Checked;
+            GlobalOptions.PrintExpenses = chkPrintExpenses.Checked;
+            GlobalOptions.PrintFreeExpenses = chkPrintFreeExpenses.Checked;
+            GlobalOptions.PrintNotes = chkPrintNotes.Checked;
+            GlobalOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
             GlobalOptions.EmulatedBrowserVersion = decimal.ToInt32(nudBrowserVersion.Value);
             GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
             GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
@@ -1205,6 +1215,38 @@ namespace Chummer
                 }
             }
 
+            OptionsChanged(sender, e);
+        }
+
+        private void chkPrintExpenses_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+            if (chkPrintExpenses.Checked)
+            {
+                chkPrintFreeExpenses.Enabled = true;
+            }
+            else
+            {
+                chkPrintFreeExpenses.Enabled = false;
+                chkPrintFreeExpenses.Checked = false;
+            }
+            OptionsChanged(sender, e);
+        }
+
+        private void chkAutomaticUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+            if (chkAutomaticUpdate.Checked)
+            {
+                chkPreferNightlyBuilds.Enabled = true;
+            }
+            else
+            {
+                chkPreferNightlyBuilds.Enabled = false;
+                chkPreferNightlyBuilds.Checked = false;
+            }
             OptionsChanged(sender, e);
         }
     }
