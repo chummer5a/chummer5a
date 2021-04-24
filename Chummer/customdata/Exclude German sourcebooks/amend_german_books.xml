@@ -19,48 +19,7 @@
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema books.xsd">
   <books>
-    <book>
-      <name>Shadowrun 5th Edition (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Street Grimoire (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Run Faster (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Schattenhandbuch (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Schattenhandbuch 2 (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Schattenhandbuch 3 (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Rigger 5.0 (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>State of the Art ADL (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Hamburg (German-exclusive)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Datapuls SOTA 2080 (German-exclusive)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Datapuls Verschlusssache (German-exclusive)</name>
+    <book xpathfilter="contains(name, 'German')">
       <hide />
     </book>
   </books>
