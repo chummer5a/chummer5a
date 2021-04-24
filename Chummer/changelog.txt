@@ -19,6 +19,7 @@ Application Changes:
 - When using Chummer in a non-English language, the way custom text is recorded and translated is now slightly smarter about which translation to use when one English word has multiple different translations. Fixes #4378.
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
+- Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
