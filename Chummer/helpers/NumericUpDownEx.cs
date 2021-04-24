@@ -28,7 +28,6 @@
 // ============================================================================ '
 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -76,84 +75,42 @@ namespace Chummer
             base.MouseEnter += _mouseEnterLeave;
             base.MouseLeave += _mouseEnterLeave;
             // DPI handler for margins (WinForms is buggy with handling scaling of margins on numeric up-downs)
-            ParentChanged += OnParentChanged;
+            ParentChanged += OnMarginChanged;
             MarginChanged += OnMarginChanged;
             DpiChangedAfterParent += OnMarginChanged;
         }
 
-        private void OnParentChanged(object sender, EventArgs e)
-        {
-            if (_blnHaveProcessedMarginsOnce)
-                OnMarginChanged(sender, e);
-        }
-
-        private bool _blnDoProcessMargins = true;
-        private bool _blnHaveProcessedMarginsOnce;
+        private bool _blnSkipOnMarginChanged;
+        private float _fltMyDpiX = 96.0f;
+        private float _fltMyDpiY = 96.0f;
 
         private void OnMarginChanged(object sender, EventArgs e)
         {
-            if (!_blnDoProcessMargins)
+            if (_blnSkipOnMarginChanged)
                 return;
             using (Graphics g = CreateGraphics())
             {
                 // Only care about adjusting margins for non-standard DPI
-                if (Math.Abs(g.DpiX - 96.0f) < float.Epsilon &&
-                    Math.Abs(g.DpiY - 96.0f) < float.Epsilon)
+                if (Math.Abs(g.DpiX - _fltMyDpiX) < float.Epsilon &&
+                    Math.Abs(g.DpiY - _fltMyDpiY) < float.Epsilon)
                     return;
-
-                int intMinNonZeroMargin = int.MaxValue;
-                BitArray ablnConsiderMargins = new BitArray(4, false);
-                if (Margin.Left != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Left, intMinNonZeroMargin);
-                    ablnConsiderMargins[0] = true;
-                }
-
-                if (Margin.Top != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Top, intMinNonZeroMargin);
-                    ablnConsiderMargins[1] = true;
-                }
-
-                if (Margin.Right != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Right, intMinNonZeroMargin);
-                    ablnConsiderMargins[2] = true;
-                }
-
-                if (Margin.Bottom != 0)
-                {
-                    intMinNonZeroMargin = Math.Min(Margin.Bottom, intMinNonZeroMargin);
-                    ablnConsiderMargins[3] = true;
-                }
-
+                float fltOldDpiX = _fltMyDpiX;
+                float fltOldDpiY = _fltMyDpiY;
+                _fltMyDpiX = g.DpiX;
+                _fltMyDpiY = g.DpiY;
                 // No non-zero margins, exit
-                if (intMinNonZeroMargin == int.MaxValue)
+                if (Margin.All == 0)
                     return;
-                if (!_blnHaveProcessedMarginsOnce)
-                {
-                    intMinNonZeroMargin += Math.Max((int) (3 * g.DpiX / 96.0f),
-                        (int) (3 * g.DpiY / 96.0f));
-                    _blnHaveProcessedMarginsOnce = true;
-                }
-
-                int intNewCommonMarginX = (int) (3 * g.DpiX / 96.0f);
-                int intNewCommonMarginY = (int) (3 * g.DpiY / 96.0f);
-                Padding objNewMargins = new Padding(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom);
-                if (ablnConsiderMargins[0])
-                    objNewMargins.Left += intNewCommonMarginX - intMinNonZeroMargin;
-                if (ablnConsiderMargins[1])
-                    objNewMargins.Top += intNewCommonMarginY - intMinNonZeroMargin;
-                if (ablnConsiderMargins[2])
-                    objNewMargins.Right += intNewCommonMarginX - intMinNonZeroMargin;
-                if (ablnConsiderMargins[3])
-                    objNewMargins.Bottom += intNewCommonMarginY - intMinNonZeroMargin;
-
+                Padding objNewMargins = new Padding(
+                    (int)(Margin.Left * _fltMyDpiX / fltOldDpiX),
+                    (int)(Margin.Top * _fltMyDpiY / fltOldDpiY),
+                    (int)(Margin.Right * _fltMyDpiX / fltOldDpiX),
+                    (int)(Margin.Bottom * _fltMyDpiY / fltOldDpiY));
                 this.DoThreadSafe(() =>
                 {
-                    _blnDoProcessMargins = false;
+                    _blnSkipOnMarginChanged = true;
                     Margin = objNewMargins;
-                    _blnDoProcessMargins = true;
+                    _blnSkipOnMarginChanged = false;
                 });
             }
         }
