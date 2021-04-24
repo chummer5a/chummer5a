@@ -3017,22 +3017,10 @@
                 <altcode>SR5</altcode>
             </book>
             <book>
-                <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-                <name>Shadowrun 5th Edition (German-exclusive Content)</name>
-                <translate>Shadowrun 5. Edition (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>SR5G</altcode>
-            </book>
-            <book>
                 <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
                 <name>Street Grimoire</name>
                 <translate>Straßengrimoire</translate>
                 <altcode>SG</altcode>
-            </book>
-            <book>
-                <id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
-                <name>Street Grimoire (German-exclusive Content)</name>
-                <translate>Straßengrimoire (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>SGG</altcode>
             </book>
             <book translated="True">
                 <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
@@ -3057,12 +3045,6 @@
                 <name>Run Faster</name>
                 <translate>Schattenläufer</translate>
                 <altcode>RF</altcode>
-            </book>
-            <book>
-                <id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-                <name>Run Faster (German-exclusive Content)</name>
-                <translate>Schattenläufer (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>RFG</altcode>
             </book>
             <book>
                 <id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
@@ -3123,12 +3105,6 @@
                 <name>Rigger 5.0</name>
                 <translate>Asphaltkrieger</translate>
                 <altcode>R5</altcode>
-            </book>
-            <book>
-                <id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
-                <name>Rigger 5.0 (German-exclusive Content)</name>
-                <translate>Asphaltkrieger (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>R5G</altcode>
             </book>
             <book>
                 <id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>

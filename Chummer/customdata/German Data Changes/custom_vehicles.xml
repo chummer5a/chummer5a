@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <vehicles>
+    <vehicle>
+      <id>116f6efe-2bb0-4fd4-80de-c25d6fa721bd</id>
+      <name>BMW M8</name>
+      <page>56</page>
+      <source>R5</source>
+      <accel>3</accel>
+      <armor>11</armor>
+      <avail>10</avail>
+      <body>12</body>
+      <category>Cars</category>
+      <cost>76000</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>6</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>4fbe5cd2-b7b9-11e6-80f5-76304dec7eb7</id>
+      <name>MCT-Nissan Roto-drone (Medium) (German)</name>
+      <page>147</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>6</avail>
+      <body>4</body>
+      <category>Drones: Medium</category>
+      <cost>8000</cost>
+      <handling>4</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>4</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <addslots>3</addslots>
+      </mods>
+      <modslots>7</modslots>
+      <weaponmodslots>3</weaponmodslots>
+    </vehicle>
+    <vehicle>
+      <id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
+      <name>Mercury Cruiser</name>
+      <page>51</page>
+      <source>R5</source>
+      <accel>3</accel>
+      <armor>11</armor>
+      <avail>0</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>21000</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>5</seats>
+    </vehicle>
+    <vehicle>
+      <id>1eb827c6-cda1-40fe-b855-8a1f41a34700</id>
+      <name>Mercedes-Benz CityMog</name>
+      <page>64</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>10</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>44000</cost>
+      <handling>5/4</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>3</seats>
+    </vehicle>
+    <vehicle>
+      <id>122a3919-dc05-4d8d-89b3-fa0ac9e1d669</id>
+      <name>Mercedes-Benz CityMog CM-X (Pickup)</name>
+      <page>64</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>10</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>42000</cost>
+      <handling>5/4</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>5</seats>
+    </vehicle>
+    <vehicle>
+      <id>e0a63cca-ce9b-4b1b-b88b-1d496c37e82d</id>
+      <name>Mercedes-Benz CityMog Traveler</name>
+      <page>64</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>10</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>56000</cost>
+      <handling>5/4</handling>
+      <pilot>3</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Middle)</name>
+      </mods>
+      <seats>20</seats>
+    </vehicle>
+    <vehicle>
+      <id>04b54f68-d1df-42f7-a03e-0bc465e42024</id>
+      <name>Mercedes-Benz CityMog Elite</name>
+      <page>64</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>12</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>96000</cost>
+      <handling>5/3</handling>
+      <pilot>3</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>4</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (High)</name>
+      </mods>
+      <seats>12</seats>
+    </vehicle>
+    <vehicle>
+      <id>b52811c6-03d4-4dee-8a2e-04ea043b79e8</id>
+      <name>Volkswagen Multicity</name>
+      <page>64</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>4</armor>
+      <avail>0</avail>
+      <body>12</body>
+      <category>Cars</category>
+      <cost>18000</cost>
+      <handling>3/2</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>1</maxrating>
+        </gear>
+      </gears>
+      <seats>3</seats>
+    </vehicle>
+    <vehicle>
+      <id>8abe349d-d687-45a0-a1c9-d6189e4eac39</id>
+      <name>Volkswagen Urban Explorer</name>
+      <page>65</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>0</avail>
+      <body>13</body>
+      <category>Cars</category>
+      <cost>28000</cost>
+      <handling>3/3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Amenities (Middle)</name>
+        <name>SunCell</name>
+      </mods>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>9b5cf9b8-c3ce-4853-91c7-215a73ad4ed2</id>
+      <name>Volkswagen Urban Transporter</name>
+      <page>65</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>0</avail>
+      <body>13</body>
+      <category>Cars</category>
+      <cost>19500</cost>
+      <handling>3/3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>2</seats>
+    </vehicle>
+    <vehicle>
+      <id>61c57dad-8683-464e-92e1-3ad57776365e</id>
+      <name>Volkswagen Urban Traveler</name>
+      <page>65</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>6</armor>
+      <avail>0</avail>
+      <body>13</body>
+      <category>Cars</category>
+      <cost>29500</cost>
+      <handling>3/3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>9</seats>
+    </vehicle>
+    <vehicle>
+      <id>1581a0b7-d198-46ba-bf68-88871554fcf1</id>
+      <name>Volkswagen Urban Watcher</name>
+      <page>65</page>
+      <source>R5</source>
+      <accel>1</accel>
+      <armor>10</armor>
+      <avail>12R</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>65000</cost>
+      <handling>3/3</handling>
+      <pilot>2</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Landing Drone Rack (Medium)</name>
+        <name>Retrans Unit</name>
+      </mods>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>d0bdf891-9faa-4128-8439-ae4964a425f7</id>
+      <name>Ares Minotaurus</name>
+      <page>81</page>
+      <source>R5</source>
+      <accel>2</accel>
+      <armor>8</armor>
+      <avail>12F</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>45000</cost>
+      <handling>4/5</handling>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <speed>5</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>4</maxrating>
+        </gear>
+      </gears>
+      <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>98dc1868-0c72-468a-bf82-a87dbbcd0002</id>
+      <name>Dodge Hurricane</name>
+      <page>57</page>
+      <source>R5</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>0</avail>
+      <body>15</body>
+      <category>Cars</category>
+      <cost>37000</cost>
+      <handling>4/4</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>3</seats>
+    </vehicle>
+    <vehicle>
+      <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
+      <name>Dodge Hurricane Crew Modell</name>
+      <page>57</page>
+      <source>R5</source>
+      <accel>2</accel>
+      <armor>12</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>43000</cost>
+      <handling>3/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
+      <name>Dodge Hurricane Security Modell</name>
+      <page>57</page>
+      <source>R5</source>
+      <accel>2</accel>
+      <armor>14</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>67000</cost>
+      <handling>4/3</handling>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>3</maxrating>
+        </gear>
+      </gears>
+      <seats>5</seats>
+    </vehicle>
+    <vehicle>
+      <id>349e9cdf-fa51-4da1-87ee-2ecd535fd019</id>
+      <name>BMW X Infinity</name>
+      <page>57</page>
+      <source>R5</source>
+      <accel>2</accel>
+      <armor>13</armor>
+      <avail>10</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>72000</cost>
+      <handling>5/5</handling>
+      <pilot>2</pilot>
+      <sensor>4</sensor>
+      <speed>4</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>4</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+  </vehicles>
+  <mods>
+    <mod>
+      <id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
+      <name>Ejection seat</name>
+      <page>171</page>
+      <source>R5</source>
+      <avail>8R</avail>
+      <category>Protection</category>
+      <cost>750</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <category>Bikes</category>
+            <category>Cars</category>
+            <category>Trucks</category>
+            <category>Municipal/Construction</category>
+            <category>Corpsec/Police/Military</category>
+            <category>Boats</category>
+            <category>Submarines</category>
+            <category>Fixed-Wing Aircraft</category>
+            <category>LTAV</category>
+            <category>Rotorcraft</category>
+            <category>VTOL/VSTOL</category>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
+  </mods>
+</chummer>
