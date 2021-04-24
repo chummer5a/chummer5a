@@ -157,7 +157,7 @@ namespace Chummer
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
-                await Task.Delay(20).ConfigureAwait(false);
+                await Task.Delay(20);
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -210,7 +210,7 @@ namespace Chummer
             }
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
             {
-                await Task.Delay(20).ConfigureAwait(false);
+                await Task.Delay(20);
             }
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
         }
@@ -243,7 +243,7 @@ namespace Chummer
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
-                await Task.Delay(20).ConfigureAwait(false);
+                await Task.Delay(20);
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -303,13 +303,13 @@ namespace Chummer
                 if (blnHasCustomData)
                 {
                     // If we have any custom data, make sure the base data is already loaded so we can easily just copy it over
-                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, strLanguage).ConfigureAwait(false);
+                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, strLanguage);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
                 else if (strLanguage != GlobalOptions.DefaultLanguage)
                 {
                     // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
-                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage).ConfigureAwait(false);
+                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
                 if (xmlReturn == null) // Not an else in case something goes wrong in safe cast in the line above
@@ -321,9 +321,7 @@ namespace Chummer
                     // Load the base file and retrieve all of the child nodes.
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                xmlScratchpad.Load(objXmlReader);
+                        xmlScratchpad.LoadStandard(strPath);
 
                         if (xmlReturnDocElement != null)
                         {
@@ -383,7 +381,7 @@ namespace Chummer
             {
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
                 {
-                    await Task.Delay(20).ConfigureAwait(false);
+                    await Task.Delay(20);
                 }
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)
@@ -428,20 +426,6 @@ namespace Chummer
             }
 
             return xmlReturn;
-        }
-
-        public static XPathNavigator GetFastNavigator(this XmlDocument xmlDoc)
-        {
-            if (xmlDoc == null)
-                return null;
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                xmlDoc.Save(memStream);
-                memStream.Position = 0;
-                //TODO: Should probably be using GlobalOptions.SafeXmlReaderSettings here but it has some issues.
-                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.UnSafeXmlReaderSettings))
-                    return new XPathDocument(objXmlReader).CreateNavigator();
-            }
         }
 
         private static void CheckIdNodes(XmlNode xmlParentNode, string strFileName)
@@ -660,9 +644,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlFile.Load(objXmlReader);
+                    xmlFile.LoadStandard(strFile);
                 }
                 catch (IOException)
                 {
@@ -727,9 +709,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlFile.Load(objXmlReader);
+                    xmlFile.LoadStandard(strFile);
                 }
                 catch (IOException)
                 {
@@ -827,9 +807,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlFile.Load(objXmlReader);
+                    xmlFile.LoadStandard(strFile);
                 }
                 catch (IOException)
                 {

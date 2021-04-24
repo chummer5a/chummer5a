@@ -882,9 +882,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objXmlDocument.Load(objXmlReader);
+                    objXmlDocument.LoadStandard(strFile);
                 }
                 catch (IOException)
                 {
