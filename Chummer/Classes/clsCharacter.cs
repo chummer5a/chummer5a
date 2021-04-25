@@ -2149,8 +2149,8 @@ namespace Chummer
                         UploadObjectAsMetric.UploadObject(TelemetryClient, Options);
                     }
                     XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
-                    XmlNode objXmlCharacter;
-                    XPathNavigator xmlCharacterNavigator;
+                    XmlNode objXmlCharacter = null;
+                    XPathNavigator xmlCharacterNavigator = null;
                     XmlNodeList objXmlNodeList;
                     XmlNodeList objXmlLocationList;
                     Quality objLivingPersonaQuality = null;
@@ -2161,60 +2161,68 @@ namespace Chummer
 
                         if (!File.Exists(_strFileName))
                             return false;
-                        bool errorCaught = false;
-                        do
+                        bool blnKeepLoading = await Task.Run(() =>
                         {
-                            try
+                            bool blnErrorCaught = false;
+                            do
                             {
-                                objXmlDocument.LoadStandard(_strFileName, !errorCaught);
-                                errorCaught = false;
-                            }
-                            catch (XmlException ex)
-                            {
-                                if (System.Text.RegularExpressions.Regex.IsMatch(ex.Message, GlobalOptions.InvalidXmlCharacterRegex))
+                                try
                                 {
-                                    /*If we found a known control character that's preventing the character from
-                                    being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
-                                    If yes, restart the load, explicitly ignoring invalid characters.*/
-
-                                    if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_InvalidTextFound"),
-                                                                        LanguageManager.GetString("Message_InvalidTextFound_Title"),
-                                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                                    objXmlDocument.LoadStandard(_strFileName, !blnErrorCaught);
+                                    blnErrorCaught = false;
+                                }
+                                catch (XmlException ex)
+                                {
+                                    if (System.Text.RegularExpressions.Regex.IsMatch(ex.Message,
+                                        GlobalOptions.InvalidXmlCharacterRegex))
                                     {
-                                        IsLoading = false;
+                                        /*If we found a known control character that's preventing the character from
+                                        being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
+                                        If yes, restart the load, explicitly ignoring invalid characters.*/
+
+                                        if (Program.MainForm.ShowMessageBox(
+                                            LanguageManager.GetString("Message_InvalidTextFound"),
+                                            LanguageManager.GetString("Message_InvalidTextFound_Title"),
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                                        {
+                                            return false;
+                                        }
+
+                                        blnErrorCaught = true;
+                                    }
+                                    else
+                                    {
+                                        if (showWarnings)
+                                        {
+                                            Program.MainForm.ShowMessageBox(
+                                                string.Format(GlobalOptions.CultureInfo,
+                                                    LanguageManager.GetString("Message_FailedLoad"), ex.Message),
+                                                string.Format(GlobalOptions.CultureInfo,
+                                                    LanguageManager.GetString("MessageTitle_FailedLoad"), ex.Message),
+                                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+
                                         return false;
                                     }
-                                    errorCaught = true;
                                 }
-                                else
-                                {
-                                    if (showWarnings)
-                                    {
-                                        Program.MainForm.ShowMessageBox(
-                                           string.Format(GlobalOptions.CultureInfo,
-                                               LanguageManager.GetString("Message_FailedLoad"), ex.Message),
-                                           string.Format(GlobalOptions.CultureInfo,
-                                               LanguageManager.GetString("MessageTitle_FailedLoad"), ex.Message),
-                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    }
+                            } while (blnErrorCaught);
 
-                                    return false;
-                                }
-                            }
-                        } while (errorCaught);
-
+                            objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+                            xmlCharacterNavigator =
+                                objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                            return true;
+                        }).ConfigureAwait(true);
+                        if (!blnKeepLoading || objXmlCharacter == null || xmlCharacterNavigator == null)
+                        {
+                            IsLoading = false;
+                            return false;
+                        }
                         //Timekeeper.Finish("load_xml");
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
                     {
                         frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
-                        objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
-                        xmlCharacterNavigator =
-                            objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
-
-                        if (objXmlCharacter == null || xmlCharacterNavigator == null)
-                            return false;
 
                         IsLoading = true;
 

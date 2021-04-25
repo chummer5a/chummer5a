@@ -212,7 +212,7 @@ namespace ChummerHub.Client.UI
             Settings.Default.Save();
         }
 
-        private async void CbSINnerUrl_SelectedValueChanged(object sender, EventArgs e)
+        private void CbSINnerUrl_SelectedValueChanged(object sender, EventArgs e)
         {
             Settings.Default.SINnerUrl = cbSINnerUrl.SelectedValue.ToString();
             Settings.Default.Save();
@@ -318,7 +318,7 @@ namespace ChummerHub.Client.UI
                               {
                                   if (signout.Response.StatusCode != HttpStatusCode.OK)
                                   {
-                                      var roles = GetRolesStatus(this).Result;
+                                      var roles = await GetRolesStatus(this);
                                   }
                                   else
                                   {
@@ -612,7 +612,7 @@ namespace ChummerHub.Client.UI
                             else
                             {
                                 string msg = posttask.Response.ReasonPhrase + ": " + Environment.NewLine;
-                                var content = posttask.Response.Content.ReadAsStringAsync().Result;
+                                var content = await posttask.Response.Content.ReadAsStringAsync();
                                 msg += content;
                                 Log.Warn("SINner " + sin.Id + " not posted: " + msg);
                             }

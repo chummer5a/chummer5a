@@ -342,7 +342,7 @@ namespace ChummerHub.Client.Model
                 catch (Exception e)
                 {
                     op_uploadChummer?.tc?.TrackException(e);
-                    await Utils.HandleError(e).ConfigureAwait(true);
+                    Utils.HandleError(e);
                     throw;
                 }
             }
@@ -661,7 +661,7 @@ namespace ChummerHub.Client.Model
                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                     }
 
-                    HttpOperationResponse<ResultSinnerPostSIN> response = await Utils.PostSINner(this).ConfigureAwait(true);
+                    HttpOperationResponse<ResultSinnerPostSIN> response = await Utils.PostSINnerAsync(this);
                     if (response?.Body?.CallSuccess == true)
                     {
                         try
@@ -683,7 +683,7 @@ namespace ChummerHub.Client.Model
                                 myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                             }
 
-                            var uploadresult = Utils.UploadChummer(this);
+                            var uploadresult = await Utils.UploadChummer(this);
 
                             if (uploadresult.CallSuccess != true)
                             {

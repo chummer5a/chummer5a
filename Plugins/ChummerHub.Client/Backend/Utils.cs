@@ -553,7 +553,7 @@ namespace ChummerHub.Client.Backend
             return await HandleError(response, null).ConfigureAwait(true);
         }
 
-        public static async Task<object> HandleError(Exception e)
+        public static ResultBase HandleError(Exception e)
         {
             ResultBase rb = new ResultBase
             {
@@ -1052,7 +1052,7 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        private static async void SwitchToCharacter(CharacterCache objCache)
+        private static void SwitchToCharacter(CharacterCache objCache)
         {
             using (new CursorWait(PluginHandler.MainForm, true))
             {
@@ -1128,7 +1128,7 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static async Task<HttpOperationResponse<ResultSinnerPostSIN>> PostSINner(CharacterExtended ce)
+        public static HttpOperationResponse<ResultSinnerPostSIN> PostSINner(CharacterExtended ce)
         {
             if (ce == null)
                 throw new ArgumentNullException(nameof(ce));
@@ -1154,10 +1154,10 @@ namespace ChummerHub.Client.Backend
                 });
 
                 // this can be called anywhere
-                var task = new Task(() =>
+                var task = new Task(async () =>
                 {
                     var client = StaticUtils.GetClient();
-                    res = client.PostSINWithHttpMessagesAsync(uploadInfo).Result;
+                    res = await client.PostSINWithHttpMessagesAsync(uploadInfo);
                 });
 
                 // also can be called anywhere. Task  will be scheduled for execution.
@@ -1202,10 +1202,10 @@ namespace ChummerHub.Client.Backend
                         {
                             if (ce.MySINnerFile.Id != null)
                                 res = await client.PutSINWithHttpMessagesAsync(ce.MySINnerFile.Id.Value, fs).ConfigureAwait(true);
-                            string msg = "Upload ended with statuscode: ";
-                            msg += res?.Response?.StatusCode + Environment.NewLine;
-                            msg += res?.Response?.ReasonPhrase;
-                            msg += Environment.NewLine + res?.Response?.Content.ReadAsStringAsync().Result;
+                            HttpResponseMessage objResponseMessage = res?.Response;
+                            string strResponseMessageContent = objResponseMessage != null ? await objResponseMessage.Content.ReadAsStringAsync() : string.Empty;
+                            string msg = "Upload ended with statuscode: " + objResponseMessage?.StatusCode + Environment.NewLine
+                                         + objResponseMessage?.ReasonPhrase + Environment.NewLine + strResponseMessageContent;
                             Log.Info(msg);
                             HttpStatusCode myStatus = res?.Response?.StatusCode ?? HttpStatusCode.NotFound;
                             if(!StaticUtils.IsUnitTest)
@@ -1243,7 +1243,7 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static ResultSINnerPut UploadChummer(CharacterExtended ce)
+        public static async Task<ResultSINnerPut> UploadChummer(CharacterExtended ce)
         {
             if (ce == null)
                 throw new ArgumentNullException(nameof(ce));
@@ -1252,7 +1252,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (string.IsNullOrEmpty(ce.ZipFilePath))
                 {
-                    ce.ZipFilePath = ce.PrepareModel().Result;
+                    ce.ZipFilePath = await ce.PrepareModel();
                 }
 
                 using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
@@ -1262,7 +1262,7 @@ namespace ChummerHub.Client.Backend
                         var client = StaticUtils.GetClient();
                         if (!StaticUtils.IsUnitTest)
                         {
-                            res = client.PutSIN(ce.MySINnerFile.Id ?? Guid.Empty, fs);
+                            res = await client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fs);
                             string msg = "Upload ended with statuscode: ";
                             if (res != null)
                             {
@@ -1286,7 +1286,7 @@ namespace ChummerHub.Client.Backend
                         }
                         else
                         {
-                            client.PutSIN(ce.MySINnerFile.Id ?? Guid.Empty, fs);
+                            await client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fs);
                         }
                     }
                     catch (Exception e)
@@ -1440,9 +1440,9 @@ namespace ChummerHub.Client.Backend
                 if (objCache?.DownLoadRunning != null && objCache.DownLoadRunning.Status == TaskStatus.Running)
                     return objCache.DownLoadRunning;
                 Log.Info("Downloading SINner: " + sinner?.Id);
-                Task<string> returntask = Task.Run(() =>
+                Task<string> returntask = Task.Run(async () =>
                 {
-                    string filepath = DownloadFile(sinner, objCache).Result;
+                    string filepath = await DownloadFile(sinner, objCache);
                     if (objCache != null)
                         objCache.FilePath = filepath;
                     return filepath;

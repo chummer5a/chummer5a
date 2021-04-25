@@ -321,15 +321,11 @@ namespace Chummer
                 {
                     foreach(IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                     {
-                        List<TreeNode> lstNodes = await Task.Run(() =>
+                        List<TreeNode> lstNodes = await Task.Run(async () =>
                         {
                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin);
-                            var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
-                            if (task.Result != null)
-                            {
-                                return task.Result.OrderBy(a => a.Text).ToList();
-                            }
-                            return new List<TreeNode>();
+                            ICollection<TreeNode> lstTreeNodes = await plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
+                            return lstTreeNodes?.OrderBy(a => a.Text).ToList() ?? new List<TreeNode>();
                         });
                         await Task.Run(() =>
                         {
