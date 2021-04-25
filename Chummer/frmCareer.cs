@@ -2863,7 +2863,8 @@ namespace Chummer
 
                             if (!blnHasImmunity)
                             {
-                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml").ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml")
+                                    .ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
@@ -2970,7 +2971,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(false);
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
@@ -3021,7 +3022,7 @@ namespace Chummer
                     {
                         frmLoadingForm.Reset(36);
                         frmLoadingForm.Show();
-                        await objMerge.Load().ConfigureAwait(false);
+                        await objMerge.Load();
                         frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
@@ -3120,7 +3121,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(false);
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
@@ -12991,7 +12992,7 @@ namespace Chummer
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();
-                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(false);
+                    await CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
                     IsCharacterUpdateRequested = true;

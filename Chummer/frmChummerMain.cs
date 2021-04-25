@@ -211,167 +211,178 @@ namespace Chummer
 
                     Program.MainForm = this;
 
-                    using (frmLoading frmProgressBar = new frmLoading { CharacterFile = Text })
+                    using (new CursorWait(this))
                     {
-                        frmProgressBar.Reset((GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length);
-                        frmProgressBar.Show();
+                        using (frmLoading frmProgressBar = new frmLoading {CharacterFile = Text})
+                        {
+                            frmProgressBar.Reset(
+                                (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length);
+                            frmProgressBar.Show();
 
 #if DEBUG
-                        if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Minor < 215)
+                            if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning &&
+                                CurrentVersion.Minor < 215)
 #else
                         if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion.Minor < 215)
 #endif
-                        {
-                            if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
-                                LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
-                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                             {
-                                Application.Exit();
-                                return;
-                            }
-
-                            GlobalOptions.ShowCharacterCustomDataWarning = false;
-                        }
-
-                        // Attempt to cache all XML files that are used the most.
-                        using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
-                        {
-                            // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
-                            await Task.Run(() =>
-                                Parallel.ForEach(s_astrPreloadFileNames, x =>
+                                if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
+                                    LanguageManager.GetString("MessageTitle_CharacterCustomDataWarning"),
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    // Load default language data first for performance reasons
-                                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                                        XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
-                                    XmlManager.Load(x);
-                                    frmProgressBar.PerformStep(Application.ProductName);
-                                })).ConfigureAwait(true); // Makes sure frmLoading that wraps all gets disposed on the same thread that created it
-                            //Timekeeper.Finish("cache_load");
-                        }
-
-                        frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
-
-                        _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
-                        _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
-
-                        // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
-                        string[] strArgs = Environment.GetCommandLineArgs();
-                        ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
-                        bool blnShowTest = false;
-                        if (!Utils.IsUnitTest && strArgs.Length > 1)
-                        {
-                            HashSet<string> setFilesToLoad = new HashSet<string>();
-                            try
-                            {
-                                foreach (string strArg in strArgs)
-                                {
-                                    if (strArg == "/test")
-                                    {
-                                        blnShowTest = true;
-                                    }
-                                    else if ((strArg == "/help")
-                                             || (strArg == "?")
-                                             || (strArg == "/?"))
-                                    {
-                                        string msg = "Commandline parameters are either " + Environment.NewLine;
-                                        msg += "\t/test" + Environment.NewLine;
-                                        msg += "\t/help" + Environment.NewLine;
-                                        msg += "\t(filename to open)" + Environment.NewLine;
-                                        msg += "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" + Environment.NewLine;
-                                        Console.WriteLine(msg);
-                                    }
-                                    else if (strArg.Contains("/plugin"))
-                                    {
-                                        Log.Info("Encountered command line argument, that should already have been handled in one of the plugins: " + strArg);
-                                    }
-                                    else if (!strArg.StartsWith('/'))
-                                    {
-                                        if (!File.Exists(strArg))
-                                        {
-                                            throw new ArgumentException("Chummer started with unknown command line arguments: " +
-                                                                        strArgs.Aggregate((j, k) => j + " " + k));
-                                        }
-                                        if (setFilesToLoad.Contains(strArg))
-                                            continue;
-                                        setFilesToLoad.Add(strArg);
-                                    }
+                                    Application.Exit();
+                                    return;
                                 }
 
+                                GlobalOptions.ShowCharacterCustomDataWarning = false;
+                            }
+
+                            // Attempt to cache all XML files that are used the most.
+                            using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
+                            {
                                 // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
                                 await Task.Run(() =>
-                                    Parallel.ForEach(setFilesToLoad, async x =>
+                                    Parallel.ForEach(s_astrPreloadFileNames, x =>
                                     {
-                                        Character objCharacter = await LoadCharacter(x).ConfigureAwait(false);
-                                        lstCharactersToLoad.Add(objCharacter);
-                                    })).ConfigureAwait(true); // Makes sure frmLoading that wraps all gets disposed on the same thread that created it
+                                        // Load default language data first for performance reasons
+                                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                            XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
+                                        XmlManager.Load(x);
+                                        frmProgressBar.PerformStep(Application.ProductName);
+                                    })).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                                //Timekeeper.Finish("cache_load");
                             }
-                            catch (Exception ex)
+
+                            frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
+
+                            _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
+                            _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
+
+                            // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
+                            string[] strArgs = Environment.GetCommandLineArgs();
+                            ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
+                            bool blnShowTest = false;
+                            if (!Utils.IsUnitTest && strArgs.Length > 1)
                             {
-                                op_frmChummerMain.SetSuccess(false);
-                                ExceptionTelemetry ext = new ExceptionTelemetry(ex)
+                                HashSet<string> setFilesToLoad = new HashSet<string>();
+                                try
                                 {
-                                    SeverityLevel = SeverityLevel.Warning
-                                };
-                                op_frmChummerMain.tc.TrackException(ext);
-                                Log.Warn(ex);
+                                    foreach (string strArg in strArgs)
+                                    {
+                                        if (strArg == "/test")
+                                        {
+                                            blnShowTest = true;
+                                        }
+                                        else if ((strArg == "/help")
+                                                 || (strArg == "?")
+                                                 || (strArg == "/?"))
+                                        {
+                                            string msg = "Commandline parameters are either " + Environment.NewLine;
+                                            msg += "\t/test" + Environment.NewLine;
+                                            msg += "\t/help" + Environment.NewLine;
+                                            msg += "\t(filename to open)" + Environment.NewLine;
+                                            msg +=
+                                                "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
+                                                Environment.NewLine;
+                                            Console.WriteLine(msg);
+                                        }
+                                        else if (strArg.Contains("/plugin"))
+                                        {
+                                            Log.Info(
+                                                "Encountered command line argument, that should already have been handled in one of the plugins: " +
+                                                strArg);
+                                        }
+                                        else if (!strArg.StartsWith('/'))
+                                        {
+                                            if (!File.Exists(strArg))
+                                            {
+                                                throw new ArgumentException(
+                                                    "Chummer started with unknown command line arguments: " +
+                                                    strArgs.Aggregate((j, k) => j + " " + k));
+                                            }
+
+                                            if (setFilesToLoad.Contains(strArg))
+                                                continue;
+                                            setFilesToLoad.Add(strArg);
+                                        }
+                                    }
+
+                                    // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                                    await Task.Run(() =>
+                                        Parallel.ForEach(setFilesToLoad, async x =>
+                                        {
+                                            Character objCharacter = await LoadCharacter(x);
+                                            lstCharactersToLoad.Add(objCharacter);
+                                        })).ConfigureAwait(true); // Makes sure frmLoading that wraps all gets disposed on the same thread that created it
+                                }
+                                catch (Exception ex)
+                                {
+                                    op_frmChummerMain.SetSuccess(false);
+                                    ExceptionTelemetry ext = new ExceptionTelemetry(ex)
+                                    {
+                                        SeverityLevel = SeverityLevel.Warning
+                                    };
+                                    op_frmChummerMain.tc.TrackException(ext);
+                                    Log.Warn(ex);
+                                }
                             }
-                        }
 
-                        frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
+                            frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
 
-                        if (MasterIndex != null)
-                        {
-                            if (CharacterRoster == null)
+                            if (MasterIndex != null)
+                            {
+                                if (CharacterRoster == null)
+                                    MasterIndex.WindowState = FormWindowState.Maximized;
+                                MasterIndex.Show();
+                            }
+
+                            frmProgressBar.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
+
+                            if (CharacterRoster != null)
+                            {
+                                if (MasterIndex == null)
+                                    CharacterRoster.WindowState = FormWindowState.Maximized;
+                                CharacterRoster.Show();
+                            }
+
+                            if (GlobalOptions.AllowEasterEggs)
+                            {
+                                frmProgressBar.PerformStep(LanguageManager.GetString("String_Chummy"));
+                                _mascotChummy = new Chummy(null);
+                                _mascotChummy.Show(this);
+                            }
+
+                            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                            if (MasterIndex != null && CharacterRoster != null)
+                            {
                                 MasterIndex.WindowState = FormWindowState.Maximized;
-                            MasterIndex.Show();
-                        }
-
-                        frmProgressBar.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
-                        
-                        if (CharacterRoster != null)
-                        {
-                            if (MasterIndex == null)
                                 CharacterRoster.WindowState = FormWindowState.Maximized;
-                            CharacterRoster.Show();
+                            }
+
+                            if (blnShowTest)
+                            {
+                                frmTest frmTestData = new frmTest();
+                                frmTestData.Show();
+                            }
+
+                            if (lstCharactersToLoad.Count > 0)
+                                OpenCharacterList(lstCharactersToLoad);
                         }
 
-                        if (GlobalOptions.AllowEasterEggs)
+                        Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
+
+                        // Set the Tag for each ToolStrip item so it can be translated.
+                        foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
                         {
-                            frmProgressBar.PerformStep(LanguageManager.GetString("String_Chummy"));
-                            _mascotChummy = new Chummy(null);
-                            _mascotChummy.Show(this);
+                            tssItem.UpdateLightDarkMode();
+                            tssItem.TranslateToolStripItemsRecursively();
                         }
 
-                        // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                        if (MasterIndex != null && CharacterRoster != null)
+                        foreach (ToolStripMenuItem tssItem in mnuProcessFile.Items.OfType<ToolStripMenuItem>())
                         {
-                            MasterIndex.WindowState = FormWindowState.Maximized;
-                            CharacterRoster.WindowState = FormWindowState.Maximized;
+                            tssItem.UpdateLightDarkMode();
+                            tssItem.TranslateToolStripItemsRecursively();
                         }
-
-                        if (blnShowTest)
-                        {
-                            frmTest frmTestData = new frmTest();
-                            frmTestData.Show();
-                        }
-
-                        if (lstCharactersToLoad.Count > 0)
-                            OpenCharacterList(lstCharactersToLoad);
-                    }
-
-                    Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
-
-                    // Set the Tag for each ToolStrip item so it can be translated.
-                    foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
-                    {
-                        tssItem.UpdateLightDarkMode();
-                        tssItem.TranslateToolStripItemsRecursively();
-                    }
-
-                    foreach (ToolStripMenuItem tssItem in mnuProcessFile.Items.OfType<ToolStripMenuItem>())
-                    {
-                        tssItem.UpdateLightDarkMode();
-                        tssItem.TranslateToolStripItemsRecursively();
                     }
                 }
                 catch (Exception ex)
@@ -866,7 +877,7 @@ namespace Chummer
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
             using (new CursorWait(this))
             {
-                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(false);
+                Character objOpenCharacter = await LoadCharacter(strFileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -888,7 +899,7 @@ namespace Chummer
                 return;
             using (new CursorWait(this))
             {
-                Character objOpenCharacter = await LoadCharacter(strFileName).ConfigureAwait(false);
+                Character objOpenCharacter = await LoadCharacter(strFileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -1095,7 +1106,7 @@ namespace Chummer
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
                 // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
-                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value).ConfigureAwait(false))).ConfigureAwait(false);
+                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value)));
                 Program.MainForm.OpenCharacterList(lstCharacters);
             }
         }
@@ -1375,41 +1386,38 @@ namespace Chummer
                 {
                     if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                         return;
-                    // Array with locker instead of concurrent bag because we want to preserve order
-                    Character[] lstCharacters = null;
                     //Timekeeper.Start("load_sum");
-                    using (new CursorWait(this))
+                    List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
+                    foreach (string strFile in openFileDialog.FileNames)
                     {
-                        List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
-                        foreach (string strFile in openFileDialog.FileNames)
-                        {
-                            Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                            if (objLoopCharacter != null)
-                                SwitchToOpenCharacter(objLoopCharacter, true);
-                            else
-                                lstFilesToOpen.Add(strFile);
-                        }
+                        Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        if (objLoopCharacter != null)
+                            SwitchToOpenCharacter(objLoopCharacter, true);
+                        else
+                            lstFilesToOpen.Add(strFile);
+                    }
 
-                        if (lstFilesToOpen.Count > 0)
+                    // Array instead of concurrent bag because we want to preserve order
+                    Character[] lstCharacters = null;
+                    if (lstFilesToOpen.Count > 0)
+                    {
+                        using (frmLoading frmProgressBar = new frmLoading
                         {
-                            using (frmLoading frmProgressBar = new frmLoading
+                            CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen)
+                        })
+                        {
+                            frmProgressBar.Reset(lstFilesToOpen.Count * 35);
+                            frmProgressBar.Show();
+                            lstCharacters = new Character[lstFilesToOpen.Count];
+                            Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(lstFilesToOpen.Count);
+                            for (int i = 0; i < lstFilesToOpen.Count; ++i)
                             {
-                                CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen)
-                            })
-                            {
-                                frmProgressBar.Reset(lstFilesToOpen.Count * 35);
-                                frmProgressBar.Show();
-                                lstCharacters = new Character[lstFilesToOpen.Count];
-                                Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(lstFilesToOpen.Count);
-                                for (int i = 0; i < lstFilesToOpen.Count; ++i)
-                                {
-                                    dicIndexedStrings.Add(i, lstFilesToOpen[i]);
-                                }
-                                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
-                                await Task.Run(() =>
-                                    Parallel.ForEach(dicIndexedStrings, async x => lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false, true, true, frmProgressBar)
-                                        .ConfigureAwait(false))).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                                dicIndexedStrings.Add(i, lstFilesToOpen[i]);
                             }
+                            // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                            await Task.Run(() => Parallel.ForEach(dicIndexedStrings,
+                                async x => lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false,
+                                    true, true, frmProgressBar))).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                         }
                     }
                     Program.MainForm.OpenCharacterList(lstCharacters);
@@ -1562,7 +1570,7 @@ namespace Chummer
                         frmProgressBar = null;
                     OpenCharacters.Add(objCharacter);
                     //Timekeeper.Start("load_file");
-                    bool blnLoaded = await objCharacter.Load(frmProgressBar, blnShowErrors).ConfigureAwait(false);
+                    bool blnLoaded = await objCharacter.Load(frmProgressBar, blnShowErrors);
                     //Timekeeper.Finish("load_file");
                     if (!blnLoaded)
                     {

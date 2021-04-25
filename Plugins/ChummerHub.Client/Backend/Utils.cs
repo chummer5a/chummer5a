@@ -72,7 +72,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (_userRoles == null)
                 {
-                    using (new CursorWait())
+                    using (new CursorWait(PluginHandler.MainForm))
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...
@@ -103,7 +103,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (_possibleRoles == null)
                 {
-                    using (new CursorWait())
+                    using (new CursorWait(PluginHandler.MainForm))
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...

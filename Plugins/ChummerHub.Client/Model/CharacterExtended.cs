@@ -645,7 +645,7 @@ namespace ChummerHub.Client.Model
         {
             try
             {
-                using (new CursorWait(null, true))
+                using (new CursorWait(PluginHandler.MainForm, true))
                 {
                     if (myState != null)
                     {

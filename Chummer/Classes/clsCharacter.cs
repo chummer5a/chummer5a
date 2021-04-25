@@ -2095,7 +2095,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false)
         {
-            return await XmlManager.LoadXPathAsync(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile).ConfigureAwait(false);
+            return await XmlManager.LoadXPathAsync(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile);
         }
 
         /// <summary>
@@ -2121,7 +2121,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false)
         {
-            return await XmlManager.LoadAsync(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile).ConfigureAwait(false);
+            return await XmlManager.LoadAsync(strFileName, Options.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile);
         }
 
         public bool IsLoading { get; set; }
@@ -16365,7 +16365,7 @@ namespace Chummer
                                         using (StreamReader objReader = File.OpenText(strEntryFullName))
                                         {
                                             string strLine;
-                                            while ((strLine = await objReader.ReadLineAsync().ConfigureAwait(false)) != null)
+                                            while ((strLine = await objReader.ReadLineAsync()) != null)
                                             {
                                                 // Trim away the newlines and empty spaces at the beginning and end of lines
                                                 strLine = strLine.Trim('\n', '\r', ' ').Trim();
@@ -18796,13 +18796,13 @@ namespace Chummer
         [IgnoreDataMember]
         public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown;
 
-        public void OnDefaultDoubleClick(object sender, EventArgs e)
+        public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == FileName);
 
             if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
             {
-                objOpenCharacter = Program.MainForm.LoadCharacter(FilePath).Result;
+                objOpenCharacter = await Program.MainForm.LoadCharacter(FilePath);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }

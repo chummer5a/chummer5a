@@ -10634,7 +10634,7 @@ namespace Chummer
                 if (!CharacterObject.Save())
                     return;
                 IsDirty = false;
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(CharacterObject.FileName).ConfigureAwait(false);
+                Character objOpenCharacter = await Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
             }

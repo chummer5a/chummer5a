@@ -330,7 +330,7 @@ namespace Chummer
                                 return task.Result.OrderBy(a => a.Text).ToList();
                             }
                             return new List<TreeNode>();
-                        }).ConfigureAwait(false);
+                        });
                         await Task.Run(() =>
                         {
                             foreach(TreeNode node in lstNodes)
@@ -376,7 +376,7 @@ namespace Chummer
                                 });
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
-                        }).ConfigureAwait(false);
+                        });
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
@@ -597,13 +597,19 @@ namespace Chummer
         private void treCharacterList_DoubleClick(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if(objSelectedNode != null && objSelectedNode.Level > 0)
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+                return;
+            switch (objSelectedNode.Tag)
             {
-                if (objSelectedNode.Tag == null) return;
-                if (objSelectedNode.Tag is CharacterCache objCache)
+                case null:
+                    return;
+                case CharacterCache objCache:
                 {
                     using (new CursorWait(this))
+                    {
                         objCache.OnMyDoubleClick(sender, e);
+                    }
+                    break;
                 }
             }
         }
