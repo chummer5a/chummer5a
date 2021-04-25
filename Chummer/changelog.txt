@@ -20,6 +20,7 @@ Application Changes:
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 - Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
+- Added the ability to specify a city, district, and borough for a lifestyle.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -108,6 +109,9 @@ Changed/New Strings:
 - Message_MergeIdentical
 - MessageTitle_MergeIdentical
 - Message_Load_Error_Warning
+- Label_SelectLifestyle_Borough
+- Label_SelectLifestyle_District
+- Label_SelectLifestyle_City
 
 Build 214
 Application Fixes:

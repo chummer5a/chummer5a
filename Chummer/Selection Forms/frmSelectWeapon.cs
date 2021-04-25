@@ -384,14 +384,7 @@ namespace Chummer
                     dgvWeapons.Columns[7].Visible = false;
                     dgvWeapons.Columns[8].Visible = false;
                 }
-                if (blnAnyMelee)
-                {
-                    dgvWeapons.Columns[9].Visible = true;
-                }
-                else
-                {
-                    dgvWeapons.Columns[9].Visible = false;
-                }
+                dgvWeapons.Columns[9].Visible = blnAnyMelee;
                 dgvWeapons.Columns[0].Visible = false;
                 dgvWeapons.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
                 dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;

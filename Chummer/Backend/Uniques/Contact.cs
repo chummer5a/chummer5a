@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
@@ -50,6 +51,7 @@ namespace Chummer
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
     public sealed class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes, IHasInternalId
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
         private string _strLocation = string.Empty;
@@ -744,7 +746,7 @@ namespace Chummer
             catch (Exception e)
             {
                 string msg = "Could not LoadData for " + strLanguage + " of hobbiesvices " + HobbiesVice + ". Is it missing in contacts.xml?";
-                Log.Exception(e, msg);
+                Log.Error(e, msg);
                 throw;
             }
 

@@ -2984,8 +2984,9 @@ namespace Chummer
                 return;
 
             // Prompt the user to select an inanimate Vessel.
+            XPathNavigator xmlVesselsNagivator = await CharacterObject.LoadDataXPathAsync("vessels.xml");
             List<ListItem> lstMetatype = new List<ListItem>(10);
-            foreach (XPathNavigator xmlMetatype in CharacterObject.LoadDataXPath("vessels.xml").Select("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatype in xmlVesselsNagivator.Select("/chummer/metatypes/metatype"))
             {
                 string strName = xmlMetatype.SelectSingleNode("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
@@ -3008,7 +3009,8 @@ namespace Chummer
             }
 
             // Get the Node for the selected Vessel.
-            XmlNode objSelected = CharacterObject.LoadData("vessels.xml").SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + "]");
+            XmlDocument xmlVessels = await CharacterObject.LoadDataAsync("vessels.xml");
+            XmlNode objSelected = xmlVessels.SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + "]");
             if (objSelected == null)
                 return;
 
@@ -3044,7 +3046,7 @@ namespace Chummer
                             CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
                         ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.CHA.MetatypeMinimum,
                             CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
-                        XmlDocument xmlPowerDoc = CharacterObject.LoadData("critterpowers.xml");
+                        XmlDocument xmlPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
 
                         // Update the Movement if the Vessel has one.
                         string strMovement = objSelected["movement"]?.InnerText;

@@ -1119,15 +1119,12 @@ namespace Chummer.Backend.Equipment
                 objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
                 objClip.Save(objWriter);
             }
-            var ammoreloadable = this.GetAmmoReloadable(lstGearToSearch, false);
+            var ammoreloadable = GetAmmoReloadable(lstGearToSearch, false);
             foreach (var reloadClipGear in ammoreloadable)
             {
                 Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
                 reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
-                if (reloadClipGear.Location != null)
-                    reload.AmmoLocation = reloadClipGear.Location.Name;
-                else
-                    reload.AmmoLocation = "available or loaded";
+                reload.AmmoLocation = reloadClipGear.Location != null ? reloadClipGear.Location.Name : "available or loaded";
                 reload.Save(objWriter);
                 //reloadClipGear.Save(objWriter);
             }
@@ -5231,7 +5228,7 @@ namespace Chummer.Backend.Equipment
             }
             catch(ArgumentException ae)
             {
-                Program.MainForm.ShowMessageBox(ae.Message, "", MessageBoxButtons.OK);
+                Program.MainForm.ShowMessageBox(ae.Message);
                 return;
             }
 

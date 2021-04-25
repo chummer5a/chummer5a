@@ -10600,7 +10600,7 @@ namespace Chummer
                 if (CharacterObject.MetatypeCategory == "Shapeshifter")
                 {
                     List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = CharacterObject.LoadData("metatypes.xml");
+                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml");
                     string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
                                                  + CharacterObject.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
                                                  + "]/metavariants/metavariant[id = "
