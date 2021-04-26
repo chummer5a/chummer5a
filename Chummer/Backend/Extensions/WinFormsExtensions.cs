@@ -46,7 +46,7 @@ namespace Chummer
             {
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                 if (myControlCopy.InvokeRequired)
-                    myControlCopy.Invoke(funcToRun);
+                    myControlCopy.BeginInvoke(funcToRun);
                 else
                     funcToRun.Invoke();
             }

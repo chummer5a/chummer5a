@@ -81,14 +81,14 @@ namespace Chummer
                 string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
 
             //lets write that in separate lines to see where the exception is thrown
-            if (!GlobalOptions.HideMasterIndex)
+            if (!GlobalOptions.HideMasterIndex || isUnitTest)
             {
                 MasterIndex = new frmMasterIndex
                 {
                     MdiParent = this
                 };
             }
-            if (!GlobalOptions.HideCharacterRoster)
+            if (!GlobalOptions.HideCharacterRoster || isUnitTest)
             {
                 CharacterRoster = new frmCharacterRoster
                 {
@@ -223,7 +223,7 @@ namespace Chummer
                             if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning &&
                                 CurrentVersion.Minor < 215)
 #else
-                        if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion.Minor < 215)
+                            if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning && CurrentVersion.Build > 0 && CurrentVersion.Minor < 215)
 #endif
                             {
                                 if (ShowMessageBox(LanguageManager.GetString("Message_CharacterCustomDataWarning"),
@@ -242,14 +242,15 @@ namespace Chummer
                             {
                                 // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
                                 await Task.Run(() =>
-                                    Parallel.ForEach(s_astrPreloadFileNames, x =>
-                                    {
-                                        // Load default language data first for performance reasons
-                                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                                            XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
-                                        XmlManager.Load(x);
-                                        frmProgressBar.PerformStep(Application.ProductName);
-                                    })).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                                        Parallel.ForEach(s_astrPreloadFileNames, async x =>
+                                        {
+                                            // Load default language data first for performance reasons
+                                            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                                await XmlManager.LoadAsync(x, null, GlobalOptions.DefaultLanguage);
+                                            await XmlManager.LoadAsync(x);
+                                            frmProgressBar.PerformStep(Application.ProductName);
+                                        }))
+                                    .ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                                 //Timekeeper.Finish("cache_load");
                             }
 
