@@ -3221,9 +3221,11 @@
       <range>Special</range>
       <type>M</type>
       <required>
-        <allof>
+        <oneof>
           <metamagicart>Advanced Ritual Casting</metamagicart>
-        </allof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
       </required>
     </spell>
     <spell>

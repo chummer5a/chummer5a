@@ -31,6 +31,7 @@ Data Changes:
 - When creating spirit critters with forces not divisible by 3, the number of optional powers they get is now properly based on rounding the result of the division down instead of up. Fixes #4356.
 - All spirits now properly have a starting and maximum Essence equal to their Force instead of to 6. Fixes #4358.
 - Extraplanar Travelers is now a full category of selectable critters. Fixes #4394.
+- Changed Imbue Item spell from SG to properly require being an adept, mystic adept or having the Advanced Ritual Casting art.
 
 Changed/New Strings:
 - String_ContactPoints
